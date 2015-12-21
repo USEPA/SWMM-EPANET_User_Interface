@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmMainSWMM</class>
+ <widget class="QMainWindow" name="frmMainSWMM">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>792</width>
+    <height>603</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SWMM 5.1</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../icons/epa_swmm.png</normaloff>../icons/epa_swmm.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QMdiArea" name="map">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QComboBox" name="cbAutoLength">
+        <item>
+         <property name="text">
+          <string>Auto-Length: Off</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Auto-Length: On</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbOffset">
+        <item>
+         <property name="text">
+          <string>Offsets: Elevation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Offsets: Depth</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbFlowUnits">
+        <item>
+         <property name="text">
+          <string>Flow Units: CFS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: GPM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: MGD</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: CMS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units:  LPS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: MLD</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnZoom100">
+        <property name="text">
+         <string>Zoom Level: 100%</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnCoord">
+        <property name="text">
+         <string>x,y</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>792</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionStdNewProject"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuReport">
+    <property name="title">
+     <string>Report</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <widget class="QMenu" name="menuScripting">
+     <property name="title">
+      <string>Scripting</string>
+     </property>
+     <addaction name="actionIPython"/>
+     <addaction name="actionExec"/>
+    </widget>
+    <addaction name="menuScripting"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuProject"/>
+   <addaction name="menuReport"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuPlugins"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar_Object">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionObjAddGage"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_Map">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="actionMapSelectObj"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_Standard">
+   <property name="windowTitle">
+    <string>toolBar_3</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>23</width>
+     <height>22</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="actionStdNewProject"/>
+  </widget>
+  <widget class="QDockWidget" name="dockw_tab">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QTabWidget" name="tabProjMap">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="tabProject">
+        <attribute name="title">
+         <string>Project</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabMap">
+        <attribute name="title">
+         <string>Map</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockw_more">
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
+   <property name="windowTitle">
+    <string>Titles/Notes</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_7"/>
+  </widget>
+  <action name="actionStdNewProject">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_new.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>New Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Start a new project</string>
+   </property>
+  </action>
+  <action name="actionMapSelectObj">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_pointer.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Select an object</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an object from a map</string>
+   </property>
+  </action>
+  <action name="actionObjAddGage">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_gage.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Add Gage</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a rain gage</string>
+   </property>
+  </action>
+  <action name="actionIPython">
+   <property name="text">
+    <string>IPython</string>
+   </property>
+  </action>
+  <action name="actionExec">
+   <property name="text">
+    <string>exec</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="swmm.qrc"/>
+ </resources>
+ <connections/>
+</ui>

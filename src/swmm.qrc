@@ -1,0 +1,42 @@
+<RCC>
+  <qresource prefix="/">
+    <file>icons/map_fullextent.png</file>
+    <file>icons/map_measure.png</file>
+    <file>icons/map_pan.png</file>
+    <file>icons/map_pointer.png</file>
+    <file>icons/map_selectregion.png</file>
+    <file>icons/map_selectvertices0.png</file>
+    <file>icons/map_zoomin.png</file>
+    <file>icons/map_zoomout0.png</file>
+    <file>icons/obj_gage.png</file>
+    <file>icons/obj_link_conduit.png</file>
+    <file>icons/obj_link_orifice.png</file>
+    <file>icons/obj_link_outlet.png</file>
+    <file>icons/obj_link_pump.png</file>
+    <file>icons/obj_link_weir.png</file>
+    <file>icons/obj_maplabel.png</file>
+    <file>icons/obj_node_divider.png</file>
+    <file>icons/obj_node_junction.png</file>
+    <file>icons/obj_node_outfall.png</file>
+    <file>icons/obj_node_storage.png</file>
+    <file>icons/obj_subcatchment.png</file>
+    <file>icons/std_project_arrangewindows.png</file>
+    <file>icons/std_project_copywindow.png</file>
+    <file>icons/std_project_findobjectbyrules.png</file>
+    <file>icons/std_project_findobjectinmap.png</file>
+    <file>icons/std_project_new.png</file>
+    <file>icons/std_project_open.png</file>
+    <file>icons/std_project_overviewmap.png</file>
+    <file>icons/std_project_printwindow.png</file>
+    <file>icons/std_project_profileplot.png</file>
+    <file>icons/std_project_runswmm.png</file>
+    <file>icons/std_project_save.png</file>
+    <file>icons/std_project_scatterplot0.png</file>
+    <file>icons/std_project_statisticreport0.png</file>
+    <file>icons/std_project_statusreport.png</file>
+    <file>icons/std_project_tsplot0.png</file>
+    <file>icons/std_project_tstable0.png</file>
+    <file>icons/plugin.png</file>
+    <file>icons/std_project_viewoption.png</file>
+  </qresource>
+</RCC>

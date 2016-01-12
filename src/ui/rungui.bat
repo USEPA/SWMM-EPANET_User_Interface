@@ -6,4 +6,4 @@ set QGIS=C:\OSGeo4W64\apps\qgis
 set QGIS_PREFIX_PATH=C:\OSGeo4W64\apps\qgis
 set QT_PLUGIN_PATH=C:\OSGEO4W64\apps\Qt4\plugins
 set QT_RASTER_CLIP_LIMIT=4096
-python frmMainSWMM.py
+python frmMain.py

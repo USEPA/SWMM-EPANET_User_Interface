@@ -6,7 +6,7 @@ sip.setapi("QVariant", 2)
 #from embed_ipython_new import EmbedIPython
 from ui_utility import EmbedMap
 from PyQt4 import QtCore, QtGui
-from frmMainSWMMDesigner import Ui_frmMainSWMM
+from frmMainSWMMDesigner import Ui_frmMain
 #import pymsgbox
 import imp
 
@@ -17,10 +17,11 @@ MainModule = "__init__"
 _plugins = []
 
 
-class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
+class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        self.init_swmm()
         '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
@@ -32,6 +33,19 @@ class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
             map_win.setGeometry(0, 0, 600, 400)
             map_win.setWindowTitle('Study Area Map')
             map_win.show()
+
+    def init_swmm(self):
+        model = QtGui.QStandardItemModel()
+        #model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
+        self.treeProject.setModel(model)
+        model.appendRow(QtGui.QStandardItem("Title/Notes"))
+        model.appendRow(QtGui.QStandardItem("Options"))
+        model.appendRow(QtGui.QStandardItem("Climatology"))
+        hydrology = QtGui.QStandardItem("Hydrology")
+        hydrology.appendRow(QtGui.QStandardItem("Rain Gages"))
+        hydrology.appendRow(QtGui.QStandardItem("Subcatchments"))
+        hydrology.appendRow(QtGui.QStandardItem("Aquifers"))
+        model.appendRow(hydrology)
 
     def populatePlugins(self, plugins):
         if len(plugins) > 0:
@@ -161,6 +175,6 @@ def print_process_id():
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    MainApp = frmMainSWMM()
+    MainApp = frmMain()
     MainApp.show()
     sys.exit(app.exec_())

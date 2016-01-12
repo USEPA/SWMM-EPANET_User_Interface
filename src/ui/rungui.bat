@@ -1,0 +1,9 @@
+set Path=C:\OSGEO4W64\apps\Python27\Scripts;C:\OSGEO4~1\apps\qgis\bin;C:\OSGEO4~1\bin;$PATH
+set PROJ_LIB=C:\OSGEO4W64\share\proj
+set PYTHONHOME=C:\OSGEO4W64\apps\Python27
+set PYTHONPATH=C:\OSGeo4W64\apps\qgis\python
+set QGIS=C:\OSGeo4W64\apps\qgis
+set QGIS_PREFIX_PATH=C:\OSGeo4W64\apps\qgis
+set QT_PLUGIN_PATH=C:\OSGEO4W64\apps\Qt4\plugins
+set QT_RASTER_CLIP_LIMIT=4096
+python frmMainSWMM.py

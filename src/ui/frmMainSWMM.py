@@ -3,19 +3,11 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from PyQt4.QtGui import *
-from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.qt.inprocess import QtInProcessKernelManager
-from IPython.lib import guisupport
-from embed_ipython_new import QIPythonWidget
-from embed_ipython_new import EmbedIPython
+#from embed_ipython_new import EmbedIPython
 from ui_utility import EmbedMap
 from PyQt4 import QtCore, QtGui
 from frmMainSWMMDesigner import Ui_frmMainSWMM
-#from IPython import embed
-#from RestrictedPython import compile_restricted
-#import py_compile
-import pymsgbox
+#import pymsgbox
 import imp
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
@@ -24,6 +16,7 @@ PluginFolder = "./plugins"
 MainModule = "__init__"
 _plugins = []
 
+
 class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -31,7 +24,6 @@ class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
         '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
-        '''self.runscriptrestricted('')'''
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
         map_widget = EmbedMap(session=self)

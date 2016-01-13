@@ -43,15 +43,30 @@ class HydraulicsOptions(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
+    field_dict = {
+        "Units": "flow_units",
+        "Headloss": "head_loss",
+        "Specific Gravity": "specific_gravity",
+        "Viscosity": "relative_viscosity",
+        "Trials": "maximum_trials",
+        "Accuracy": "accuracy",
+        "CHECKFREQ": "check_frequency",
+        "MAXCHECK": "max_check",
+        "DAMPLIMIT": "damp_limit",
+        "Unbalanced": "unbalanced_continue",
+        "Pattern": "default_pattern",
+        "Demand Multiplier": "demand_multiplier",
+        "Emitter Exponent": "emitter_exponent",
+        "Quality": "",
+        "Diffusivity": "",
+        "Tolerance": ""}
+    """Mapping from label used in file to field name"""
+
     # @staticmethod
     # def default():
     #     return EPANETHydraulicOptions(EPANETOptions.SECTION_NAME, None, None, -1)
 
     def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
-
         self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
 
@@ -99,3 +114,17 @@ class HydraulicsOptions(Section):
 
         self.hydraulics_file = ""
         """Hydraulics file to either use or save"""
+
+        Section.__init__(self, name, value, None, index)
+
+    def set_from_text(self, text):
+        for line in text.splitlines():
+            if not line.startswith(';', '['):
+                lower_line = line.tolower()
+                for dict_tuple in HydraulicsOptions.field_dict:
+                    if lower_line.startswith(dict_tuple.key.tolower):
+                        try:
+                            setattr(self, dict_tuple.value, line.substring(dict_tuple.key.length()).trim())
+                        except:
+                            raise Exception("Unable to set attribute " + dict_tuple.value +
+                                            " to " + line.substring(dict_tuple.key.length()))

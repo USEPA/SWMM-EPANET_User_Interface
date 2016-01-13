@@ -48,7 +48,7 @@ class FixedStatus(Enum):
     CLOSED = 2
 
 
-class Link(object):
+class Link(Section):
     """A link in an EPANET model"""
     def __init__(self, name, inlet_node, outlet_node):
         self.name = name

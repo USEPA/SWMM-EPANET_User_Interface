@@ -13,7 +13,7 @@ from core.epanet.options.backdrop import BackdropOptions
 from core.epanet.options.energy import EnergyOptions
 from core.epanet.options.map import MapOptions
 from core.epanet.options.quality import QualityOptions
-from core.epanet.options.reactions import ReactionsOptions
+from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
@@ -43,7 +43,7 @@ class Project(InputFile):
         "[RULES]": [Rule],
         "[DEMANDS]": [Demand],
         "[QUALITY]": QualityOptions,
-        "[REACTIONS]": ReactionsOptions,
+        "[REACTIONS]": Reactions(Reactions.SECTION_NAME, None, None, -1),
         "[SOURCES]": [Source],
         # [MIXING]
         "[OPTIONS]": MapOptions,
@@ -56,6 +56,35 @@ class Project(InputFile):
         "[BACKDROP]": BackdropOptions
         # [TAGS]
           }
+
+    def __init__(self):
+        self.Title = Title(Title.SECTION_NAME, None, None, -1)
+        self.junctions = [Junction]
+        # [RESERVOIRS]
+        # [TANKS]
+        self.pipes = [Pipe]
+        self.pumps = [Pump]
+        self.valves = [Valve]
+        self.emitters = [(Junction, "emitter_coefficient")]
+        self.curves = [Curve]
+        self.patterns = [Pattern]
+        self.energy = EnergyOptions(EnergyOptions.SECTION_NAME, None, None, -1)
+        # [STATUS]
+        self.controls = [Control]
+        self.rules = [Rule]
+        self.demands = [Demand]
+        self.quality = QualityOptions(QualityOptions.SECTION_NAME, None, None, -1)
+        self.reactions = Reactions(Reactions.SECTION_NAME, None, None, -1)
+        self.sources = [Source]
+        # [MIXING]
+        #self.options = MapOptions,
+        self.options = HydraulicsOptions,
+        #"[TIMES]": TimesOptions,
+        #"[REPORT]": ReportOptions,
+        #"[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
+        #"[VERTICES]": [Vertex],
+        #"[LABELS]": [Label],
+        #"[BACKDROP]": BackdropOptions
 
     def __init__(self, filename):
         self.section_types = Project.epanet_section_types

@@ -29,7 +29,19 @@
         section_class = self.section_types.get(section_name)
         if section_class is None:
             section_class = Section
-        self.sections.append(section_class(section_name, section_body, None, section_index))
+        if isinstance(section_class, list):
+            section_list = []
+            section_class = section_class[0]
+            for row in section_body.splitlines():
+                try:
+                    make_one = section_class(section_name, row, None, section_index)
+                except:
+                    make_one = None
+                if make_one is not None:
+                    section_list.append(make_one)
+            self.sections.append(Section(section_name, section_list))
+        else:
+            self.sections.append(section_class(section_name, section_body, None, section_index))
 
     def to_inp(self):
         build_str = ""
@@ -57,6 +69,22 @@ class Section(object):
         self.index = index
         """Index indicating the order in which this item was read
            (used for keeping items in the same order when written)"""
+
+        if isinstance(value, str):
+            self.set_from_text(value)
+
+    def set_from_text(self, text):
+        for line in text.splitlines():
+            if not line.startswith(';', '['):
+                line_list = line.split()
+                for name_last_word in range(0, 1):
+                    attr_name = ''.join(line_list[:name_last_word]).lower()
+                    if hasattr(self, attr_name):
+                        try:
+                            setattr(self, attr_name, ' '.join(line_list[name_last_word + 1:]))
+                        except:
+                            raise Exception("Unable to set attribute " + attr_name +
+                                            " to " + ' '.join(line_list[name_last_word + 1:]))
 
     def to_inp(self):
         """format contents of this item for writing to file"""

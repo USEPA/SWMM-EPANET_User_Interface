@@ -1,7 +1,7 @@
 ﻿from core.inputfile import Section
 
 
-class ReactionsOptions(Section):
+class Reactions(Section):
     """Defines parameters related to chemical reactions occurring in the network"""
 
     SECTION_NAME = "[REACTIONS]"
@@ -11,10 +11,6 @@ class ReactionsOptions(Section):
     #    return ReactionsOptions(ReactionsOptions.SECTION_NAME, None, -1)
 
     def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
-
         self.order_bulk = 1.0		    # real
         """set the order of reactions occurring in the bulk fluid"""
 
@@ -35,3 +31,5 @@ class ReactionsOptions(Section):
 
         self.roughness_correlation = 1.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
+
+        Section.__init__(self, name, value, None, index)

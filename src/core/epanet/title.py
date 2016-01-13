@@ -11,9 +11,13 @@ class Title(Section):
     #     return Title(EPANETOptions.SECTION_NAME, None, None, -1)
 
     def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
-
         self.title = ""
         """Descriptive title"""
 
+        Section.__init__(self, name, value, default_value, index)
+
+    def set_from_text(self, text):
+        lines = text.splitlines()
+        del lines[0]  # skip [TITLE] line
+        self.title = '\n'.join(lines)
 

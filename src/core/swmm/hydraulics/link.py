@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Link(object):
-    """A link in a SWMM or EPANET model"""
+    """A link in a SWMM model"""
     def __init__(self, name, inlet_node, outlet_node):
         self.name = name
         """Link Name"""
@@ -19,9 +19,12 @@ class Link(object):
         self.outlet_node = outlet_node
         """Node on the outlet end of the Link"""
 
+        self.vertices = {}
+        """Collection of intermediate vertices along the length of the link"""
+
 
 class Conduit(Link):
-    """A link in a SWMM or EPANET model"""
+    """A conduit in a SWMM model"""
     def __init__(self, name, inlet_node, outlet_node):
         Link.__init__(self, name, inlet_node, outlet_node)
         self.length = 0.0
@@ -47,8 +50,140 @@ class Conduit(Link):
         self.cross_section = None
         """See class CrossSection"""
 
+        self.entry_loss_coefficient = 0.0
+        """Head loss coefficient associated with energy losses at the entrance of the conduit"""
+
+        self.exit_loss_coefficient = 0.0
+        """Head loss coefficient associated with energy losses at the exit of the conduit"""
+
+        self.loss_coefficient = 0.0
+        """Head loss coefficient associated with energy losses along the length of the conduit"""
+
         self.flap_gate = False
         """True if a flap gate exists that prevents backflow."""
+
+
+class Pump(Link):
+    """A pump link in a SWMM model"""
+    def __init__(self, name, inlet_node, outlet_node):
+        Link.__init__(self, name, inlet_node, outlet_node)
+        self.pump_curve = Curve
+        """Associated pump curve"""
+
+        self.initial_status = 0.0
+        """Initial status of the pump"""
+
+        self.startup_depth = 0.0
+        """Depth at inlet node when the pump turns on"""
+
+        self.shutoff_depth = 0.0
+        """Depth at inlet node when the pump turns off"""
+
+
+class OrificeType(Enum):
+    SIDE = 1
+    BOTTOM = 2
+
+
+class Orifice(Link):
+    """An orifice link in a SWMM model"""
+    def __init__(self, name, inlet_node, outlet_node):
+        Link.__init__(self, name, inlet_node, outlet_node)
+        self.type = OrificeType.SIDE
+        """Type of orifice"""
+
+        self.cross_section = None
+        """See class CrossSection"""
+
+        self.inlet_offset = 0.0
+        """Depth of bottom of orifice opening from inlet node invert"""
+
+        self.discharge_coefficient = 0.0
+        """Discharge coefficient"""
+
+        self.flap_gate = False
+        """True if a flap gate exists that prevents backflow."""
+
+        self.o_rate = 0.0
+        """Time to open/close a gated orifice"""
+
+
+class WeirType(Enum):
+    TRANSVERSE = 1
+    SIDEFLOW = 2
+    V_NOTCH = 3
+    TRAPEZOIDAL = 4
+    ROADWAY = 5
+
+
+class RoadSurfaceType(Enum):
+    PAVED = 1
+    GRAVEL = 2
+
+
+class Weir(Link):
+    """A weir link in a SWMM model"""
+    def __init__(self, name, inlet_node, outlet_node):
+        Link.__init__(self, name, inlet_node, outlet_node)
+        self.type = WeirType.TRANSVERSE
+        """Type of weir"""
+
+        self.cross_section = None
+        """See class CrossSection"""
+
+        self.inlet_offset = 0.0
+        """Depth of bottom of weir opening from inlet node invert"""
+
+        self.discharge_coefficient = 0.0
+        """Discharge coefficient for central portion of weir"""
+
+        self.flap_gate = False
+        """True if weir contains a flap gate to prevent backflow"""
+
+        self.end_contractions = 0.0
+        """Number of end contractions"""
+
+        self.end_coefficient = 0
+        """Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""
+
+        self.can_surcharge = false
+        """True if weir can surcharge"""
+
+        self.road_width = 0.0
+        """Width of road lanes and shoulders"""
+
+        self.road_surface = RoadSurfaceType.PAVED
+        """Type of road surface"""
+
+
+class OutletCurveType(Enum):
+    TABULAR_DEPTH = 1
+    TABULAR_HEAD = 2
+    FUNCTIONAL_DEPTH = 3
+    FUNCTIONAL_HEAD = 4
+
+
+class Outlet(Link):
+    """An outlet link in a SWMM model"""
+    def __init__(self, name, inlet_node, outlet_node):
+        Link.__init__(self, name, inlet_node, outlet_node)
+        self.inlet_offset = 0.0
+        """Depth of outlet above inlet node invert"""
+
+        self.flap_gate = False
+        """True if outlet contains a flap gate to prevent backflow"""
+
+        self.coefficient = 0.0
+        """Coefficient in outflow expression"""
+
+        self.exponent = 0.0
+        """Exponent in outflow expression"""
+
+        self.curve_type = OutletCurveType.TABULAR_DEPTH
+        """Method of defining flow as a function of either freeboard depth or head across the outlet"""
+
+        self.rating_curve = Curve
+        """Name of rating curve that relates outflow to either depth or head"""
 
 
 class CrossSectionShape(Enum):
@@ -86,25 +221,32 @@ class CrossSection:
     """
     def __init__(self, shape):
         self.shape = shape  # class CrossSectionShape
+        """cross-section shape"""
+
         self.geometry1 = 0.0
+        """full height of the cross-section (ft or m)"""
+
         self.geometry2 = 0.0
+        """auxiliary parameters (width, side slopes, etc.)"""
+
         self.geometry3 = 0.0
+        """auxiliary parameters (width, side slopes, etc.)"""
+
         self.geometry4 = 0.0
+        """auxiliary parameters (width, side slopes, etc.)"""
+
         self.barrels = 0.0
+        """number of barrels (i.e., number of parallel pipes of equal size, slope, and
+        roughness) associated with a conduit (default is 1)."""
+
         self.culvert_code = None
+        """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
+
         self.curve = Curve(None)
+        """associated Shape Curve that defines how width varies with depth."""
+
         self.transect = Transect(None)
-
-
-class Curve:
-    """A functional relationship between two quantities.
-        Uses: Storage, Shape, Diversion, Tidal, Pump, Rating and Control."""
-    def __init__(self, name):
-        self.name = name
-        """Name of the curve"""
-
-        self.mapping = {}
-        """Dictionary mapping input values to output values"""
+        """ cross-section geometry of an irregular channel"""
 
 
 class Transect:

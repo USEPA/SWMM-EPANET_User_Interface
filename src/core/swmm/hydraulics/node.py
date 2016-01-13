@@ -1,13 +1,14 @@
 ﻿from enum import Enum
 
-import core.swmm.groundwater
-
 
 class Node(object):
-    """A node in a SWMM or EPANET model"""
+    """A node in a SWMM model"""
     def __init__(self, name, coordinates):
         self.name = name
         """Node Name"""
+
+        self.centroid = coordinates
+        """Coordinates of Node location (x, y)"""
 
         self.description = None
         """Optional description of the Node"""
@@ -15,10 +16,13 @@ class Node(object):
         self.tag = None
         """Optional label used to categorize or classify the Node"""
 
-        self.coordinates = coordinates
-        """Coordinates of Node location (x, y)"""
+        self.direct_inflows = {}
+        """List of external direct, dry weather, or RDII inflows"""
 
-        self.inflows = {}
+        self.dry_weather_inflows = {}
+        """List of external direct, dry weather, or RDII inflows"""
+
+        self.rdi_inflows = {}
         """List of external direct, dry weather, or RDII inflows"""
 
         self.treatments = {}
@@ -28,7 +32,7 @@ class Node(object):
         """Invert elevation of the Node (feet or meters)"""
 
 
-class JunctionNode(Node):
+class Junction(Node):
     """A Junction node"""
     def __init__(self, name, coordinates):
         Node.__init__(self, name, coordinates)
@@ -74,7 +78,7 @@ class OutfallType(Enum):
     TIMESERIES = 5
 
 
-class OutfallNode(Node):
+class Outfall(Node):
     """A terminal node of the drainage system
         Defines a final downstream boundary under Dynamic Wave flow routing.
         For other types of flow routing they behave as a junction.
@@ -127,7 +131,7 @@ class FlowDividerType(Enum):
 
 
 class WeirDivider:
-    def __init__(self, name, coordinates):
+    def __init__(self):
         self.min_flow = 0.0
         """Minimum flow at which diversion begins (flow units)."""
 
@@ -140,7 +144,7 @@ class WeirDivider:
             2.65 to 3.10 per foot, for flows in CFS."""
 
 
-class FlowDividerNode(JunctionNode):
+class Divider(JunctionNode):
     """Flow Dividers are drainage system nodes that divert inflows to
         a specific conduit in a prescribed manner. A flow divider can
         have no more than two conduit links on its discharge side.
@@ -156,10 +160,32 @@ class FlowDividerNode(JunctionNode):
         self.flow_divider_type = flow_divider_type
         """Type of flow divider from FlowDividerType(Enum)"""
 
+        self.max_depth = 0.0
+        """Maximum depth of node (i.e., from ground surface to invert)
+            (feet or meters). If zero, then the distance from the invert to
+            the top of the highest connecting link will be used. """
+
+        self.initial_depth = 0.0
+        """Depth of water at the node at the start of the simulation
+            (feet or meters)."""
+
+        self.surcharge_depth = 0.0
+        """Additional depth of water beyond the maximum depth that is
+            allowed before the node floods (feet or meters).
+            This parameter can be used to simulate bolted manhole covers
+            or force main connections. """
+
+        self.ponded_area = 0.0
+        """Area occupied by ponded water atop the node after flooding
+            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+            option is turned on, a non-zero value of this parameter will allow
+            ponded water to be stored and subsequently returned to the
+            conveyance system when capacity exists."""
+
         self.cutoff_flow = 0
         """Cutoff flow value used for a CUTOFF divider (flow units)."""
 
-        self.tabular_curve = None
+        self.divider_curve = None
         """Diversion Curve used with a TABULAR divider"""
 
         self.weir = None
@@ -188,17 +214,21 @@ class StorageUnit(JunctionNode):
     """
     def __init__(self, name, coordinates, storage_curve_type):
         Node.__init__(self, name, coordinates)
-        self.evaporation_factor = 0.0
-        """The fraction of the potential evaporation from the storage unit’s
-            water surface that is actually realized."""
+        self.max_depth = 0.0
+        """Maximum depth of node (i.e., from ground surface to invert)
+            (feet or meters). If zero, then the distance from the invert to
+            the top of the highest connecting link will be used. """
 
-        self.infiltration = core.swmm.groundwater.GreenAmptInfiltration()
-        """Set of GreenAmpt parameters that describe how water can infiltrate
-            into the native soil below the unit. To disable any infiltration,
-            set this to None or the parameters inside to zero."""
+        self.initial_depth = 0.0
+        """Depth of water at the node at the start of the simulation
+            (feet or meters)."""
 
         self.storage_curve_type = storage_curve_type
         """StorageCurveType: FUNCTIONAL or TABULAR"""
+
+        self.storage_curve = None
+        """Storage Curve containing the relationship between
+            surface area and storage depth"""
 
         self.coefficient = 0.0
         """A-value in the functional relationship
@@ -212,6 +242,101 @@ class StorageUnit(JunctionNode):
         """C-value in the functional relationship
             between surface area and storage depth."""
 
-        self.tabular_curve = None
-        """Storage Curve containing the relationship between
-            surface area and storage depth"""
+        self.ponded_area = 0.0
+        """Area occupied by ponded water atop the node after flooding
+            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+            option is turned on, a non-zero value of this parameter will allow
+            ponded water to be stored and subsequently returned to the
+            conveyance system when capacity exists."""
+
+        self.evaporation_factor = 0.0
+        """The fraction of the potential evaporation from the storage units
+            water surface that is actually realized."""
+
+        self.seepage_loss = false
+        """The following Green-Ampt infiltration parameters are only used when the storage
+            node is intended to act as an infiltration basin:"""
+
+        self.seepage_suction_head = 0.0
+        """Soil capillary suction head (in or mm)."""
+
+        self.seepage_hydraulic_conductivity = 0.0
+        """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
+
+        self.seepage_initial_moisture.deficit = 0.0
+        """Initial soil moisture deficit (volume of voids / total volume)."""
+
+
+class DirectInflowType(Enum):
+    CONCENTRATION = 1
+    MASS = 2
+
+
+class DirectInflow:
+    """Defines characteristics of direct inflows added directly into a node"""
+    def __init__(self):
+        self.constituent = ""
+        """Name of constituent"""
+
+        self.timeseries = none
+        """Name of the time series that contains inflow data for the selected constituent"""
+
+        self.format = DirectInflowType.CONCENTRATION
+        """Type of inflow data contained in the time series, concentration or mass flow rate"""
+
+        self.conversion_factor = 0.0
+        """Numerical factor used to convert the units of pollutant mass flow rate in the time series data
+        into concentration mass units per second"""
+
+        self.scale_factor = 0.0
+        """Multiplier used to adjust the values of the constituent's inflow time series"""
+
+        self.baseline = 0.0
+        """Value of the constant baseline component of the constituent's inflow"""
+
+        self.baseline_pattern = Pattern    # (Subclass Pattern)
+        """Optional Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+
+
+class DryWeatherInflow:
+    """Defines characteristics of dry weather inflows added to a node"""
+    def __init__(self):
+        self.constituent = ""
+        """Name of constituent"""
+
+        self.average = 0.0
+        """Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+
+        self.time_pattern = Pattern    # (Subclass Pattern)
+        """time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+
+
+class RDIInflow:
+    """Defines characteristics of Rainfall-Dependent Infiltration/Inflows at a node"""
+    def __init__(self):
+        self.hydrograph_group = ""
+        """name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+
+        self.sewershed_area = 0.0
+        """area of the sewershed which contributes RDII to the node (acres or hectares)"""
+
+
+class TreatmentResult(Enum):
+    CONCENTRATION = 1
+    REMOVAL = 2
+
+
+class Treatment:
+    """Define the treatment properties of a node using a treatment expression"""
+    def __init__(self):
+        self.pollutant = ""
+        """Name of pollutant receiving treatment"""
+
+        self.result = TreatmentResult.CONCENTRATION
+        """Result computed by treatment function. Choices are:
+        C function computes effluent concentration
+        R function computes fractional removal."""
+
+        self.function = ""
+        """mathematical function expressing treatment result in terms of pollutant concentrations,
+        pollutant removals, and other standard variables"""

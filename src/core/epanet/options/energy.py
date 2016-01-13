@@ -1,4 +1,4 @@
-﻿from core.epanet.time_patterns.patterns import Pattern
+﻿from core.epanet.patterns import Pattern
 from core.inputfile import Section
 
 

@@ -1,8 +1,9 @@
 from enum import Enum
 
+from core.inputfile import Section
 from core.epanet.curves import Curve
 from core.epanet.vertex import Vertex
-from core.epanet.time_patterns.patterns import Pattern
+from core.epanet.patterns import Pattern
 
 
 class InitialStatusPipe(Enum):

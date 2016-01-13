@@ -8,7 +8,7 @@ from core.epanet.hydraulics.link import Valve
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Source
-from core.epanet.map_labels.labels import Label
+from core.epanet.labels import Label
 from core.epanet.options.backdrop import BackdropOptions
 from core.epanet.options.energy import EnergyOptions
 from core.epanet.options.map import MapOptions
@@ -16,7 +16,7 @@ from core.epanet.options.quality import QualityOptions
 from core.epanet.options.reactions import ReactionsOptions
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
-from core.epanet.time_patterns.patterns import Pattern
+from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
 from core.inputfile import InputFile

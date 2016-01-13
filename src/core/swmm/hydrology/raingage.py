@@ -15,6 +15,16 @@ class RainFormat(Enum):
     CUMULATIVE = 3
 
 
+class RainDataSource(Enum):
+    TIMESERIES = 1
+    FILE = 2
+
+
+class RainFileUnits(Enum):
+    IN = 1
+    MM = 2
+
+
 class RainGage:
     """A rain gage, including reference to location and time-series data"""
 
@@ -42,6 +52,18 @@ class RainGage:
         self.snow_catch_factor = 1
         """Factor that corrects gage readings for snowfall"""
 
-        self.data_source = None
+        self.data_source = RainDataSource.TIMESERIES
         """Source of rainfall data; This can be set to a
             TimeSeries or a TimeSeriesFile."""
+
+        self.timeseries = Timeseries
+        """time series with rainfall data if Data Source selection was TIMESERIES"""
+
+        self.data_file_name = ""
+        """Name of external file containing rainfall data"""
+
+        self.data_file_station_id = ""
+        """Recording gage station number"""
+
+        self.data_file_rain_units = RainFileUnits.IN
+        """Depth units (IN or MM) for rainfall values in the file"""

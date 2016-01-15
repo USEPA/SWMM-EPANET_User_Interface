@@ -21,10 +21,6 @@ class TimesOptions(Section):
         return TimesOptions(TimesOptions.SECTION_NAME, None, -1)
 
     def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
-
         self.duration = 0			    # hours:minutes
         """duration of the simulation"""
 
@@ -54,3 +50,6 @@ class TimesOptions(Section):
 
         self.statistic = StatisticOptions.NONE  # NONE/AVERAGED/MINIMUM/MAXIMUM/RANGE
         """determines what kind of statistical post-processing to do on simulation results"""
+
+        Section.__init__(self, name, value, index)
+        # TODO: parse "value" argument to extract values for each field, after setting default values below

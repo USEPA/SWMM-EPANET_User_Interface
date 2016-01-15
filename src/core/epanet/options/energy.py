@@ -7,14 +7,8 @@ class EnergyOptions(Section):
 
     SECTION_NAME = "[ENERGY]"
 
-    @staticmethod
-    def default():
-        return EnergyOptions(EnergyOptions.SECTION_NAME, None, -1)
-
-    def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
+    def __init__(self):
+        Section.__init__(self)
 
         self.global_price = 0.0		        # real
         """global default value of energy price for all pumps"""

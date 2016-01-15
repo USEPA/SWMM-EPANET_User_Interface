@@ -10,7 +10,9 @@ class Reactions(Section):
     # def default():
     #    return ReactionsOptions(ReactionsOptions.SECTION_NAME, None, -1)
 
-    def __init__(self, name, value, index):
+    def __init__(self):
+        Section.__init__(self)
+
         self.order_bulk = 1.0		    # real
         """set the order of reactions occurring in the bulk fluid"""
 
@@ -32,4 +34,4 @@ class Reactions(Section):
         self.roughness_correlation = 1.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
 
-        Section.__init__(self, name, value, None, index)
+

@@ -20,14 +20,8 @@ class ReportOptions(Section):
 
     SECTION_NAME = "[REPORT]"
 
-    @staticmethod
-    def default():
-        return ReportOptions(ReportOptions.SECTION_NAME, None, -1)
-
-    def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
+    def __init__(self):
+        Section.__init__(self)
 
         self.pagesize = 0		# integer
         """sets the number of lines written per page of the output report"""

@@ -50,14 +50,14 @@ class FixedStatus(Enum):
 
 class Link(Section):
     """A link in an EPANET model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        self.name = name
+    def __init__(self):
+        self.link_id = "Unnamed"
         """Link Name"""
 
-        self.inlet_node = inlet_node
+        self.inlet_node = None
         """Node on the inlet end of the Link"""
 
-        self.outlet_node = outlet_node
+        self.outlet_node = None
         """Node on the outlet end of the Link"""
 
         self.description = None
@@ -72,11 +72,20 @@ class Link(Section):
         self.report_flag = ""
         """Flag indicating whether an output report is desired for this link"""
 
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        return str(self.link_id) + "   " + str(self.inlet_node) + "   "\
+               + str(self.outlet_node) + "   " + str(self.description)
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+
+    def set_from_text(self, text):
+        (self.link_id, self.inlet_node, self.outlet_node, self.description) = text.split()
+
 
 class Pipe(Link):
     """A Pipe link in an EPANET model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
 
         self.length = 0.0
         """pipe length"""
@@ -98,6 +107,29 @@ class Pipe(Link):
 
         self.wall_reaction_coefficient = 0.0
         """wall reaction coefficient for this pipe"""
+
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        return str(self.link_id) + '\t'\
+               + str(self.inlet_node) + '\t'\
+               + str(self.outlet_node) + '\t'\
+               + str(self.length) + '\t'\
+               + str(self.diameter) + '\t'\
+               + str(self.roughness) + '\t'\
+               + str(self.loss_coefficient) + '\t'\
+               + str(self.status)
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+
+    def set_from_text(self, text):
+        fields = text.split()
+        self.link_id = fields[0]
+        self.inlet_node = fields[1]
+        self.outlet_node = fields[2]
+        self.length = fields[3]
+        self.diameter = fields[4]
+        self.roughness = fields[5]
+        self.loss_coefficient = fields[6]
+        self.status = fields[7]
 
 
 class Pump(Link):
@@ -125,6 +157,21 @@ class Pump(Link):
 
         self.energy = PumpEnergy
         """parameters used to compute pumping energy and cost"""
+
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        return str(self.link_id) + '\t'\
+               + str(self.inlet_node) + '\t'\
+               + str(self.outlet_node)
+        """TODO: format for remaining fields?       + str(self.head_curve)"""
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+
+    def set_from_text(self, text):
+        fields = text.split()
+        self.link_id = fields[0]
+        self.inlet_node = fields[1]
+        self.outlet_node = fields[2]
+        """TODO: Populate additional fields: self.head_curve = fields[3]"""
 
 
 class Valve(Link):
@@ -155,6 +202,26 @@ class Valve(Link):
         self.fixed_status = FixedStatus.OPEN
         """valve is open or closed"""
 
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        return str(self.link_id) + '\t'\
+               + str(self.inlet_node) + '\t'\
+               + str(self.outlet_node) + '\t'\
+               + str(self.diameter) + '\t'\
+               + str(self.type) + '\t'\
+               + str(self.setting) + '\t'\
+               + str(self.loss_coefficient)
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+
+    def set_from_text(self, text):
+        fields = text.split()
+        self.link_id = fields[0]
+        self.inlet_node = fields[1]
+        self.outlet_node = fields[2]
+        self.diameter = fields[3]
+        self.type = fields[4]
+        self.setting = fields[5]
+        self.loss_coefficient = fields[6]
 
 class PumpEnergy:
     """Defines parameters used to compute pumping energy and cost"""

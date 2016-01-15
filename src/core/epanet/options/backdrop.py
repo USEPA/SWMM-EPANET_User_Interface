@@ -15,15 +15,8 @@ class BackdropOptions(Section):
 
     SECTION_NAME = "[BACKDROP]"
 
-    @staticmethod
-    def default():
-        return BackdropOptions(BackdropOptions.SECTION_NAME, None, -1)
-
-    def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
-
+    def __init__(self):
+        Section.__init__(self)
         self.dimensions = (0.0, 0.0, 0.0, 0.0)  # real
         """provides the X and Y coordinates of the lower-left and upper-right corners of the map’s bounding rectangle"""
 
@@ -38,3 +31,4 @@ class BackdropOptions(Section):
 
         self.offset_y = 0.0			            # real
         """Y distance that the upper-left corner of the backdrop image is offset from the map’s bounding rectangle"""
+

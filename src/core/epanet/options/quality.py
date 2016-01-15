@@ -20,10 +20,8 @@ class QualityOptions(Section):
     # def default():
     #     return QualityOptions(EPANETOptions.SECTION_NAME, None, None, -1)
 
-    def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
+    def __init__(self):
+        Section.__init__(self)
 
         self.quality = Quality.NONE
         """Type of water quality analysis to perform"""

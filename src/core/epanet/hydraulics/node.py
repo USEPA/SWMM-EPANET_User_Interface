@@ -1,5 +1,5 @@
 ﻿from enum import Enum
-
+from core.coordinates import Coordinates
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 
@@ -20,19 +20,18 @@ class MixingModel(Enum):
     LIFO = 4
 
 
-class Node(object):
+class Node(Coordinates):
     """A node in an EPANET model"""
-    def __init__(self, name, coordinates):
-        self.name = name
+    def __init__(self, x, y):
+        Coordinates.__init__(self, x, y)
+
+        self.name = "Unnamed"
         """Node Name"""
 
-        self.centroid = coordinates
-        """Coordinates of Node location (x, y)"""
-
-        self.description = None
+        self.description = ""
         """Optional description of the Node"""
 
-        self.tag = None
+        self.tag = ""
         """Optional label used to categorize or classify the Node"""
 
         self.initial_quality = 0.0
@@ -45,20 +44,32 @@ class Node(object):
         """Indicates whether reporting is desired at this node"""
 
 
-class Junction(Node):
-    """A Junction node"""
-    def __init__(self, name, coordinates):
-        Node.__init__(self, name, coordinates)
+class Junction:
+    """Junction properties"""
+    def __init__(self):
+        self.node_id = -1
+        """elevation of junction"""
 
         self.elevation = 0.0
         """elevation of junction"""
 
-        self.demands = {Demand}  # collection of Demands
+        self.demand = "" # Does this need to be a list or just one?
         """characteristics of all demands at this node"""
+
+        self.pattern = ""
+        """TODO: decide whether pattern belongs here and document it"""
 
         self.emitter_coefficient = 0.0
         """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
             the product of the flow coefficient and the junction pressure raised to power  """
+
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        return '\t'.join((str(self.node_id), str(self.elevation), str(self.demand), str(self.pattern)))
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+
+    def set_from_text(self, text):
+        (self.node_id, self.elevation, self.demand, self.pattern) = text.split()
 
 
 class Reservoir(Node):

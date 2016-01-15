@@ -1,8 +1,7 @@
 from enum import Enum
 
 from core.inputfile import Section
-
-from core.epanet.time_patterns.patterns import Pattern
+from core.epanet.patterns import Pattern
 
 
 class FlowUnits(Enum):
@@ -66,7 +65,9 @@ class HydraulicsOptions(Section):
     # def default():
     #     return EPANETHydraulicOptions(EPANETOptions.SECTION_NAME, None, None, -1)
 
-    def __init__(self, name, value, default_value, index):
+    def __init__(self):
+        Section.__init__(self)
+
         self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
 
@@ -115,16 +116,16 @@ class HydraulicsOptions(Section):
         self.hydraulics_file = ""
         """Hydraulics file to either use or save"""
 
-        Section.__init__(self, name, value, None, index)
-
     def set_from_text(self, text):
         for line in text.splitlines():
-            if not line.startswith(';', '['):
-                lower_line = line.tolower()
-                for dict_tuple in HydraulicsOptions.field_dict:
-                    if lower_line.startswith(dict_tuple.key.tolower):
+            if not line.startswith((';', '[')):
+                lower_line = line.lower()
+                for dict_tuple in HydraulicsOptions.field_dict.items():
+                    key = dict_tuple[0]
+                    if lower_line.startswith(key.lower() + ' '):
+                        attr_name = dict_tuple[1]
                         try:
-                            setattr(self, dict_tuple.value, line.substring(dict_tuple.key.length()).trim())
+                            setattr(self, attr_name, line.substring(key.length()).trim())
                         except:
-                            raise Exception("Unable to set attribute " + dict_tuple.value +
-                                            " to " + line.substring(dict_tuple.key.length()))
+                            raise Exception("Unable to set attribute " + attr_name +
+                                            " to " + line.substring(key.length()))

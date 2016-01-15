@@ -11,6 +11,7 @@ from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
 from core.epanet.options.backdrop import BackdropOptions
 from core.epanet.options.energy import EnergyOptions
+from core.epanet.options.hydraulics import HydraulicsOptions
 from core.epanet.options.map import MapOptions
 from core.epanet.options.quality import QualityOptions
 from core.epanet.options.reactions import Reactions
@@ -25,40 +26,40 @@ from core.inputfile import InputFile
 class Project(InputFile):
     """Manage a complete EPANET input sequence"""
 
-    epanet_section_types = {
-
-        "[TITLE]": Title,
-        "[JUNCTIONS]": [Junction],  # junction node information
-        # [RESERVOIRS]
-        # [TANKS]
-        "[PIPES]": [Pipe],
-        "[PUMPS]": [Pump],
-        "[VALVES]": [Valve],
-        "[EMITTERS]": ("[JUNCTIONS]", "emmitter_coefficient"),
-        "[CURVES]": [Curve],
-        "[PATTERNS]": [Pattern],   # will this create a collection of them?
-        "[ENERGY]": EnergyOptions,
-        # [STATUS]
-        "[CONTROLS]": [Control],
-        "[RULES]": [Rule],
-        "[DEMANDS]": [Demand],
-        "[QUALITY]": QualityOptions,
-        "[REACTIONS]": Reactions(Reactions.SECTION_NAME, None, None, -1),
-        "[SOURCES]": [Source],
-        # [MIXING]
-        "[OPTIONS]": MapOptions,
-        # "[OPTIONS]": EPANETHydraulicsOptions,
-        "[TIMES]": TimesOptions,
-        "[REPORT]": ReportOptions,
-        "[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
-        "[VERTICES]": [Vertex],
-        "[LABELS]": [Label],
-        "[BACKDROP]": BackdropOptions
-        # [TAGS]
-          }
+    # epanet_section_types = {
+    #
+    #     "[TITLE]": Title,
+    #     "[JUNCTIONS]": [Junction],  # junction node information
+    #     # [RESERVOIRS]
+    #     # [TANKS]
+    #     "[PIPES]": [Pipe],
+    #     "[PUMPS]": [Pump],
+    #     "[VALVES]": [Valve],
+    #     "[EMITTERS]": ("[JUNCTIONS]", "emmitter_coefficient"),
+    #     "[CURVES]": [Curve],
+    #     "[PATTERNS]": [Pattern],   # will this create a collection of them?
+    #     "[ENERGY]": EnergyOptions,
+    #     # [STATUS]
+    #     "[CONTROLS]": [Control],
+    #     "[RULES]": [Rule],
+    #     "[DEMANDS]": [Demand],
+    #     "[QUALITY]": QualityOptions,
+    #     "[REACTIONS]": Reactions(Reactions.SECTION_NAME, None, None, -1),
+    #     "[SOURCES]": [Source],
+    #     # [MIXING]
+    #     "[OPTIONS]": MapOptions,
+    #     # "[OPTIONS]": EPANETHydraulicsOptions,
+    #     "[TIMES]": TimesOptions,
+    #     "[REPORT]": ReportOptions,
+    #     "[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
+    #     "[VERTICES]": [Vertex],
+    #     "[LABELS]": [Label],
+    #     "[BACKDROP]": BackdropOptions
+    #     # [TAGS]
+    #       }
 
     def __init__(self):
-        self.Title = Title(Title.SECTION_NAME, None, None, -1)
+        self.title = Title()
         self.junctions = [Junction]
         # [RESERVOIRS]
         # [TANKS]
@@ -68,24 +69,21 @@ class Project(InputFile):
         self.emitters = [(Junction, "emitter_coefficient")]
         self.curves = [Curve]
         self.patterns = [Pattern]
-        self.energy = EnergyOptions(EnergyOptions.SECTION_NAME, None, None, -1)
+        self.energy = EnergyOptions()
         # [STATUS]
         self.controls = [Control]
         self.rules = [Rule]
         self.demands = [Demand]
-        self.quality = QualityOptions(QualityOptions.SECTION_NAME, None, None, -1)
-        self.reactions = Reactions(Reactions.SECTION_NAME, None, None, -1)
+        self.quality = QualityOptions()
+        self.reactions = Reactions()
         self.sources = [Source]
         # [MIXING]
-        #self.options = MapOptions,
-        self.options = HydraulicsOptions,
-        #"[TIMES]": TimesOptions,
-        #"[REPORT]": ReportOptions,
-        #"[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
-        #"[VERTICES]": [Vertex],
-        #"[LABELS]": [Label],
-        #"[BACKDROP]": BackdropOptions
-
-    def __init__(self, filename):
-        self.section_types = Project.epanet_section_types
-        InputFile.__init__(self, filename)
+        # self.options = MapOptions,
+        self.options = HydraulicsOptions()
+        # "[TIMES]": TimesOptions,
+        # "[REPORT]": ReportOptions,
+        # "[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
+        # "[VERTICES]": [Vertex],
+        # "[LABELS]": [Label],
+        # "[BACKDROP]": BackdropOptions
+        InputFile.__init__(self)

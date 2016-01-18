@@ -134,8 +134,8 @@ class Pipe(Link):
 
 class Pump(Link):
     """A Pump link in an EPANET model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
 
         self.type = PumpType.POWER
         """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
@@ -143,41 +143,43 @@ class Pump(Link):
         self.power = 0.0
         """power value for constant energy pump, hp (kW)"""
 
-        self.head_curve = Curve
+        self.head_curve_id = ""
         """curve that describes head versus flow for the pump"""
 
         self.speed = 0.0
         """relative speed setting (normal speed is 1.0, 0 means pump is off)"""
 
-        self.pattern = Pattern
+        self.pattern = Pattern()
         """time pattern that describes how speed setting varies with time"""
 
         self.initial_status = InitialStatusPump.OPEN
         """initial status of a pump, can also include a speed setting"""
 
-        self.energy = PumpEnergy
+        self.energy = PumpEnergy()
         """parameters used to compute pumping energy and cost"""
 
     def to_inp(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + '\t'\
                + str(self.inlet_node) + '\t'\
-               + str(self.outlet_node)
-        """TODO: format for remaining fields?       + str(self.head_curve)"""
+               + str(self.outlet_node) + '\t'\
+               + str(self.head_curve_id)
+        """TODO: format for remaining fields? """
         """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
 
     def set_from_text(self, text):
-        fields = text.split()
+        fields = text.split(None, 3)
         self.link_id = fields[0]
         self.inlet_node = fields[1]
         self.outlet_node = fields[2]
-        """TODO: Populate additional fields: self.head_curve = fields[3]"""
+        self.head_curve_id = fields[3]
+        """TODO: Populate additional fields: self.speed = ... """
 
 
 class Valve(Link):
     """A valve link in an EPANET model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
 
         self.diameter = 0.0
         """valve diameter"""
@@ -196,7 +198,7 @@ class Valve(Link):
         self.loss_coefficient = 0.0
         """TCV (throttle control valve) Loss Coefficient"""
 
-        self.valve_curve = Curve
+        self.valve_curve = Curve()
         """GPV (general purpose valve) head loss curve"""
 
         self.fixed_status = FixedStatus.OPEN

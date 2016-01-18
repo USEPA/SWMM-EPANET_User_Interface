@@ -12,19 +12,30 @@ class CurveType(Enum):
 class Curve:
     """Defines data curves and their X,Y points"""
     def __init__(self):
-        self.Name = ""			# string
+        self.curve_id = ""			# string
         """Curve ID Label"""
 
-        self.Description = ""   # string
+        self.description = ""   # string
         """Curve description"""
 
-        self.Type = CurveType.PUMP			# PUMP, EFFICIENCY, VOLUME, or HEAD_LOSS
+        self.curve_type = CurveType.PUMP			# PUMP, EFFICIENCY, VOLUME, or HEAD_LOSS
         """Curve type"""
 
-        self.XValues = 0.0		# real array
-        """X Values"""
+        self.curve_xy = []		# list of (x, y) tuples
+        """X, Y Values"""
 
-        self.YValues = 0.0		# real array
-        """Y Values"""
+    def to_inp(self):
+        """format contents of this item for writing to file"""
+        inp = str(self.curve_id)
+        if len(self.description) > 0:
+            inp += self.description + '\n'
+        for xy in self.curve_xy:
+            inp += '\t' + xy[0] + '\t' + xy[1] + '\n'
+        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        return inp
 
+    def set_from_text(self, text):
+        fields = text.split()
+        self.curve_id = fields[0]
+        self.curve_xy.append((fields[1], fields[2]))
 

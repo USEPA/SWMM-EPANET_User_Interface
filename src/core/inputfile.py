@@ -43,12 +43,20 @@
                 section_list = []
                 list_class = section_attr[0]
                 for row in section_text.splitlines()[1:]:
-                    try:
-                        make_one = list_class()
-                        make_one.set_from_text(row)
-                        section_list.append(make_one)
-                    except:
-                        make_one = None
+                    if row.startswith(';'):
+                        comment = Section()
+                        comment.name = "Comment"
+                        comment.index = section_index
+                        comment.value = row
+                        comment.value_original = row
+                        section_list.append(comment)
+                    else:
+                        try:
+                            make_one = list_class()
+                            make_one.set_from_text(row)
+                            section_list.append(make_one)
+                        except:
+                            make_one = None
                 new_section = Section()
                 new_section.name = section_name
                 new_section.index = section_index
@@ -123,6 +131,6 @@ class Section(object):
                     inp += item.to_inp() + '\n'
                 else:
                     inp += item + '\n'
-            return inp
+            return inp + '\n'
         else:
             return self.value

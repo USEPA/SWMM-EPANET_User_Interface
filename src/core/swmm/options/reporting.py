@@ -6,12 +6,8 @@ class Reporting(core.inputfile.Section):
 
     SECTION_NAME = "[REPORT]"
 
-    @staticmethod
-    def default():
-        return ReportOptions(ReportOptions.SECTION_NAME, None, -1)
-
     def __init__(self, name, value, index):
-        core.inputfile.Section.__init__(self, name, value, None, index)
+        core.inputfile.Section.__init__(self)
         # TODO: parse "value" argument to extract values for each field, after setting default values below
         # TODO: document valid values in docstrings below and/or implement each as an Enum or class
 

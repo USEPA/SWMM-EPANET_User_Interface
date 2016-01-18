@@ -8,11 +8,11 @@ class TemperatureSource(Enum):
 
 class EvaporationFormat(Enum):
     UNSET = 0
-    CONSTANT = 1    # (in/day or mm/day)
-    MONTHLY = 2     # evapJan evapFeb ... evapDec (in/day or mm/day)
-    TIMESERIES = 3  # name of timeseries with evaporation data
-    TEMPERATURE = 4 # compute from daily air temperature and latitude
-    FILE = 5        # (panJan panFeb ... panDec)
+    CONSTANT = 1     # (in/day or mm/day)
+    MONTHLY = 2      # evapJan evapFeb ... evapDec (in/day or mm/day)
+    TIMESERIES = 3   # name of timeseries with evaporation data
+    TEMPERATURE = 4  # compute from daily air temperature and latitude
+    FILE = 5         # (panJan panFeb ... panDec)
 
 
 class WindSource(Enum):
@@ -54,7 +54,7 @@ class Evaporation:
         self.monthly_pan_coefficients = {}
         """twelve monthly pan coefficients used with file option and file name in temperature section"""
 
-        self.recovery_pattern = None  #time pattern
+        self.recovery_pattern = None  # time pattern
         """name of a monthly time pattern"""
 
         self.dry_only = False

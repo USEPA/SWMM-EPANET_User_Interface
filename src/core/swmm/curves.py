@@ -14,6 +14,7 @@ class CurveType(Enum):
     RATING = 9
     CONTROL = 10
 
+
 class Curve:
     """Defines data curves and their X,Y points"""
     def __init__(self):

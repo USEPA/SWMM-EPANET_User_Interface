@@ -51,6 +51,8 @@ class FixedStatus(Enum):
 class Link(Section):
     """A link in an EPANET model"""
     def __init__(self):
+        Section.__init__(self)
+
         self.link_id = "Unnamed"
         """Link Name"""
 
@@ -74,9 +76,11 @@ class Link(Section):
 
     def to_inp(self):
         """format contents of this item for writing to file"""
-        return str(self.link_id) + "   " + str(self.inlet_node) + "   "\
-               + str(self.outlet_node) + "   " + str(self.description)
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        return str(self.link_id) + "   "\
+               + str(self.inlet_node) + "   "\
+               + str(self.outlet_node) + "   "\
+               + str(self.description)
+        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_from_text(self, text):
         (self.link_id, self.inlet_node, self.outlet_node, self.description) = text.split()
@@ -118,7 +122,7 @@ class Pipe(Link):
                + str(self.roughness) + '\t'\
                + str(self.loss_coefficient) + '\t'\
                + str(self.status)
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_from_text(self, text):
         fields = text.split()
@@ -164,8 +168,8 @@ class Pump(Link):
                + str(self.inlet_node) + '\t'\
                + str(self.outlet_node) + '\t'\
                + str(self.head_curve_id)
-        """TODO: format for remaining fields? """
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        # TODO: format for remaining fields?
+        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_from_text(self, text):
         fields = text.split(None, 3)
@@ -213,7 +217,7 @@ class Valve(Link):
                + str(self.type) + '\t'\
                + str(self.setting) + '\t'\
                + str(self.loss_coefficient)
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_from_text(self, text):
         fields = text.split()
@@ -224,6 +228,7 @@ class Valve(Link):
         self.type = fields[4]
         self.setting = fields[5]
         self.loss_coefficient = fields[6]
+
 
 class PumpEnergy:
     """Defines parameters used to compute pumping energy and cost"""

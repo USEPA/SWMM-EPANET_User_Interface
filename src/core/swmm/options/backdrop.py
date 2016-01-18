@@ -7,12 +7,8 @@ class BackdropOptions(Section):
 
     SECTION_NAME = "[BACKDROP]"
 
-    @staticmethod
-    def default():
-        return BackdropOptions(BackdropOptions.SECTION_NAME, None, -1)
-
-    def __init__(self, name, value, index):
-        Section.__init__(self, name, value, None, index)
+    def __init__(self):
+        Section.__init__(self)
         # TODO: parse "value" argument to extract values for each field, after setting default values below
         # TODO: document valid values in docstrings below and/or implement each as an Enum or class
 

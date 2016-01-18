@@ -6,8 +6,8 @@ class InterfaceFiles(Section):
 
     SECTION_NAME = "[FILES]"
 
-    def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
+    def __init__(self):
+        Section.__init__(self)
         self.use_rainfall = None
         """Name of rainfall data file to use"""
 

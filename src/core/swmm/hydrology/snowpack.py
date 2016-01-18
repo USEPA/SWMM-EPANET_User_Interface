@@ -88,40 +88,13 @@ class SnowPack:
         """Fraction of snow depth that is added to snow accumulation on the pack's pervious area"""
 
         self.fraction_converted_immediate_melt = 0.0
-        """Fraction of snow depth that becomes liquid water which runs onto any subcatchment associated with the snow pack"""
+        """Fraction of snow depth that becomes liquid water, runs onto any subcatchment associated with the snow pack"""
 
         self.fraction_moved_another_subcatchment = 0.0
         """Fraction of snow depth which is added to the snow accumulation on some other subcatchment"""
 
         self.subcatchment_transfer = ""
         """subcatchment receiving transfers of snow depth"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         self.porosity = 0.0
         """Volume of voids / total soil volume (volumetric fraction)."""

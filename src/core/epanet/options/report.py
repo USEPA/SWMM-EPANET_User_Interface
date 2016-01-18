@@ -35,7 +35,7 @@ class ReportOptions(Section):
         self.summary = StatusYesNo.YES		# YES/NO
         """determines whether a summary table of number of network components and key analysis options is generated"""
 
-        self.energy	= StatusYesNo.NO        # YES/NO
+        self.energy = StatusYesNo.NO        # YES/NO
         """determines if a table reporting average energy usage and cost for each pump is provided"""
 
         self.parameters = ""		        # string -- note could be multiple parameter lines

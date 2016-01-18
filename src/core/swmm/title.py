@@ -10,8 +10,8 @@ class Title(Section):
     # def default():
     #     return Title(SWMMOptions.SECTION_NAME, None, None, -1)
 
-    def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
+    def __init__(self):
+        Section.__init__(self)
 
         self.title = ""
         """Descriptive title"""

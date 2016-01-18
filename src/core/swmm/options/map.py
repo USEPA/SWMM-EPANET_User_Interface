@@ -19,8 +19,8 @@ class MapOptions(Section):
     # def default():
     #     return SWMMOptions(SWMMOptions.SECTION_NAME, None, None, -1)
 
-    def __init__(self, name, value, default_value, index):
-        Section.__init__(self, name, value, None, index)
+    def __init__(self):
+        Section.__init__(self)
         # TODO: parse "value" argument to extract values for each field, after setting default values below
 
         self.dimensions = []

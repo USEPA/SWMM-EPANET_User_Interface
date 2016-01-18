@@ -66,7 +66,7 @@ class Junction:
     def to_inp(self):
         """format contents of this item for writing to file"""
         return '\t'.join((str(self.node_id), str(self.elevation), str(self.demand), str(self.pattern)))
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_from_text(self, text):
         (self.node_id, self.elevation, self.demand, self.pattern) = text.split()

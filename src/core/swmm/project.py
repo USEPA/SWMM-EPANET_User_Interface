@@ -15,7 +15,7 @@ class Project(core.inputfile.InputFile):
     section_types = {
         "[TITLE]": None,  # project title
         "[OPTIONS]": core.swmm.options.Options,  # analysis options
-        "[REPORT]": None,  #": None,  # output reporting instructions
+        "[REPORT]": None,  # output reporting instructions
         "[FILES]": core.swmm.files.Files,  # interface file options
         "[RAINGAGES]": [core.swmm.raingage.RainGage],  # rain gage information
         "[HYDROGRAPHS]": None,  # unit hydrograph data used to construct RDII inflows
@@ -56,19 +56,19 @@ class Project(core.inputfile.InputFile):
         "[CURVES]": None,  # x-y tabular data referenced in other sections
         "[TIMESERIES]": None,  # time series data referenced in other sections
 
-        "[MAP]": None,  # X,Y coordinates of the map’s bounding rectangle
-        "[POLYGONS]": None,  #": None,  # X,Y coordinates for each vertex of subcatchment polygons
+        "[MAP]": None,       # X,Y coordinates of the map's bounding rectangle
+        "[POLYGONS]": None,  # X,Y coordinates for each vertex of subcatchment polygons
         "[COORDINATES]": [core.coordinates.Coordinates],  # X,Y coordinates for nodes
         "[VERTICES]": None,  # X,Y coordinates for each interior vertex of polyline links
-        "[LABELS]": None,  # X,Y coordinates and text of labels
-        "[SYMBOLS]": None,  # X,Y coordinates for rain gages
-        "[BACKDROP]": None  # X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+        "[LABELS]": None,    # X,Y coordinates and text of labels
+        "[SYMBOLS]": None,   # X,Y coordinates for rain gages
+        "[BACKDROP]": None   # X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
         }
 
-    def __init__(self, filename):
+    def __init__(self):
         self.section_types = Project.section_types
-        core.inputfile.InputFile.__init__(self, filename)
+        core.inputfile.InputFile.__init__(self)
 
 
 

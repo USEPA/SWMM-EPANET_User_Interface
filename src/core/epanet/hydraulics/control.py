@@ -25,6 +25,7 @@ class Control:
     def set_from_text(self, text):
         self.row = text
 
+
 class SimpleControl:
     """Defines simple controls that modify links based on a single condition"""
     def __init__(self):
@@ -70,9 +71,7 @@ class SimpleControl:
     def set_from_text(self, text):
         fields = text.split()
         self.link_id = fields[0]
-        self.inlet_node = fields[1]
-        self.outlet_node = fields[2]
-        """TODO: Populate additional fields: self.head_curve = fields[3]"""
+        """TODO: Populate additional fields"""
 
 
 class Rule:
@@ -89,4 +88,4 @@ class Rule:
         return self.rule_id + '\t' + self.rule_text
 
     def set_from_text(self, text):
-        (self.curve_id, self.rule_text) = text.split(None, 1)
+        (self.rule_id, self.rule_text) = text.split(None, 1)

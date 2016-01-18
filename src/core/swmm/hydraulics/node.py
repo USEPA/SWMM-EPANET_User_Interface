@@ -1,13 +1,14 @@
 ﻿from enum import Enum
+from coordinates import Coordinates
 
 
 class Node(object):
     """A node in a SWMM model"""
-    def __init__(self, name, coordinates):
-        self.name = name
+    def __init__(self):
+        self.name = "Unnamed"
         """Node Name"""
 
-        self.centroid = coordinates
+        self.centroid = Coordinates(0.0, 0.0)
         """Coordinates of Node location (x, y)"""
 
         self.description = None
@@ -34,8 +35,8 @@ class Node(object):
 
 class Junction(Node):
     """A Junction node"""
-    def __init__(self, name, coordinates):
-        Node.__init__(self, name, coordinates)
+    def __init__(self):
+        Node.__init__(self)
 
         self.max_depth = 0.0
         """Maximum depth of junction (i.e., from ground surface to invert)
@@ -94,8 +95,8 @@ class Outfall(Node):
             boundary condition type and stage description
             presence of a flap gate to prevent backflow through the outfall.
     """
-    def __init__(self, name, coordinates):
-        Node.__init__(self, name, coordinates)
+    def __init__(self):
+        Node.__init__(self)
 
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""
@@ -144,20 +145,20 @@ class WeirDivider:
             2.65 to 3.10 per foot, for flows in CFS."""
 
 
-class Divider(JunctionNode):
+class Divider(Junction):
     """Flow Dividers are drainage system nodes that divert inflows to
         a specific conduit in a prescribed manner. A flow divider can
         have no more than two conduit links on its discharge side.
         Flow dividers are only active under Kinematic Wave routing
         and are treated as simple junctions under Dynamic Wave routing.
     """
-    def __init__(self, name, coordinates, flow_divider_type):
-        Node.__init__(self, name, coordinates)
+    def __init__(self):
+        Node.__init__(self)
 
         self.diverted_link = None
         """Name of link which receives the diverted flow."""
 
-        self.flow_divider_type = flow_divider_type
+        self.flow_divider_type = FlowDividerType.CUTOFF
         """Type of flow divider from FlowDividerType(Enum)"""
 
         self.max_depth = 0.0
@@ -205,15 +206,15 @@ class StorageCurveType(Enum):
     TABULAR = 2
 
 
-class StorageUnit(JunctionNode):
+class StorageUnit(Junction):
     """Storage Units are drainage system nodes that provide storage volume.
         Physically they could represent storage facilities as small as
         a catch basin or as large as a lake. The volumetric properties
         of a storage unit are described by a function or table of
         surface area versus height.
     """
-    def __init__(self, name, coordinates, storage_curve_type):
-        Node.__init__(self, name, coordinates)
+    def __init__(self):
+        Node.__init__(self)
         self.max_depth = 0.0
         """Maximum depth of node (i.e., from ground surface to invert)
             (feet or meters). If zero, then the distance from the invert to
@@ -223,7 +224,7 @@ class StorageUnit(JunctionNode):
         """Depth of water at the node at the start of the simulation
             (feet or meters)."""
 
-        self.storage_curve_type = storage_curve_type
+        self.storage_curve_type = StorageCurveType.TABULAR
         """StorageCurveType: FUNCTIONAL or TABULAR"""
 
         self.storage_curve = None
@@ -253,7 +254,7 @@ class StorageUnit(JunctionNode):
         """The fraction of the potential evaporation from the storage units
             water surface that is actually realized."""
 
-        self.seepage_loss = false
+        self.seepage_loss = None
         """The following Green-Ampt infiltration parameters are only used when the storage
             node is intended to act as an infiltration basin:"""
 
@@ -278,7 +279,7 @@ class DirectInflow:
         self.constituent = ""
         """Name of constituent"""
 
-        self.timeseries = none
+        self.timeseries = None
         """Name of the time series that contains inflow data for the selected constituent"""
 
         self.format = DirectInflowType.CONCENTRATION

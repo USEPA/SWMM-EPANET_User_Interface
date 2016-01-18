@@ -99,7 +99,7 @@ class Washoff:
         self.cleaning_efficiency = 0.0
         """Street cleaning removal efficiency (percent) for the pollutant"""
 
-        self.bmp_efficiency	= 0.0
+        self.bmp_efficiency = 0.0
         """Removal efficiency (percent) associated with any Best Management Practice that might have been implemented"""
 
 

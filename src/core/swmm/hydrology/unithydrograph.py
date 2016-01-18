@@ -1,3 +1,4 @@
+import swmm.hydrology.raingage
 
 
 class UnitHydrograph:
@@ -8,7 +9,7 @@ class UnitHydrograph:
         self.group_name = name
         """Name assigned to the UH Group"""
 
-        self.rain_gage_used	= RainGage
+        self.rain_gage_used = swmm.hydrology.raingage.RainGage()
         """Name of the rain gage that supplies rainfall data to the unit hydrographs in the group"""
 
         self.hydrograph_months = ""
@@ -23,7 +24,7 @@ class UnitHydrograph:
         self.initial_abstraction_rate = 0.0
         """Rate at which any utilized initial abstraction is made available again"""
 
-        self.initial_abstraction_amount	= 0.0
+        self.initial_abstraction_amount = 0.0
         """Amount of initial abstraction that has already been utilized at the start of the simulation"""
 
 

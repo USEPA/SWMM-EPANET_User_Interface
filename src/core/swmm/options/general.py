@@ -36,8 +36,8 @@ class General(core.inputfile.Section):
     # def default():
     #     return Options(Options.SECTION_NAME, None, None, -1)
 
-    def __init__(self, name, value, default_value, index):
-        core.inputfile.Section.__init__(self, name, value, None, index)
+    def __init__(self):
+        core.inputfile.Section.__init__(self)
         # TODO: parse "value" argument to extract values for each field, after setting default values below
 
         self.flow_units = FlowUnits.CFS

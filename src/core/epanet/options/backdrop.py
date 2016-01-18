@@ -18,17 +18,17 @@ class BackdropOptions(Section):
     def __init__(self):
         Section.__init__(self)
         self.dimensions = (0.0, 0.0, 0.0, 0.0)  # real
-        """provides the X and Y coordinates of the lower-left and upper-right corners of the map’s bounding rectangle"""
+        """provides the X and Y coordinates of the lower-left and upper-right corners of the map's bounding rectangle"""
 
         self.units = BackdropUnits.NONE			# FEET/METERS/DEGREES/NONE
-        """specifies the units that the map’s dimensions are given in"""
+        """specifies the units that the map's dimensions are given in"""
 
         self.file = "" 		                    # string
         """name of the file that contains the backdrop image"""
 
         self.offset_x = 0.0			            # real
-        """X distance that the upper-left corner of the backdrop image is offset from the map’s bounding rectangle"""
+        """X distance that the upper-left corner of the backdrop image is offset from the map's bounding rectangle"""
 
         self.offset_y = 0.0			            # real
-        """Y distance that the upper-left corner of the backdrop image is offset from the map’s bounding rectangle"""
+        """Y distance that the upper-left corner of the backdrop image is offset from the map's bounding rectangle"""
 

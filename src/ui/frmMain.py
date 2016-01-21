@@ -3,19 +3,11 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from PyQt4.QtGui import *
-from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.qt.inprocess import QtInProcessKernelManager
-from IPython.lib import guisupport
-from embed_ipython_new import QIPythonWidget
-from embed_ipython_new import EmbedIPython
+#from embed_ipython_new import EmbedIPython
 from ui_utility import EmbedMap
 from PyQt4 import QtCore, QtGui
-from frmMainSWMMDesigner import Ui_frmMainSWMM
-#from IPython import embed
-#from RestrictedPython import compile_restricted
-#import py_compile
-import pymsgbox
+from frmMainSWMMDesigner import Ui_frmMain
+#import pymsgbox
 import imp
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
@@ -24,14 +16,15 @@ PluginFolder = "./plugins"
 MainModule = "__init__"
 _plugins = []
 
-class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
+
+class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        self.init_swmm()
         '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
-        '''self.runscriptrestricted('')'''
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
         map_widget = EmbedMap(session=self)
@@ -40,6 +33,19 @@ class frmMainSWMM(QtGui.QMainWindow, Ui_frmMainSWMM):
             map_win.setGeometry(0, 0, 600, 400)
             map_win.setWindowTitle('Study Area Map')
             map_win.show()
+
+    def init_swmm(self):
+        model = QtGui.QStandardItemModel()
+        #model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
+        self.treeProject.setModel(model)
+        model.appendRow(QtGui.QStandardItem("Title/Notes"))
+        model.appendRow(QtGui.QStandardItem("Options"))
+        model.appendRow(QtGui.QStandardItem("Climatology"))
+        hydrology = QtGui.QStandardItem("Hydrology")
+        hydrology.appendRow(QtGui.QStandardItem("Rain Gages"))
+        hydrology.appendRow(QtGui.QStandardItem("Subcatchments"))
+        hydrology.appendRow(QtGui.QStandardItem("Aquifers"))
+        model.appendRow(hydrology)
 
     def populatePlugins(self, plugins):
         if len(plugins) > 0:
@@ -169,6 +175,6 @@ def print_process_id():
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    MainApp = frmMainSWMM()
+    MainApp = frmMain()
     MainApp.show()
     sys.exit(app.exec_())

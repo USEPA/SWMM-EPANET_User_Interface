@@ -3,11 +3,11 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-#from embed_ipython_new import EmbedIPython
+from embed_ipython_new import EmbedIPython
 from ui_utility import EmbedMap
 from PyQt4 import QtCore, QtGui
 from frmMainSWMMDesigner import Ui_frmMain
-#import pymsgbox
+# import pymsgbox
 import imp
 
 CURR = os.path.abspath(os.path.dirname('__file__'))

@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
+from frmHydraulicsOptions import Ui_frmHydraulicsOptions
 
 plugin_name = 'EPANET'
 plugin_create_menu = False
@@ -45,10 +46,23 @@ def open_epanet():
         model = QtGui.QStandardItemModel()
         for section in opened_project.sections:
             if hasattr(section, "SECTION_NAME"):
-                model.appendRow(QtGui.QStandardItem(section.SECTION_NAME))
+                if section.SECTION_NAME == '[OPTIONS]':
+                     # Open EPANET project from File/Open menu
+                    actionOptions = QtGui.QAction(main_window)
+                    actionOptions.setObjectName("actionOptions")
+                    model.appendRow(actionOptions)
+                    actionOptions.setText("Options")
+                    QtCore.QObject.connect(actionOptions, QtCore.SIGNAL('triggered()'), open_options)
+                else:
+                    model.appendRow(QtGui.QStandardItem(section.SECTION_NAME))
             else:
                 model.appendRow(QtGui.QStandardItem(section.name))
         _main_window.treeProject.setModel(model)
 
     except Exception as ex:
         QtGui.QMessageBox.critical(None, "Error loading file", file_name + '\n\n' + ex.__str__(), QtGui.QMessageBox.Ok)
+
+
+def open_options():
+    if not _main_window:
+        QtGui.QMessageBox.critical(None, "Plugin not loaded", "_main_window not set in plugin", QtGui.QMessageBox.Ok)

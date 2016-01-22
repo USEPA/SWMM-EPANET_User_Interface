@@ -92,7 +92,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 elif create_menu and not self.sender().isChecked():
                     self.remove_plugin_menu(lplugin)
                     return
-                lplugin.run()
+                elif hasattr(lplugin, "run"):
+                    lplugin.run()
+                elif hasattr(lplugin, "load"):
+                    lplugin.load(self)
                 return
 
     def add_plugin_menu(self, plugin):

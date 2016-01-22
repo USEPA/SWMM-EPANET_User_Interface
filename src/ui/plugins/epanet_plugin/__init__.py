@@ -1,13 +1,13 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
-from frmHydraulicsOptions import Ui_frmHydraulicsOptions
+from ui.plugins.epanet_plugin.frmHydraulicsOptions import Ui_frmHydraulicsOptions
 
 plugin_name = 'EPANET'
 plugin_create_menu = False
 __all__ = {}
 _main_window = None
-
+_frm_options = None
 
 def load(main_window):
     global _main_window
@@ -39,30 +39,41 @@ def open_epanet():
         QtGui.QMessageBox.critical(None, "Plugin not loaded", "_main_window not set in plugin", QtGui.QMessageBox.Ok)
 
     file_name = QtGui.QFileDialog.getOpenFileName(None, caption='EPANET Input file')
-    try:
-        opened_project = core.epanet.project.Project()
-        opened_project.read_file(file_name)
-        _main_window.current_project = opened_project
-        model = QtGui.QStandardItemModel()
-        for section in opened_project.sections:
-            if hasattr(section, "SECTION_NAME"):
-                if section.SECTION_NAME == '[OPTIONS]':
-                     # Open EPANET project from File/Open menu
-                    actionOptions = QtGui.QAction(main_window)
-                    actionOptions.setObjectName("actionOptions")
-                    model.appendRow(actionOptions)
-                    actionOptions.setText("Options")
-                    QtCore.QObject.connect(actionOptions, QtCore.SIGNAL('triggered()'), open_options)
-                else:
-                    model.appendRow(QtGui.QStandardItem(section.SECTION_NAME))
-            else:
-                model.appendRow(QtGui.QStandardItem(section.name))
-        _main_window.treeProject.setModel(model)
 
-    except Exception as ex:
-        QtGui.QMessageBox.critical(None, "Error loading file", file_name + '\n\n' + ex.__str__(), QtGui.QMessageBox.Ok)
+    opened_project = core.epanet.project.Project()
+    opened_project.read_file(file_name)
+    _main_window.current_project = opened_project
+    model = QtGui.QStandardItemModel()
+    for section in opened_project.sections:
+        if hasattr(section, "SECTION_NAME"):
+            if section.SECTION_NAME == '[OPTIONS]':
+                # # Open options form to edit this section
+                # action_options = QtGui.QAction(_main_window)
+                # action_options.setObjectName("actionOptions")
+                # model.appendRow(action_options)
+                # action_options.setText("Options")
+                # action_options = QtGui.QStandardItem("Options")
+                # QtCore.QObject.connect(action_options, QtCore.SIGNAL('triggered()'), open_options)
+                model.appendRow(QtGui.QStandardItem("Options"))
+            else:
+                model.appendRow(QtGui.QStandardItem(section.SECTION_NAME))
+        else:
+            model.appendRow(QtGui.QStandardItem(section.name))
+    _main_window.treeProject.setModel(model)
+    open_options()
+
+#    except Exception as ex:
+#        QtGui.QMessageBox.critical(None, "Error loading file", file_name + '\n\n' + ex.__str__(), QtGui.QMessageBox.Ok)
 
 
 def open_options():
+    global _main_window, _frm_options
     if not _main_window:
         QtGui.QMessageBox.critical(None, "Plugin not loaded", "_main_window not set in plugin", QtGui.QMessageBox.Ok)
+    _frm_options = frmOptions()
+    _frm_options.show()
+
+class frmOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
+    def __init__(self, parent=None):
+        QtGui.QMainWindow.__init__(self, parent)
+        self.setupUi(self)

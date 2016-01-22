@@ -1,1 +1,1 @@
-__all__ = ['MyCalculations', 'Summary']
+__all__ = ['MyCalculations', 'Summary', 'epanet_plugin']

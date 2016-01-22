@@ -165,6 +165,11 @@ class Ui_frmMain(object):
         self.menuScripting.addAction(self.actionExec)
         self.menuPlugins.addAction(self.menuScripting.menuAction())
         self.menuPlugins.addSeparator()
+
+        self.actionRunModel = QtGui.QAction(frmMain)
+        self.actionRunModel.setObjectName(_fromUtf8("actionRunModel"))
+        self.menuFile.addAction(self.actionRunModel)
+
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -221,5 +226,6 @@ class Ui_frmMain(object):
         self.actionObjAddGage.setToolTip(_translate("frmMain", "Add a rain gage", None))
         self.actionIPython.setText(_translate("frmMain", "IPython", None))
         self.actionExec.setText(_translate("frmMain", "exec", None))
+        self.actionRunModel.setText(_translate("frmMain", "Run Model", None))
 
 import swmm_rc

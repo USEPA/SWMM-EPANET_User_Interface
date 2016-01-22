@@ -9,6 +9,10 @@ from PyQt4 import QtCore, QtGui
 from frmMainSWMMDesigner import Ui_frmMain
 # import pymsgbox
 import imp
+import core.inputfile
+import core.epanet.project
+from swmm5.swmm5tools import SWMM5Simulation
+from swmm5 import swmm5
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
 
@@ -22,9 +26,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.init_swmm()
+        self.current_project = core.inputfile.InputFile()
         '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
+        QtCore.QObject.connect(self.actionRunModel, QtCore.SIGNAL('triggered()'), self.run_model)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
         map_widget = EmbedMap(session=self)
@@ -160,6 +166,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def action_1(self):
         pass
+
+    def run_model(self):
+        file_name = QtGui.QFileDialog.getOpenFileName(parent=self, caption='Input file')
+        try:
+            sim = SWMM5Simulation(file_name)
+            QtGui.QMessageBox.information(parent=self, title="Finished running SWMM", text=sim.inpFile)
+        except Exception as inst:
+            QtGui.QMessageBox.critical(self, "Error running SWMM", inst.__str__(), QtGui.QMessageBox.Ok)
 
     def script_ipython(self):
         widget = EmbedIPython(session=self, plugins=_plugins, mainmodule=MainModule)

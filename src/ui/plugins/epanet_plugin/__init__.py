@@ -9,6 +9,7 @@ __all__ = {}
 _main_window = None
 _frm_options = None
 
+
 def load(main_window):
     global _main_window
     _main_window = main_window
@@ -37,6 +38,7 @@ def load(main_window):
 def open_epanet():
     if not _main_window:
         QtGui.QMessageBox.critical(None, "Plugin not loaded", "_main_window not set in plugin", QtGui.QMessageBox.Ok)
+        return
 
     file_name = QtGui.QFileDialog.getOpenFileName(None, caption='EPANET Input file')
 
@@ -73,7 +75,29 @@ def open_options():
     _frm_options = frmOptions()
     _frm_options.show()
 
+
 class frmOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def __init__(self, parent=None):
+        if not parent:
+            parent = _main_window
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        # TODO: function that populates combo box from Enum
+        self.cboFlowUnits.addItems(("CFS", "GPM", "MGD", "IMGD", "AFD", "LPS", "LPM", "MLD", "CMH", "CMD"))
+        self.cboHeadloss.addItems(("H_W", "D_W", "C_M"))
+        self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
+        self.set_from(_main_window.current_project)
+
+    def set_from(self, project):
+        section = project.find_section("OPTIONS")
+        self.txtSpecificGravity.setText(section.specific_gravity)
+        self.txtRelativeViscosity.setText(section.relative_viscosity)
+        self.txtMaximumTrials.setText(section.maximum_trials)
+        self.txtAccuracy.setText(section.accuracy)
+        self.txtDefaultPattern.setText(section.default_pattern)
+        self.txtDemandMultiplier.setText(section.demand_multiplier)
+        self.txtEmitterExponent.setText(section.emitter_exponent)
+        self.txtCheckFrequency.setText(section.check_frequency)
+        self.txtMaxCheck.setText(section.max_check)
+        self.txtDampLimit.setText(section.damp_limit)
+

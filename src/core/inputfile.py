@@ -77,6 +77,16 @@
             if section_attr is not None:
                 self.__setattr__(attr_name, new_section)
 
+    def find_section(self, section_title):
+        for section in self.sections:
+            if hasattr(section, "SECTION_NAME"):
+                this_section_name = section.SECTION_NAME
+            else:
+                this_section_name = section.name
+            if str(this_section_name).replace('[', '').replace(']', '').lower() == section_title.lower():
+                return section
+        return None
+
     def to_inp(self):
         build_str = ""
         for section in self.sections:

@@ -22,21 +22,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.init_swmm()
-        '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
-        map_widget = EmbedMap(session=self)
-        map_win = self.map.addSubWindow(map_widget, QtCore.Qt.Widget)
-        if map_win:
-            map_win.setGeometry(0, 0, 600, 400)
-            map_win.setWindowTitle('Study Area Map')
-            map_win.show()
+        # map_widget = EmbedMap(session=self)
+        # map_win = self.map.addSubWindow(map_widget, QtCore.Qt.Widget)
+        # if map_win:
+        #     map_win.setGeometry(0, 0, 600, 400)
+        #     map_win.setWindowTitle('Study Area Map')
+        #     map_win.show()
 
     def init_swmm(self):
         model = QtGui.QStandardItemModel()
-        #model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
+        # model.setHorizontalHeaderLabels(['col1', 'col2', 'col3'])
         self.treeProject.setModel(model)
         model.appendRow(QtGui.QStandardItem("Title/Notes"))
         model.appendRow(QtGui.QStandardItem("Options"))

@@ -119,13 +119,13 @@ class HydraulicsOptions(Section):
     def set_from_text(self, text):
         for line in text.splitlines():
             if not line.startswith((';', '[')):
-                lower_line = line.lower()
+                lower_line = line.lower().strip()
                 for dict_tuple in HydraulicsOptions.field_dict.items():
                     key = dict_tuple[0]
-                    if lower_line.startswith(key.lower() + ' '):
+                    if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
                         attr_name = dict_tuple[1]
                         try:
-                            setattr(self, attr_name, line.substring(key.length()).trim())
+                            setattr(self, attr_name, line[len(key) + 1:].strip())
                         except:
                             raise Exception("Unable to set attribute " + attr_name +
                                             " to " + line.substring(key.length()))

@@ -92,6 +92,12 @@ class Ui_frmMain(object):
         self.menuScripting.setObjectName(_fromUtf8("menuScripting"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
+
+        self.actionExit = QtGui.QAction(main_window)
+        self.actionExit.setObjectName("actionExit")
+        self.actionExit.addAction(main_window.actionExit)
+        self.actionExit.setText("Exit")
+
         frmMain.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(frmMain)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))

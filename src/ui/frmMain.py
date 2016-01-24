@@ -26,6 +26,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.populatePlugins(_plugins)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
+        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL('triggered()'), self.action_exit)
         # map_widget = EmbedMap(session=self)
         # map_win = self.map.addSubWindow(map_widget, QtCore.Qt.Widget)
         # if map_win:
@@ -156,7 +157,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         for p in _plugins:
             if p['name'] == plugin_name:
                lp = self.load_plugin(p)
-               if not lp == None:
+               if lp is not None:
                    lp.run(int(lp.__all__[str(method_name)]))
                    return
 
@@ -171,6 +172,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def script_exec(self):
         pass
+
+    def action_exit(self):
+        # TODO: check project status and prompt if there are unsaved changed
+        QApplication.quit()
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

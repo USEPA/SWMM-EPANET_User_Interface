@@ -1,9 +1,9 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
-from ui.plugins.epanet_plugin.frmHydraulicsOptions import Ui_frmHydraulicsOptions
+from ui.plugins.EPANET.frmHydraulicsOptions import Ui_frmHydraulicsOptions
 
-plugin_name = 'EPANET'
+plugin_name = "EPANET"
 plugin_create_menu = False
 __all__ = {}
 _main_window = None
@@ -13,6 +13,7 @@ _frm_options = None
 def load(main_window):
     global _main_window
     _main_window = main_window
+    _main_window.setWindowTitle("EPANET")
     # Set the contents of the project tree control
     model = QtGui.QStandardItemModel()
     model.appendRow(QtGui.QStandardItem("Title/Notes"))
@@ -34,6 +35,12 @@ def load(main_window):
     main_window.actionOpenEPANET.setText("Open EPANET Project")
     QtCore.QObject.connect(main_window.actionOpenEPANET, QtCore.SIGNAL('triggered()'), open_epanet)
 
+    # Save EPANET project from File/Save As menu
+    main_window.actionSaveEPANET = QtGui.QAction(main_window)
+    main_window.actionSaveEPANET.setObjectName("actionSaveEPANET")
+    main_window.menuFile.addAction(main_window.actionSaveEPANET)
+    main_window.actionSaveEPANET.setText("Save EPANET Project As...")
+    QtCore.QObject.connect(main_window.actionSaveEPANET, QtCore.SIGNAL('triggered()'), save_epanet)
 
 def open_epanet():
     if not _main_window:
@@ -66,6 +73,17 @@ def open_epanet():
 
 #    except Exception as ex:
 #        QtGui.QMessageBox.critical(None, "Error loading file", file_name + '\n\n' + ex.__str__(), QtGui.QMessageBox.Ok)
+
+
+def save_epanet():
+    if not _main_window:
+        QtGui.QMessageBox.critical(None, "Plugin not loaded", "_main_window not set in plugin", QtGui.QMessageBox.Ok)
+        return
+
+    file_name = QtGui.QFileDialog.getSaveFileName(None, caption='EPANET Input file')
+    inp_writer = open(file_name, 'w')
+    inp_writer.write(_main_window.current_project.to_inp())
+    inp_writer.close()
 
 
 def open_options():

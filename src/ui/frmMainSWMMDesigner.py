@@ -93,9 +93,9 @@ class Ui_frmMain(object):
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
 
-        self.actionExit = QtGui.QAction(main_window)
+        self.actionExit = QtGui.QAction(frmMain)
         self.actionExit.setObjectName("actionExit")
-        self.actionExit.addAction(main_window.actionExit)
+        self.menuFile.addAction(self.actionExit)
         self.actionExit.setText("Exit")
 
         frmMain.setMenuBar(self.menubar)

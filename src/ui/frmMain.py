@@ -175,7 +175,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def action_exit(self):
         # TODO: check project status and prompt if there are unsaved changed
-        QApplication.quit()
+        app.quit()
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

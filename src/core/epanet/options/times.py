@@ -20,28 +20,28 @@ class TimesOptions(Section):
         self.duration = 0			    # hours:minutes
         """duration of the simulation"""
 
-        self.hydraulic_timestep = 1	    # hours:minutes
+        self.hydraulic_timestep = "1:00"	    # hours:minutes
         """determines how often a new hydraulic state of the network is computed"""
 
-        self.quality_timestep = 0.1		# hours:minutes
+        self.quality_timestep = "0:05"		# hours:minutes
         """time step used to track changes in water quality throughout the network"""
 
-        self.rule_timestep = 0.1		# hours:minutes
+        self.rule_timestep = "0:05" 		# hours:minutes
         """ime step used to check for changes in system status due to activation of rule-based controls"""
 
-        self.pattern_timestep = 1 		# hours:minutes
+        self.pattern_timestep = "1:00" 		# hours:minutes
         """interval between time periods in all time patterns"""
 
-        self.pattern_start = 0		    # hours:minutes
+        self.pattern_start = "0:00"	    # hours:minutes
         """time offset at which all patterns will start"""
 
-        self.report_timestep = 1		# hours:minutes
+        self.report_timestep = "1:00"		# hours:minutes
         """time interval between which output results are reported"""
 
-        self.report_start = 0	        # hours:minutes
+        self.report_start = "0:00"	        # hours:minutes
         """length of time into the simulation at which output results begin to be reported"""
 
-        self.start_clocktime = 0		# hours:minutes AM/PM
+        self.start_clocktime = "12 am"		# hours:minutes AM/PM
         """time of day (e.g., 3:00 PM) at which the simulation begins"""
 
         self.statistic = StatisticOptions.NONE  # NONE/AVERAGED/MINIMUM/MAXIMUM/RANGE

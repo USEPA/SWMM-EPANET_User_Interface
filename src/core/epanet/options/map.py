@@ -11,3 +11,4 @@ class MapOptions(Section):
 
         self.map = ""
         """Name of a file containing coordinates of the network's nodes"""
+        """Don't write by default"""

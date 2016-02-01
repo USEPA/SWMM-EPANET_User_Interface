@@ -68,7 +68,7 @@ class HydraulicsOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.flow_units = FlowUnits.CFS
+        self.flow_units = FlowUnits.GPM
         """FlowUnits: units in use for flow values"""
 
         self.head_loss = HeadLoss.H_W
@@ -89,10 +89,10 @@ class HydraulicsOptions(Section):
         self.unbalanced = Unbalanced.STOP
         """Determines what happens if a hydraulic solution cannot be reached within the prescribed number of TRIALS"""
 
-        self.unbalanced_continue = 1
+        self.unbalanced_continue = 10
         """If continuing after n trials, continue this many more trials with links held fixed"""
 
-        self.default_pattern = Pattern
+        self.default_pattern = "1"
         """Default demand pattern to be applied to all junctions where no demand pattern was specified"""
 
         self.demand_multiplier = 1.0
@@ -101,10 +101,10 @@ class HydraulicsOptions(Section):
         self.emitter_exponent = 0.5
         """Specifies the power to which the pressure is raised when computing the flow issuing from an emitter"""
 
-        self.check_frequency = 0.0
+        self.check_frequency = 2
         """Undocumented"""
 
-        self.max_check = 0.0
+        self.max_check = 10
         """Undocumented"""
 
         self.damp_limit = 0.0
@@ -112,9 +112,11 @@ class HydraulicsOptions(Section):
 
         self.hydraulics = Hydraulics.SAVE
         """Either SAVE the current hydraulics solution to a file or USE a previously saved hydraulics solution"""
+        """By default do not write this line"""
 
         self.hydraulics_file = ""
         """Hydraulics file to either use or save"""
+        """By default do not write this line"""
 
     def set_from_text(self, text):
         for line in text.splitlines():

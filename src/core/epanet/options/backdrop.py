@@ -17,7 +17,7 @@ class BackdropOptions(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.dimensions = (0.0, 0.0, 0.0, 0.0)  # real
+        self.dimensions = (0.0, 0.0, 10000.0, 10000.0)  # real
         """provides the X and Y coordinates of the lower-left and upper-right corners of the map's bounding rectangle"""
 
         self.units = BackdropUnits.NONE			# FEET/METERS/DEGREES/NONE

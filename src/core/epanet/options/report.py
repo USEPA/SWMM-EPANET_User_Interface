@@ -28,6 +28,7 @@ class ReportOptions(Section):
 
         self.file = ""			# string
         """supplies the name of a file to which the output report will be written"""
+        """don't write by default"""
 
         self.status = StatusWrite.NO		# YES/NO/FULL
         """determines whether a hydraulic status report should be generated"""
@@ -37,6 +38,8 @@ class ReportOptions(Section):
 
         self.energy = StatusYesNo.NO        # YES/NO
         """determines if a table reporting average energy usage and cost for each pump is provided"""
+        """don't write by default"""
 
         self.parameters = ""		        # string -- note could be multiple parameter lines
         """used to identify which quantities are reported on"""
+        """don't write by default"""

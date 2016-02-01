@@ -31,7 +31,7 @@ class Reactions(Section):
         self.limiting_potential = 0.0	    # real
         """specifies that reaction rates are proportional to difference between concentration and potential value"""
 
-        self.roughness_correlation = 1.0    # real
+        self.roughness_correlation = 0.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
 
 

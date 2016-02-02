@@ -19,7 +19,7 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblGlobalEfficiency">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -37,7 +37,7 @@
      <string>Pump Efficiency (%)</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl2">
+   <widget class="QLabel" name="lblGlobalPrice">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -50,7 +50,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Energy Price/kwh&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl3">
+   <widget class="QLabel" name="lblGlobalPattern">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -109,7 +109,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl3_2">
+   <widget class="QLabel" name="lblDemandCharge">
     <property name="geometry">
      <rect>
       <x>30</x>

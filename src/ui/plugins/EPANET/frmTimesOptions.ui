@@ -19,7 +19,7 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblTotalDuration">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -37,7 +37,7 @@
      <string>Total Duration</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl2">
+   <widget class="QLabel" name="lblHydraulic">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -50,7 +50,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hydraulic Time Step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl3">
+   <widget class="QLabel" name="lblQuality">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -99,7 +99,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl4">
+   <widget class="QLabel" name="lblRule">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -122,7 +122,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl5">
+   <widget class="QLabel" name="lblPattern">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -145,7 +145,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl6">
+   <widget class="QLabel" name="lblPatternTime">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -158,7 +158,7 @@
      <string>Pattern Start Time</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl7">
+   <widget class="QLabel" name="lblReporting">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -191,7 +191,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl8">
+   <widget class="QLabel" name="lblReportingTime">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -204,7 +204,7 @@
      <string>Report Start Time</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl9">
+   <widget class="QLabel" name="lblClockStart">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -217,7 +217,7 @@
      <string>Clock Start Time</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl10">
+   <widget class="QLabel" name="lblStatistic">
     <property name="geometry">
      <rect>
       <x>30</x>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
-    <height>465</height>
+    <width>576</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="font">
@@ -19,7 +19,7 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblFlowUnits">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -37,7 +37,7 @@
      <string>Flow Units</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl2">
+   <widget class="QLabel" name="lblHeadloss">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -50,7 +50,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Headloss Formula&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl3">
+   <widget class="QLabel" name="lblSpecificGravity">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -66,8 +66,8 @@
    <widget class="QPushButton" name="cmdOK">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>410</y>
+      <x>200</x>
+      <y>320</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -79,8 +79,8 @@
    <widget class="QPushButton" name="cmdCancel">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>410</y>
+      <x>300</x>
+      <y>320</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -109,7 +109,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal1">
+   <widget class="QLineEdit" name="txtSpecificGravity">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -119,7 +119,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl4">
+   <widget class="QLabel" name="lblRelativeViscosity">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -132,7 +132,7 @@
      <string>Relative Viscosity</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal2">
+   <widget class="QLineEdit" name="txtRelativeViscosity">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -142,7 +142,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl5">
+   <widget class="QLabel" name="lblMaximumTrials">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -155,7 +155,7 @@
      <string>Maximum Trials</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal3">
+   <widget class="QLineEdit" name="txtMaximumTrials">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -165,7 +165,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl6">
+   <widget class="QLabel" name="lblAccuracy">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -178,30 +178,7 @@
      <string>Accuracy</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl7">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>200</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>If Unbalanced</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cboUnbalanced">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>200</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtVal4">
+   <widget class="QLineEdit" name="txtAccuracy">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -211,11 +188,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl8">
+   <widget class="QLabel" name="lblDefaultPattern">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>230</y>
+      <x>310</x>
+      <y>20</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -224,11 +201,11 @@
      <string>Default Pattern</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl9">
+   <widget class="QLabel" name="lblDemandMultiplier">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>260</y>
+      <x>310</x>
+      <y>50</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -237,11 +214,11 @@
      <string>Demand Multiplier</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl10">
+   <widget class="QLabel" name="lblEmitterExponent">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>290</y>
+      <x>310</x>
+      <y>80</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -250,41 +227,41 @@
      <string>Emitter Exponent</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal5">
+   <widget class="QLineEdit" name="txtDefaultPattern">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>230</y>
+      <x>440</x>
+      <y>20</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal6">
+   <widget class="QLineEdit" name="txtDemandMultiplier">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>260</y>
+      <x>440</x>
+      <y>50</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal7">
+   <widget class="QLineEdit" name="txtEmitterExponent">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>290</y>
+      <x>440</x>
+      <y>80</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl12">
+   <widget class="QLabel" name="lblCheckFrequency">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>320</y>
+      <x>310</x>
+      <y>110</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -293,11 +270,11 @@
      <string>Check Frequency</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl13">
+   <widget class="QLabel" name="lblMaxCheck">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>350</y>
+      <x>310</x>
+      <y>140</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -306,11 +283,11 @@
      <string>Max Check</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl14">
+   <widget class="QLabel" name="lblDampLimit">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>380</y>
+      <x>310</x>
+      <y>170</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -319,35 +296,146 @@
      <string>Damp Limit</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal8">
+   <widget class="QLineEdit" name="txtCheckFrequency">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>320</y>
+      <x>440</x>
+      <y>110</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal9">
+   <widget class="QLineEdit" name="txtMaxCheck">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>350</y>
+      <x>440</x>
+      <y>140</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtVal10">
+   <widget class="QLineEdit" name="txtDampLimit">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>380</y>
+      <x>440</x>
+      <y>170</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="gbxUnbalanced">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>210</y>
+      <width>241</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>If Unbalanced</string>
+    </property>
+    <widget class="QCheckBox" name="cbxStop">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stop</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxContinue">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Continue</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxContinueN">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Continue N</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtContinueN">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>60</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="gbxHydraulics">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>210</y>
+      <width>251</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Hydraulics File</string>
+    </property>
+    <widget class="QCheckBox" name="cbxUse">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Use</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxSave">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>30</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtHydraulicsFile">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>211</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
-    <height>257</height>
+    <width>283</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="font">
@@ -19,29 +19,11 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblChemicalName">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>20</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Parameter</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl2">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>50</y>
+      <x>20</x>
+      <y>110</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -50,11 +32,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Chemical Name&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl3">
+   <widget class="QLabel" name="lblMassUnits">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>80</y>
+      <x>20</x>
+      <y>140</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -66,8 +48,8 @@
    <widget class="QPushButton" name="cmdOK">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>200</y>
+      <x>50</x>
+      <y>260</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -79,8 +61,8 @@
    <widget class="QPushButton" name="cmdCancel">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>200</y>
+      <x>150</x>
+      <y>260</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -89,31 +71,21 @@
      <string>Cancel</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cboParameter">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>20</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="txtMassUnits">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>80</y>
+      <x>150</x>
+      <y>140</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl4">
+   <widget class="QLabel" name="lblDiffusivity">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>110</y>
+      <x>20</x>
+      <y>170</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -125,18 +97,18 @@
    <widget class="QLineEdit" name="txtDiffusivity">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>110</y>
+      <x>150</x>
+      <y>170</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl5">
+   <widget class="QLabel" name="lblTraceNode">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>140</y>
+      <x>20</x>
+      <y>200</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -148,18 +120,18 @@
    <widget class="QLineEdit" name="txtTraceNode">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>140</y>
+      <x>150</x>
+      <y>200</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl6">
+   <widget class="QLabel" name="lblTolerance">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>170</y>
+      <x>20</x>
+      <y>230</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -171,8 +143,8 @@
    <widget class="QLineEdit" name="txtTolerance">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>170</y>
+      <x>150</x>
+      <y>230</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -181,12 +153,77 @@
    <widget class="QLineEdit" name="txtChemicalName">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>50</y>
+      <x>150</x>
+      <y>110</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="gbxQuality">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>241</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Analysis Type</string>
+    </property>
+    <widget class="QCheckBox" name="cbxNone">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>None</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxChemical">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Chemical</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxAge">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>30</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Age</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbxTrace">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>60</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Trace</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

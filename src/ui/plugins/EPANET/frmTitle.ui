@@ -19,7 +19,7 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblTitle">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -63,7 +63,7 @@
      <string>Cancel</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="plainTextEdit">
+   <widget class="QPlainTextEdit" name="txtTitle">
     <property name="geometry">
      <rect>
       <x>70</x>

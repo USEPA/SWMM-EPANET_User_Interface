@@ -19,7 +19,7 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl1">
+   <widget class="QLabel" name="lblMapFile">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -107,7 +107,7 @@
      <property name="title">
       <string>Lower Left</string>
      </property>
-     <widget class="QLabel" name="lbl2">
+     <widget class="QLabel" name="lblLLX">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -120,7 +120,7 @@
        <string>X-Coordinate</string>
       </property>
      </widget>
-     <widget class="QLabel" name="lbl3">
+     <widget class="QLabel" name="lblLLY">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -166,7 +166,7 @@
      <property name="title">
       <string>Upper Right</string>
      </property>
-     <widget class="QLabel" name="lbl4">
+     <widget class="QLabel" name="lblURX">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -199,7 +199,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="lbl5">
+     <widget class="QLabel" name="lblURY">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -280,7 +280,7 @@
       <string>X</string>
      </property>
     </widget>
-    <widget class="QLabel" name="lvlY">
+    <widget class="QLabel" name="lblY">
      <property name="geometry">
       <rect>
        <x>170</x>

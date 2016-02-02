@@ -14,7 +14,7 @@ class Quality(Enum):
 class QualityOptions(Section):
     """EPANET Quality Options"""
 
-    SECTION_NAME = "[QUALITY]"
+    SECTION_NAME = "[OPTIONS]"
 
     # @staticmethod
     # def default():

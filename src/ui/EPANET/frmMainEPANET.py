@@ -1,4 +1,13 @@
-import os
+import os, sys
+
+os.environ['QT_API'] = 'pyqt'
+import sip
+sip.setapi("QString", 2)
+sip.setapi("QVariant", 2)
+from src.ui.embed_ipython_new import EmbedIPython
+#from src.ui.ui_utility import EmbedMap
+from src.ui.ui_utility import *
+from src.ui.model_utility import *
 
 from PyQt4 import QtCore, QtGui
 from src.ui.frmMain import frmMain
@@ -84,3 +93,9 @@ class frmMainEPANET(frmMain):
 
     def load_model(self, model):
         pass
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    MainApp = frmMainEPANET()
+    MainApp.show()
+    sys.exit(app.exec_())

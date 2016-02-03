@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 os.environ['QT_API'] = 'pyqt'
 import sip
@@ -83,3 +83,9 @@ class frmMainSWMM(frmMain):
 
     def load_model(self, model):
         pass
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    MainApp = frmMainSWMM()
+    MainApp.show()
+    sys.exit(app.exec_())

@@ -69,7 +69,7 @@
                         try:
                             if len(row.strip()) > 0:
                                 make_one = list_class()
-                                make_one.text(row)
+                                make_one.text = row
                                 section_list.append(make_one)
                         except:
                             make_one = None

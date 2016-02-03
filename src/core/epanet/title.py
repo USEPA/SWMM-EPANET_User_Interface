@@ -15,11 +15,14 @@ class Title(Section):
         self.title = ""
         """Descriptive title"""
 
-    def set_from_text(self, text):
-        lines = text.splitlines()
-        del lines[0]  # skip [TITLE] line
-        self.title = '\n'.join(lines)
-
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         return Title.SECTION_NAME + '\n' + self.title
+
+    @text.setter
+    def text(self, new_text):
+        """read properties from text"""
+        lines = new_text.splitlines()
+        del lines[0]  # skip [TITLE] line
+        self.title = '\n'.join(lines)

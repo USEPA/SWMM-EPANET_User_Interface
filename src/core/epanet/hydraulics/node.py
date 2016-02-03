@@ -53,7 +53,7 @@ class Junction:
         self.elevation = 0.0
         """elevation of junction"""
 
-        self.demand = "" # Does this need to be a list or just one?
+        self.demand = ""  # Does this need to be a list or just one?
         """characteristics of all demands at this node"""
 
         self.pattern = ""
@@ -63,13 +63,15 @@ class Junction:
         """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
             the product of the flow coefficient and the junction pressure raised to power  """
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         return '\t'.join((str(self.node_id), str(self.elevation), str(self.demand), str(self.pattern)))
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    def set_from_text(self, text):
-        (self.node_id, self.elevation, self.demand, self.pattern) = text.split()
+    @text.setter
+    def text(self, new_text):
+        (self.node_id, self.elevation, self.demand, self.pattern) = new_text.split()
 
 
 class Reservoir(Node):

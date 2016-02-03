@@ -1,4 +1,5 @@
 from core.coordinates import Coordinates
+import core.swmm.timeseries
 from enum import Enum
 
 
@@ -56,7 +57,7 @@ class RainGage:
         """Source of rainfall data; This can be set to a
             TimeSeries or a TimeSeriesFile."""
 
-        self.timeseries = Timeseries
+        self.timeseries = core.swmm.timeseries.TimeSeries()
         """time series with rainfall data if Data Source selection was TIMESERIES"""
 
         self.data_file_name = ""

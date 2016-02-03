@@ -146,7 +146,7 @@ class Weir(Link):
         self.end_coefficient = 0
         """Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""
 
-        self.can_surcharge = false
+        self.can_surcharge = False
         """True if weir can surcharge"""
 
         self.road_width = 0.0

@@ -24,7 +24,8 @@ class Curve:
         self.curve_xy = []		# list of (x, y) tuples
         """X, Y Values"""
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         inp = str(self.curve_id)
         if len(self.description) > 0:
@@ -34,8 +35,13 @@ class Curve:
         """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
         return inp
 
-    def set_from_text(self, text):
-        fields = text.split()
+    @text.setter
+    def text(self, new_text):
+        comment_split = str.split(new_text, ';', 1)
+        if len(comment_split) == 2:
+            new_text = comment_split[0]
+            self.description = ';' + comment_split[1]
+        fields = new_text.split()
         self.curve_id = fields[0]
         self.curve_xy.append((fields[1], fields[2]))
 

@@ -2,11 +2,11 @@
 
 import core.coordinates
 import core.inputfile
-import core.swmm.files
 import core.swmm.hydraulics.link
 import core.swmm.options
-import core.swmm.raingage
-import core.swmm.subcatchment
+import core.swmm.options.general
+import core.swmm.hydrology.raingage
+import core.swmm.hydrology.subcatchment
 
 
 class Project(core.inputfile.InputFile):
@@ -14,14 +14,14 @@ class Project(core.inputfile.InputFile):
 
     section_types = {
         "[TITLE]": None,  # project title
-        "[OPTIONS]": core.swmm.options.Options,  # analysis options
+        "[OPTIONS]": core.swmm.options.general.General(),  # analysis options
         "[REPORT]": None,  # output reporting instructions
         "[FILES]": core.swmm.files.Files,  # interface file options
-        "[RAINGAGES]": [core.swmm.raingage.RainGage],  # rain gage information
+        "[RAINGAGES]": [core.swmm.hydrology.raingage.RainGage],  # rain gage information
         "[HYDROGRAPHS]": None,  # unit hydrograph data used to construct RDII inflows
         "[EVAPORATION]": None,  # evaporation data
         "[TEMPERATURE]": None,  # air temperature and snow melt data
-        "[SUBCATCHMENTS]": [core.swmm.subcatchment.Subcatchment],  # basic subcatchment information
+        "[SUBCATCHMENTS]": [core.swmm.hydrology.subcatchment.Subcatchment],  # basic subcatchment information
         "[SUBAREAS]": None,  # subcatchment impervious/pervious sub-area data
         "[INFILTRATION]": None,  # subcatchment infiltration parameters
         "[LID_CONTROLS]": None,  # low impact development control information
@@ -29,7 +29,7 @@ class Project(core.inputfile.InputFile):
         "[AQUIFERS]": None,  # groundwater aquifer parameters
         "[GROUNDWATER]": None,  # subcatchment groundwater parameters
         "[SNOWPACKS]": None,  # subcatchment snow pack parameters
-        "[JUNCTIONS]": [core.swmm.hydraulics.node.JunctionNode],  # junction node information
+        "[JUNCTIONS]": [core.swmm.hydraulics.node.Junction],  # junction node information
         "[OUTFALLS]": None,  # outfall node information
         "[DIVIDERS]": None,  # flow divider node information
         "[STORAGE]": None,  # storage node information

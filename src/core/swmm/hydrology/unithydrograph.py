@@ -1,4 +1,4 @@
-import swmm.hydrology.raingage
+import core.swmm.hydrology.raingage
 
 
 class UnitHydrograph:
@@ -9,7 +9,7 @@ class UnitHydrograph:
         self.group_name = name
         """Name assigned to the UH Group"""
 
-        self.rain_gage_used = swmm.hydrology.raingage.RainGage()
+        self.rain_gage_used = core.swmm.hydrology.raingage.RainGage()
         """Name of the rain gage that supplies rainfall data to the unit hydrographs in the group"""
 
         self.hydrograph_months = ""

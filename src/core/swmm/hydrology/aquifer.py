@@ -52,8 +52,8 @@ class Aquifer:
             at the start of the simulation (volumetric fraction)
             (cannot exceed soil porosity)."""
 
-        self.upper_evaporation_pattern = Pattern
-        """Monthly pattern of adjustments to upper evaporation fraction (optional)"""
+        self.upper_evaporation_pattern = ""
+        """ID of monthly pattern of adjustments to upper evaporation fraction (optional)"""
 
 
 

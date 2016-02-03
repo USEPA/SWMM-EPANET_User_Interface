@@ -74,16 +74,26 @@ class Link(Section):
         self.report_flag = ""
         """Flag indicating whether an output report is desired for this link"""
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + "   "\
-               + str(self.inlet_node) + "   "\
-               + str(self.outlet_node) + "   "\
-               + str(self.description)
+            + str(self.inlet_node) + "   "\
+            + str(self.outlet_node) + "   "\
+            + str(self.description)
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    def set_from_text(self, text):
-        (self.link_id, self.inlet_node, self.outlet_node, self.description) = text.split()
+    @text.setter
+    def text(self, new_text):
+        comment_split = str.split(new_text, ';', 1)
+        if len(comment_split) == 2:
+            line = comment_split[0]
+            self.comment = ';' + comment_split[1]
+        fields = new_text.split(None, 3)
+        if len(fields) > 2:
+            (self.link_id, self.inlet_node, self.outlet_node) = fields[0:2]
+            if len(fields) > 3:
+                self.description = fields[3]
 
 
 class Pipe(Link):
@@ -112,28 +122,42 @@ class Pipe(Link):
         self.wall_reaction_coefficient = 0.0
         """wall reaction coefficient for this pipe"""
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
-        return str(self.link_id) + '\t'\
-               + str(self.inlet_node) + '\t'\
-               + str(self.outlet_node) + '\t'\
-               + str(self.length) + '\t'\
-               + str(self.diameter) + '\t'\
-               + str(self.roughness) + '\t'\
-               + str(self.loss_coefficient) + '\t'\
-               + str(self.status)
+        if len(self.link_id) > 0:
+            return str(self.link_id) + '\t'\
+                   + str(self.inlet_node) + '\t'\
+                   + str(self.outlet_node) + '\t'\
+                   + str(self.length) + '\t'\
+                   + str(self.diameter) + '\t'\
+                   + str(self.roughness) + '\t'\
+                   + str(self.loss_coefficient) + '\t'\
+                   + str(self.status) \
+                   + ('\t' + self.comment if len(self.comment) > 0 else '')
+        elif len(self.comment) > 0:
+            return self.comment
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    def set_from_text(self, text):
-        fields = text.split()
-        self.link_id = fields[0]
-        self.inlet_node = fields[1]
-        self.outlet_node = fields[2]
-        self.length = fields[3]
-        self.diameter = fields[4]
-        self.roughness = fields[5]
-        self.loss_coefficient = fields[6]
-        self.status = fields[7]
+    @text.setter
+    def text(self, new_text):
+        """read properties from text"""
+        comment_split = str.split(new_text, ';', 1)
+        if len(comment_split) == 2:
+            new_text = comment_split[0]
+            self.comment = ';' + comment_split[1]
+        fields = new_text.split(None, 6)
+        if len(fields) > 2:
+            self.link_id = fields[0]
+            self.inlet_node = fields[1]
+            self.outlet_node = fields[2]
+        if len(fields) > 6:
+            self.length = fields[3]
+            self.diameter = fields[4]
+            self.roughness = fields[5]
+            self.loss_coefficient = fields[6]
+        if len(fields) > 7:
+            self.status = fields[7]
 
 
 class Pump(Link):
@@ -162,17 +186,24 @@ class Pump(Link):
         self.energy = PumpEnergy()
         """parameters used to compute pumping energy and cost"""
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + '\t'\
-               + str(self.inlet_node) + '\t'\
-               + str(self.outlet_node) + '\t'\
-               + str(self.head_curve_id)
+            + str(self.inlet_node) + '\t'\
+            + str(self.outlet_node) + '\t'\
+            + str(self.head_curve_id)\
+            + ('\t' + self.comment if len(self.comment) > 0 else '')
         # TODO: format for remaining fields?
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    def set_from_text(self, text):
-        fields = text.split(None, 3)
+    @text.setter
+    def text(self, new_text):
+        comment_split = str.split(new_text, ';', 1)
+        if len(comment_split) == 2:
+            new_text = comment_split[0]
+            self.comment = ';' + comment_split[1]
+        fields = new_text.split(None, 3)
         self.link_id = fields[0]
         self.inlet_node = fields[1]
         self.outlet_node = fields[2]
@@ -208,19 +239,21 @@ class Valve(Link):
         self.fixed_status = FixedStatus.OPEN
         """valve is open or closed"""
 
-    def to_inp(self):
+    @property
+    def text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + '\t'\
-               + str(self.inlet_node) + '\t'\
-               + str(self.outlet_node) + '\t'\
-               + str(self.diameter) + '\t'\
-               + str(self.type) + '\t'\
-               + str(self.setting) + '\t'\
-               + str(self.loss_coefficient)
+            + str(self.inlet_node) + '\t'\
+            + str(self.outlet_node) + '\t'\
+            + str(self.diameter) + '\t'\
+            + str(self.type) + '\t'\
+            + str(self.setting) + '\t'\
+            + str(self.loss_coefficient)
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    def set_from_text(self, text):
-        fields = text.split()
+    @text.setter
+    def text(self, new_text):
+        fields = new_text.split()
         self.link_id = fields[0]
         self.inlet_node = fields[1]
         self.outlet_node = fields[2]

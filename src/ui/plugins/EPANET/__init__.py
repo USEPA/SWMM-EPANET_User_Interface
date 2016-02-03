@@ -82,7 +82,7 @@ def save_epanet():
 
     file_name = QtGui.QFileDialog.getSaveFileName(None, caption='EPANET Input file')
     inp_writer = open(file_name, 'w')
-    inp_writer.write(_main_window.current_project.to_inp())
+    inp_writer.write(_main_window.current_project.text())
     inp_writer.close()
 
 

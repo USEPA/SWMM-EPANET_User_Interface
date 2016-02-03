@@ -15,7 +15,7 @@ class SimpleTitleTest(unittest.TestCase):
 
         name = self.my_title.SECTION_NAME
         assert self.my_title.title == "test title"
-        assert self.my_title.to_inp() == "[TITLE]\ntest title", 'incorrect title block'
+        assert self.my_title.text == "[TITLE]\ntest title", 'incorrect title block'
 
 
 

@@ -21,19 +21,19 @@ class LIDControl:
         self.lid_type = LIDType.BC
         """Generic type of LID being defined"""
 
-        self.has_surface_layer = false
+        self.has_surface_layer = False
         """does lid have surface layer"""
 
-        self.has_pavement_layer = false
+        self.has_pavement_layer = False
         """does lid have pavement layer"""
 
-        self.has_soil_layer = false
+        self.has_soil_layer = False
         """does lid have soil layer"""
 
-        self.has_storage_layer = false
+        self.has_storage_layer = False
         """does lid have storage layer"""
 
-        self.has_underdrain_system = false
+        self.has_underdrain_system = False
         """does lid have underdrain system"""
 
         self.surface_layer_storage_depth = 0.0

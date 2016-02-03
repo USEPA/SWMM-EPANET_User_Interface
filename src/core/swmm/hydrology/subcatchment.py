@@ -1,8 +1,7 @@
 from enum import Enum
 
 from core.coordinates import Coordinates
-from core.swmm.raingage import RainGage
-
+from core.swmm.hydrology.raingage import RainGage
 
 class Routing(Enum):
     """Routing of runoff between pervious and impervious areas

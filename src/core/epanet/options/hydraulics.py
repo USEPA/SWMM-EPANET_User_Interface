@@ -118,8 +118,13 @@ class HydraulicsOptions(Section):
         """Hydraulics file to either use or save"""
         """By default do not write this line"""
 
-    def set_from_text(self, text):
-        for line in text.splitlines():
+    @property
+    def text(self):
+        return Section.text
+
+    @text.setter
+    def text(self, new_text):
+        for line in new_text.splitlines():
             if not line.startswith((';', '[')):
                 lower_line = line.lower().strip()
                 for dict_tuple in HydraulicsOptions.field_dict.items():

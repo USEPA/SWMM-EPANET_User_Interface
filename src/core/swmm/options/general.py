@@ -1,7 +1,7 @@
 ﻿from enum import Enum
 
 import core.inputfile
-import core.swmm.groundwater
+import core.swmm.hydrology.subcatchment
 
 
 class FlowUnits(Enum):
@@ -43,7 +43,7 @@ class General(core.inputfile.Section):
         self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
 
-        self.infiltration = core.swmm.groundwater.HortonInfiltration()
+        self.infiltration = core.swmm.hydrology.subcatchment.HortonInfiltration()
         """
         Infiltration computation model of rainfall into the 
         upper soil zone of subcatchments. Use one of the following:

@@ -133,7 +133,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def remove_plugin_menu(self, plugin):
         lcustom_pluginmenu = self.find_plugin_main_menu(plugin)
-        if lcustom_pluginmenu  == None:
+        if lcustom_pluginmenu is None:
             pass
         else:
             lcustom_pluginmenu.clear()

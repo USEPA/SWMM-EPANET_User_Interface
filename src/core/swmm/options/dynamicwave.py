@@ -1,7 +1,6 @@
 ﻿from enum import Enum
 
 import core.inputfile
-import core.swmm.groundwater
 
 
 class InertialDamping(Enum):

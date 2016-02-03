@@ -19,9 +19,9 @@ class Label:
         self.size = 10.0
         """label size"""
 
-        self.bold = false
+        self.bold = False
         """label bold"""
 
-        self.italic = false
+        self.italic = False
         """lable italics"""
 

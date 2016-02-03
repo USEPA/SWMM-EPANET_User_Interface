@@ -17,6 +17,6 @@ class SimpleCurveTest(unittest.TestCase):
     def runTest(self):
         assert self.my_curve.curve_id == "XXX"
         assert self.my_curve.description == "test curve"
-        xstr = self.my_curve.to_inp()
+        xstr = self.my_curve.text
 
-        assert self.my_curve.to_inp() == 'XXX	1.0	1.1	1.2	1.3', 'incorrect pattern block'
+        assert self.my_curve.text == 'XXX	1.0	1.1	1.2	1.3', 'incorrect pattern block'

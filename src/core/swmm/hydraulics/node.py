@@ -1,5 +1,5 @@
 ﻿from enum import Enum
-from coordinates import Coordinates
+from core.coordinates import Coordinates
 
 
 class Node(object):

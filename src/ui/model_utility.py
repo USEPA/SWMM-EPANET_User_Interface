@@ -21,7 +21,7 @@ class SWMMTreeObjects(object):
 class EPANETTreeObjects(object):
     ObjRoot = ['Title/Notes','Options','Junctions', 'Reservoirs', \
                'Tanks','Pipes', 'Pumps', 'Valves', 'Labels', 'Patterns', 'Curves', 'Controls']
-    ObjOptions=['Hydraulics','Quality','Reactions','Times','Energy']
+    ObjOptions=['Hydraulics','Quality','Reactions','Times','Energy','Report','Map/Backdrop']
     ObjControls = ['Simple','Rule-Based']
 
 class ObjectTreeView(QTreeWidget):

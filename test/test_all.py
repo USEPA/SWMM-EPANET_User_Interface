@@ -1,13 +1,21 @@
+import webbrowser
 import unittest
+import HTMLTestRunner
 from test_title import SimpleTitleTest
 from test_options import SimpleOptionsTest
 from test_patterns import SimplePatternTest
-from project import ProjectTest
+from test_project import ProjectTest
 from test_curves import SimpleCurveTest
 
 if __name__ == "__main__":
     # execute only if run as a script
-    runner = unittest.TextTestRunner()
+    # runner = unittest.TextTestRunner()
+    report_filename = "testresults.html"
+    fp = file(report_filename, 'wb')
+    runner = HTMLTestRunner.HTMLTestRunner(
+        stream=fp,
+        title='SWMM-EPANET UI Test Report',
+        description='Unit test results')
 
     my_suite = unittest.TestSuite()
 
@@ -19,13 +27,15 @@ if __name__ == "__main__":
     # my_suite.addTest(SimpleEnergyTest())
     # my_suite.addTest(SimpleReportTest())
     # my_suite.addTest(SimpleBackdropTest())
-    # my_suite.addTest(ProjectTest())
+    my_suite.addTest(ProjectTest())
 
     # will need for later MTPs:
     my_suite.addTest(SimplePatternTest())
     # my_suite.addTest(SimpleCurveTest())
 
     runner.run(my_suite)
-
-
-
+    fp.close()
+    try:
+        webbrowser.open_new_tab(report_filename)
+    except:
+        print("Test results written to " + report_filename)

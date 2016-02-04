@@ -11,11 +11,12 @@ from src.ui.model_utility import *
 
 from PyQt4 import QtCore, QtGui
 from src.ui.frmMain import frmMain
+from src.ui.EPANET.frmEnergyOptions import frmEnergyOptions
 from src.ui.model_utility import *
 import pymsgbox
 from src.core.coordinates import *
 from src.core.inputfile import *
-from src.core.epanet.project import *
+from src.core.epanet.project import Project
 from src.core.epanet.title import *
 from src.core.epanet.curves import *
 from src.core.epanet.labels import *
@@ -23,6 +24,8 @@ from src.core.epanet.patterns import *
 from src.core.epanet.vertex import *
 from src.core.epanet.options import *
 from src.core.epanet.hydraulics import *
+
+_frmEnergyOptions = None
 
 class frmMainEPANET(frmMain):
     def __init__(self, parent=None, *args):
@@ -43,10 +46,6 @@ class frmMainEPANET(frmMain):
     def std_openproj(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.net *.inp)')
         if len(filename) > 0:
-            if os.path.splitext(filename)[1] == '.net':
-                self.model = 'EPANET'
-            elif os.path.splitext(filename)[1] == '.inp':
-                self.model = 'SWMM'
             self.project = Project()
             try:
                 self.project.read_file(filename)
@@ -56,16 +55,23 @@ class frmMainEPANET(frmMain):
         pass
 
     def edit_options(self, itm, column):
-        #pymsgbox.alert('edit options')
-        mitm = itm
-        if self.project == None or mitm.data(0, 0) != 'Options':
-            return
-        from src.ui.frmOptions import frmOptions
-        dlg = frmOptions(self, self.project.options)
-        dlg.show()
-        result = dlg.exec_()
-        if result == 1:
-            pass
+        global _frmEnergyOptions
+        if self.project == None:
+             return
+
+        if itm.data(0, 0) == 'Energy':
+            _frmEnergyOptions = frmEnergyOptions(self)
+            _frmEnergyOptions.show()
+
+        # mitm = itm
+        # if self.project == None or mitm.data(0, 0) != 'Options':
+        #     return
+        # from src.ui.frmOptions import frmOptions
+        # dlg = frmOptions(self, self.project.options)
+        # dlg.show()
+        # result = dlg.exec_()
+        # if result == 1:
+        #    pass
 
     def on_load(self, **kwargs):
         #self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

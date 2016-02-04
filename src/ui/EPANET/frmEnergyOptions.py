@@ -9,10 +9,6 @@ class frmEnergyOptions(QtGui.QMainWindow, Ui_frmEnergyOptions):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # TODO: function that populates combo box from Enum
-        # self.cboFlowUnits.addItems(("CFS", "GPM", "MGD", "IMGD", "AFD", "LPS", "LPM", "MLD", "CMH", "CMD"))
-        # self.cboHeadloss.addItems(("H_W", "D_W", "C_M"))
-        # self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.set_from(parent.project)

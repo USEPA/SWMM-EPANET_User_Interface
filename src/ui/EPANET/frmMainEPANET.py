@@ -12,6 +12,13 @@ from src.ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from src.ui.frmMain import frmMain
 from src.ui.EPANET.frmEnergyOptions import frmEnergyOptions
+from src.ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
+from src.ui.EPANET.frmMapBackdropOptions import frmMapBackdropOptions
+from src.ui.EPANET.frmQualityOptions import frmQualityOptions
+from src.ui.EPANET.frmReactionsOptions import frmReactionsOptions
+from src.ui.EPANET.frmReportOptions import frmReportOptions
+from src.ui.EPANET.frmTimesOptions import frmTimesOptions
+from src.ui.EPANET.frmTitle import frmTitle
 from src.ui.model_utility import *
 import pymsgbox
 from src.core.coordinates import *
@@ -26,6 +33,13 @@ from src.core.epanet.options import *
 from src.core.epanet.hydraulics import *
 
 _frmEnergyOptions = None
+_frmHydraulicsOptions = None
+_frmMapBackdropOptions = None
+_frmQualityOptions = None
+_frmReactionsOptions = None
+_frmReportOptions = None
+_frmTimesOptions = None
+_frmTitle = None
 
 class frmMainEPANET(frmMain):
     def __init__(self, parent=None, *args):
@@ -62,6 +76,27 @@ class frmMainEPANET(frmMain):
         if itm.data(0, 0) == 'Energy':
             _frmEnergyOptions = frmEnergyOptions(self)
             _frmEnergyOptions.show()
+        if itm.data(0, 0) == 'Hydraulics':
+            _frmHydraulicsOptions = frmHydraulicsOptions(self)
+            _frmHydraulicsOptions.show()
+        if itm.data(0, 0) == 'Map/Backdrop':
+            _frmMapBackdropOptions = frmMapBackdropOptions(self)
+            _frmMapBackdropOptions.show()
+        if itm.data(0, 0) == 'Quality':
+            _frmQualityOptions = frmQualityOptions(self)
+            _frmQualityOptions.show()
+        if itm.data(0, 0) == 'Reactions':
+            _frmReactionsOptions = frmReactionsOptions(self)
+            _frmReactionsOptions.show()
+        if itm.data(0, 0) == 'Report':
+            _frmReportOptions = frmReportOptions(self)
+            _frmReportOptions.show()
+        if itm.data(0, 0) == 'Times':
+            _frmTimesOptions = frmTimesOptions(self)
+            _frmTimesOptions.show()
+        if itm.data(0, 0) == 'Title/Notes':
+            _frmTitle = frmTitle(self)
+            _frmTitle.show()
 
         # mitm = itm
         # if self.project == None or mitm.data(0, 0) != 'Options':

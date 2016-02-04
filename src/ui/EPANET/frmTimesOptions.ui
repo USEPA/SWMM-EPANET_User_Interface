@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmHydraulicsOptions</class>
- <widget class="QMainWindow" name="frmHydraulicsOptions">
+ <class>frmTimesOptions</class>
+ <widget class="QMainWindow" name="frmTimesOptions">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>EPANET Hydraulics Options</string>
+   <string>EPANET Times Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="lblTotalDuration">

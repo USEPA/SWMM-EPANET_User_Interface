@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmHydraulicsOptions</class>
- <widget class="QMainWindow" name="frmHydraulicsOptions">
+ <class>frmMapBackdropOptions</class>
+ <widget class="QMainWindow" name="frmMapBackdropOptions">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>EPANET Hydraulics Options</string>
+   <string>EPANET Map/Backdrop Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="lblMapFile">

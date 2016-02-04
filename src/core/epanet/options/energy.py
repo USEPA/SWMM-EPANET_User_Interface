@@ -13,8 +13,8 @@ class EnergyOptions(Section):
         self.global_price = 0.0		        # real
         """global default value of energy price for all pumps"""
 
-        self.global_pattern = Pattern      # pattern
-        """global default value of price pattern for all pumps"""
+        self.global_pattern = ""            # string
+        """id of global default value of price pattern for all pumps"""
 
         self.global_efficiency = 75.0		# real
         """global default value of pumping efficiency for all pumps"""

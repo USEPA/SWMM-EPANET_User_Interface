@@ -60,21 +60,22 @@ class Project(InputFile):
 
     def __init__(self):
         self.title = Title()
-        self.junctions = [Junction]
+        # self.junctions = [Junction]
         # [RESERVOIRS]
         # [TANKS]
-        self.pipes = [Pipe]
-        self.pumps = [Pump]
-        self.valves = [Valve]
-        self.emitters = [(Junction, "emitter_coefficient")]
-        self.curves = [Curve]
-        self.patterns = [Pattern]
-        self.energy = EnergyOptions()
+        # self.pipes = [Pipe]
+        # self.pumps = [Pump]
+        # self.valves = [Valve]
+        # self.emitters = [(Junction, "emitter_coefficient")]
+        # self.curves = [Curve]
+        # self.patterns = [Pattern]
+        # self.energy = EnergyOptions()
         # [STATUS]
-        self.controls = [Control]
-        self.rules = [Rule]
-        self.demands = [Demand]
-        self.quality = QualityOptions()
+        # self.controls = [Control]
+        # self.rules = [Rule]
+        # self.demands = [Demand]
+        # self.quality = ReadNodesInitialQuality
+        self.options = QualityOptions()
         self.reactions = Reactions()
         self.sources = [Source]
         # [MIXING]

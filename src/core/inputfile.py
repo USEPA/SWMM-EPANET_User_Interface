@@ -169,5 +169,5 @@ class Section(object):
                             try:
                                 setattr(self, attr_name, ' '.join(line_list[name_last_word + 1:]))
                             except:
-                                raise Exception("Unable to set attribute " + attr_name +
-                                                " to " + ' '.join(line_list[name_last_word + 1:]))
+                                print ("Section.text could not set " + attr_name)  # +
+                                             #  " to " + ' '.join(line_list[name_last_word + 1:]))

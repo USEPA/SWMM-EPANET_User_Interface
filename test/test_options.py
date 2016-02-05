@@ -35,7 +35,7 @@ class SimpleOptionsTest(unittest.TestCase):
         self.my_quality.quality = quality.Quality.CHEMICAL
         self.my_quality.chemical_name = "DummyChemical"
         self.my_quality.mass_units = "mg/L"
-        self.my_quality.relative_diffusivity = 1.0
+        self.my_quality.diffusivity = 1.0
         self.my_quality.trace_node = ""
         self.my_quality.tolerance = 0.01
 

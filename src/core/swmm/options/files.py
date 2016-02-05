@@ -1,7 +1,7 @@
 from core.inputfile import Section
 
 
-class InterfaceFiles(Section):
+class Files(Section):
     """Optional SWMM interface file names to use or save during a run"""
 
     SECTION_NAME = "[FILES]"

@@ -1,7 +1,7 @@
 ﻿import core.inputfile
 
 
-class Reporting(core.inputfile.Section):
+class Report(core.inputfile.Section):
     """Report Options"""
 
     SECTION_NAME = "[REPORT]"

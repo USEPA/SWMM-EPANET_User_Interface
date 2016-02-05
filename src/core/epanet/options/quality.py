@@ -3,7 +3,7 @@ from enum import Enum
 from core.inputfile import Section
 
 
-class Quality(Enum):
+class QualityAnalysisType(Enum):
     """Type of Water Quality Analysis"""
     NONE = 1
     CHEMICAL = 2
@@ -16,14 +16,10 @@ class QualityOptions(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    # @staticmethod
-    # def default():
-    #     return QualityOptions(EPANETOptions.SECTION_NAME, None, None, -1)
-
     def __init__(self):
         Section.__init__(self)
 
-        self.quality = Quality.NONE
+        self.quality = QualityAnalysisType.NONE
         """Type of water quality analysis to perform"""
 
         self.chemical_name = ""
@@ -32,7 +28,7 @@ class QualityOptions(Section):
         self.mass_units = ""
         """Units of chemical to be analyzed in quality section"""
 
-        self.relative_diffusivity = 1.0
+        self.diffusivity = 1.0
         """Molecular diffusivity of the chemical being analyzed relative to that of chlorine in water"""
 
         self.trace_node = ""
@@ -41,3 +37,50 @@ class QualityOptions(Section):
         self.tolerance = 0.01
         """Difference in water quality level below one parcel of water is essentially the same as another"""
 
+    @property
+    def text(self):
+        """Contents of this item formatted for writing to file"""
+        txt = " Quality            \t"
+        if self.quality is None or self.quality == QualityAnalysisType.NONE:
+            txt = ""
+        elif self.quality == QualityAnalysisType.AGE:
+            txt += "AGE"
+        elif self.quality == QualityAnalysisType.TRACE:
+            txt += "Trace"
+            if self.trace_node is not None and len(self.trace_node) > 0:
+                txt += " " + self.trace_node
+        elif self.quality == QualityAnalysisType.CHEMICAL:
+            if self.chemical_name is None or len(self.chemical_name) == 0:
+                txt += "CHEMICAL"
+            else:
+                txt += self.chemical_name
+        if len(txt) > 0 and self.mass_units is not None and len(self.mass_units) > 0:
+            txt += " " + self.mass_units
+        if len(txt) > 0:
+            txt += "\n"
+        txt += " Diffusivity        \t" + str(self.diffusivity) + "\n"
+        txt += " Tolerance          \t" + str(self.tolerance) + "\n"
+        return txt
+
+    @text.setter
+    def text(self, new_text):
+        """Read this section from the text representation"""
+        self.quality = QualityAnalysisType.NONE  # default to NONE until found below
+        self.chemical_name = ""
+        self.mass_units = ""
+        self.trace_node = ""
+        Section.text = new_text  # First set easy fields using default text setter
+
+        for line in new_text.splitlines():
+            line_list = line.split()
+            if str(line_list[0]).strip().upper() == "QUALITY":
+                quality_type = str(line_list[1]).strip().upper()
+                try:
+                    self.quality = QualityAnalysisType[quality_type]
+                except:
+                    self.quality = QualityAnalysisType.CHEMICAL
+                    self.chemical_name = str(line_list[1])
+                if self.quality == QualityAnalysisType.TRACE:
+                    self.trace_node = line_list[2]
+                elif len(line_list) > 2:
+                    self.mass_units = line_list[2]

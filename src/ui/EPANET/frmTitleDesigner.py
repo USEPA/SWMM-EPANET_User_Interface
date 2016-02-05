@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmTitle(object):
     def setupUi(self, frmTitle):
         frmTitle.setObjectName(_fromUtf8("frmTitle"))
-        frmTitle.resize(538, 159)
+        frmTitle.resize(538, 137)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmTitle.setFont(font)
@@ -47,12 +47,6 @@ class Ui_frmTitle(object):
         self.txtTitle.setGeometry(QtCore.QRect(70, 20, 451, 71))
         self.txtTitle.setObjectName(_fromUtf8("txtTitle"))
         frmTitle.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmTitle)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmTitle.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmTitle)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmTitle.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmTitle)
         QtCore.QMetaObject.connectSlotsByName(frmTitle)

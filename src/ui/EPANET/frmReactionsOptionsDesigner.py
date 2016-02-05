@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmReactionsOptions(object):
     def setupUi(self, frmReactionsOptions):
         frmReactionsOptions.setObjectName(_fromUtf8("frmReactionsOptions"))
-        frmReactionsOptions.resize(345, 295)
+        frmReactionsOptions.resize(345, 277)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmReactionsOptions.setFont(font)
@@ -83,12 +83,6 @@ class Ui_frmReactionsOptions(object):
         self.txtWallOrder.setGeometry(QtCore.QRect(200, 50, 113, 20))
         self.txtWallOrder.setObjectName(_fromUtf8("txtWallOrder"))
         frmReactionsOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmReactionsOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmReactionsOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmReactionsOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmReactionsOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmReactionsOptions)
         QtCore.QMetaObject.connectSlotsByName(frmReactionsOptions)

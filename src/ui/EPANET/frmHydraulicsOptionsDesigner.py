@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmHydraulicsOptions(object):
     def setupUi(self, frmHydraulicsOptions):
         frmHydraulicsOptions.setObjectName(_fromUtf8("frmHydraulicsOptions"))
-        frmHydraulicsOptions.resize(576, 380)
+        frmHydraulicsOptions.resize(576, 358)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmHydraulicsOptions.setFont(font)
@@ -140,12 +140,6 @@ class Ui_frmHydraulicsOptions(object):
         self.txtHydraulicsFile.setGeometry(QtCore.QRect(20, 60, 211, 20))
         self.txtHydraulicsFile.setObjectName(_fromUtf8("txtHydraulicsFile"))
         frmHydraulicsOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmHydraulicsOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmHydraulicsOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmHydraulicsOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmHydraulicsOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmHydraulicsOptions)
         QtCore.QMetaObject.connectSlotsByName(frmHydraulicsOptions)

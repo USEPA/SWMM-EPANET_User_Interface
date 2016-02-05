@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmReportOptions(object):
     def setupUi(self, frmReportOptions):
         frmReportOptions.setObjectName(_fromUtf8("frmReportOptions"))
-        frmReportOptions.resize(414, 695)
+        frmReportOptions.resize(414, 677)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmReportOptions.setFont(font)
@@ -257,12 +257,6 @@ class Ui_frmReportOptions(object):
         self.cbxLink9.setGeometry(QtCore.QRect(20, 210, 101, 17))
         self.cbxLink9.setObjectName(_fromUtf8("cbxLink9"))
         frmReportOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmReportOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmReportOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmReportOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmReportOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmReportOptions)
         QtCore.QMetaObject.connectSlotsByName(frmReportOptions)

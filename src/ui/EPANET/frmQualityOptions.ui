@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>283</width>
-    <height>318</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="font">
@@ -172,12 +172,12 @@
     <property name="title">
      <string>Analysis Type</string>
     </property>
-    <widget class="QCheckBox" name="cbxNone">
+    <widget class="QRadioButton" name="rbnNone">
      <property name="geometry">
       <rect>
        <x>30</x>
        <y>30</y>
-       <width>70</width>
+       <width>82</width>
        <height>17</height>
       </rect>
      </property>
@@ -185,12 +185,12 @@
       <string>None</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="cbxChemical">
+    <widget class="QRadioButton" name="rbnChemical">
      <property name="geometry">
       <rect>
        <x>30</x>
        <y>60</y>
-       <width>70</width>
+       <width>82</width>
        <height>17</height>
       </rect>
      </property>
@@ -198,12 +198,12 @@
       <string>Chemical</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="cbxAge">
+    <widget class="QRadioButton" name="rbnAge">
      <property name="geometry">
       <rect>
        <x>130</x>
        <y>30</y>
-       <width>70</width>
+       <width>82</width>
        <height>17</height>
       </rect>
      </property>
@@ -211,12 +211,12 @@
       <string>Age</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="cbxTrace">
+    <widget class="QRadioButton" name="rbnTrace">
      <property name="geometry">
       <rect>
        <x>130</x>
        <y>60</y>
-       <width>70</width>
+       <width>82</width>
        <height>17</height>
       </rect>
      </property>
@@ -226,15 +226,6 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

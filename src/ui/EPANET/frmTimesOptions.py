@@ -1,7 +1,8 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
-import core.epanet.options.energy
+import core.epanet.options.times
+from core.epanet.options.times import StatisticOptions
 from ui.EPANET.frmTimesOptionsDesigner import Ui_frmTimesOptions
 
 
@@ -10,28 +11,38 @@ class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         # TODO: function that populates combo box from Enum
-        # self.cboFlowUnits.addItems(("CFS", "GPM", "MGD", "IMGD", "AFD", "LPS", "LPM", "MLD", "CMH", "CMD"))
-        # self.cboHeadloss.addItems(("H_W", "D_W", "C_M"))
-        # self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
+        self.cboStatistic.addItems(("NONE", "AVERAGED", "MINIMUM", "MAXIMUM", "RANGE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.set_from(parent.project)
         self._parent = parent
 
     def set_from(self, project):
-        # section = core.epanet.options.energy.EnergyOptions()
+        # section = core.epanet.options.times.TimesOptions()
         section = project.find_section("TIMES")
-        # self.txtGlobalPrice.setText(str(section.global_price))
-        # self.txtGlobalPattern.setText(str(section.global_pattern))
-        # self.txtGlobalEfficiency.setText(str(section.global_efficiency))
-        # self.txtDemandCharge.setText(str(section.demand_charge))
+        self.txtTotalDuration.setText(str(section.duration))
+        self.txtHydraulic.setText(str(section.hydraulic_timestep))
+        self.txtQuality.setText(str(section.quality_timestep))
+        self.txtRule.setText(str(section.rule_timestep))
+        self.txtPattern.setText(str(section.pattern_timestep))
+        self.txtPatternTime.setText(str(section.pattern_start))
+        self.txtReporting.setText(str(section.report_timestep))
+        self.txtReportingTime.setText(str(section.report_start))
+        self.txtClockStart.setText(str(section.start_clocktime))
+        self.cboStatistic = section.statistic
 
     def cmdOK_Clicked(self):
         section = self._parent.project.find_section("TIMES")
-        # section.global_price = self.txtGlobalPrice.text()
-        # section.global_pattern = self.txtGlobalPattern.text()
-        # section.global_efficiency = self.txtGlobalEfficiency.text()
-        # section.demand_charge = self.txtDemandCharge.text()
+        section.duration = self.txtTotalDuration.text()
+        section.hydraulic_timestep = self.txtHydraulic.text()
+        section.quality_timestep = self.txtQuality.text()
+        section.rule_timestep = self.txtRule.text()
+        section.pattern_timestep = self.txtPattern.text()
+        section.pattern_start = self.txtPatternTime.text()
+        section.report_timestep = self.txtReporting.text()
+        section.report_start = self.txtReportingTime.text()
+        section.start_clocktime = self.txtClockStart.text()
+        section.statistic = self.cboStatistic
         self.close()
 
     def cmdCancel_Clicked(self):

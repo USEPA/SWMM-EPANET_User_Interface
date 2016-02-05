@@ -20,7 +20,7 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
 
     def set_from(self, project):
         # section = core.epanet.options.hydraulics.HydraulicsOptions()
-        section = project.find_section("OPTIONS")
+        section = project.find_section("Hydraulics")
         self.cboFlow.currentText(section.flow_units)
         self.cboHeadloss.currentText(section.head_loss)
         self.txtAccuracy.setText(str(section.accuracy))

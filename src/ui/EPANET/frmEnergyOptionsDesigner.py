@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmEnergyOptions(object):
     def setupUi(self, frmEnergyOptions):
         frmEnergyOptions.setObjectName(_fromUtf8("frmEnergyOptions"))
-        frmEnergyOptions.resize(304, 209)
+        frmEnergyOptions.resize(304, 191)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmEnergyOptions.setFont(font)
@@ -65,12 +65,6 @@ class Ui_frmEnergyOptions(object):
         self.txtGlobalPrice.setGeometry(QtCore.QRect(160, 50, 113, 20))
         self.txtGlobalPrice.setObjectName(_fromUtf8("txtGlobalPrice"))
         frmEnergyOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmEnergyOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmEnergyOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmEnergyOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmEnergyOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmEnergyOptions)
         QtCore.QMetaObject.connectSlotsByName(frmEnergyOptions)

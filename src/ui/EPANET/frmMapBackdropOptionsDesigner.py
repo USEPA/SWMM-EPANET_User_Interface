@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmMapBackdropOptions(object):
     def setupUi(self, frmMapBackdropOptions):
         frmMapBackdropOptions.setObjectName(_fromUtf8("frmMapBackdropOptions"))
-        frmMapBackdropOptions.resize(562, 410)
+        frmMapBackdropOptions.resize(562, 387)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmMapBackdropOptions.setFont(font)
@@ -110,12 +110,6 @@ class Ui_frmMapBackdropOptions(object):
         self.txtBackdropY.setGeometry(QtCore.QRect(190, 30, 113, 20))
         self.txtBackdropY.setObjectName(_fromUtf8("txtBackdropY"))
         frmMapBackdropOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmMapBackdropOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmMapBackdropOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmMapBackdropOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmMapBackdropOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmMapBackdropOptions)
         QtCore.QMetaObject.connectSlotsByName(frmMapBackdropOptions)

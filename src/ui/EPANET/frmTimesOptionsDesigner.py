@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmTimesOptions(object):
     def setupUi(self, frmTimesOptions):
         frmTimesOptions.setObjectName(_fromUtf8("frmTimesOptions"))
-        frmTimesOptions.resize(304, 390)
+        frmTimesOptions.resize(304, 368)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmTimesOptions.setFont(font)
@@ -101,12 +101,6 @@ class Ui_frmTimesOptions(object):
         self.txtHydraulic.setGeometry(QtCore.QRect(160, 50, 113, 20))
         self.txtHydraulic.setObjectName(_fromUtf8("txtHydraulic"))
         frmTimesOptions.setCentralWidget(self.centralWidget)
-        self.mainToolBar = QtGui.QToolBar(frmTimesOptions)
-        self.mainToolBar.setObjectName(_fromUtf8("mainToolBar"))
-        frmTimesOptions.addToolBar(QtCore.Qt.TopToolBarArea, self.mainToolBar)
-        self.statusBar = QtGui.QStatusBar(frmTimesOptions)
-        self.statusBar.setObjectName(_fromUtf8("statusBar"))
-        frmTimesOptions.setStatusBar(self.statusBar)
 
         self.retranslateUi(frmTimesOptions)
         QtCore.QMetaObject.connectSlotsByName(frmTimesOptions)

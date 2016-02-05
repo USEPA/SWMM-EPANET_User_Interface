@@ -69,7 +69,7 @@ class Project(InputFile):
         # self.emitters = [(Junction, "emitter_coefficient")]
         # self.curves = [Curve]
         # self.patterns = [Pattern]
-        # self.energy = EnergyOptions()
+        self.energy = EnergyOptions()
         # [STATUS]
         # self.controls = [Control]
         # self.rules = [Rule]
@@ -81,10 +81,10 @@ class Project(InputFile):
         # [MIXING]
         # self.options = MapOptions,
         self.options = HydraulicsOptions()
-        # "[TIMES]": TimesOptions,
-        # "[REPORT]": ReportOptions,
-        # "[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
-        # "[VERTICES]": [Vertex],
-        # "[LABELS]": [Label],
-        # "[BACKDROP]": BackdropOptions
+        self.times = TimesOptions()
+        self.report = ReportOptions()
+        # "[COORDINATES]": [Coordinates]  # X,Y coordinates for nodes
+        # "[VERTICES]": [Vertex]
+        # "[LABELS]": [Label]
+        self.options = BackdropOptions()
         InputFile.__init__(self)

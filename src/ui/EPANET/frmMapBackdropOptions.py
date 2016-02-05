@@ -22,13 +22,13 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         self.txtBackdropFile.setText(str(section.file))
         self.txtBackdropX.setText(str(section.offset_x))
         self.txtBackdropY.setText(str(section.offset_y))
-        self.txtLLX.setText(str(section.dimensions(0)))
-        self.txtLLY.setText(str(section.dimensions(1)))
-        self.txtURX.setText(str(section.dimensions(2)))
-        self.txtURY.setText(str(section.dimensions(3)))
+        self.txtLLX.setText(str(section.dimensions[0]))
+        self.txtLLY.setText(str(section.dimensions[1]))
+        self.txtURX.setText(str(section.dimensions[2]))
+        self.txtURY.setText(str(section.dimensions[3]))
         self.cboMapUnits = section.units
         section = project.find_section("OPTIONS")
-        self.txtMapFile.setText(str(section.mapfile))
+        # self.txtMapFile.setText(str(section.mapfile))
 
     def cmdOK_Clicked(self):
         section = self._parent.project.find_section("BACKDROP")
@@ -38,7 +38,7 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         section.dimensions = (self.txtLLX.text(), self.txtLLY.text(), self.txtURX.text(), self.txtURY.text())
         section.units = self.cboMapUnits
         section = self._parent.project.find_section("OPTIONS")
-        section.mapfile = self.txtMapFile.Text()
+        # section.mapfile = self.txtMapFile.Text()
         self.close()
 
     def cmdCancel_Clicked(self):

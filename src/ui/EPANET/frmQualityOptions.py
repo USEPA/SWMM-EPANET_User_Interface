@@ -2,7 +2,8 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
 import core.epanet.options.quality
-from core.epanet.options.quality import Quality
+from core.epanet.options.quality import QualityOptions
+from core.epanet.options.quality import QualityAnalysisType
 from ui.EPANET.frmQualityOptionsDesigner import Ui_frmQualityOptions
 
 
@@ -15,10 +16,10 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
 
         self.quality_dict = {
-            Quality.NONE: self.rbnNone,
-            Quality.AGE: self.rbnAge,
-            Quality.CHEMICAL: self.rbnChemical,
-            Quality.TRACE: self.rbnTrace}
+            QualityAnalysisType.NONE: self.rbnNone,
+            QualityAnalysisType.AGE: self.rbnAge,
+            QualityAnalysisType.CHEMICAL: self.rbnChemical,
+            QualityAnalysisType.TRACE: self.rbnTrace}
         """Mapping from Quality enum type to radio button"""
 
         self.set_from(parent.project)

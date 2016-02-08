@@ -42,7 +42,7 @@ class DynamicWave(core.inputfile.Section):
         will be handled under dynamic wave flow routing
         """
 
-        self.normal_flow_limited = NormalFlowLimited.SLOPE
+        self.normal_flow_limited = NormalFlowLimited.BOTH
         """
         Which condition is checked to determine if flow in a conduit
         is supercritical and should thus be limited to the normal flow
@@ -72,4 +72,24 @@ class DynamicWave(core.inputfile.Section):
         """
         Minimum surface area used at nodes when computing 
         changes in water depth under dynamic wave routing
+        """
+
+        self.max_trials = 8
+        """
+        Undocumented but shows up in SWMM 5 UI as 'maximum trials per time step'
+        """
+
+        self.head_tolerance = 0.005
+        """
+        Undocumented but shows up in SWMM 5 UI as 'head convergence tolerance'
+        """
+
+        self.minimum_step = 0.5
+        """
+        Undocumented but shows up in SWMM 5 UI as 'minimum variable timestep'
+        """
+
+        self.threads = 1
+        """
+        Undocumented but shows up in SWMM 5 UI as 'number of threads'
         """

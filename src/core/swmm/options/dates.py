@@ -16,28 +16,28 @@ class Dates(core.inputfile.Section):
         core.inputfile.Section.__init__(self)
         # TODO: parse "value" argument to extract values for each field, after setting default values below
 
-        self.start_date = 0
+        self.start_date = "1/1/2002"
         """Date when the simulation begins"""
 
-        self.start_time = 0
+        self.start_time = "0:00"
         """Time of day on the starting date when the simulation begins"""
 
-        self.end_date = 0
+        self.end_date = "1/1/2002"
         """Date when the simulation is to end"""
 
-        self.end_time = 0
+        self.end_time = "24:00"
         """Time of day on the ending date when the simulation will end"""
 
-        self.report_start_date = 0
+        self.report_start_date = "1/1/2002"
         """Date when reporting of results is to begin"""
 
-        self.report_start_time = 0
+        self.report_start_time = "0:00"
         """Time of day on the report starting date when reporting is to begin"""
 
-        self.sweep_start = None
+        self.sweep_start = "1/1"
         """Day of the year (month/day) when street sweeping operations begin"""
 
-        self.sweep_end = None
+        self.sweep_end = "12/31"
         """Day of the year (month/day) when street sweeping operations end"""
 
         self.dry_days = 0

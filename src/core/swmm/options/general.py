@@ -50,7 +50,7 @@ class General(core.inputfile.Section):
         HortonInfiltration, GreenAmptInfiltration, or CurveNumberInfiltration
         """
 
-        self.flow_routing = FlowRouting.STEADY
+        self.flow_routing = FlowRouting.KINWAVE
         """Method used to route flows through the drainage system"""
 
         self.link_offsets = LinkOffsets.DEPTH

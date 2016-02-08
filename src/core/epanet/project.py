@@ -9,11 +9,9 @@ from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
+from core.epanet.options.options import Options
 from core.epanet.options.backdrop import BackdropOptions
 from core.epanet.options.energy import EnergyOptions
-from core.epanet.options.hydraulics import HydraulicsOptions
-from core.epanet.options.map import MapOptions
-from core.epanet.options.quality import QualityOptions
 from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
@@ -75,16 +73,15 @@ class Project(InputFile):
         # self.rules = [Rule]
         # self.demands = [Demand]
         # self.quality = ReadNodesInitialQuality
-        self.options = QualityOptions()
         self.reactions = Reactions()
         self.sources = [Source]
         # [MIXING]
         # self.options = MapOptions,
-        self.options = HydraulicsOptions()
+        self.options = Options()
         self.times = TimesOptions()
         self.report = ReportOptions()
         # "[COORDINATES]": [Coordinates]  # X,Y coordinates for nodes
         # "[VERTICES]": [Vertex]
         # "[LABELS]": [Label]
-        self.options = BackdropOptions()
+        self.backdrop_options = BackdropOptions()
         InputFile.__init__(self)

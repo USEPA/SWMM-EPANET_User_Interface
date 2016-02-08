@@ -27,14 +27,14 @@
         section_whole = ""
         for line in lines_iterator:
             if line.startswith('['):
-                if len(section_name) > 0:
+                if section_name:
                     self.add_section(section_name, section_whole, section_index)
                     section_index += 1
                 section_name = line.rstrip()
                 section_whole = line
             else:
                 section_whole += line
-        if len(section_name) > 0:
+        if section_name:
             self.add_section(section_name, section_whole, section_index)
             section_index += 1
 
@@ -67,7 +67,7 @@
                         section_list.append(comment)
                     else:
                         try:
-                            if len(row.strip()) > 0:
+                            if row.strip():
                                 make_one = list_class()
                                 make_one.text(row)
                                 section_list.append(make_one)
@@ -112,9 +112,14 @@
 class Section(object):
     """Any section or sub-section or value in an input file"""
 
+    field_format = " {:19}\t{}"
+
     def __init__(self):
         self.name = "Unnamed"
         """Name of the item"""
+
+        if hasattr(self, "SECTION_NAME"):
+            self.name = self.SECTION_NAME
 
         self.value = ""
         """Current value of the item as it appears in an InputFile"""
@@ -136,13 +141,13 @@ class Section(object):
         if isinstance(self.value, basestring):
             return self.value
         elif isinstance(self.value, (list, tuple)):
-            inp = self.name + '\n'
+            text_list = [self.name]
             for item in self.value:
                 if hasattr(item, "text"):
-                    inp += item.text + '\n'
+                    text_list.append(item.text)
                 else:
-                    inp += item + '\n'
-            return inp
+                    text_list.append(str(item))
+            return '\n'.join(text_list)
         elif self.value is None:
             return ''
         else:
@@ -157,17 +162,34 @@ class Section(object):
             comment_split = str.split(line, ';', 1)
             if len(comment_split) == 2:
                 line = comment_split[0]
-                if len(self.comment) > 0:
+                if self.comment:
                     self.comment += '\n'
                 self.comment += ';' + comment_split[1]
             if not line.startswith('['):
-                if len(line.strip()) > 0:
+                if line.strip():
+                    tried_set = False
                     line_list = line.split()
-                    for name_last_word in range(0, 1):
-                        attr_name = ''.join(line_list[:name_last_word]).lower()
-                        if hasattr(self, attr_name):
-                            try:
-                                setattr(self, attr_name, ' '.join(line_list[name_last_word + 1:]))
-                            except:
-                                print ("Section.text could not set " + attr_name)  # +
-                                             #  " to " + ' '.join(line_list[name_last_word + 1:]))
+                    if len(line_list) > 1:
+                        if len(line_list) == 2:
+                            attr_name = line_list[0].lower()
+                            if hasattr(self, attr_name):
+                                try:
+                                    tried_set = True
+                                    setattr(self, attr_name, line_list[1])
+                                except:
+                                    print ("Section.text could not set " + attr_name)
+                        else:
+                            for name_last_word in range(1, 2):
+                                for connector in ('', '_'):
+                                    attr_name = connector.join(line_list[:name_last_word]).lower()
+                                    if hasattr(self, attr_name):
+                                        try:
+                                            tried_set = True
+                                            setattr(self, attr_name, ' '.join(line_list[name_last_word + 1:]))
+                                        except:
+                                            print("Section.text could not set " + attr_name)
+                    if not tried_set:
+                        print("Section.text skipped: " + line)
+
+    def format(self, **kwargs):
+        return self.field_format.format(kwargs)

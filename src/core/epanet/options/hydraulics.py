@@ -46,7 +46,7 @@ class HydraulicsOptions(Section):
         "Units": "flow_units",
         "Headloss": "head_loss",
         "Specific Gravity": "specific_gravity",
-        "Viscosity": "relative_viscosity",
+        "Viscosity": "viscosity",
         "Trials": "maximum_trials",
         "Accuracy": "accuracy",
         "CHECKFREQ": "check_frequency",
@@ -61,10 +61,6 @@ class HydraulicsOptions(Section):
         "Tolerance": ""}
     """Mapping from label used in file to field name"""
 
-    # @staticmethod
-    # def default():
-    #     return EPANETHydraulicOptions(EPANETOptions.SECTION_NAME, None, None, -1)
-
     def __init__(self):
         Section.__init__(self)
 
@@ -77,7 +73,7 @@ class HydraulicsOptions(Section):
         self.specific_gravity = 1.0
         """Ratio of the density of the fluid being modeled to that of water at 4 deg. C"""
 
-        self.relative_viscosity = 1.0
+        self.viscosity = 1.0
         """Kinematic viscosity of the fluid being modeled relative to that of water at 20 deg. C"""
 
         self.maximum_trials = 40
@@ -120,19 +116,35 @@ class HydraulicsOptions(Section):
 
     @property
     def text(self):
-        return Section.text
+        text_list = []
+        for label, attr_name in HydraulicsOptions.field_dict.items():
+            if label == "Unbalanced":
+                if self.unbalanced == Unbalanced.STOP:
+                    text_list.append(self.format("Unbalanced", "STOP"))
+                else:
+                    text_list.append(self.format("Unbalanced", "Continue " + str(self.unbalanced_continue)))
+
+            elif label and attr_name and hasattr(self, attr_name):
+                attr_value = getattr(self, attr_name)
+                if attr_value:
+                    text_list.append(self.format(label, attr_value))
+
+        return '\n'.join(text_list)
 
     @text.setter
     def text(self, new_text):
         for line in new_text.splitlines():
-            if not line.startswith((';', '[')):
-                lower_line = line.lower().strip()
-                for dict_tuple in HydraulicsOptions.field_dict.items():
-                    key = dict_tuple[0]
-                    if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
-                        attr_name = dict_tuple[1]
-                        try:
-                            setattr(self, attr_name, line[len(key) + 1:].strip())
-                        except:
-                            raise Exception("Unable to set attribute " + attr_name +
-                                            " to " + line.substring(key.length()))
+            try:
+                if not line.startswith((';', '[')):
+                    lower_line = line.lower().strip()
+                    for dict_tuple in HydraulicsOptions.field_dict.items():
+                        key = dict_tuple[0]
+                        if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
+                            attr_name = dict_tuple[1]
+                            attr_value = line[len(key) + 1:].strip()
+                            try:
+                                setattr(self, attr_name, attr_value)
+                            except:
+                                raise Exception("Unable to set attribute " + attr_name + " to " + attr_value)
+            except:
+                raise Exception("Unable to set text from input line: " + line)

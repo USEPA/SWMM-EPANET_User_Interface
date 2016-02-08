@@ -28,11 +28,11 @@ class Curve:
     def text(self):
         """format contents of this item for writing to file"""
         inp = str(self.curve_id)
-        if len(self.description) > 0:
+        if self.description:
             inp += self.description + '\n'
         for xy in self.curve_xy:
             inp += '\t' + xy[0] + '\t' + xy[1] + '\n'
-        """TODO: What is the rule for creating columns? Will any amount of whitespace work?"""
+        # TODO: format columns as in original with spaces and tabs
         return inp
 
     @text.setter

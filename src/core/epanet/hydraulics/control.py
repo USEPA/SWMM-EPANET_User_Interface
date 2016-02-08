@@ -57,25 +57,25 @@ class SimpleControl:
     def text(self):
         """format contents of this item for writing to file"""
         inp = " "
-        if self.link_id is not None and len(self.link_id) > 0:
+        if self.link_id:
             inp += "LINK " + self.link_id
         inp += self.status + ' '
-        if self.node_id is not None and len(self.node_id) > 0:
+        if self.node_id:
             inp += "NODE " + self.node_id + ' '
-        if self.value is not None and len(str(self.value)) > 0:
+        if self.value:
             inp += self.control_type + ' ' + str(self.value) + ' '
-        if self.time is not None and len(self.time) > 0:
+        if self.time:
             inp += self.time + ' '
-        if self.clock_time is not None and len(self.clock_time) > 0:
+        if self.clock_time:
             inp += self.clock_time + ' '
-        """TODO: research correct formatting of time, clock_time options"""
+        # TODO: research correct formatting of time, clock_time options
         return inp
 
     @text.setter
     def text(self, new_text):
         fields = new_text.split()
         self.link_id = fields[0]
-        """TODO: Populate additional fields"""
+        # TODO: Populate additional fields
 
 
 class Rule:

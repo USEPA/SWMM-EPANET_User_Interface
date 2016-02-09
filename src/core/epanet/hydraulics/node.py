@@ -57,7 +57,7 @@ class Junction:
         """characteristics of all demands at this node"""
 
         self.pattern = ""
-        """TODO: decide whether pattern belongs here and document it"""
+        # TODO: decide whether pattern belongs here and document it"""
 
         self.emitter_coefficient = 0.0
         """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals

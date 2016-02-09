@@ -47,16 +47,16 @@ class QualityOptions(Section):
             txt += "AGE"
         elif self.quality == QualityAnalysisType.TRACE:
             txt += "Trace"
-            if self.trace_node is not None and len(self.trace_node) > 0:
+            if self.trace_node:
                 txt += " " + self.trace_node
         elif self.quality == QualityAnalysisType.CHEMICAL:
-            if self.chemical_name is None or len(self.chemical_name) == 0:
-                txt += "CHEMICAL"
-            else:
+            if self.chemical_name:
                 txt += self.chemical_name
-        if len(txt) > 0 and self.mass_units is not None and len(self.mass_units) > 0:
+            else:
+                txt += "CHEMICAL"
+        if txt and self.mass_units:
             txt += " " + self.mass_units
-        if len(txt) > 0:
+        if txt:
             txt += "\n"
         txt += " Diffusivity        \t" + str(self.diffusivity) + "\n"
         txt += " Tolerance          \t" + str(self.tolerance) + "\n"

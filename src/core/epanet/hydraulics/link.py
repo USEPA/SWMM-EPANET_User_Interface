@@ -125,7 +125,7 @@ class Pipe(Link):
     @property
     def text(self):
         """format contents of this item for writing to file"""
-        if len(self.link_id) > 0:
+        if self.link_id:
             return str(self.link_id) + '\t'\
                    + str(self.inlet_node) + '\t'\
                    + str(self.outlet_node) + '\t'\
@@ -134,8 +134,8 @@ class Pipe(Link):
                    + str(self.roughness) + '\t'\
                    + str(self.loss_coefficient) + '\t'\
                    + str(self.status) \
-                   + ('\t' + self.comment if len(self.comment) > 0 else '')
-        elif len(self.comment) > 0:
+                   + ('\t' + self.comment if self.comment else '')
+        elif self.comment:
             return self.comment
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
@@ -193,7 +193,7 @@ class Pump(Link):
             + str(self.inlet_node) + '\t'\
             + str(self.outlet_node) + '\t'\
             + str(self.head_curve_id)\
-            + ('\t' + self.comment if len(self.comment) > 0 else '')
+            + ('\t' + self.comment if self.comment else '')
         # TODO: format for remaining fields?
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
@@ -208,7 +208,7 @@ class Pump(Link):
         self.inlet_node = fields[1]
         self.outlet_node = fields[2]
         self.head_curve_id = fields[3]
-        """TODO: Populate additional fields: self.speed = ... """
+        # TODO: Populate additional fields: self.speed = ... """
 
 
 class Valve(Link):

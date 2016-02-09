@@ -1,6 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
+import core.swmm.project
 from ui.SWMM.frmTitleDesigner import Ui_frmTitle
 
 
@@ -14,7 +14,7 @@ class frmTitle(QtGui.QMainWindow, Ui_frmTitle):
         self._parent = parent
 
     def set_from(self, project):
-        # section = core.epanet.project.Title()
+        # section = core.swmm.project.Title()
         # section = project.find_section("TITLE")
         # self.txtTitle.setPlainText(str(section.title))
         self.txtTitle.setPlainText("")

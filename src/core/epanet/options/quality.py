@@ -69,18 +69,22 @@ class QualityOptions(Section):
         self.chemical_name = ""
         self.mass_units = ""
         self.trace_node = ""
-        Section.text = new_text  # First set easy fields using default text setter
 
         for line in new_text.splitlines():
             line_list = line.split()
-            if str(line_list[0]).strip().upper() == "QUALITY":
-                quality_type = str(line_list[1]).strip().upper()
-                try:
-                    self.quality = QualityAnalysisType[quality_type]
-                except:
-                    self.quality = QualityAnalysisType.CHEMICAL
-                    self.chemical_name = str(line_list[1])
-                if self.quality == QualityAnalysisType.TRACE:
-                    self.trace_node = line_list[2]
-                elif len(line_list) > 2:
-                    self.mass_units = line_list[2]
+            if line_list:
+                if str(line_list[0]).strip().upper() == "QUALITY":
+                    quality_type = str(line_list[1]).strip().upper()
+                    try:
+                        self.quality = QualityAnalysisType[quality_type]
+                    except:
+                        self.quality = QualityAnalysisType.CHEMICAL
+                        self.chemical_name = str(line_list[1])
+                    if self.quality == QualityAnalysisType.TRACE:
+                        self.trace_node = line_list[2]
+                    elif len(line_list) > 2:
+                        self.mass_units = line_list[2]
+                elif str(line_list[0]).strip().upper() == "DIFFUSIVITY":
+                    self.diffusivity = float(line_list[1])
+                elif str(line_list[0]).strip().upper() == "TOLERANCE":
+                    self.tolerance = float(line_list[1])

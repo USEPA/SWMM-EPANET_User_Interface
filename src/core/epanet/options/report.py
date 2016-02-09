@@ -43,3 +43,11 @@ class ReportOptions(Section):
         self.parameters = ""		        # string -- note could be multiple parameter lines
         """used to identify which quantities are reported on"""
         """don't write by default"""
+
+    @property
+    def page(self):
+        return self.pagesize
+
+    @page.setter
+    def page(self, new_value):
+        self.pagesize = new_value

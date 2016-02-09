@@ -136,7 +136,19 @@ class Section(object):
 
     @property
     def text(self):
-        """Contents of this item formatted for writing to file"""
+        """Contents of this section formatted for writing to file"""
+
+        if hasattr(self, "field_dict") and self.field_dict:
+            text_list = []
+            if self.name and self.name.startswith('['):
+                text_list.append(self.name)
+            for label, attr_name in self.field_dict.items():
+                if label and attr_name and hasattr(self, attr_name):
+                    attr_value = str(getattr(self, attr_name))
+                    if attr_value:
+                        text_list.append(self.field_format.format(label, attr_value))
+            if text_list:
+                return '\n'.join(text_list)
 
         if isinstance(self.value, basestring):
             return self.value
@@ -151,7 +163,7 @@ class Section(object):
         elif self.value is None:
             return ''
         else:
-            return self.value
+            return str(self.value)
 
     @text.setter
     def text(self, new_text):
@@ -159,37 +171,57 @@ class Section(object):
 
         self.value = new_text
         for line in new_text.splitlines():
+            # first split out any comment after a semicolon
             comment_split = str.split(line, ';', 1)
             if len(comment_split) == 2:
                 line = comment_split[0]
                 if self.comment:
                     self.comment += '\n'
                 self.comment += ';' + comment_split[1]
-            if not line.startswith('['):
-                if line.strip():
-                    tried_set = False
+
+            if not line.startswith('[') and line.strip():
+                # Set fields from field_dict if this section has one
+                attr_name = ""
+                tried_set = False
+                if hasattr(self, "field_dict") and self.field_dict:
+                    lower_line = line.lower().strip()
+                    for dict_tuple in self.field_dict.items():
+                        key = dict_tuple[0]
+                        # if this line starts with this key followed by a space or tab
+                        if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
+                            test_attr_name = dict_tuple[1]
+                            if hasattr(self, test_attr_name):
+                                attr_name = test_attr_name
+                                attr_value = line[len(key) + 1:].strip()
+                                break
+                else:  # This section does not have a field_dict, try to set its fields anyway
                     line_list = line.split()
                     if len(line_list) > 1:
                         if len(line_list) == 2:
-                            attr_name = line_list[0].lower()
-                            if hasattr(self, attr_name):
-                                try:
-                                    tried_set = True
-                                    setattr(self, attr_name, line_list[1])
-                                except:
-                                    print ("Section.text could not set " + attr_name)
+                            test_attr_name = line_list[0].lower()
+                            if hasattr(self, test_attr_name):
+                                attr_name = test_attr_name
+                                attr_value = line_list[1]
                         else:
-                            for name_last_word in range(1, 2):
+                            for value_start in (1, 2):
                                 for connector in ('', '_'):
-                                    attr_name = connector.join(line_list[:name_last_word]).lower()
-                                    if hasattr(self, attr_name):
-                                        try:
-                                            tried_set = True
-                                            setattr(self, attr_name, ' '.join(line_list[name_last_word + 1:]))
-                                        except:
-                                            print("Section.text could not set " + attr_name)
-                    if not tried_set:
-                        print("Section.text skipped: " + line)
-
-    def format(self, **kwargs):
-        return self.field_format.format(kwargs)
+                                    test_attr_name = connector.join(line_list[:value_start]).lower()
+                                    if hasattr(self, test_attr_name):
+                                        attr_name = test_attr_name
+                                        attr_value = ' '.join(line_list[value_start:])
+                                        break
+                if attr_name:
+                    try:
+                        tried_set = True
+                        # If existing value is an int or float, make sure new value is too, else str
+                        old_value = getattr(self, attr_name, "")
+                        if isinstance(old_value, int):
+                            setattr(self, attr_name, int(attr_value.replace(' ', '')))
+                        elif isinstance(old_value, float):
+                            setattr(self, attr_name, float(attr_value.replace(' ', '')))
+                        else:
+                            setattr(self, attr_name, attr_value)
+                    except:
+                        print("Section.text could not set " + attr_name)
+                if not tried_set:
+                    print("Section.text skipped: " + line)

@@ -12,7 +12,7 @@ class SimpleCurveTest(unittest.TestCase):
         self.my_curve.curve_id = "XXX"
         self.my_curve.description = "test curve"
         self.my_curve.curve_type = curves.CurveType.HEAD_LOSS
-        self.my_curve.curve_xy = ((1500,250),(1400,200))
+        self.my_curve.curve_xy = ((1500, 250), (1400, 200))
 
     def runTest(self):
         assert self.my_curve.curve_id == "XXX"

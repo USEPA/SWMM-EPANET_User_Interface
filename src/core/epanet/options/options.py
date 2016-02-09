@@ -36,6 +36,5 @@ class Options(Section):
     @text.setter
     def text(self, new_text):
         """Read this section from the text representation"""
-        Section.text = new_text  # First set simple fields using default text setter
         self.hydraulics.text = new_text
         self.quality.text = new_text

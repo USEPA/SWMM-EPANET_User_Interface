@@ -1,7 +1,5 @@
 from enum import Enum
-
 from core.inputfile import Section
-from core.epanet.patterns import Pattern
 
 
 class FlowUnits(Enum):
@@ -118,16 +116,18 @@ class HydraulicsOptions(Section):
     def text(self):
         text_list = []
         for label, attr_name in HydraulicsOptions.field_dict.items():
+            attr_value = ""
             if label == "Unbalanced":
                 if self.unbalanced == Unbalanced.STOP:
-                    text_list.append(self.format("Unbalanced", "STOP"))
+                    attr_value = "STOP"
                 else:
-                    text_list.append(self.format("Unbalanced", "Continue " + str(self.unbalanced_continue)))
+                    attr_value = "Continue " + str(self.unbalanced_continue)
 
             elif label and attr_name and hasattr(self, attr_name):
-                attr_value = getattr(self, attr_name)
-                if attr_value:
-                    text_list.append(self.format(label, attr_value))
+                attr_value = str(getattr(self, attr_name))
+
+            if attr_value:
+                text_list.append(self.field_format.format(label, attr_value))
 
         return '\n'.join(text_list)
 
@@ -137,14 +137,17 @@ class HydraulicsOptions(Section):
             try:
                 if not line.startswith((';', '[')):
                     lower_line = line.lower().strip()
-                    for dict_tuple in HydraulicsOptions.field_dict.items():
+                    for dict_tuple in self.field_dict.items():
                         key = dict_tuple[0]
                         if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
                             attr_name = dict_tuple[1]
-                            attr_value = line[len(key) + 1:].strip()
-                            try:
+                            if attr_name == "unbalanced_continue":
+                                fields = line.split()
+                                self.unbalanced = Unbalanced[fields[1].upper()]
+                                if len(fields) > 2:
+                                    self.unbalanced_continue = fields[2]
+                            else:
+                                attr_value = line[len(key) + 1:].strip()
                                 setattr(self, attr_name, attr_value)
-                            except:
-                                raise Exception("Unable to set attribute " + attr_name + " to " + attr_value)
             except:
-                raise Exception("Unable to set text from input line: " + line)
+                print("HydraulicsOptions skipping input line: " + line)

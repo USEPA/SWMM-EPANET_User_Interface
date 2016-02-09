@@ -5,7 +5,7 @@ from enum import Enum
 class SWMMTreeObjects(object):
     ObjRoot = ['Title/Notes','Options','Climatology', 'Hydrology', \
                'Hydraulics','Quality','Curves', 'Time Series', 'Time Patterns', 'Map Labels']
-    ObjOptions = ['General','Dates','Time Steps','Dynamic Wave','Interface Files','Reporting']
+    ObjOptions = ['General','Dates','Time Steps','Dynamic Wave','Interface Files','Reporting','Map/Backdrop']
     ObjClimatology = ['Temperature','Evaporation','Wind Speed','Snow Melt','Areal Depletion',\
                       'Adjustment']
     ObjHydrology = ['Rain Gages','Subcatchments','Aquifers','Snow Packs','Unit Hydrographs', \

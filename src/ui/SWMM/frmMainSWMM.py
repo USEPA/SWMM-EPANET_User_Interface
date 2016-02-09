@@ -10,6 +10,14 @@ from src.ui.ui_utility import *
 from src.ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from src.ui.frmMain import frmMain
+from src.ui.SWMM.frmDates import frmDates
+from src.ui.SWMM.frmDynamicWave import frmDynamicWave
+from src.ui.SWMM.frmMapBackdropOptions import frmMapBackdropOptions
+from src.ui.SWMM.frmGeneralOptions import frmGeneralOptions
+from src.ui.SWMM.frmInterfaceFiles import frmInterfaceFiles
+from src.ui.SWMM.frmReportOptions import frmReportOptions
+from src.ui.SWMM.frmTimeSteps import frmTimeSteps
+from src.ui.SWMM.frmTitle import frmTitle
 #from IPython import embed
 #from RestrictedPython import compile_restricted
 #import py_compile
@@ -19,7 +27,7 @@ from qgis.core import *
 from qgis.gui import *
 from src.core.coordinates import *
 from src.core.inputfile import *
-from src.core.epanet.project import *
+from src.core.swmm.project import Project
 from src.core.epanet.title import *
 from src.core.epanet.curves import *
 from src.core.epanet.labels import *
@@ -27,6 +35,15 @@ from src.core.epanet.patterns import *
 from src.core.epanet.vertex import *
 from src.core.epanet.options import *
 from src.core.epanet.hydraulics import *
+
+_frmDates = None
+_frmDynamicWave = None
+_frmMapBackdropOptions = None
+_frmGeneralOptions = None
+_frmInterfaceFiles = None
+_frmReportOptions = None
+_frmTimeSteps = None
+_frmTitle = None
 
 class frmMainSWMM(frmMain):
     def __init__(self, parent=None, *args):
@@ -56,16 +73,33 @@ class frmMainSWMM(frmMain):
         pass
 
     def edit_options(self, itm, column):
-        #pymsgbox.alert('edit options')
-        mitm = itm
-        if self.project == None or mitm.data(0, 0) != 'Options':
-            return
-        from src.ui.frmOptions import frmOptions
-        dlg = frmOptions(self, self.project.options)
-        dlg.show()
-        result = dlg.exec_()
-        if result == 1:
-            pass
+        # if self.project == None:
+        #     return
+
+        if itm.data(0, 0) == 'Dates':
+            _frmDates = frmDates(self)
+            _frmDates.show()
+        if itm.data(0, 0) == 'Dynamic Wave':
+            _frmDynamicWave = frmDynamicWave(self)
+            _frmDynamicWave.show()
+        if itm.data(0, 0) == 'Map/Backdrop':
+            _frmMapBackdropOptions = frmMapBackdropOptions(self)
+            _frmMapBackdropOptions.show()
+        if itm.data(0, 0) == 'General':
+            _frmGeneralOptions = frmGeneralOptions(self)
+            _frmGeneralOptions.show()
+        if itm.data(0, 0) == 'Interface Files':
+            _frmInterfaceFiles = frmInterfaceFiles(self)
+            _frmInterfaceFiles.show()
+        if itm.data(0, 0) == 'Reporting':
+            _frmReportOptions = frmReportOptions(self)
+            _frmReportOptions.show()
+        if itm.data(0, 0) == 'Time Steps':
+            _frmTimeSteps = frmTimeSteps(self)
+            _frmTimeSteps.show()
+        if itm.data(0, 0) == 'Title/Notes':
+            _frmTitle = frmTitle(self)
+            _frmTitle.show()
 
     def on_load(self, **kwargs):
         self.obj_tree = ObjectTreeView(model=kwargs['model'])

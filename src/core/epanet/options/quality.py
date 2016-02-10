@@ -16,6 +16,8 @@ class QualityOptions(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
+    field_format = " {:20}\t{}\n"
+
     def __init__(self):
         Section.__init__(self)
 
@@ -58,8 +60,8 @@ class QualityOptions(Section):
             txt += " " + self.mass_units
         if txt:
             txt += "\n"
-        txt += " Diffusivity        \t" + str(self.diffusivity) + "\n"
-        txt += " Tolerance          \t" + str(self.tolerance) + "\n"
+        txt += self.field_format.format("Diffusivity", str(self.diffusivity))
+        txt += self.field_format.format("Tolerance", str(self.tolerance))
         return txt
 
     @text.setter

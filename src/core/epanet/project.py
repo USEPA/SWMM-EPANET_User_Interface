@@ -83,5 +83,5 @@ class Project(InputFile):
         # "[COORDINATES]": [Coordinates]  # X,Y coordinates for nodes
         # "[VERTICES]": [Vertex]
         # "[LABELS]": [Label]
-        self.backdrop_options = BackdropOptions()
+        self.backdrop = BackdropOptions()
         InputFile.__init__(self)

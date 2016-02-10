@@ -1,4 +1,5 @@
-﻿from enum import Enum
+﻿import traceback
+from enum import Enum
 
 
 class InputFile(object):
@@ -6,22 +7,30 @@ class InputFile(object):
 
     def __init__(self):
         self.sections = []
+        self.file_name = ""
         """List of sections in the file"""
 
     @property
     def text(self):
         section_text_list = []
-        for section in self.sections:
-            section_text_list.append(str(section.text))
-        return '\n'.join(section_text_list)
+        try:
+            for section in self.sections:
+                section_text_list.append(str(section.text))
+            return '\n'.join(section_text_list)
+        except Exception as e:
+            return(str(e) + '\n' + traceback.print_exc())
 
     @text.setter
     def text(self, new_text):
         self.set_from_text_lines(new_text.splitlines())
 
-    def read_file(self, filename):
-        with open(filename, 'r') as inp_reader:
-            self.set_from_text_lines(iter(inp_reader))
+    def read_file(self, file_name):
+        try:
+            with open(file_name, 'r') as inp_reader:
+                self.file_name = file_name
+                self.set_from_text_lines(iter(inp_reader))
+        except Exception as e:
+            print("Error reading {}: {}\n{}".format(file_name, str(e), traceback.print_exc()))
 
     def set_from_text_lines(self, lines_iterator):
         """Read as a project file from the lines of text in @param lines_iterator provides"""

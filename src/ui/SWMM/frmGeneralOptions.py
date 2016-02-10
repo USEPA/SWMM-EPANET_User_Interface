@@ -35,7 +35,7 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         if section.infiltration == "HORTON":
             self.rbnHorton.setChecked(True)
         if section.infiltration == "MODIFIED_HORTON":
-            self.rbnModifiedHortonn.setChecked(True)
+            self.rbnModifiedHorton.setChecked(True)
         if section.infiltration == "GREEN_AMPT":
             self.rbnGreenAmpt.setChecked(True)
         if section.infiltration == "MODIFIED_GREEN_AMPT":
@@ -55,32 +55,52 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
             section.ignore_rainfall = "YES"
         else:
             section.ignore_rainfall = "NO"
-
-        # self.cbxSnowmelt.setChecked(section.ignore_snowmelt)
-        # self.cbxGroundwater.setChecked(section.ignore_groundwater)
-        # self.cbxWaterQuality.setChecked(section.ignore_quality)
-        # self.cbxFlowRouting.setChecked(section.ignore_routing)
-        # if section.flow_routing == "STEADY":
-        #     self.rbnSteady.setChecked(True)
-        # if section.flow_routing == "KINWAVE":
-        #     self.rbnKinematic.setChecked(True)
-        # if section.flow_routing == "DYNWAVE":
-        #     self.rbnDynamic.setChecked(True)
-        # if section.infiltration == "HORTON":
-        #     self.rbnHorton.setChecked(True)
-        # if section.infiltration == "MODIFIED_HORTON":
-        #     self.rbnModifiedHortonn.setChecked(True)
-        # if section.infiltration == "GREEN_AMPT":
-        #     self.rbnGreenAmpt.setChecked(True)
-        # if section.infiltration == "MODIFIED_GREEN_AMPT":
-        #     self.rbnModifiedGreenAmpt.setChecked(True)
-        # if section.infiltration == "CURVE_NUMBER":
-        #     self.rbnCurveNumber.setChecked(True)
-        # self.cbxAllowPonding.setChecked(section.allow_ponding)
-        # self.txtMinimum.settext(section.min_slope)
-        # section = project.find_section("REPORT")
-        # self.cbxControls.setChecked(section.controls)
-        # self.cbxInput.setChecked(section.input)
+        if self.cbxSnowmelt.IsChecked:
+            section.ignore_snowmelt = "YES"
+        else:
+            section.ignore_snowmelt = "NO"
+        if self.cbxGroundwater.IsChecked:
+            section.ignore_groundwater = "YES"
+        else:
+            section.ignore_groundwater = "NO"
+        if self.cbxWaterQuality.IsChecked:
+            section.ignore_quality = "YES"
+        else:
+            section.ignore_quality = "NO"
+        if self.cbxFlowRouting.IsChecked:
+            section.ignore_routing = "YES"
+        else:
+            section.ignore_routing = "NO"
+        if self.rbnSteady.IsChecked:
+            section.flow_routing = "STEADY"
+        if self.rbnKinematic.IsChecked:
+            section.flow_routing = "KINWAVE"
+        if self.rbnDynamic.IsChecked:
+            section.flow_routing = "DYNWAVE"
+        if self.rbnHorton.setChecked:
+            section.infiltration = "HORTON"
+        if self.rbnModifiedHorton.setChecked:
+            section.infiltration = "MODIFIED_HORTON"
+        if self.rbnGreenAmpt.setChecked:
+            section.infiltration = "GREEN_AMPT"
+        if self.rbnModifiedGreenAmpt.setChecked:
+            section.infiltration = "MODIFIED_GREEN_AMPT"
+        if self.rbnCurveNumber.setChecked:
+            section.infiltration = "CURVE_NUMBER"
+        if self.cbxAllowPonding.IsChecked:
+            section.allow_ponding = "YES"
+        else:
+            section.allow_ponding = "NO"
+        section.min_slope = self.txtMinimum.text
+        section = self._parent.project.find_section("REPORT")
+        if self.cbxControls.IsChecked:
+            section.controls = "YES"
+        else:
+            section.controls = "NO"
+        if self.cbxInput.IsChecked:
+            section.input = "YES"
+        else:
+            section.input = "NO"
         self.close()
 
     def cmdCancel_Clicked(self):

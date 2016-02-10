@@ -34,7 +34,7 @@ class QualityOptions(Section):
         self.trace_node = ""
         """Node id to use in a quality trace"""
 
-        self.tolerance = 0.01
+        self.tolerance = 0.0
         """Difference in water quality level below one parcel of water is essentially the same as another"""
 
     @property

@@ -1,4 +1,7 @@
-﻿class InputFile(object):
+﻿from enum import Enum
+
+
+class InputFile(object):
     """Input File Reader and Writer"""
 
     def __init__(self):
@@ -134,6 +137,9 @@ class Section(object):
         self.comment = ""
         """A user-specified header and/or comment about the section"""
 
+    def __str__(self):
+        return self.text
+
     @property
     def text(self):
         """Contents of this section formatted for writing to file"""
@@ -145,6 +151,10 @@ class Section(object):
             for label, attr_name in self.field_dict.items():
                 if label and attr_name and hasattr(self, attr_name):
                     attr_value = str(getattr(self, attr_name))
+                    if isinstance(attr_value, Enum):
+                        attr_value = attr_value.name
+                    else:
+                        attr_value = str(attr_value)
                     if attr_value:
                         text_list.append(self.field_format.format(label, attr_value))
             if text_list:
@@ -213,15 +223,35 @@ class Section(object):
                 if attr_name:
                     try:
                         tried_set = True
-                        # If existing value is an int or float, make sure new value is too, else str
-                        old_value = getattr(self, attr_name, "")
-                        if isinstance(old_value, int):
-                            setattr(self, attr_name, int(attr_value.replace(' ', '')))
-                        elif isinstance(old_value, float):
-                            setattr(self, attr_name, float(attr_value.replace(' ', '')))
-                        else:
-                            setattr(self, attr_name, attr_value)
+                        self.setattr_keep_type(attr_name, attr_value)
                     except:
                         print("Section.text could not set " + attr_name)
                 if not tried_set:
                     print("Section.text skipped: " + line)
+
+    def setattr_keep_type(self, attr_name, attr_value):
+        """ Set attribute attr_name = attr_value.
+            If existing value of attr_name is int, float, or Enum try to remove spaces and convert attr_value
+            to the same type before setting. """
+        try:
+            old_value = getattr(self, attr_name, "")
+            if isinstance(old_value, int):
+                if isinstance(attr_value, str):
+                    attr_value = attr_value.replace(' ', '')
+                setattr(self, attr_name, int(attr_value))
+            elif isinstance(old_value, float):
+                if isinstance(attr_value, str):
+                    attr_value = attr_value.replace(' ', '')
+                setattr(self, attr_name, float(attr_value))
+            elif isinstance(old_value, Enum):
+                if not isinstance(attr_value, Enum):
+                    try:
+                        attr_value = type(old_value)[attr_value]
+                    except KeyError:
+                        attr_value = type(old_value)[attr_value.upper()]
+                setattr(self, attr_name, attr_value)
+            else:
+                setattr(self, attr_name, attr_value)
+        except:
+            setattr(self, attr_name, attr_value)
+

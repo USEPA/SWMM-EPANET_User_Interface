@@ -26,12 +26,11 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         self._parent = parent
 
     def set_from(self, project):
-        # section = core.epanet.options.quality.QualityOptions()
-        section = project.find_section("OPTIONS")
+        section = project.options.quality
         self.quality_dict.get(section.quality).setChecked(True)
         self.txtChemicalName.setText(str(section.chemical_name))
         self.txtMassUnits.setText(str(section.mass_units))
-        self.txtDiffusivity.setText(str(section.relative_diffusivity))
+        self.txtDiffusivity.setText(str(section.diffusivity))
         self.txtTolerance.setText(str(section.tolerance))
         self.txtTraceNode.setText(str(section.trace_node))
 

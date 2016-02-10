@@ -38,3 +38,9 @@ class Options(Section):
         """Read this section from the text representation"""
         self.hydraulics.text = new_text
         self.quality.text = new_text
+        self.map = ""
+        for line in new_text.splitlines():
+            line_list = line.split()
+            if line_list:
+                if str(line_list[0]).strip().upper() == "MAP":
+                    self.map = ' '.join(line_list[1:])

@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
 import core.epanet.options.hydraulics
+from enum import Enum
 from ui.EPANET.frmHydraulicsOptionsDesigner import Ui_frmHydraulicsOptions
 
 
@@ -18,40 +19,77 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         self.set_from(parent.project)
         self._parent = parent
 
+    @staticmethod
+    def set_combo(combo_box, value):
+        try:
+            if isinstance(value, Enum):
+                value = value.name
+            index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
+            if index >= 0:
+                combo_box.setCurrentIndex(index)
+        except Exception as e:
+            print(str(e))
+
     def set_from(self, project):
-        # section = core.epanet.options.hydraulics.HydraulicsOptions()
-        section = project.find_section("OPTIONS")
-        self.cboFlow.currentText(section.flow_units)
-        self.cboHeadloss.currentText(section.head_loss)
-        self.txtAccuracy.setText(str(section.accuracy))
-        self.txtCheckFrequency.setText(str(section.check_frequency))
-        self.txtDampLimit.setText(str(section.damp_limit))
-        self.txtDefaultPattern.setText(str(section.default_pattern))
-        self.txtDemandMultiplier.setText(str(section.demand_multiplier))
-        self.txtEmitterExponent.setText(str(section.emitter_exponent))
-        self.txtMaxCheck.setText(str(section.max_check))
-        self.txtMaximumTrials.setText(str(section.maximum_trials))
-        self.txtRelativeViscosity.setText(str(section.relative_viscosity))
-        self.txtSpecificGravity.setText(str(section.specific_gravity))
-        if section.hydraulics == "USE":
-            self.cbxUse.setChecked("TRUE")
-        if section.hydraulics == "SAVE":
-            self.cbxSave.setChecked("FALSE")
-        self.txtSpecificGravity.setText(str(section.hydraulics_file))
-        if section.unbalanced == "STOP":
-            self.cbxStop.setChecked("TRUE")
-        if section.unbalanced == "CONTINUE" and section.unbalanced_continue == 0:
-            self.cbxContinue.setChecked("TRUE")
-        if section.unbalanced == "CONTINUE" and section.unbalanced_continue > 0:
-            self.cbxContinueN.setChecked("TRUE")
-        self.cbxContinueN.setText(str(section.unbalanced_continue))
+        hydraulics_options = project.options.hydraulics
+
+        frmHydraulicsOptions.set_combo(self.cboFlow, hydraulics_options.flow_units)
+        frmHydraulicsOptions.set_combo(self.cboHeadloss, hydraulics_options.head_loss)
+
+        self.txtAccuracy.setText(str(hydraulics_options.accuracy))
+        self.txtCheckFrequency.setText(str(hydraulics_options.check_frequency))
+        self.txtDampLimit.setText(str(hydraulics_options.damp_limit))
+        self.txtDefaultPattern.setText(str(hydraulics_options.default_pattern))
+        self.txtDemandMultiplier.setText(str(hydraulics_options.demand_multiplier))
+        self.txtEmitterExponent.setText(str(hydraulics_options.emitter_exponent))
+        self.txtMaxCheck.setText(str(hydraulics_options.max_check))
+        self.txtMaximumTrials.setText(str(hydraulics_options.maximum_trials))
+        self.txtRelativeViscosity.setText(str(hydraulics_options.viscosity))
+        self.txtSpecificGravity.setText(str(hydraulics_options.specific_gravity))
+        if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.USE:
+            self.cbxUse.setChecked(True)
+            self.cbxSave.setChecked(False)
+        if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.SAVE:
+            self.cbxUse.setChecked(False)
+            self.cbxSave.setChecked(True)
+        self.txtHydraulicsFile.setText(str(hydraulics_options.hydraulics_file))
+        if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
+            self.cbxStop.setChecked(True)
+        if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
+            if hydraulics_options.unbalanced_continue == 0:
+                self.cbxContinue.setChecked(True)
+            elif hydraulics_options.unbalanced_continue > 0:
+                self.cbxContinueN.setChecked(True)
+        self.cbxContinueN.setText(str(hydraulics_options.unbalanced_continue))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("OPTIONS")
-        # section.global_price = self.txtGlobalPrice.text()
-        # section.global_pattern = self.txtGlobalPattern.text()
-        # section.global_efficiency = self.txtGlobalEfficiency.text()
-        # section.demand_charge = self.txtDemandCharge.text()
+        hydraulics_options = self._parent.project.options.hydraulics
+        hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
+        hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[self.cboHeadloss.currentText()]
+        hydraulics_options.accuracy = float(self.txtAccuracy.text())
+        hydraulics_options.check_frequency = int(self.txtCheckFrequency.text())
+        hydraulics_options.damp_limit = float(self.txtDampLimit.text())
+        hydraulics_options.default_pattern = self.txtDefaultPattern.text()
+        hydraulics_options.demand_multiplier = float(self.txtDemandMultiplier.text())
+        hydraulics_options.emitter_exponent = float(self.txtEmitterExponent.text())
+        hydraulics_options.max_check = int(self.txtMaxCheck.text())
+        hydraulics_options.maximum_trials = int(self.txtMaximumTrials.text())
+        hydraulics_options.viscosity = float(self.txtRelativeViscosity.text())
+        hydraulics_options.specific_gravity = float(self.txtSpecificGravity.text())
+        if self.cbxUse.isChecked():
+            hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.USE
+
+        if self.cbxSave.isChecked():
+            hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.SAVE
+
+        hydraulics_options.hydraulics_file = str(self.txtHydraulicsFile.text())
+        if self.cbxStop.isChecked():
+            hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.STOP
+        if self.cbxContinue.isChecked():
+            hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.CONTINUE
+            hydraulics_options.unbalanced_continue = 10
+        elif self.cbxContinueN.isChecked():
+            hydraulics_options.unbalanced_continue = int(self.cbxContinueN.text())
         self.close()
 
     def cmdCancel_Clicked(self):

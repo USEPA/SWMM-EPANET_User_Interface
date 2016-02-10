@@ -148,6 +148,6 @@ class HydraulicsOptions(Section):
                                     self.unbalanced_continue = fields[2]
                             else:
                                 attr_value = line[len(key) + 1:].strip()
-                                setattr(self, attr_name, attr_value)
+                                self.setattr_keep_type(attr_name, attr_value)
             except:
                 print("HydraulicsOptions skipping input line: " + line)

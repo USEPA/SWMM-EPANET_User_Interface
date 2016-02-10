@@ -20,6 +20,14 @@ class ReportOptions(Section):
 
     SECTION_NAME = "[REPORT]"
 
+    field_dict = {
+        "Status": "status",
+        "Summary": "summary",
+        "Page": "pagesize",
+        "Energy": "energy",
+        "File": "file"}
+    """Mapping from label used in file to field name"""
+
     def __init__(self):
         Section.__init__(self)
 

@@ -18,6 +18,8 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         section = project.find_section("OPTIONS")
         if section.ignore_rainfall == "YES":
             self.cbxRainfallRunoff.setChecked(section.ignore_rainfall)
+        if section.ignore_rdii == "YES":
+            self.cbxRainfallII.setChecked(section.ignore_rdii)
         if section.ignore_snowmelt == "YES":
             self.cbxSnowmelt.setChecked(section.ignore_snowmelt)
         if section.ignore_groundwater == "YES":
@@ -55,6 +57,10 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
             section.ignore_rainfall = "YES"
         else:
             section.ignore_rainfall = "NO"
+        if self.cbxRainfallII.IsChecked:
+            section.ignore_rdii = "YES"
+        else:
+            section.ignore_rdii = "NO"
         if self.cbxSnowmelt.IsChecked:
             section.ignore_snowmelt = "YES"
         else:

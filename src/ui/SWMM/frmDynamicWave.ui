@@ -58,7 +58,7 @@
      <string>Inertial Terms</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cbxInertial">
+   <widget class="QComboBox" name="cboInertial">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -81,7 +81,7 @@
      <string>Normal Flow Criterion</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cbxNormal">
+   <widget class="QComboBox" name="cboNormal">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -104,7 +104,7 @@
      <string>Force Main Equation</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cbxForce">
+   <widget class="QComboBox" name="cboForce">
     <property name="geometry">
      <rect>
       <x>210</x>

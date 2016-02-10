@@ -62,6 +62,9 @@ class General(core.inputfile.Section):
         self.ignore_rainfall = False
         """True to ignore all rainfall data and runoff calculations"""
 
+        self.ignore_rdii = False
+        """True to ignore all rdii calculations"""
+
         self.ignore_snowmelt = False
         """
         True to ignore snowmelt calculations 

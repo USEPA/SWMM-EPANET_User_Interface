@@ -47,25 +47,31 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         self.txtRelativeViscosity.setText(str(hydraulics_options.viscosity))
         self.txtSpecificGravity.setText(str(hydraulics_options.specific_gravity))
         if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.USE:
-            self.cbxUse.setChecked(True)
-            self.cbxSave.setChecked(False)
+            self.rbnUse.setChecked(True)
+            self.rbnSave.setChecked(False)
         if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.SAVE:
-            self.cbxUse.setChecked(False)
-            self.cbxSave.setChecked(True)
+            self.rbnUse.setChecked(False)
+            self.rbnSave.setChecked(True)
         self.txtHydraulicsFile.setText(str(hydraulics_options.hydraulics_file))
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
-            self.cbxStop.setChecked(True)
+            self.rbnStop.setChecked(True)
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
             if hydraulics_options.unbalanced_continue == 0:
-                self.cbxContinue.setChecked(True)
+                self.rbnContinue.setChecked(True)
             elif hydraulics_options.unbalanced_continue > 0:
-                self.cbxContinueN.setChecked(True)
-        self.cbxContinueN.setText(str(hydraulics_options.unbalanced_continue))
+                self.rbnContinueN.setChecked(True)
+        self.txtContinueN.setText(str(hydraulics_options.unbalanced_continue))
 
     def cmdOK_Clicked(self):
         hydraulics_options = self._parent.project.options.hydraulics
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
-        hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[self.cboHeadloss.currentText()]
+        if self.cboHeadloss.currentText() == "H-W":
+            head_loss_underscore = "H_W"
+        elif self.cboHeadloss.currentText() == "D-W":
+            head_loss_underscore = "D_W"
+        else:
+            head_loss_underscore = "C_M"
+        hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]
         hydraulics_options.accuracy = float(self.txtAccuracy.text())
         hydraulics_options.check_frequency = int(self.txtCheckFrequency.text())
         hydraulics_options.damp_limit = float(self.txtDampLimit.text())
@@ -76,20 +82,21 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         hydraulics_options.maximum_trials = int(self.txtMaximumTrials.text())
         hydraulics_options.viscosity = float(self.txtRelativeViscosity.text())
         hydraulics_options.specific_gravity = float(self.txtSpecificGravity.text())
-        if self.cbxUse.isChecked():
+        if self.rbnUse.isChecked():
             hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.USE
 
-        if self.cbxSave.isChecked():
+        if self.rbnSave.isChecked():
             hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.SAVE
 
         hydraulics_options.hydraulics_file = str(self.txtHydraulicsFile.text())
-        if self.cbxStop.isChecked():
+        if self.rbnStop.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.STOP
-        if self.cbxContinue.isChecked():
+        if self.rbnContinue.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.CONTINUE
-            hydraulics_options.unbalanced_continue = 10
-        elif self.cbxContinueN.isChecked():
-            hydraulics_options.unbalanced_continue = int(self.cbxContinueN.text())
+            hydraulics_options.unbalanced_continue = 0
+        elif self.rbnContinueN.isChecked():
+            hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.CONTINUE
+            hydraulics_options.unbalanced_continue = self.txtContinueN.text()
         self.close()
 
     def cmdCancel_Clicked(self):

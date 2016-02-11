@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>576</width>
-    <height>358</height>
+    <height>301</height>
    </rect>
   </property>
   <property name="font">
@@ -67,7 +67,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>320</y>
+      <y>260</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -80,7 +80,7 @@
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>320</y>
+      <y>260</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -145,8 +145,8 @@
    <widget class="QLabel" name="lblMaximumTrials">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>140</y>
+      <x>300</x>
+      <y>20</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -158,8 +158,8 @@
    <widget class="QLineEdit" name="txtMaximumTrials">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>140</y>
+      <x>430</x>
+      <y>20</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -168,8 +168,8 @@
    <widget class="QLabel" name="lblAccuracy">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>170</y>
+      <x>300</x>
+      <y>50</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -181,8 +181,8 @@
    <widget class="QLineEdit" name="txtAccuracy">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>170</y>
+      <x>430</x>
+      <y>50</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -191,8 +191,8 @@
    <widget class="QLabel" name="lblDefaultPattern">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>20</y>
+      <x>300</x>
+      <y>80</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -204,8 +204,8 @@
    <widget class="QLabel" name="lblDemandMultiplier">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>50</y>
+      <x>300</x>
+      <y>110</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -217,8 +217,8 @@
    <widget class="QLabel" name="lblEmitterExponent">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>80</y>
+      <x>300</x>
+      <y>140</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -230,8 +230,8 @@
    <widget class="QLineEdit" name="txtDefaultPattern">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>20</y>
+      <x>430</x>
+      <y>80</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -240,8 +240,8 @@
    <widget class="QLineEdit" name="txtDemandMultiplier">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>50</y>
+      <x>430</x>
+      <y>110</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -250,8 +250,8 @@
    <widget class="QLineEdit" name="txtEmitterExponent">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>80</y>
+      <x>430</x>
+      <y>140</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -260,8 +260,8 @@
    <widget class="QLabel" name="lblCheckFrequency">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>110</y>
+      <x>300</x>
+      <y>170</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -273,8 +273,8 @@
    <widget class="QLabel" name="lblMaxCheck">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>140</y>
+      <x>300</x>
+      <y>200</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -286,8 +286,8 @@
    <widget class="QLabel" name="lblDampLimit">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>170</y>
+      <x>300</x>
+      <y>230</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -299,8 +299,8 @@
    <widget class="QLineEdit" name="txtCheckFrequency">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>110</y>
+      <x>430</x>
+      <y>170</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -309,8 +309,8 @@
    <widget class="QLineEdit" name="txtMaxCheck">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>140</y>
+      <x>430</x>
+      <y>200</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -319,8 +319,8 @@
    <widget class="QLineEdit" name="txtDampLimit">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>170</y>
+      <x>430</x>
+      <y>230</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -330,9 +330,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>210</y>
+      <y>140</y>
       <width>241</width>
-      <height>91</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="title">
@@ -341,8 +341,8 @@
     <widget class="QLineEdit" name="txtContinueN">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>60</y>
+       <x>150</x>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -351,8 +351,8 @@
     <widget class="QRadioButton" name="rbnStop">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>20</y>
+       <x>60</x>
+       <y>30</y>
        <width>82</width>
        <height>17</height>
       </rect>
@@ -364,8 +364,8 @@
     <widget class="QRadioButton" name="rbnContinue">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>40</y>
+       <x>60</x>
+       <y>50</y>
        <width>82</width>
        <height>17</height>
       </rect>
@@ -377,63 +377,14 @@
     <widget class="QRadioButton" name="rbnContinueN">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>60</y>
+       <x>60</x>
+       <y>70</y>
        <width>82</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
       <string>Continue N</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="gbxHydraulics">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>210</y>
-      <width>251</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Hydraulics File</string>
-    </property>
-    <widget class="QLineEdit" name="txtHydraulicsFile">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>60</y>
-       <width>211</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbnUse">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Use</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbnSave">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>30</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Save</string>
      </property>
     </widget>
    </widget>

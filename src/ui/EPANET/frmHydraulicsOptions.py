@@ -34,7 +34,14 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         hydraulics_options = project.options.hydraulics
 
         frmHydraulicsOptions.set_combo(self.cboFlow, hydraulics_options.flow_units)
-        frmHydraulicsOptions.set_combo(self.cboHeadloss, hydraulics_options.head_loss)
+        head_loss_no_underscore = hydraulics_options.head_loss
+        if hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.H_W:
+            head_loss_no_underscore = "H-W"
+        elif hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.D_W:
+            head_loss_no_underscore = "D-W"
+        elif hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.C_M:
+            head_loss_no_underscore = "C-M"
+        frmHydraulicsOptions.set_combo(self.cboHeadloss, head_loss_no_underscore)
 
         self.txtAccuracy.setText(str(hydraulics_options.accuracy))
         self.txtCheckFrequency.setText(str(hydraulics_options.check_frequency))
@@ -46,13 +53,6 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         self.txtMaximumTrials.setText(str(hydraulics_options.maximum_trials))
         self.txtRelativeViscosity.setText(str(hydraulics_options.viscosity))
         self.txtSpecificGravity.setText(str(hydraulics_options.specific_gravity))
-        if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.USE:
-            self.rbnUse.setChecked(True)
-            self.rbnSave.setChecked(False)
-        if hydraulics_options.hydraulics == core.epanet.options.hydraulics.Hydraulics.SAVE:
-            self.rbnUse.setChecked(False)
-            self.rbnSave.setChecked(True)
-        self.txtHydraulicsFile.setText(str(hydraulics_options.hydraulics_file))
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
             self.rbnStop.setChecked(True)
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
@@ -65,12 +65,13 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def cmdOK_Clicked(self):
         hydraulics_options = self._parent.project.options.hydraulics
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
+        head_loss_underscore = self.cboHeadloss.currentText()
         if self.cboHeadloss.currentText() == "H-W":
-            head_loss_underscore = "H_W"
+             head_loss_underscore = "H_W"
         elif self.cboHeadloss.currentText() == "D-W":
-            head_loss_underscore = "D_W"
-        else:
-            head_loss_underscore = "C_M"
+             head_loss_underscore = "D_W"
+        elif self.cboHeadloss.currentText() == "C-M":
+             head_loss_underscore = "C_M"
         hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]
         hydraulics_options.accuracy = float(self.txtAccuracy.text())
         hydraulics_options.check_frequency = int(self.txtCheckFrequency.text())
@@ -82,13 +83,6 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         hydraulics_options.maximum_trials = int(self.txtMaximumTrials.text())
         hydraulics_options.viscosity = float(self.txtRelativeViscosity.text())
         hydraulics_options.specific_gravity = float(self.txtSpecificGravity.text())
-        if self.rbnUse.isChecked():
-            hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.USE
-
-        if self.rbnSave.isChecked():
-            hydraulics_options.hydraulics = core.epanet.options.hydraulics.Hydraulics.SAVE
-
-        hydraulics_options.hydraulics_file = str(self.txtHydraulicsFile.text())
         if self.rbnStop.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.STOP
         if self.rbnContinue.isChecked():

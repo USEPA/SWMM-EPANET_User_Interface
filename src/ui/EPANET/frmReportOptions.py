@@ -2,6 +2,9 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
 import core.epanet.options.report
+from core.epanet.options.report import StatusWrite
+from core.epanet.options.report import StatusYesNo
+from enum import Enum
 from ui.EPANET.frmReportOptionsDesigner import Ui_frmReportOptions
 
 
@@ -32,14 +35,25 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         self.set_from(parent.project)
         self._parent = parent
 
+    @staticmethod
+    def set_combo(combo_box, value):
+        try:
+            if isinstance(value, Enum):
+                value = value.name
+            index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
+            if index >= 0:
+                combo_box.setCurrentIndex(index)
+        except Exception as e:
+            print(str(e))
+
     def set_from(self, project):
         # section = core.epanet.options.report.ReportOptions()
         section = project.find_section("REPORT")
         self.txtPageSize.setText(str(section.pagesize))
         self.txtReportFileName.setText(str(section.file))
-        self.cboStatus = section.status
-        self.cboSummary = section.summary
-        self.cboEnergy = section.energy
+        frmReportOptions.set_combo(self.cboStatus, section.status)
+        frmReportOptions.set_combo(self.cboSummary, section.summary)
+        frmReportOptions.set_combo(self.cboEnergy, section.energy)
 
         # if parameter = "Elevation"
         # self.cbxNode1
@@ -129,9 +143,9 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         section = self._parent.project.find_section("REPORT")
         section.pagesize = self.txtPageSize.text()
         section.file = self.txtReportFileName.text()
-        section.status = self.cboStatus
-        section.summary = self.cboSummary
-        section.energy = self.cboEnergy
+        section.status = core.epanet.options.report.StatusWrite[self.cboStatus.currentText()]
+        section.summary = core.epanet.options.report.StatusYesNo[self.cboSummary.currentText()]
+        section.energy = core.epanet.options.report.StatusYesNo[self.cboEnergy.currentText()]
         # parameters still to do
         self.close()
 

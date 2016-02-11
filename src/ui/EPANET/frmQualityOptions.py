@@ -26,29 +26,29 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         self._parent = parent
 
     def set_from(self, project):
-        section = project.options.quality
-        self.quality_dict.get(section.quality).setChecked(True)
-        self.txtChemicalName.setText(str(section.chemical_name))
-        self.txtMassUnits.setText(str(section.mass_units))
-        self.txtDiffusivity.setText(str(section.diffusivity))
-        self.txtTolerance.setText(str(section.tolerance))
-        self.txtTraceNode.setText(str(section.trace_node))
+        quality_options = project.options.quality
+        self.quality_dict.get(quality_options.quality).setChecked(True)
+        self.txtChemicalName.setText(str(quality_options.chemical_name))
+        self.txtMassUnits.setText(str(quality_options.mass_units))
+        self.txtDiffusivity.setText(str(quality_options.diffusivity))
+        self.txtTolerance.setText(str(quality_options.tolerance))
+        self.txtTraceNode.setText(str(quality_options.trace_node))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("OPTIONS")
+        quality_options = self._parent.project.options.quality
         if self.rbnNone.isChecked():
-            section.quality = "None"
+            quality_options.quality = QualityAnalysisType.NONE
         if self.rbnChemical.isChecked():
-            section.quality = "Chemical"
+            quality_options.quality = QualityAnalysisType.CHEMICAL
         if self.rbnAge.isChecked():
-            section.quality = "Age"
+            quality_options.quality = QualityAnalysisType.AGE
         if self.rbnTrace.isChecked():
-            section.quality = "Trace"
-        section.chemical_name = self.txtChemicalName.text()
-        section.mass_units = self.txtMassUnits.text()
-        section.relative_diffusivity = self.txtDiffusivity.text()
-        section.tolerance = self.txtTolerance.text()
-        section.trace_node = self.txtTraceNode.text()
+            quality_options.quality = QualityAnalysisType.TRACE
+        quality_options.chemical_name = self.txtChemicalName.text()
+        quality_options.mass_units = self.txtMassUnits.text()
+        quality_options.diffusivity = self.txtDiffusivity.text()
+        quality_options.tolerance = self.txtTolerance.text()
+        quality_options.trace_node = self.txtTraceNode.text()
         self.close()
 
     def cmdCancel_Clicked(self):

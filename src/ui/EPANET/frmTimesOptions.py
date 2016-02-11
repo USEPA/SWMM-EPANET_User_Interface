@@ -3,6 +3,7 @@ import PyQt4.QtCore as QtCore
 import core.epanet.project
 import core.epanet.options.times
 from core.epanet.options.times import StatisticOptions
+from enum import Enum
 from ui.EPANET.frmTimesOptionsDesigner import Ui_frmTimesOptions
 
 
@@ -17,6 +18,17 @@ class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
         self.set_from(parent.project)
         self._parent = parent
 
+    @staticmethod
+    def set_combo(combo_box, value):
+        try:
+            if isinstance(value, Enum):
+                value = value.name
+            index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
+            if index >= 0:
+                combo_box.setCurrentIndex(index)
+        except Exception as e:
+            print(str(e))
+
     def set_from(self, project):
         # section = core.epanet.options.times.TimesOptions()
         section = project.find_section("TIMES")
@@ -29,7 +41,7 @@ class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
         self.txtReporting.setText(str(section.report_timestep))
         self.txtReportingTime.setText(str(section.report_start))
         self.txtClockStart.setText(str(section.start_clocktime))
-        self.cboStatistic = section.statistic
+        frmTimesOptions.set_combo(self.cboStatistic, section.statistic)
 
     def cmdOK_Clicked(self):
         section = self._parent.project.find_section("TIMES")
@@ -42,7 +54,7 @@ class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
         section.report_timestep = self.txtReporting.text()
         section.report_start = self.txtReportingTime.text()
         section.start_clocktime = self.txtClockStart.text()
-        section.statistic = self.cboStatistic
+        section.statistic = core.epanet.options.times.StatisticOptions[self.cboStatistic.currentText()]
         self.close()
 
     def cmdCancel_Clicked(self):

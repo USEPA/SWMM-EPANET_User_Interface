@@ -1,4 +1,5 @@
-﻿import traceback
+﻿import inspect
+import traceback
 from enum import Enum
 
 
@@ -88,7 +89,7 @@ class InputFile(object):
                         try:
                             if row.strip():
                                 make_one = list_class()
-                                make_one.text(row)
+                                make_one.set_text(row)
                                 section_list.append(make_one)
                         except Exception as e:
                             print("Could not create object from row: " + row + "\n" + str(e))
@@ -165,10 +166,7 @@ class Section(object):
         elif isinstance(self.value, (list, tuple)):
             text_list = [self.name]
             for item in self.value:
-                if hasattr(item, "text"):
-                    text_list.append(item.text)
-                else:
-                    text_list.append(str(item))
+                text_list.append(str(item))
             return '\n'.join(text_list)
         elif self.value is None:
             return ''

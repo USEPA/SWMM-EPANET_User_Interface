@@ -168,6 +168,3 @@ class General(Section):
                             print("options.General.text could not set " + attr_name + '\n' + str(e))
                 if not tried_set:
                     print("options.General.text skipped: " + line)
-
-    text = property(get_text, set_text)
-

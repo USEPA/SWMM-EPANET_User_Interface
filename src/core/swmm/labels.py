@@ -7,10 +7,10 @@ class Label:
         self.centroid = core.coordinates
         """X and Y coordinates of label centroid"""
 
-        self.text = ""			    # string
+        self.label_text = ""			    # string
         """Text of label in double quotes"""
 
-        self.anchorID = ""			# string
+        self.anchor_id = ""			# string
         """ID label of an anchor node (optional)"""
 
         self.font = ""

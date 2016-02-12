@@ -47,4 +47,4 @@ class SimpleOptionsTest(unittest.TestCase):
         assert self.my_HydraulicsOptions.demand_multiplier == 1.1
         assert self.my_MapOptions.map == ""
         assert self.my_quality.chemical_name == "DummyChemical"
-        # assert self.my_HydraulicsOptions.text == "[OPTIONS]", 'incorrect options block'
+        # assert self.my_HydraulicsOptions.get_text() == "[OPTIONS]", 'incorrect options block'

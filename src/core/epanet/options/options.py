@@ -39,8 +39,8 @@ class Options(Section):
                 new_text (str): Text to parse into properties.
         """
         self.__init__()
-        self.hydraulics.text = new_text
-        self.quality.text = new_text
+        self.hydraulics.set_text(new_text)
+        self.quality.set_text(new_text)
         for line in new_text.splitlines():
             line_list = line.split()
             if line_list:

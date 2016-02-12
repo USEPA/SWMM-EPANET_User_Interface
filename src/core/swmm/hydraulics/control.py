@@ -5,6 +5,6 @@ class ControlRule:
         self.ID = name
         """control rule id"""
 
-        self.text = ""
+        self.rule_text = ""
         """text of control rule"""
 

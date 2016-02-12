@@ -48,3 +48,18 @@ class SimpleOptionsTest(unittest.TestCase):
         assert self.my_MapOptions.map == ""
         assert self.my_quality.chemical_name == "DummyChemical"
         # assert self.my_HydraulicsOptions.get_text() == "[OPTIONS]", 'incorrect options block'
+        expected_text = " Unbalanced         	STOP\n" + \
+                        " MAXCHECK           	10\n" + \
+                        " Emitter Exponent   	0.5\n" + \
+                        " Trials             	40\n" + \
+                        " DAMPLIMIT          	0.0\n" + \
+                        " Viscosity          	1.0\n" + \
+                        " Demand Multiplier  	1.1\n" + \
+                        " CHECKFREQ          	2\n" + \
+                        " Specific Gravity   	1.0\n" + \
+                        " Pattern            	1\n" + \
+                        " Units              	FlowUnits.CFS\n" + \
+                        " Accuracy           	0.001\n" + \
+                        " Headloss           	HeadLoss.H_W"
+        actual_text = self.my_HydraulicsOptions.get_text()
+        assert actual_text == expected_text

@@ -5,7 +5,7 @@ import unittest
 class SimpleCurveTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_curve = curves.Curve
+        self.my_curve = curves.Curve()
 
     def setUp(self):
         self.my_curve = curves.Curve()

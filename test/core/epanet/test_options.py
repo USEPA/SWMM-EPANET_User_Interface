@@ -1,4 +1,4 @@
-from core.epanet import options
+from core.epanet.options.options import Options
 from core.epanet.options import hydraulics
 from core.epanet.options import map
 from core.epanet.options import quality
@@ -8,7 +8,7 @@ import unittest
 class SimpleOptionsTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_options = options
+        self.my_options = Options()
 
     def setUp(self):
 
@@ -41,7 +41,7 @@ class SimpleOptionsTest(unittest.TestCase):
 
     def runTest(self):
 
-        name = self.my_options.hydraulics.HydraulicsOptions.SECTION_NAME
+        name = self.my_options.hydraulics.SECTION_NAME
         assert name == "[OPTIONS]"
         assert self.my_HydraulicsOptions.flow_units == hydraulics.FlowUnits.CFS
         assert self.my_HydraulicsOptions.demand_multiplier == 1.1

@@ -5,7 +5,7 @@ import unittest
 class SimplePatternTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_pattern = patterns.Pattern
+        self.my_pattern = patterns.Pattern()
 
     def setUp(self):
         self.my_pattern = patterns.Pattern()

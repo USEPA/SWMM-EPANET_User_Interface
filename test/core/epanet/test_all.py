@@ -1,6 +1,6 @@
 import webbrowser
 import unittest
-import HTMLTestRunner
+import test.HTMLTestRunner
 from test_title import SimpleTitleTest
 from test_options import SimpleOptionsTest
 from test_patterns import SimplePatternTest
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # runner = unittest.TextTestRunner()
     report_filename = "testresults.html"
     fp = file(report_filename, 'wb')
-    runner = HTMLTestRunner.HTMLTestRunner(
+    runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='SWMM-EPANET UI Test Report',
         description='Unit test results')

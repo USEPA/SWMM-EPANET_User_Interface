@@ -67,17 +67,17 @@ class Pump(Link):
     """A pump link in a SWMM model"""
     def __init__(self, name, inlet_node, outlet_node):
         Link.__init__(self, name, inlet_node, outlet_node)
-        self.pump_curve = Curve
-        """Associated pump curve"""
+        self.pump_curve = ""
+        """str: Associated pump curve"""
 
         self.initial_status = 0.0
-        """Initial status of the pump"""
+        """float: Initial status of the pump"""
 
         self.startup_depth = 0.0
-        """Depth at inlet node when the pump turns on"""
+        """float: Depth at inlet node when the pump turns on"""
 
         self.shutoff_depth = 0.0
-        """Depth at inlet node when the pump turns off"""
+        """float: Depth at inlet node when the pump turns off"""
 
 
 class OrificeType(Enum):
@@ -90,22 +90,22 @@ class Orifice(Link):
     def __init__(self, name, inlet_node, outlet_node):
         Link.__init__(self, name, inlet_node, outlet_node)
         self.type = OrificeType.SIDE
-        """Type of orifice"""
+        """OrificeType: Type of orifice"""
 
         self.cross_section = None
         """See class CrossSection"""
 
         self.inlet_offset = 0.0
-        """Depth of bottom of orifice opening from inlet node invert"""
+        """float: Depth of bottom of orifice opening from inlet node invert"""
 
         self.discharge_coefficient = 0.0
-        """Discharge coefficient"""
+        """float: Discharge coefficient"""
 
         self.flap_gate = False
-        """True if a flap gate exists that prevents backflow."""
+        """bool: True if a flap gate exists that prevents backflow."""
 
         self.o_rate = 0.0
-        """Time to open/close a gated orifice"""
+        """float: Time to open/close a gated orifice"""
 
 
 class WeirType(Enum):
@@ -132,28 +132,28 @@ class Weir(Link):
         """See class CrossSection"""
 
         self.inlet_offset = 0.0
-        """Depth of bottom of weir opening from inlet node invert"""
+        """float: Depth of bottom of weir opening from inlet node invert"""
 
         self.discharge_coefficient = 0.0
-        """Discharge coefficient for central portion of weir"""
+        """float: Discharge coefficient for central portion of weir"""
 
         self.flap_gate = False
-        """True if weir contains a flap gate to prevent backflow"""
+        """bool: True if weir contains a flap gate to prevent backflow"""
 
         self.end_contractions = 0.0
-        """Number of end contractions"""
+        """float: Number of end contractions"""
 
-        self.end_coefficient = 0
-        """Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""
+        self.end_coefficient = 0.0
+        """float: Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""
 
         self.can_surcharge = False
-        """True if weir can surcharge"""
+        """bool: True if weir can surcharge"""
 
         self.road_width = 0.0
-        """Width of road lanes and shoulders"""
+        """float: Width of road lanes and shoulders"""
 
         self.road_surface = RoadSurfaceType.PAVED
-        """Type of road surface"""
+        """RoadSurfaceType: Type of road surface"""
 
 
 class OutletCurveType(Enum):
@@ -168,22 +168,22 @@ class Outlet(Link):
     def __init__(self, name, inlet_node, outlet_node):
         Link.__init__(self, name, inlet_node, outlet_node)
         self.inlet_offset = 0.0
-        """Depth of outlet above inlet node invert"""
+        """float: Depth of outlet above inlet node invert"""
 
         self.flap_gate = False
-        """True if outlet contains a flap gate to prevent backflow"""
+        """bool: True if outlet contains a flap gate to prevent backflow"""
 
         self.coefficient = 0.0
-        """Coefficient in outflow expression"""
+        """float: Coefficient in outflow expression"""
 
         self.exponent = 0.0
-        """Exponent in outflow expression"""
+        """float: Exponent in outflow expression"""
 
         self.curve_type = OutletCurveType.TABULAR_DEPTH
-        """Method of defining flow as a function of either freeboard depth or head across the outlet"""
+        """OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet"""
 
-        self.rating_curve = Curve
-        """Name of rating curve that relates outflow to either depth or head"""
+        self.rating_curve = ""
+        """str: Name of rating curve that relates outflow to either depth or head"""
 
 
 class CrossSectionShape(Enum):
@@ -224,26 +224,26 @@ class CrossSection:
         """cross-section shape"""
 
         self.geometry1 = 0.0
-        """full height of the cross-section (ft or m)"""
+        """float: full height of the cross-section (ft or m)"""
 
         self.geometry2 = 0.0
-        """auxiliary parameters (width, side slopes, etc.)"""
+        """float: auxiliary parameters (width, side slopes, etc.)"""
 
         self.geometry3 = 0.0
-        """auxiliary parameters (width, side slopes, etc.)"""
+        """float: auxiliary parameters (width, side slopes, etc.)"""
 
         self.geometry4 = 0.0
-        """auxiliary parameters (width, side slopes, etc.)"""
+        """float: auxiliary parameters (width, side slopes, etc.)"""
 
         self.barrels = 0.0
-        """number of barrels (i.e., number of parallel pipes of equal size, slope, and
+        """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
         roughness) associated with a conduit (default is 1)."""
 
         self.culvert_code = None
         """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
 
-        self.curve = Curve(None)
-        """associated Shape Curve that defines how width varies with depth."""
+        self.curve = ""
+        """str: associated Shape Curve ID that defines how width varies with depth."""
 
         self.transect = Transect(None)
         """ cross-section geometry of an irregular channel"""

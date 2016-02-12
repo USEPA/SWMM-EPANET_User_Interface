@@ -74,8 +74,7 @@ class Link(Section):
         self.report_flag = ""
         """Flag indicating whether an output report is desired for this link"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + "   "\
             + str(self.inlet_node) + "   "\
@@ -83,15 +82,14 @@ class Link(Section):
             + str(self.description)
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         comment_split = str.split(new_text, ';', 1)
         if len(comment_split) == 2:
-            line = comment_split[0]
+            new_text = comment_split[0]
             self.comment = ';' + comment_split[1]
         fields = new_text.split(None, 3)
         if len(fields) > 2:
-            (self.link_id, self.inlet_node, self.outlet_node) = fields[0:2]
+            (self.link_id, self.inlet_node, self.outlet_node) = fields[0:3]
             if len(fields) > 3:
                 self.description = fields[3]
 
@@ -122,8 +120,7 @@ class Pipe(Link):
         self.wall_reaction_coefficient = 0.0
         """wall reaction coefficient for this pipe"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         if self.link_id:
             return str(self.link_id) + '\t'\
@@ -139,9 +136,11 @@ class Pipe(Link):
             return self.comment
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
-        """read properties from text"""
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
         comment_split = str.split(new_text, ';', 1)
         if len(comment_split) == 2:
             new_text = comment_split[0]
@@ -186,8 +185,7 @@ class Pump(Link):
         self.energy = PumpEnergy()
         """parameters used to compute pumping energy and cost"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + '\t'\
             + str(self.inlet_node) + '\t'\
@@ -197,8 +195,7 @@ class Pump(Link):
         # TODO: format for remaining fields?
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         comment_split = str.split(new_text, ';', 1)
         if len(comment_split) == 2:
             new_text = comment_split[0]
@@ -239,8 +236,7 @@ class Valve(Link):
         self.fixed_status = FixedStatus.OPEN
         """valve is open or closed"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         return str(self.link_id) + '\t'\
             + str(self.inlet_node) + '\t'\
@@ -251,8 +247,7 @@ class Valve(Link):
             + str(self.loss_coefficient)
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         fields = new_text.split()
         self.link_id = fields[0]
         self.inlet_node = fields[1]
@@ -269,13 +264,13 @@ class PumpEnergy:
         self.PricePatternEfficiency = PumpEnergyType.PRICE 	# PRICE, PATTERN, or EFFICIENCY
         """Indicator whether this pump energy specification is entered as price, pattern, or efficiency"""
 
-        self.Value = 0.0		        # real
+        self.value = 0.0		        # real
         """Value of price or efficiency"""
 
-        self.EnergyPattern = Pattern   # (Subclass Pattern)
-        """If entered as pattern, this is the associated pattern"""
+        self.energy_pattern = ""       # string
+        """If entered as pattern, this is the associated pattern ID"""
 
-        self.EnergyCurve = Curve       # (Subclass Curve)
-        """If efficiency is entered as a curve, this is the associated curve"""
+        self.energy_curve = ""          # string
+        """If efficiency is entered as a curve, this is the associated curve ID"""
 
 

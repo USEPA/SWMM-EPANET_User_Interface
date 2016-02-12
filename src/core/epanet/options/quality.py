@@ -39,8 +39,7 @@ class QualityOptions(Section):
         self.tolerance = 0.0
         """Difference in water quality level below one parcel of water is essentially the same as another"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """Contents of this item formatted for writing to file"""
         txt = " Quality            \t"
         if self.quality is None or self.quality == QualityAnalysisType.NONE:
@@ -64,9 +63,11 @@ class QualityOptions(Section):
         txt += self.field_format.format("Tolerance", str(self.tolerance))
         return txt
 
-    @text.setter
-    def text(self, new_text):
-        """Read this section from the text representation"""
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
         self.quality = QualityAnalysisType.NONE  # default to NONE until found below
         self.chemical_name = ""
         self.mass_units = ""

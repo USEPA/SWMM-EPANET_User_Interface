@@ -13,6 +13,7 @@ from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.timeseries import TimeSeries
 
+
 class Project(InputFile):
     """Manage a complete SWMM input sequence"""
 
@@ -78,51 +79,52 @@ class Project(InputFile):
         self.options = General()                # OPTIONS       analysis options
         self.report = Report()                  # REPORT        output reporting instructions
         self.files = Files()                    # FILES         interface file options
-        self.raingages = [RainGage]             # RAINGAGES     rain gage information
-        self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
-        self.evaporation = Evaporation()        # EVAPORATION   evaporation data
-        self.temperatur = Temperature()         # TEMPERATURE   air temperature and snow melt data
-        self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
-        self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
-        self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
-        self.lid_controls = [Section]           # LID_CONTROLS  low impact development control information
-        self.lid_usage = [Section]              # LID_USAGE     assignment of LID controls to subcatchments
-        self.aquifers = [Section]               # AQUIFERS      groundwater aquifer parameters
-        self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
-        self.snowpacks = [Section]              # SNOWPACKS     subcatchment snow pack parameters
-        self.junctions = [Junction]             # JUNCTIONS     junction node information
-        self.outfalls = [Outfall] # OUTFALLS # outfall node information
-        self.dividers = [Divider] # DIVIDERS # flow divider node information
-        self.storage = [StorageUnit] # STORAGE # storage node information
-        self.conduits = [Conduit] # CONDUITS # conduit link information
-        self.pumps = [Pump] # PUMPS # pump link information
-        self.orifices = [Orifice] # ORIFICES # orifice link information
-        self.weirs = [Weir] # WEIRS # weir link information
-        self.outlets = [Outlet] # OUTLETS # outlet link information
-        self.xsections = [CrossSection] # XSECTIONS # conduit, orifice, and weir cross-section geometry
-        self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
-        self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
-        self.controls = [Section] # CONTROLS # rules that control pump and regulator operation
-        self.pollutants = [Section] # POLLUTANTS # pollutant information
-        self.landuses = [Section] # LANDUSES # land use categories
-        self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
-        self.buildup = [Section] # BUILDUP # buildup functions for pollutants and land uses
-        self.washoff = [Section] # WASHOFF # washoff functions for pollutants and land uses
-        self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
-        self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes
-        self.dwf = [Section] # DWF # baseline dry weather sanitary inflow at nodes
-        self.patterns = [Section] # PATTERNS # periodic variation in dry weather inflow
-        self.rdii = [Section] # RDII # rainfall-dependent I/I information at nodes
-        self.loadings = [Section] # LOADINGS # initial pollutant loads on subcatchments
-        self.curves = [Section] # CURVES # x-y tabular data referenced in other sections
-        self.timeseries = [TimeSeries] # TIMESERIES # time series data referenced in other sections
-        self.map = [Section] # MAP # X,Y coordinates of the map's bounding rectangle
-        self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
-        self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
-        self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        self.labels = [Section] # LABELS # X,Y coordinates and text of labels
-        self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
-        self.backdrop = [Section] # BACKDROP # X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+        # self.raingages = [RainGage]             # RAINGAGES     rain gage information
+        # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
+        # self.evaporation = Evaporation()        # EVAPORATION   evaporation data
+        # self.temperatur = Temperature()         # TEMPERATURE   air temperature and snow melt data
+        # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
+        # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
+        # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
+        # self.lid_controls = [Section]           # LID_CONTROLS  low impact development control information
+        # self.lid_usage = [Section]              # LID_USAGE     assignment of LID controls to subcatchments
+        # self.aquifers = [Section]               # AQUIFERS      groundwater aquifer parameters
+        # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
+        # self.snowpacks = [Section]              # SNOWPACKS     subcatchment snow pack parameters
+        # self.junctions = [Junction]             # JUNCTIONS     junction node information
+        # self.outfalls = [Outfall] # OUTFALLS # outfall node information
+        # self.dividers = [Divider] # DIVIDERS # flow divider node information
+        # self.storage = [StorageUnit] # STORAGE # storage node information
+        # self.conduits = [Conduit] # CONDUITS # conduit link information
+        # self.pumps = [Pump] # PUMPS # pump link information
+        # self.orifices = [Orifice] # ORIFICES # orifice link information
+        # self.weirs = [Weir] # WEIRS # weir link information
+        # self.outlets = [Outlet] # OUTLETS # outlet link information
+        # self.xsections = [CrossSection] # XSECTIONS # conduit, orifice, and weir cross-section geometry
+        # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
+        # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
+        # self.controls = [Section] # CONTROLS # rules that control pump and regulator operation
+        # self.pollutants = [Section] # POLLUTANTS # pollutant information
+        # self.landuses = [Section] # LANDUSES # land use categories
+        # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
+        # self.buildup = [Section] # BUILDUP # buildup functions for pollutants and land uses
+        # self.washoff = [Section] # WASHOFF # washoff functions for pollutants and land uses
+        # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
+        # self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes
+        # self.dwf = [Section] # DWF # baseline dry weather sanitary inflow at nodes
+        # self.patterns = [Section] # PATTERNS # periodic variation in dry weather inflow
+        # self.rdii = [Section] # RDII # rainfall-dependent I/I information at nodes
+        # self.loadings = [Section] # LOADINGS # initial pollutant loads on subcatchments
+        # self.curves = [Section] # CURVES # x-y tabular data referenced in other sections
+        # self.timeseries = [TimeSeries] # TIMESERIES # time series data referenced in other sections
+        # self.map = [Section] # MAP # X,Y coordinates of the map's bounding rectangle
+        # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
+        # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
+        # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
+        # self.labels = [Section] # LABELS # X,Y coordinates and text of labels
+        # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
+        # self.backdrop = [Section] # BACKDROP
+        #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
 
 

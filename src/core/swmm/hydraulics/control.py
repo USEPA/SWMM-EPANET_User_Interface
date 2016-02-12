@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class ControlRule:
     """Determines how pumps and regulators will be adjusted based on simulation time or conditions at
     specific nodes and links."""

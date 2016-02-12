@@ -56,26 +56,26 @@ class Buildup:
     """Specifies the rate at which pollutants build up over different land uses between rain events."""
     def __init__(self):
         self.pollutant = ""
-        """Pollutant name"""
+        """str: Pollutant name"""
 
         self.function = BuildupFunction.POW
-        """Type of buildup function to use for the pollutant"""
+        """BuildupFunction: Type of buildup function to use for the pollutant"""
 
         self.max_buildup = 0.0
-        """Maximum buildup that can occur"""
+        """float: Maximum buildup that can occur"""
 
         self.rate_constant = 0.0
-        """Time constant that governs the rate of pollutant buildup"""
+        """float: Time constant that governs the rate of pollutant buildup"""
 
         self.power_sat_constant = 0.0
-        """Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
+        """float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
             Saturation buildup formula"""
 
         self.scaling_factor = 0.0
-        """Multiplier used to adjust the buildup rates listed in the time series"""
+        """float: Multiplier used to adjust the buildup rates listed in the time series"""
 
-        self.timeseries = Timeseries
-        """Time Series that contains buildup rates"""
+        self.timeseries = ""
+        """str: ID of Time Series that contains buildup rates"""
 
         self.normalizer_name = Normalizer.AREA
         """Variable to which buildup is normalized on a per unit basis"""
@@ -107,33 +107,33 @@ class Pollutant:
     """Identifies the pollutants being analyzed"""
     def __init__(self):
         self.name = ""
-        """Name assigned to the pollutant"""
+        """str: Name assigned to the pollutant"""
 
         self.units = ConcentrationUnits.MG_per_L
-        """Concentration units in which the pollutant concentration is expressed"""
+        """ConcentrationUnits: Units in which the pollutant concentration is expressed"""
 
         self.rain_concentration = 0.0
-        """Concentration of the pollutant in rain water"""
+        """float: Concentration of the pollutant in rain water"""
 
         self.gw_concentration = 0.0
-        """Concentration of the pollutant in ground water"""
+        """float: Concentration of the pollutant in ground water"""
 
         self.ii_concentration = 0.0
-        """Concentration of the pollutant in any Infiltration/Inflow"""
+        """float: Concentration of the pollutant in any Infiltration/Inflow"""
 
         self.dwf_concentration = 0.0
-        """Concentration of the pollutant in any dry weather sanitary flow"""
+        """float: Concentration of the pollutant in any dry weather sanitary flow"""
 
         self.decay_coefficient = 0.0
-        """First-order decay coefficient of the pollutant"""
+        """float: First-order decay coefficient of the pollutant"""
 
-        self.snow_only = false
-        """buildup occurs only when there is snow cover"""
+        self.snow_only = False
+        """bool: buildup occurs only when there is snow cover"""
 
         self.co_pollutant = ""
-        """Name of another pollutant whose runoff concentration contributes to the
+        """str: Name of another pollutant whose runoff concentration contributes to the
             runoff concentration of the current pollutant"""
 
         self.co_fraction = 0.0
-        """Fraction of the co-pollutant's runoff concentration that contributes to the
+        """float: Fraction of the co-pollutant's runoff concentration that contributes to the
             runoff concentration of the current pollutant"""

@@ -1,20 +1,25 @@
-﻿from enum import Enum
-
-import core.inputfile
+﻿from core.inputfile import Section
 
 
-class Dates(core.inputfile.Section):
+class Dates(Section):
     """SWMM Date Options"""
 
     SECTION_NAME = "[OPTIONS]"
 
-    # @staticmethod
-    # def default():
-    #     return Options(Options.SECTION_NAME, None, None, -1)
+    field_dict = {
+     "START_DATE": "start_date",
+     "START_TIME": "start_time",
+     "REPORT_START_DATE": "report_start_date",
+     "REPORT_START_TIME": "report_start_time",
+     "END_DATE": "end_date",
+     "END_TIME": "end_time",
+     "SWEEP_START": "sweep_start",
+     "SWEEP_END": "sweep_end",
+     "DRY_DAYS": "dry_days"}
+    """Mapping from label used in file to field name"""
 
     def __init__(self):
-        core.inputfile.Section.__init__(self)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
+        Section.__init__(self)
 
         self.start_date = "1/1/2002"
         """Date when the simulation begins"""

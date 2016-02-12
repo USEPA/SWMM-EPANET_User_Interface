@@ -6,14 +6,19 @@ class Title(Section):
 
     SECTION_NAME = "[TITLE]"
 
-    # @staticmethod
-    # def default():
-    #     return Title(SWMMOptions.SECTION_NAME, None, None, -1)
-
     def __init__(self):
         Section.__init__(self)
-
         self.title = ""
-        """Descriptive title"""
+        """str: Descriptive title"""
 
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return Title.SECTION_NAME + '\n' + self.title
 
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        lines = new_text.splitlines()
+        self.title = '\n'.join(lines[1:])  # include all after [TITLE] line

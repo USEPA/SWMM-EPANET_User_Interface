@@ -29,8 +29,8 @@ class RainFileUnits(Enum):
 class RainGage:
     """A rain gage, including reference to location and time-series data"""
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = "Unnamed"
         """User-assigned rain gage name"""
 
         self.coordinates = Coordinates(None, None)

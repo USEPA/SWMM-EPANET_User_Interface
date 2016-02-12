@@ -16,4 +16,4 @@ class SimplePatternTest(unittest.TestCase):
     def runTest(self):
         assert self.my_pattern.pattern_id == "XXX"
         assert self.my_pattern.description == "test pattern"
-        assert self.my_pattern.text == 'XXX	1.0	1.1	1.2	1.3', 'incorrect pattern block'
+        assert self.my_pattern.get_text() == 'XXX	1.0	1.1	1.2	1.3', 'incorrect pattern block'

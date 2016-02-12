@@ -112,8 +112,7 @@ class HydraulicsOptions(Section):
         """Hydraulics file to either use or save"""
         """By default do not write this line"""
 
-    @property
-    def text(self):
+    def get_text(self):
         text_list = []
         for label, attr_name in HydraulicsOptions.field_dict.items():
             attr_value = ""
@@ -131,8 +130,7 @@ class HydraulicsOptions(Section):
 
         return '\n'.join(text_list)
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         for line in new_text.splitlines():
             try:
                 if not line.startswith((';', '[')):

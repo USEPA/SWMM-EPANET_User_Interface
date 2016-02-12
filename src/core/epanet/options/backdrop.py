@@ -29,11 +29,10 @@ class BackdropOptions(Section):
         self.offset = (0.0, 0.0)                # (real, real)
         """Distance the upper-left corner of the backdrop image is offset from the map's bounding rectangle (X, Y)"""
 
-    @property
-    def text(self):
+    def get_text(self):
         text_list = [BackdropOptions.SECTION_NAME]
         if self.dimensions:
-            text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS", \
+            text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",
                              self.dimensions[0], self.dimensions[1], self.dimensions[2], self.dimensions[3]))
         if self.units:
             if isinstance(self.units, Enum):
@@ -47,8 +46,7 @@ class BackdropOptions(Section):
             text_list.append(" {:17}\t{:16f}\t{:16f}".format("OFFSET", self.offset[0], self.offset[1]))
         return '\n'.join(text_list)
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         BackdropOptions.__init__(self)
         for line in new_text.splitlines():
             try:

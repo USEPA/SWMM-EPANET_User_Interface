@@ -9,10 +9,10 @@ class TemperatureSource(Enum):
 class EvaporationFormat(Enum):
     UNSET = 0
     CONSTANT = 1     # (in/day or mm/day)
-    MONTHLY = 2      # evapJan evapFeb ... evapDec (in/day or mm/day)
+    MONTHLY = 2      # evaporation for each month: Jan Feb ... Dec (in/day or mm/day)
     TIMESERIES = 3   # name of timeseries with evaporation data
     TEMPERATURE = 4  # compute from daily air temperature and latitude
-    FILE = 5         # (panJan panFeb ... panDec)
+    FILE = 5         # pan for each month: Jan Feb ... Dec
 
 
 class WindSource(Enum):

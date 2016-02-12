@@ -1,4 +1,4 @@
-from core.epanet import title
+from core.swmm import title
 import unittest
 
 

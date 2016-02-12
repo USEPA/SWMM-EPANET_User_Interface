@@ -3,6 +3,7 @@ from enum import Enum
 from core.coordinates import Coordinates
 from core.swmm.hydrology.raingage import RainGage
 
+
 class Routing(Enum):
     """Routing of runoff between pervious and impervious areas
         IMPERV: runoff from pervious area flows to impervious area,
@@ -33,17 +34,17 @@ class Subcatchment:
         self.tag = None
         """Optional label used to categorize or classify the Subcatchment."""
 
-        self.rain_gage = RainGage(None)
-        """The RainGage associated with the Subcatchment."""
+        self.rain_gage = ""
+        """str: The RainGage ID associated with the Subcatchment."""
 
         self.outlet = None
         """The Node or Subcatchment which receives Subcatchment's runoff."""
 
-        self.area = 0
-        """Area of the subcatchment (acres or hectares)."""
+        self.area = 0.0
+        """float: Area of the subcatchment (acres or hectares)."""
 
         self.percent_impervious = 0
-        """Percent of land area which is impervious."""
+        """float: Percent of land area which is impervious."""
 
         self.width = 0
         """Characteristic width of the overland flow path for sheet flow
@@ -59,32 +60,32 @@ class Subcatchment:
             produce good fits to measured runoff hydrographs."""
 
         self.percent_slope = 0
-        """Average percent slope of the subcatchment."""
+        """float: Average percent slope of the subcatchment."""
 
         self.n_imperv = 0
-        """Manning's n for overland flow in impervious part of Subcatchment"""
+        """float: Manning's n for overland flow in impervious part of Subcatchment"""
 
         self.n_perv = 0
         """Manning's n for overland flow in pervious part of Subcatchment"""
 
         self.storage_depth_imperv = 0
-        """Depth of depression storage on the impervious portion of the
+        """float: Depth of depression storage on the impervious portion of the
             Subcatchment (inches or millimeters) """
 
         self.storage_depth_perv = 0
-        """Depth of depression storage on the pervious portion of the
+        """float: Depth of depression storage on the pervious portion of the
             Subcatchment (inches or millimeters)"""
 
         self.percent_zero_impervious = 0
-        """Percent of the impervious area with no depression storage."""
+        """float: Percent of the impervious area with no depression storage."""
 
         self.subarea_routing = Routing.OUTLET
-        """Internal routing of runoff between pervious and impervious areas"""
+        """Routing: Internal routing of runoff between pervious and impervious areas"""
 
         self.percent_routed = 0
-        """Percent of runoff routed between subareas"""
+        """float: Percent of runoff routed between subareas"""
 
-        self.infiltration_parameters = HortonInfiltration
+        self.infiltration_parameters = HortonInfiltration()
         """infiltration parameters from horton, green-ampt, or scs classes"""
 
         self.groundwater = None

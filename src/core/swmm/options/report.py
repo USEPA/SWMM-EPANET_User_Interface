@@ -1,33 +1,44 @@
-﻿import core.inputfile
+﻿from enum import Enum
+from core.inputfile import Section
 
 
-class Report(core.inputfile.Section):
+class StatusYesNo(Enum):
+    """Report writing options"""
+    YES = 1
+    NO = 2
+
+
+class Report(Section):
     """Report Options"""
 
     SECTION_NAME = "[REPORT]"
 
-    def __init__(self, name, value, index):
-        core.inputfile.Section.__init__(self)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
-        # TODO: document valid values in docstrings below and/or implement each as an Enum or class
+    field_dict = {
+     "CONTROLS": "controls",
+     "INPUT": "input"}
+    """Mapping from label used in file to field name"""
 
-        self.input = False
+    def __init__(self):
+        Section.__init__(self)
+
+        self.input = StatusYesNo.NO
         """Whether report includes a summary of the input data"""
 
-        self.continuity = True
+        self.continuity = StatusYesNo.NO
         """Whether to report continuity checks"""
 
-        self.flow_stats = True
+        self.flow_stats = StatusYesNo.NO
         """Whether to report summary flow statistics"""
 
-        self.controls = False
+        self.controls = StatusYesNo.NO
         """Whether to list all control actions taken during a simulation"""
 
-        self.subcatchments = {}
-        """List of subcatchments whose results are to be reported"""
+        self.subcatchments = ""
+        """List of subcatchments whose results are to be reported, or ALL or NONE"""
 
-        self.nodes = {}
-        """List of nodes whose results are to be reported"""
+        self.nodes = ""
+        """List of nodes whose results are to be reported, or ALL or NONE"""
 
-        self.links = {}
-        """List of links whose results are to be reported"""
+        self.links = ""
+        """List of links whose results are to be reported, or ALL or NONE"""
+

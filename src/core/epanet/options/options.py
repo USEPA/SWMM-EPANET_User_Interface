@@ -4,6 +4,7 @@ from core.inputfile import Section
 from core.epanet.options.quality import QualityOptions
 from core.epanet.options.hydraulics import HydraulicsOptions
 
+
 class Options(Section):
     """EPANET Options"""
 
@@ -13,32 +14,33 @@ class Options(Section):
         Section.__init__(self)
 
         self.hydraulics = HydraulicsOptions()
-        """Hydraulics options"""
+        """HydraulicsOptions: Hydraulics options"""
 
         self.quality = QualityOptions()
-        """Water quality options"""
+        """QualityOptions: Water quality options"""
 
         self.map = ""
-        """Name of a file containing coordinates of the network's nodes, not written if not set"""
+        """str: Name of a file containing coordinates of the network's nodes, not written if not set"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """Contents of this item formatted for writing to file"""
         text_list = [self.SECTION_NAME]
         if self.hydraulics is not None:
-            text_list.append(self.hydraulics.text)
+            text_list.append(self.hydraulics.get_text())
         if self.quality is not None:
-            text_list.append(self.quality.text)
+            text_list.append(self.quality.get_text())
         if self.map:
             text_list.append(" MAP                \t" + self.map)
         return '\n'.join(text_list)
 
-    @text.setter
-    def text(self, new_text):
-        """Read this section from the text representation"""
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        self.__init__()
         self.hydraulics.text = new_text
         self.quality.text = new_text
-        self.map = ""
         for line in new_text.splitlines():
             line_list = line.split()
             if line_list:

@@ -28,13 +28,23 @@ class DynamicWave(core.inputfile.Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    # @staticmethod
-    # def default():
-    #     return Options(Options.SECTION_NAME, None, None, -1)
+    field_dict = {
+     "INERTIAL_DAMPING": "inertial_damping",
+     "NORMAL_FLOW_LIMITED": "normal_flow_limited",
+     "FORCE_MAIN_EQUATION": "force_main_equation",
+     "VARIABLE_STEP": "variable_step",
+     "LENGTHENING_STEP": "lengthening_step",
+     "MIN_SURFAREA": "min_surface_area",
+     "MAX_TRIALS": "max_trials",
+     "HEAD_TOLERANCE": "head_tolerance",
+     "SYS_FLOW_TOL": "sys_flow_tol",
+     "LAT_FLOW_TOL": "lat_flow_tol",
+     "MINIMUM_STEP": "minimum_step",
+     "THREADS": "threads"}
+    """Mapping from label used in file to field name"""
 
     def __init__(self):
         core.inputfile.Section.__init__(self)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
 
         self.inertial_damping = InertialDamping.NONE
         """

@@ -277,49 +277,49 @@ class DirectInflow:
     """Defines characteristics of direct inflows added directly into a node"""
     def __init__(self):
         self.constituent = ""
-        """Name of constituent"""
+        """str: Name of constituent"""
 
-        self.timeseries = None
-        """Name of the time series that contains inflow data for the selected constituent"""
+        self.timeseries = ""
+        """str: Name of the time series that contains inflow data for the selected constituent"""
 
         self.format = DirectInflowType.CONCENTRATION
-        """Type of inflow data contained in the time series, concentration or mass flow rate"""
+        """DirectInflowType: Type of inflow data contained in the time series, concentration or mass flow rate"""
 
         self.conversion_factor = 0.0
-        """Numerical factor used to convert the units of pollutant mass flow rate in the time series data
+        """float: Numerical factor used to convert the units of pollutant mass flow rate in the time series data
         into concentration mass units per second"""
 
         self.scale_factor = 0.0
-        """Multiplier used to adjust the values of the constituent's inflow time series"""
+        """float: Multiplier used to adjust the values of the constituent's inflow time series"""
 
         self.baseline = 0.0
-        """Value of the constant baseline component of the constituent's inflow"""
+        """float: Value of the constant baseline component of the constituent's inflow"""
 
-        self.baseline_pattern = Pattern    # (Subclass Pattern)
-        """Optional Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+        self.baseline_pattern = ""
+        """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
 
 
 class DryWeatherInflow:
     """Defines characteristics of dry weather inflows added to a node"""
     def __init__(self):
         self.constituent = ""
-        """Name of constituent"""
+        """str: Name of constituent"""
 
         self.average = 0.0
-        """Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+        """float: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
 
-        self.time_pattern = Pattern    # (Subclass Pattern)
-        """time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+        self.time_pattern = ""    # (Subclass Pattern)
+        """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
 
 
 class RDIInflow:
     """Defines characteristics of Rainfall-Dependent Infiltration/Inflows at a node"""
     def __init__(self):
         self.hydrograph_group = ""
-        """name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+        """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
 
         self.sewershed_area = 0.0
-        """area of the sewershed which contributes RDII to the node (acres or hectares)"""
+        """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
 
 
 class TreatmentResult(Enum):
@@ -334,10 +334,10 @@ class Treatment:
         """Name of pollutant receiving treatment"""
 
         self.result = TreatmentResult.CONCENTRATION
-        """Result computed by treatment function. Choices are:
+        """TreatmentResult: Result computed by treatment function. Choices are:
         C function computes effluent concentration
         R function computes fractional removal."""
 
         self.function = ""
-        """mathematical function expressing treatment result in terms of pollutant concentrations,
+        """str: mathematical function expressing treatment result in terms of pollutant concentrations,
         pollutant removals, and other standard variables"""

@@ -12,15 +12,13 @@ class Pattern:
         self.multipliers = []
         """Array of multipliers for this pattern"""
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         return str(self.pattern_id) + '\t' + '\t'.join(self.multipliers)
         # TODO: format for remaining fields?       + str(self.head_curve)
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         fields = new_text.split()
         self.pattern_id = fields[0]
         self.multipliers = fields[1:]

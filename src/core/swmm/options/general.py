@@ -1,6 +1,8 @@
 ﻿from enum import Enum
-
-import core.inputfile
+from core.inputfile import Section
+from core.swmm.options.dates import Dates
+from core.swmm.options.dynamicwave import DynamicWave
+from core.swmm.options.timesteps import TimeSteps
 import core.swmm.hydrology.subcatchment
 
 
@@ -27,18 +29,51 @@ class LinkOffsets(Enum):
     ELEVATION = 2
 
 
-class General(core.inputfile.Section):
+class General(Section):
     """SWMM General Options"""
 
     SECTION_NAME = "[OPTIONS]"
 
-    # @staticmethod
-    # def default():
-    #     return Options(Options.SECTION_NAME, None, None, -1)
+    field_dict = {
+     "COMPATIBILITY": "",
+     "REPORT_CONTROLS": "",
+     "REPORT_INPUT": "",
+
+     "FLOW_UNITS": "flow_units",
+     "INFILTRATION": "infiltration",
+     "FLOW_ROUTING": "flow_routing",
+     "LINK_OFFSETS": "link_offsets",
+     "MIN_SLOPE": "min_slope",
+     "ALLOW_PONDING": "allow_ponding",
+     "SKIP_STEADY_STATE": "",
+
+     "IGNORE_RAINFALL": "ignore_rainfall",
+     "IGNORE_RDII": "ignore_rdii",
+     "IGNORE_SNOWMELT": "ignore_snowmelt",
+     "IGNORE_GROUNDWATER": "ignore_groundwater",
+     "IGNORE_ROUTING": "ignore_routing",
+     "IGNORE_QUALITY": "ignore_quality",
+
+     "INERTIAL_DAMPING": "",
+     "NORMAL_FLOW_LIMITED": "",
+     "FORCE_MAIN_EQUATION": "",
+     "VARIABLE_STEP": "",
+     "LENGTHENING_STEP": "",
+     "MIN_SURFAREA": "",
+     "MAX_TRIALS": "",
+     "HEAD_TOLERANCE": "",
+     "SYS_FLOW_TOL": "",
+     "LAT_FLOW_TOL": "",
+     "MINIMUM_STEP": "",
+     "THREADS": ""}
+    """Mapping from label used in file to field name"""
 
     def __init__(self):
-        core.inputfile.Section.__init__(self)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
+        Section.__init__(self)
+
+        self.dates = Dates()
+        self.time_steps = TimeSteps()
+        self.dynamic_wave = DynamicWave()
 
         self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
@@ -97,3 +132,42 @@ class General(core.inputfile.Section):
 
         self.temp_dir = ""
         """Directory where model writes its temporary files"""
+
+    def get_text(self):
+        """Contents of this item formatted for writing to file"""
+        # First, add the values in this section stored directly in this class
+        text_list = [Section.get_text(self)]
+        if self.dates is not None:  # Add the values stored in Dates class
+            text_list.append(self.dates.get_text().replace(self.SECTION_NAME + '\n', ''))
+        if self.time_steps is not None:  # Add the values stored in TimeSteps class
+            text_list.append(self.time_steps.get_text().replace(self.SECTION_NAME + '\n', ''))
+        if self.dynamic_wave is not None:  # Add the values stored in DynamicWave class
+            text_list.append(self.dynamic_wave.get_text().replace(self.SECTION_NAME + '\n', ''))
+        return '\n'.join(text_list)
+
+    def set_text(self, new_text):
+        """Read this section from the text representation"""
+        for line in new_text.splitlines():
+            comment_split = str.split(line, ';', 1)
+            if len(comment_split) == 2:
+                line = comment_split[0]
+                if self.comment:
+                    self.comment += '\n'
+                self.comment += ';' + comment_split[1]
+
+            if not line.startswith('[') and line.strip():
+                # Set fields from field_dict if this section has one
+                tried_set = False
+                for set_here in (self, self.dates, self.time_steps, self.dynamic_wave):
+                    (attr_name, attr_value) = set_here.get_field_dict_value(line)
+                    if attr_name:
+                        try:
+                            tried_set = True
+                            set_here.setattr_keep_type(attr_name, attr_value)
+                        except Exception as e:
+                            print("options.General.text could not set " + attr_name + '\n' + str(e))
+                if not tried_set:
+                    print("options.General.text skipped: " + line)
+
+    text = property(get_text, set_text)
+

@@ -1,5 +1,5 @@
-﻿from core.inputfile import Section
-from enum import Enum
+﻿from enum import Enum
+from core.inputfile import Section
 
 
 class StatusWrite(Enum):
@@ -54,8 +54,10 @@ class ReportOptions(Section):
 
     @property
     def page(self):
+        """Alias for pagesize"""
         return self.pagesize
 
     @page.setter
     def page(self, new_value):
+        """Alias for pagesize"""
         self.pagesize = new_value

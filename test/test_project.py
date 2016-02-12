@@ -14,12 +14,12 @@ class ProjectTest(unittest.TestCase):
             assert len(self.my_project.sections) == 29
 
             with open(inp_filename + ".written_inp.txt", 'w') as writer:
-                writer.writelines(self.my_project.text)
+                writer.writelines(self.my_project.get_text())
             with open(inp_filename + ".written_inp_spaces.inp", 'w') as writer:
-                writer.writelines(' '.join(self.my_project.text.split()))
+                writer.writelines(' '.join(self.my_project.get_text().split()))
             with open(inp_filename + ".written_orig_spaces.inp", 'w') as writer:
                 with open(inp_filename, 'r') as read_inp:
                     writer.writelines(' '.join(read_inp.read().split()))
 
             with open(inp_filename, 'r') as read_inp:
-                assert ' '.join(self.my_project.text.split()) == ' '.join(read_inp.read().split())
+                assert ' '.join(self.my_project.get_text().split()) == ' '.join(read_inp.read().split())

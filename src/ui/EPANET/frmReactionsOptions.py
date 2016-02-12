@@ -22,7 +22,7 @@ class frmReactionsOptions(QtGui.QMainWindow, Ui_frmReactionsOptions):
         self.txtTankOrder.setText(str(section.order_tank))
         self.txtGlobalBulk.setText(str(section.global_bulk))
         self.txtGlobalWall.setText(str(section.global_wall))
-        self.txtLimiting.setText(str( section.limiting_potential))
+        self.txtLimiting.setText(str(section.limiting_potential))
         self.txtCorrelation.setText(str(section.roughness_correlation))
 
     def cmdOK_Clicked(self):

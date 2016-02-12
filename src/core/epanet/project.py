@@ -24,39 +24,10 @@ from core.inputfile import InputFile
 class Project(InputFile):
     """Manage a complete EPANET input sequence"""
 
-    # epanet_section_types = {
-    #
-    #     "[TITLE]": Title,
-    #     "[JUNCTIONS]": [Junction],  # junction node information
-    #     # [RESERVOIRS]
-    #     # [TANKS]
-    #     "[PIPES]": [Pipe],
-    #     "[PUMPS]": [Pump],
-    #     "[VALVES]": [Valve],
-    #     "[EMITTERS]": ("[JUNCTIONS]", "emmitter_coefficient"),
-    #     "[CURVES]": [Curve],
-    #     "[PATTERNS]": [Pattern],   # will this create a collection of them?
-    #     "[ENERGY]": EnergyOptions,
-    #     # [STATUS]
-    #     "[CONTROLS]": [Control],
-    #     "[RULES]": [Rule],
-    #     "[DEMANDS]": [Demand],
-    #     "[QUALITY]": QualityOptions,
-    #     "[REACTIONS]": Reactions(Reactions.SECTION_NAME, None, None, -1),
-    #     "[SOURCES]": [Source],
-    #     # [MIXING]
-    #     "[OPTIONS]": MapOptions,
-    #     # "[OPTIONS]": EPANETHydraulicsOptions,
-    #     "[TIMES]": TimesOptions,
-    #     "[REPORT]": ReportOptions,
-    #     "[COORDINATES]": [Coordinates],  # X,Y coordinates for nodes
-    #     "[VERTICES]": [Vertex],
-    #     "[LABELS]": [Label],
-    #     "[BACKDROP]": BackdropOptions
-    #     # [TAGS]
-    #       }
-
     def __init__(self):
+        """Initialize the sections of an EPANET input file.
+           Any sections not initialized here will be handled by the generic core.inputfile.Section class.
+           Each section is initialized with a """
         self.title = Title()
         # self.junctions = [Junction]
         # [RESERVOIRS]

@@ -16,7 +16,7 @@ class EnergyOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.global_efficiency = "75"		# real or string; usually treat as string
+        self.global_efficiency = "75"		# treat as string to preserve formatting
         """global default value of pumping efficiency for all pumps or efficiency curve ID (percent)"""
 
         self.global_price = 0.0		        # real

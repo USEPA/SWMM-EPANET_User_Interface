@@ -63,14 +63,12 @@ class Junction:
         """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
             the product of the flow coefficient and the junction pressure raised to power  """
 
-    @property
-    def text(self):
+    def get_text(self):
         """format contents of this item for writing to file"""
         return '\t'.join((str(self.node_id), str(self.elevation), str(self.demand), str(self.pattern)))
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
-    @text.setter
-    def text(self, new_text):
+    def set_text(self, new_text):
         (self.node_id, self.elevation, self.demand, self.pattern) = new_text.split()
 
 
@@ -129,24 +127,24 @@ class Tank(Node):
 class Source:
     """Defines locations of water quality sources"""
     def __init__(self):
-        self.Type = SourceType.CONCENTRATION			# CONCENTRATION, MASS, FLOW_PACED, or SET_POINT
+        self.source_type = SourceType.CONCENTRATION			# CONCENTRATION, MASS, FLOW_PACED, or SET_POINT
         """Source type (CONCENTRATION, MASS, FLOW_PACED, or SET_POINT)"""
 
-        self.Baseline = 0.0			    # real
+        self.baseline = 0.0			    # real
         """Baseline source strength"""
 
-        self.SourcePattern = Pattern    # (Subclass Pattern)
+        self.source_pattern = ""        # string
         """Time pattern ID (optional)"""
 
 
 class Demand:
     """Define multiple water demands at junction nodes"""
     def __init__(self):
-        self.BaseDemand = 0.0	    # real
+        self.base_demand = 0.0       # real
         """Base demand (flow units)"""
 
-        self.DemandPattern = Pattern    # (Subclass Pattern)
+        self.demand_pattern = ""     # string
         """Demand pattern ID (optional)"""
 
-        self.Category = ""			# string
+        self.category = ""          # string
         """Name of demand category preceded by a semicolon (optional)"""

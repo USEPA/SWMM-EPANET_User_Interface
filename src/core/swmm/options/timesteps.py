@@ -54,8 +54,8 @@ class TimeSteps(core.inputfile.Section):
         during periods when there is no rainfall and no ponded water.
         """
 
-        self.routing_step = 600
-        """str: Time step length in seconds used for routing flows and
+        self.routing_step = ""
+        """str: Time step used for routing flows and
         water quality constituents through the conveyance system
         """
 

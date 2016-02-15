@@ -185,6 +185,11 @@ class Section(object):
                     attr_value = getattr(self, attr_name)
                     if isinstance(attr_value, Enum):
                         attr_value = attr_value.name
+                    if isinstance(attr_value, bool):
+                        if attr_value:
+                            attr_value = "YES"
+                        else:
+                            attr_value = "NO"
                     if attr_value:
                         text_list.append(self.field_format.format(label, attr_value))
             if text_list:
@@ -275,11 +280,11 @@ class Section(object):
         """
         try:
             old_value = getattr(self, attr_name, "")
-            if isinstance(old_value, int):
+            if type(old_value) == int:
                 if isinstance(attr_value, str):
                     attr_value = attr_value.replace(' ', '')
                 setattr(self, attr_name, int(attr_value))
-            elif isinstance(old_value, float):
+            elif type(old_value) == float:
                 if isinstance(attr_value, str):
                     attr_value = attr_value.replace(' ', '')
                 setattr(self, attr_name, float(attr_value))
@@ -290,12 +295,13 @@ class Section(object):
                     except KeyError:
                         attr_value = type(old_value)[attr_value.upper()]
                 setattr(self, attr_name, attr_value)
-            elif isinstance(old_value, bool):
+            elif type(old_value) == bool:
                 if not isinstance(attr_value, bool):
                     attr_value = str(attr_value).upper() not in ("NO", "FALSE")
                 setattr(self, attr_name, attr_value)
             else:
                 setattr(self, attr_name, attr_value)
-        except:
+        except Exception as e:
+            print("Exception setting {}: {}".format(attr_name, str(e)))
             setattr(self, attr_name, attr_value)
 

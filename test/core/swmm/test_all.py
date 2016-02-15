@@ -5,6 +5,7 @@ from test_title import SimpleTitleTest
 # from test_options import SimpleOptionsTest
 # from test_patterns import SimplePatternTest
 from test_project import ProjectTest
+from test_options_general import OptionsGeneralTest
 # from test_curves import SimpleCurveTest
 # from test_energy import SimpleEnergyTest
 
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     fp = file(report_filename, 'wb')
     runner = HTMLTestRunner(
         stream=fp,
-        title='SWMM-EPANET UI Test Report',
+        title='SWMM Core Test Report',
         description='Unit test results')
 
     my_suite = unittest.TestSuite()
@@ -29,6 +30,7 @@ if __name__ == "__main__":
     # my_suite.addTest(SimpleReportTest())
     # my_suite.addTest(SimpleBackdropTest())
     my_suite.addTest(ProjectTest())
+    my_suite.addTest(OptionsGeneralTest())
 
     # will need for later MTPs:
     # my_suite.addTest(SimplePatternTest())

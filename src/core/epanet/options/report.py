@@ -9,12 +9,6 @@ class StatusWrite(Enum):
     FULL = 3
 
 
-class StatusYesNo(Enum):
-    """Report writing options"""
-    YES = 1
-    NO = 2
-
-
 class ReportOptions(Section):
     """Report Options"""
 
@@ -31,24 +25,24 @@ class ReportOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.pagesize = 0		# integer
+        self.pagesize = 0               # integer
         """sets the number of lines written per page of the output report"""
 
-        self.file = ""			# string
+        self.file = ""                  # string
         """supplies the name of a file to which the output report will be written"""
         """don't write by default"""
 
-        self.status = StatusWrite.NO		# YES/NO/FULL
+        self.status = StatusWrite.NO    # YES/NO/FULL
         """determines whether a hydraulic status report should be generated"""
 
-        self.summary = StatusYesNo.YES		# YES/NO
+        self.summary = True             # YES/NO
         """determines whether a summary table of number of network components and key analysis options is generated"""
 
-        self.energy = StatusYesNo.NO        # YES/NO
+        self.energy = False             # YES/NO
         """determines if a table reporting average energy usage and cost for each pump is provided"""
         """don't write by default"""
 
-        self.parameters = ""		        # string -- note could be multiple parameter lines
+        self.parameters = ""            # string -- could be multiple parameter lines
         """used to identify which quantities are reported on"""
         """don't write by default"""
 

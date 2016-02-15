@@ -1,11 +1,4 @@
-﻿from enum import Enum
-from core.inputfile import Section
-
-
-class StatusYesNo(Enum):
-    """Report writing options"""
-    YES = 1
-    NO = 2
+﻿from core.inputfile import Section
 
 
 class Report(Section):
@@ -21,16 +14,16 @@ class Report(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.input = StatusYesNo.NO
+        self.input = False
         """Whether report includes a summary of the input data"""
 
-        self.continuity = StatusYesNo.NO
+        self.continuity = False
         """Whether to report continuity checks"""
 
-        self.flow_stats = StatusYesNo.NO
+        self.flow_stats = False
         """Whether to report summary flow statistics"""
 
-        self.controls = StatusYesNo.NO
+        self.controls = False
         """Whether to list all control actions taken during a simulation"""
 
         self.subcatchments = ""

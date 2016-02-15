@@ -35,7 +35,7 @@ class General(Section):
     SECTION_NAME = "[OPTIONS]"
 
     field_dict = {
-     "COMPATIBILITY": "",
+     "COMPATIBILITY": "compatibility",
      "REPORT_CONTROLS": "",
      "REPORT_INPUT": "",
 
@@ -52,21 +52,14 @@ class General(Section):
      "IGNORE_SNOWMELT": "ignore_snowmelt",
      "IGNORE_GROUNDWATER": "ignore_groundwater",
      "IGNORE_ROUTING": "ignore_routing",
-     "IGNORE_QUALITY": "ignore_quality",
-
-     "INERTIAL_DAMPING": "",
-     "NORMAL_FLOW_LIMITED": "",
-     "FORCE_MAIN_EQUATION": "",
-     "VARIABLE_STEP": "",
-     "LENGTHENING_STEP": "",
-     "MIN_SURFAREA": "",
-     "MAX_TRIALS": "",
-     "HEAD_TOLERANCE": "",
-     "SYS_FLOW_TOL": "",
-     "LAT_FLOW_TOL": "",
-     "MINIMUM_STEP": "",
-     "THREADS": ""}
+     "IGNORE_QUALITY": "ignore_quality"}
     """Mapping from label used in file to field name"""
+
+    old_flow_routing = {
+        "UF": FlowRouting.STEADY,
+        "KW": FlowRouting.KINWAVE,
+        "DW": FlowRouting.DYNWAVE}
+    """Mapping from old flow routing names to FlowRouting enumeration"""
 
     def __init__(self):
         Section.__init__(self)
@@ -78,11 +71,11 @@ class General(Section):
         self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
 
-        self.infiltration = core.swmm.hydrology.subcatchment.HortonInfiltration()
+        self.infiltration = "HORTON"
         """
         Infiltration computation model of rainfall into the 
         upper soil zone of subcatchments. Use one of the following:
-        HortonInfiltration, GreenAmptInfiltration, or CurveNumberInfiltration
+        HORTON, MODIFIED_HORTON, GREEN_AMPT, MODIFIED_GREEN_AMPT, CURVE_NUMBER
         """
 
         self.flow_routing = FlowRouting.KINWAVE
@@ -128,10 +121,13 @@ class General(Section):
         """
 
         self.min_slope = 0.0
-        """Minimum value allowed for a conduits slope"""
+        """Minimum value allowed for a conduit slope"""
 
         self.temp_dir = ""
         """Directory where model writes its temporary files"""
+
+        self.compatibility = 5
+        """SWMM Version compatibility"""
 
     def get_text(self):
         """Contents of this item formatted for writing to file"""
@@ -163,6 +159,11 @@ class General(Section):
                     if attr_name:
                         try:
                             tried_set = True
+
+                            if attr_name == "flow_routing" and General.old_flow_routing.has_key(attr_value.upper()):
+                                # Translate from old flow routing name to new flow routing name
+                                attr_value = General.old_flow_routing[attr_value.upper()]
+
                             set_here.setattr_keep_type(attr_name, attr_value)
                         except Exception as e:
                             print("options.General.text could not set " + attr_name + '\n' + str(e))

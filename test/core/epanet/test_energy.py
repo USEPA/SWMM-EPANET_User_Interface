@@ -4,7 +4,7 @@ import unittest
 
 class SimpleEnergyTest(unittest.TestCase):
 
-    TEST_TEST = (
+    TEST_TEXT = (
         ("[ENERGY]\n"
          " Global Efficiency  \t82\n"
          " Global Price       \t1.5\n"
@@ -24,7 +24,7 @@ class SimpleEnergyTest(unittest.TestCase):
         self.my_energy = energy.EnergyOptions()
 
     def runTest(self):
-        for test_text in self.TEST_TEST:
+        for test_text in self.TEST_TEXT:
             self.my_energy = energy.EnergyOptions()
             self.my_energy.set_text(test_text[0])
             assert self.my_energy.global_efficiency == test_text[1]

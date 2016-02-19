@@ -8,31 +8,31 @@ from test_project import ProjectTest
 from test_curves import SimpleCurveTest
 from test_energy import SimpleEnergyTest
 
+my_suite = unittest.TestSuite()
+
+# for MTP 1:
+my_suite.addTest(SimpleTitleTest())
+my_suite.addTest(SimpleOptionsTest())
+# my_suite.addTest(SimpleReactionsTest())
+# my_suite.addTest(SimpleTimesTest())
+my_suite.addTest(SimpleEnergyTest())
+# my_suite.addTest(SimpleReportTest())
+# my_suite.addTest(SimpleBackdropTest())
+my_suite.addTest(ProjectTest())
+
+# will need for later MTPs:
+# my_suite.addTest(SimplePatternTest())
+# my_suite.addTest(SimpleCurveTest())
+
 if __name__ == "__main__":
     # execute only if run as a script
     # runner = unittest.TextTestRunner()
-    report_filename = "testresults.html"
+    report_filename = "test_results_epanet.html"
     fp = file(report_filename, 'wb')
     runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
-        title='SWMM-EPANET UI Test Report',
+        title='EPANET Core Test Report',
         description='Unit test results')
-
-    my_suite = unittest.TestSuite()
-
-    # for MTP 1:
-    my_suite.addTest(SimpleTitleTest())
-    my_suite.addTest(SimpleOptionsTest())
-    # my_suite.addTest(SimpleReactionsTest())
-    # my_suite.addTest(SimpleTimesTest())
-    my_suite.addTest(SimpleEnergyTest())
-    # my_suite.addTest(SimpleReportTest())
-    # my_suite.addTest(SimpleBackdropTest())
-    my_suite.addTest(ProjectTest())
-
-    # will need for later MTPs:
-    # my_suite.addTest(SimplePatternTest())
-    # my_suite.addTest(SimpleCurveTest())
 
     runner.run(my_suite)
     fp.close()

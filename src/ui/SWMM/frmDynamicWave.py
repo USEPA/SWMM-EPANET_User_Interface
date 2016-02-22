@@ -1,6 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.options.dynamicwave
+import core.swmm.options.dynamic_wave
 from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
 
 

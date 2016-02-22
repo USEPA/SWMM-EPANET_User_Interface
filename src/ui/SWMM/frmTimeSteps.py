@@ -14,28 +14,26 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
         self._parent = parent
 
     def set_from(self, project):
-        # section = core.swmm.options.timesteps
-        section = project.find_section("OPTIONS")
-        self.cbxSkip.setChecked(section.TimeSteps.skip_steady_state)
-        self.sbxLateral.setvalue(section.TimeSteps.lat_flow_tol)
-        self.sbxSystem.setvalue(section.TimeSteps.sys_flow_tol)
-        self.sbxDry.setvalue(section.TimeSteps.dry_step)
-        self.tmeDry.setTime(section.TimeSteps.dry_step)
-        self.sbxWet.setvalue(section.TimeSteps.wet_step)
-        self.tmeWet.setTime(section.TimeSteps.wet_step)
-        self.sbxReportDay.setvalue(section.TimeSteps.report_step)
-        self.tmeReport.setTime(section.TimeSteps.report_step)
-        self.txtRouting.text(section.TimeSteps.routing_step)
+        section = project.options.time_steps
+        self.cbxSkip.setChecked(section.skip_steady_state)
+        self.sbxLateral.setValue(section.lat_flow_tol)
+        self.sbxSystem.setValue(section.sys_flow_tol)
+        #self.sbxDry.setValue(section.dry_step)
+        self.tmeDry.setTime(QtCore.QTime.fromString(section.dry_step, section.TIME_FORMAT))
+        #self.sbxWet.setValue(section.wet_step)
+        self.tmeWet.setTime(QtCore.QTime.fromString(section.wet_step, section.TIME_FORMAT))
+        #self.sbxReportDay.setValue(QtCore.QTime.fromString(section.report_step, section.TIME_FORMAT))
+        self.txtRouting.text = section.routing_step
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("OPTIONS")
-        section.TimeSteps.skip_steady_state = self.cbxSkip
-        section.TimeSteps.lat_flow_tol = self.sbxLateral
-        section.TimeSteps.sys_flow_tol = self.sbxSystem
-        section.TimeSteps.dry_step = self.sbxDry + self.tmeDry
-        section.TimeSteps.wet_step = self.sbxWet + self.tmeWet
-        section.TimeSteps.report_step = self.sbxReportDay + self.tmeReport
-        section.TimeSteps.routing_step = self.txtRouting.text()
+        section = self._parent.project.options.time_steps
+        section.skip_steady_state = self.cbxSkip.isChecked()
+        section.lat_flow_tol = self.sbxLateral.value()
+        section.sys_flow_tol = self.sbxSystem.value()
+        #section.dry_step = self.sbxDry + self.tmeDry
+        #section.wet_step = self.sbxWet + self.tmeWet
+        #section.report_step = self.sbxReportDay + self.tmeReport
+        section.routing_step = self.txtRouting.text()
         self.close()
 
     def cmdCancel_Clicked(self):

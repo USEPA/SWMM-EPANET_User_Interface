@@ -3,7 +3,7 @@ from core.swmm.hydraulics.node import Node, Junction, Outfall, Divider, StorageU
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
-from core.swmm.options.timesteps import TimeSteps
+#from core.swmm.options.time_steps import TimeSteps
 from core.swmm.options.report import Report
 from core.swmm.options.files import Files
 from core.swmm.climatology.climatology import Evaporation

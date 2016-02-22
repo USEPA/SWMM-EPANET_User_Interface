@@ -1,8 +1,8 @@
 ﻿from enum import Enum
 from core.inputfile import Section
 from core.swmm.options.dates import Dates
-from core.swmm.options.dynamicwave import DynamicWave
-from core.swmm.options.timesteps import TimeSteps
+from core.swmm.options.dynamic_wave import DynamicWave
+from core.swmm.options.time_steps import TimeSteps
 import core.swmm.hydrology.subcatchment
 
 

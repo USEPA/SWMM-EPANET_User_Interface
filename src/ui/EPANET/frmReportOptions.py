@@ -3,7 +3,6 @@ import PyQt4.QtCore as QtCore
 import core.epanet.project
 import core.epanet.options.report
 from core.epanet.options.report import StatusWrite
-from core.epanet.options.report import StatusYesNo
 from enum import Enum
 from ui.EPANET.frmReportOptionsDesigner import Ui_frmReportOptions
 
@@ -40,6 +39,11 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         try:
             if isinstance(value, Enum):
                 value = value.name
+            elif isinstance(value, bool):
+                if value:
+                    value = "YES"
+                else:
+                    value = "NO"
             index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
             if index >= 0:
                 combo_box.setCurrentIndex(index)
@@ -140,12 +144,12 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         # self.txtLink18
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("REPORT")
+        section = self._parent.project.report
         section.pagesize = self.txtPageSize.text()
         section.file = self.txtReportFileName.text()
         section.status = core.epanet.options.report.StatusWrite[self.cboStatus.currentText()]
-        section.summary = core.epanet.options.report.StatusYesNo[self.cboSummary.currentText()]
-        section.energy = core.epanet.options.report.StatusYesNo[self.cboEnergy.currentText()]
+        section.summary = self.cboSummary.currentText() == "YES"
+        section.energy = self.cboEnergy.currentText() == "YES"
         # parameters still to do
         self.close()
 

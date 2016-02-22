@@ -1,6 +1,4 @@
 from core.epanet.options.options import Options
-from core.epanet.options import hydraulics
-from core.epanet.options import map
 from core.epanet.options import quality
 import unittest
 

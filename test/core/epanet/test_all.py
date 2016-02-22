@@ -4,10 +4,14 @@ import test.HTMLTestRunner
 from test_title import SimpleTitleTest
 from test_options import SimpleOptionsTest
 from test_quality import SimpleQualityTest
-from test_patterns import SimplePatternTest
-from test_project import ProjectTest
-from test_curves import SimpleCurveTest
+from test_reactions import SimpleReactionsTest
+# from test_times import SimpleTimesTest
 from test_energy import SimpleEnergyTest
+# from test_report import SimpleReportTest
+# from test_backdrop import SimpleBackdropTest
+from test_project import ProjectTest
+from test_patterns import SimplePatternTest
+from test_curves import SimpleCurveTest
 
 my_suite = unittest.TestSuite()
 
@@ -15,7 +19,7 @@ my_suite = unittest.TestSuite()
 my_suite.addTest(SimpleTitleTest())
 my_suite.addTest(SimpleOptionsTest())
 my_suite.addTest(SimpleQualityTest())
-# my_suite.addTest(SimpleReactionsTest())
+my_suite.addTest(SimpleReactionsTest())
 # my_suite.addTest(SimpleTimesTest())
 my_suite.addTest(SimpleEnergyTest())
 # my_suite.addTest(SimpleReportTest())

@@ -291,9 +291,9 @@ class Section(object):
             elif isinstance(old_value, Enum):
                 if not isinstance(attr_value, Enum):
                     try:
-                        attr_value = type(old_value)[attr_value]
+                        attr_value = type(old_value)[attr_value.replace('-', '_')]
                     except KeyError:
-                        attr_value = type(old_value)[attr_value.upper()]
+                        attr_value = type(old_value)[attr_value.upper().replace('-', '_')]
                 setattr(self, attr_name, attr_value)
             elif type(old_value) == bool:
                 if not isinstance(attr_value, bool):

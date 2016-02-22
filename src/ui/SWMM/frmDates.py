@@ -15,28 +15,28 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
 
     def set_from(self, project):
         # section = core.swmm.options.dates.Dates
-        section = project.find_section("OPTIONS")
-        self.dedStart.setDate(section.start_date)
-        self.tmeStart.setTime(section.start_time)
-        self.dedStartReport.setDate(section.report_start_date)
-        self.tmeReport.setTime(section.report_start_time)
-        self.dedEnd.setDate(section.end_date)
-        self.tmeEnd.setTime(section.end_time)
-        self.dedSweepEnd.setdate(section.sweep_end)
-        self.dedSweepStart.setDate(section.sweep_start)
-        self.txtAntecedent.setText(section.dry_days)
+        section = project.options.dates
+        self.dedStart.setDate(QtCore.QDate.fromString(section.start_date, section.DATE_FORMAT))
+        self.tmeStart.setTime(QtCore.QTime.fromString(section.start_time, section.TIME_FORMAT))
+        self.dedStartReport.setDate(QtCore.QDate.fromString(section.report_start_date, section.DATE_FORMAT))
+        self.tmeReport.setTime(QtCore.QTime.fromString(section.report_start_time, section.TIME_FORMAT))
+        self.dedEnd.setDate(QtCore.QDate.fromString(section.end_date, section.DATE_FORMAT))
+        self.tmeEnd.setTime(QtCore.QTime.fromString(section.end_time, section.TIME_FORMAT))
+        self.dedSweepEnd.setDate(QtCore.QDate.fromString(section.sweep_end, section.DATE_FORMAT))
+        self.dedSweepStart.setDate(QtCore.QDate.fromString(section.sweep_start, section.DATE_FORMAT))
+        self.txtAntecedent.setText(str(section.dry_days))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("OPTIONS")
-        section.start_date = self.dedStart.text()
-        section.start_time = self.tmeStart.text()
-        section.report_start_date = self.dedStartReport.text()
-        section.report_start_time = self.tmeReport.text()
-        section.end_date = self.dedEnd.text()
-        section.end_time = self.tmeEnd.text()
-        section.sweep_end = self.dedSweepEnd.text()
-        section.sweep_start = self.dedSweepStart.text()
-        section.dry_days = self.txtAntecedent.text()
+        section = self._parent.project.options.dates
+        section.start_date = self.dedStart.date().toString(section.DATE_FORMAT)
+        section.start_time = self.tmeStart.time().toString(section.TIME_FORMAT)
+        section.report_start_date = self.dedStartReport.date().toString(section.DATE_FORMAT)
+        section.report_start_time = self.tmeReport.time().toString(section.TIME_FORMAT)
+        section.end_date = self.dedEnd.date().toString(section.DATE_FORMAT)
+        section.end_time = self.tmeEnd.time().toString(section.TIME_FORMAT)
+        section.sweep_end = self.dedSweepEnd.date().toString(section.DATE_FORMAT)
+        section.sweep_start = self.dedSweepStart.date().toString(section.DATE_FORMAT)
+        section.dry_days = int(self.txtAntecedent.text())
         self.close()
 
     def cmdCancel_Clicked(self):

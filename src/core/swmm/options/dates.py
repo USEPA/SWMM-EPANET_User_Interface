@@ -18,6 +18,9 @@ class Dates(Section):
      "DRY_DAYS": "dry_days"}
     """Mapping from label used in file to field name"""
 
+    DATE_FORMAT = "MM/dd/yyyy"
+    TIME_FORMAT = "hh:mm:ss"
+
     def __init__(self):
         Section.__init__(self)
 

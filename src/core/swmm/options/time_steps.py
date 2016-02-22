@@ -32,6 +32,8 @@ class TimeSteps(core.inputfile.Section):
      "THREADS": ""}
     """Mapping from label used in file to field name"""
 
+    TIME_FORMAT = "hh:mm:ss"
+
     def __init__(self):
         core.inputfile.Section.__init__(self)
 

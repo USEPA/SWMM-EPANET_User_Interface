@@ -16,14 +16,14 @@ class frmEnergyOptions(QtGui.QMainWindow, Ui_frmEnergyOptions):
 
     def set_from(self, project):
         # section = core.epanet.options.energy.EnergyOptions()
-        section = project.find_section("ENERGY")
+        section = project.energy
         self.txtGlobalPrice.setText(str(section.global_price))
         self.txtGlobalPattern.setText(str(section.global_pattern))
         self.txtGlobalEfficiency.setText(str(section.global_efficiency))
         self.txtDemandCharge.setText(str(section.demand_charge))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("ENERGY")
+        section = self._parent.project.energy
         section.global_price = self.txtGlobalPrice.text()
         section.global_pattern = self.txtGlobalPattern.text()
         section.global_efficiency = self.txtGlobalEfficiency.text()

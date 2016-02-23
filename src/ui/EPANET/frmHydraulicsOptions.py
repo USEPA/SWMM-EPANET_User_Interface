@@ -4,14 +4,15 @@ import core.epanet.project
 import core.epanet.options.hydraulics
 from enum import Enum
 from ui.EPANET.frmHydraulicsOptionsDesigner import Ui_frmHydraulicsOptions
+import ui.convenience
 
 
 class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # TODO: function that populates combo box from Enum
-        self.cboFlow.addItems(("CFS", "GPM", "MGD", "IMGD", "AFD", "LPS", "LPM", "MLD", "CMH", "CMD"))
+        self.cboFlow.clear()
+        ui.convenience.set_combo_items(core.epanet.options.hydraulics.FlowUnits, self.cboFlow)
         self.cboHeadloss.addItems(("H-W", "D-W", "C-M"))
         # self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -19,29 +20,11 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         self.set_from(parent.project)
         self._parent = parent
 
-    @staticmethod
-    def set_combo(combo_box, value):
-        try:
-            if isinstance(value, Enum):
-                value = value.name
-            index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
-            if index >= 0:
-                combo_box.setCurrentIndex(index)
-        except Exception as e:
-            print(str(e))
-
     def set_from(self, project):
         hydraulics_options = project.options.hydraulics
 
-        frmHydraulicsOptions.set_combo(self.cboFlow, hydraulics_options.flow_units)
-        head_loss_no_underscore = hydraulics_options.head_loss
-        if hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.H_W:
-            head_loss_no_underscore = "H-W"
-        elif hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.D_W:
-            head_loss_no_underscore = "D-W"
-        elif hydraulics_options.head_loss == core.epanet.options.hydraulics.HeadLoss.C_M:
-            head_loss_no_underscore = "C-M"
-        frmHydraulicsOptions.set_combo(self.cboHeadloss, head_loss_no_underscore)
+        ui.convenience.set_combo(self.cboFlow, hydraulics_options.flow_units)
+        ui.convenience.set_combo(self.cboHeadloss, hydraulics_options.head_loss.name.replace('_', "-"))
 
         self.txtAccuracy.setText(str(hydraulics_options.accuracy))
         self.txtCheckFrequency.setText(str(hydraulics_options.check_frequency))
@@ -65,13 +48,7 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def cmdOK_Clicked(self):
         hydraulics_options = self._parent.project.options.hydraulics
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
-        head_loss_underscore = self.cboHeadloss.currentText()
-        if self.cboHeadloss.currentText() == "H-W":
-             head_loss_underscore = "H_W"
-        elif self.cboHeadloss.currentText() == "D-W":
-             head_loss_underscore = "D_W"
-        elif self.cboHeadloss.currentText() == "C-M":
-             head_loss_underscore = "C_M"
+        head_loss_underscore = self.cboHeadloss.currentText().replace('-', '_')
         hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]
         hydraulics_options.accuracy = float(self.txtAccuracy.text())
         hydraulics_options.check_frequency = int(self.txtCheckFrequency.text())

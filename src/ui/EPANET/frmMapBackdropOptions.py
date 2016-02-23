@@ -12,23 +12,12 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         # TODO: Move this and same version from frmHydraulicsOptions to a shared location
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # TODO: function that populates combo box from Enum
+        frmMapBackdropOptions.set_combo_items(core.epanet.options.backdrop.BackdropUnits, self.cboMapUnits)
         self.cboMapUnits.addItems(("FEET", "METERS", "DEGREES", "NONE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.set_from(parent.project)
         self._parent = parent
-
-    @staticmethod
-    def set_combo(combo_box, value):
-        try:
-            if isinstance(value, Enum):
-                value = value.name
-            index = combo_box.findText(value, QtCore.Qt.MatchFixedString)
-            if index >= 0:
-                combo_box.setCurrentIndex(index)
-        except Exception as e:
-            print(str(e))
 
     def set_from(self, project):
         # section = core.epanet.options.backdrop.BackdropOptions()

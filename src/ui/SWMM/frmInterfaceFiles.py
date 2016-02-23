@@ -15,7 +15,7 @@ class frmInterfaceFiles(QtGui.QMainWindow, Ui_frmInterfaceFiles):
 
     def set_from(self, project):
         # section = core.swmm.options.files.Files()
-        section = project.find_section("FILES")
+        section = project.files
         self.txtUseRainfall.setText(str(section.use_rainfall))
         self.txtSaveRainfall.setText(str(section.save_rainfall))
         self.txtUseRunoff.setText(str(section.use_runoff))
@@ -28,7 +28,7 @@ class frmInterfaceFiles(QtGui.QMainWindow, Ui_frmInterfaceFiles):
         self.txtSaveOutflows.setText(str(section.save_outflows))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("FILES")
+        section = self._parent.project.files
         section.use_rainfall = self.txtUseRainfall.text()
         section.save_rainfall = self.txtSaveRainfall.Text()
         section.use_runoff = self.txtUseRunoff.Text()

@@ -63,3 +63,7 @@ class SimpleOptionsTest(unittest.TestCase):
                         " Headloss           	HeadLoss.H_W"
         actual_text = self.my_HydraulicsOptions.get_text()
         assert actual_text == expected_text
+
+        expected_text = ""
+        actual_text = self.my_MapOptions.get_text()
+        assert actual_text == expected_text

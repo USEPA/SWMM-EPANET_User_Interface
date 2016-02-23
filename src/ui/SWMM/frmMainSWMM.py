@@ -25,16 +25,16 @@ import pymsgbox
 import imp
 from qgis.core import *
 from qgis.gui import *
-from src.core.coordinates import *
-from src.core.inputfile import *
-from src.core.swmm.project import Project
-from src.core.epanet.title import *
-from src.core.epanet.curves import *
-from src.core.epanet.labels import *
-from src.core.epanet.patterns import *
-from src.core.epanet.vertex import *
-from src.core.epanet.options import *
-from src.core.epanet.hydraulics import *
+from core.coordinates import *
+from core.inputfile import *
+from core.swmm.project import Project
+from core.epanet.title import *
+from core.epanet.curves import *
+from core.epanet.labels import *
+from core.epanet.patterns import *
+from core.epanet.vertex import *
+from core.epanet.options import *
+from core.epanet.hydraulics import *
 
 _frmDates = None
 _frmDynamicWave = None
@@ -53,6 +53,7 @@ class frmMainSWMM(frmMain):
 
         QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.std_openproj)
         QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
+
         self.model = 'SWMM'
         self.on_load(model=self.model)
 
@@ -70,6 +71,14 @@ class frmMainSWMM(frmMain):
                self.load_model(self.model)
            except:
                self.project = None
+        pass
+
+    def proj_save(self):
+        pymsgbox.alert('Saving SWMM.')
+        pass
+
+    def proj_save_as(self):
+        pymsgbox.alert("save as SWMM")
         pass
 
     def edit_options(self, itm, column):

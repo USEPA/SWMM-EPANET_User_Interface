@@ -55,6 +55,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
         QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
         QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
+        QtCore.QObject.connect(self.actionStdSave, QtCore.SIGNAL('triggered()'), self.proj_save)
+        QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.proj_save)
+        QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.proj_save_as)
 
         self.layers = []
         self.canvas = QgsMapCanvas(self, 'mapCanvas')

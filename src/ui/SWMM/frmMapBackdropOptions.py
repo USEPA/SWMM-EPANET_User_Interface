@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.options.backdrop
+from core.swmm.options.map import MapUnits
 from ui.SWMM.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
 
 
@@ -15,40 +16,43 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
 
     def set_from(self, project):
         # section = core.swmm.options.backdrop.BackdropOptions()
-        section = project.find_section("BACKDROP")
+        section = project.backdrop
         self.txtBackdropFile.setText(str(section.file))
         self.txtLLXBack.setText(str(section.dimensions[0]))
         self.txtLLYBack.setText(str(section.dimensions[1]))
         self.txtURXBack.setText(str(section.dimensions[2]))
         self.txtURYBack.setText(str(section.dimensions[3]))
-        section = project.find_section("OPTIONS")
+        section = project.map
         self.txtLLXMap.setText(str(section.dimensions[0]))
         self.txtLLYMap.setText(str(section.dimensions[1]))
         self.txtURXMap.setText(str(section.dimensions[2]))
         self.txtURYMap.setText(str(section.dimensions[3]))
-        if section.units == "NONE":
+        if section.units == MapUnits.NONE:
             self.rbnNone.setChecked(True)
-        if section.units == "DEGREES":
+        if section.units == MapUnits.DEGREES:
             self.rbnDegrees.setChecked(True)
-        if section.units == "FEET":
+        if section.units == MapUnits.FEET:
             self.rbnFeet.setChecked(True)
-        if section.units == "METERS":
+        if section.units == MapUnits.METERS:
             self.rbnMeters.setChecked(True)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("BACKDROP")
+        section = self._parent.project.backdrop
         section.file = self.txtBackdropFile.text()
-        section.dimensions = (self.txtLLXBack.text(), self.txtLLYBack.text(), self.txtURXBack.text(), self.txtURYBack.text())
-        section = self._parent.project.find_section("OPTIONS")
+        section.dimensions = (float(self.txtLLXBack.text()), float(self.txtLLYBack.text()),
+                              float(self.txtURXBack.text()), float(self.txtURYBack.text()))
+
+        section = self._parent.project.map
         if self.rbnNone.isChecked():
-            section.units = "NONE"
+            section.units = MapUnits.NONE
         if self.rbnDegrees.isChecked():
-            section.units = "DEGREES"
+            section.units =  MapUnits.DEGREES
         if self.rbnFeet.isChecked():
-            section.units = "FEET"
+            section.units = MapUnits.FEET
         if self.rbnMeters.isChecked():
-            section.units = "METERS"
-        section.dimensions = (self.txtLLXMap.text(), self.txtLLYMap.text(), self.txtURXMap.text(), self.txtURYMap.text())
+            section.units = MapUnits.METERS
+        section.dimensions = (float(self.txtLLXMap.text()), float(self.txtLLYMap.text()),
+                              float(self.txtURXMap.text()), float(self.txtURYMap.text()))
         self.close()
 
     def cmdCancel_Clicked(self):

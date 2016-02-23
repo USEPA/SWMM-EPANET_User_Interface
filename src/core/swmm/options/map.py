@@ -15,15 +15,10 @@ class MapOptions(Section):
 
     SECTION_NAME = "[MAP]"
 
-    # @staticmethod
-    # def default():
-    #     return SWMMOptions(SWMMOptions.SECTION_NAME, None, None, -1)
-
     def __init__(self):
         Section.__init__(self)
-        # TODO: parse "value" argument to extract values for each field, after setting default values below
 
-        self.dimensions = []
+        self.dimensions = (0.0, 0.0, 0.0, 0.0)  # real
         """
         Coordinates of the map extent:
         X1 lower-left X coordinate of full map extent

@@ -378,7 +378,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLineEdit" name="txtURBack">
+     <widget class="QLineEdit" name="txtURXBack">
       <property name="geometry">
        <rect>
         <x>100</x>

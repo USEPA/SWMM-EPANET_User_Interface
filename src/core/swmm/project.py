@@ -6,6 +6,8 @@ from core.swmm.options.general import General
 #from core.swmm.options.time_steps import TimeSteps
 from core.swmm.options.report import Report
 from core.swmm.options.files import Files
+from core.swmm.options.backdrop import BackdropOptions
+from core.swmm.options.map import MapOptions
 from core.swmm.climatology.climatology import Evaporation
 from core.swmm.climatology.climatology import Temperature
 from core.swmm.hydrology.raingage import RainGage
@@ -79,6 +81,8 @@ class Project(InputFile):
         self.options = General()                # OPTIONS       analysis options
         self.report = Report()                  # REPORT        output reporting instructions
         self.files = Files()                    # FILES         interface file options
+        self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
+        self.map = MapOptions()                 # MAP           map's bounding rectangle and units
         # self.raingages = [RainGage]             # RAINGAGES     rain gage information
         # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
         # self.evaporation = Evaporation()        # EVAPORATION   evaporation data
@@ -117,13 +121,11 @@ class Project(InputFile):
         # self.loadings = [Section] # LOADINGS # initial pollutant loads on subcatchments
         # self.curves = [Section] # CURVES # x-y tabular data referenced in other sections
         # self.timeseries = [TimeSeries] # TIMESERIES # time series data referenced in other sections
-        # self.map = [Section] # MAP # X,Y coordinates of the map's bounding rectangle
         # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.labels = [Section] # LABELS # X,Y coordinates and text of labels
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
-        # self.backdrop = [Section] # BACKDROP
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
 

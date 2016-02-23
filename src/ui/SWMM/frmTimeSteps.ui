@@ -195,6 +195,29 @@
      <string>Routing</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="txtRouting">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>180</y>
+      <width>71</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblSeconds">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>180</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Seconds</string>
+    </property>
+   </widget>
    <widget class="QSpinBox" name="sbxReportDay">
     <property name="geometry">
      <rect>
@@ -288,22 +311,6 @@
      <rect>
       <x>240</x>
       <y>130</y>
-      <width>81</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="showGroupSeparator" stdset="0">
-     <bool>false</bool>
-    </property>
-    <property name="displayFormat">
-     <string>h:mm:ss</string>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="tmeRouting">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>180</y>
       <width>81</width>
       <height>22</height>
      </rect>

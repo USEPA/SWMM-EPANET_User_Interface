@@ -21,16 +21,16 @@ from src.ui.EPANET.frmTimesOptions import frmTimesOptions
 from src.ui.EPANET.frmTitle import frmTitle
 from src.ui.model_utility import *
 import pymsgbox
-from src.core.coordinates import *
-from src.core.inputfile import *
-from src.core.epanet.project import Project
-from src.core.epanet.title import *
-from src.core.epanet.curves import *
-from src.core.epanet.labels import *
-from src.core.epanet.patterns import *
-from src.core.epanet.vertex import *
-from src.core.epanet.options import *
-from src.core.epanet.hydraulics import *
+from core.coordinates import *
+from core.inputfile import *
+from core.epanet.project import Project
+from core.epanet.title import *
+from core.epanet.curves import *
+from core.epanet.labels import *
+from core.epanet.patterns import *
+from core.epanet.vertex import *
+from core.epanet.options import *
+from core.epanet.hydraulics import *
 
 _frmEnergyOptions = None
 _frmHydraulicsOptions = None
@@ -66,6 +66,14 @@ class frmMainEPANET(frmMain):
                 self.load_model(self.model)
             except:
                 self.project = None
+        pass
+
+    def proj_save(self):
+        pymsgbox.alert('Saving EPANET')
+        pass
+
+    def proj_save_as(self):
+        pymsgbox.alert("save as EPANET")
         pass
 
     def edit_options(self, itm, column):

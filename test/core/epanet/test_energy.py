@@ -41,3 +41,11 @@ class SimpleEnergyTest(unittest.TestCase):
         assert str(my_energy3.global_efficiency) == "87.6"
         assert my_energy3.global_price == 1.23
         assert my_energy3.demand_charge == 2.34
+
+        expected_text = "[ENERGY]\n" + \
+                        " Global Efficiency  	87.6\n" + \
+                        " Global Price       	1.23\n" + \
+                        " Demand Charge      	2.34"
+
+        actual_text = my_energy3.get_text()
+        assert actual_text == expected_text

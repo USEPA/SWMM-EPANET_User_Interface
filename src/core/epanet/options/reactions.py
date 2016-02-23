@@ -6,9 +6,15 @@ class Reactions(Section):
 
     SECTION_NAME = "[REACTIONS]"
 
-    # @staticmethod
-    # def default():
-    #    return ReactionsOptions(ReactionsOptions.SECTION_NAME, None, -1)
+    field_dict = {
+        "Order Bulk": "order_bulk",
+        "Order Tank": "order_wall",
+        "Order Wall": "order_tank",
+        "Global Bulk": "global_bulk",
+        "Global Wall": "global_wall",
+        "Limiting Potential": "limiting_potential",
+        "Roughness Correlation": "roughness_correlation"}
+    """Mapping from label used in file to field name"""
 
     def __init__(self):
         Section.__init__(self)
@@ -33,5 +39,16 @@ class Reactions(Section):
 
         self.roughness_correlation = 0.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
+
+        def set_text(self, new_text):
+            """Read properties from text.
+                Args:
+                    new_text (str): Text to parse into properties.
+            """
+            zero_pos = new_text.upper().find("ZERO")  # Replace "zero" with numeral if it appears, any capitalization
+            if zero_pos >= 0:
+                new_text = new_text[:zero_pos] + '0' + new_text[zero_pos + len("ZERO"):]
+            Section.set_text(self, new_text)
+
 
 

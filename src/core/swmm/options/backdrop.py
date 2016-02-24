@@ -16,13 +16,25 @@ class BackdropOptions(Section):
         self.file = "" 		                    # string
         """name of the file that contains the backdrop image"""
 
+        self.units = ""      # "None"  # string
+        self.offset = None   # (0.0, 0.0)  # real
+        self.scaling = None  # (0.0, 0.0)  # real
+
     def get_text(self):
         text_list = [BackdropOptions.SECTION_NAME]
         if self.dimensions:
             text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",
                              self.dimensions[0], self.dimensions[1], self.dimensions[2], self.dimensions[3]))
+        if self.units:
+            text_list.append(" {:17}\t{}".format("UNITS", self.units))
         if self.file:
             text_list.append(" {:17}\t{}".format("FILE", self.file))
+        if self.offset:
+            text_list.append(" {:17}\t{:16}\t{:16}".format("OFFSET",
+                             self.offset[0], self.offset[1]))
+        if self.scaling:
+            text_list.append(" {:17}\t{:16}\t{:16}".format("SCALING",
+                             self.scaling[0], self.scaling[1]))
         return '\n'.join(text_list)
 
     def set_text(self, new_text):
@@ -38,6 +50,10 @@ class BackdropOptions(Section):
                     if len(fields) > 1:
                         if fields[0].lower() == "dimensions" and len(fields) > 4:
                             self.dimensions = fields[1:5]
+                        elif fields[0].lower() == "offset" and len(fields) > 2:
+                            self.offset = fields[1:3]
+                        elif fields[0].lower() == "scaling" and len(fields) > 2:
+                            self.scaling = fields[1:3]
                         else:
                             self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
             except:

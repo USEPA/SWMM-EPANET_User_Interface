@@ -15,8 +15,8 @@ class InputFile(object):
         section_text_list = []
         try:
             for section in self.sections:
-                try:
-                    section_text_list.append(section.get_text())
+                try:  # Make sure each section text ends with one newline, two newlines after join below.
+                    section_text_list.append(section.get_text().rstrip('\n') + '\n')
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
             return '\n'.join(section_text_list)

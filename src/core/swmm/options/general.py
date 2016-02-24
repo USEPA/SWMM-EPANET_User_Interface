@@ -61,6 +61,8 @@ class General(Section):
         "DW": FlowRouting.DYNWAVE}
     """Mapping from old flow routing names to FlowRouting enumeration"""
 
+    section_comments = (";; Dates", ";; Time Steps", ";; Dynamic Wave")
+
     def __init__(self):
         Section.__init__(self)
 
@@ -134,10 +136,13 @@ class General(Section):
         # First, add the values in this section stored directly in this class
         text_list = [Section.get_text(self)]
         if self.dates is not None:  # Add the values stored in Dates class
+            text_list.append(General.section_comments[0])
             text_list.append(self.dates.get_text().replace(self.SECTION_NAME + '\n', ''))
         if self.time_steps is not None:  # Add the values stored in TimeSteps class
+            text_list.append(General.section_comments[1])
             text_list.append(self.time_steps.get_text().replace(self.SECTION_NAME + '\n', ''))
         if self.dynamic_wave is not None:  # Add the values stored in DynamicWave class
+            text_list.append(General.section_comments[2])
             text_list.append(self.dynamic_wave.get_text().replace(self.SECTION_NAME + '\n', ''))
         return '\n'.join(text_list)
 
@@ -147,9 +152,10 @@ class General(Section):
             comment_split = str.split(line, ';', 1)
             if len(comment_split) == 2:
                 line = comment_split[0]
-                if self.comment:
-                    self.comment += '\n'
-                self.comment += ';' + comment_split[1]
+                if not comment_split[1] in General.section_comments:
+                    if self.comment:
+                        self.comment += '\n'
+                    self.comment += ';' + comment_split[1]
 
             if not line.startswith('[') and line.strip():
                 # Set fields from field_dict if this section has one

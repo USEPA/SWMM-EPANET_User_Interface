@@ -30,15 +30,15 @@ class frmInterfaceFiles(QtGui.QMainWindow, Ui_frmInterfaceFiles):
     def cmdOK_Clicked(self):
         section = self._parent.project.files
         section.use_rainfall = self.txtUseRainfall.text()
-        section.save_rainfall = self.txtSaveRainfall.Text()
-        section.use_runoff = self.txtUseRunoff.Text()
-        section.save_runoff = self.txtSaveRunoff.Text()
-        section.use_hotstart = self.txtUseHotstart.Text()
-        section.save_hotstart = self.txtSaveHotstart.Text()
-        section.use_rdii = self.txtUseRDII.Text()
-        section.save_rdii = self.txtSaveRDII.Text()
-        section.use_inflows = self.txtUseInflows.Text()
-        section.save_outflows = self.txtSaveOutflows.Text()
+        section.save_rainfall = self.txtSaveRainfall.text()
+        section.use_runoff = self.txtUseRunoff.text()
+        section.save_runoff = self.txtSaveRunoff.text()
+        section.use_hotstart = self.txtUseHotstart.text()
+        section.save_hotstart = self.txtSaveHotstart.text()
+        section.use_rdii = self.txtUseRDII.text()
+        section.save_rdii = self.txtSaveRDII.text()
+        section.use_inflows = self.txtUseInflows.text()
+        section.save_outflows = self.txtSaveOutflows.text()
         self.close()
 
     def cmdCancel_Clicked(self):

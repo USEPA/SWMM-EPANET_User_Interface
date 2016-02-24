@@ -4,6 +4,7 @@ import core.epanet.project
 import core.epanet.options.backdrop
 from enum import Enum
 from ui.EPANET.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
+import ui.convenience
 
 
 class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
@@ -12,8 +13,7 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         # TODO: Move this and same version from frmHydraulicsOptions to a shared location
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        frmMapBackdropOptions.set_combo_items(core.epanet.options.backdrop.BackdropUnits, self.cboMapUnits)
-        self.cboMapUnits.addItems(("FEET", "METERS", "DEGREES", "NONE"))
+        ui.convenience.set_combo_items(core.epanet.options.backdrop.BackdropUnits, self.cboMapUnits)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.set_from(parent.project)
@@ -29,7 +29,7 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         self.txtLLY.setText(str(backdrop_options.dimensions[1]))
         self.txtURX.setText(str(backdrop_options.dimensions[2]))
         self.txtURY.setText(str(backdrop_options.dimensions[3]))
-        frmMapBackdropOptions.set_combo(self.cboMapUnits, backdrop_options.units)
+        ui.convenience.set_combo(self.cboMapUnits, backdrop_options.units)
         section = project.find_section("OPTIONS")
         self.txtMapFile.setText(str(project.options.map))
 

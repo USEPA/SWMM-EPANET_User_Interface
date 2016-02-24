@@ -161,7 +161,7 @@ class Section(object):
         txt = self._get_text_field_dict()
         if txt:
             return txt
-        if isinstance(self.value, basestring):
+        if isinstance(self.value, basestring) and len(self.value) > 0:
             return self.value
         elif isinstance(self.value, (list, tuple)):
             text_list = [self.name]

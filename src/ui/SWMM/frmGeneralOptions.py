@@ -79,8 +79,6 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         section = self._parent.project.report
         section.controls = self.cbxReportControl.isChecked()
         section.input = self.cbxReportInput.isChecked()
-        with open(self._parent.project.file_name + ".GeneralOk.txt", 'w') as writer:
-            writer.writelines(self._parent.project.get_text())
         self.close()
 
     def cmdCancel_Clicked(self):

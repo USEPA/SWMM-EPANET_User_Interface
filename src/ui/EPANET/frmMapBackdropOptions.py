@@ -41,8 +41,6 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         backdrop_options.units = core.epanet.options.backdrop.BackdropUnits[self.cboMapUnits.currentText()]
         options = self._parent.project.options
         options.map = self.txtMapFile.text()
-        with open(self._parent.project.file_name + ".BackdropOk.txt", 'w') as writer:
-            writer.writelines(self._parent.project.get_text())
         self.close()
 
     def cmdCancel_Clicked(self):

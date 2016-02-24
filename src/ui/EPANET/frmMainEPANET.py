@@ -1,45 +1,23 @@
 import os, sys
-
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from src.ui.embed_ipython_new import EmbedIPython
-#from src.ui.ui_utility import EmbedMap
-from src.ui.ui_utility import *
-from src.ui.model_utility import *
+from ui.ui_utility import *
 
 from PyQt4 import QtCore, QtGui
-from src.ui.frmMain import frmMain
-from src.ui.EPANET.frmEnergyOptions import frmEnergyOptions
-from src.ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
-from src.ui.EPANET.frmMapBackdropOptions import frmMapBackdropOptions
-from src.ui.EPANET.frmQualityOptions import frmQualityOptions
-from src.ui.EPANET.frmReactionsOptions import frmReactionsOptions
-from src.ui.EPANET.frmReportOptions import frmReportOptions
-from src.ui.EPANET.frmTimesOptions import frmTimesOptions
-from src.ui.EPANET.frmTitle import frmTitle
-from src.ui.model_utility import *
-import pymsgbox
-from core.coordinates import *
-from core.inputfile import *
+from ui.frmMain import frmMain
+from ui.EPANET.frmEnergyOptions import frmEnergyOptions
+from ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
+from ui.EPANET.frmMapBackdropOptions import frmMapBackdropOptions
+from ui.EPANET.frmQualityOptions import frmQualityOptions
+from ui.EPANET.frmReactionsOptions import frmReactionsOptions
+from ui.EPANET.frmReportOptions import frmReportOptions
+from ui.EPANET.frmTimesOptions import frmTimesOptions
+from ui.EPANET.frmTitle import frmTitle
+from ui.model_utility import *
 from core.epanet.project import Project
-from core.epanet.title import *
-from core.epanet.curves import *
-from core.epanet.labels import *
-from core.epanet.patterns import *
-from core.epanet.vertex import *
-from core.epanet.options import *
-from core.epanet.hydraulics import *
 
-_frmEnergyOptions = None
-_frmHydraulicsOptions = None
-_frmMapBackdropOptions = None
-_frmQualityOptions = None
-_frmReactionsOptions = None
-_frmReportOptions = None
-_frmTimesOptions = None
-_frmTitle = None
 
 class frmMainEPANET(frmMain):
     def __init__(self, parent=None, *args):
@@ -54,62 +32,73 @@ class frmMainEPANET(frmMain):
         self.model = 'EPANET'
         self.on_load(model=self.model)
 
+        self._frmEnergyOptions = None
+        self._frmHydraulicsOptions = None
+        self._frmMapBackdropOptions = None
+        self._frmQualityOptions = None
+        self._frmReactionsOptions = None
+        self._frmReportOptions = None
+        self._frmTimesOptions = None
+        self._frmTitle = None
+
     def std_newproj(self):
         pass
 
     def std_openproj(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.net *.inp)')
-        if len(filename) > 0:
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", "", "Inp files (*.inp);;All files (*.*)")
+        if file_name:
             self.project = Project()
             try:
-                self.project.read_file(filename)
+                self.project.read_file(file_name)
                 self.load_model(self.model)
             except:
                 self.project = None
         pass
 
     def proj_save(self):
-        pymsgbox.alert('Saving EPANET')
-        pass
+        with open(self.project.file_name, 'w') as writer:
+            writer.writelines(self.project.get_text())
 
     def proj_save_as(self):
-        pymsgbox.alert("save as EPANET")
-        pass
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "", "Inp files (*.inp)")
+        if file_name:
+            with open(file_name, 'w') as writer:
+                writer.writelines(self.project.get_text())
+                self.project.file_name = file_name
 
     def edit_options(self, itm, column):
-        global _frmEnergyOptions
         if self.project == None:
              return
 
         if itm.data(0, 0) == 'Energy':
-            _frmEnergyOptions = frmEnergyOptions(self)
-            _frmEnergyOptions.show()
+            self._frmEnergyOptions = frmEnergyOptions(self)
+            self._frmEnergyOptions.show()
         if itm.data(0, 0) == 'Hydraulics':
-            _frmHydraulicsOptions = frmHydraulicsOptions(self)
-            _frmHydraulicsOptions.show()
+            self._frmHydraulicsOptions = frmHydraulicsOptions(self)
+            self._frmHydraulicsOptions.show()
         if itm.data(0, 0) == 'Map/Backdrop':
-            _frmMapBackdropOptions = frmMapBackdropOptions(self)
-            _frmMapBackdropOptions.show()
+            self._frmMapBackdropOptions = frmMapBackdropOptions(self)
+            self._frmMapBackdropOptions.show()
         if itm.data(0, 0) == 'Quality':
-            _frmQualityOptions = frmQualityOptions(self)
-            _frmQualityOptions.show()
+            self._frmQualityOptions = frmQualityOptions(self)
+            self._frmQualityOptions.show()
         if itm.data(0, 0) == 'Reactions':
-            _frmReactionsOptions = frmReactionsOptions(self)
-            _frmReactionsOptions.show()
+            self._frmReactionsOptions = frmReactionsOptions(self)
+            self._frmReactionsOptions.show()
         if itm.data(0, 0) == 'Report':
-            _frmReportOptions = frmReportOptions(self)
-            _frmReportOptions.show()
+            self._frmReportOptions = frmReportOptions(self)
+            self._frmReportOptions.show()
         if itm.data(0, 0) == 'Times':
-            _frmTimesOptions = frmTimesOptions(self)
-            _frmTimesOptions.show()
+            self._frmTimesOptions = frmTimesOptions(self)
+            self._frmTimesOptions.show()
         if itm.data(0, 0) == 'Title/Notes':
-            _frmTitle = frmTitle(self)
-            _frmTitle.show()
+            self._frmTitle = frmTitle(self)
+            self._frmTitle.show()
 
         # mitm = itm
         # if self.project == None or mitm.data(0, 0) != 'Options':
         #     return
-        # from src.ui.frmOptions import frmOptions
+        # from ui.frmOptions import frmOptions
         # dlg = frmOptions(self, self.project.options)
         # dlg.show()
         # result = dlg.exec_()

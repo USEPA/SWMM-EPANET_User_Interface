@@ -1,49 +1,22 @@
 import os, sys
-
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from src.ui.embed_ipython_new import EmbedIPython
-#from src.ui.ui_utility import EmbedMap
-from src.ui.ui_utility import *
-from src.ui.model_utility import *
+from ui.ui_utility import *
+from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
-from src.ui.frmMain import frmMain
-from src.ui.SWMM.frmDates import frmDates
-from src.ui.SWMM.frmDynamicWave import frmDynamicWave
-from src.ui.SWMM.frmMapBackdropOptions import frmMapBackdropOptions
-from src.ui.SWMM.frmGeneralOptions import frmGeneralOptions
-from src.ui.SWMM.frmInterfaceFiles import frmInterfaceFiles
-from src.ui.SWMM.frmReportOptions import frmReportOptions
-from src.ui.SWMM.frmTimeSteps import frmTimeSteps
-from src.ui.SWMM.frmTitle import frmTitle
-#from IPython import embed
-#from RestrictedPython import compile_restricted
-#import py_compile
-import pymsgbox
-import imp
-from qgis.core import *
-from qgis.gui import *
-from core.coordinates import *
-from core.inputfile import *
+from ui.frmMain import frmMain
+from ui.SWMM.frmDates import frmDates
+from ui.SWMM.frmDynamicWave import frmDynamicWave
+from ui.SWMM.frmMapBackdropOptions import frmMapBackdropOptions
+from ui.SWMM.frmGeneralOptions import frmGeneralOptions
+from ui.SWMM.frmInterfaceFiles import frmInterfaceFiles
+from ui.SWMM.frmReportOptions import frmReportOptions
+from ui.SWMM.frmTimeSteps import frmTimeSteps
+from ui.SWMM.frmTitle import frmTitle
 from core.swmm.project import Project
-from core.epanet.title import *
-from core.epanet.curves import *
-from core.epanet.labels import *
-from core.epanet.patterns import *
-from core.epanet.vertex import *
-from core.epanet.options import *
-from core.epanet.hydraulics import *
 
-_frmDates = None
-_frmDynamicWave = None
-_frmMapBackdropOptions = None
-_frmGeneralOptions = None
-_frmInterfaceFiles = None
-_frmReportOptions = None
-_frmTimeSteps = None
-_frmTitle = None
 
 class frmMainSWMM(frmMain):
     def __init__(self, parent=None, *args):
@@ -57,58 +30,68 @@ class frmMainSWMM(frmMain):
         self.model = 'SWMM'
         self.on_load(model=self.model)
 
+        self._frmDates = None
+        self._frmDynamicWave = None
+        self._frmMapBackdropOptions = None
+        self._frmGeneralOptions = None
+        self._frmInterfaceFiles = None
+        self._frmReportOptions = None
+        self._frmTimeSteps = None
+        self._frmTitle = None
+
     def std_newproj(self):
         pass
 
     def std_openproj(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.net *.inp)')
-        if len(filename) > 0:
-           if os.path.splitext(filename)[1] == '.inp':
-                self.model = 'SWMM'
-           self.project = Project()
-           try:
-               self.project.read_file(filename)
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", "", "Inp files (*.inp);;All files (*.*)")
+        if file_name:
+            self.project = Project()
+            try:
+               self.project.read_file(file_name)
                self.load_model(self.model)
-           except:
+            except:
                self.project = None
         pass
 
     def proj_save(self):
-        pymsgbox.alert('Saving SWMM.')
-        pass
+        with open(self.project.file_name, 'w') as writer:
+            writer.writelines(self.project.get_text())
 
     def proj_save_as(self):
-        pymsgbox.alert("save as SWMM")
-        pass
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "", "Inp files (*.inp)")
+        if file_name:
+            with open(file_name, 'w') as writer:
+                writer.writelines(self.project.get_text())
+                self.project.file_name = file_name
 
     def edit_options(self, itm, column):
-        # if self.project == None:
-        #     return
+        if self.project == None:
+            return
 
         if itm.data(0, 0) == 'Dates':
-            _frmDates = frmDates(self)
-            _frmDates.show()
+            self._frmDates = frmDates(self)
+            self._frmDates.show()
         if itm.data(0, 0) == 'Dynamic Wave':
-            _frmDynamicWave = frmDynamicWave(self)
-            _frmDynamicWave.show()
+            self._frmDynamicWave = frmDynamicWave(self)
+            self._frmDynamicWave.show()
         if itm.data(0, 0) == 'Map/Backdrop':
-            _frmMapBackdropOptions = frmMapBackdropOptions(self)
-            _frmMapBackdropOptions.show()
+            self._frmMapBackdropOptions = frmMapBackdropOptions(self)
+            self._frmMapBackdropOptions.show()
         if itm.data(0, 0) == 'General':
-            _frmGeneralOptions = frmGeneralOptions(self)
-            _frmGeneralOptions.show()
+            self._frmGeneralOptions = frmGeneralOptions(self)
+            self._frmGeneralOptions.show()
         if itm.data(0, 0) == 'Interface Files':
-            _frmInterfaceFiles = frmInterfaceFiles(self)
-            _frmInterfaceFiles.show()
+            self._frmInterfaceFiles = frmInterfaceFiles(self)
+            self._frmInterfaceFiles.show()
         if itm.data(0, 0) == 'Reporting':
-            _frmReportOptions = frmReportOptions(self)
-            _frmReportOptions.show()
+            self._frmReportOptions = frmReportOptions(self)
+            self._frmReportOptions.show()
         if itm.data(0, 0) == 'Time Steps':
-            _frmTimeSteps = frmTimeSteps(self)
-            _frmTimeSteps.show()
+            self._frmTimeSteps = frmTimeSteps(self)
+            self._frmTimeSteps.show()
         if itm.data(0, 0) == 'Title/Notes':
-            _frmTitle = frmTitle(self)
-            _frmTitle.show()
+            self._frmTitle = frmTitle(self)
+            self._frmTitle.show()
 
     def on_load(self, **kwargs):
         self.obj_tree = ObjectTreeView(model=kwargs['model'])

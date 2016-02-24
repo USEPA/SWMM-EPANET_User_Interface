@@ -6,6 +6,12 @@ from test_title import SimpleTitleTest
 # from test_patterns import SimplePatternTest
 from test_project import ProjectTest
 from test_options_general import OptionsGeneralTest
+from test_options_backdrop import OptionsBackdropTest
+from test_options_dates import OptionsDatesTest
+from test_options_dynamicwave import OptionsDynamicWaveTest
+from test_options_interfacefiles import OptionsInterfaceFilesTest
+from test_options_reporting import OptionsReportingTest
+from test_options_timesteps import OptionsTimestepTest
 # from test_curves import SimpleCurveTest
 # from test_energy import SimpleEnergyTest
 
@@ -13,14 +19,15 @@ my_suite = unittest.TestSuite()
 
 # for MTP 1:
 my_suite.addTest(SimpleTitleTest())
-# my_suite.addTest(SimpleOptionsTest())
-# my_suite.addTest(SimpleReactionsTest())
-# my_suite.addTest(SimpleTimesTest())
-# my_suite.addTest(SimpleEnergyTest())
-# my_suite.addTest(SimpleReportTest())
-# my_suite.addTest(SimpleBackdropTest())
-my_suite.addTest(ProjectTest())
 my_suite.addTest(OptionsGeneralTest())
+my_suite.addTest(OptionsDatesTest())
+my_suite.addTest(OptionsTimestepTest())
+my_suite.addTest(OptionsDynamicWaveTest())
+my_suite.addTest(OptionsInterfaceFilesTest())
+my_suite.addTest(OptionsReportingTest())
+my_suite.addTest(OptionsBackdropTest())
+my_suite.addTest(ProjectTest())
+
 
 # will need for later MTPs:
 # my_suite.addTest(SimplePatternTest())

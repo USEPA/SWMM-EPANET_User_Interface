@@ -51,8 +51,10 @@ class frmMainEPANET(frmMain):
             try:
                 self.project.read_file(file_name)
                 self.load_model(self.model)
+                self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
             except:
                 self.project = None
+                self.setWindowTitle(self.model)
         pass
 
     def proj_save(self):

@@ -123,6 +123,47 @@ class OptionsGeneralTest(unittest.TestCase):
             assert options.dynamic_wave.min_surface_area == int(current_text[19])
             assert options.compatibility == int(current_text[20])
 
+        expected_text = "[OPTIONS]\n" + \
+                        " IGNORE_GROUNDWATER 	NO\n" + \
+                        " IGNORE_QUALITY     	NO\n" + \
+                        " IGNORE_ROUTING     	NO\n" + \
+                        " LINK_OFFSETS       	DEPTH\n" + \
+                        " FLOW_UNITS         	MGD\n" + \
+                        " INFILTRATION       	GREEN_AMPT\n" + \
+                        " ALLOW_PONDING      	YES\n" + \
+                        " IGNORE_SNOWMELT    	NO\n" + \
+                        " IGNORE_RDII        	NO\n" + \
+                        " IGNORE_RAINFALL    	NO\n" + \
+                        " COMPATIBILITY      	4\n" + \
+                        " FLOW_ROUTING       	DYNWAVE\n" + \
+                        " END_TIME           	12:30:00\n" + \
+                        " END_DATE           	02/04/2000\n" + \
+                        " SWEEP_END          	12/31\n" + \
+                        " START_TIME         	00:01:00\n" + \
+                        " DRY_DAYS           	4\n" + \
+                        " REPORT_START_TIME  	00:02:00\n" + \
+                        " START_DATE         	02/02/2000\n" + \
+                        " SWEEP_START        	1/1\n" + \
+                        " REPORT_START_DATE  	02/03/2000\n" + \
+                        " SKIP_STEADY_STATE  	NO\n" + \
+                        " LAT_FLOW_TOL       	5\n" + \
+                        " DRY_STEP           	01:30:00\n" + \
+                        " REPORT_STEP        	02:00:00\n" + \
+                        " WET_STEP           	00:30:00\n" + \
+                        " SYS_FLOW_TOL       	5\n" + \
+                        " ROUTING_STEP       	00:02:00\n" + \
+                        " LENGTHENING_STEP   	1.0\n" + \
+                        " VARIABLE_STEP      	0.6\n" + \
+                        " INERTIAL_DAMPING   	PARTIAL\n" + \
+                        " FORCE_MAIN_EQUATION	HW\n" + \
+                        " NORMAL_FLOW_LIMITED	BOTH\n" + \
+                        " MAX_TRIALS         	8\n" + \
+                        " MIN_SURFAREA       	2.0\n" + \
+                        " HEAD_TOLERANCE     	0.005\n" + \
+                        " THREADS            	1\n" + \
+                        " MINIMUM_STEP       	0.5"
 
+        actual_text = options.get_text()
+        assert actual_text == expected_text
 
 

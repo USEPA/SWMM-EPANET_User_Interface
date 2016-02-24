@@ -10,6 +10,8 @@ class Options(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
+    section_comments = (";; Hydraulics", ";; Water Quality")
+
     def __init__(self):
         Section.__init__(self)
 
@@ -25,12 +27,14 @@ class Options(Section):
     def get_text(self):
         """Contents of this item formatted for writing to file"""
         text_list = [self.SECTION_NAME]
-        if self.hydraulics is not None:
-            text_list.append(self.hydraulics.get_text())
-        if self.quality is not None:
-            text_list.append(self.quality.get_text())
         if self.map:
             text_list.append(" MAP                \t" + self.map)
+        if self.hydraulics is not None:
+            text_list.append(Options.section_comments[0])
+            text_list.append(self.hydraulics.get_text())
+        if self.quality is not None:
+            text_list.append(Options.section_comments[1])
+            text_list.append(self.quality.get_text())
         return '\n'.join(text_list)
 
     def set_text(self, new_text):

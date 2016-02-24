@@ -180,21 +180,30 @@ class Section(object):
             text_list = []
             if self.name and self.name.startswith('['):
                 text_list.append(self.name)
+            if self.comment:
+                text_list.append(self.comment)
             for label, attr_name in self.field_dict.items():
-                if label and attr_name and hasattr(self, attr_name):
-                    attr_value = getattr(self, attr_name)
-                    if isinstance(attr_value, Enum):
-                        attr_value = attr_value.name
-                    if isinstance(attr_value, bool):
-                        if attr_value:
-                            attr_value = "YES"
-                        else:
-                            attr_value = "NO"
-                    if attr_value:
-                        text_list.append(self.field_format.format(label, attr_value))
+                attr_line = self._get_attr_line(label, attr_name)
+                if attr_line:
+                    text_list.append(attr_line)
             if text_list:
                 return '\n'.join(text_list)
         return ''  # Did not find field values from field_dict to return
+
+    def _get_attr_line(self, label, attr_name):
+        if label and attr_name and hasattr(self, attr_name):
+            attr_value = getattr(self, attr_name)
+            if isinstance(attr_value, Enum):
+                attr_value = attr_value.name.replace('_', '-')
+            if isinstance(attr_value, bool):
+                if attr_value:
+                    attr_value = "YES"
+                else:
+                    attr_value = "NO"
+            if attr_value or attr_value == 0:
+                return (self.field_format.format(label, attr_value))
+        else:
+            return None
 
     def set_text(self, new_text):
         """Read properties from text.

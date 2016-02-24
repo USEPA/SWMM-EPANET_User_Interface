@@ -23,6 +23,7 @@ class  OptionsDatesTest(unittest.TestCase):
                         " END_DATE           	1/1/2002\n" + \
                         " SWEEP_END          	12/31\n" + \
                         " START_TIME         	0:00\n" + \
+                        " DRY_DAYS           	0\n" + \
                         " REPORT_START_TIME  	0:00\n" + \
                         " START_DATE         	1/1/2002\n" + \
                         " SWEEP_START        	1/1\n" + \

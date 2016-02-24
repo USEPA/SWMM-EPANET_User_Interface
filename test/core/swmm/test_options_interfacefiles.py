@@ -23,9 +23,9 @@ class  OptionsInterfaceFilesTest(unittest.TestCase):
         actual_text = self.my_options.get_text()
         assert actual_text == expected_text
 
-        self.my_options.save_outflows = "saveoutflows.txt"
+        self.my_options.save_outflows = "save_outflows.txt"
 
-        expected_text = "saveoutflows.txt"
+        expected_text = "SAVE  OUTFLOWS  save_outflows.txt"
 
         actual_text = self.my_options.get_text()
         assert actual_text == expected_text

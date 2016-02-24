@@ -19,10 +19,13 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
         assert name == "[OPTIONS]"
 
         expected_text = "[OPTIONS]\n" + \
+                        " LENGTHENING_STEP   	0.0\n" + \
+                        " VARIABLE_STEP      	0.0\n" + \
                         " INERTIAL_DAMPING   	NONE\n" + \
                         " FORCE_MAIN_EQUATION	HW\n" + \
                         " NORMAL_FLOW_LIMITED	BOTH\n" + \
                         " MAX_TRIALS         	8\n" + \
+                        " MIN_SURFAREA       	0.0\n" + \
                         " HEAD_TOLERANCE     	0.005\n" + \
                         " THREADS            	1\n" + \
                         " MINIMUM_STEP       	0.5"

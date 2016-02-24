@@ -58,9 +58,10 @@ class SimpleOptionsTest(unittest.TestCase):
                         " CHECKFREQ          	2\n" + \
                         " Specific Gravity   	1.0\n" + \
                         " Pattern            	1\n" + \
-                        " Units              	FlowUnits.CFS\n" + \
+                        " Units              	CFS\n" + \
                         " Accuracy           	0.001\n" + \
-                        " Headloss           	HeadLoss.H_W"
+                        " Headloss           	H-W"
+
         actual_text = self.my_HydraulicsOptions.get_text()
         assert actual_text == expected_text
 

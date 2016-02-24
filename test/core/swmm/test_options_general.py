@@ -129,6 +129,7 @@ class OptionsGeneralTest(unittest.TestCase):
                         " IGNORE_ROUTING     	NO\n" + \
                         " LINK_OFFSETS       	DEPTH\n" + \
                         " FLOW_UNITS         	MGD\n" + \
+                        " MIN_SLOPE          	0.0\n" + \
                         " INFILTRATION       	GREEN_AMPT\n" + \
                         " ALLOW_PONDING      	YES\n" + \
                         " IGNORE_SNOWMELT    	NO\n" + \

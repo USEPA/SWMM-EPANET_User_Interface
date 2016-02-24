@@ -121,13 +121,12 @@ class HydraulicsOptions(Section):
                     attr_value = "STOP"
                 else:
                     attr_value = "Continue " + str(self.unbalanced_continue)
-
-            elif label and attr_name and hasattr(self, attr_name):
-                attr_value = str(getattr(self, attr_name))
-
             if attr_value:
                 text_list.append(self.field_format.format(label, attr_value))
-
+            else:
+                attr_line = self._get_attr_line(label, attr_name)
+                if attr_line:
+                    text_list.append(attr_line)
         return '\n'.join(text_list)
 
     def set_text(self, new_text):

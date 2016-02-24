@@ -40,15 +40,26 @@ class Reactions(Section):
         self.roughness_correlation = 0.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
 
-        def set_text(self, new_text):
-            """Read properties from text.
-                Args:
-                    new_text (str): Text to parse into properties.
-            """
-            zero_pos = new_text.upper().find("ZERO")  # Replace "zero" with numeral if it appears, any capitalization
-            if zero_pos >= 0:
-                new_text = new_text[:zero_pos] + '0' + new_text[zero_pos + len("ZERO"):]
-            Section.set_text(self, new_text)
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if self.comment and self.comment.upper().startswith(";TYPE"):
+            # TODO: implement reactions table as list of reactions
+            return self.value
+        else:
+            return Section.get_text(self)
+
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        zero_pos = new_text.upper().find("ZERO")  # Replace "zero" with numeral if it appears, any capitalization
+        if zero_pos >= 0:
+            new_text = new_text[:zero_pos] + '0' + new_text[zero_pos + len("ZERO"):]
+        Section.set_text(self, new_text)
+        if self.comment and self.comment.upper().startswith(";TYPE"):
+            # TODO: implement reactions table as list of reactions
+            self.value = new_text
 
 
 

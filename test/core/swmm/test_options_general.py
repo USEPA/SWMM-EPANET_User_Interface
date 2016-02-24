@@ -136,6 +136,7 @@ class OptionsGeneralTest(unittest.TestCase):
                         " IGNORE_RAINFALL    	NO\n" + \
                         " COMPATIBILITY      	4\n" + \
                         " FLOW_ROUTING       	DYNWAVE\n" + \
+                        ";; Dates\n" + \
                         " END_TIME           	12:30:00\n" + \
                         " END_DATE           	02/04/2000\n" + \
                         " SWEEP_END          	12/31\n" + \
@@ -145,6 +146,7 @@ class OptionsGeneralTest(unittest.TestCase):
                         " START_DATE         	02/02/2000\n" + \
                         " SWEEP_START        	1/1\n" + \
                         " REPORT_START_DATE  	02/03/2000\n" + \
+                        ";; Time Steps\n" + \
                         " SKIP_STEADY_STATE  	NO\n" + \
                         " LAT_FLOW_TOL       	5\n" + \
                         " DRY_STEP           	01:30:00\n" + \
@@ -152,6 +154,7 @@ class OptionsGeneralTest(unittest.TestCase):
                         " WET_STEP           	00:30:00\n" + \
                         " SYS_FLOW_TOL       	5\n" + \
                         " ROUTING_STEP       	00:02:00\n" + \
+                        ";; Dynamic Wave\n" + \
                         " LENGTHENING_STEP   	1.0\n" + \
                         " VARIABLE_STEP      	0.6\n" + \
                         " INERTIAL_DAMPING   	PARTIAL\n" + \

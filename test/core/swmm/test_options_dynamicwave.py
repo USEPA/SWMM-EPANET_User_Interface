@@ -22,7 +22,7 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
                         " LENGTHENING_STEP   	0.0\n" + \
                         " VARIABLE_STEP      	0.0\n" + \
                         " INERTIAL_DAMPING   	NONE\n" + \
-                        " FORCE_MAIN_EQUATION	HW\n" + \
+                        " FORCE_MAIN_EQUATION	H-W\n" + \
                         " NORMAL_FLOW_LIMITED	BOTH\n" + \
                         " MAX_TRIALS         	8\n" + \
                         " MIN_SURFAREA       	0.0\n" + \

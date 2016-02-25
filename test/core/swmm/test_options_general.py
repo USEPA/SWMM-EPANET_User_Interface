@@ -159,7 +159,7 @@ class OptionsGeneralTest(unittest.TestCase):
                         " LENGTHENING_STEP   	1.0\n" + \
                         " VARIABLE_STEP      	0.6\n" + \
                         " INERTIAL_DAMPING   	PARTIAL\n" + \
-                        " FORCE_MAIN_EQUATION	HW\n" + \
+                        " FORCE_MAIN_EQUATION	H-W\n" + \
                         " NORMAL_FLOW_LIMITED	BOTH\n" + \
                         " MAX_TRIALS         	8\n" + \
                         " MIN_SURFAREA       	2.0\n" + \
@@ -169,5 +169,4 @@ class OptionsGeneralTest(unittest.TestCase):
 
         actual_text = options.get_text()
         assert actual_text == expected_text
-
 

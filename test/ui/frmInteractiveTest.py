@@ -1,54 +1,48 @@
 import sys
+import PyQt4.Qt as Qt
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
 
-try:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, QtGui.QApplication.UnicodeUTF8)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
-
-
-class frmInteractiveTest(QtGui.QMainWindow):
+class frmInteractiveTest(QtGui.QDialog):
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
-        self.resize(400, 300)
-        self.verticalLayoutWidget = QtGui.QWidget(self)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 401, 301))
-        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.listWidget = QtGui.QListWidget(self.verticalLayoutWidget)
-        self.listWidget.setObjectName(_fromUtf8("listWidget"))
-        self.verticalLayout.addWidget(self.listWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(self.verticalLayoutWidget)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.verticalLayout.addWidget(self.buttonBox)
-
-        self.retranslateUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QtGui.QDialog.__init__(self, parent)
         self._parent = parent
+        self.resize(400, 800)
 
-    def accept(self):
-        pass
+        self.list_view = QtGui.QListView()
+        self.model = QtGui.QStandardItemModel()
+        self.ok_button = QtGui.QPushButton("OK")
+        self.skip_button = QtGui.QPushButton("Skip")
 
-    def reject(self):
+        self.ok_button.clicked.connect(self.clicked_ok)
+        self.skip_button.clicked.connect(self.clicked_skip)
+
+        layout = QtGui.QVBoxLayout()
+
+        layout.addWidget(self.list_view, 1)
+        layout.addWidget(self.ok_button, 0)
+        layout.addWidget(self.skip_button, 0)
+        self.setLayout(layout)
+        self.OK = False
+
+    def set_list(self, list_items):
+        self.model = QtGui.QStandardItemModel()
+
+        for item_text in list_items:
+            item = QtGui.QStandardItem(item_text)
+            item.setCheckState(Qt.Qt.Unchecked)
+            item.setCheckable(True)
+            self.model.appendRow(item)
+        self.list_view.setModel(self.model)
+
+    def clicked_ok(self):
+        self.OK = True
         self.close()
 
-    def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog", None))
+    def clicked_skip(self):
+        self.OK = False
+        self.close()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

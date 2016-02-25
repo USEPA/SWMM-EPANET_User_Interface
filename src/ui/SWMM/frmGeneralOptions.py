@@ -17,6 +17,7 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         # section = core.swmm.options.general.General()
         section = project.options
         self.cbxRainfallRunoff.setChecked(not section.ignore_rainfall)
+        self.cbxRainfallII.setChecked(not section.ignore_rdii)
         self.cbxSnowmelt.setChecked(not section.ignore_snowmelt)
         self.cbxGroundwater.setChecked(not section.ignore_groundwater)
         self.cbxWaterQuality.setChecked(not section.ignore_quality)

@@ -67,6 +67,7 @@ class frmMainEPANET(frmMain):
             with open(file_name, 'w') as writer:
                 writer.writelines(self.project.get_text())
                 self.project.file_name = file_name
+                self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
 
     def edit_options(self, itm, column):
         if self.project == None:

@@ -6,8 +6,23 @@ class Files(Section):
 
     SECTION_NAME = "[FILES]"
 
+    field_dict = {
+     "USE RAINFALL": "use_rainfall",
+     "SAVE RAINFALL": "save_rainfall",
+     "USE RUNOFF": "use_runoff",
+     "SAVE RUNOFF": "save_runoff",
+     "USE HOTSTART": "use_hotstart",
+     "SAVE HOTSTART": "save_hotstart",
+     "USE RDII": "use_rdii",
+     "SAVE RDII": "save_rdii",
+     "USE INFLOWS": "use_inflows",
+     "SAVE OUTFLOWS": "save_outflows"}
+    """Mapping from label used in file to field name"""
+
     def __init__(self):
         Section.__init__(self)
+        self.comment = ";;Interfacing Files"
+
         self.use_rainfall = None
         """Name of rainfall data file to use"""
 
@@ -37,4 +52,3 @@ class Files(Section):
 
         self.save_outflows = None
         """Name of outflows data file to save"""
-

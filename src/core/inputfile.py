@@ -200,6 +200,8 @@ class Section(object):
                     attr_value = "YES"
                 else:
                     attr_value = "NO"
+            if isinstance(attr_value, list):
+                attr_value = ' '.join(attr_value)
             if attr_value or attr_value == 0:
                 return (self.field_format.format(label, attr_value))
         else:
@@ -210,6 +212,7 @@ class Section(object):
             Args:
                 new_text (str): Text to parse into properties.
         """
+        self.__init__()  # Reset all values to defaults
         self.value = new_text
         for line in new_text.splitlines():
             self.set_text_line(line)

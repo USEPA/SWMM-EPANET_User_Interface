@@ -34,7 +34,7 @@ class BackdropOptions(Section):
         if self.dimensions:
             text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",
                              self.dimensions[0], self.dimensions[1], self.dimensions[2], self.dimensions[3]))
-        if self.units:
+        if self.units is not None:
             if isinstance(self.units, Enum):
                 units_name = self.units.name
             else:

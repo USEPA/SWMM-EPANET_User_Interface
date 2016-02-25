@@ -61,7 +61,7 @@ class Report(Section):
                     attr_value = attr_value.split()
                     existing_value = getattr(self, attr_name, Report.EMPTY_LIST)
                     if existing_value != Report.EMPTY_LIST:  # include values already set on other lines
-                        attr_value.extend(existing_value)
+                        attr_value = existing_value + attr_value
                 self.setattr_keep_type(attr_name, attr_value)
 
 

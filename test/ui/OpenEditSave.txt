@@ -1,0 +1,9 @@
+Launch SWMM
+
+Open project Example1.inp
+
+Edit Title
+
+Save project Example1-Edited.inp
+
+Manually verify that TITLE section in Example1-Edited.inp reflects edits

@@ -19,8 +19,14 @@ class OptionsReportingTest(unittest.TestCase):
         assert name == "[REPORT]"
 
         expected_text = "[REPORT]\n" + \
+                        ";;Reporting Options\n" + \
+                        " CONTINUITY         	YES\n" + \
+                        " LINKS              	NONE\n" + \
+                        " CONTROLS           	NO\n" + \
+                        " FLOWSTATS          	YES\n" + \
+                        " SUBCATCHMENTS      	NONE\n" + \
                         " INPUT              	NO\n" + \
-                        " CONTROLS           	NO"
+                        " NODES              	NONE"
 
         actual_text = self.my_options.get_text()
         assert actual_text == expected_text

@@ -19,8 +19,8 @@ class NormalFlowLimited(Enum):
 
 class ForceMainEquation(Enum):
     """Equation to be used for friction losses"""
-    HW = 1
-    DW = 2
+    H_W = 1
+    D_W = 2
 
 
 class DynamicWave(core.inputfile.Section):
@@ -58,7 +58,7 @@ class DynamicWave(core.inputfile.Section):
         is supercritical and should thus be limited to the normal flow
         """
 
-        self.force_main_equation = ForceMainEquation.HW
+        self.force_main_equation = ForceMainEquation.H_W
         """
         Establishes whether the Hazen-Williams (H-W) or the Darcy-Weisbach (D-W) equation will be used to
         compute friction losses for pressurized flow in conduits that have been assigned a Circular Force

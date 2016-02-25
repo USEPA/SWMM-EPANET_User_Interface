@@ -28,9 +28,9 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         if section.inertial_damping == core.swmm.options.dynamic_wave.InertialDamping.NONE:
             self.cboInertial.setCurrentIndex(0)
 
-        if section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.HW:
+        if section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
             self.cboForce.setCurrentIndex(0)
-        if section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.DW:
+        if section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
             self.cboForce.setCurrentIndex(1)
 
         if section.normal_flow_limited == core.swmm.options.dynamic_wave.NormalFlowLimited.SLOPE:
@@ -62,9 +62,9 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
             section.inertial_damping = core.swmm.options.dynamic_wave.InertialDamping.NONE
 
         if self.cboForce.currentIndex() == 0:
-            section.force_main_equation = core.swmm.options.dynamic_wave.ForceMainEquation.HW
+            section.force_main_equation = core.swmm.options.dynamic_wave.ForceMainEquation.H_W
         if self.cboForce.currentIndex() == 1:
-            section.force_main_equation = core.swmm.options.dynamic_wave.ForceMainEquation.DW
+            section.force_main_equation = core.swmm.options.dynamic_wave.ForceMainEquation.D_W
 
         if self.cboNormal.currentIndex() == 0:
             section.normal_flow_limited = core.swmm.options.dynamic_wave.NormalFlowLimited.SLOPE

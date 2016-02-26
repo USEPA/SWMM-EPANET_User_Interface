@@ -29,8 +29,8 @@ class InputFile(object):
     def read_file(self, file_name):
         try:
             with open(file_name, 'r') as inp_reader:
-                self.file_name = file_name
                 self.set_from_text_lines(iter(inp_reader))
+                self.file_name = file_name
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
@@ -39,6 +39,7 @@ class InputFile(object):
             Args:
                 lines_iterator (iterator): Produces lines of text formatted as input file.
         """
+        self.__init__()
         section_index = 1
         section_name = ""
         section_whole = ""
@@ -65,20 +66,26 @@ class InputFile(object):
         except:
             section_attr = None
 
+        new_section = self.find_section(section_name)
+
         if section_attr is None:  # if there is not a class associated with this name, read it as generic Section
-            new_section = Section()
-            new_section.name = section_name
-            new_section.index = section_index
-            new_section.value = section_text
-            new_section.value_original = section_text
-        else:
-            section_class = type(section_attr)
-            if section_class is list:
+            if new_section is None:
                 new_section = Section()
                 new_section.name = section_name
                 new_section.index = section_index
+                new_section.value = section_text
                 new_section.value_original = section_text
-                section_list = []
+        else:
+            section_class = type(section_attr)
+            if section_class is list:
+                if new_section is None:
+                    new_section = Section()
+                    new_section.name = section_name
+                    new_section.index = section_index
+                    new_section.value_original = section_text
+                    section_list = []
+                else:
+                    section_list = new_section.value
                 list_class = section_attr[0]
                 for row in section_text.splitlines()[1:]:  # process each row after the one with the section name
                     if row.startswith(';'):                # if row starts with semicolon, the whole row is a comment
@@ -98,18 +105,19 @@ class InputFile(object):
                             print("Could not create object from row: " + row + "\n" + str(e))
                 new_section.value = section_list
             else:
-                new_section = section_class()
-                if hasattr(new_section, "index"):
-                    new_section.index = section_index
-                if hasattr(new_section, "value"):
-                    new_section.value = section_text
-                if hasattr(new_section, "value_original"):
-                    new_section.value_original = section_text
+                if new_section is None:
+                    new_section = section_class()
+                    if hasattr(new_section, "index"):
+                        new_section.index = section_index
+                    if hasattr(new_section, "value"):
+                        new_section.value = section_text
+                    if hasattr(new_section, "value_original"):
+                        new_section.value_original = section_text
                 try:
                     new_section.set_text(section_text)
                 except Exception as e:
                     print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e))
-        if new_section is not None:
+        if new_section is not None and new_section not in self.sections:
             self.sections.append(new_section)
             if section_attr is not None:
                 self.__setattr__(attr_name, new_section)

@@ -1,0 +1,65 @@
+Start SWMM.
+
+Open the file named Example1.inp using 'File:Open'.
+
+From the Project Tree, double-click 'Title/Notes'.
+
+Add an 'X' to the end of the title, so it reads 'Example 1X'.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'General'.
+
+Change the infiltration model to 'Modified Horton', and check 'Allow Ponding'.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Dates'.
+
+Change 'End Analysis on' to 01/31/1998 and the Antecedant Dry Days to 3.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Time Steps'.
+
+Change the routing time step to 30 sections.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Dynamic Wave'.
+
+Change the force main equation to 'Darcy-Weisbach', and change the Maximum Trials per Time Step to 4.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Inteface Files'.
+
+In the 'Save Outflows' box, enter 'outflow.txt' as the file name.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Reporting'.
+
+Check 'Input Summary'.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Map/Backdrop'.
+
+Change the map units to Meters.
+
+Click 'OK'.
+
+Save the project using 'File:Save As..' with the name 'Example1X.inp'.
+
+Now compare the file 'Example1.inp' with 'Example1X.inp'.  The only differences between the two files should be the changes made in this exercise.
+
+Close SWMM.
+
+Open SWMM again.
+
+Open the file named Example1X.inp using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Example1Y.inp'.
+
+Now compare the file 'Example1X.inp' with 'Example1Y.inp'.  There should be no differences between the two files.

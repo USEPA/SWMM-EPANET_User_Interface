@@ -123,12 +123,17 @@ class InputFile(object):
                 self.__setattr__(attr_name, new_section)
 
     def find_section(self, section_title):
+        """ Find an element of self.sections, ignoring square brackets and capitalization.
+            Args:
+                 section_title (str): Title of section to find.
+        """
+        compare_title = InputFile.printable_to_attribute(section_title)
         for section in self.sections:
             if hasattr(section, "SECTION_NAME"):
                 this_section_name = section.SECTION_NAME
             else:
                 this_section_name = section.name
-            if str(this_section_name).replace('[', '').replace(']', '').lower() == section_title.lower():
+            if InputFile.printable_to_attribute(str(this_section_name)) == compare_title:
                 return section
         return None
 

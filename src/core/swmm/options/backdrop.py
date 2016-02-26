@@ -49,11 +49,11 @@ class BackdropOptions(Section):
                     fields = line.split()
                     if len(fields) > 1:
                         if fields[0].lower() == "dimensions" and len(fields) > 4:
-                            self.dimensions = fields[1:5]
+                            self.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
                         elif fields[0].lower() == "offset" and len(fields) > 2:
-                            self.offset = fields[1:3]
+                            self.offset = (float(fields[1]), float(fields[2]))
                         elif fields[0].lower() == "scaling" and len(fields) > 2:
-                            self.scaling = fields[1:3]
+                            self.scaling = (float(fields[1]), float(fields[2]))
                         else:
                             self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
             except:

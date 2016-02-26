@@ -22,8 +22,8 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         self.tmeReport.setTime(QtCore.QTime.fromString(section.report_start_time, section.TIME_FORMAT))
         self.dedEnd.setDate(QtCore.QDate.fromString(section.end_date, section.DATE_FORMAT))
         self.tmeEnd.setTime(QtCore.QTime.fromString(section.end_time, section.TIME_FORMAT))
-        self.dedSweepEnd.setDate(QtCore.QDate.fromString(section.sweep_end, section.DATE_FORMAT))
-        self.dedSweepStart.setDate(QtCore.QDate.fromString(section.sweep_start, section.DATE_FORMAT))
+        self.dedSweepEnd.setDate(QtCore.QDate.fromString(section.sweep_end, section.DATE_SWEEP_FORMAT))
+        self.dedSweepStart.setDate(QtCore.QDate.fromString(section.sweep_start, section.DATE_SWEEP_FORMAT))
         self.txtAntecedent.setText(str(section.dry_days))
 
     def cmdOK_Clicked(self):

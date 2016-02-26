@@ -229,9 +229,13 @@ class Section(object):
         comment_split = str.split(line, ';', 1)
         if len(comment_split) == 2:
             line = comment_split[0]
+            this_comment = ';' + comment_split[1]
             if self.comment:
-                self.comment += '\n'
-            self.comment += ';' + comment_split[1]
+                if this_comment in self.comment:
+                    this_comment = ''       # Already have this comment, don't add it again
+                else:
+                    self.comment += '\n'    # Separate from existing comment with newline
+            self.comment += this_comment
 
         if not line.startswith('[') and line.strip():
             # Set fields from field_dict if this section has one

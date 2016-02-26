@@ -27,7 +27,7 @@ class MapOptions(Section):
         Y2 upper-right Y coordinate of full map extent
         """
 
-        self.units = MapUnits.FEET
+        self.units = MapUnits.NONE
         """map units"""
 
     def get_text(self):

@@ -148,14 +148,19 @@ class General(Section):
 
     def set_text(self, new_text):
         """Read this section from the text representation"""
+
+        # Skip the comments we insert automatically
+        for comment in General.section_comments:
+            new_text = new_text.replace(comment + '\n', '')
+
         for line in new_text.splitlines():
             comment_split = str.split(line, ';', 1)
             if len(comment_split) == 2:
                 line = comment_split[0]
-                if not comment_split[1] in General.section_comments:
-                    if self.comment:
-                        self.comment += '\n'
-                    self.comment += ';' + comment_split[1]
+                this_comment = ';' + comment_split[1]
+                if self.comment:
+                    self.comment += '\n'
+                self.comment += this_comment
 
             if not line.startswith('[') and line.strip():
                 # Set fields from field_dict if this section has one

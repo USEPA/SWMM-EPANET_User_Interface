@@ -43,6 +43,9 @@ class Options(Section):
                 new_text (str): Text to parse into properties.
         """
         self.__init__()
+        # Skip the comments we insert automatically
+        for comment in Options.section_comments:
+            new_text = new_text.replace(comment + '\n', '')
         self.hydraulics.set_text(new_text)
         self.quality.set_text(new_text)
         for line in new_text.splitlines():

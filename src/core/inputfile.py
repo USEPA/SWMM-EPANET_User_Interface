@@ -54,6 +54,9 @@ class InputFile(object):
         if section_name:
             self.add_section(section_name, section_whole, section_index)
             section_index += 1
+        for attr_value in vars(self).itervalues():
+            if isinstance(attr_value, Section) and attr_value not in self.sections:
+                self.sections.append(attr_value)
 
     def add_section(self, section_name, section_text, section_index):
         attr_name = InputFile.printable_to_attribute(section_name)

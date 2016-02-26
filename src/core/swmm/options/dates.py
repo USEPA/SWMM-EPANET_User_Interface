@@ -19,6 +19,7 @@ class Dates(Section):
     """Mapping from label used in file to field name"""
 
     DATE_FORMAT = "MM/dd/yyyy"
+    DATE_SWEEP_FORMAT = "MM/dd"
     TIME_FORMAT = "hh:mm:ss"
 
     def __init__(self):

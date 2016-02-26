@@ -34,8 +34,8 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         section.report_start_time = self.tmeReport.time().toString(section.TIME_FORMAT)
         section.end_date = self.dedEnd.date().toString(section.DATE_FORMAT)
         section.end_time = self.tmeEnd.time().toString(section.TIME_FORMAT)
-        section.sweep_end = self.dedSweepEnd.date().toString(section.DATE_FORMAT)
-        section.sweep_start = self.dedSweepStart.date().toString(section.DATE_FORMAT)
+        section.sweep_end = self.dedSweepEnd.date().toString(section.DATE_SWEEP_FORMAT)
+        section.sweep_start = self.dedSweepStart.date().toString(section.DATE_SWEEP_FORMAT)
         section.dry_days = int(self.txtAntecedent.text())
         self.close()
 

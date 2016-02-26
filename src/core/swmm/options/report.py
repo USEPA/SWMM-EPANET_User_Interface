@@ -57,7 +57,7 @@ class Report(Section):
         for line in new_text.splitlines():
             (attr_name, attr_value) = self.get_field_dict_value(line)
             if attr_name:
-                if attr_name in Report.list_attributes:
+                if attr_name in Report.LISTS:
                     attr_value = attr_value.split()
                     existing_value = getattr(self, attr_name, Report.EMPTY_LIST)
                     if existing_value != Report.EMPTY_LIST:  # include values already set on other lines

@@ -40,6 +40,7 @@ class InputFile(object):
                 lines_iterator (iterator): Produces lines of text formatted as input file.
         """
         self.__init__()
+        self.sections = []
         section_index = 1
         section_name = ""
         section_whole = ""

@@ -61,16 +61,13 @@ class frmMainEPANET(frmMain):
         pass
 
     def proj_save(self):
-        with open(self.project.file_name, 'w') as writer:
-            writer.writelines(self.project.get_text())
+        self.project.write_file(self.project.file_name)
 
     def proj_save_as(self):
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "", "Inp files (*.inp)")
         if file_name:
-            with open(file_name, 'w') as writer:
-                writer.writelines(self.project.get_text())
-                self.project.file_name = file_name
-                self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
+            self.project.write_file(file_name)
+            self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
 
     def edit_options(self, itm, column):
         if self.project == None:

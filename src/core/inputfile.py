@@ -34,6 +34,12 @@ class InputFile(object):
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
+    def write_file(self, file_name):
+        if file_name:
+            with open(file_name, 'w') as writer:
+                writer.writelines(self.get_text())
+                self.file_name = file_name
+
     def set_from_text_lines(self, lines_iterator):
         """Read as a project file from lines of text.
             Args:

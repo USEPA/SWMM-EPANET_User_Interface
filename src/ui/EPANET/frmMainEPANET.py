@@ -42,6 +42,9 @@ class frmMainEPANET(frmMain):
         self._frmTitle = None
 
     def std_newproj(self):
+        self.project = Project()
+        self.setWindowTitle(self.model + " - New")
+        self.project.file_name = "New.inp"
         pass
 
     def std_openproj(self):

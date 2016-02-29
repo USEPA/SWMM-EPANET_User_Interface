@@ -28,6 +28,19 @@ class frmMainSWMM(frmMain):
         QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
 
         self.model = 'SWMM'
+        self.modelenv1 = 'EXE_SWMM'
+        assembly_path = os.path.abspath(__file__)
+        pp = os.path.dirname(os.path.dirname(os.path.dirname(assembly_path)))
+        pexe = os.path.join(pp, r'Externals\SWMM5Exe.exe')
+        if os.path.exists(pexe):
+            os.environ[self.modelenv1] = pexe
+        else:
+            exename = QtGui.QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/',
+                                                        'exe files (*.exe)')
+            if os.path.exists(exename):
+                os.environ[self.modelenv1] = exename
+            else:
+                os.environ[self.modelenv1] = ''
         self.on_load(model=self.model)
 
         self._frmDates = None
@@ -95,6 +108,35 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Title/Notes':
             self._frmTitle = frmTitle(self)
             self._frmTitle.show()
+    def proj_run_simulation(self):
+        run = 0
+        inp_dir = ''
+        margs=[]
+
+        prog = os.environ[self.modelenv1]
+        if not os.path.exists(prog):
+            pymsgbox.alert('SWMM Executable is not found.')
+            return -1
+
+        filename = ''
+        if self.project == None:
+            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
+        else:
+            #filename = self.project.name
+            pass
+        if os.path.exists(filename):
+            fpre, fext = os.path.splitext(filename)
+            margs.append(filename)
+            margs.append(fpre + '.out')
+            margs.append(fpre + '.rpt')
+        else:
+            pymsgbox.alert('SWMM input file not found.')
+
+        #
+        #running the Exe (modified version to rid of the \b printout
+        #
+        status = StatusMonitor0(prog, margs, self, model='SWMM')
+        status.show()
 
     def on_load(self, **kwargs):
         self.obj_tree = ObjectTreeView(model=kwargs['model'])

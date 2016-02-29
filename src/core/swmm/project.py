@@ -74,7 +74,6 @@ class Project(InputFile):
     #     }
 
     def __init__(self):
-        InputFile.__init__(self)
         """Define the fields of a SWMM Project by creating an empty placeholder for each section"""
 
         self.title = Title()                    # TITLE         project title
@@ -128,5 +127,5 @@ class Project(InputFile):
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
-
+        InputFile.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 

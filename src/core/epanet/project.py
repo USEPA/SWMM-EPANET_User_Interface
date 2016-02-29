@@ -55,4 +55,5 @@ class Project(InputFile):
         # "[VERTICES]": [Vertex]
         # "[LABELS]": [Label]
         self.backdrop = BackdropOptions()
-        InputFile.__init__(self)
+
+        InputFile.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

@@ -7,9 +7,9 @@ class InputFile(object):
     """Input File Reader and Writer"""
 
     def __init__(self):
-        self.sections = []
         self.file_name = ""
-        """List of sections in the file"""
+        self.sections = []
+        self.add_sections_from_attributes()
 
     def get_text(self):
         section_text_list = []
@@ -55,6 +55,10 @@ class InputFile(object):
         if section_name:
             self.add_section(section_name, section_whole, section_index)
             section_index += 1
+        self.add_sections_from_attributes()
+
+    def add_sections_from_attributes(self):
+        """Add the sections that are attributes of the class to the list of sections."""
         for attr_value in vars(self).itervalues():
             if isinstance(attr_value, Section) and attr_value not in self.sections:
                 self.sections.append(attr_value)

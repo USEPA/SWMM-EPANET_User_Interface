@@ -30,6 +30,20 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
 
         self.model = 'EPANET'
+        self.modelenv1 = 'EXE_EPANET'
+        assembly_path = os.path.abspath(__file__)
+        pp = os.path.dirname(os.path.dirname(os.path.dirname(assembly_path)))
+        pexe = os.path.join(pp, r'Externals\epanet2d.exe')
+        #pexe = os.path.join(pp, r'Externals\epanet.exe')
+        if os.path.exists(pexe):
+            os.environ[self.modelenv1] = pexe
+        else:
+            exename = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
+                                                        'exe files (*.exe)')
+            if os.path.exists(exename):
+                os.environ[self.modelenv1] = exename
+            else:
+                os.environ[self.modelenv1] = ''
         self.on_load(model=self.model)
 
         self._frmEnergyOptions = None
@@ -110,6 +124,31 @@ class frmMainEPANET(frmMain):
         # result = dlg.exec_()
         # if result == 1:
         #    pass
+    def proj_run_simulation(self):
+
+        margs=[]
+        prog = os.environ[self.modelenv1]
+        if not os.path.exists(prog):
+            pymsgbox.alert('EPANET Executable is not found.')
+            return -1
+
+        filename = ''
+        if self.project == None:
+            #file_name = QtGui.QFileDialog.getOpenFileName(parent=self, caption='Input file')
+            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
+        else:
+            #filename = self.project.name
+            pass
+        if os.path.exists(filename):
+            fpre, fext = os.path.splitext(filename)
+            margs.append(filename)
+            margs.append(fpre + '.txt')
+            margs.append(fpre + '.out')
+        else:
+            pymsgbox.alert('EPANET input file not found.')
+
+        status = StatusMonitor0(prog, margs, self, model='EPANET')
+        status.show()
 
     def on_load(self, **kwargs):
         #self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

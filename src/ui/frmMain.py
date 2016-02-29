@@ -5,32 +5,33 @@ import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
 from embed_ipython_new import EmbedIPython
-#from src.ui.ui_utility import EmbedMap
-from src.ui.ui_utility import *
-from src.ui.model_utility import *
+#from ui.ui_utility import EmbedMap
+from ui.ui_utility import *
+from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QCoreApplication
 from frmMainDesigner import Ui_frmMain
 #from IPython import embed
 #from RestrictedPython import compile_restricted
 #import py_compile
-import pymsgbox
+# import pymsgbox
 import imp
-from qgis.core import *
-from qgis.gui import *
-from src.core.coordinates import *
-from src.core.inputfile import *
-from src.core.epanet.project import *
-from src.core.epanet.title import *
-from src.core.epanet.curves import *
-from src.core.epanet.labels import *
-from src.core.epanet.patterns import *
-from src.core.epanet.vertex import *
-from src.core.epanet.options import *
-from src.core.epanet.hydraulics import *
+# from qgis.core import *
+# from qgis.gui import *
+from core.coordinates import *
+from core.inputfile import *
+from core.epanet.project import *
+from core.epanet.title import *
+from core.epanet.curves import *
+from core.epanet.labels import *
+from core.epanet.patterns import *
+from core.epanet.vertex import *
+from core.epanet.options import *
+from core.epanet.hydraulics import *
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
 
-PluginFolder = "./plugins"
+PluginFolder = "../../plugins"
 MainModule = "__init__"
 _plugins = []
 
@@ -46,15 +47,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.get_plugins()
         self.populatePlugins(_plugins)
         '''self.runscriptrestricted('')'''
-        QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
-        QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
+        # QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
+        # QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
         QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
-        QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-        QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-        QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-        QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
-        QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
+        # QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+        # QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+        # QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+        # QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
+        # QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
         QtCore.QObject.connect(self.actionStdSave, QtCore.SIGNAL('triggered()'), self.proj_save)
         QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.proj_save)
         QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.proj_save_as)
@@ -64,69 +65,69 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                self.proj_run_simulation)
 
         self.layers = []
-        self.canvas = QgsMapCanvas(self, 'mapCanvas')
-        self.canvas.setMouseTracking(True)
-        self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas)
-        self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
-        if self.map_win:
-            self.map_win.setGeometry(0, 0, 600, 400)
-            self.map_win.setWindowTitle('Study Area Map')
-            self.map_win.show()
-
-    def setQgsMapTool(self):
-        self.map_widget.setZoomInMode()
-        self.map_widget.setZoomOutMode()
-        self.map_widget.setPanMode()
-
-    def map_pan(self):
-        self.map_widget.setPanMode()
-
-    def zoomfull(self):
-        self.map_widget.zoomfull()
-
-    def map_addfeature(self):
-        self.map_widget.setAddFeatureMode()
-
-    def onGeometryAdded(self):
-        pymsgbox.alert('A new feature is added.')
-
-    def showCoords(self, event):
-        pass
-
-    def mouseMoveEvent(self, event):
-        pass
-        x = event.x()
-        y = event.y()
-        p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
-
-    def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.MouseMove:
-            if event.buttons() == QtCore.Qt.NoButton:
-                pos = event.pos()
-                x = pos.x()
-                y = pos.y()
-                p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-                self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
-            else:
-                pass
-
-    def map_addvector(self):
-        #pymsgbox.alert('add vector')
-        from frmMapAddVector import frmMapAddVector
-        dlg = frmMapAddVector(self)
-        dlg.show()
-        result = dlg.exec_()
-        if result == 1:
-            specs = dlg.getLayerSpecifications()
-            filename = specs['filename']
-            if filename.lower().endswith('.shp'):
-                self.map_widget.addVectorLayer(filename)
-
-    def map_addraster(self):
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '/')
-        if len(filename) > 0:
-            self.map_widget.addRasterLayer(filename)
+    #     self.canvas = QgsMapCanvas(self, 'mapCanvas')
+    #     self.canvas.setMouseTracking(True)
+    #     self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas)
+    #     self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
+    #     if self.map_win:
+    #         self.map_win.setGeometry(0, 0, 600, 400)
+    #         self.map_win.setWindowTitle('Study Area Map')
+    #         self.map_win.show()
+    #
+    # def setQgsMapTool(self):
+    #     self.map_widget.setZoomInMode()
+    #     self.map_widget.setZoomOutMode()
+    #     self.map_widget.setPanMode()
+    #
+    # def map_pan(self):
+    #     self.map_widget.setPanMode()
+    #
+    # def zoomfull(self):
+    #     self.map_widget.zoomfull()
+    #
+    # def map_addfeature(self):
+    #     self.map_widget.setAddFeatureMode()
+    #
+    # def onGeometryAdded(self):
+    #     pymsgbox.alert('A new feature is added.')
+    #
+    # def showCoords(self, event):
+    #     pass
+    #
+    # def mouseMoveEvent(self, event):
+    #     pass
+    #     x = event.x()
+    #     y = event.y()
+    #     p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+    #     self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
+    #
+    # def eventFilter(self, source, event):
+    #     if event.type() == QtCore.QEvent.MouseMove:
+    #         if event.buttons() == QtCore.Qt.NoButton:
+    #             pos = event.pos()
+    #             x = pos.x()
+    #             y = pos.y()
+    #             p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+    #             self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
+    #         else:
+    #             pass
+    #
+    # def map_addvector(self):
+    #     #pymsgbox.alert('add vector')
+    #     from frmMapAddVector import frmMapAddVector
+    #     dlg = frmMapAddVector(self)
+    #     dlg.show()
+    #     result = dlg.exec_()
+    #     if result == 1:
+    #         specs = dlg.getLayerSpecifications()
+    #         filename = specs['filename']
+    #         if filename.lower().endswith('.shp'):
+    #             self.map_widget.addVectorLayer(filename)
+    #
+    # def map_addraster(self):
+    #     filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '/')
+    #     if len(filename) > 0:
+    #         self.map_widget.addRasterLayer(filename)
 
     def populatePlugins(self, plugins):
         if len(plugins) > 0:
@@ -160,7 +161,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         exec(lcode)
 
     def run_tier1_plugin(self):
-        '''pymsgbox.alert('called here.', 'main program')'''
+        # pymsgbox.alert('called here.', 'main program')
         for p in _plugins:
             if p['name'] == self.sender().text():
                 lplugin = self.load_plugin(p)
@@ -173,7 +174,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 elif create_menu and not self.sender().isChecked():
                     self.remove_plugin_menu(lplugin)
                     return
-                lplugin.run()
+                lplugin.run(self)
                 return
 
     def add_plugin_menu(self, plugin):
@@ -234,10 +235,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         (plugin_name, method_name) = ltxt.split('|', 2)
         for p in _plugins:
             if p['name'] == plugin_name:
-               lp = self.load_plugin(p)
-               if not lp == None:
-                   lp.run(int(lp.__all__[str(method_name)]))
-                   return
+                lp = self.load_plugin(p)
+                if lp:
+                    lp.run(self, int(lp.__all__[str(method_name)]))
+                    return
 
     def action_1(self):
         pass

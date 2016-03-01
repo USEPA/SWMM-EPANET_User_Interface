@@ -11,7 +11,7 @@ class ProjectTest(unittest.TestCase):
     def runTest(self):
         for inp_filename in ["Example1.inp"]:
             self.my_project.read_file(inp_filename)
-            assert len(self.my_project.sections) == 24
+            assert len(self.my_project.sections) == 26
 
             with open(inp_filename + ".written.txt", 'w') as writer:
                 writer.writelines(self.my_project.get_text())

@@ -1,5 +1,9 @@
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
+try:
+    from PyQt4.QtCore import QString
+except ImportError:
+    QString = str
 from enum import Enum
 
 class SWMMTreeObjects(object):

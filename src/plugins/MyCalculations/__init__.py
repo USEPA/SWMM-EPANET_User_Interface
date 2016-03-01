@@ -7,4 +7,4 @@ __all__ = {}
 
 def run(session=None, choice=None):
     ltopTitle = 'Plugin:MyCalculations'
-    QMessageBox.information(None, ltopTitle, "Custom user calculation is done.", QMessageBox.Ok)
+    QMessageBox.information(None, ltopTitle, "This is a sample plug-in illustrating how a single menu could contain a custom user calculation.", QMessageBox.Ok)

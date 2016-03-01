@@ -31,7 +31,7 @@ class frmMainSWMM(frmMain):
         self.modelenv1 = 'EXE_SWMM'
         assembly_path = os.path.abspath(__file__)
         pp = os.path.dirname(os.path.dirname(os.path.dirname(assembly_path)))
-        pexe = os.path.join(pp, r'Externals\SWMM5Exe.exe')
+        pexe = os.path.join(pp, r'Externals\swmm5.exe')
         if os.path.exists(pexe):
             os.environ[self.modelenv1] = pexe
         else:

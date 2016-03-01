@@ -29,6 +29,8 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.std_openproj)
         QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
 
+        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
+
         self.model = 'EPANET'
         self.modelenv1 = 'EXE_EPANET'
         assembly_path = os.path.abspath(__file__)
@@ -67,7 +69,6 @@ class frmMainEPANET(frmMain):
             self.project = Project()
             try:
                 self.project.read_file(file_name)
-                self.load_model(self.model)
                 self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
             except:
                 self.project = None
@@ -126,7 +127,7 @@ class frmMainEPANET(frmMain):
         margs=[]
         prog = os.environ[self.modelenv1]
         if not os.path.exists(prog):
-            pymsgbox.alert('EPANET Executable is not found.')
+            QMessageBox.information(None, "EPANET", "EPANET Executable not found", QMessageBox.Ok)
             return -1
 
         filename = ''
@@ -142,7 +143,7 @@ class frmMainEPANET(frmMain):
             margs.append(fpre + '.txt')
             margs.append(fpre + '.out')
         else:
-            pymsgbox.alert('EPANET input file not found.')
+            QMessageBox.information(None, "EPANET", "EPANET input file not found", QMessageBox.Ok)
 
         status = StatusMonitor0(prog, margs, self, model='EPANET')
         status.show()
@@ -151,10 +152,7 @@ class frmMainEPANET(frmMain):
         #self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         #cleaner = QtCore.QObjectCleanupHandler()
         #cleaner.add(self.tabProjMap.layout())
-        #try out epanet
         self.obj_tree = ObjectTreeView(model=kwargs['model'])
-        #QtCore.QObject.connect(self.obj_tree, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), \
-        #                       self.edit_options)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
         #self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QVBoxLayout(self.tabProject)
@@ -171,8 +169,9 @@ class frmMainEPANET(frmMain):
         self.dockw_more.setLayout(mlayout)
         #self.actionPan.setEnabled(False)
 
-    def load_model(self, model):
-        pass
+    def action_exit(self):
+        # TODO: check project status and prompt if there are unsaved changed
+        app.quit()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

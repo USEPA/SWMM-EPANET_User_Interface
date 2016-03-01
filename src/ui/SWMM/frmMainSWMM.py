@@ -6,6 +6,7 @@ sip.setapi("QVariant", 2)
 from ui.ui_utility import *
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QMessageBox
 from ui.frmMain import frmMain
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave
@@ -26,6 +27,8 @@ class frmMainSWMM(frmMain):
 
         QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.std_openproj)
         QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
+
+        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
 
         self.model = 'SWMM'
         self.modelenv1 = 'EXE_SWMM'
@@ -64,7 +67,6 @@ class frmMainSWMM(frmMain):
             self.project = Project()
             try:
                self.project.read_file(file_name)
-               self.load_model(self.model)
                self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
             except:
                self.project = None
@@ -108,6 +110,7 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Title/Notes':
             self._frmTitle = frmTitle(self)
             self._frmTitle.show()
+
     def proj_run_simulation(self):
         run = 0
         inp_dir = ''
@@ -115,26 +118,23 @@ class frmMainSWMM(frmMain):
 
         prog = os.environ[self.modelenv1]
         if not os.path.exists(prog):
-            pymsgbox.alert('SWMM Executable is not found.')
+            QMessageBox.information(None, "SWMM", "SWMM Executable not found", QMessageBox.Ok)
             return -1
 
         filename = ''
-        if self.project == None:
+        if self.project is None:
             filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
         else:
             filename = self.project.file_name
-            pass
         if os.path.exists(filename):
             fpre, fext = os.path.splitext(filename)
             margs.append(filename)
             margs.append(fpre + '.out')
             margs.append(fpre + '.rpt')
         else:
-            pymsgbox.alert('SWMM input file not found.')
+            QMessageBox.information(None, "SWMM", "SWMM input file not found", QMessageBox.Ok)
 
-        #
-        #running the Exe (modified version to rid of the \b printout
-        #
+        # running the Exe (modified version to rid of the \b printout
         status = StatusMonitor0(prog, margs, self, model='SWMM')
         status.show()
 
@@ -152,8 +152,9 @@ class frmMainSWMM(frmMain):
         mlayout.addWidget(self.obj_list)
         self.dockw_more.setLayout(mlayout)
 
-    def load_model(self, model):
-        pass
+    def action_exit(self):
+        # TODO: check project status and prompt if there are unsaved changed
+        app.quit()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

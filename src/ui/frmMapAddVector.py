@@ -1,6 +1,6 @@
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QMessageBox
 from frmMapAddVectorDesigner import Ui_frmAddVectorLayer
-import pymsgbox
 
 class frmMapAddVector(QtGui.QDialog):
     def __init__(self, parent=None, *args):
@@ -23,7 +23,7 @@ class frmMapAddVector(QtGui.QDialog):
 
     def btnBrowse_Clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
-        #pymsgbox.alert('Data file:' + filename,'Add Vector Layer')
+        # pymsgbox.alert('Data file:' + filename,'Add Vector Layer')
         self.ui.txtDataset.text = filename
         self.ui.txtDataset.setText(filename)
         self.specs['filename'] = filename
@@ -31,12 +31,13 @@ class frmMapAddVector(QtGui.QDialog):
     def btnBox_Clicked(self, btn):
         choice = ""
         if len(self.ui.txtDataset.text().strip()) == 0:
-            pymsgbox.alert('Need to specify a data file.','Add Vector Layer')
+            QMessageBox.information(None, "Add Vector Layer",  "Need to specify a data file", QMessageBox.Ok)
+            pass
 
     def btnBox_Accepted(self):
         filename = self.ui.txtDataset.text.strip()
         if len(filename) == 0:
-            pymsgbox.alert('Need to specify a data file.','Add Vector Layer')
+            QMessageBox.information(None, "Add Vector Layer",  "Need to specify a data file", QMessageBox.Ok)
             return ''
         else:
             return filename

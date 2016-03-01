@@ -1,6 +1,6 @@
 from PyQt4 import QtCore, QtGui
 from frmOptionsDesigner import Ui_diagOptions
-import pymsgbox
+
 
 class frmOptions(QtGui.QDialog):
     def __init__(self, parent=None, *args):
@@ -9,7 +9,7 @@ class frmOptions(QtGui.QDialog):
         self.ui = Ui_diagOptions()
         self.ui.setupUi(self)
         self.options = args[0]
-        #QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("rejected()"), self.btnBox_Rejected)
+        # QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("rejected()"), self.btnBox_Rejected)
         self.ui.tableOptions.itemDoubleClicked.connect(self.itemDoubleClicked)
         self.ui.tableOptions.itemChanged.connect(self.itemChanged)
         self.setupOptions()
@@ -19,7 +19,7 @@ class frmOptions(QtGui.QDialog):
         self.add_child(p, 'Accuracy',self.options.accuracy)
         self.add_child(p, 'frequency', self.options.check_frequency)
         self.add_child(p, 'damp limit', self.options.damp_limit)
-        #self.add_child(p, 'pattern', self.options.default_pattern)
+        # self.add_child(p, 'pattern', self.options.default_pattern)
         self.add_child(p, 'multiplier', self.options.demand_multiplier)
         self.add_child(p, 'exponent', self.options.emitter_exponent)
 
@@ -28,9 +28,9 @@ class frmOptions(QtGui.QDialog):
         itm.setFirstColumnSpanned(False)
         itm.setText(0, name)
         itm.setText(1, data)
-        #itm.setData(0, QtCore.Qt.UserRole, name)
-        #itm.setData(1, QtCore.Qt.UserRole, data)
-        #self.ui.tableOptions.addTopLevelItem(itm)
+        # itm.setData(0, QtCore.Qt.UserRole, name)
+        # itm.setData(1, QtCore.Qt.UserRole, data)
+        # self.ui.tableOptions.addTopLevelItem(itm)
         return itm
 
     def add_child(self, p_itm, name, data):
@@ -38,8 +38,8 @@ class frmOptions(QtGui.QDialog):
         itm.setFirstColumnSpanned(False)
         itm.setText(0, name)
         itm.setText(1, str(data))
-        #itm.setData(0, QtCore.Qt.UserRole, name)
-        #itm.setData(1, QtCore.Qt.UserRole, data)
+        # itm.setData(0, QtCore.Qt.UserRole, name)
+        # itm.setData(1, QtCore.Qt.UserRole, data)
         p_itm.addChild(itm)
 
     def itemChanged(self, itm, column):
@@ -62,6 +62,7 @@ class frmOptions(QtGui.QDialog):
             return True
         else:
             return False
+
 
 class ComboBoxOptionItem(QtGui.QComboBox):
     def __init__(self, parent=None, *args):

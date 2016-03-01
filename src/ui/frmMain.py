@@ -1,5 +1,4 @@
 import os
-
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
@@ -9,25 +8,13 @@ from embed_ipython_new import EmbedIPython
 from ui.ui_utility import *
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QCoreApplication
 from frmMainDesigner import Ui_frmMain
 #from IPython import embed
 #from RestrictedPython import compile_restricted
 #import py_compile
-# import pymsgbox
 import imp
 # from qgis.core import *
 # from qgis.gui import *
-from core.coordinates import *
-from core.inputfile import *
-from core.epanet.project import *
-from core.epanet.title import *
-from core.epanet.curves import *
-from core.epanet.labels import *
-from core.epanet.patterns import *
-from core.epanet.vertex import *
-from core.epanet.options import *
-from core.epanet.hydraulics import *
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
 
@@ -35,18 +22,16 @@ PluginFolder = "../../plugins"
 MainModule = "__init__"
 _plugins = []
 
+
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __init__(self, parent=None, *args):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.project = None
-        #self.model = args[0]
         self.obj_tree = None
         self.obj_list = None
-        '''_plugins = self.get_plugins()'''
         self.get_plugins()
         self.populatePlugins(_plugins)
-        '''self.runscriptrestricted('')'''
         # QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
         # QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)

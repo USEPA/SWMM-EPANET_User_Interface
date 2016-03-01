@@ -33,19 +33,20 @@ class frmMainEPANET(frmMain):
 
         self.model = 'EPANET'
         self.modelenv1 = 'EXE_EPANET'
-        assembly_path = os.path.abspath(__file__)
-        pp = os.path.dirname(os.path.dirname(os.path.dirname(assembly_path)))
-        pexe = os.path.join(pp, r'Externals\epanet2d.exe')
-        #pexe = os.path.join(pp, r'Externals\epanet.exe')
+        assembly_path = os.path.dirname(os.path.abspath(__file__))
+        exe_name = "epanet2d.exe"
+        pexe = os.path.join(assembly_path, exe_name)
+        if not os.path.exists(pexe):
+            pp = os.path.dirname(os.path.dirname(assembly_path))
+            pexe = os.path.join(pp, "Externals", exe_name)
+        if not os.path.exists(pexe):
+            pexe = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
+                                                        'exe files (*.exe)')
         if os.path.exists(pexe):
             os.environ[self.modelenv1] = pexe
         else:
-            exename = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
-                                                        'exe files (*.exe)')
-            if os.path.exists(exename):
-                os.environ[self.modelenv1] = exename
-            else:
-                os.environ[self.modelenv1] = ''
+            os.environ[self.modelenv1] = ''
+
         self.on_load(model=self.model)
 
         self._frmEnergyOptions = None

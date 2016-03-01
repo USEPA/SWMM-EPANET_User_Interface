@@ -25,7 +25,7 @@ exe = EXE(pyz,
           upx=True,
           console=True )
 coll = COLLECT(exe,
-               a.binaries,
+               a.binaries + [('epanet2d.exe', '../../Externals/epanet2d.exe', 'BINARY')],
                a.zipfiles,
                a.datas,
                strip=False,

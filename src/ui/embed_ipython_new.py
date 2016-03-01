@@ -17,16 +17,18 @@ sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
 from PyQt4.QtGui import *
 # Import the console machinery from ipython
-from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.qt.inprocess import QtInProcessKernelManager
+from qtconsole.rich_jupyter_widget import RichJupyterWidget
+from qtconsole.inprocess import QtInProcessKernelManager
 from IPython.lib import guisupport
 from PyQt4 import QtCore
 
-class QIPythonWidget(RichIPythonWidget):
-    """ Convenience class for a live IPython console widget. We can replace the standard banner using the customBanner argument"""
-    def __init__(self,customBanner=None,*args,**kwargs):
-        if customBanner!=None: self.banner=customBanner
-        super(QIPythonWidget, self).__init__(*args,**kwargs)
+
+class QIPythonWidget(RichJupyterWidget):
+    """ Convenience class for a live IPython console widget.
+    We can replace the standard banner using the customBanner argument"""
+    def __init__(self, *args, **kwargs):
+        # if customBanner is not None: self.banner=customBanner
+        super(QIPythonWidget, self).__init__(*args, **kwargs)
         self.kernel_manager = kernel_manager = QtInProcessKernelManager()
         kernel_manager.start_kernel()
         kernel_manager.kernel.gui = 'qt4'
@@ -43,12 +45,15 @@ class QIPythonWidget(RichIPythonWidget):
     def pushVariables(self,variableDict):
         """ Given a dictionary containing name / value pairs, push those variables to the IPython console widget """
         self.kernel_manager.kernel.shell.push(variableDict)
+
     def clearTerminal(self):
         """ Clears the terminal """
-        self._control.clear()    
+        self._control.clear()
+
     def printText(self,text):
         """ Prints some plain text to the console """
-        self._append_plain_text(text)        
+        self._append_plain_text(text)
+
     def executeCommand(self,command):
         """ Execute a command in the frame of the console widget """
         self._execute(command,False)
@@ -59,20 +64,22 @@ class EmbedIPython(QWidget):
     def __init__(self, parent=None, **kwargs):
         super(EmbedIPython, self).__init__(parent)
         layout = QVBoxLayout(self)
-        self.button = QPushButton('Another widget')
-        ipyConsole = QIPythonWidget(customBanner="Welcome to the embedded ipython console\n",**kwargs)
-        layout.addWidget(self.button)
+        # self.button = QPushButton('Another widget')
+        ipyConsole = QIPythonWidget(customBanner="Welcome to the embedded ipython console\n" +
+                                                 "The variable 'session.project' is the currently open project file.",
+                                    **kwargs)
+        # layout.addWidget(self.button)
         layout.addWidget(ipyConsole)        
-        # This allows the variable foo and method print_process_id to be accessed from the ipython console
-        #ipyConsole.pushVariables({"foo":43,"print_process_id":print_process_id})
         ipyConsole.pushVariables(kwargs)
-        ipyConsole.printText("The variable 'foo' and the method 'print_process_id()' are available. Use the 'whos' command for information.")
+        # ipyConsole.printText("The variable 'session.project' is the currently open project file.")
+
 
 def print_process_id():
     print 'Process ID is:', os.getpid()        
 
+
 def main():
-    app  = QApplication([])
+    app = QApplication([])
     widget = EmbedIPython()
     widget.show()
     app.exec_()    

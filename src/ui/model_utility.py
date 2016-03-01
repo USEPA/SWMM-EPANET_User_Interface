@@ -125,3 +125,58 @@ class ObjectListView(QListWidget):
         for obj in self.ObjList:
             self.addItem(obj)
         pass
+
+class StatusMonitor0(QtGui.QDialog):
+    def __init__(self, cmd, args, parent=None, **kwargs):
+        super(StatusMonitor0, self).__init__(parent)
+        self.cmd = cmd
+        self.args = args
+        self.keepGoing = True
+        self.prog = kwargs['model']
+
+        layout = QVBoxLayout()
+        self.output = QtGui.QTextEdit()
+        self.butt = QPushButton('Close')
+        self.setupConnections()
+        self.setWindowTitle('Running ' + self.prog)
+        layout.addWidget(self.output)
+        layout.addWidget(self.butt)
+        layout.setContentsMargins(10, 10, 10, 10)
+        self.setLayout(layout)
+        self.butt.clicked.connect(self.close)
+
+    def setupConnections(self):
+        self.worker = Worker(self.cmd, self.args)
+        self.worker.finished.connect(self.end_worker)
+        self.worker.sendOutput.connect(self.showOutput)
+
+    @QtCore.pyqtSlot(QString)
+    def showOutput(self, output):
+        self.output.append(output)
+
+    def end_worker(self):
+        self.worker.process.kill()
+        del self.worker
+
+    def closeEvent(self,event):
+        event.accept()
+
+class Worker(QtCore.QObject):
+    sendOutput = QtCore.pyqtSignal(QString)
+    finished = QtCore.pyqtSignal()
+    def __init__(self, cmd, args):
+        super(Worker, self).__init__()
+        self.cmd = cmd
+        self.args = args
+        self.process = QtCore.QProcess()
+        self.setupProcess()
+
+    def setupProcess(self):
+        self.process.readyReadStandardOutput.connect(self.readStdOutput)
+        self.process.start(self.cmd, self.args)
+        self.finished.emit()
+
+    @QtCore.pyqtSlot()
+    def readStdOutput(self):
+        output = QString(self.process.readAllStandardOutput())
+        self.sendOutput.emit(output)

@@ -122,7 +122,7 @@ class frmMainSWMM(frmMain):
         if self.project == None:
             filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
         else:
-            #filename = self.project.name
+            filename = self.project.file_name
             pass
         if os.path.exists(filename):
             fpre, fext = os.path.splitext(filename)

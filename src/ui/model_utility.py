@@ -156,7 +156,9 @@ class StatusMonitor0(QtGui.QDialog):
 
     @QtCore.pyqtSlot(QString)
     def showOutput(self, output):
-        self.output.append(output)
+        while '\b\b' in output:
+            output = output.replace('\b\b', '\b')
+        self.output.append(output.replace('\b', '\n'))
 
     def end_worker(self):
         self.worker.process.kill()

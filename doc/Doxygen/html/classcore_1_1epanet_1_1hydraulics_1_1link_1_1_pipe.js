@@ -1,9 +1,10 @@
 var classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#abcd4dfe441276a39ea7ebb536b34acbd", null ],
-    [ "set_from_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#ad57d41cf185248aed9e2cc1b7b1fc091", null ],
-    [ "to_inp", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a23ac52637e3fd0a7013fe910c1100475", null ],
+    [ "get_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#ac43256754b8047e4602540e66441234a", null ],
+    [ "set_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a580ed4d00c3ea0ee9c86aaed964ab67a", null ],
     [ "bulk_reaction_coefficient", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a39625f6e7b262662fa00dabc6369efa5", null ],
+    [ "comment", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a7ada8ec11f7b375256198412c8288482", null ],
     [ "diameter", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a9bfd57ae31ee9150d4c5516a809f593f", null ],
     [ "inlet_node", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#a5ead5f7f2a7a3d25f06bede2a9a1fc83", null ],
     [ "length", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html#aa20593c1e69da11549abfd726d207ac0", null ],

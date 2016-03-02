@@ -1,8 +1,9 @@
 var classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a826996ade038a8ced8dd6bddc84d22a3", null ],
-    [ "set_from_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#ad14250054f97ee196df8547d53447aae", null ],
-    [ "to_inp", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#abbb98bd7aff26eac92b8930a48388c69", null ],
+    [ "get_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a2ce53ad7c5cf8c783b4bd9919b07ec04", null ],
+    [ "set_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#ad9d10a6a5098ec4dbfbd572741c7c975", null ],
+    [ "comment", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a810c903776a7cb6cf9f755024c59e729", null ],
     [ "energy", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a7371c55ed3dcf9d0f51eed7b73f8cf2b", null ],
     [ "head_curve_id", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#aae08078799c5027af205d84bbdcca2b8", null ],
     [ "initial_status", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a6d5591f7eaecd4c14e22fa31bbd99552", null ],

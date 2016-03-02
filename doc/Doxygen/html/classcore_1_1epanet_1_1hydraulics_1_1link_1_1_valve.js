@@ -1,8 +1,8 @@
 var classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#aaf1f133f5d2613e1af0a7a335552176d", null ],
-    [ "set_from_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#a54fb27663bc8893a5e5d5a4827c925d1", null ],
-    [ "to_inp", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#a8ad46a62942fec8811e9e75f55365616", null ],
+    [ "get_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#af4ba14b5430c00c651b51d96b54bace0", null ],
+    [ "set_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#a8be3662f9b10773a54e5915233457e99", null ],
     [ "diameter", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#a2c5ae14df7576faaec961bf54e2dda3c", null ],
     [ "fixed_status", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#ab57ed841206852d57dc8fd2b58cece13", null ],
     [ "inlet_node", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html#aa9c4a9b2a687a1491473f16272de2a69", null ],

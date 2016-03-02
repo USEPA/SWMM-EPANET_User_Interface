@@ -1,7 +1,7 @@
 var classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#a5d6d0def69975c942ada12dbca9de69a", null ],
-    [ "BaseDemand", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#afc9b3a3f60b3e8d25ae3a607745b88ac", null ],
-    [ "Category", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#a2d39137a2603b10c9b043ae836fbb6a2", null ],
-    [ "DemandPattern", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#aac7891fc31092d6f91dd531359c8769d", null ]
+    [ "base_demand", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#ad3af4e17efc82cce40920cf3c5c510b6", null ],
+    [ "category", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#a16c3cb698418eb4e39a3b50a149c72b8", null ],
+    [ "demand_pattern", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#a3203557cc99f0349955cd4039363026f", null ]
 ];

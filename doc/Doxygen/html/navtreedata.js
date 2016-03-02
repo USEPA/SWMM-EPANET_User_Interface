@@ -2,11 +2,7 @@ var NAVTREE =
 [
   [ "SWMM EPANET UI", "index.html", [
     [ "Namespaces", null, [
-      [ "Namespace List", "namespaces.html", "namespaces" ],
-      [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ]
-      ] ]
+      [ "Namespace List", "namespaces.html", "namespaces" ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -27,10 +23,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "____init_____8py.html",
-"classcore_1_1epanet_1_1project_1_1_project.html#a0180aa5f4fda8631b4349dd407506bfc",
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_weir_divider.html#a0c5b5e6e51dc7ca22c76d62f9d63f3d8",
-"classcore_1_1swmm_1_1options_1_1general_1_1_general.html#a17e7be67c15e81059e3c3f285523dcc8",
-"namespacecore_1_1swmm.html"
+"classcore_1_1epanet_1_1options_1_1times_1_1_times_options.html#ae5d77a08915fc3288b8262eb5dc074fe",
+"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_storage_unit.html#ab537c86ea53bbb6a61263e0d25256550",
+"classcore_1_1swmm_1_1options_1_1dates_1_1_dates.html#ad73ec5a9f51e25ee2ae87afdaebd0c76",
+"namespacecore_1_1epanet_1_1curves.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

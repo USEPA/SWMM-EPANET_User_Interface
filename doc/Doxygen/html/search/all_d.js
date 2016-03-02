@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['map',['map',['../classcore_1_1epanet_1_1options_1_1map_1_1_map_options.html#ad2ad81d0d35feb6546439c51595866eb',1,'core::epanet::options::map::MapOptions']]],
+  ['map',['map',['../classcore_1_1epanet_1_1options_1_1map_1_1_map_options.html#ad2ad81d0d35feb6546439c51595866eb',1,'core.epanet.options.map.MapOptions.map()'],['../classcore_1_1epanet_1_1options_1_1options_1_1_options.html#a09d1d14c6f8c010c41ad42aac3eac1b3',1,'core.epanet.options.options.Options.map()'],['../classcore_1_1swmm_1_1project_1_1_project.html#a4825b759a74c7465e500c57ca83e156a',1,'core.swmm.project.Project.map()']]],
   ['map_2epy',['map.py',['../epanet_2options_2map_8py.html',1,'']]],
   ['map_2epy',['map.py',['../swmm_2options_2map_8py.html',1,'']]],
   ['mapoptions',['MapOptions',['../classcore_1_1epanet_1_1options_1_1map_1_1_map_options.html',1,'core::epanet::options::map']]],
@@ -12,6 +12,7 @@ var searchData=
   ['max_5fcheck',['max_check',['../classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a67126c432d6b8ded2973640e5df7d556',1,'core::epanet::options::hydraulics::HydraulicsOptions']]],
   ['max_5fdepth',['max_depth',['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_junction.html#a712998658d3d2c4b9918bd3ad145e30b',1,'core.swmm.hydraulics.node.Junction.max_depth()'],['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_weir_divider.html#a5c43c18ec4c99a2a95f4e0e7bb0395d4',1,'core.swmm.hydraulics.node.WeirDivider.max_depth()'],['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_divider.html#a55ac5a696978b8c52171192c39ff4cb4',1,'core.swmm.hydraulics.node.Divider.max_depth()'],['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_storage_unit.html#a83402e12c281b3130abc9cce02495667',1,'core.swmm.hydraulics.node.StorageUnit.max_depth()']]],
   ['max_5frate',['max_rate',['../classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html#aeee087af340fe7fada39f5b15072abc9',1,'core::swmm::hydrology::subcatchment::HortonInfiltration']]],
+  ['max_5ftrials',['max_trials',['../classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html#a6961bbb07a5d537b33af8aa2e62e9f6e',1,'core::swmm::options::dynamic_wave::DynamicWave']]],
   ['max_5fvolume',['max_volume',['../classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html#a37097ca7eac611b52782799ded66e9d4',1,'core::swmm::hydrology::subcatchment::HortonInfiltration']]],
   ['maximum',['MAXIMUM',['../classcore_1_1epanet_1_1options_1_1times_1_1_statistic_options.html#a922fb322099241197299f38d77c053b0',1,'core::epanet::options::times::StatisticOptions']]],
   ['maximum_5fflow',['maximum_flow',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#aee57a66fb75dc89ab5063606f35f49b6',1,'core::swmm::hydraulics::link::Conduit']]],
@@ -24,9 +25,10 @@ var searchData=
   ['min_5fflow',['min_flow',['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_weir_divider.html#a0c5b5e6e51dc7ca22c76d62f9d63f3d8',1,'core::swmm::hydraulics::node::WeirDivider']]],
   ['min_5frate',['min_rate',['../classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html#a62fb44721da27f5d7a4b91006834aff7',1,'core::swmm::hydrology::subcatchment::HortonInfiltration']]],
   ['min_5fslope',['min_slope',['../classcore_1_1swmm_1_1options_1_1general_1_1_general.html#ac15d2ed0d7cde51ac8c1ac1b00afd24d',1,'core::swmm::options::general::General']]],
-  ['min_5fsurface_5farea',['min_surface_area',['../classcore_1_1swmm_1_1options_1_1dynamicwave_1_1_dynamic_wave.html#a4087c83e62a2a7099b75741280fff38e',1,'core::swmm::options::dynamicwave::DynamicWave']]],
+  ['min_5fsurface_5farea',['min_surface_area',['../classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html#a1f89f26b27c998eff814302643eee685',1,'core::swmm::options::dynamic_wave::DynamicWave']]],
   ['minimum',['MINIMUM',['../classcore_1_1epanet_1_1options_1_1times_1_1_statistic_options.html#ae80a40125a62eb3e8b6090f1fa9aea55',1,'core::epanet::options::times::StatisticOptions']]],
   ['minimum_5flevel',['minimum_level',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html#af4c69b37d4702bcc68c3088c7ea355f2',1,'core::epanet::hydraulics::node::Tank']]],
+  ['minimum_5fstep',['minimum_step',['../classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html#a6bb8a35c713283eb0dac85cb30b6451e',1,'core::swmm::options::dynamic_wave::DynamicWave']]],
   ['minimum_5fvolume',['minimum_volume',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html#a9ffd8fb31734b9644c3efc370fb41ec7',1,'core::epanet::hydraulics::node::Tank']]],
   ['mixed',['MIXED',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_mixing_model.html#a42a7261f2d5e56fb42d68ca0ec4637b0',1,'core::epanet::hydraulics::node::MixingModel']]],
   ['mixing_5ffraction',['mixing_fraction',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html#aff88202595ba69acd5a18b0bbf67be7a',1,'core::epanet::hydraulics::node::Tank']]],
@@ -37,6 +39,5 @@ var searchData=
   ['modifiedbaskethandle',['ModifiedBaskethandle',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section_shape.html#ad1fa2e2c9bfc383b55c4171611fe9eb4',1,'core::swmm::hydraulics::link::CrossSectionShape']]],
   ['monthly',['MONTHLY',['../classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation_format.html#aef2fa86a62f193aea50270dcb6606ca6',1,'core.swmm.climatology.climatology.EvaporationFormat.MONTHLY()'],['../classcore_1_1swmm_1_1climatology_1_1climatology_1_1_wind_source.html#a98548217f8235681576dd61f4eb95c37',1,'core.swmm.climatology.climatology.WindSource.MONTHLY()'],['../classcore_1_1swmm_1_1patterns_1_1_pattern_type.html#ad629f220c8464cee0c60aaf55820d5da',1,'core.swmm.patterns.PatternType.MONTHLY()'],['../classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#afdca5c9b3ba716e2ce1b6f67b1180e85',1,'core.swmm.climatology.climatology.Evaporation.monthly()']]],
   ['monthly_5fpan_5fcoefficients',['monthly_pan_coefficients',['../classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#a60fb6017b2049c3ec208a8ef77700108',1,'core::swmm::climatology::climatology::Evaporation']]],
-  ['multipliers',['multipliers',['../classcore_1_1epanet_1_1patterns_1_1_pattern.html#a188ca04fb480c6a573ff4c7eec20916e',1,'core.epanet.patterns.Pattern.multipliers()'],['../classcore_1_1swmm_1_1patterns_1_1_pattern.html#abaab914482442a8e01bbe1c95dc9f844',1,'core.swmm.patterns.Pattern.multipliers()']]],
-  ['my_5fproject',['my_project',['../namespacecore_1_1_e_p_a_n_e_t___core___demo.html#a5ae01bd85328ea22554531091b6b232a',1,'core::EPANET_Core_Demo']]]
+  ['multipliers',['multipliers',['../classcore_1_1epanet_1_1patterns_1_1_pattern.html#a188ca04fb480c6a573ff4c7eec20916e',1,'core.epanet.patterns.Pattern.multipliers()'],['../classcore_1_1swmm_1_1patterns_1_1_pattern.html#abaab914482442a8e01bbe1c95dc9f844',1,'core.swmm.patterns.Pattern.multipliers()']]]
 ];

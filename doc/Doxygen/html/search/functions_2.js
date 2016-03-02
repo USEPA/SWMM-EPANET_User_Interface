@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['read_5ffile',['read_file',['../namespacecore_1_1inputfile.html#a26aa3e681800bfe7ffd998f8a6e71b3f',1,'core::inputfile']]]
+  ['find_5fsection',['find_section',['../classcore_1_1inputfile_1_1_input_file.html#ac05a1ea138ae419e551a02c2266a2528',1,'core::inputfile::InputFile']]]
 ];

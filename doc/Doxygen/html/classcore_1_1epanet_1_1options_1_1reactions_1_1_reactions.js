@@ -1,6 +1,7 @@
 var classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions =
 [
     [ "__init__", "classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a3557fccc0796a79f79b502ef857d24a9", null ],
+    [ "set_text", "classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a1eb2068a446282702f818a95ffd7570f", null ],
     [ "global_bulk", "classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#ae89df3fc4a90b8edcb280a8f0aba426a", null ],
     [ "global_wall", "classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a3c6d1b8c3165b0e1ba53f5e9d31aec51", null ],
     [ "limiting_potential", "classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a2186e62ca578f641b39d391c0526f168", null ],

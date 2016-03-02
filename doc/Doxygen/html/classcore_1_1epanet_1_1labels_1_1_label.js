@@ -1,7 +1,7 @@
 var classcore_1_1epanet_1_1labels_1_1_label =
 [
     [ "__init__", "classcore_1_1epanet_1_1labels_1_1_label.html#ac602bf1f07c9937e3860b938e47349f6", null ],
-    [ "AnchorID", "classcore_1_1epanet_1_1labels_1_1_label.html#ac4a775f7ee127743084b9833c190cea1", null ],
-    [ "Centroid", "classcore_1_1epanet_1_1labels_1_1_label.html#aaa7327be15eddc8de8470059a6c768a6", null ],
-    [ "Text", "classcore_1_1epanet_1_1labels_1_1_label.html#a5d50ece951d84317eb5f5cbb784a29bf", null ]
+    [ "anchor_id", "classcore_1_1epanet_1_1labels_1_1_label.html#a99b48792c1c544e921d1b65ccbc72575", null ],
+    [ "centroid", "classcore_1_1epanet_1_1labels_1_1_label.html#a5daf711d585a9bf5842a7e23669c69f8", null ],
+    [ "label_text", "classcore_1_1epanet_1_1labels_1_1_label.html#aa340113ff811c662e8bb271602392af9", null ]
 ];

@@ -1,8 +1,8 @@
 var classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#a4fd4c65826fbf636d048d65dea7de2e8", null ],
-    [ "set_from_text", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#a28078baea341900a6107658641585162", null ],
-    [ "to_inp", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#ab10a6f963c87c3f3fe224d46816b335d", null ],
+    [ "get_text", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#a6d855eed6bc7e16ce6ba7a75670941c8", null ],
+    [ "set_text", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#adaf82368a0d75b64a7ff1f42ec453fdf", null ],
     [ "clock_time", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#ad1383bcd9b43c368791f2f9d39b09dc3", null ],
     [ "control_type", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#a097046b27a905e7735e13420db8f8152", null ],
     [ "link_id", "classcore_1_1epanet_1_1hydraulics_1_1control_1_1_simple_control.html#abb8f558eb3573dcd257dec54466d3246", null ],

@@ -1,8 +1,9 @@
 var classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link =
 [
     [ "__init__", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a868742fda1443c2f333d998fdd33dfff", null ],
-    [ "set_from_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a6cfa5c80912b8d28ec9effda01c4521d", null ],
-    [ "to_inp", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a68ee8eb19254a8150af4f50def46e005", null ],
+    [ "get_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a2c8e6a56b959530e5976dfd02732f3c2", null ],
+    [ "set_text", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#ae4060df1a63371be00677f94122e4c2f", null ],
+    [ "comment", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a29814d9a6fed1c53481a6d7bc5fd5f10", null ],
     [ "description", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#accf4cc38fc00fe3b4083d65d94262fb0", null ],
     [ "inlet_node", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a59ab0b59bc9225b9004270c01f06adb4", null ],
     [ "link_id", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html#a75679640fb4153dfde2558b7b0a4180b", null ],

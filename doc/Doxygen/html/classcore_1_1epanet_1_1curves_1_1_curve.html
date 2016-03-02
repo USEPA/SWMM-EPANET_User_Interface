@@ -109,6 +109,7 @@ $(document).ready(function(){initNavTree('classcore_1_1epanet_1_1curves_1_1_curv
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classcore_1_1epanet_1_1curves_1_1_curve-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">core.epanet.curves.Curve Class Reference</div>  </div>
@@ -122,11 +123,11 @@ $(document).ready(function(){initNavTree('classcore_1_1epanet_1_1curves_1_1_curv
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a276b8401ff5a9198a477a70b39a877dd"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#a276b8401ff5a9198a477a70b39a877dd">__init__</a> (self)</td></tr>
 <tr class="separator:a276b8401ff5a9198a477a70b39a877dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d14be4f18c0e3e2122b72d222006364"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#a8d14be4f18c0e3e2122b72d222006364">to_inp</a> (self)</td></tr>
-<tr class="memdesc:a8d14be4f18c0e3e2122b72d222006364"><td class="mdescLeft">&#160;</td><td class="mdescRight">format contents of this item for writing to file  <a href="#a8d14be4f18c0e3e2122b72d222006364">More...</a><br /></td></tr>
-<tr class="separator:a8d14be4f18c0e3e2122b72d222006364"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef795b94c77c52125843ca11297f838a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#aef795b94c77c52125843ca11297f838a">set_from_text</a> (self, text)</td></tr>
-<tr class="separator:aef795b94c77c52125843ca11297f838a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bab685bd7bf501a926532feb6979f75"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#a8bab685bd7bf501a926532feb6979f75">get_text</a> (self)</td></tr>
+<tr class="memdesc:a8bab685bd7bf501a926532feb6979f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">format contents of this item for writing to file  <a href="#a8bab685bd7bf501a926532feb6979f75">More...</a><br /></td></tr>
+<tr class="separator:a8bab685bd7bf501a926532feb6979f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bcbf556e8a2c9817e125e6d22a88c35"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#a9bcbf556e8a2c9817e125e6d22a88c35">set_text</a> (self, new_text)</td></tr>
+<tr class="separator:a9bcbf556e8a2c9817e125e6d22a88c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -138,6 +139,11 @@ Public Attributes</h2></td></tr>
 <tr class="separator:acd428b89b13994c2ffa6ae258d637649"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2578bfb648bc8b26c59418130f75a5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#ad2578bfb648bc8b26c59418130f75a5f">curve_xy</a></td></tr>
 <tr class="separator:ad2578bfb648bc8b26c59418130f75a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a7031a7f079555c4d49e8a9003e63b609"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve.html#a7031a7f079555c4d49e8a9003e63b609">field_format</a> = &quot; {:16}\t{:12}\t{:12}\n&quot;</td></tr>
+<tr class="separator:a7031a7f079555c4d49e8a9003e63b609"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines data curves and their X,Y points. </p>
@@ -159,38 +165,12 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aef795b94c77c52125843ca11297f838a"></a>
+<a class="anchor" id="a8bab685bd7bf501a926532feb6979f75"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def core.epanet.curves.Curve.set_from_text </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>text</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a8d14be4f18c0e3e2122b72d222006364"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def core.epanet.curves.Curve.to_inp </td>
+          <td class="memname">def core.epanet.curves.Curve.get_text </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>self</em></td><td>)</td>
@@ -200,6 +180,32 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>format contents of this item for writing to file </p>
+
+</div>
+</div>
+<a class="anchor" id="a9bcbf556e8a2c9817e125e6d22a88c35"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.epanet.curves.Curve.set_text </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>new_text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -252,8 +258,28 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7031a7f079555c4d49e8a9003e63b609"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string core.epanet.curves.Curve.field_format = &quot; {:16}\t{:12}\t{:12}\n&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/devNotMW/GitHub/SWMM-EPANET_User_Interface/src/core/epanet/<a class="el" href="epanet_2curves_8py.html">curves.py</a></li>
+<li>C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/src/core/epanet/<a class="el" href="epanet_2curves_8py.html">curves.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

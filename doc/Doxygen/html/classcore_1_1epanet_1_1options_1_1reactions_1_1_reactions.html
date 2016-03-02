@@ -131,6 +131,9 @@ Inheritance diagram for core.epanet.options.reactions.Reactions:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3557fccc0796a79f79b502ef857d24a9"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a3557fccc0796a79f79b502ef857d24a9">__init__</a> (self)</td></tr>
 <tr class="separator:a3557fccc0796a79f79b502ef857d24a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eb2068a446282702f818a95ffd7570f"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a1eb2068a446282702f818a95ffd7570f">set_text</a> (self, new_text)</td></tr>
+<tr class="memdesc:a1eb2068a446282702f818a95ffd7570f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read properties from text.  <a href="#a1eb2068a446282702f818a95ffd7570f">More...</a><br /></td></tr>
+<tr class="separator:a1eb2068a446282702f818a95ffd7570f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -153,6 +156,8 @@ Public Attributes</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a52c761a92635756be0198b831802252d"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a52c761a92635756be0198b831802252d">SECTION_NAME</a> = &quot;[REACTIONS]&quot;</td></tr>
 <tr class="separator:a52c761a92635756be0198b831802252d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13ff03622dcea523679743a8feb02695"><td class="memItemLeft" align="right" valign="top">dictionary&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a13ff03622dcea523679743a8feb02695">field_dict</a></td></tr>
+<tr class="separator:a13ff03622dcea523679743a8feb02695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines parameters related to chemical reactions occurring in the network. </p>
@@ -173,7 +178,70 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a1eb2068a446282702f818a95ffd7570f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.epanet.options.reactions.Reactions.set_text </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>new_text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read properties from text. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">new_text</td><td>Text to parse into properties. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a13ff03622dcea523679743a8feb02695"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dictionary core.epanet.options.reactions.Reactions.field_dict</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;= {</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="stringliteral">&quot;Order Bulk&quot;</span>: <span class="stringliteral">&quot;order_bulk&quot;</span>,</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="stringliteral">&quot;Order Tank&quot;</span>: <span class="stringliteral">&quot;order_wall&quot;</span>,</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="stringliteral">&quot;Order Wall&quot;</span>: <span class="stringliteral">&quot;order_tank&quot;</span>,</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="stringliteral">&quot;Global Bulk&quot;</span>: <span class="stringliteral">&quot;global_bulk&quot;</span>,</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="stringliteral">&quot;Global Wall&quot;</span>: <span class="stringliteral">&quot;global_wall&quot;</span>,</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="stringliteral">&quot;Limiting Potential&quot;</span>: <span class="stringliteral">&quot;limiting_potential&quot;</span>,</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="stringliteral">&quot;Roughness Correlation&quot;</span>: <span class="stringliteral">&quot;roughness_correlation&quot;</span>}</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a class="anchor" id="ae89df3fc4a90b8edcb280a8f0aba426a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -279,7 +347,7 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/devNotMW/GitHub/SWMM-EPANET_User_Interface/src/core/epanet/options/<a class="el" href="reactions_8py.html">reactions.py</a></li>
+<li>C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/src/core/epanet/options/<a class="el" href="reactions_8py.html">reactions.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,10 +1,12 @@
 var searchData=
 [
   ['o_5frate',['o_rate',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#ace849e5f30004d9c4c08c70fd553d924',1,'core::swmm::hydraulics::link::Orifice']]],
-  ['offset_5fx',['offset_x',['../classcore_1_1epanet_1_1options_1_1backdrop_1_1_backdrop_options.html#ae4af0e0d05ac833fc98ce011ede3ca94',1,'core::epanet::options::backdrop::BackdropOptions']]],
-  ['offset_5fy',['offset_y',['../classcore_1_1epanet_1_1options_1_1backdrop_1_1_backdrop_options.html#a4fc7e4e6b84e29f1ac7374a27a4282d9',1,'core::epanet::options::backdrop::BackdropOptions']]],
+  ['offset',['offset',['../classcore_1_1epanet_1_1options_1_1backdrop_1_1_backdrop_options.html#a30d5ed0576b1dff208acd3d418b96584',1,'core.epanet.options.backdrop.BackdropOptions.offset()'],['../classcore_1_1swmm_1_1options_1_1backdrop_1_1_backdrop_options.html#a75a0e2655996c7e0ff259e3120c7c5bf',1,'core.swmm.options.backdrop.BackdropOptions.offset()']]],
+  ['old_5fflow_5frouting',['old_flow_routing',['../classcore_1_1swmm_1_1options_1_1general_1_1_general.html#ac11751b31a0e997a1de1eec08d491246',1,'core::swmm::options::general::General']]],
   ['open',['OPEN',['../classcore_1_1epanet_1_1hydraulics_1_1link_1_1_initial_status_pipe.html#aed7ec3112e23a63ff1a3c327c5dd7eb6',1,'core.epanet.hydraulics.link.InitialStatusPipe.OPEN()'],['../classcore_1_1epanet_1_1hydraulics_1_1link_1_1_initial_status_pump.html#a8ae88d90ffe4ac9c202821d46f1273cf',1,'core.epanet.hydraulics.link.InitialStatusPump.OPEN()'],['../classcore_1_1epanet_1_1hydraulics_1_1link_1_1_fixed_status.html#a979f7136c46662461b7ea1032dd4edd4',1,'core.epanet.hydraulics.link.FixedStatus.OPEN()']]],
-  ['options',['options',['../classcore_1_1epanet_1_1project_1_1_project.html#a3d75925a37df983211017adc8be48516',1,'core::epanet::project::Project']]],
+  ['options',['Options',['../classcore_1_1epanet_1_1options_1_1options_1_1_options.html',1,'core::epanet::options::options']]],
+  ['options',['options',['../classcore_1_1epanet_1_1project_1_1_project.html#a3d75925a37df983211017adc8be48516',1,'core.epanet.project.Project.options()'],['../classcore_1_1swmm_1_1project_1_1_project.html#a4d467ba0d53e2c0868db9db202cdd134',1,'core.swmm.project.Project.options()']]],
+  ['options_2epy',['options.py',['../options_8py.html',1,'']]],
   ['order_5fbulk',['order_bulk',['../classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a2019683d378f92ab6a275fdae8a9eabe',1,'core::epanet::options::reactions::Reactions']]],
   ['order_5ftank',['order_tank',['../classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a9d971aa91fcccd892fef0d0c7f1ffbf1',1,'core::epanet::options::reactions::Reactions']]],
   ['order_5fwall',['order_wall',['../classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a663b05a5ad60f0c57c39c36e8631103a',1,'core::epanet::options::reactions::Reactions']]],

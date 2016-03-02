@@ -1,0 +1,65 @@
+Start EPANET.
+
+Open the file named Net1.inp using 'File:Open'.
+
+From the Project Tree, double-click 'Title/Notes'.
+
+Add the text 'TEST' to the end of the title.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Hydraulics'.
+
+Change the flow units to CFS, the specific gravity to 2.0 and the relative viscosity to 3.0.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Quality'.
+
+Change the chemical name to 'XXX' and the relative diffusivity to 2.0.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Reactions'.
+
+Change the wall reaction order to 2.0, the tank reaction order to 3.0, and the limiting concentration to 4.0.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Times'.
+
+Change the quality time step to 0:10 and the statistic to 'Averaged'.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Energy'.
+
+Change the pump efficiency to 66.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Report'.
+
+Change the page size to 16 and summary to 'Yes'.
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Map/Background'.
+
+Change the map units to 'Meters'.
+
+Click 'OK'.
+
+Save the project using 'File:Save As..' with the name 'Net1X.inp'.
+
+Now compare the file 'Net1.inp' with 'Net1X.inp'.  The only differences between the two files should be the changes made in this exercise.
+
+Close EPANET.
+
+Open EPANET again.
+
+Open the file named Net1X.inp using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Net1Y.inp'.
+
+Now compare the file 'Net1X.inp' with 'Net1Y.inp'.  There should be no differences between the two files.

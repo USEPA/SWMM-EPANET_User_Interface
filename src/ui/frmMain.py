@@ -3,6 +3,8 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
+import sys
+from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
 #from ui.ui_utility import EmbedMap
 from ui.ui_utility import *
@@ -18,9 +20,7 @@ import imp
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
 
-PluginFolder = "../../plugins"
 MainModule = "__init__"
-_plugins = []
 
 
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
@@ -30,8 +30,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.project = None
         self.obj_tree = None
         self.obj_list = None
-        self.get_plugins()
-        self.populatePlugins(_plugins)
+        self.plugins = self.get_plugins()
+        self.populate_plugins_menu()
         # QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
         # QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
@@ -114,52 +114,51 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     #     if len(filename) > 0:
     #         self.map_widget.addRasterLayer(filename)
 
-    def populatePlugins(self, plugins):
-        if len(plugins) > 0:
+    def populate_plugins_menu(self):
+        if self.plugins:
             menu = self.menuPlugins
-            for p in plugins:
-                """loaded = self.loadPlugin(p)
-                entry = menu.addMenu(p['name'])"""
+            for p in self.plugins:
                 lnew_action = QtGui.QAction(p['name'], menu)
                 lnew_action.setCheckable(True)
-                '''menu.addAction(QtGui.QAction(p['name'], menu, checkable=True))'''
                 menu.addAction(lnew_action)
                 QtCore.QObject.connect(lnew_action, QtCore.SIGNAL('triggered()'), self.run_tier1_plugin)
 
     def get_plugins(self):
-        if not os.path.exists(PluginFolder):
-            return _plugins
-        possibleplugins = os.listdir(PluginFolder)
-        for i in possibleplugins:
-            location = os.path.join(PluginFolder, i)
-            if not os.path.isdir(location) or not MainModule + ".py" in os.listdir(location):
-                continue
-            info = imp.find_module(MainModule, [location])
-            _plugins.append({"name": i, "info": info})
-        return _plugins
+        found_plugins = []
+        plugin_folder = os.path.join(CURR, "plugins")
+        if not os.path.exists(plugin_folder):
+            plugin_folder = os.path.normpath(os.path.join(CURR, "../../plugins"))
+        if os.path.exists(plugin_folder):
+            for folder_name in os.listdir(plugin_folder):
+                location = os.path.join(plugin_folder, folder_name)
+                if os.path.isdir(location) and MainModule + ".py" in os.listdir(location):
+                    info = imp.find_module(MainModule, [location])
+                    found_plugins.append({"name": folder_name, "info": info})
+        return found_plugins
 
     def load_plugin(self, plugin):
-        return imp.load_module(MainModule, *plugin["info"])
-
-    def runscriptrestricted(self, src):
-        lcode = 'for i in range(3):\n    print("Python is cool")'
-        exec(lcode)
+        try:
+            return imp.load_module(MainModule, *plugin["info"])
+        except Exception as ex:
+            QMessageBox.information(None, "Exception Loading Plugin", plugin['name'] + '\n' + str(ex), QMessageBox.Ok)
+            return None
 
     def run_tier1_plugin(self):
         # pymsgbox.alert('called here.', 'main program')
-        for p in _plugins:
+        for p in self.plugins:
             if p['name'] == self.sender().text():
                 lplugin = self.load_plugin(p)
-                create_menu = False
-                if hasattr(lplugin, 'plugin_create_menu'):
-                    create_menu = lplugin.plugin_create_menu
-                if create_menu and self.sender().isChecked():
-                    self.add_plugin_menu(lplugin)
-                    return
-                elif create_menu and not self.sender().isChecked():
-                    self.remove_plugin_menu(lplugin)
-                    return
-                lplugin.run(self)
+                if lplugin:
+                    create_menu = False
+                    if hasattr(lplugin, 'plugin_create_menu'):
+                        create_menu = lplugin.plugin_create_menu
+                    if create_menu and self.sender().isChecked():
+                        self.add_plugin_menu(lplugin)
+                        return
+                    elif create_menu and not self.sender().isChecked():
+                        self.remove_plugin_menu(lplugin)
+                        return
+                    lplugin.run(self)
                 return
 
     def add_plugin_menu(self, plugin):
@@ -168,7 +167,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not lnew_custom_menu  == None:
             pass
             '''
-        lnew_custom_menu = self.menubar.addMenu('P_' + plugin.plugin_name)
+        lnew_custom_menu = self.menubar.addMenu(plugin.plugin_name)
         lnew_custom_menu.menuTag = 'plugin_mainmenu_' + plugin.plugin_name
         Action1=QtGui.QAction('Menu 1 0',self)
         Action1.setVisible(False)
@@ -218,7 +217,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def run_plugin_custom(self):
         ltxt = str(self.sender().data())
         (plugin_name, method_name) = ltxt.split('|', 2)
-        for p in _plugins:
+        for p in self.plugins:
             if p['name'] == plugin_name:
                 lp = self.load_plugin(p)
                 if lp:
@@ -229,16 +228,31 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
 
     def script_ipython(self):
-        widget = EmbedIPython(session=self, plugins=_plugins, mainmodule=MainModule)
+        widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=MainModule)
         ipy_win = self.map.addSubWindow(widget,QtCore.Qt.Widget)
         if ipy_win:
             ipy_win.show()
 
     def script_exec(self):
-        pass
+            file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", None, "All files (*.*)")
+            if file_name:
+                save_handle = sys.stdout
+                try:
+                    redirected_output = StringIO()
+                    sys.stdout = redirected_output
+                    session = self
+                    with open(file_name, 'r') as myfile:
+                        exec(myfile)
+                    QMessageBox.information(None, "Finished Running Script",
+                                            file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
+                except Exception as ex:
+                    QMessageBox.information(None, "Exception Running Script",
+                                            file_name + '\n' + str(ex), QMessageBox.Ok)
+                sys.stdout = save_handle
 
     def __unicode__(self):
         return unicode(self)
+
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

@@ -14,6 +14,17 @@ a = Analysis(['frmMainEPANET.py'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
+
+def add_plugin(plugin_name):
+    import os
+    plugin_lst = []
+    for file in os.listdir('../../plugins/' + plugin_name):
+        if file == "__init__.py":
+            plugin_lst.append(('plugins/' + plugin_name + '/' + file, '../../plugins/' + plugin_name + '/' + file, 'DATA'))
+    return plugin_lst
+
+a.datas += add_plugin('Summary')
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -23,7 +34,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True )
+          console=False )
 coll = COLLECT(exe,
                a.binaries + [('epanet2d.exe', '../../Externals/epanet2d.exe', 'BINARY')],
                a.zipfiles,

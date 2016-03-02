@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>SWMM-EPANET UI Test Report</title>
+    <title>SWMM Core Test Report</title>
     <meta name="generator" content="HTMLTestRunner 0.8.2"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     
@@ -188,10 +188,17 @@ function showOutput(id, name) {
 --></script>
 
 <div class='heading'>
+<<<<<<< Updated upstream
 <h1>SWMM-EPANET UI Test Report</h1>
 <p class='attribute'><strong>Start Time:</strong> 2016-02-12 14:11:36</p>
 <p class='attribute'><strong>Duration:</strong> 0:00:00.009000</p>
 <p class='attribute'><strong>Status:</strong> Pass 2</p>
+=======
+<h1>SWMM Core Test Report</h1>
+<p class='attribute'><strong>Start Time:</strong> 2016-02-15 15:00:32</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.014000</p>
+<p class='attribute'><strong>Status:</strong> Pass 3</p>
+>>>>>>> Stashed changes
 
 <p class='description'>Unit test results</p>
 </div>
@@ -246,33 +253,27 @@ function showOutput(id, name) {
 
 <tr id='pt2.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>
+    <td colspan='5' align='center'>pass</td>
+</tr>
 
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt2.1')" >
-        pass</a>
+<tr class='passClass'>
+    <td>test_options_general.OptionsGeneralTest: In core.swmm.options, test field values after setting from text.</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c3',1)">Detail</a></td>
+</tr>
 
-    <div id='div_pt2.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt2.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-pt2.1: options.General.text skipped:  COMPATIBILITY         5
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt3.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>2</td>
-    <td>2</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>

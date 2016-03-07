@@ -1,192 +1,59 @@
-# -*- coding: utf-8 -*-
+import PyQt4.QtGui as QtGui
+import PyQt4.QtCore as QtCore
+import core.swmm.options.backdrop
+from core.swmm.options.map import MapUnits
+from ui.SWMM.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
 
-# Form implementation generated from reading ui file 'frmMapBackdropOptions.ui'
-#
-# Created: Mon Mar 07 15:43:21 2016
-#      by: PyQt4 UI code generator 4.11.3
-#
-# WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
+    def __init__(self, parent=None):
+        QtGui.QMainWindow.__init__(self, parent)
+        self.setupUi(self)
+        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
+        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.set_from(parent.project)
+        self._parent = parent
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
+    def set_from(self, project):
+        # section = core.swmm.options.backdrop.BackdropOptions()
+        section = project.backdrop
+        self.txtBackdropFile.setText(str(section.file))
+        self.txtLLXBack.setText(str(section.dimensions[0]))
+        self.txtLLYBack.setText(str(section.dimensions[1]))
+        self.txtURXBack.setText(str(section.dimensions[2]))
+        self.txtURYBack.setText(str(section.dimensions[3]))
+        section = project.map
+        self.txtLLXMap.setText(str(section.dimensions[0]))
+        self.txtLLYMap.setText(str(section.dimensions[1]))
+        self.txtURXMap.setText(str(section.dimensions[2]))
+        self.txtURYMap.setText(str(section.dimensions[3]))
+        if section.units == MapUnits.NONE:
+            self.rbnNone.setChecked(True)
+        if section.units == MapUnits.DEGREES:
+            self.rbnDegrees.setChecked(True)
+        if section.units == MapUnits.FEET:
+            self.rbnFeet.setChecked(True)
+        if section.units == MapUnits.METERS:
+            self.rbnMeters.setChecked(True)
 
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+    def cmdOK_Clicked(self):
+        section = self._parent.project.backdrop
+        section.file = self.txtBackdropFile.text()
+        section.dimensions = (float(self.txtLLXBack.text()), float(self.txtLLYBack.text()),
+                              float(self.txtURXBack.text()), float(self.txtURYBack.text()))
 
-class Ui_frmMapBackdropOptions(object):
-    def setupUi(self, frmMapBackdropOptions):
-        frmMapBackdropOptions.setObjectName(_fromUtf8("frmMapBackdropOptions"))
-        frmMapBackdropOptions.resize(438, 444)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        frmMapBackdropOptions.setFont(font)
-        frmMapBackdropOptions.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.centralWidget = QtGui.QWidget(frmMapBackdropOptions)
-        self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.gbxMap = QtGui.QGroupBox(self.centralWidget)
-        self.gbxMap.setObjectName(_fromUtf8("gbxMap"))
-        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.gbxMap)
-        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
-        self.gbxLLMap = QtGui.QGroupBox(self.gbxMap)
-        self.gbxLLMap.setObjectName(_fromUtf8("gbxLLMap"))
-        self.formLayout_4 = QtGui.QFormLayout(self.gbxLLMap)
-        self.formLayout_4.setObjectName(_fromUtf8("formLayout_4"))
-        self.lblLLX = QtGui.QLabel(self.gbxLLMap)
-        self.lblLLX.setObjectName(_fromUtf8("lblLLX"))
-        self.formLayout_4.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblLLX)
-        self.txtLLXMap = QtGui.QLineEdit(self.gbxLLMap)
-        self.txtLLXMap.setObjectName(_fromUtf8("txtLLXMap"))
-        self.formLayout_4.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtLLXMap)
-        self.lblLLY = QtGui.QLabel(self.gbxLLMap)
-        self.lblLLY.setObjectName(_fromUtf8("lblLLY"))
-        self.formLayout_4.setWidget(1, QtGui.QFormLayout.LabelRole, self.lblLLY)
-        self.txtLLYMap = QtGui.QLineEdit(self.gbxLLMap)
-        self.txtLLYMap.setObjectName(_fromUtf8("txtLLYMap"))
-        self.formLayout_4.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtLLYMap)
-        self.horizontalLayout_3.addWidget(self.gbxLLMap)
-        self.gbxURMap = QtGui.QGroupBox(self.gbxMap)
-        self.gbxURMap.setObjectName(_fromUtf8("gbxURMap"))
-        self.formLayout_5 = QtGui.QFormLayout(self.gbxURMap)
-        self.formLayout_5.setObjectName(_fromUtf8("formLayout_5"))
-        self.lblURX = QtGui.QLabel(self.gbxURMap)
-        self.lblURX.setObjectName(_fromUtf8("lblURX"))
-        self.formLayout_5.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblURX)
-        self.txtURXMap = QtGui.QLineEdit(self.gbxURMap)
-        self.txtURXMap.setObjectName(_fromUtf8("txtURXMap"))
-        self.formLayout_5.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtURXMap)
-        self.lblURY = QtGui.QLabel(self.gbxURMap)
-        self.lblURY.setObjectName(_fromUtf8("lblURY"))
-        self.formLayout_5.setWidget(1, QtGui.QFormLayout.LabelRole, self.lblURY)
-        self.txtURYMap = QtGui.QLineEdit(self.gbxURMap)
-        self.txtURYMap.setObjectName(_fromUtf8("txtURYMap"))
-        self.formLayout_5.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtURYMap)
-        self.horizontalLayout_3.addWidget(self.gbxURMap)
-        self.verticalLayout.addWidget(self.gbxMap)
-        self.gbxMapUnits = QtGui.QGroupBox(self.centralWidget)
-        self.gbxMapUnits.setObjectName(_fromUtf8("gbxMapUnits"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.gbxMapUnits)
-        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.rbnFeet = QtGui.QRadioButton(self.gbxMapUnits)
-        self.rbnFeet.setObjectName(_fromUtf8("rbnFeet"))
-        self.horizontalLayout_2.addWidget(self.rbnFeet)
-        self.rbnMeters = QtGui.QRadioButton(self.gbxMapUnits)
-        self.rbnMeters.setObjectName(_fromUtf8("rbnMeters"))
-        self.horizontalLayout_2.addWidget(self.rbnMeters)
-        self.rbnDegrees = QtGui.QRadioButton(self.gbxMapUnits)
-        self.rbnDegrees.setObjectName(_fromUtf8("rbnDegrees"))
-        self.horizontalLayout_2.addWidget(self.rbnDegrees)
-        self.rbnNone = QtGui.QRadioButton(self.gbxMapUnits)
-        self.rbnNone.setObjectName(_fromUtf8("rbnNone"))
-        self.horizontalLayout_2.addWidget(self.rbnNone)
-        self.verticalLayout.addWidget(self.gbxMapUnits)
-        self.gbxBackdrop = QtGui.QGroupBox(self.centralWidget)
-        self.gbxBackdrop.setObjectName(_fromUtf8("gbxBackdrop"))
-        self.formLayout_3 = QtGui.QFormLayout(self.gbxBackdrop)
-        self.formLayout_3.setObjectName(_fromUtf8("formLayout_3"))
-        self.lblBackdrop = QtGui.QLabel(self.gbxBackdrop)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.lblBackdrop.setFont(font)
-        self.lblBackdrop.setObjectName(_fromUtf8("lblBackdrop"))
-        self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblBackdrop)
-        self.txtBackdropFile = QtGui.QLineEdit(self.gbxBackdrop)
-        self.txtBackdropFile.setObjectName(_fromUtf8("txtBackdropFile"))
-        self.formLayout_3.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtBackdropFile)
-        self.gbBkDim = QtGui.QGroupBox(self.gbxBackdrop)
-        self.gbBkDim.setObjectName(_fromUtf8("gbBkDim"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.gbBkDim)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.gbxLLBack = QtGui.QGroupBox(self.gbBkDim)
-        self.gbxLLBack.setObjectName(_fromUtf8("gbxLLBack"))
-        self.formLayout = QtGui.QFormLayout(self.gbxLLBack)
-        self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.lblLLXBack = QtGui.QLabel(self.gbxLLBack)
-        self.lblLLXBack.setObjectName(_fromUtf8("lblLLXBack"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblLLXBack)
-        self.txtLLXBack = QtGui.QLineEdit(self.gbxLLBack)
-        self.txtLLXBack.setObjectName(_fromUtf8("txtLLXBack"))
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtLLXBack)
-        self.lblLLYBack = QtGui.QLabel(self.gbxLLBack)
-        self.lblLLYBack.setObjectName(_fromUtf8("lblLLYBack"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.lblLLYBack)
-        self.txtLLYBack = QtGui.QLineEdit(self.gbxLLBack)
-        self.txtLLYBack.setObjectName(_fromUtf8("txtLLYBack"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtLLYBack)
-        self.horizontalLayout.addWidget(self.gbxLLBack)
-        self.gbxURBack = QtGui.QGroupBox(self.gbBkDim)
-        self.gbxURBack.setObjectName(_fromUtf8("gbxURBack"))
-        self.formLayout_2 = QtGui.QFormLayout(self.gbxURBack)
-        self.formLayout_2.setObjectName(_fromUtf8("formLayout_2"))
-        self.lblURXBack = QtGui.QLabel(self.gbxURBack)
-        self.lblURXBack.setObjectName(_fromUtf8("lblURXBack"))
-        self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblURXBack)
-        self.txtURXBack = QtGui.QLineEdit(self.gbxURBack)
-        self.txtURXBack.setObjectName(_fromUtf8("txtURXBack"))
-        self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtURXBack)
-        self.lblURYBack = QtGui.QLabel(self.gbxURBack)
-        self.lblURYBack.setObjectName(_fromUtf8("lblURYBack"))
-        self.formLayout_2.setWidget(1, QtGui.QFormLayout.LabelRole, self.lblURYBack)
-        self.txtURYBack = QtGui.QLineEdit(self.gbxURBack)
-        self.txtURYBack.setObjectName(_fromUtf8("txtURYBack"))
-        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtURYBack)
-        self.horizontalLayout.addWidget(self.gbxURBack)
-        self.formLayout_3.setWidget(1, QtGui.QFormLayout.SpanningRole, self.gbBkDim)
-        self.verticalLayout.addWidget(self.gbxBackdrop)
-        self.fraButtons = QtGui.QFrame(self.centralWidget)
-        self.fraButtons.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.fraButtons.setFrameShadow(QtGui.QFrame.Raised)
-        self.fraButtons.setObjectName(_fromUtf8("fraButtons"))
-        self.gridLayout = QtGui.QGridLayout(self.fraButtons)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.cmdCancel = QtGui.QPushButton(self.fraButtons)
-        self.cmdCancel.setObjectName(_fromUtf8("cmdCancel"))
-        self.gridLayout.addWidget(self.cmdCancel, 0, 2, 1, 1)
-        self.cmdOK = QtGui.QPushButton(self.fraButtons)
-        self.cmdOK.setObjectName(_fromUtf8("cmdOK"))
-        self.gridLayout.addWidget(self.cmdOK, 0, 1, 1, 1)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 0, 0, 1, 1)
-        self.verticalLayout.addWidget(self.fraButtons)
-        frmMapBackdropOptions.setCentralWidget(self.centralWidget)
+        section = self._parent.project.map
+        if self.rbnNone.isChecked():
+            section.units = MapUnits.NONE
+        if self.rbnDegrees.isChecked():
+            section.units =  MapUnits.DEGREES
+        if self.rbnFeet.isChecked():
+            section.units = MapUnits.FEET
+        if self.rbnMeters.isChecked():
+            section.units = MapUnits.METERS
+        section.dimensions = (float(self.txtLLXMap.text()), float(self.txtLLYMap.text()),
+                              float(self.txtURXMap.text()), float(self.txtURYMap.text()))
+        self.close()
 
-        self.retranslateUi(frmMapBackdropOptions)
-        QtCore.QMetaObject.connectSlotsByName(frmMapBackdropOptions)
-
-    def retranslateUi(self, frmMapBackdropOptions):
-        frmMapBackdropOptions.setWindowTitle(_translate("frmMapBackdropOptions", "SWMM Map/Backdrop Options", None))
-        self.gbxMap.setTitle(_translate("frmMapBackdropOptions", "Map Dimensions", None))
-        self.gbxLLMap.setTitle(_translate("frmMapBackdropOptions", "Lower Left", None))
-        self.lblLLX.setText(_translate("frmMapBackdropOptions", "X-Coordinate", None))
-        self.lblLLY.setText(_translate("frmMapBackdropOptions", "Y-Coordinate", None))
-        self.gbxURMap.setTitle(_translate("frmMapBackdropOptions", "Upper Right", None))
-        self.lblURX.setText(_translate("frmMapBackdropOptions", "X-Coordinate", None))
-        self.lblURY.setText(_translate("frmMapBackdropOptions", "Y-Coordinate", None))
-        self.gbxMapUnits.setTitle(_translate("frmMapBackdropOptions", "Map Units", None))
-        self.rbnFeet.setText(_translate("frmMapBackdropOptions", "Feet", None))
-        self.rbnMeters.setText(_translate("frmMapBackdropOptions", "Meters", None))
-        self.rbnDegrees.setText(_translate("frmMapBackdropOptions", "Degrees", None))
-        self.rbnNone.setText(_translate("frmMapBackdropOptions", "None", None))
-        self.gbxBackdrop.setTitle(_translate("frmMapBackdropOptions", "Backdrop Configuration", None))
-        self.lblBackdrop.setText(_translate("frmMapBackdropOptions", "File Name", None))
-        self.gbBkDim.setTitle(_translate("frmMapBackdropOptions", "Dimensions", None))
-        self.gbxLLBack.setTitle(_translate("frmMapBackdropOptions", "Lower Left", None))
-        self.lblLLXBack.setText(_translate("frmMapBackdropOptions", "X-Coordinate", None))
-        self.lblLLYBack.setText(_translate("frmMapBackdropOptions", "Y-Coordinate", None))
-        self.gbxURBack.setTitle(_translate("frmMapBackdropOptions", "Upper Right", None))
-        self.lblURXBack.setText(_translate("frmMapBackdropOptions", "X-Coordinate", None))
-        self.lblURYBack.setText(_translate("frmMapBackdropOptions", "Y-Coordinate", None))
-        self.cmdCancel.setText(_translate("frmMapBackdropOptions", "Cancel", None))
-        self.cmdOK.setText(_translate("frmMapBackdropOptions", "OK", None))
-
+    def cmdCancel_Clicked(self):
+        self.close()

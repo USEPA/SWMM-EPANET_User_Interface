@@ -36,8 +36,8 @@ class Project(InputFile):
         # self.pumps = [Pump]
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
+        self.patterns = [Pattern]
         # self.curves = [Curve]
-        # self.patterns = [Pattern]
         self.energy = EnergyOptions()
         # [STATUS]
         # self.controls = [Control]

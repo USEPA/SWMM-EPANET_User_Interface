@@ -49,18 +49,18 @@ class InputFile(object):
         self.sections = []
         section_index = 1
         section_name = ""
-        section_whole = ""
+        section_whole = []
         for line in lines_iterator:
             if line.startswith('['):
                 if section_name:
                     self.add_section(section_name, section_whole, section_index)
                     section_index += 1
                 section_name = line.rstrip()
-                section_whole = line
+                section_whole = [line]
             else:
-                section_whole += line
+                section_whole.append(line)
         if section_name:
-            self.add_section(section_name, section_whole, section_index)
+            self.add_section(section_name, '\n'.join(section_whole), section_index)
             section_index += 1
         self.add_sections_from_attributes()
 
@@ -192,6 +192,8 @@ class Section(object):
             return self.value
         elif isinstance(self.value, (list, tuple)):
             text_list = [self.name]
+            if self.comment:
+                text_list.append(self.comment)
             for item in self.value:
                 text_list.append(str(item))
             return '\n'.join(text_list)

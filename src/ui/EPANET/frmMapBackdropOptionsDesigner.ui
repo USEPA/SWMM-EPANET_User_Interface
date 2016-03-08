@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>464</height>
+    <width>662</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="font">
@@ -21,7 +21,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="fraMapFile">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -115,25 +115,50 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_3">
+     <widget class="QFrame" name="fraMapUnits">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QFormLayout" name="formLayout_3">
-       <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
         <widget class="QLabel" name="lblMapUnits">
          <property name="text">
           <string>Map Units</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item>
         <widget class="QComboBox" name="cboMapUnits"/>
        </item>
-       <item row="1" column="0">
+       <item>
+        <spacer name="hspMapUnits">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>484</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="fraBackdrop">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
         <widget class="QLabel" name="lblBackdrop">
          <property name="font">
           <font>
@@ -145,7 +170,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item>
         <widget class="QLineEdit" name="txtBackdropFile"/>
        </item>
       </layout>
@@ -156,32 +181,45 @@
       <property name="title">
        <string>Backdrop Offsets</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="txtBackdropY"/>
+       </item>
+       <item row="1" column="0">
         <widget class="QLabel" name="lblX">
          <property name="text">
           <string>X</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="1" column="1">
         <widget class="QLineEdit" name="txtBackdropX"/>
        </item>
-       <item>
+       <item row="1" column="2">
         <widget class="QLabel" name="lblY">
          <property name="text">
           <string>Y</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QLineEdit" name="txtBackdropY"/>
+       <item row="1" column="4">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="fraOKCancel">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -190,7 +228,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <spacer name="horizontalSpacer">
+        <spacer name="hspOKCancel">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

@@ -132,8 +132,8 @@ class frmMainSWMM(frmMain):
         if os.path.exists(filename):
             fpre, fext = os.path.splitext(filename)
             margs.append(filename)
-            margs.append(fpre + '.out')
             margs.append(fpre + '.rpt')
+            margs.append(fpre + '.out')
         else:
             QMessageBox.information(None, "SWMM", "SWMM input file not found", QMessageBox.Ok)
 

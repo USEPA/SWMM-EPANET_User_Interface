@@ -14,8 +14,9 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
         self._parent = parent
 
     def set_from(self, project):
-        # section = core.epanet.project.Title()
-        # section = project.find_section("TITLE")
+        # section = core.epanet.project.Control()
+        section = project.find_section("CONTROLS")
+        section = project.find_section("RULES")
         # self.txtTitle.setPlainText(str(section.title))
 
     def cmdOK_Clicked(self):

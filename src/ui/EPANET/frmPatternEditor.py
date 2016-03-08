@@ -15,7 +15,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
 
     def set_from(self, project):
         # section = core.epanet.project.Title()
-        # section = project.find_section("TITLE")
+        section = project.find_section("PATTERNS")
         # self.txtTitle.setPlainText(str(section.title))
 
     def cmdOK_Clicked(self):

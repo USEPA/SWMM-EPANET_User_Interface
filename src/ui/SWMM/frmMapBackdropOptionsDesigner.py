@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'frmMapBackdropOptions.ui'
+# Form implementation generated from reading ui file 'frmMapBackdropOptionsDesigner.ui'
 #
-# Created: Mon Mar 07 15:43:21 2016
+# Created: Tue Mar 08 16:50:47 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_frmMapBackdropOptions(object):
     def setupUi(self, frmMapBackdropOptions):
         frmMapBackdropOptions.setObjectName(_fromUtf8("frmMapBackdropOptions"))
-        frmMapBackdropOptions.resize(438, 444)
+        frmMapBackdropOptions.resize(516, 464)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmMapBackdropOptions.setFont(font)
@@ -91,19 +91,27 @@ class Ui_frmMapBackdropOptions(object):
         self.rbnNone.setObjectName(_fromUtf8("rbnNone"))
         self.horizontalLayout_2.addWidget(self.rbnNone)
         self.verticalLayout.addWidget(self.gbxMapUnits)
-        self.gbxBackdrop = QtGui.QGroupBox(self.centralWidget)
-        self.gbxBackdrop.setObjectName(_fromUtf8("gbxBackdrop"))
-        self.formLayout_3 = QtGui.QFormLayout(self.gbxBackdrop)
-        self.formLayout_3.setObjectName(_fromUtf8("formLayout_3"))
-        self.lblBackdrop = QtGui.QLabel(self.gbxBackdrop)
+        self.frame = QtGui.QFrame(self.centralWidget)
+        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame.setObjectName(_fromUtf8("frame"))
+        self.horizontalLayout_4 = QtGui.QHBoxLayout(self.frame)
+        self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
+        self.lblBackdrop = QtGui.QLabel(self.frame)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.lblBackdrop.setFont(font)
         self.lblBackdrop.setObjectName(_fromUtf8("lblBackdrop"))
-        self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.lblBackdrop)
-        self.txtBackdropFile = QtGui.QLineEdit(self.gbxBackdrop)
+        self.horizontalLayout_4.addWidget(self.lblBackdrop)
+        self.txtBackdropFile = QtGui.QLineEdit(self.frame)
         self.txtBackdropFile.setObjectName(_fromUtf8("txtBackdropFile"))
-        self.formLayout_3.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtBackdropFile)
+        self.horizontalLayout_4.addWidget(self.txtBackdropFile)
+        self.verticalLayout.addWidget(self.frame)
+        self.gbxBackdrop = QtGui.QGroupBox(self.centralWidget)
+        self.gbxBackdrop.setObjectName(_fromUtf8("gbxBackdrop"))
+        self.formLayout_3 = QtGui.QFormLayout(self.gbxBackdrop)
+        self.formLayout_3.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout_3.setObjectName(_fromUtf8("formLayout_3"))
         self.gbBkDim = QtGui.QGroupBox(self.gbxBackdrop)
         self.gbBkDim.setObjectName(_fromUtf8("gbBkDim"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.gbBkDim)
@@ -142,7 +150,7 @@ class Ui_frmMapBackdropOptions(object):
         self.txtURYBack.setObjectName(_fromUtf8("txtURYBack"))
         self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtURYBack)
         self.horizontalLayout.addWidget(self.gbxURBack)
-        self.formLayout_3.setWidget(1, QtGui.QFormLayout.SpanningRole, self.gbBkDim)
+        self.formLayout_3.setWidget(0, QtGui.QFormLayout.SpanningRole, self.gbBkDim)
         self.verticalLayout.addWidget(self.gbxBackdrop)
         self.fraButtons = QtGui.QFrame(self.centralWidget)
         self.fraButtons.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -163,6 +171,20 @@ class Ui_frmMapBackdropOptions(object):
 
         self.retranslateUi(frmMapBackdropOptions)
         QtCore.QMetaObject.connectSlotsByName(frmMapBackdropOptions)
+        frmMapBackdropOptions.setTabOrder(self.txtLLXMap, self.txtLLYMap)
+        frmMapBackdropOptions.setTabOrder(self.txtLLYMap, self.txtURXMap)
+        frmMapBackdropOptions.setTabOrder(self.txtURXMap, self.txtURYMap)
+        frmMapBackdropOptions.setTabOrder(self.txtURYMap, self.rbnFeet)
+        frmMapBackdropOptions.setTabOrder(self.rbnFeet, self.rbnMeters)
+        frmMapBackdropOptions.setTabOrder(self.rbnMeters, self.rbnDegrees)
+        frmMapBackdropOptions.setTabOrder(self.rbnDegrees, self.rbnNone)
+        frmMapBackdropOptions.setTabOrder(self.rbnNone, self.txtBackdropFile)
+        frmMapBackdropOptions.setTabOrder(self.txtBackdropFile, self.txtLLXBack)
+        frmMapBackdropOptions.setTabOrder(self.txtLLXBack, self.txtLLYBack)
+        frmMapBackdropOptions.setTabOrder(self.txtLLYBack, self.txtURXBack)
+        frmMapBackdropOptions.setTabOrder(self.txtURXBack, self.txtURYBack)
+        frmMapBackdropOptions.setTabOrder(self.txtURYBack, self.cmdOK)
+        frmMapBackdropOptions.setTabOrder(self.cmdOK, self.cmdCancel)
 
     def retranslateUi(self, frmMapBackdropOptions):
         frmMapBackdropOptions.setWindowTitle(_translate("frmMapBackdropOptions", "SWMM Map/Backdrop Options", None))
@@ -178,8 +200,8 @@ class Ui_frmMapBackdropOptions(object):
         self.rbnMeters.setText(_translate("frmMapBackdropOptions", "Meters", None))
         self.rbnDegrees.setText(_translate("frmMapBackdropOptions", "Degrees", None))
         self.rbnNone.setText(_translate("frmMapBackdropOptions", "None", None))
-        self.gbxBackdrop.setTitle(_translate("frmMapBackdropOptions", "Backdrop Configuration", None))
-        self.lblBackdrop.setText(_translate("frmMapBackdropOptions", "File Name", None))
+        self.lblBackdrop.setText(_translate("frmMapBackdropOptions", "Backdrop File Name", None))
+        self.gbxBackdrop.setTitle(_translate("frmMapBackdropOptions", "Backdrop Dimensions", None))
         self.gbBkDim.setTitle(_translate("frmMapBackdropOptions", "Dimensions", None))
         self.gbxLLBack.setTitle(_translate("frmMapBackdropOptions", "Lower Left", None))
         self.lblLLXBack.setText(_translate("frmMapBackdropOptions", "X-Coordinate", None))

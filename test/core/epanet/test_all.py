@@ -27,7 +27,7 @@ my_suite.addTest(SimpleBackdropTest())
 my_suite.addTest(ProjectTest())
 
 # will need for later MTPs:
-# my_suite.addTest(SimplePatternTest())
+my_suite.addTest(SimplePatternTest())
 # my_suite.addTest(SimpleCurveTest())
 
 if __name__ == "__main__":

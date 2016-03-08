@@ -15,6 +15,11 @@ from ui.EPANET.frmReactionsOptions import frmReactionsOptions
 from ui.EPANET.frmReportOptions import frmReportOptions
 from ui.EPANET.frmTimesOptions import frmTimesOptions
 from ui.EPANET.frmTitle import frmTitle
+
+from ui.EPANET.frmControls import frmControls
+from ui.EPANET.frmCurveEditor import frmCurveEditor
+from ui.EPANET.frmPatternEditor import frmPatternEditor
+
 from ui.model_utility import *
 from core.epanet.project import Project
 
@@ -57,6 +62,11 @@ class frmMainEPANET(frmMain):
         self._frmReportOptions = None
         self._frmTimesOptions = None
         self._frmTitle = None
+
+        self._frmControls = None
+        self._frmCurveEditor = None
+        self._frmPatternEditor = None
+
 
     def std_newproj(self):
         self.project = Project()
@@ -113,6 +123,14 @@ class frmMainEPANET(frmMain):
         if itm.data(0, 0) == 'Title/Notes':
             self._frmTitle = frmTitle(self)
             self._frmTitle.show()
+        if itm.data(0, 0) == 'Simple':
+            self._frmControls = frmControls(self)
+            self._frmControls.setWindowTitle('EPANET Simple Controls')
+            self._frmControls.show()
+        if itm.data(0, 0) == 'Rule-Based':
+            self._frmControls = frmControls(self)
+            self._frmControls.setWindowTitle('EPANET Rule-Based Controls')
+            self._frmControls.show()
 
         # mitm = itm
         # if self.project == None or mitm.data(0, 0) != 'Options':

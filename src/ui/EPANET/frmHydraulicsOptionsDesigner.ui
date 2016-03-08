@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
-    <height>301</height>
+    <width>589</width>
+    <height>332</height>
    </rect>
   </property>
   <property name="font">
@@ -19,375 +19,241 @@
    <string>EPANET Hydraulics Options</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lblFlowUnits">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>20</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Flow Units</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblHeadloss">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Headloss Formula&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblSpecificGravity">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>80</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Specific Gravity</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="cmdOK">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>OK</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="cmdCancel">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Cancel</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cboFlow">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>20</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cboHeadloss">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>50</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtSpecificGravity">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>80</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblRelativeViscosity">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>110</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relative Viscosity</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtRelativeViscosity">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>110</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblMaximumTrials">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>20</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Maximum Trials</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtMaximumTrials">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>20</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAccuracy">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>50</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Accuracy</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtAccuracy">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>50</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblDefaultPattern">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>80</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Default Pattern</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblDemandMultiplier">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>110</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Demand Multiplier</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblEmitterExponent">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>140</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Emitter Exponent</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtDefaultPattern">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>80</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtDemandMultiplier">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>110</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtEmitterExponent">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>140</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblCheckFrequency">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>170</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Check Frequency</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblMaxCheck">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>200</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Max Check</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblDampLimit">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>230</y>
-      <width>111</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Damp Limit</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtCheckFrequency">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>170</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtMaxCheck">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>200</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="txtDampLimit">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>230</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="gbxUnbalanced">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>140</y>
-      <width>241</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>If Unbalanced</string>
-    </property>
-    <widget class="QLineEdit" name="txtContinueN">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>70</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbnStop">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>30</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Stop</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbnContinue">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>50</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Continue</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="rbnContinueN">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>70</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Continue N</string>
-     </property>
-    </widget>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="fraTop">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QFrame" name="fraLeft">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblFlowUnits">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Flow Units</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cboFlow"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblHeadloss">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Headloss Formula&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="cboHeadloss"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="lblSpecificGravity">
+            <property name="text">
+             <string>Specific Gravity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="txtSpecificGravity"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="lblRelativeViscosity">
+            <property name="text">
+             <string>Relative Viscosity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txtRelativeViscosity"/>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QGroupBox" name="gbxUnbalanced">
+            <property name="title">
+             <string>If Unbalanced</string>
+            </property>
+            <layout class="QFormLayout" name="formLayout">
+             <item row="0" column="0">
+              <widget class="QRadioButton" name="rbnStop">
+               <property name="text">
+                <string>Stop</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QRadioButton" name="rbnContinue">
+               <property name="text">
+                <string>Continue</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QRadioButton" name="rbnContinueN">
+               <property name="text">
+                <string>Continue N</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="txtContinueN"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblMaximumTrials">
+            <property name="text">
+             <string>Maximum Trials</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="txtMaximumTrials"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblAccuracy">
+            <property name="text">
+             <string>Accuracy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="txtAccuracy"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="lblDefaultPattern">
+            <property name="text">
+             <string>Default Pattern</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="txtDefaultPattern"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="lblDemandMultiplier">
+            <property name="text">
+             <string>Demand Multiplier</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txtDemandMultiplier"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="lblEmitterExponent">
+            <property name="text">
+             <string>Emitter Exponent</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="txtEmitterExponent"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="lblCheckFrequency">
+            <property name="text">
+             <string>Check Frequency</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="txtCheckFrequency"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="lblMaxCheck">
+            <property name="text">
+             <string>Max Check</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="txtMaxCheck"/>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="lblDampLimit">
+            <property name="text">
+             <string>Damp Limit</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="txtDampLimit"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="fraOKCancel">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="hspOKCancel">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>386</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdOK">
+         <property name="text">
+          <string>OK</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdCancel">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

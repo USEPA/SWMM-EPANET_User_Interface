@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>444</height>
+    <width>516</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="font">
@@ -128,12 +128,15 @@
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="gbxBackdrop">
-      <property name="title">
-       <string>Backdrop Configuration</string>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
       </property>
-      <layout class="QFormLayout" name="formLayout_3">
-       <item row="0" column="0">
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
         <widget class="QLabel" name="lblBackdrop">
          <property name="font">
           <font>
@@ -141,14 +144,26 @@
           </font>
          </property>
          <property name="text">
-          <string>File Name</string>
+          <string>Backdrop File Name</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item>
         <widget class="QLineEdit" name="txtBackdropFile"/>
        </item>
-       <item row="1" column="0" colspan="2">
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="gbxBackdrop">
+      <property name="title">
+       <string>Backdrop Dimensions</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout_3">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="gbBkDim">
          <property name="title">
           <string>Dimensions</string>
@@ -261,6 +276,23 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>txtLLXMap</tabstop>
+  <tabstop>txtLLYMap</tabstop>
+  <tabstop>txtURXMap</tabstop>
+  <tabstop>txtURYMap</tabstop>
+  <tabstop>rbnFeet</tabstop>
+  <tabstop>rbnMeters</tabstop>
+  <tabstop>rbnDegrees</tabstop>
+  <tabstop>rbnNone</tabstop>
+  <tabstop>txtBackdropFile</tabstop>
+  <tabstop>txtLLXBack</tabstop>
+  <tabstop>txtLLYBack</tabstop>
+  <tabstop>txtURXBack</tabstop>
+  <tabstop>txtURYBack</tabstop>
+  <tabstop>cmdOK</tabstop>
+  <tabstop>cmdCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

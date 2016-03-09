@@ -295,6 +295,44 @@ class Section(object):
             if not tried_set:
                 print("Section.text skipped: " + line)
 
+    def set_list_comment_plus_ids(self, new_text, item_type):
+        """Parse new_text formatted as a one-line section comment (column headers) followed by items.
+         Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
+         new_text is split into items (comment plus lines starting with the same ID).
+         self.value is a list of item_type.
+         Each item text is made into an item_type using a constructor that takes a string, then added to self.value.
+         """
+        self.value = []
+        lines = new_text.splitlines()
+        first_index = 1
+        if str(lines[1]).startswith(';'):
+            # Save first comment line as section comment
+            self.comment = lines[1]
+            first_index += 1
+
+        item_text = ""
+        item_id = ""
+        for line in lines[first_index:]:
+            if str(line).startswith(';'):
+                if item_text:
+                    self.value.append(item_type(item_text))
+                item_text = line
+                item_id = ""
+            else:
+                id_split = line.split()
+                new_item_id = id_split[0].strip()
+                if len(item_id) > 0:  # If already processed at least one line containing ID
+                    if new_item_id != item_id:
+                        self.value.append(item_type(item_text))
+                        item_text = ""
+                item_id = new_item_id
+                if item_text:
+                    item_text += '\n'
+                item_text += line
+
+        if item_text:
+            self.value.append(item_type(item_text))
+
     def get_field_dict_value(self, line):
         """Search self.field_dict for attribute matching start of line.
             Args:

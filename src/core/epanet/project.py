@@ -15,7 +15,7 @@ from core.epanet.options.energy import EnergyOptions
 from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
-from core.epanet.patterns import Pattern
+from core.epanet.patterns import Patterns
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
 from core.inputfile import InputFile
@@ -36,7 +36,7 @@ class Project(InputFile):
         # self.pumps = [Pump]
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
-        self.patterns = [Pattern]
+        self.patterns = Patterns()
         self.curves = Curves()
         self.energy = EnergyOptions()
         # [STATUS]

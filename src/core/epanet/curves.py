@@ -15,36 +15,12 @@ class Curves(Section):
 
     SECTION_NAME = "[CURVES]"
 
+    def __init__(self):
+        Section.__init__(self)
+        self.comment = ";ID              \tX-Value     \tY-Value"
+
     def set_text(self, new_text):
-        self.value = []
-        lines = new_text.splitlines()
-        first_curve = 1
-        if str(lines[1]).startswith(';'):
-            # Save first comment line as section comment
-            self.comment = lines[1]
-            first_curve += 1
-
-        curve_text = ""
-        curve_id = ""
-        for line in lines[first_curve:]:
-            if str(line).startswith(';'):
-                if curve_text:
-                    self.value.append(Curve(curve_text))
-                curve_text = line
-                curve_id = ""
-            else:
-                if len(curve_id) > 0:
-                    id_split = new_text.split()
-                    if id_split[0] != curve_id:
-                        self.value.append(Curve(curve_text))
-                        curve_text = ""
-                        curve_id = ""
-                if curve_text:
-                    curve_text += '\n'
-                curve_text += line
-
-        if curve_text:
-            self.value.append(Curve(curve_text))
+        self.set_list_comment_plus_ids(new_text, Curve)
 
 
 class Curve(Section):

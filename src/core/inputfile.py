@@ -320,15 +320,16 @@ class Section(object):
                 item_id = ""
             else:
                 id_split = line.split()
-                new_item_id = id_split[0].strip()
-                if len(item_id) > 0:  # If already processed at least one line containing ID
-                    if new_item_id != item_id:
-                        self.value.append(item_type(item_text))
-                        item_text = ""
-                item_id = new_item_id
-                if item_text:
-                    item_text += '\n'
-                item_text += line
+                if len(id_split) > 1:
+                    new_item_id = id_split[0].strip()
+                    if len(item_id) > 0:  # If already processed at least one line containing ID
+                        if new_item_id != item_id:
+                            self.value.append(item_type(item_text))
+                            item_text = ""
+                    item_id = new_item_id
+                    if item_text:
+                        item_text += '\n'
+                    item_text += line
 
         if item_text:
             self.value.append(item_type(item_text))

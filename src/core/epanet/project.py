@@ -1,5 +1,5 @@
 from core.coordinates import Coordinates
-from core.epanet.curves import Curve
+from core.epanet.curves import Curves
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import Pipe
@@ -37,7 +37,7 @@ class Project(InputFile):
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
         self.patterns = [Pattern]
-        # self.curves = [Curve]
+        self.curves = Curves()
         self.energy = EnergyOptions()
         # [STATUS]
         # self.controls = [Control]

@@ -53,7 +53,7 @@ class InputFile(object):
         for line in lines_iterator:
             if line.startswith('['):
                 if section_name:
-                    self.add_section(section_name, section_whole, section_index)
+                    self.add_section(section_name, '\n'.join(section_whole), section_index)
                     section_index += 1
                 section_name = line.rstrip()
                 section_whole = [line]

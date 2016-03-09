@@ -28,7 +28,7 @@ my_suite.addTest(ProjectTest())
 
 # will need for later MTPs:
 my_suite.addTest(SimplePatternTest())
-# my_suite.addTest(SimpleCurveTest())
+my_suite.addTest(SimpleCurveTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

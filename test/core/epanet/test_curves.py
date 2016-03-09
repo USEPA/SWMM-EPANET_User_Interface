@@ -1,8 +1,15 @@
 from core.epanet import curves
+from core.epanet.project import Project
 import unittest
 
 
 class SimpleCurveTest(unittest.TestCase):
+
+    TEST_TEXT = ("[CURVES]",
+                 ";ID\tX-Value\tY-Value",
+                 ";PUMP: Pump Curve for Pump 9",
+                 " 1\t1500\t250\t")
+
     def __init__(self):
         unittest.TestCase.__init__(self)
         self.my_curve = curves.Curve()
@@ -11,10 +18,28 @@ class SimpleCurveTest(unittest.TestCase):
         self.my_curve = curves.Curve()
         self.my_curve.curve_id = "XXX"
         self.my_curve.description = "test curve"
-        self.my_curve.curve_type = curves.CurveType.HEAD_LOSS
+        self.my_curve.curve_type = curves.CurveType.HEADLOSS
         self.my_curve.curve_xy = ((1500, 250), (1400, 200))
 
     def runTest(self):
         assert self.my_curve.curve_id == "XXX"
         assert self.my_curve.description == "test curve"
-        assert self.my_curve.get_text() == 'XXX	1.0	1.1	1.2	1.3', 'incorrect pattern block'
+        assert self.my_curve.get_text().split() == [';HEADLOSS:', 'test', 'curve',
+                                                    'XXX', '1500', '250', 'XXX', '1400', '200'], "incorrect pattern block"
+
+        # Create new Project with this section populated from TEST_TEXT
+        from_text = Project()
+        from_text.set_text('\n'.join(SimpleCurveTest.TEST_TEXT))
+        project_curves = from_text.curves
+        assert project_curves.comment == SimpleCurveTest.TEST_TEXT[1]
+        assert len(project_curves.value) == 1
+        this_curve = project_curves.value[0]
+        assert this_curve.curve_id == '1'
+        assert this_curve.description == "Pump Curve for Pump 9"
+        assert this_curve.curve_type == curves.CurveType.PUMP
+        assert this_curve.curve_xy == [("1500", "250")]
+
+if __name__ == '__main__':
+    my_test = SimpleCurveTest()
+    my_test.setUp()
+    my_test.runTest()

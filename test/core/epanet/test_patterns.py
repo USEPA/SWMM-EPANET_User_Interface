@@ -1,17 +1,18 @@
 from core.epanet import patterns
 from core.epanet.project import Project
-from core.inputfile import Section
 import unittest
 
-TEST_TEXT = ("[PATTERNS]",
-             ";ID\tMultipliers",
-             ";Demand Pattern",
-             " 1\t1.0\t1.2\t1.4\t1.6\t1.4\t1.2",
-             " 1\t1.0\t0.8\t0.6\t0.4\t0.6\t0.8",
-             " 2\t2.0\t2.2\t2.4\t2.6\t2.4\t2.2",
-             " 2\t2.0\t2.8\t2.6\t2.4\t2.6\t2.8")
 
 class SimplePatternTest(unittest.TestCase):
+
+    TEST_TEXT = ("[PATTERNS]",
+                 ";ID\tMultipliers",
+                 ";Demand Pattern",
+                 " 1\t1.0\t1.2\t1.4\t1.6\t1.4\t1.2",
+                 " 1\t1.0\t0.8\t0.6\t0.4\t0.6\t0.8",
+                 " 2\t2.0\t2.2\t2.4\t2.6\t2.4\t2.2",
+                 " 2\t2.0\t2.8\t2.6\t2.4\t2.6\t2.8")
+
     def __init__(self):
         unittest.TestCase.__init__(self)
         self.my_pattern = patterns.Pattern()
@@ -29,7 +30,7 @@ class SimplePatternTest(unittest.TestCase):
 
         # Create new Project with this section populated from TEST_TEXT
         from_text = Project()
-        from_text.set_text('\n'.join(TEST_TEXT))
+        from_text.set_text('\n'.join(SimplePatternTest.TEST_TEXT))
         pattern_list = from_text.patterns.value[2:]  # Skip first two in list, they are comments
         assert len(pattern_list) == 4
         assert int(pattern_list[0].pattern_id) == 1

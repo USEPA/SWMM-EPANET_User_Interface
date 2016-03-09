@@ -132,6 +132,14 @@ class frmMainEPANET(frmMain):
             self._frmControls.setWindowTitle('EPANET Rule-Based Controls')
             self._frmControls.show()
 
+        # the following items will respond to a click in the list, not the tree diagram
+        if itm.data(0, 0) == 'Patterns':
+            self._frmPatternEditor = frmPatternEditor(self)
+            self._frmPatternEditor.show()
+        if itm.data(0, 0) == 'Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.show()
+
         # mitm = itm
         # if self.project == None or mitm.data(0, 0) != 'Options':
         #     return

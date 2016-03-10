@@ -160,11 +160,14 @@ class Section(object):
     field_format = " {:19}\t{}"
 
     def __init__(self):
-        self.name = "Unnamed"
-        """Name of the item"""
-
         if hasattr(self, "SECTION_NAME"):
             self.name = self.SECTION_NAME
+        else:
+            try:
+                if self.name is None:
+                    self.name = "Unnamed"
+            except AttributeError as e:  # If name has never been set, it will be an error to test for None above.
+                self.name = "Unnamed"
 
         self.value = ""
         """Current value of the item as it appears in an InputFile"""
@@ -178,7 +181,6 @@ class Section(object):
 
         self.comment = ""
         """A user-specified header and/or comment about the section"""
-
     def __str__(self):
         """Override default method to return string representation"""
         return self.get_text()

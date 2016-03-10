@@ -40,7 +40,7 @@ class Project(InputFile):
         self.curves = Curves()
         self.energy = EnergyOptions()
         # [STATUS]
-        # self.controls = [Control]
+        self.controls = [Control]
         # self.rules = [Rule]
         # self.demands = [Demand]
         # self.quality = ReadNodesInitialQuality

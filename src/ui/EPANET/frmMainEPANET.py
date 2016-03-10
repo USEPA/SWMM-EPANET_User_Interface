@@ -126,10 +126,12 @@ class frmMainEPANET(frmMain):
         if itm.data(0, 0) == 'Simple':
             self._frmControls = frmControls(self)
             self._frmControls.setWindowTitle('EPANET Simple Controls')
+            self._frmControls.set_from(self.project, "CONTROLS")
             self._frmControls.show()
         if itm.data(0, 0) == 'Rule-Based':
             self._frmControls = frmControls(self)
             self._frmControls.setWindowTitle('EPANET Rule-Based Controls')
+            self._frmControls.set_from(self.project, "RULES")
             self._frmControls.show()
 
         # the following items will respond to a click in the list, not the tree diagram

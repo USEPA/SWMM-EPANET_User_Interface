@@ -16,6 +16,11 @@ from ui.SWMM.frmInterfaceFiles import frmInterfaceFiles
 from ui.SWMM.frmReportOptions import frmReportOptions
 from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
+
+from ui.SWMM.frmControls import frmControls
+from ui.SWMM.frmCurveEditor import frmCurveEditor
+from ui.SWMM.frmPatternEditor import frmPatternEditor
+
 from core.swmm.project import Project
 
 
@@ -113,6 +118,49 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Title/Notes':
             self._frmTitle = frmTitle(self)
             self._frmTitle.show()
+        if itm.data(0, 0) == 'Controls':
+            self._frmControls = frmControls(self)
+            self._frmControls.show()
+
+        # the following items will respond to a click in the list, not the tree diagram
+        if itm.data(0, 0) == 'Time Patterns':
+            self._frmPatternEditor = frmPatternEditor(self)
+            self._frmPatternEditor.show()
+        if itm.data(0, 0) == 'Control Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Control Curves')
+            self._frmCurveEditor.set_from(self.project, "CONTROL")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Diversion Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Diversion Curves')
+            self._frmCurveEditor.set_from(self.project, "DIVERSION")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Pump Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Pump Curves')
+            self._frmCurveEditor.set_from(self.project, "PUMP")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Rating Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Rating Curves')
+            self._frmCurveEditor.set_from(self.project, "RATING")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Shape Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Shape Curves')
+            self._frmCurveEditor.set_from(self.project, "SHAPE")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Storage Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Storage Curves')
+            self._frmCurveEditor.set_from(self.project, "STORAGE")
+            self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'Tidal Curves':
+            self._frmCurveEditor = frmCurveEditor(self)
+            self._frmCurveEditor.setWindowTitle('SWMM Tidal Curves')
+            self._frmCurveEditor.set_from(self.project, "TIDAL")
+            self._frmCurveEditor.show()
 
     def proj_run_simulation(self):
         run = 0

@@ -1,5 +1,4 @@
 from enum import Enum
-from core.inputfile import Section
 
 
 class ControlType(Enum):
@@ -34,6 +33,10 @@ class Control:
         self.control_type = ControlType.ABOVE
         """Simple controls are used to change link status or settings based on tank water level, junction pressure,
             time into the simulation or time of day"""
+
+    def __str__(self):
+        """Override default method to return string representation"""
+        return self.get_text()
 
     def get_text(self):
         """format contents of this item for writing to file"""

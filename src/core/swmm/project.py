@@ -1,4 +1,5 @@
-﻿from core.inputfile import InputFile, Section
+﻿from core.inputfile import InputFile, SectionAsListOf
+from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Node, Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
@@ -13,6 +14,7 @@ from core.swmm.climatology.climatology import Temperature
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
+from core.swmm.patterns import Patterns
 from core.swmm.timeseries import TimeSeries
 
 
@@ -85,7 +87,7 @@ class Project(InputFile):
         # self.raingages = [RainGage]             # RAINGAGES     rain gage information
         # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
         # self.evaporation = Evaporation()        # EVAPORATION   evaporation data
-        # self.temperatur = Temperature()         # TEMPERATURE   air temperature and snow melt data
+        # self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
@@ -106,7 +108,7 @@ class Project(InputFile):
         # self.xsections = [CrossSection] # XSECTIONS # conduit, orifice, and weir cross-section geometry
         # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
-        # self.controls = [Section] # CONTROLS # rules that control pump and regulator operation
+        self.controls = SectionAsListOf("[CONTROLS]", basestring) # rules that control pump and regulator operation
         # self.pollutants = [Section] # POLLUTANTS # pollutant information
         # self.landuses = [Section] # LANDUSES # land use categories
         # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
@@ -115,7 +117,7 @@ class Project(InputFile):
         # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
         # self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes
         # self.dwf = [Section] # DWF # baseline dry weather sanitary inflow at nodes
-        # self.patterns = [Section] # PATTERNS # periodic variation in dry weather inflow
+        self.patterns = Patterns() # periodic variation in dry weather inflow
         # self.rdii = [Section] # RDII # rainfall-dependent I/I information at nodes
         # self.loadings = [Section] # LOADINGS # initial pollutant loads on subcatchments
         # self.curves = [Section] # CURVES # x-y tabular data referenced in other sections

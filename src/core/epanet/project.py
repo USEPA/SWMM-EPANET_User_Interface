@@ -1,4 +1,4 @@
-from core.inputfile import Section
+from core.inputfile import SectionAsListOf
 from core.epanet.curves import Curves
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
@@ -39,12 +39,12 @@ class Project(InputFile):
         self.curves = Curves()
         self.energy = EnergyOptions()
         # [STATUS]
-        self.controls = [Control]
-        self.rules = Section()
+        self.controls = SectionAsListOf("[CONTROLS]", Control)
+        self.rules = SectionAsListOf("[RULES]", basestring)
         # self.demands = [Demand]
         # self.quality = ReadNodesInitialQuality
         self.reactions = Reactions()
-        self.sources = [Source]
+        self.sources = SectionAsListOf("[SOURCES]", Source)
         # [MIXING]
         # self.options = MapOptions,
         self.options = Options()

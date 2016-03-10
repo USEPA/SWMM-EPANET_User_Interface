@@ -1,7 +1,6 @@
-from core.coordinates import Coordinates
+from core.inputfile import Section
 from core.epanet.curves import Curves
 from core.epanet.hydraulics.control import Control
-from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
@@ -41,7 +40,7 @@ class Project(InputFile):
         self.energy = EnergyOptions()
         # [STATUS]
         self.controls = [Control]
-        # self.rules = [Rule]
+        self.rules = Section()
         # self.demands = [Demand]
         # self.quality = ReadNodesInitialQuality
         self.reactions = Reactions()

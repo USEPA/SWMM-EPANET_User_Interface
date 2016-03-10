@@ -56,9 +56,9 @@ class InputFile(object):
                     self.add_section(section_name, '\n'.join(section_whole), section_index)
                     section_index += 1
                 section_name = line.rstrip()
-                section_whole = [line]
-            else:
-                section_whole.append(line)
+                section_whole = [section_name]
+            elif line.strip():
+                section_whole.append(line.rstrip())
         if section_name:
             self.add_section(section_name, '\n'.join(section_whole), section_index)
             section_index += 1
@@ -88,50 +88,24 @@ class InputFile(object):
                 new_section.value_original = section_text
         else:
             section_class = type(section_attr)
-            if section_class is list:
-                if new_section is None:
-                    new_section = Section()
-                    new_section.name = section_name
-                    new_section.index = section_index
-                    new_section.value_original = section_text
-                    section_list = []
+            if new_section is None:                 # This section has not yet been added to self.sections
+                if section_class is SectionAsListOf:
+                    new_section = section_attr      # Use the existing instance created during project init
                 else:
-                    section_list = new_section.value
-                list_class = section_attr[0]
-                for row in section_text.splitlines()[1:]:  # process each row after the one with the section name
-                    if row.startswith(';'):                # if row starts with semicolon, the whole row is a comment
-                        comment = Section()
-                        comment.name = "Comment"
-                        comment.index = section_index
-                        comment.value = row
-                        comment.value_original = row
-                        section_list.append(comment)
-                    else:
-                        try:
-                            if row.strip():
-                                make_one = list_class()
-                                make_one.set_text(row)
-                                section_list.append(make_one)
-                        except Exception as e:
-                            print("Could not create object from row: " + row + "\n" + str(e))
-                new_section.value = section_list
-            else:
-                if new_section is None:
-                    new_section = section_class()
-                    if hasattr(new_section, "index"):
-                        new_section.index = section_index
-                    if hasattr(new_section, "value"):
-                        new_section.value = section_text
-                    if hasattr(new_section, "value_original"):
-                        new_section.value_original = section_text
-                try:
-                    new_section.set_text(section_text)
-                except Exception as e:
-                    print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e))
-        if new_section is not None and new_section not in self.sections:
-            self.sections.append(new_section)
-            if section_attr is not None:
-                self.__setattr__(attr_name, new_section)
+                    new_section = section_class()   # Create a new instance of this class
+        if new_section is not None:
+            if hasattr(new_section, "index"):
+                new_section.index = section_index
+            if hasattr(new_section, "value_original"):
+                new_section.value_original = section_text
+            try:
+                new_section.set_text(section_text)
+            except Exception as e:
+                print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e))
+            if new_section not in self.sections:
+                self.sections.append(new_section)
+                if section_attr is not None:
+                    self.__setattr__(attr_name, new_section)
 
     def find_section(self, section_title):
         """ Find an element of self.sections, ignoring square brackets and capitalization.
@@ -160,17 +134,17 @@ class Section(object):
     field_format = " {:19}\t{}"
 
     def __init__(self):
+        """Initialize or reset section"""
         if hasattr(self, "SECTION_NAME"):
             self.name = self.SECTION_NAME
-        else:
-            try:
-                if self.name is None:
-                    self.name = "Unnamed"
-            except AttributeError as e:  # If name has never been set, it will be an error to test for None above.
-                self.name = "Unnamed"
+        elif not hasattr(self, "name"):
+            self.name = "Unnamed"
 
-        self.value = ""
-        """Current value of the item as it appears in an InputFile"""
+        if hasattr(self, "value") and type(self.value) is list:
+            self.value = []
+        else:
+            self.value = ""
+            """Current value of the item as it appears in an InputFile"""
 
         self.value_original = None
         """Original value of the item as read from an InputFile during this session"""
@@ -181,6 +155,7 @@ class Section(object):
 
         self.comment = ""
         """A user-specified header and/or comment about the section"""
+
     def __str__(self):
         """Override default method to return string representation"""
         return self.get_text()
@@ -391,3 +366,45 @@ class Section(object):
             print("Exception setting {}: {}".format(attr_name, str(e)))
             setattr(self, attr_name, attr_value)
 
+
+class SectionAsListOf(Section):
+    def __init__(self, section_name, list_type):
+        if not section_name.startswith("["):
+            section_name = '[' + section_name + ']'
+        self.SECTION_NAME = section_name.upper()
+        Section.__init__(self)
+        self.list_type = list_type
+
+    def set_text(self, new_text):
+        self.value = []
+        for row in new_text.splitlines()[1:]:  # process each row after the one with the section name
+            if row.startswith(';'):            # if row starts with semicolon, the whole row is a comment
+                if self.value:
+                    comment = Section()
+                    comment.name = "Comment"
+                    comment.value = row
+                    self.value.append(comment)
+                else:
+                    if self.comment:
+                        self.comment += '\n' + row
+                    else:
+                        self.comment = row
+            elif row.strip():
+                try:
+                    if self.list_type is basestring:
+                        make_one = row
+                    else:
+                        make_one = self.list_type()
+                        make_one.set_text(row)
+                    self.value.append(make_one)
+                except Exception as e:
+                    print("Could not create object from row: " + row + "\n" + str(e))
+
+    def get_text(self):
+        """Contents of this section formatted for writing to file"""
+        text_list = [self.name]
+        if self.comment:
+            text_list.append(self.comment)
+        for item in self.value:
+            text_list.append(str(item))
+        return '\n'.join(text_list)

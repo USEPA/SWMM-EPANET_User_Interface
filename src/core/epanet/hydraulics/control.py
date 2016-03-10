@@ -6,10 +6,10 @@ class ControlType(Enum):
     ABOVE = 1
     BELOW = 2
     TIME = 3
-    CLOCK_TIME = 4
+    CLOCKTIME = 4
 
 
-class Control:
+class Control():
     """Defines simple controls that modify links based on a single condition"""
     def __init__(self):
         self.link_id = ""		# string
@@ -27,7 +27,7 @@ class Control:
         self.time = ""			# string
         """a time since the start of the simulation in decimal hours or in hours:minutes format"""
 
-        self.clock_time = ""    # string
+        self.clocktime = ""     # string
         """time of day (hour or hour:minute) AM/PM)"""
 
         self.control_type = ControlType.ABOVE
@@ -46,8 +46,8 @@ class Control:
                 return prefix + " IF NODE " + self.node_id + ' ' + self.control_type.name + ' ' + str(self.value)
             elif self.control_type == ControlType.TIME and len(self.time) > 0:
                 return prefix + " AT TIME " + self.time
-            elif self.control_type == ControlType.CLOCK_TIME and len(self.clock_time) > 0:
-                return prefix + " AT CLOCKTIME " + self.clock_time
+            elif self.control_type == ControlType.CLOCKTIME and len(self.clocktime) > 0:
+                return prefix + " AT CLOCKTIME " + self.clocktime
         return ''
 
     def set_text(self, new_text):
@@ -64,6 +64,6 @@ class Control:
             self.time = fields[5]
         elif type_str == "CLOCKTIME":
             self.control_type = ControlType.CLOCKTIME
-            self.time = ' '.join(fields[5:])
+            self.clocktime = ' '.join(fields[5:])
         else:
             raise NameError("Unable to parse Control: " + new_text)

@@ -234,21 +234,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             ipy_win.show()
 
     def script_exec(self):
-            file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", None, "All files (*.*)")
-            if file_name:
-                save_handle = sys.stdout
-                try:
-                    redirected_output = StringIO()
-                    sys.stdout = redirected_output
-                    session = self
-                    with open(file_name, 'r') as myfile:
-                        exec(myfile)
-                    QMessageBox.information(None, "Finished Running Script",
-                                            file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
-                except Exception as ex:
-                    QMessageBox.information(None, "Exception Running Script",
-                                            file_name + '\n' + str(ex), QMessageBox.Ok)
-                sys.stdout = save_handle
+        qsettings = QtCore.QSettings(self.model, "GUI")
+        directory = qsettings.value("ScriptDir", "")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", directory, "All files (*.*)")
+        if file_name:
+            path_only, file_only = os.path.split(file_name)
+            qsettings.setValue("ScriptDir", path_only)
+            qsettings.sync()
+            save_handle = sys.stdout
+            try:
+                redirected_output = StringIO()
+                sys.stdout = redirected_output
+                session = self
+                with open(file_name, 'r') as script_file:
+                    exec(script_file)
+                QMessageBox.information(None, "Finished Running Script",
+                                        file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
+            except Exception as ex:
+                QMessageBox.information(None, "Exception Running Script",
+                                        file_name + '\n' + str(ex), QMessageBox.Ok)
+            sys.stdout = save_handle
 
     def __unicode__(self):
         return unicode(self)

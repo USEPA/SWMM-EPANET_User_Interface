@@ -29,32 +29,51 @@ class ConcentrationUnits(Enum):
 ConcentrationUnitLabels = ["MG/L", "UG/L", "#/L"]
 
 
-class Landuse:
+class Landuse(Section):
     """Identifies the various categories of land uses within the drainage area. Each subcatchment area
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-    def __init__(self):
-        self.name = ""
+    field_format = " {:16}\t{:10}\t{:10}\t{:10}\n"
+
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+        self.land_use_name = ""
         """Name assigned to the land use"""
 
-        self.description = ""
-        """Optional comment or description of the land use"""
-
-        self.street_sweeping_interval = "30.0"
+        self.street_sweeping_interval = ''
         """Days between street sweeping within the land use"""
 
-        self.street_sweeping_availability = "0.0"
+        self.street_sweeping_availability = ''
         """Fraction of the buildup of all pollutants that is available for removal by sweeping"""
 
-        self.last_swept = "0.0"
+        self.last_swept = ''
         """Number of days since last swept at the start of the simulation"""
 
-        self.buildups = []    # Collection of type Buildup
-        """Specifies the rate at which pollutants build up over different land uses between rain events."""
+        if new_text:
+            self.set_text(new_text)
 
-        self.washoffs = []    # Collection of type Washoff
-        """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += Landuse.field_format.format(self.land_use_name,
+                                           self.street_sweeping_interval,
+                                           self.street_sweeping_availability,
+                                           self.last_swept)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.land_use_name = fields[0]
+        if len(fields) > 1:
+            self.street_sweeping_interval = fields[1]
+        if len(fields) > 2:
+            self.street_sweeping_availability =  fields[2]
+        if len(fields) > 3:
+            self.last_swept =  fields[3]
 
 
 class Buildup(Section):
@@ -73,17 +92,17 @@ class Buildup(Section):
         self.function = BuildupFunction.POW
         """BuildupFunction: Type of buildup function to use for the pollutant"""
 
-        self.rate_constant = ''
+        self.rate_constant = '0.0'
         """float: Time constant that governs the rate of pollutant buildup"""
 
-        self.power_sat_constant = ''
+        self.power_sat_constant = '0.0'
         """float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
             Saturation buildup formula"""
 
-        self.max_buildup = ''
+        self.max_buildup = '0.0'
         """float: Maximum buildup that can occur"""
 
-        self.scaling_factor = ''
+        self.scaling_factor = '1.0'
         """float: Multiplier used to adjust the buildup rates listed in the time series"""
 
         self.timeseries = ''
@@ -129,33 +148,59 @@ class Buildup(Section):
 class Washoff(Section):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
 
-    field_format = " {:16}\t{:6}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:16}\t{:10}\t{:10}\t{:10}\n"
+    field_format = " {:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
-        self.pollutant = ""
+        self.land_use_name = ""
+        """land use name"""
+
+        self.pollutant = ''
         """Pollutant name"""
 
         self.function = WashoffFunction.EXP
         """Choice of washoff function to use for the pollutant"""
 
-        self.coefficient = 0.0
+        self.coefficient = '0.0'
         """Value of C1 in the exponential and rating curve formulas"""
 
-        self.exponent = 0.0
+        self.exponent = '0.0'
         """Exponent used in the exponential and rating curve washoff formulas"""
 
-        self.cleaning_efficiency = 0.0
+        self.cleaning_efficiency = '0.0'
         """Street cleaning removal efficiency (percent) for the pollutant"""
 
-        self.bmp_efficiency = 0.0
+        self.bmp_efficiency = '0.0'
         """Removal efficiency (percent) associated with any Best Management Practice that might have been implemented"""
 
         if new_text:
             self.set_text(new_text)
 
     def get_text(self):
-        return Washoff.field_format.format(self.name)
+        return Washoff.field_format.format(self.land_use_name,
+                                           self.pollutant,
+                                           self.function.name,
+                                           self.coefficient,
+                                           self.exponent,
+                                           self.cleaning_efficiency,
+                                           self.bmp_efficiency)
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 1:
+            self.land_use_name = fields[0]
+            self.pollutant = fields[1]
+        if len(fields) > 2:
+            self.function = WashoffFunction[fields[2].upper()]
+        if len(fields) > 3:
+            self.coefficient = fields[3]
+        if len(fields) > 4:
+            self.exponent = fields[4]
+        if len(fields) > 5:
+            self.cleaning_efficiency = fields[5]
+        if len(fields) > 6:
+            self.bmp_efficiency = fields[6]
 
 
 class Pollutant(Section):
@@ -170,19 +215,19 @@ class Pollutant(Section):
         self.units = ConcentrationUnits.MG_per_L
         """ConcentrationUnits: Units in which the pollutant concentration is expressed"""
 
-        self.rain_concentration = ''
+        self.rain_concentration = '0.0'
         """float: Concentration of the pollutant in rain water"""
 
-        self.gw_concentration = ''
+        self.gw_concentration = '0.0'
         """float: Concentration of the pollutant in ground water"""
 
-        self.ii_concentration = ''
+        self.ii_concentration = '0.0'
         """float: Concentration of the pollutant in any Infiltration/Inflow"""
 
-        self.dwf_concentration = ''
+        self.dwf_concentration = '0.0'
         """float: Concentration of the pollutant in any dry weather sanitary flow"""
 
-        self.decay_coefficient = ''
+        self.decay_coefficient = '0.0'
         """float: First-order decay coefficient of the pollutant (1/days)"""
 
         self.snow_only = False
@@ -192,7 +237,7 @@ class Pollutant(Section):
         """str: Name of another pollutant whose runoff concentration contributes to the
             runoff concentration of the current pollutant"""
 
-        self.co_fraction = "0.0"
+        self.co_fraction = '0.0'
         """float: Fraction of the co-pollutant's runoff concentration that contributes to the
             runoff concentration of the current pollutant"""
 

@@ -11,6 +11,7 @@ from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.map import MapOptions
 from core.swmm.climatology.climatology import Evaporation
 from core.swmm.climatology.climatology import Temperature
+from core.swmm.curves import Curves
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
@@ -116,11 +117,11 @@ class Project(InputFile):
         # self.washoff = [Section] # WASHOFF # washoff functions for pollutants and land uses
         # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
         # self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes
-        # self.dwf = [Section] # DWF # baseline dry weather sanitary inflow at nodes
-        self.patterns = Patterns() # periodic variation in dry weather inflow
-        # self.rdii = [Section] # RDII # rainfall-dependent I/I information at nodes
-        # self.loadings = [Section] # LOADINGS # initial pollutant loads on subcatchments
-        # self.curves = [Section] # CURVES # x-y tabular data referenced in other sections
+        # self.dwf = [Section]                    # DWF           baseline dry weather sanitary inflow at nodes
+        self.patterns = Patterns()                # PATTERNS      periodic variation in dry weather inflow
+        # self.rdii = [Section]                   # RDII          rainfall-dependent I/I information at nodes
+        # self.loadings = [Section]               # LOADINGS      initial pollutant loads on subcatchments
+        self.curves = Curves()                    # CURVES        x-y tabular data referenced in other sections
         # self.timeseries = [TimeSeries] # TIMESERIES # time series data referenced in other sections
         # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes

@@ -12,6 +12,7 @@ from core.swmm.options.map import MapOptions
 from core.swmm.climatology.climatology import Evaporation
 from core.swmm.climatology.climatology import Temperature
 from core.swmm.curves import Curves
+from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
@@ -95,7 +96,7 @@ class Project(InputFile):
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
         # self.lid_controls = [Section]           # LID_CONTROLS  low impact development control information
         # self.lid_usage = [Section]              # LID_USAGE     assignment of LID controls to subcatchments
-        # self.aquifers = [Section]               # AQUIFERS      groundwater aquifer parameters
+        self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer)  # groundwater aquifer parameters
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
         # self.snowpacks = [Section]              # SNOWPACKS     subcatchment snow pack parameters
         # self.junctions = [Junction]             # JUNCTIONS     junction node information

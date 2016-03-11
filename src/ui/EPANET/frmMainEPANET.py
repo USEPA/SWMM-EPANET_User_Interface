@@ -75,12 +75,18 @@ class frmMainEPANET(frmMain):
         pass
 
     def std_openproj(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", "", "Inp files (*.inp);;All files (*.*)")
+        qsettings = QtCore.QSettings(self.model, "GUI")
+        directory = qsettings.value("ProjectDir", "")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
+                                                      "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.project = Project()
             try:
                 self.project.read_file(file_name)
-                self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
+                path_only, file_only = os.path.split(file_name)
+                self.setWindowTitle(self.model + " - " + file_only)
+                qsettings.setValue("ProjectDir", path_only)
+                qsettings.sync()
             except:
                 self.project = None
                 self.setWindowTitle(self.model)
@@ -90,7 +96,15 @@ class frmMainEPANET(frmMain):
         self.project.write_file(self.project.file_name)
 
     def proj_save_as(self):
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "", "Inp files (*.inp)")
+        qsettings = QtCore.QSettings(self.model, "GUI")
+        directory = qsettings.value("ProjectDir", "")
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
+        if file_name:
+            self.project.write_file(file_name)
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+            qsettings.setValue("ProjectDir", path_only)
+            qsettings.sync()
         if file_name:
             self.project.write_file(file_name)
             self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])

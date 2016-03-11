@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 from core.inputfile import Section
 
@@ -28,11 +29,11 @@ class Curve(Section):
 
     field_format = " {:16}\t{:12}\t{:12}\n"
 
-    def __init__(self, text=None):
-        self.curve_id = ""      # string
+    def __init__(self, new_text=None):
+        self.curve_id = ''      # string
         """Curve ID Label"""
 
-        self.description = ""   # string
+        self.description = ''   # string
         """Curve description"""
 
         self.curve_type = CurveType.PUMP    # PUMP, EFFICIENCY, VOLUME, or HEADLOSS
@@ -41,8 +42,8 @@ class Curve(Section):
         self.curve_xy = []      # list of (x, y) tuples
         """X, Y Values"""
 
-        if text:
-            self.set_text(text)
+        if new_text:
+            self.set_text(new_text)
 
     def get_text(self):
         """format contents of this item for writing to file"""
@@ -62,7 +63,8 @@ class Curve(Section):
                     try:
                         self.setattr_keep_type("curve_type", colon_split[0][1:].strip())
                     except Exception as e:
-                        print("Curve could not set curve_type = " + colon_split[0][1:] + '\n' + str(e))
+                        print("Curve could not set curve_type = " + colon_split[0][1:] + '\n' + str(e) + '\n' +
+                              str(traceback.print_exc()))
                     self.description = colon_split[1].strip()
                 else:
                     self.description = line[1:].strip()

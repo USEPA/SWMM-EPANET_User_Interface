@@ -17,6 +17,7 @@ from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.patterns import Patterns
 from core.swmm.timeseries import TimeSeries
+from core.swmm.quality import Pollutant, Buildup
 
 
 class Project(InputFile):
@@ -110,10 +111,10 @@ class Project(InputFile):
         # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
         self.controls = SectionAsListOf("[CONTROLS]", basestring) # rules that control pump and regulator operation
-        # self.pollutants = [Section] # POLLUTANTS # pollutant information
+        self.pollutants = SectionAsListOf("[POLLUTANTS]", Pollutant) # pollutant information
         # self.landuses = [Section] # LANDUSES # land use categories
         # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
-        # self.buildup = [Section] # BUILDUP # buildup functions for pollutants and land uses
+        self.buildup =  SectionAsListOf("[BUILDUP]", Buildup) # buildup functions for pollutants and land uses
         # self.washoff = [Section] # WASHOFF # washoff functions for pollutants and land uses
         # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
         # self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes

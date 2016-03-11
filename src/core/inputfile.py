@@ -407,5 +407,7 @@ class SectionAsListOf(Section):
         if self.comment:
             text_list.append(self.comment)
         for item in self.value:
-            text_list.append(str(item))
+            item_str = str(item)
+            if item_str.strip():
+                text_list.append(item_str.rstrip('\n'))
         return '\n'.join(text_list)

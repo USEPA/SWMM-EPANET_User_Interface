@@ -80,8 +80,9 @@ class frmMainSWMM(frmMain):
                 self.project.read_file(file_name)
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
-                qsettings.setValue("ProjectDir", path_only)
-                qsettings.sync()
+                if path_only != directory:
+                    qsettings.setValue("ProjectDir", path_only)
+                    del qsettings
             except:
                 self.project = Project()
                 self.setWindowTitle(self.model)
@@ -97,8 +98,9 @@ class frmMainSWMM(frmMain):
             self.project.write_file(file_name)
             path_only, file_only = os.path.split(file_name)
             self.setWindowTitle(self.model + " - " + file_only)
-            qsettings.setValue("ProjectDir", path_only)
-            qsettings.sync()
+            if path_only != directory:
+                qsettings.setValue("ProjectDir", path_only)
+                del qsettings
 
     def edit_options(self, itm, column):
         if not self.project:

@@ -101,7 +101,8 @@ class InputFile(object):
             try:
                 new_section.set_text(section_text)
             except Exception as e:
-                print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e))
+                print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e) +
+                      '\n' + str(traceback.print_exc()))
             if new_section not in self.sections:
                 self.sections.append(new_section)
                 if section_attr is not None:
@@ -363,7 +364,7 @@ class Section(object):
             else:
                 setattr(self, attr_name, attr_value)
         except Exception as e:
-            print("Exception setting {}: {}".format(attr_name, str(e)))
+            print("Exception setting {}: {}\n{}".format(attr_name, str(e), str(traceback.print_exc())))
             setattr(self, attr_name, attr_value)
 
 
@@ -398,7 +399,7 @@ class SectionAsListOf(Section):
                         make_one.set_text(row)
                     self.value.append(make_one)
                 except Exception as e:
-                    print("Could not create object from row: " + row + "\n" + str(e))
+                    print("Could not create object from: " + row + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
     def get_text(self):
         """Contents of this section formatted for writing to file"""

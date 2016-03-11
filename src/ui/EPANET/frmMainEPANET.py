@@ -85,8 +85,9 @@ class frmMainEPANET(frmMain):
                 self.project.read_file(file_name)
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
-                qsettings.setValue("ProjectDir", path_only)
-                qsettings.sync()
+                if path_only != directory:
+                    qsettings.setValue("ProjectDir", path_only)
+                    del qsettings
             except:
                 self.project = None
                 self.setWindowTitle(self.model)
@@ -103,8 +104,9 @@ class frmMainEPANET(frmMain):
             self.project.write_file(file_name)
             path_only, file_only = os.path.split(file_name)
             self.setWindowTitle(self.model + " - " + file_only)
-            qsettings.setValue("ProjectDir", path_only)
-            qsettings.sync()
+            if path_only != directory:
+                qsettings.setValue("ProjectDir", path_only)
+                del qsettings
         if file_name:
             self.project.write_file(file_name)
             self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])

@@ -1,6 +1,6 @@
 from enum import Enum
-
 from core.coordinates import Coordinates
+from core.inputfile import Section
 from core.swmm.hydrology.raingage import RainGage
 
 
@@ -93,9 +93,6 @@ class Subcatchment:
 
         self.snow_pack = None
         """Snow pack parameter set (if any) of the subcatchment."""
-
-        self.lid_usages = {}
-        """Uses of Low Impact Development controls in the Subcatchment."""
 
         self.coverages = {}
         """Land uses in the subcatchment."""
@@ -191,34 +188,81 @@ class Groundwater:
             Leave blank to use the receiving node's invert elevation."""
 
 
-class LIDUsage:
-    """Specifies how a particular LID control will be deployed within the subcatchment"""
-    def __init__(self):
-        self.control_name = ""
-        """Name of a previously defined LID control to be used in the subcatchment"""
+class LIDUsage(Section):
+    """Specifies how an LID control will be deployed in a subcatchment"""
 
-        self.number_replicate_units = 0
+    field_format = " {:16}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}"  # TODO: add fields \t{:24}\t{:16}
+
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+        self.subcatchment_name = ''
+        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
+
+        self.control_name = ''
+        """Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment"""
+
+        self.number_replicate_units = '0'
         """Number of equal size units of the LID practice deployed within the subcatchment"""
 
-        self.area_each_unit = 0.0
+        self.area_each_unit = '0.0'
         """Surface area devoted to each replicate LID unit"""
 
-        self.top_width_overland_flow_surface = 0.0
+        self.top_width_overland_flow_surface = '0.0'
         """Width of the outflow face of each identical LID unit"""
 
-        self.percent_initially_saturated = 0.0
+        self.percent_initially_saturated = '0.0'
         """Degree to which storage zone is initially filled with water"""
 
-        self.percent_impervious_area_treated = 0.0
+        self.percent_impervious_area_treated = '0.0'
         """Percent of the impervious portion of the subcatchment's non-LID area whose runoff
         is treated by the LID practice"""
 
-        self.send_outflow_pervious_area = 0
+        self.send_outflow_pervious_area = '0'
         """1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
         than going to the subcatchment's outlet"""
 
         self.detailed_report_file = ""
         """Name of an optional file where detailed time series results for the LID will be written"""
+
+        if new_text:
+            self.set_text(new_text)
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += LIDUsage.field_format.format(self.subcatchment_name,
+                                            self.control_name,
+                                            self.number_replicate_units,
+                                            self.area_each_unit,
+                                            self.top_width_overland_flow_surface,
+                                            self.percent_initially_saturated,
+                                            self.percent_impervious_area_treated,
+                                            self.send_outflow_pervious_area,
+                                            self.detailed_report_file)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.subcatchment_name = fields[0]
+        if len(fields) > 1:
+            self.control_name = fields[1]
+        if len(fields) > 2:
+            self.number_replicate_units = fields[2]
+        if len(fields) > 3:
+            self.area_each_unit = fields[3]
+        if len(fields) > 4:
+            self.top_width_overland_flow_surface = fields[4]
+        if len(fields) > 5:
+            self.percent_initially_saturated = fields[5]
+        if len(fields) > 6:
+            self.percent_impervious_area_treated = fields[6]
+        if len(fields) > 7:
+            self.send_outflow_pervious_area = fields[7]
+        if len(fields) > 8:
+            self.detailed_report_file = fields[8]
 
 
 class Coverage:

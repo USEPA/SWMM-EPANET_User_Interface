@@ -16,7 +16,7 @@ from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.lidcontrol import LIDControls
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage
 from core.swmm.patterns import Patterns
 from core.swmm.timeseries import TimeSeries
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
@@ -96,7 +96,7 @@ class Project(InputFile):
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
         self.lid_controls = LIDControls()  # low impact development control information
-        # self.lid_usage = [Section]              # LID_USAGE     assignment of LID controls to subcatchments
+        self.lid_usage = SectionAsListOf("[LID_USAGE]", LIDUsage)              # assignment of LID controls to subcatchments
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer)  # groundwater aquifer parameters
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
         # self.snowpacks = [Section]              # SNOWPACKS     subcatchment snow pack parameters

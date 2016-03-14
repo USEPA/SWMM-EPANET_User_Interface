@@ -16,7 +16,7 @@ class CurveType(Enum):
 
 
 class Curves(Section):
-    """CURVES section of EPANET input"""
+    """CURVES section of SWMM input"""
 
     SECTION_NAME = "[CURVES]"
 

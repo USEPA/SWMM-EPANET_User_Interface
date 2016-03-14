@@ -1,10 +1,10 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf
-from core.swmm.hydraulics.control import ControlRule
+# from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Node, Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
-#from core.swmm.options.time_steps import TimeSteps
+# from core.swmm.options.time_steps import TimeSteps
 from core.swmm.options.report import Report
 from core.swmm.options.files import Files
 from core.swmm.options.backdrop import BackdropOptions
@@ -13,6 +13,7 @@ from core.swmm.climatology.climatology import Evaporation
 from core.swmm.climatology.climatology import Temperature
 from core.swmm.curves import Curves
 from core.swmm.hydrology.aquifer import Aquifer
+from core.swmm.hydrology.lidcontrol import LIDControls
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment
@@ -94,7 +95,7 @@ class Project(InputFile):
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
-        # self.lid_controls = [Section]           # LID_CONTROLS  low impact development control information
+        self.lid_controls = LIDControls()  # low impact development control information
         # self.lid_usage = [Section]              # LID_USAGE     assignment of LID controls to subcatchments
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer)  # groundwater aquifer parameters
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
@@ -113,7 +114,7 @@ class Project(InputFile):
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
         self.controls = SectionAsListOf("[CONTROLS]", basestring) # rules that control pump and regulator operation
         self.landuses = SectionAsListOf("[LANDUSES]", Landuse)    # land use categories
-        self.buildup =  SectionAsListOf("[BUILDUP]", Buildup)     # buildup functions for pollutants and land uses
+        self.buildup = SectionAsListOf("[BUILDUP]", Buildup)      # buildup functions for pollutants and land uses
         self.washoff = SectionAsListOf("[WASHOFF]", Washoff)      # washoff functions for pollutants and land uses
         self.pollutants = SectionAsListOf("[POLLUTANTS]", Pollutant)  # pollutant information
         # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments

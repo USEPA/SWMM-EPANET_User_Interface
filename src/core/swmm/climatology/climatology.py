@@ -21,20 +21,47 @@ class WindSource(Enum):
     FILE = 1
 
 
-class Temperature:
-    """temperature parameters"""
+class Temperature(Section):
+    """temperature, wind speed, snow melt, and areal depletion parameters"""
+
+    SECTION_NAME = "[TEMPERATURE]"
+
     def __init__(self):
+        Section.__init__(self)
+
         self.source = TemperatureSource.TIMESERIES
         """source of temperature data; timeseries or file"""
 
-        self.timeseries = None
+        self.timeseries = ''
         """name of time series in [TIMESERIES] section"""
 
-        self.filename = None
+        self.filename = ''
         """name of external Climate file with temperature data."""
 
-        self.start_date = None
+        self.start_date = ''
         """date to begin reading from the file m/d/y. If unset, read all"""
+
+        self.wind_speed = WindSpeed()
+
+        self.snow_melt = SnowMelt()
+
+        self.areal_depletion = ArealDepletion()
+
+    def get_text(self):
+        text_list = [self.name]
+
+        if self.comment:
+            text_list.append(self.comment)
+
+        if self.source == TemperatureSource.TIMESERIES:
+           text_list.append(self.format.name + '\t' + self.timeseries)
+        elif self.source == TemperatureSource.FILE:
+           text_list.append(self.format.name + '\t' + self.filename + '\t' + self.start_date)
+
+        text_list.append(self.wind_speed.get_text())
+        text_list.append(self.snow_melt.get_text())
+        text_list.append(self.areal_depletion.get_text())
+        return '\n'.join(text_list)
 
 
 class Evaporation(Section):
@@ -126,8 +153,12 @@ class Evaporation(Section):
                         except Exception as ex:
                             raise ValueError("Could not set EVAPORATION from: " + line + '\n' + str(ex))
 
+
 class WindSpeed:
     """wind speed parameters"""
+
+    SECTION_NAME = "WINDSPEED"
+
     def __init__(self):
         self.source = WindSource.MONTHLY
         """Whether wind speed is entered from the climate file or as monthly values"""
@@ -135,38 +166,60 @@ class WindSpeed:
         self.wind_speed_monthly = ()
         """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
 
+    def get_text(self):
+        if self.source == WindSource.MONTHLY:
+           return WindSpeed.SECTION_NAME + '\t' + self.source.name + '\t' + '\t'.join(self.wind_speed_monthly)
+        elif self.source == WindSource.FILE:
+           return WindSpeed.SECTION_NAME + '\t' + self.source.name
+
 
 class SnowMelt:
     """snow melt parameters"""
+
+    SECTION_NAME = "WINDSPEED"
+
     def __init__(self):
-        self.snow_temp = None
+        self.snow_temp = ''
         """air temperature at which precipitation falls as snow (deg F or C)"""
 
-        self.ati_weight = 0.5
+        self.ati_weight = '0.5'
         """antecedent temperature index weight (default is 0.5)"""
 
-        self.negative_melt_ratio = 0.6
+        self.negative_melt_ratio = '0.6'
         """negative melt ratio (default is 0.6)"""
 
-        self.elevation = 0
+        self.elevation = '0'
         """average elevation of study area above mean sea level (ft or m)"""
 
-        self.latitude = 0.0
+        self.latitude = '0.0'
         """latitude of the study area in degrees North (default is 50)."""
 
-        self.time_correction = 0.0
+        self.time_correction = '0'
         """correction, in minutes of time, between true solar time and the standard clock time (default is 0)."""
+
+    def get_text(self):
+        return SnowMelt.SECTION_NAME + '\t' +\
+               self.snow_temp + '\t' +\
+               self.ati_weight + '\t' +\
+               self.negative_melt_ratio + '\t' +\
+               self.elevation + '\t' +\
+               self.latitude + '\t' +\
+               self.time_correction
 
 
 class ArealDepletion:
     """areal depletion parameters"""
+
     def __init__(self):
-        self.adc_impervious = None
+        self.adc_impervious = ()
         """fraction of area covered by snow when ratio of snow depth to depth for impervious area"""
 
-        self.adc_pervious = None
+        self.adc_pervious = ()
         """fraction of area covered by snow when ratio of snow depth to depth for pervious area"""
 
+    def get_text(self):
+        return "ADC IMPERVIOUS\t" + '\t'.join(self.adc_impervious) +'\n' +\
+               "ADC PERVIOUS\t" + '\t'.join(self.adc_pervious)
 
 class Adjustments:
     """monthly adjustments from undocumented table [ADJUSTMENTS]"""

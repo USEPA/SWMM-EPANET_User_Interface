@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>578</height>
+    <width>618</width>
+    <height>417</height>
    </rect>
   </property>
   <property name="font">
@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>SWMM Control Rules</string>
+   <string>SWMM Climatology</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -32,7 +32,7 @@
        <item>
         <widget class="QTabWidget" name="tabClimate">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Temperature">
           <attribute name="title">
@@ -73,18 +73,18 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="2" column="0">
-               <widget class="QComboBox" name="cboTimeSeries"/>
-              </item>
-              <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
                <widget class="QRadioButton" name="rbnTimeseries">
                 <property name="text">
                  <string>Time Series</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item>
+               <widget class="QComboBox" name="cboTimeSeries"/>
+              </item>
+              <item>
                <widget class="QToolButton" name="btnTimeSeries">
                 <property name="text">
                  <string>...</string>
@@ -139,8 +139,8 @@
           <attribute name="title">
            <string>Evaporation</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
             <widget class="QFrame" name="fraEvapTop">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -148,7 +148,7 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_3">
+             <layout class="QGridLayout" name="gridLayout_10">
               <item row="0" column="0">
                <widget class="QLabel" name="lblEvap">
                 <property name="text">
@@ -169,17 +169,129 @@
               <item row="1" column="1">
                <widget class="QLineEdit" name="txtDaily"/>
               </item>
+              <item row="1" column="2">
+               <spacer name="hspDaily">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>188</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lblEvapTs">
+                <property name="text">
+                 <string>Name of Time Series</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="cboEvapTs"/>
+              </item>
+              <item row="2" column="2">
+               <widget class="QToolButton" name="btnEvapDelete">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="3">
+               <widget class="QLabel" name="lblEvapMisc">
+                <property name="text">
+                 <string>Pan Coefficients</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0" colspan="3">
+               <widget class="QTableWidget" name="tblEvap">
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <row>
+                 <property name="text">
+                  <string>Value</string>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>Jan</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Feb</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Mar</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Apr</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>May</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Jun</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Jul</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Aug</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Sep</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Oct</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Nov</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Dec</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
-           <item>
+           <item row="1" column="0">
             <widget class="Line" name="lineEvap">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item>
+           <item row="2" column="0">
             <widget class="QFrame" name="fraEvapBottom">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -251,7 +363,78 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QTableWidget" name="tblWind"/>
+            <widget class="QTableWidget" name="tblWind">
+             <property name="rowCount">
+              <number>1</number>
+             </property>
+             <property name="columnCount">
+              <number>12</number>
+             </property>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <row/>
+             <column>
+              <property name="text">
+               <string>Jan</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Feb</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Mar</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Apr</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>May</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Jun</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Jul</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Aug</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Sep</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Oct</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Nov</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Dec</string>
+              </property>
+             </column>
+            </widget>
            </item>
            <item row="4" column="0">
             <widget class="QFrame" name="fraWindBot">
@@ -358,12 +541,87 @@
            <item>
             <widget class="QLabel" name="lblFraction">
              <property name="text">
-              <string>Fraction of Area Covered by Snow</string>
+              <string>Fraction of Area Covered by Snow, by Depth Ratio</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QTableWidget" name="tblAreal"/>
+            <widget class="QTableWidget" name="tblAreal">
+             <property name="rowCount">
+              <number>10</number>
+             </property>
+             <property name="columnCount">
+              <number>2</number>
+             </property>
+             <attribute name="verticalHeaderHighlightSections">
+              <bool>true</bool>
+             </attribute>
+             <row>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.1</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.2</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.3</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.4</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.5</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.6</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.7</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.8</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>0.9</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>Impervious</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Pervious</string>
+              </property>
+             </column>
+             <item row="0" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+            </widget>
            </item>
            <item>
             <widget class="QFrame" name="frame">
@@ -426,16 +684,139 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QTableWidget" name="tblAdjustments"/>
+            <widget class="QTableWidget" name="tblAdjustments">
+             <row>
+              <property name="text">
+               <string>Jan</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Feb</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Mar</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Apr</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>May</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Jun</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Jul</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Aug</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Sep</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Oct</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Nov</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Dec</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>Temp</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Evap</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Rain</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Cond</string>
+              </property>
+             </column>
+            </widget>
            </item>
            <item>
-            <widget class="QLabel" name="lblAdjustments">
-             <property name="text">
-              <string>Temp -- Temperature Adjustment (+- deg F or deg C)
+            <widget class="QFrame" name="frame_2">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="fraAdjBottom">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <widget class="QLabel" name="lblAdjustments">
+                <property name="text">
+                 <string>Temp -- Temperature Adjustment (+- deg F or deg C)
 Evap -- evaporation adjustment (+- in/day or mm/day)
 Rain -- rainfall multiplier
 Cond -- soil conductivity multiplier</string>
-             </property>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="btnClear">
+                <property name="text">
+                 <string>Clear All</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>

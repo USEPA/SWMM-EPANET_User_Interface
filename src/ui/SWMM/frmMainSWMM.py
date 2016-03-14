@@ -17,6 +17,8 @@ from ui.SWMM.frmReportOptions import frmReportOptions
 from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
+from ui.SWMM.frmClimatology import  frmClimatology
+
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -133,6 +135,31 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Controls':
             self._frmControls = frmControls(self)
             self._frmControls.show()
+
+        if itm.data(0, 0) == "Temperature":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
+        elif itm.data(0, 0) == "Evaporation":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
+        elif itm.data(0, 0) == "Wind Speed":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
+        elif itm.data(0, 0) == "Snow Melt":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
+        elif itm.data(0, 0) == "Areal Depletion":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
+        elif itm.data(0, 0) == "Adjustment":
+            self._frmClimatology = frmClimatology(self)
+            self._frmClimatology.set_from(self.project, itm.data(0, 0))
+            self._frmClimatology.show()
 
         # the following items will respond to a click in the list, not the tree diagram
         if itm.data(0, 0) == 'Time Patterns':

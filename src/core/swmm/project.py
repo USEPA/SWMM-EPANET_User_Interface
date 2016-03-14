@@ -90,7 +90,7 @@ class Project(InputFile):
         self.map = MapOptions()                 # MAP           map's bounding rectangle and units
         # self.raingages = [RainGage]             # RAINGAGES     rain gage information
         # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
-        # self.evaporation = Evaporation()        # EVAPORATION   evaporation data
+        self.evaporation = Evaporation()        # EVAPORATION   evaporation data
         # self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data

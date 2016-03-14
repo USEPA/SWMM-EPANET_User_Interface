@@ -1,4 +1,5 @@
 from enum import Enum
+from core.inputfile import Section
 
 
 class TemperatureSource(Enum):
@@ -36,9 +37,14 @@ class Temperature:
         """date to begin reading from the file m/d/y. If unset, read all"""
 
 
-class Evaporation:
+class Evaporation(Section):
     """How daily evaporation rates vary with time for the study area"""
+
+    SECTION_NAME = "[EVAPORATION]"
+
     def __init__(self):
+        Section.__init__(self)
+
         self.format = EvaporationFormat.UNSET
         """format used for evaporation data"""
 
@@ -48,18 +54,77 @@ class Evaporation:
         self.monthly = ()
         """twelve monthly evaporation rates"""
 
-        self.timeseries = None
+        self.timeseries = ''
         """name of time series in [TIMESERIES] section with evaporation data"""
 
-        self.monthly_pan_coefficients = {}
+        self.monthly_pan_coefficients = ()
         """twelve monthly pan coefficients used with file option and file name in temperature section"""
 
-        self.recovery_pattern = None  # time pattern
+        self.recovery_pattern = ''  # time pattern ID
         """name of a monthly time pattern"""
 
         self.dry_only = False
         """determines if evaporation only occurs during periods with no precipitation."""
 
+    def get_text(self):
+        text_list = [self.name]
+
+        if self.comment:
+            text_list.append(self.comment)
+
+        format_line = self.format.name + '\t'
+        if self.format == EvaporationFormat.CONSTANT:
+            format_line += self.constant
+        elif self.format == EvaporationFormat.MONTHLY:
+            format_line += '\t'.join(self.monthly)
+        elif self.format == EvaporationFormat.TIMESERIES:
+            format_line += self.timeseries
+        elif self.format == EvaporationFormat.TEMPERATURE:
+            pass
+        elif self.format == EvaporationFormat.FILE:
+            format_line += '\t'.join(self.monthly_pan_coefficients)
+        elif self.format == EvaporationFormat.RECOVERY:
+            format_line += self.recovery_pattern
+        text_list.append(format_line)
+
+        if self.dry_only:
+            text_list.append("DRY_ONLY\tYES")
+        else:
+            text_list.append("DRY_ONLY\tNO")
+        return '\n'.join(text_list)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            if line.startswith('['):
+                if line.strip().upper() != self.name.upper():
+                    raise ValueError("Cannot set " + self.name + " from section " + line.strip())
+            elif line.startswith(';'):
+                if self.comment:
+                    self.comment += '\n'
+                self.comment += line
+            else:
+                fields = line.split()
+                if len(fields) > 0:
+                    if fields[0].upper() == "DRY_ONLY":
+                        self.dry_only = fields[1].upper() == "YES"
+                    else:
+                        try:
+                            self.format = EvaporationFormat[fields[0]]
+                            if self.format == EvaporationFormat.CONSTANT:
+                                self.constant = fields[1]
+                            elif self.format == EvaporationFormat.MONTHLY:
+                                self.monthly = fields[1:]
+                            elif self.format == EvaporationFormat.TIMESERIES:
+                                self.timeseries = fields[1]
+                            elif self.format == EvaporationFormat.TEMPERATURE:
+                                pass
+                            elif self.format == EvaporationFormat.FILE:
+                                self.monthly_pan_coefficients = fields[1:]
+                            elif self.format == EvaporationFormat.RECOVERY:
+                                self.recovery_pattern = fields[1]
+                        except Exception as ex:
+                            raise ValueError("Could not set EVAPORATION from: " + line + '\n' + str(ex))
 
 class WindSpeed:
     """wind speed parameters"""

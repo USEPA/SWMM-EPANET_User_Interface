@@ -291,7 +291,7 @@ class Section(object):
         item_text = ""
         item_id = ""
         for line in lines[first_index:]:
-            if str(line).startswith(';'):
+            if line.startswith(';'):
                 if item_text:
                     self.value.append(item_type(item_text))
                 item_text = line
@@ -302,7 +302,13 @@ class Section(object):
                     new_item_id = id_split[0].strip()
                     if len(item_id) > 0:  # If already processed at least one line containing ID
                         if new_item_id != item_id:
-                            self.value.append(item_type(item_text))
+                            try:
+                                self.value.append(item_type(item_text))
+                            except Exception as ex:
+                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(item_type.__name__,
+                                                                                            item_text,
+                                                                                            str(ex),
+                                                                                            str(traceback.print_exc())))
                             item_text = ""
                     item_id = new_item_id
                     if item_text:

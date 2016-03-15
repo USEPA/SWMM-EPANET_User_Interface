@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>638</width>
-    <height>432</height>
+    <width>776</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="font">
@@ -39,38 +39,48 @@
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="lblControlName">
-            <property name="text">
-             <string>Control Name:</string>
+           <widget class="QFrame" name="fraTopLeft">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_12">
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblControlName">
+               <property name="text">
+                <string>Control Name:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="txtName"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="lblLIDType">
+               <property name="text">
+                <string>LID Type:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="cboLIDType"/>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="txtName"/>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="lblLIDType">
+           <widget class="QLabel" name="lblImage">
             <property name="text">
-             <string>LID Type:</string>
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap>../swmmimages/1bio.png</pixmap>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QComboBox" name="cboLIDType"/>
-          </item>
-          <item row="2" column="0" rowspan="2" colspan="3">
-           <widget class="QGraphicsView" name="gvwLID"/>
-          </item>
          </layout>
-         <zorder>graphicsView</zorder>
-         <zorder>graphicsView</zorder>
-         <zorder>graphicsView</zorder>
-         <zorder>tabLID</zorder>
-         <zorder>lblControlName</zorder>
-         <zorder>gvwLID</zorder>
-         <zorder>cboLIDType</zorder>
-         <zorder>txtName</zorder>
-         <zorder>lblLIDType</zorder>
         </widget>
        </item>
        <item>
@@ -92,58 +102,6 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="0">
-               <widget class="QLabel" name="lblSurface1">
-                <property name="text">
-                 <string>Surface Prop 1</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="txtSurface1"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="lblSurface2">
-                <property name="text">
-                 <string>Surface Prop 2</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="txtSurface2"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="lblSurface3">
-                <property name="text">
-                 <string>Surface Prop 3</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="txtSurface3"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="lblSurface4">
-                <property name="text">
-                 <string>Surface Prop 4</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="txtSurface4"/>
-              </item>
               <item row="4" column="0">
                <widget class="QLabel" name="lblSurface5">
                 <property name="text">
@@ -156,6 +114,58 @@
               </item>
               <item row="4" column="1">
                <widget class="QLineEdit" name="txtSurface5"/>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="txtSurface4"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="lblSurface4">
+                <property name="text">
+                 <string>Surface Prop 4</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="txtSurface3"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lblSurface3">
+                <property name="text">
+                 <string>Surface Prop 3</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="txtSurface2"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="lblSurface2">
+                <property name="text">
+                 <string>Surface Prop 2</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="txtSurface1"/>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lblSurface1">
+                <property name="text">
+                 <string>Surface Prop 1</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -203,7 +213,7 @@
                <widget class="QLineEdit" name="txtPavement2"/>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="lblPavemen3">
+               <widget class="QLabel" name="lblPavement3">
                 <property name="text">
                  <string>Pavement 3</string>
                 </property>
@@ -274,7 +284,7 @@
                <widget class="QLineEdit" name="txtSoil1"/>
               </item>
               <item row="1" column="0">
-               <widget class="QLabel" name="lblSoli2">
+               <widget class="QLabel" name="lblSoil2">
                 <property name="text">
                  <string>Soil 2</string>
                 </property>
@@ -565,9 +575,6 @@
      </widget>
     </item>
    </layout>
-   <zorder>fraTop</zorder>
-   <zorder>fraOKCancel</zorder>
-   <zorder>tabLID</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

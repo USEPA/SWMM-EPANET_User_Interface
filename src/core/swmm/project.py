@@ -125,7 +125,7 @@ class Project(InputFile):
         # self.rdii = [Section]                   # RDII          rainfall-dependent I/I information at nodes
         # self.loadings = [Section]               # LOADINGS      initial pollutant loads on subcatchments
         self.curves = Curves()                    # CURVES        x-y tabular data referenced in other sections
-        # self.timeseries = [TimeSeries] # TIMESERIES # time series data referenced in other sections
+        self.timeseries = SectionAsListOf("[TIMESERIES]", TimeSeries) # time series data referenced in other sections
         # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links

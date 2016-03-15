@@ -1,5 +1,6 @@
 from enum import Enum
 from core.inputfile import Section
+from core.swmm.timeseries import TimeSeries
 
 
 class TemperatureSource(Enum):
@@ -84,9 +85,8 @@ class Temperature(Section):
                         if fields[0].upper() == "TIMESERIES":
                             self.timeseries = ' '.join(fields[1:])
                         elif fields[0].upper() == "FILE":
-                            # Check for optional M/D/Y start date as last field
-                            check_if_date = fields[-1].split('/')
-                            if len(check_if_date) == 3 and ''.join(check_if_date).isdigit():
+                            # Check for optional start date as last field
+                            if TimeSeries.is_date(fields[-1]):
                                 self.start_date = fields[-1]
                                 self.filename = ' '.join(fields[1:-1])
                             else:

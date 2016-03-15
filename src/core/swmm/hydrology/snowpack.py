@@ -157,55 +157,6 @@ class SnowPack(Section):
         self.subcatchment_transfer = ""
         """subcatchment receiving transfers of snow depth"""
 
-        # TODO: remove commented-out section below. It looks like these are not needed here
-        # self.porosity = 0.0
-        # """Volume of voids / total soil volume (volumetric fraction)."""
-        #
-        # self.wilting_point = 0.0
-        # """Soil moisture content at which plants cannot survive
-        #     (volumetric fraction). """
-        #
-        # self.field_capacity = 0.0
-        # """Soil moisture content after all free water has drained off
-        #     (volumetric fraction)."""
-        #
-        # self.conductivity = 0.0
-        # """Soil's saturated hydraulic conductivity (in/hr or mm/hr)."""
-        #
-        # self.conductivity_slope = 0.0
-        # """Average slope of log(conductivity) versus soil moisture deficit
-        #     (porosity minus moisture content) curve (unitless)."""
-        #
-        # self.tension_slope = 0.0
-        # """Average slope of soil tension versus soil moisture content curve
-        #     (inches or mm)."""
-        #
-        # self.upper_evaporation_fraction = 0.0
-        # """Fraction of total evaporation available for evapotranspiration
-        #     in the upper unsaturated zone."""
-        #
-        # self.lower_evaporation_depth = 0.0
-        # """Maximum depth into the lower saturated zone over which
-        #     evapotranspiration can occur (ft or m)."""
-        #
-        # self.lower_groundwater_loss_rate = 0.0
-        # """Rate of percolation from saturated zone to deep groundwater (in/hr or mm/hr)."""
-        #
-        # self.bottom_elevation = 0.0
-        # """Elevation of the bottom of the aquifer (ft or m)."""
-        #
-        # self.water_table_elevation = 0.0
-        # """Elevation of the water table in the aquifer
-        #     at the start of the simulation (ft or m)."""
-        #
-        # self.unsaturated_zone_moisture = 0.0
-        # """Moisture content of the unsaturated upper zone of the aquifer
-        #     at the start of the simulation (volumetric fraction)
-        #     (cannot exceed soil porosity)."""
-        #
-        # self.upper_evaporation_pattern = ""
-        # """ID of monthly pattern of adjustments to upper evaporation fraction (optional)"""
-
         if new_text:
             self.set_text(new_text)
 
@@ -215,9 +166,9 @@ class SnowPack(Section):
         if self.comment:
             text_list.append(self.comment)
         for field_names in self.LineTypes:
-            if getattr(self, field_names[0]):
-                line = self.name + '\t' + field_names[1]
-                for field_name in field_names[2:]:
+            if getattr(self, field_names[0]):               # If the flag for this group of fields is true,
+                line = self.name + '\t' + field_names[1]    # add a line with name, group name,
+                for field_name in field_names[2:]:          # and the field values in this group.
                     line += '\t' + str(getattr(self, field_name))
                 text_list.append(line)
         return '\n'.join(text_list)
@@ -229,16 +180,16 @@ class SnowPack(Section):
             if line:
                 fields = line.split()
                 if len(fields) > 2:
-                    if not self.name:
+                    if not self.name:                      # If we have not found a name yet, use the first one we find
                         self.name = fields[0]
-                    elif fields[0] != self.name:
+                    elif fields[0] != self.name:           # If we find a different name, complain
                         raise ValueError("SnowPack.set_text: name: " + fields[0] + " != " + self.name)
                     check_type = fields[1].upper()
                     found_type = False
                     for field_names in self.LineTypes:
-                        if field_names[1].upper() == check_type:
+                        if field_names[1].upper() == check_type:  # Find the group of fields this line is about
                             found_type = True
-                            setattr(self, field_names[0], True)  # Set flag to show it has this
+                            setattr(self, field_names[0], True)   # Set flag to show we have this group
                             for (field_name, field_value) in zip(field_names[2:], fields[2:]):
                                 self.setattr_keep_type(field_name, field_value)
                             continue

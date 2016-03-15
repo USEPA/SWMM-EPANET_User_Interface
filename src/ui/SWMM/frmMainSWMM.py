@@ -22,6 +22,7 @@ from ui.SWMM.frmClimatology import  frmClimatology
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
+from ui.SWMM.frmLID import frmLID
 
 from core.swmm.project import Project
 
@@ -200,6 +201,9 @@ class frmMainSWMM(frmMain):
             self._frmCurveEditor.setWindowTitle('SWMM Tidal Curves')
             self._frmCurveEditor.set_from(self.project, "TIDAL")
             self._frmCurveEditor.show()
+        if itm.data(0, 0) == 'LID Controls':
+            self._frmLID = frmLID(self)
+            self._frmLID.show()
 
     def proj_run_simulation(self):
         run = 0

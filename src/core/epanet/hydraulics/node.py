@@ -37,7 +37,7 @@ class Node(Coordinates):
         self.initial_quality = 0.0
         """Quality represents concentration for chemicals, hours for water age, or percent for source tracing"""
 
-        self.source_quality = Source
+        self.source_quality = Source()
         """defines characteristics of water quality source"""
 
         self.report_flag = ""
@@ -46,6 +46,9 @@ class Node(Coordinates):
 
 class Junction:
     """Junction properties"""
+
+    field_format = " {:19}\t{}"
+
     def __init__(self):
         self.node_id = -1
         """elevation of junction"""

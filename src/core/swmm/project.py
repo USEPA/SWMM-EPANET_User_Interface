@@ -15,6 +15,7 @@ from core.swmm.curves import Curves
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.lidcontrol import LIDControls
 from core.swmm.hydrology.raingage import RainGage
+from core.swmm.hydrology.snowpack import SnowPacks
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage
 from core.swmm.patterns import Patterns
@@ -99,7 +100,7 @@ class Project(InputFile):
         self.lid_usage = SectionAsListOf("[LID_USAGE]", LIDUsage)              # assignment of LID controls to subcatchments
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer)  # groundwater aquifer parameters
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
-        # self.snowpacks = [Section]              # SNOWPACKS     subcatchment snow pack parameters
+        self.snowpacks = SnowPacks()              # SNOWPACKS     subcatchment snow pack parameters
         # self.junctions = [Junction]             # JUNCTIONS     junction node information
         # self.outfalls = [Outfall] # OUTFALLS # outfall node information
         # self.dividers = [Divider] # DIVIDERS # flow divider node information

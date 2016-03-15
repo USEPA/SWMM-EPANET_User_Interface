@@ -6,6 +6,8 @@ class Report(Section):
 
     SECTION_NAME = "[REPORT]"
 
+    DEFAULT_COMMENT = ";;Reporting Options"
+
     field_dict = {
      "INPUT": "input",
      "CONTINUITY": "continuity",
@@ -22,8 +24,6 @@ class Report(Section):
 
     def __init__(self):
         Section.__init__(self)
-
-        self.comment = ";;Reporting Options"
 
         self.input = False
         """Whether report includes a summary of the input data"""
@@ -55,6 +55,7 @@ class Report(Section):
         self.__init__()  # Reset all values to defaults
 
         for line in new_text.splitlines():
+            line = self.set_comment_check_section(line)
             (attr_name, attr_value) = self.get_field_dict_value(line)
             if attr_name:
                 if attr_name in Report.LISTS:

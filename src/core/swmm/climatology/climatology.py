@@ -72,35 +72,28 @@ class Temperature(Section):
         areal_depletion_text = ''
         for line in new_text.splitlines():
             try:
-                if line.startswith('['):
-                    if line.strip().upper() != self.SECTION_NAME:
-                        raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
-                elif line.startswith(';'):
-                    if self.comment:
-                        self.comment += '\n'
-                    self.comment += line
-                else:
-                    fields = line.split()
-                    if len(fields) > 1:
-                        if fields[0].upper() == "TIMESERIES":
-                            self.timeseries = ' '.join(fields[1:])
-                        elif fields[0].upper() == "FILE":
-                            # Check for optional start date as last field
-                            if TimeSeries.is_date(fields[-1]):
-                                self.start_date = fields[-1]
-                                self.filename = ' '.join(fields[1:-1])
-                            else:
-                                self.filename = ' '.join(fields[1:])
-                        elif fields[0].upper() == WindSpeed.SECTION_NAME:
-                            self.wind_speed = WindSpeed()
-                            self.wind_speed.set_text(line)
-                        elif fields[0].upper() == SnowMelt.SECTION_NAME:
-                            self.snow_melt = SnowMelt()
-                            self.snow_melt.set_text(line)
-                        elif fields[0].upper() == ArealDepletion.SECTION_NAME:
-                            if areal_depletion_text:
-                                areal_depletion_text += '\n'
-                            areal_depletion_text += line
+                line = self.set_comment_check_section(line)
+                fields = line.split()
+                if len(fields) > 1:
+                    if fields[0].upper() == "TIMESERIES":
+                        self.timeseries = ' '.join(fields[1:])
+                    elif fields[0].upper() == "FILE":
+                        # Check for optional start date as last field
+                        if TimeSeries.is_date(fields[-1]):
+                            self.start_date = fields[-1]
+                            self.filename = ' '.join(fields[1:-1])
+                        else:
+                            self.filename = ' '.join(fields[1:])
+                    elif fields[0].upper() == WindSpeed.SECTION_NAME:
+                        self.wind_speed = WindSpeed()
+                        self.wind_speed.set_text(line)
+                    elif fields[0].upper() == SnowMelt.SECTION_NAME:
+                        self.snow_melt = SnowMelt()
+                        self.snow_melt.set_text(line)
+                    elif fields[0].upper() == ArealDepletion.SECTION_NAME:
+                        if areal_depletion_text:
+                            areal_depletion_text += '\n'
+                        areal_depletion_text += line
             except:
                 print(self.SECTION_NAME + " skipping input line: " + line)
         if areal_depletion_text:
@@ -167,35 +160,28 @@ class Evaporation(Section):
     def set_text(self, new_text):
         self.__init__()
         for line in new_text.splitlines():
-            if line.startswith('['):
-                if line.strip().upper() != self.SECTION_NAME:
-                    raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
-            elif line.startswith(';'):
-                if self.comment:
-                    self.comment += '\n'
-                self.comment += line
-            else:
-                fields = line.split()
-                if len(fields) > 1:
-                    if fields[0].upper() == "DRY_ONLY":
-                        self.dry_only = fields[1].upper() == "YES"
-                    else:
-                        try:
-                            self.format = EvaporationFormat[fields[0]]
-                            if self.format == EvaporationFormat.CONSTANT:
-                                self.constant = fields[1]
-                            elif self.format == EvaporationFormat.MONTHLY:
-                                self.monthly = fields[1:]
-                            elif self.format == EvaporationFormat.TIMESERIES:
-                                self.timeseries = fields[1]
-                            elif self.format == EvaporationFormat.TEMPERATURE:
-                                pass
-                            elif self.format == EvaporationFormat.FILE:
-                                self.monthly_pan_coefficients = fields[1:]
-                            elif self.format == EvaporationFormat.RECOVERY:
-                                self.recovery_pattern = fields[1]
-                        except Exception as ex:
-                            raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
+            line = self.set_comment_check_section(line)
+            fields = line.split()
+            if len(fields) > 1:
+                if fields[0].upper() == "DRY_ONLY":
+                    self.dry_only = fields[1].upper() == "YES"
+                else:
+                    try:
+                        self.format = EvaporationFormat[fields[0]]
+                        if self.format == EvaporationFormat.CONSTANT:
+                            self.constant = fields[1]
+                        elif self.format == EvaporationFormat.MONTHLY:
+                            self.monthly = fields[1:]
+                        elif self.format == EvaporationFormat.TIMESERIES:
+                            self.timeseries = fields[1]
+                        elif self.format == EvaporationFormat.TEMPERATURE:
+                            pass
+                        elif self.format == EvaporationFormat.FILE:
+                            self.monthly_pan_coefficients = fields[1:]
+                        elif self.format == EvaporationFormat.RECOVERY:
+                            self.recovery_pattern = fields[1]
+                    except Exception as ex:
+                        raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
 
 
 class WindSpeed:

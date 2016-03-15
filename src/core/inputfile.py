@@ -156,6 +156,10 @@ class Section(object):
 
         self.comment = ""
         """A user-specified header and/or comment about the section"""
+        
+        if hasattr(self, "DEFAULT_COMMENT"):
+            self.comment = self.DEFAULT_COMMENT
+        
 
     def __str__(self):
         """Override default method to return string representation"""
@@ -224,24 +228,36 @@ class Section(object):
         for line in new_text.splitlines():
             self.set_text_line(line)
 
-    def set_text_line(self, line):
-        """Set part of this section from one line of text.
-            Args:
-                line (str): One line of text formatted as input file.
-        """
-        # first split out any comment after a semicolon
+    def set_comment_check_section(self, line):
+        """Split any comment after a semicolon into self.comment and return the rest of the line.
+           If the line is a section header (starts with open square bracket) then check against self.SECTION_NAME.
+           If it matches, return empty string. If it does not match, raise ValueError."""
         comment_split = str.split(line, ';', 1)
-        if len(comment_split) == 2:
+        if len(comment_split) == 2:  # Found a comment
             line = comment_split[0]
             this_comment = ';' + comment_split[1]
             if self.comment:
                 if this_comment in self.comment:
                     this_comment = ''       # Already have this comment, don't add it again
+                elif hasattr(self, "DEFAULT_COMMENT") and self.comment == self.DEFAULT_COMMENT:
+                    self.comment = ''  # Replace default comment with the one we are reading
                 else:
                     self.comment += '\n'    # Separate from existing comment with newline
             self.comment += this_comment
+        if line.startswith('['):
+            if hasattr(self, "SECTION_NAME") and line.strip().upper() != self.SECTION_NAME:
+                raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())   
+            else:
+                line = ''
+        return line  # Return the portion of the line that was not in the comment and was not a section header
 
-        if not line.startswith('[') and line.strip():
+    def set_text_line(self, line):
+        """Set part of this section from one line of text.
+            Args:
+                line (str): One line of text formatted as input file.
+        """
+        line = self.set_comment_check_section(line)
+        if line.strip():
             # Set fields from field_dict if this section has one
             attr_name = ""
             attr_value = ""

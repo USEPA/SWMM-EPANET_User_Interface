@@ -154,15 +154,8 @@ class General(Section):
             new_text = new_text.replace(comment + '\n', '')
 
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
-            if len(comment_split) == 2:
-                line = comment_split[0]
-                this_comment = ';' + comment_split[1]
-                if self.comment:
-                    self.comment += '\n'
-                self.comment += this_comment
-
-            if not line.startswith('[') and line.strip():
+            line = self.set_comment_check_section(line)
+            if line.strip():
                 # Set fields from field_dict if this section has one
                 tried_set = False
                 for set_here in (self, self.dates, self.time_steps, self.dynamic_wave):

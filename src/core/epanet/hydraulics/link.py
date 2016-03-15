@@ -83,10 +83,7 @@ class Link(Section):
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_text(self, new_text):
-        comment_split = str.split(new_text, ';', 1)
-        if len(comment_split) == 2:
-            new_text = comment_split[0]
-            self.comment = ';' + comment_split[1]
+        new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 3)
         if len(fields) > 2:
             (self.link_id, self.inlet_node, self.outlet_node) = fields[0:3]
@@ -141,11 +138,8 @@ class Pipe(Link):
             Args:
                 new_text (str): Text to parse into properties.
         """
-        comment_split = str.split(new_text, ';', 1)
-        if len(comment_split) == 2:
-            new_text = comment_split[0]
-            self.comment = ';' + comment_split[1]
-        fields = new_text.split(None, 6)
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split(None, 7)
         if len(fields) > 2:
             self.link_id = fields[0]
             self.inlet_node = fields[1]
@@ -196,10 +190,7 @@ class Pump(Link):
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_text(self, new_text):
-        comment_split = str.split(new_text, ';', 1)
-        if len(comment_split) == 2:
-            new_text = comment_split[0]
-            self.comment = ';' + comment_split[1]
+        new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 3)
         self.link_id = fields[0]
         self.inlet_node = fields[1]
@@ -248,6 +239,7 @@ class Valve(Link):
         # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_text(self, new_text):
+        new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         self.link_id = fields[0]
         self.inlet_node = fields[1]

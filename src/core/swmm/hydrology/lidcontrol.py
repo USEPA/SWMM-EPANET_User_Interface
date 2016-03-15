@@ -17,9 +17,7 @@ class LIDControls(Section):
 
     SECTION_NAME = "[LID_CONTROLS]"
 
-    def __init__(self):
-        Section.__init__(self)
-        self.comment = ";;Name          \tType/Layer\tParameters\n" + \
+    DEFAULT_COMMENT = ";;Name          \tType/Layer\tParameters\n" + \
                        ";;--------------\t----------\t----------"
 
     def set_text(self, new_text):
@@ -31,36 +29,41 @@ class LIDControl(Section):
     """Defines scale-independent LID controls that can be deployed within subcatchments"""
 
     LineTypes = (
-        ("has_surface_layer", ("SURFACE",
-                              "surface_layer_storage_depth",
-                              "surface_layer_vegetative_cover_fraction",
-                              "surface_layer_surface_roughness",
-                              "surface_layer_surface_slope",
-                              "surface_layer_swale_side_slope")),
-        ("has_soil_layer", ("SOIL",
-                           "soil_layer_thickness",
-                           "soil_layer_porosity",
-                           "soil_layer_field_capacity",
-                           "soil_layer_wilting_point",
-                           "soil_layer_conductivity",
-                           "soil_layer_conductivity_slope",
-                           "soil_layer_suction_head")),
-        ("has_pavement_layer", ("PAVEMENT",
-                               "pavement_layer_thickness",
-                               "pavement_layer_void_ratio",
-                               "pavement_layer_impervious_surface_fraction",
-                               "pavement_layer_permeability",
-                               "pavement_layer_clogging_factor")),
-        ("has_storage_layer", ("STORAGE",
-                              "storage_layer_height",
-                              "storage_layer_void_ratio",
-                              "storage_layer_filtration_rate",
-                              "storage_layer_clogging_factor")),
-        ("has_underdrain_system", ("DRAIN",
-                                  "drain_coefficient",
-                                  "drain_exponent",
-                                  "drain_offset_height",
-                                  "drain_delay")))
+        ("has_surface_layer",
+         "SURFACE",
+         "surface_layer_storage_depth",
+         "surface_layer_vegetative_cover_fraction",
+         "surface_layer_surface_roughness",
+         "surface_layer_surface_slope",
+         "surface_layer_swale_side_slope"),
+        ("has_soil_layer",
+         "SOIL",
+         "soil_layer_thickness",
+         "soil_layer_porosity",
+         "soil_layer_field_capacity",
+         "soil_layer_wilting_point",
+         "soil_layer_conductivity",
+         "soil_layer_conductivity_slope",
+         "soil_layer_suction_head"),
+        ("has_pavement_layer",
+         "PAVEMENT",
+         "pavement_layer_thickness",
+         "pavement_layer_void_ratio",
+         "pavement_layer_impervious_surface_fraction",
+         "pavement_layer_permeability",
+         "pavement_layer_clogging_factor"),
+        ("has_storage_layer",
+         "STORAGE",
+         "storage_layer_height",
+         "storage_layer_void_ratio",
+         "storage_layer_filtration_rate",
+         "storage_layer_clogging_factor"),
+        ("has_underdrain_system",
+         "DRAIN",
+         "drain_coefficient",
+         "drain_exponent",
+         "drain_offset_height",
+         "drain_delay"))
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -178,10 +181,10 @@ class LIDControl(Section):
         if self.comment:
             text_list.append(self.comment)
         text_list .append(self.control_name + '\t' + self.lid_type.name)
-        for (flag_name, field_names) in LIDControl.LineTypes:
-            if getattr(self, flag_name):
-                line = self.control_name + '\t' + field_names[0]
-                for field_name in field_names[1:]:
+        for field_names in LIDControl.LineTypes:
+            if getattr(self, field_names[0]):
+                line = self.control_name + '\t' + field_names[1]
+                for field_name in field_names[2:]:
                     line += '\t' + str(getattr(self, field_name))
                 text_list.append(line)
         return '\n'.join(text_list)
@@ -189,12 +192,7 @@ class LIDControl(Section):
     def set_text(self, new_text):
         self.__init__()
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
-            if len(comment_split) > 1:
-                if self.comment:
-                    self.comment += '\n'
-                self.comment += ';' + comment_split[1].strip()
-                line = comment_split[0].strip()
+            line = self.set_comment_check_section(line)
             if line:
                 fields = line.split()
                 if len(fields) == 2:
@@ -208,14 +206,14 @@ class LIDControl(Section):
                         raise ValueError("LIDControl.set_text: Unknown LID type in second field: " + line)
                 elif len(fields) > 2:
                     if fields[0] != self.control_name:
-                        raise ValueError("LIDControl.set_text: LID name: " + self.control_name + " != " + fields[0])
+                        raise ValueError("LIDControl.set_text: LID name: " +  fields[0] + " != " + self.control_name)
                     check_type = fields[1].upper()
                     found_type = False
-                    for (flag_name, field_names) in LIDControl.LineTypes:
-                        if field_names[0].upper() == check_type:
+                    for field_names in LIDControl.LineTypes:
+                        if field_names[1].upper() == check_type:
                             found_type = True
-                            setattr(self, flag_name, True)  # Set flag to show it has this
-                            for (field_name, field_value) in zip(field_names[1:], fields[2:]):
+                            setattr(self, field_names[0], True)  # Set flag to show it has this
+                            for (field_name, field_value) in zip(field_names[2:], fields[2:]):
                                 self.setattr_keep_type(field_name, field_value)
                             continue
                     if not found_type:

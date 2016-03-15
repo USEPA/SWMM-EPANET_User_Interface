@@ -85,6 +85,7 @@ class Aquifer(Section):
 
     def set_text(self, new_text):
         self.__init__()
+        new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
             self.name = fields[0]

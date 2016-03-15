@@ -56,49 +56,45 @@ class TimeSeries(Section):
         NEEDS_TIME = 2
         NEEDS_VALUE = 3
         for line in new_text.splitlines():
+            self.set_comment_check_section(line)
             try:
-                if line.startswith(';'):
-                    if self.comment:
-                        self.comment += '\n'
-                    self.comment += line
-                else:
-                    fields = line.split()
-                    if len(fields) > 1:
-                        if self.name:
-                            if self.name != fields[0]:
-                                raise ValueError("TimeSeries.set_text: Different Timeseries names " +
-                                                 self.name + ', ' + fields[0])
-                        else:
-                            self.name = fields[0]
-                        if fields[1].upper() == "FILE":
-                            self.file = ' '.join(fields[2:])
-                        else:
-                            state = NEEDS_DATE
-                            next_field = 1
-                            while next_field < len(fields):
-                                if state == NEEDS_DATE:
-                                    if TimeSeries.is_date(fields[next_field]):
-                                        self.dates.append(fields[next_field])
-                                        next_field += 1
-                                        if next_field == len(fields):
-                                            break
-                                    else:
-                                        self.dates.append('')
-                                    state = NEEDS_TIME
-
-                                if state == NEEDS_TIME:
-                                    self.times.append(fields[next_field])
+                fields = line.split()
+                if len(fields) > 1:
+                    if self.name:
+                        if self.name != fields[0]:
+                            raise ValueError("TimeSeries.set_text: Different Timeseries names " +
+                                             self.name + ', ' + fields[0])
+                    else:
+                        self.name = fields[0]
+                    if fields[1].upper() == "FILE":
+                        self.file = ' '.join(fields[2:])
+                    else:
+                        state = NEEDS_DATE
+                        next_field = 1
+                        while next_field < len(fields):
+                            if state == NEEDS_DATE:
+                                if TimeSeries.is_date(fields[next_field]):
+                                    self.dates.append(fields[next_field])
                                     next_field += 1
                                     if next_field == len(fields):
                                         break
-                                    state = NEEDS_VALUE
+                                else:
+                                    self.dates.append('')
+                                state = NEEDS_TIME
 
-                                if state == NEEDS_VALUE:
-                                    self.values.append(fields[next_field])
-                                    next_field += 1
-                                    state = NEEDS_DATE
+                            if state == NEEDS_TIME:
+                                self.times.append(fields[next_field])
+                                next_field += 1
+                                if next_field == len(fields):
+                                    break
+                                state = NEEDS_VALUE
 
-                            # if (len(self.dates) != len(self.times)) or (len(self.times) != len(self.values)):
-                            #     raise ValueError("TimeSeries.set_text: Different lengths:" "\nDates = " + str(len(self.dates)) + "\nTimes = " + str(len(self.time)) + "\nValues = " + str(len(self.values)))
+                            if state == NEEDS_VALUE:
+                                self.values.append(fields[next_field])
+                                next_field += 1
+                                state = NEEDS_DATE
+
+                        if (len(self.dates) != len(self.times)) or (len(self.times) != len(self.values)):
+                            raise ValueError("TimeSeries.set_text: Different lengths:" "\nDates = " + str(len(self.dates)) + "\nTimes = " + str(len(self.time)) + "\nValues = " + str(len(self.values)))
             except Exception as ex:
                 raise ValueError("Could not set timeseries from line: " + line + '\n' + str(ex))

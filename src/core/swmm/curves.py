@@ -64,18 +64,14 @@ class Curve(Section):
     def set_text(self, new_text):
         self.__init__()
         for line in new_text.splitlines():
+            self.set_comment_check_section(line)
             if line.strip():
-                if line.startswith(';'):
-                    if self.comment:
-                        self.comment += '\n'
-                    self.comment += line
-                else:
-                    fields = line.split()
-                    if len(fields) > 2:
-                        self.curve_id = fields[0]
-                        try:
-                            self.curve_type = CurveType[fields[1]]
-                            x_index = 2
-                        except:
-                            x_index = 1
-                        self.curve_xy.append((fields[x_index], fields[x_index + 1]))
+                fields = line.split()
+                if len(fields) > 2:
+                    self.curve_id = fields[0]
+                    try:
+                        self.curve_type = CurveType[fields[1]]
+                        x_index = 2
+                    except:
+                        x_index = 1
+                    self.curve_xy.append((fields[x_index], fields[x_index + 1]))

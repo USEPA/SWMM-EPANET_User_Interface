@@ -4,7 +4,7 @@ from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
-from core.epanet.hydraulics.node import Demand
+from core.epanet.hydraulics.node import Demands
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
@@ -41,7 +41,7 @@ class Project(InputFile):
         # [STATUS]
         self.controls = SectionAsListOf("[CONTROLS]", Control)
         self.rules = SectionAsListOf("[RULES]", basestring)
-        # self.demands = [Demand]
+        self.demands = Demands()
         # self.quality = ReadNodesInitialQuality
         self.reactions = Reactions()
         self.sources = SectionAsListOf("[SOURCES]", Source)

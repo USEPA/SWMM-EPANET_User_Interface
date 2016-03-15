@@ -2,7 +2,7 @@
 from core.coordinates import Coordinates
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
-
+from core.inputfile import Section
 
 class SourceType(Enum):
     """Water Quality Source Type"""
@@ -140,9 +140,32 @@ class Source:
         """Time pattern ID (optional)"""
 
 
-class Demand:
+class Demands(Section):
+
+    SECTION_NAME = "[DEMANDS]"
+
+    DEFAULT_COMMENT = ";ID    \tDemand   \tPattern   \tCategory\n;------\t---------\t----------\t--------"
+
+    def set_text(self, new_text):
+        self.value = []
+        for line in new_text.splitlines():
+            if line.startswith(';') or line.startswith('['):
+                self.set_comment_check_section(line)  # Only use this on lines that start with special characters
+            else:
+                self.value.append(Demand(line))       # Allow trailing comment to be part of a Demand (Category)
+
+
+class Demand(Section):
     """Define multiple water demands at junction nodes"""
-    def __init__(self):
+
+    field_format = "{:7}\t{:9}\t{:10}\t{}"
+
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+
+        self.junction_id = ''
+        """Junction this demand applies to"""
+
         self.base_demand = 0.0       # real
         """Base demand (flow units)"""
 
@@ -151,3 +174,28 @@ class Demand:
 
         self.category = ""          # string
         """Name of demand category preceded by a semicolon (optional)"""
+
+        if new_text:
+            self.set_text(new_text)
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.junction_id,
+                                        self.base_demand,
+                                        self.demand_pattern,
+                                        self.category)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.junction_id = fields[0]
+        if len(fields) > 1:
+            self.base_demand = fields[1]
+        if len(fields) > 2:
+            self.demand_pattern = fields[2]
+        if len(fields) > 3:
+            self.category = fields[3]

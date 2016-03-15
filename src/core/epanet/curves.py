@@ -5,6 +5,7 @@ from core.inputfile import Section
 
 class CurveType(Enum):
     """Curve Type"""
+    UNSET = 0
     PUMP = 1
     EFFICIENCY = 2
     VOLUME = 3
@@ -36,7 +37,7 @@ class Curve(Section):
         self.description = ''   # string
         """Curve description"""
 
-        self.curve_type = CurveType.PUMP    # PUMP, EFFICIENCY, VOLUME, or HEADLOSS
+        self.curve_type = CurveType.UNSET    # PUMP, EFFICIENCY, VOLUME, or HEADLOSS
         """CurveType: Type of Curve"""
 
         self.curve_xy = []      # list of (x, y) tuples
@@ -47,7 +48,11 @@ class Curve(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        inp = ";{}: {}\n".format(self.curve_type.name, self.description)
+        inp = ''
+        if self.curve_type != CurveType.UNSET:
+            inp += ";{}: {}\n".format(self.curve_type.name, self.description)
+        elif self.description:
+            inp += ";{}\n".format(self.description)
         for xy in self.curve_xy:
             inp += Curve.field_format.format(self.curve_id, xy[0], xy[1])
         return inp

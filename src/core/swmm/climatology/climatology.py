@@ -55,10 +55,10 @@ class Temperature(Section):
         if self.comment:
             text_list.append(self.comment)
 
-        field_start = Temperature.first_field_format.format(self.format.name) + '\t'
-        if self.source == TemperatureSource.TIMESERIES:
+        field_start = Temperature.first_field_format.format(self.source.name) + '\t'
+        if self.source == TemperatureSource.TIMESERIES and self.timeseries:
            text_list.append(field_start + self.timeseries)
-        elif self.source == TemperatureSource.FILE:
+        elif self.source == TemperatureSource.FILE and self.filename:
            text_list.append(field_start + self.filename + '\t' + self.start_date)
 
         text_list.append(self.wind_speed.get_text())
@@ -213,9 +213,12 @@ class WindSpeed:
     def get_text(self):
         field_start = Temperature.first_field_format.format(WindSpeed.SECTION_NAME) + '\t' + self.source.name
         if self.source == WindSource.MONTHLY:
-           return field_start + '\t' + '\t'.join(self.wind_speed_monthly)
+            if len(self.wind_speed_monthly) > 0:
+                return field_start + '\t' + '\t'.join(self.wind_speed_monthly)
+            else:
+                return ''
         elif self.source == WindSource.FILE:
-           return field_start
+            return field_start
 
     def set_text(self, new_text):
         self.__init__()
@@ -294,8 +297,12 @@ class ArealDepletion:
         """fraction of area covered by snow when ratio of snow depth to depth for pervious area"""
 
     def get_text(self):
-        return "ADC IMPERVIOUS\t" + '\t'.join(self.adc_impervious) +'\n' +\
-               "ADC PERVIOUS\t" + '\t'.join(self.adc_pervious)
+        text_list = []
+        if len(self.adc_impervious) > 0:
+            text_list.append("ADC IMPERVIOUS\t" + '\t'.join(self.adc_impervious))
+        if len(self.adc_impervious) > 0:
+            text_list.append("ADC PERVIOUS\t" + '\t'.join(self.adc_pervious))
+        return '\n'.join(text_list)
 
     def set_text(self, new_text):
         self.__init__()

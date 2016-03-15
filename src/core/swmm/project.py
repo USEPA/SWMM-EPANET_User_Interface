@@ -91,7 +91,7 @@ class Project(InputFile):
         # self.raingages = [RainGage]             # RAINGAGES     rain gage information
         # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
         self.evaporation = Evaporation()        # EVAPORATION   evaporation data
-        # self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
+        self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters

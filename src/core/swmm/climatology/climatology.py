@@ -26,6 +26,8 @@ class Temperature(Section):
 
     SECTION_NAME = "[TEMPERATURE]"
 
+    first_field_format = "{:18}"
+
     def __init__(self):
         Section.__init__(self)
 
@@ -53,15 +55,57 @@ class Temperature(Section):
         if self.comment:
             text_list.append(self.comment)
 
+        field_start = Temperature.first_field_format.format(self.format.name) + '\t'
         if self.source == TemperatureSource.TIMESERIES:
-           text_list.append(self.format.name + '\t' + self.timeseries)
+           text_list.append(field_start + self.timeseries)
         elif self.source == TemperatureSource.FILE:
-           text_list.append(self.format.name + '\t' + self.filename + '\t' + self.start_date)
+           text_list.append(field_start + self.filename + '\t' + self.start_date)
 
         text_list.append(self.wind_speed.get_text())
         text_list.append(self.snow_melt.get_text())
         text_list.append(self.areal_depletion.get_text())
         return '\n'.join(text_list)
+
+    def set_text(self, new_text):
+        self.__init__()
+        areal_depletion_text = ''
+        for line in new_text.splitlines():
+            try:
+                if line.startswith('['):
+                    if line.strip().upper() != self.SECTION_NAME:
+                        raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
+                elif line.startswith(';'):
+                    if self.comment:
+                        self.comment += '\n'
+                    self.comment += line
+                else:
+                    fields = line.split()
+                    if len(fields) > 1:
+                        if fields[0].upper() == "TIMESERIES":
+                            self.timeseries = ' '.join(fields[1:])
+                        elif fields[0].upper() == "FILE":
+                            # Check for optional M/D/Y start date as last field
+                            check_if_date = fields[-1].split('/')
+                            if len(check_if_date) == 3 and ''.join(check_if_date).isdigit():
+                                self.start_date = fields[-1]
+                                self.filename = ' '.join(fields[1:-1])
+                            else:
+                                self.filename = ' '.join(fields[1:])
+                        elif fields[0].upper() == WindSpeed.SECTION_NAME:
+                            self.wind_speed = WindSpeed()
+                            self.wind_speed.set_text(line)
+                        elif fields[0].upper() == SnowMelt.SECTION_NAME:
+                            self.snow_melt = SnowMelt()
+                            self.snow_melt.set_text(line)
+                        elif fields[0].upper() == ArealDepletion.SECTION_NAME:
+                            if areal_depletion_text:
+                                areal_depletion_text += '\n'
+                            areal_depletion_text += line
+            except:
+                print(self.SECTION_NAME + " skipping input line: " + line)
+        if areal_depletion_text:
+            self.areal_depletion = ArealDepletion()
+            self.areal_depletion.set_text(areal_depletion_text)
 
 
 class Evaporation(Section):
@@ -124,15 +168,15 @@ class Evaporation(Section):
         self.__init__()
         for line in new_text.splitlines():
             if line.startswith('['):
-                if line.strip().upper() != self.name.upper():
-                    raise ValueError("Cannot set " + self.name + " from section " + line.strip())
+                if line.strip().upper() != self.SECTION_NAME:
+                    raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
             elif line.startswith(';'):
                 if self.comment:
                     self.comment += '\n'
                 self.comment += line
             else:
                 fields = line.split()
-                if len(fields) > 0:
+                if len(fields) > 1:
                     if fields[0].upper() == "DRY_ONLY":
                         self.dry_only = fields[1].upper() == "YES"
                     else:
@@ -151,7 +195,7 @@ class Evaporation(Section):
                             elif self.format == EvaporationFormat.RECOVERY:
                                 self.recovery_pattern = fields[1]
                         except Exception as ex:
-                            raise ValueError("Could not set EVAPORATION from: " + line + '\n' + str(ex))
+                            raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
 
 
 class WindSpeed:
@@ -167,16 +211,27 @@ class WindSpeed:
         """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
 
     def get_text(self):
+        field_start = Temperature.first_field_format.format(WindSpeed.SECTION_NAME) + '\t' + self.source.name
         if self.source == WindSource.MONTHLY:
-           return WindSpeed.SECTION_NAME + '\t' + self.source.name + '\t' + '\t'.join(self.wind_speed_monthly)
+           return field_start + '\t' + '\t'.join(self.wind_speed_monthly)
         elif self.source == WindSource.FILE:
-           return WindSpeed.SECTION_NAME + '\t' + self.source.name
+           return field_start
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 1:
+            if fields[0].strip().upper() != self.SECTION_NAME:
+                raise ValueError("Could not set " + self.SECTION_NAME + " from: " + new_text)
+            self.units = WindSource[fields[1].upper()]
+        if len(fields) > 2 and self.units == WindSource.MONTHLY:
+            self.wind_speed_monthly = fields[2:]
 
 
 class SnowMelt:
     """snow melt parameters"""
 
-    SECTION_NAME = "WINDSPEED"
+    SECTION_NAME = "SNOWMELT"
 
     def __init__(self):
         self.snow_temp = ''
@@ -198,7 +253,7 @@ class SnowMelt:
         """correction, in minutes of time, between true solar time and the standard clock time (default is 0)."""
 
     def get_text(self):
-        return SnowMelt.SECTION_NAME + '\t' +\
+        return Temperature.first_field_format.format(SnowMelt.SECTION_NAME) + '\t' +\
                self.snow_temp + '\t' +\
                self.ati_weight + '\t' +\
                self.negative_melt_ratio + '\t' +\
@@ -206,9 +261,30 @@ class SnowMelt:
                self.latitude + '\t' +\
                self.time_correction
 
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 1:
+            if fields[0].strip().upper() != self.SECTION_NAME:
+                raise ValueError("Could not set " + self.SECTION_NAME + " from: " + new_text)
+        if len(fields) > 2:
+           self.snow_temp = fields[2]
+        if len(fields) > 3:
+           self.ati_weight = fields[3]
+        if len(fields) > 4:
+           self.negative_melt_ratio = fields[4]
+        if len(fields) > 5:
+           self.elevation = fields[5]
+        if len(fields) > 6:
+           self.latitude = fields[6]
+        if len(fields) > 7:
+           self.time_correction = fields[7]
+
 
 class ArealDepletion:
     """areal depletion parameters"""
+
+    SECTION_NAME = "ADC"
 
     def __init__(self):
         self.adc_impervious = ()
@@ -220,6 +296,19 @@ class ArealDepletion:
     def get_text(self):
         return "ADC IMPERVIOUS\t" + '\t'.join(self.adc_impervious) +'\n' +\
                "ADC PERVIOUS\t" + '\t'.join(self.adc_pervious)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            fields = line.split()
+            if len(fields) > 2:
+                if fields[0].strip().upper() != self.SECTION_NAME:
+                    raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line)
+                if fields[1].upper() == "IMPERVIOUS":
+                    self.adc_impervious = fields[2:]
+                elif fields[1].upper() == "PERVIOUS":
+                    self.adc_pervious = fields[2:]
+
 
 class Adjustments:
     """monthly adjustments from undocumented table [ADJUSTMENTS]"""

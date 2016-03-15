@@ -414,6 +414,6 @@ class SectionAsListOf(Section):
             text_list.append(self.comment)
         for item in self.value:
             item_str = str(item)
-            if item_str.strip():
-                text_list.append(item_str.rstrip('\n'))
+            # if item_str.strip():
+            text_list.append(item_str.rstrip('\n'))
         return '\n'.join(text_list)

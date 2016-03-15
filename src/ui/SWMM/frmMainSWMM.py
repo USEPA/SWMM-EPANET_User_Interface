@@ -22,6 +22,7 @@ from ui.SWMM.frmClimatology import  frmClimatology
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
+from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmLID import frmLID
 
 from core.swmm.project import Project
@@ -166,6 +167,9 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Time Patterns':
             self._frmPatternEditor = frmPatternEditor(self)
             self._frmPatternEditor.show()
+        if itm.data(0, 0) == 'Time Series':
+            self._frmTimeseries = frmTimeseries(self)
+            self._frmTimeseries.show()
         if itm.data(0, 0) == 'Control Curves':
             self._frmCurveEditor = frmCurveEditor(self)
             self._frmCurveEditor.setWindowTitle('SWMM Control Curves')

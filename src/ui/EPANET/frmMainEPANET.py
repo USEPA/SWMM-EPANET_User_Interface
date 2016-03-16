@@ -19,6 +19,8 @@ from ui.EPANET.frmTitle import frmTitle
 from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
+from ui.EPANET.frmSourcesQuality import frmSourcesQuality
+from ui.EPANET.frmDemands import frmDemands
 
 from ui.model_utility import *
 from core.epanet.project import Project
@@ -157,6 +159,14 @@ class frmMainEPANET(frmMain):
         if itm.data(0, 0) == 'Curves':
             self._frmCurveEditor = frmCurveEditor(self)
             self._frmCurveEditor.show()
+
+        # the following items will respond to a click on a node form, not the tree diagram
+        if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Reservoirs' or itm.data(0, 0) == 'Tanks':
+            self._frmSourcesQuality = frmSourcesQuality(self)
+            self._frmSourcesQuality.show()
+        if itm.data(0, 0) == 'Junctions':
+            self._frmDemands = frmDemands(self)
+            self._frmDemands.show()
 
         # mitm = itm
         # if self.project == None or mitm.data(0, 0) != 'Options':

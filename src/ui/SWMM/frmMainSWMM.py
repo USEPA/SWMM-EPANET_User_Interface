@@ -26,6 +26,7 @@ from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmLID import frmLID
 from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
+from ui.SWMM.frmTransect import frmTransect
 
 from core.swmm.project import Project
 
@@ -216,6 +217,9 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Unit Hydrographs':
             self._frmUnitHydrograph = frmUnitHydrograph(self)
             self._frmUnitHydrograph.show()
+        if itm.data(0, 0) == 'Transects':
+            self._frmTransect = frmTransect(self)
+            self._frmTransect.show()
 
     def proj_run_simulation(self):
         run = 0

@@ -8,8 +8,8 @@ class SourceType(Enum):
     """Water Quality Source Type"""
     CONCENTRATION = 1
     MASS = 2
-    FLOW_PACED = 3
-    SET_POINT = 4
+    FLOWPACED = 3
+    SETPOINT = 4
 
 
 class MixingModel(Enum):
@@ -35,7 +35,7 @@ class Node(Coordinates):
         """Optional label used to categorize or classify the Node"""
 
         self.initial_quality = 0.0
-        """Quality represents concentration for chemicals, hours for water age, or percent for source tracing"""
+        """"""
 
         self.source_quality = Source()
         """defines characteristics of water quality source"""
@@ -44,35 +44,73 @@ class Node(Coordinates):
         """Indicates whether reporting is desired at this node"""
 
 
-class Junction:
-    """Junction properties"""
+class Quality(Section):
+    """Initial water quality at a node."""
 
     field_format = " {:19}\t{}"
 
-    def __init__(self):
-        self.node_id = -1
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+
+        self.node_id = ''
         """elevation of junction"""
 
-        self.elevation = 0.0
-        """elevation of junction"""
+        self.initial_quality = '0.0'
+        """concentration for chemicals, hours for water age, or percent for source tracing"""
 
-        self.demand = ""  # Does this need to be a list or just one?
-        """characteristics of all demands at this node"""
-
-        self.pattern = ""
-        # TODO: decide whether pattern belongs here and document it"""
-
-        self.emitter_coefficient = 0.0
-        """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
-            the product of the flow coefficient and the junction pressure raised to power  """
+        if new_text:
+            self.set_text(new_text)
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return '\t'.join((str(self.node_id), str(self.elevation), str(self.demand), str(self.pattern)))
-        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
+        return self.field_format.format(self.node_id, self.initial_quality)
 
     def set_text(self, new_text):
-        (self.node_id, self.elevation, self.demand, self.pattern) = new_text.split()
+        (self.node_id, self.initial_quality) = new_text.split()
+
+
+class Junction(Section):
+    """Junction properties"""
+
+    field_format = "{:16}\t{:6}\t{:6}\t{:7}"
+
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+        self.node_id = ''
+        """elevation of junction"""
+
+        self.elevation = '0.0'
+        """elevation of junction"""
+
+        self.base_demand_flow = ''
+        """Base demand flow, characteristic of all demands at this node"""
+
+        self.demand_pattern = ''
+        """Demand pattern ID, optional"""
+
+        self.emitter_coefficient = '0.0'
+        """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
+            the product of the flow coefficient and the junction pressure raised to power  """
+
+        if new_text:
+            self.set_text(new_text)
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return self.field_format.format(self.node_id, self.elevation, self.base_demand_flow, self.demand_pattern)
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node_id = fields[0]
+        if len(fields) > 1:
+            self.elevation = fields[1]
+        if len(fields) > 2:
+            self.base_demand_flow = fields[2]
+        if len(fields) > 3:
+            self.demand_pattern = fields[3]
 
 
 class Reservoir(Node):
@@ -127,38 +165,55 @@ class Tank(Node):
         """used to override the global reaction coefficient"""
 
 
-class Source:
+class Source(Section):
     """Defines locations of water quality sources"""
-    def __init__(self):
-        self.source_type = SourceType.CONCENTRATION			# CONCENTRATION, MASS, FLOW_PACED, or SET_POINT
-        """Source type (CONCENTRATION, MASS, FLOW_PACED, or SET_POINT)"""
 
-        self.baseline = 0.0			    # real
+    field_format = ""
+
+    def __init__(self, new_text=None):
+        Section.__init__(self)
+
+        self.node_id = ''
+
+        self.source_type = SourceType.CONCENTRATION     # CONCENTRATION, MASS, FLOWPACED, or SETPOINT
+        """Source type (CONCENTRATION, MASS, FLOWPACED, or SETPOINT)"""
+
+        self.baseline_strength = '0.0'                  # real, but stored as string
         """Baseline source strength"""
 
-        self.source_pattern = ""        # string
+        self.pattern_id = ""                            # string
         """Time pattern ID (optional)"""
 
+        if new_text:
+            self.set_text(new_text)
 
-class Demands(Section):
-
-    SECTION_NAME = "[DEMANDS]"
-
-    DEFAULT_COMMENT = ";ID    \tDemand   \tPattern   \tCategory\n;------\t---------\t----------\t--------"
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node_id,
+                                        self.source_type.name,
+                                        self.baseline_strength,
+                                        self.pattern_id)
+        return inp
 
     def set_text(self, new_text):
-        self.value = []
-        for line in new_text.splitlines():
-            if line.startswith(';') or line.startswith('['):
-                self.set_comment_check_section(line)  # Only use this on lines that start with special characters
-            else:
-                self.value.append(Demand(line))       # Allow trailing comment to be part of a Demand (Category)
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node_id = fields[0]
+        if len(fields) > 1:
+            self.source_type = SourceType[fields[1]]
+        if len(fields) > 2:
+            self.baseline_strength = fields[2]
+        if len(fields) > 3:
+            self.pattern_id = fields[3]
 
 
 class Demand(Section):
     """Define multiple water demands at junction nodes"""
 
-    field_format = "{:7}\t{:9}\t{:10}\t{}"
+    field_format = "{:16}\t{:9}\t{:10}\t{}"
 
     def __init__(self, new_text=None):
         Section.__init__(self)

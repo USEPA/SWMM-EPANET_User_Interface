@@ -264,7 +264,7 @@ class StorageUnit(Junction):
         self.seepage_hydraulic_conductivity = 0.0
         """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
-        self.seepage_initial_moisture.deficit = 0.0
+        self.seepage_initial_moisture_deficit = 0.0
         """Initial soil moisture deficit (volume of voids / total volume)."""
 
 

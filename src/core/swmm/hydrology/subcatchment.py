@@ -191,7 +191,7 @@ class Groundwater:
 class LIDUsage(Section):
     """Specifies how an LID control will be deployed in a subcatchment"""
 
-    field_format = " {:16}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}"  # TODO: add fields \t{:24}\t{:16}
+    field_format = " {:15}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}"  # TODO: add fields? \t{:24}\t{:16}
 
     def __init__(self, new_text=None):
         Section.__init__(self)

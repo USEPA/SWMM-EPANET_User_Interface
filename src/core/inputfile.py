@@ -15,11 +15,13 @@ class InputFile(object):
         section_text_list = []
         try:
             for section in self.sections:
-                try:  # Make sure each section text ends with one newline, two newlines after join below.
-                    section_text_list.append(section.get_text().rstrip('\n') + '\n')
+                try:
+                    section_text = section.get_text().rstrip('\n')
+                    if section_text:                               # Skip adding blank sections
+                        section_text_list.append(section_text)
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
-            return '\n'.join(section_text_list)
+            return '\n\n'.join(section_text_list) + '\n'
         except Exception as e2:
             return(str(e2) + '\n' + str(traceback.print_exc()))
 
@@ -89,10 +91,14 @@ class InputFile(object):
         else:
             section_class = type(section_attr)
             if new_section is None:                 # This section has not yet been added to self.sections
-                if section_class is SectionAsListOf:
+                if section_class is SectionAsListOf or section_class is SectionAsListGroupByID:
                     new_section = section_attr      # Use the existing instance created during project init
                 else:
-                    new_section = section_class()   # Create a new instance of this class
+                    try:
+                        new_section = section_class()   # Create a new instance of this class
+                    except Exception as e:
+                        print("Could not create item of type " + str(section_class) + '\n' + str(e) +
+                              '\n' + str(traceback.print_exc()))
         if new_section is not None:
             if hasattr(new_section, "index"):
                 new_section.index = section_index
@@ -159,7 +165,6 @@ class Section(object):
         
         if hasattr(self, "DEFAULT_COMMENT"):
             self.comment = self.DEFAULT_COMMENT
-        
 
     def __str__(self):
         """Override default method to return string representation"""
@@ -168,7 +173,7 @@ class Section(object):
     def get_text(self):
         """Contents of this section formatted for writing to file"""
         txt = self._get_text_field_dict()
-        if txt:
+        if txt or txt == '':
             return txt
         if isinstance(self.value, basestring) and len(self.value) > 0:
             return self.value
@@ -186,20 +191,27 @@ class Section(object):
 
     def _get_text_field_dict(self):
         """ Get string representation of attributes represented in field_dict, if any.
-            Private method intended for use by subclasses """
+            Private method intended for use by subclasses
+            Returns None if there is no field_dict, empty string if there is, but no attributes have values."""
         if hasattr(self, "field_dict") and self.field_dict:
+            found_any = False
             text_list = []
             if self.name and self.name.startswith('['):
                 text_list.append(self.name)
             if self.comment:
                 text_list.append(self.comment)
+                if not hasattr(self, "DEFAULT_COMMENT") or self.comment != self.DEFAULT_COMMENT:
+                    found_any = True
             for label, attr_name in self.field_dict.items():
                 attr_line = self._get_attr_line(label, attr_name)
                 if attr_line:
                     text_list.append(attr_line)
-            if text_list:
+                    found_any = True
+            if found_any:
                 return '\n'.join(text_list)
-        return ''  # Did not find field values from field_dict to return
+            else:
+                return ''
+        return None  # Did not find field values from field_dict to return
 
     def _get_attr_line(self, label, attr_name):
         if label and attr_name and hasattr(self, attr_name):
@@ -229,18 +241,26 @@ class Section(object):
             self.set_text_line(line)
 
     def set_comment_check_section(self, line):
-        """Split any comment after a semicolon into self.comment and return the rest of the line.
-           If the line is a section header (starts with open square bracket) then check against self.SECTION_NAME.
-           If it matches, return empty string. If it does not match, raise ValueError."""
+        """ Split any comment after a semicolon into self.comment and return the rest of the line.
+            If the line is a section header (starts with open square bracket) then check against self.SECTION_NAME.
+            If it matches, return empty string. If it does not match, raise ValueError.
+            Args:
+                line (str): Text to search for a comment or section name.
+        """
         comment_split = str.split(line, ';', 1)
         if len(comment_split) == 2:  # Found a comment
             line = comment_split[0]
             this_comment = ';' + comment_split[1]
             if self.comment:
-                if this_comment in self.comment:
+                # Compare with existing comment and decide whether to discard one or combine them
+                omit_chars = " ;\t-_"
+                this_stripped = ''.join(c for c in this_comment if c not in omit_chars).upper()
+                if len(this_stripped) == 0 and ("---" in this_comment) and not ("---" in self.comment):
+                    self.comment += '\n'    # Add dashed line on a new line if self.comment does not already have one
+                elif this_stripped in ''.join(c for c in self.comment if c not in omit_chars).upper():
                     this_comment = ''       # Already have this comment, don't add it again
                 elif hasattr(self, "DEFAULT_COMMENT") and self.comment == self.DEFAULT_COMMENT:
-                    self.comment = ''  # Replace default comment with the one we are reading
+                    self.comment = ''       # Replace default comment with the one we are reading
                 else:
                     self.comment += '\n'    # Separate from existing comment with newline
             self.comment += this_comment
@@ -250,6 +270,11 @@ class Section(object):
             else:
                 line = ''
         return line  # Return the portion of the line that was not in the comment and was not a section header
+
+    @staticmethod
+    def match_without(string_one, string_two, omit_chars):
+        ''.join(c for c in string_one if c not in omit_chars) == \
+            ''.join(c for c in string_two if c not in omit_chars)
 
     def set_text_line(self, line):
         """Set part of this section from one line of text.
@@ -288,51 +313,6 @@ class Section(object):
                     print("Section.text could not set " + attr_name)
             if not tried_set:
                 print("Section.text skipped: " + line)
-
-    def set_list_comment_plus_ids(self, new_text, item_type):
-        """Parse new_text formatted as a one-line section comment (column headers) followed by items.
-         Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
-         new_text is split into items (comment plus lines starting with the same ID).
-         self.value is a list of item_type.
-         Each item text is made into an item_type using a constructor that takes a string, then added to self.value.
-         """
-        self.value = []
-        lines = new_text.splitlines()
-        first_index = 1
-        if str(lines[1]).startswith(';'):
-            # Save first comment line as section comment
-            self.comment = lines[1]
-            first_index += 1
-
-        item_text = ""
-        item_id = ""
-        for line in lines[first_index:]:
-            if line.startswith(';'):
-                if item_text:
-                    self.value.append(item_type(item_text))
-                item_text = line
-                item_id = ""
-            else:
-                id_split = line.split()
-                if len(id_split) > 1:
-                    new_item_id = id_split[0].strip()
-                    if len(item_id) > 0:  # If already processed at least one line containing ID
-                        if new_item_id != item_id:
-                            try:
-                                self.value.append(item_type(item_text))
-                            except Exception as ex:
-                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(item_type.__name__,
-                                                                                            item_text,
-                                                                                            str(ex),
-                                                                                            str(traceback.print_exc())))
-                            item_text = ""
-                    item_id = new_item_id
-                    if item_text:
-                        item_text += '\n'
-                    item_text += line
-
-        if item_text:
-            self.value.append(item_type(item_text))
 
     def get_field_dict_value(self, line):
         """Search self.field_dict for attribute matching start of line.
@@ -391,45 +371,104 @@ class Section(object):
 
 
 class SectionAsListOf(Section):
-    def __init__(self, section_name, list_type):
+    def __init__(self, section_name, list_type, section_comment=None):
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
+        if section_comment:
+            self.DEFAULT_COMMENT = section_comment
         Section.__init__(self)
         self.list_type = list_type
 
     def set_text(self, new_text):
         self.value = []
-        for row in new_text.splitlines()[1:]:  # process each row after the one with the section name
-            if row.startswith(';'):            # if row starts with semicolon, the whole row is a comment
-                if self.value:
+        for line in new_text.splitlines()[1:]:            # process each line after the first one [section name]
+            if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
+                if self.value:  # If we have already added items to this section, add comment as a Section
                     comment = Section()
                     comment.name = "Comment"
-                    comment.value = row
+                    comment.value = line
                     self.value.append(comment)
-                else:
-                    if self.comment:
-                        self.comment += '\n' + row
-                    else:
-                        self.comment = row
-            elif row.strip():
+                else:  # If we are still at the beginning of the section, set self.comment instead of adding a Section
+                    self.set_comment_check_section(line)
+            else:
                 try:
                     if self.list_type is basestring:
-                        make_one = row
+                        make_one = line
                     else:
                         make_one = self.list_type()
-                        make_one.set_text(row)
+                        make_one.set_text(line)
                     self.value.append(make_one)
                 except Exception as e:
-                    print("Could not create object from: " + row + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+                    print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
     def get_text(self):
         """Contents of this section formatted for writing to file"""
-        text_list = [self.name]
-        if self.comment:
-            text_list.append(self.comment)
-        for item in self.value:
-            item_str = str(item)
-            # if item_str.strip():
-            text_list.append(item_str.rstrip('\n'))
-        return '\n'.join(text_list)
+        if self.value \
+           or (self.comment and (not hasattr(self, "DEFAULT_COMMENT") or self.comment != self.DEFAULT_COMMENT)):
+            text_list = [self.name]
+            if self.comment:
+                text_list.append(self.comment)
+            for item in self.value:
+                item_str = str(item)
+                # Skip blank items unless they are a blank comment, those are purposely blank lines
+                # if item_str.strip() or isinstance(item, basestring) or (isinstance(item, Section) and item.name == "Comment"):
+                text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
+            return '\n'.join(text_list)
+        else:
+            return ''
+
+
+class SectionAsListGroupByID(SectionAsListOf):
+
+    def set_text(self, new_text):
+        """
+        Parse new_text into a section comment (column headers) followed by items of type self.list_type.
+        Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
+        new_text is split into items (comment plus lines starting with the same ID).
+        self.value is created as a list of self.list_type.
+        Each item text is made into an item_type using a constructor that takes a string, then added to self.value.
+            Args:
+                new_text (str): Text of whole section to parse into comments and a list of items.
+        """
+        self.value = []
+        lines = new_text.splitlines()
+        self.set_comment_check_section(lines[0])                  # Check first line against section name
+        next_index = 1
+        expected_comment_lines = len(self.comment.splitlines())
+        for line_number in range(1, expected_comment_lines + 1):  # Parse initial comment lines into self.comment
+            if str(lines[line_number]).startswith(';'):
+                self.set_comment_check_section(lines[1])
+                next_index += 1
+            else:
+                break
+
+        item_text = ""
+        item_id = ""
+        for line in lines[next_index:]:
+            if line.startswith(';'):    # Found a comment, must be the start of a new item
+                if item_text:
+                    self.value.append(self.list_type(item_text))
+                item_text = line
+                item_id = ""
+            else:
+                id_split = line.split()
+                if len(id_split) > 1:
+                    new_item_id = id_split[0].strip()
+                    if len(item_id) > 0:            # If we already read an ID that has not been saved to value yet
+                        if new_item_id != item_id:  # If this item is not the same one we are already reading
+                            try:                    # then save the one we have been reading since we have read it all
+                                self.value.append(self.list_type(item_text))
+                            except Exception as ex:
+                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(self.list_type.__name__,
+                                                                                            item_text,
+                                                                                            str(ex),
+                                                                                            str(traceback.print_exc())))
+                            item_text = ""          # clear the buffer after using it to create/append an item
+                    item_id = new_item_id
+                    if item_text:
+                        item_text += '\n'
+                    item_text += line
+        if item_text:
+            self.value.append(self.list_type(item_text))
+

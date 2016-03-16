@@ -6,6 +6,8 @@ class Files(Section):
 
     SECTION_NAME = "[FILES]"
 
+    DEFAULT_COMMENT = ";;Interfacing Files"
+
     field_dict = {
      "USE RAINFALL": "use_rainfall",
      "SAVE RAINFALL": "save_rainfall",
@@ -21,7 +23,6 @@ class Files(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.comment = ";;Interfacing Files"
 
         self.use_rainfall = None
         """Name of rainfall data file to use"""

@@ -1,18 +1,3 @@
-from core.inputfile import Section
-
-
-class Patterns(Section):
-    """PATTERNS section of EPANET input"""
-
-    SECTION_NAME = "[PATTERNS]"
-
-    def __init__(self):
-        Section.__init__(self)
-        self.comment = ";ID              \tMultipliers"
-
-    def set_text(self, new_text):
-        self.__init__()
-        self.set_list_comment_plus_ids(new_text, Pattern)
 
 
 class Pattern:

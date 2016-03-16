@@ -34,7 +34,7 @@ class Landuse(Section):
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-    field_format = " {:16}\t{:10}\t{:10}\t{:10}\n"
+    field_format = " {:15}\t{:10}\t{:10}\t{:10}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -79,7 +79,7 @@ class Landuse(Section):
 class Buildup(Section):
     """Specifies the rate at which pollutants build up over different land uses between rain events."""
 
-    field_format = " {:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
+    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -148,7 +148,7 @@ class Buildup(Section):
 class Washoff(Section):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
 
-    field_format = " {:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
+    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)

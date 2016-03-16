@@ -4,9 +4,9 @@ from core.inputfile import Section
 class TimeSeries(Section):
     """One time series from the TIMESERIES section"""
 
-    field_format = "{}\t{}\t{}\t{}"
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
-    def __init__(self):
+    def __init__(self, new_text=None):
         Section.__init__(self)
 
         self.name = ""
@@ -23,6 +23,9 @@ class TimeSeries(Section):
 
         self.values = []
         """List of Values"""
+
+        if new_text:
+            self.set_text(new_text)
 
     def get_text(self):
         text_list = []
@@ -52,9 +55,9 @@ class TimeSeries(Section):
 
     def set_text(self, new_text):
         self.__init__()
-        NEEDS_DATE = 1
-        NEEDS_TIME = 2
-        NEEDS_VALUE = 3
+        needs_date = 1
+        needs_time = 2
+        needs_value = 3
         for line in new_text.splitlines():
             self.set_comment_check_section(line)
             try:
@@ -69,10 +72,10 @@ class TimeSeries(Section):
                     if fields[1].upper() == "FILE":
                         self.file = ' '.join(fields[2:])
                     else:
-                        state = NEEDS_DATE
+                        state = needs_date
                         next_field = 1
                         while next_field < len(fields):
-                            if state == NEEDS_DATE:
+                            if state == needs_date:
                                 if TimeSeries.is_date(fields[next_field]):
                                     self.dates.append(fields[next_field])
                                     next_field += 1
@@ -80,21 +83,21 @@ class TimeSeries(Section):
                                         break
                                 else:
                                     self.dates.append('')
-                                state = NEEDS_TIME
+                                state = needs_time
 
-                            if state == NEEDS_TIME:
+                            if state == needs_time:
                                 self.times.append(fields[next_field])
                                 next_field += 1
                                 if next_field == len(fields):
                                     break
-                                state = NEEDS_VALUE
+                                state = needs_value
 
-                            if state == NEEDS_VALUE:
+                            if state == needs_value:
                                 self.values.append(fields[next_field])
                                 next_field += 1
-                                state = NEEDS_DATE
+                                state = needs_date
 
                         if (len(self.dates) != len(self.times)) or (len(self.times) != len(self.values)):
-                            raise ValueError("TimeSeries.set_text: Different lengths:" "\nDates = " + str(len(self.dates)) + "\nTimes = " + str(len(self.time)) + "\nValues = " + str(len(self.values)))
+                            raise ValueError("TimeSeries.set_text: Different lengths:" "\nDates = " + str(len(self.dates)) + "\nTimes = " + str(len(self.times)) + "\nValues = " + str(len(self.values)))
             except Exception as ex:
                 raise ValueError("Could not set timeseries from line: " + line + '\n' + str(ex))

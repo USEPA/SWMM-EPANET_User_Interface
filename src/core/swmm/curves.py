@@ -15,21 +15,6 @@ class CurveType(Enum):
     CONTROL = 10
 
 
-class Curves(Section):
-    """CURVES section of SWMM input"""
-
-    SECTION_NAME = "[CURVES]"
-
-    def __init__(self):
-        Section.__init__(self)
-        self.comment = ";;Name          \tType      \tX-Value   \tY-Value   \n" + \
-                       ";;--------------\t----------\t----------\t----------"
-
-    def set_text(self, new_text):
-        self.__init__()
-        self.set_list_comment_plus_ids(new_text, Curve)
-
-
 class Curve(Section):
     """Defines data curves and their X,Y points"""
 

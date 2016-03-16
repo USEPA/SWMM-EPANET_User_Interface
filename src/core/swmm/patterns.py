@@ -1,5 +1,5 @@
 from enum import Enum
-from core.inputfile import Section
+
 
 class PatternType(Enum):
     """Pattern Type"""
@@ -7,21 +7,6 @@ class PatternType(Enum):
     DAILY = 2
     HOURLY = 3
     WEEKEND = 4
-
-
-class Patterns(Section):
-    """PATTERNS section of EPANET input"""
-
-    SECTION_NAME = "[PATTERNS]"
-
-    def __init__(self):
-        Section.__init__(self)
-        self.comment = ";;Name          \tType      \tMultipliers\n" + \
-                       ";;--------------\t----------\t-----------"
-
-    def set_text(self, new_text):
-        self.__init__()
-        self.set_list_comment_plus_ids(new_text, Pattern)
 
 
 class Pattern:

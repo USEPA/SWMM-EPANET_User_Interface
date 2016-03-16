@@ -1,20 +1,5 @@
 from core.inputfile import Section
 
-class SnowPacks(Section):
-    """LID_CONTROLS section of SWMM input"""
-
-    SECTION_NAME = "[SNOWPACKS]"
-
-    DEFAULT_COMMENT = ";;Name          \tSurface   \tParameters\n" + \
-                      ";;--------------\t----------\t----------"
-
-    def __init__(self):
-        Section.__init__(self)
-
-    def set_text(self, new_text):
-        self.__init__()
-        self.set_list_comment_plus_ids(new_text, SnowPack)
-
 
 class SnowPack(Section):
     """Snow pack parameters"""

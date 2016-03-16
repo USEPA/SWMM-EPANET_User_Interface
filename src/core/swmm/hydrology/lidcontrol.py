@@ -12,19 +12,6 @@ class LIDType(Enum):
     VS = 5
 
 
-class LIDControls(Section):
-    """LID_CONTROLS section of SWMM input"""
-
-    SECTION_NAME = "[LID_CONTROLS]"
-
-    DEFAULT_COMMENT = ";;Name          \tType/Layer\tParameters\n" + \
-                       ";;--------------\t----------\t----------"
-
-    def set_text(self, new_text):
-        self.__init__()
-        self.set_list_comment_plus_ids(new_text, LIDControl)
-
-
 class LIDControl(Section):
     """Defines scale-independent LID controls that can be deployed within subcatchments"""
 

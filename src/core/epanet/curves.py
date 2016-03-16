@@ -12,25 +12,13 @@ class CurveType(Enum):
     HEADLOSS = 4
 
 
-class Curves(Section):
-    """CURVES section of EPANET input"""
-
-    SECTION_NAME = "[CURVES]"
-
-    def __init__(self):
-        Section.__init__(self)
-        self.comment = ";ID              \tX-Value     \tY-Value"
-
-    def set_text(self, new_text):
-        self.set_list_comment_plus_ids(new_text, Curve)
-
-
 class Curve(Section):
     """Defines a data curve of X,Y points"""
 
     field_format = " {:16}\t{:12}\t{:12}\n"
 
     def __init__(self, new_text=None):
+        Section.__init__(self)
         self.curve_id = ''      # string
         """Curve ID Label"""
 

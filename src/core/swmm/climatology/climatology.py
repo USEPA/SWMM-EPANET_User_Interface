@@ -185,7 +185,7 @@ class Evaporation(Section):
 
 
 class WindSpeed:
-    """wind speed parameters"""
+    """wind speed parameters, stored as part of [TEMPERATURE] section"""
 
     SECTION_NAME = "WINDSPEED"
 
@@ -197,14 +197,17 @@ class WindSpeed:
         """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
 
     def get_text(self):
-        field_start = Temperature.first_field_format.format(WindSpeed.SECTION_NAME) + '\t' + self.source.name
+        inp = Temperature.first_field_format.format(WindSpeed.SECTION_NAME) + '\t' + self.source.name
         if self.source == WindSource.MONTHLY:
             if len(self.wind_speed_monthly) > 0:
-                return field_start + '\t' + '\t'.join(self.wind_speed_monthly)
+                inp += '\t' + '\t'.join(self.wind_speed_monthly)
             else:
-                return ''
+                inp = ''
         elif self.source == WindSource.FILE:
-            return field_start
+            pass
+        else:
+            inp = ''
+        return inp
 
     def set_text(self, new_text):
         self.__init__()
@@ -212,7 +215,7 @@ class WindSpeed:
         if len(fields) > 1:
             if fields[0].strip().upper() != self.SECTION_NAME:
                 raise ValueError("Could not set " + self.SECTION_NAME + " from: " + new_text)
-            self.units = WindSource[fields[1].upper()]
+            self.source = WindSource[fields[1].upper()]
         if len(fields) > 2 and self.units == WindSource.MONTHLY:
             self.wind_speed_monthly = fields[2:]
 

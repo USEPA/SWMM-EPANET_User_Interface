@@ -1,10 +1,11 @@
-from core.inputfile import SectionAsListOf
-from core.epanet.curves import Curves
+from core.inputfile import SectionAsListOf, SectionAsListGroupByID
+from core.epanet.curves import Curve
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
-from core.epanet.hydraulics.node import Demands
+from core.epanet.hydraulics.node import Demand
+from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
@@ -14,7 +15,7 @@ from core.epanet.options.energy import EnergyOptions
 from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
-from core.epanet.patterns import Patterns
+from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
 from core.inputfile import InputFile
@@ -25,26 +26,37 @@ class Project(InputFile):
 
     def __init__(self):
         """Initialize the sections of an EPANET input file.
-           Any sections not initialized here will be handled by the generic core.inputfile.Section class.
-           Each section is initialized with a """
+           Any sections not initialized here will be handled by the generic core.inputfile.Section class."""
         self.title = Title()
-        # self.junctions = [Junction]
+        self.junctions = SectionAsListOf("[JUNCTIONS]", Junction,
+                                         ";ID             \tElev  \tDemand\tPattern\n" +\
+                                         ";---------------\t------\t------\t-------")
         # [RESERVOIRS]
         # [TANKS]
         # self.pipes = [Pipe]
         # self.pumps = [Pump]
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
-        self.patterns = Patterns()
-        self.curves = Curves()
+        self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
+                                               ";ID              \tMultipliers")
+        self.curves = SectionAsListGroupByID("[CURVES]", Curve,
+                                             ";ID              \tX-Value     \tY-Value" +\
+                                             ";----------------\t------------\t-------")
         self.energy = EnergyOptions()
         # [STATUS]
         self.controls = SectionAsListOf("[CONTROLS]", Control)
         self.rules = SectionAsListOf("[RULES]", basestring)
-        self.demands = Demands()
-        # self.quality = ReadNodesInitialQuality
+        self.demands = SectionAsListOf("[DEMANDS]", Demand,
+                                       ";ID             \tDemand   \tPattern   \tCategory\n" +\
+                                       ";---------------\t---------\t----------\t--------")
+
+        self.quality = SectionAsListOf("[QUALITY]", Quality,
+                                       ";Node            \tInitQuality\n" +\
+                                       ";----------------\t-----------")
         self.reactions = Reactions()
-        self.sources = SectionAsListOf("[SOURCES]", Source)
+        self.sources = SectionAsListOf("[SOURCES]", Source,
+                                       ";Node            \tType        \tStrength    \tPattern\n" +\
+                                       ";----------------\t------------\t------------\t-------")
         # [MIXING]
         # self.options = MapOptions,
         self.options = Options()

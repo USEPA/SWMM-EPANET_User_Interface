@@ -24,6 +24,8 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmLID import frmLID
+from ui.SWMM.frmSnowPack import frmSnowPack
+from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 from core.swmm.project import Project
 
@@ -208,6 +210,12 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'LID Controls':
             self._frmLID = frmLID(self)
             self._frmLID.show()
+        if itm.data(0, 0) == 'Snow Packs':
+            self._frmSnowPack = frmSnowPack(self)
+            self._frmSnowPack.show()
+        if itm.data(0, 0) == 'Unit Hydrographs':
+            self._frmUnitHydrograph = frmUnitHydrograph(self)
+            self._frmUnitHydrograph.show()
 
     def proj_run_simulation(self):
         run = 0

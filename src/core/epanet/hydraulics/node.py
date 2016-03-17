@@ -221,13 +221,13 @@ class Demand(Section):
         self.junction_id = ''
         """Junction this demand applies to"""
 
-        self.base_demand = 0.0       # real
+        self.base_demand = "0.0"       # real, stored as string
         """Base demand (flow units)"""
 
-        self.demand_pattern = ""     # string
+        self.demand_pattern = ''     # string
         """Demand pattern ID (optional)"""
 
-        self.category = ""          # string
+        self.category = ''          # string
         """Name of demand category preceded by a semicolon (optional)"""
 
         if new_text:

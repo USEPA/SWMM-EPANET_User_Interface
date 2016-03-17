@@ -254,10 +254,10 @@ class Section(object):
             if self.comment:
                 # Compare with existing comment and decide whether to discard one or combine them
                 omit_chars = " ;\t-_"
-                this_stripped = ''.join(c for c in this_comment if c not in omit_chars).upper()
+                this_stripped = self.omit_these(this_comment, omit_chars).upper()
                 if len(this_stripped) == 0 and ("---" in this_comment) and not ("---" in self.comment):
                     self.comment += '\n'    # Add dashed line on a new line if self.comment does not already have one
-                elif this_stripped in ''.join(c for c in self.comment if c not in omit_chars).upper():
+                elif this_stripped in self.omit_these(self.comment, omit_chars).upper():
                     this_comment = ''       # Already have this comment, don't add it again
                 elif hasattr(self, "DEFAULT_COMMENT") and self.comment == self.DEFAULT_COMMENT:
                     self.comment = ''       # Replace default comment with the one we are reading
@@ -266,15 +266,39 @@ class Section(object):
             self.comment += this_comment
         if line.startswith('['):
             if hasattr(self, "SECTION_NAME") and line.strip().upper() != self.SECTION_NAME:
-                raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())   
+                raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
             else:
                 line = ''
         return line  # Return the portion of the line that was not in the comment and was not a section header
 
     @staticmethod
-    def match_without(string_one, string_two, omit_chars):
-        ''.join(c for c in string_one if c not in omit_chars) == \
-            ''.join(c for c in string_two if c not in omit_chars)
+    def omit_these(original, omit_chars):
+        """Return original with any characters in omit_chars removed.
+            Args:
+                original (str): Text to search
+                omit_chars (str): Characters to remove from original
+        """
+        return ''.join(c for c in original if c not in omit_chars)
+
+    @staticmethod
+    def match_omit(string_one, string_two, omit_chars):
+        """Compare strings after removing omit_chars from both. True if they match.
+            Args:
+                string_one (str): One string to compare
+                string_two (str): Other string to compare
+                omit_chars (str): Characters to remove from both strings before comparing
+        """
+        return Section.omit_these(string_one, omit_chars) == Section.omit_these(string_two, omit_chars)
+
+    @staticmethod
+    def match_omit_nocase(string_one, string_two, omit_chars):
+        """Compare strings after converting to upper case and removing omit_chars. True if they match.
+            Args:
+                string_one (str): One string to compare
+                string_two (str): Other string to compare
+                omit_chars (str): Characters to remove from both strings before comparing
+        """
+        return Section.match_omit(string_one.upper(), string_two.upper(), omit_chars.upper())
 
     def set_text_line(self, line):
         """Set part of this section from one line of text.
@@ -438,8 +462,13 @@ class SectionAsListGroupByID(SectionAsListOf):
         expected_comment_lines = len(self.comment.splitlines())
         for line_number in range(1, expected_comment_lines + 1):  # Parse initial comment lines into self.comment
             if str(lines[line_number]).startswith(';'):
-                self.set_comment_check_section(lines[1])
-                next_index += 1
+                # On multi-line initial comment, make sure last line is just dashes if the default comment was.
+                # Otherwise it is kept out of the section comment and will be assigned to go with an item.
+                if next_index < expected_comment_lines \
+                   or len(Section.omit_these(self.comment.splitlines()[line_number - 1], ";-_ \t")) > 0 \
+                   or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0:
+                    self.set_comment_check_section(lines[1])
+                    next_index += 1
             else:
                 break
 

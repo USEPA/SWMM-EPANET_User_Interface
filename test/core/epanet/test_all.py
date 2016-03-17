@@ -12,6 +12,7 @@ from test_backdrop import SimpleBackdropTest
 from test_project import ProjectTest
 from test_patterns import SimplePatternTest
 from test_curves import SimpleCurveTest
+from test_demands import SimpleDemandsTest
 
 my_suite = unittest.TestSuite()
 
@@ -29,6 +30,7 @@ my_suite.addTest(ProjectTest())
 # will need for later MTPs:
 my_suite.addTest(SimplePatternTest())
 my_suite.addTest(SimpleCurveTest())
+my_suite.addTest(SimpleDemandsTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

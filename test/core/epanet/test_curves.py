@@ -1,3 +1,4 @@
+from core.inputfile import Section
 from core.epanet import curves
 from core.epanet.project import Project
 import unittest
@@ -7,6 +8,7 @@ class SimpleCurveTest(unittest.TestCase):
 
     TEST_TEXT = ("[CURVES]",
                  ";ID\tX-Value\tY-Value",
+                 ";--\t-------\t-------",
                  ";PUMP: Pump Curve for Pump 9",
                  " 1\t1500\t250\t")
 
@@ -29,9 +31,9 @@ class SimpleCurveTest(unittest.TestCase):
 
         # Create new Project with this section populated from TEST_TEXT
         from_text = Project()
-        from_text.set_text('\n'.join(SimpleCurveTest.TEST_TEXT))
+        from_text.set_text('\n'.join(self.TEST_TEXT))
         project_curves = from_text.curves
-        assert project_curves.comment == SimpleCurveTest.TEST_TEXT[1]
+        assert Section.match_omit(project_curves.get_text(), '\n'.join(self.TEST_TEXT), " -;\t\n")
         assert len(project_curves.value) == 1
         this_curve = project_curves.value[0]
         assert this_curve.curve_id == '1'

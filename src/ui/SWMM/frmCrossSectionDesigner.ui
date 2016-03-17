@@ -37,11 +37,29 @@
            <height>100</height>
           </size>
          </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+         <property name="spacing">
+          <number>20</number>
+         </property>
+         <property name="gridSize">
+          <size>
+           <width>100</width>
+           <height>100</height>
+          </size>
+         </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
          </property>
          <property name="modelColumn">
           <number>0</number>
+         </property>
+         <property name="uniformItemSizes">
+          <bool>true</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -135,7 +153,7 @@
            </widget>
           </item>
           <item row="7" column="0" colspan="3">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="lblDimensions">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -160,7 +178,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="fraBottom">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -169,7 +187,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label_9">
+        <widget class="QLabel" name="lblBottom">
          <property name="text">
           <string>Open rectangular channel.  Sidewalls can be removed for 2-D modeling.</string>
          </property>

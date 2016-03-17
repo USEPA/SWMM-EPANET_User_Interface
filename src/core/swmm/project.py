@@ -90,7 +90,11 @@ class Project(InputFile):
         self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
         self.map = MapOptions()                 # MAP           map's bounding rectangle and units
         # self.raingages = [RainGage]             # RAINGAGES     rain gage information
-        # self.hydrographs = [UnitHydrograph]     # HYDROGRAPHS   unit hydrograph data used to construct RDII inflows
+        self.hydrographs = SectionAsListGroupByID("[HYDROGRAPHS]", UnitHydrograph,
+            ";;Hydrograph    \tRain Gage/Month \tResponse\tR       \tT       \tK       \tDmax    \tDrecov  \tDinit   \n"
+            ";;--------------\t----------------\t--------\t--------\t--------\t--------\t--------\t--------\t--------")
+        # unit hydrograph data used to construct RDII inflows
+
         self.evaporation = Evaporation()        # EVAPORATION   evaporation data
         self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
@@ -109,7 +113,7 @@ class Project(InputFile):
 
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer,
             ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat\n" +\
-            ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------"
+            ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------"
 )  # groundwater aquifer parameters
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
 

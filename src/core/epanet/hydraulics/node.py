@@ -47,7 +47,7 @@ class Node(Coordinates):
 class Quality(Section):
     """Initial water quality at a node."""
 
-    field_format = " {:19}\t{}"
+    field_format = "{:16}\t{}"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -168,14 +168,14 @@ class Tank(Node):
 class Source(Section):
     """Defines locations of water quality sources"""
 
-    field_format = ""
+    field_format = "{:16}\t{:14}\t{:12}\t{}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
 
         self.node_id = ''
 
-        self.source_type = SourceType.CONCENTRATION     # CONCENTRATION, MASS, FLOWPACED, or SETPOINT
+        self.source_type = SourceType.CONCENTRATION
         """Source type (CONCENTRATION, MASS, FLOWPACED, or SETPOINT)"""
 
         self.baseline_strength = '0.0'                  # real, but stored as string

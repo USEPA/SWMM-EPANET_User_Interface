@@ -52,12 +52,12 @@ class Project(InputFile):
                                        ";---------------\t---------\t----------\t--------")
 
         self.quality = SectionAsListOf("[QUALITY]", Quality,
-                                       ";Node            \tInitQuality\n"
-                                       ";----------------\t-----------")
+                                       ";Node           \tInitQuality\n"
+                                       ";---------------\t-----------")
         self.reactions = Reactions()
         self.sources = SectionAsListOf("[SOURCES]", Source,
-                                       ";Node            \tType        \tStrength    \tPattern\n"
-                                       ";----------------\t------------\t------------\t-------")
+                                       ";Node           \tType          \tStrength    \tPattern\n"
+                                       ";---------------\t--------------\t------------\t-------")
         # [MIXING]
         # self.options = MapOptions,
         self.options = Options()

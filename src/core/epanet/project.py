@@ -29,7 +29,7 @@ class Project(InputFile):
            Any sections not initialized here will be handled by the generic core.inputfile.Section class."""
         self.title = Title()
         self.junctions = SectionAsListOf("[JUNCTIONS]", Junction,
-                                         ";ID             \tElev  \tDemand\tPattern\n" +\
+                                         ";ID             \tElev  \tDemand\tPattern\n"
                                          ";---------------\t------\t------\t-------")
         # [RESERVOIRS]
         # [TANKS]
@@ -38,25 +38,26 @@ class Project(InputFile):
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
-                                               ";ID              \tMultipliers")
+                                               ";ID              \tMultipliers\n"
+                                               ";----------------\t-----------")
         self.curves = SectionAsListGroupByID("[CURVES]", Curve,
-                                             ";ID              \tX-Value     \tY-Value" +\
+                                             ";ID              \tX-Value     \tY-Value\n"
                                              ";----------------\t------------\t-------")
         self.energy = EnergyOptions()
         # [STATUS]
         self.controls = SectionAsListOf("[CONTROLS]", Control)
         self.rules = SectionAsListOf("[RULES]", basestring)
         self.demands = SectionAsListOf("[DEMANDS]", Demand,
-                                       ";ID             \tDemand   \tPattern   \tCategory\n" +\
+                                       ";ID             \tDemand   \tPattern   \tCategory\n"
                                        ";---------------\t---------\t----------\t--------")
 
         self.quality = SectionAsListOf("[QUALITY]", Quality,
-                                       ";Node            \tInitQuality\n" +\
-                                       ";----------------\t-----------")
+                                       ";Node           \tInitQuality\n"
+                                       ";---------------\t-----------")
         self.reactions = Reactions()
         self.sources = SectionAsListOf("[SOURCES]", Source,
-                                       ";Node            \tType        \tStrength    \tPattern\n" +\
-                                       ";----------------\t------------\t------------\t-------")
+                                       ";Node           \tType          \tStrength    \tPattern\n"
+                                       ";---------------\t--------------\t------------\t-------")
         # [MIXING]
         # self.options = MapOptions,
         self.options = Options()

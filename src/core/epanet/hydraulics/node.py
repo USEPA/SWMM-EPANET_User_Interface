@@ -47,7 +47,7 @@ class Node(Coordinates):
 class Quality(Section):
     """Initial water quality at a node."""
 
-    field_format = " {:19}\t{}"
+    field_format = "{:16}\t{}"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -168,14 +168,14 @@ class Tank(Node):
 class Source(Section):
     """Defines locations of water quality sources"""
 
-    field_format = ""
+    field_format = "{:16}\t{:14}\t{:12}\t{}\n"
 
     def __init__(self, new_text=None):
         Section.__init__(self)
 
         self.node_id = ''
 
-        self.source_type = SourceType.CONCENTRATION     # CONCENTRATION, MASS, FLOWPACED, or SETPOINT
+        self.source_type = SourceType.CONCENTRATION
         """Source type (CONCENTRATION, MASS, FLOWPACED, or SETPOINT)"""
 
         self.baseline_strength = '0.0'                  # real, but stored as string
@@ -221,13 +221,13 @@ class Demand(Section):
         self.junction_id = ''
         """Junction this demand applies to"""
 
-        self.base_demand = 0.0       # real
+        self.base_demand = "0.0"       # real, stored as string
         """Base demand (flow units)"""
 
-        self.demand_pattern = ""     # string
+        self.demand_pattern = ''     # string
         """Demand pattern ID (optional)"""
 
-        self.category = ""          # string
+        self.category = ''          # string
         """Name of demand category preceded by a semicolon (optional)"""
 
         if new_text:

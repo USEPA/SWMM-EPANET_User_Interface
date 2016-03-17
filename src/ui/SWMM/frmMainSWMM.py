@@ -28,6 +28,7 @@ from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCrossSection import frmCrossSection
+from ui.SWMM.frmInflows import frmInflows
 
 from core.swmm.project import Project
 
@@ -226,6 +227,11 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Conduits':
             self._frmCrossSection = frmCrossSection(self)
             self._frmCrossSection.show()
+
+        # the following items will respond to a click on a node form, not the tree diagram
+        if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Outfalls' or itm.data(0, 0) == 'Dividers' or itm.data(0, 0) == 'Storage Units':
+            self._frmInflows = frmInflows(self)
+            self._frmInflows.show()
 
     def proj_run_simulation(self):
         run = 0

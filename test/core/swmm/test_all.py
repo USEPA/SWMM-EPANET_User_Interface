@@ -14,6 +14,7 @@ from test_options_reporting import OptionsReportingTest
 from test_options_timesteps import OptionsTimestepTest
 # from test_curves import SimpleCurveTest
 # from test_energy import SimpleEnergyTest
+from test_aquifers import SimpleAquifersTest
 
 my_suite = unittest.TestSuite()
 
@@ -28,10 +29,11 @@ my_suite.addTest(OptionsReportingTest())
 my_suite.addTest(OptionsBackdropTest())
 my_suite.addTest(ProjectTest())
 
-
 # will need for later MTPs:
 # my_suite.addTest(SimplePatternTest())
 # my_suite.addTest(SimpleCurveTest())
+
+my_suite.addTest(SimpleAquifersTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

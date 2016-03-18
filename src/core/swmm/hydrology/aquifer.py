@@ -1,10 +1,29 @@
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Aquifer(Section):
     """Sub-surface groundwater area that models water infiltrating."""
 
     field_format = " {:16}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}"
+
+    #    attribute                      label                    default  hint
+    metadata = Metadata((
+        ("name",                        "Aquifer Name",          "",      "User-assigned aquifer name"),
+        ("porosity",                    "Porosity",              "0.5",   "Volume of voids / total soil volume"),
+        ("wilting_point",               "Wilting Point",         "0.15",  "Residual moisture content of a completely dry soil (fraction)"),
+        ("field_capacity",              "Field Capacity",        "0.30",  "Soil moisture content after all free water has drained off (fraction)"),
+        ("conductivity",                "Conductivity",          "5.0",   "Soil''s saturated hydraulic conductivity (in/hr or mm/hr)"),
+        ("conductivity_slope",          "Conductivity Slope",    "10.0",  "Slope of log(conductivity) v. soil moisture deficit curve"),
+        ("tension_slope",               "Tension Slope",         "15.0",  "Slope of soil tension v. soil moisture content curve"),
+        ("upper_evaporation_fraction",  "Upper Evap. Fraction",  "0.35",  "Fraction of total evaporation available for upper unsaturated zone"),
+        ("lower_evaporation_depth",     "Lower Evap. Depth",     "14.0",  "Depth into saturated zone over which evaporation can occur (ft or m)"),
+        ("lower_groundwater_loss_rate", "Lower GW Loss Rate",    "0.002", "Rate of seepage to deep groundwater when aquifer is completely saturated (in/hr or mm/hr)"),
+        ("bottom_elevation",            "Bottom Elevation",      "0.0",   "Elevation of the bottom of the aquifer (ft or m)"),
+        ("water_table_elevation",       "Water Table Elevation", "10.0",  "Initial water table elevation (ft or m)"),
+        ("unsaturated_zone_moisture",   "Unsat. Zone Moisture",  "0.30",  "Initial moisture content of the unsaturated upper zone (fraction)"),
+        ("upper_evaporation_pattern",   "Upper Evap. Pattern",   "",      "Monthly pattern of adjustments to upper evaporation fraction (optional)")
+    ))
 
     def __init__(self, new_text=None):
         Section.__init__(self)

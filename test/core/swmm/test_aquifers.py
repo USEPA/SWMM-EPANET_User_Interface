@@ -1,5 +1,6 @@
 from core.inputfile import Section
 from core.swmm.project import Project
+from core.swmm.hydrology.aquifer import Aquifer
 import unittest
 
 
@@ -52,3 +53,6 @@ class SimpleAquifersTest(unittest.TestCase):
         assert val.water_table_elevation == "12"
         assert val.unsaturated_zone_moisture == "13"
         assert val.upper_evaporation_pattern == "14"
+
+        assert Aquifer.metadata.label_of("name") == "Aquifer Name"
+        assert Aquifer.metadata.hint_of("name") == "User-assigned aquifer name"

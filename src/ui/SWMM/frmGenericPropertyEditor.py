@@ -1,3 +1,4 @@
+from enum import Enum
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
@@ -6,41 +7,52 @@ from core.swmm.patterns import PatternType
 from ui.SWMM.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 
 
-class cBox( QtGui.QComboBox ):
-    def __init__( self, *args, **kwargs ):
-        super( cBox, self ).__init__( *args, **kwargs)
+class cBox(QtGui.QComboBox):
+    def __init__(self, *args, **kwargs):
+        super(cBox, self).__init__(*args, **kwargs)
 
 
 class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
-    def __init__(self, parent=None):
+    def __init__(self, parent, edit_these):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # self.cboType.clear()
-        # ui.convenience.set_combo_items(core.swmm.patterns.PatternType, self.cboType)
+
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.tblGeneric.currentCellChanged.connect(self.tblGeneric_currentCellChanged)
-        self.set_from(parent.project)
+        if edit_these:
+            self.meta = edit_these[0].metadata
+        self.set_from(parent.project, edit_these)
         self._parent = parent
 
-    def set_from(self, project):
-        self.tblGeneric.setColumnCount(1)
-        self.tblGeneric.setRowCount(4)
-        self.tblGeneric.setVerticalHeaderLabels(("Aquifer Name","Porosity","Wilting Point","Upper Evap. Pattern"))
-
-        led = QtGui.QLineEdit("New Name")
-        self.tblGeneric.setItem(-1,1,QtGui.QTableWidgetItem(led.text()))
-
-        led = QtGui.QLineEdit(str("0.5"))
-        self.tblGeneric.setItem(0,1,QtGui.QTableWidgetItem(led.text()))
-
-        led = QtGui.QLineEdit(str("0.15"))
-        self.tblGeneric.setItem(1,1,QtGui.QTableWidgetItem(led.text()))
-
-        combobox = QtGui.QComboBox()
-        combobox.addItem('one')
-        combobox.addItem('two')
-        self.tblGeneric.setCellWidget(3, 0, combobox)
+    def set_from(self, project, edit_these):
+        if edit_these:
+            self.meta = edit_these[0].metadata
+            self.tblGeneric.horizontalHeader().hide()
+            self.tblGeneric.setColumnCount(len(edit_these))
+            self.tblGeneric.setRowCount(len(self.meta))
+            self.tblGeneric.setVerticalHeaderLabels(self.meta.labels())
+            column = 0
+            for edit_this in edit_these:
+                row = 0
+                for meta_item in self.meta:
+                    value = self.meta.value(meta_item, edit_this)
+                    if isinstance(value, Enum):
+                        combobox = QtGui.QComboBox()
+                        ui.convenience.set_combo_items(type(value), combobox)
+                        ui.convenience.set_combo(combobox, value)
+                        self.tblGeneric.setCellWidget(row, column, combobox)
+                    else:
+                        print "row " + str(row) + " col " + str(column) + " = " + str(value)
+                        self.tblGeneric.setItem(row, column, QtGui.QTableWidgetItem(value))
+                    row += 1
+                column += 1
+        else:
+            self.tblGeneric.setColumnCount(1)
+            self.tblGeneric.setRowCount(1)
+            self.tblGeneric.setVerticalHeaderLabels(("Error"))
+            led = QtGui.QLineEdit("No items selected to edit")
+            self.tblGeneric.setItem(-1,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
         self.close()
@@ -51,11 +63,4 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
     def tblGeneric_currentCellChanged(self):
         row = self.tblGeneric.currentRow()
         col = self.tblGeneric.currentColumn()
-        if row == 0:
-            self.lblNotes.setText("Text for row 0")
-        elif row == 1:
-            self.lblNotes.setText("Text for row 1")
-        elif row == 2:
-            self.lblNotes.setText("Text for row 2")
-        elif row == 3:
-            self.lblNotes.setText("Text for row 3")
+        self.lblNotes.setText(self.meta[row].hint)

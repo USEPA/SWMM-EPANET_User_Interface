@@ -13,7 +13,7 @@ class Aquifer(Section):
         ("porosity",                    "Porosity",              "0.5",   "Volume of voids / total soil volume"),
         ("wilting_point",               "Wilting Point",         "0.15",  "Residual moisture content of a completely dry soil (fraction)"),
         ("field_capacity",              "Field Capacity",        "0.30",  "Soil moisture content after all free water has drained off (fraction)"),
-        ("conductivity",                "Conductivity",          "5.0",   "Soil''s saturated hydraulic conductivity (in/hr or mm/hr)"),
+        ("conductivity",                "Conductivity",          "5.0",   "Soil's saturated hydraulic conductivity (in/hr or mm/hr)"),
         ("conductivity_slope",          "Conductivity Slope",    "10.0",  "Slope of log(conductivity) v. soil moisture deficit curve"),
         ("tension_slope",               "Tension Slope",         "15.0",  "Slope of soil tension v. soil moisture content curve"),
         ("upper_evaporation_fraction",  "Upper Evap. Fraction",  "0.35",  "Fraction of total evaporation available for upper unsaturated zone"),
@@ -26,61 +26,61 @@ class Aquifer(Section):
     ))
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-
-        self.name = ''
-        """User-assigned name."""
-
-        self.porosity = ''
-        """Volume of voids / total soil volume (volumetric fraction)."""
-
-        self.wilting_point = ''
-        """Soil moisture content at which plants cannot survive
-            (volumetric fraction). """
-
-        self.field_capacity = ''
-        """Soil moisture content after all free water has drained off
-            (volumetric fraction)."""
-
-        self.conductivity = ''
-        """Soil's saturated hydraulic conductivity (in/hr or mm/hr)."""
-
-        self.conductivity_slope = ''
-        """Average slope of log(conductivity) versus soil moisture deficit
-            (porosity minus moisture content) curve (unitless)."""
-
-        self.tension_slope = ''
-        """Average slope of soil tension versus soil moisture content curve
-            (inches or mm)."""
-
-        self.upper_evaporation_fraction = ''
-        """Fraction of total evaporation available for evapotranspiration
-            in the upper unsaturated zone."""
-
-        self.lower_evaporation_depth = ''
-        """Maximum depth into the lower saturated zone over which
-            evapotranspiration can occur (ft or m)."""
-
-        self.lower_groundwater_loss_rate = ''
-        """Rate of percolation from saturated zone to deep groundwater (in/hr or mm/hr)."""
-
-        self.bottom_elevation = ''
-        """Elevation of the bottom of the aquifer (ft or m)."""
-
-        self.water_table_elevation = ''
-        """Elevation of the water table in the aquifer
-            at the start of the simulation (ft or m)."""
-
-        self.unsaturated_zone_moisture = ''
-        """Moisture content of the unsaturated upper zone of the aquifer
-            at the start of the simulation (volumetric fraction)
-            (cannot exceed soil porosity)."""
-
-        self.upper_evaporation_pattern = ''
-        """ID of monthly pattern of adjustments to upper evaporation fraction (optional)"""
-
         if new_text:
-            self.set_text(new_text)
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.name = ''
+            """User-assigned name."""
+
+            self.porosity = ''
+            """Volume of voids / total soil volume (volumetric fraction)."""
+
+            self.wilting_point = ''
+            """Soil moisture content at which plants cannot survive
+                (volumetric fraction). """
+
+            self.field_capacity = ''
+            """Soil moisture content after all free water has drained off
+                (volumetric fraction)."""
+
+            self.conductivity = ''
+            """Soil's saturated hydraulic conductivity (in/hr or mm/hr)."""
+
+            self.conductivity_slope = ''
+            """Average slope of log(conductivity) versus soil moisture deficit
+                (porosity minus moisture content) curve (unitless)."""
+
+            self.tension_slope = ''
+            """Average slope of soil tension versus soil moisture content curve
+                (inches or mm)."""
+
+            self.upper_evaporation_fraction = ''
+            """Fraction of total evaporation available for evapotranspiration
+                in the upper unsaturated zone."""
+
+            self.lower_evaporation_depth = ''
+            """Maximum depth into the lower saturated zone over which
+                evapotranspiration can occur (ft or m)."""
+
+            self.lower_groundwater_loss_rate = ''
+            """Rate of percolation from saturated zone to deep groundwater (in/hr or mm/hr)."""
+
+            self.bottom_elevation = ''
+            """Elevation of the bottom of the aquifer (ft or m)."""
+
+            self.water_table_elevation = ''
+            """Elevation of the water table in the aquifer
+                at the start of the simulation (ft or m)."""
+
+            self.unsaturated_zone_moisture = ''
+            """Moisture content of the unsaturated upper zone of the aquifer
+                at the start of the simulation (volumetric fraction)
+                (cannot exceed soil porosity)."""
+
+            self.upper_evaporation_pattern = ''
+            """ID of monthly pattern of adjustments to upper evaporation fraction (optional)"""
 
     def get_text(self):
         inp = ''

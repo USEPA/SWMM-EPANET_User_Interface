@@ -459,15 +459,15 @@ class SectionAsListGroupByID(SectionAsListOf):
         lines = new_text.splitlines()
         self.set_comment_check_section(lines[0])                  # Check first line against section name
         next_index = 1
-        expected_comment_lines = len(self.comment.splitlines())
-        for line_number in range(1, expected_comment_lines + 1):  # Parse initial comment lines into self.comment
+        expected_comment_lines = self.comment.splitlines()
+        for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into self.comment
             if str(lines[line_number]).startswith(';'):
                 # On multi-line initial comment, make sure last line is just dashes if the default comment was.
                 # Otherwise it is kept out of the section comment and will be assigned to go with an item.
                 if next_index < expected_comment_lines \
-                   or len(Section.omit_these(self.comment.splitlines()[line_number - 1], ";-_ \t")) > 0 \
-                   or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0:
-                    self.set_comment_check_section(lines[1])
+                   or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0 \
+                   or len(Section.omit_these(expected_comment_lines[line_number - 1], ";-_ \t")) > 0:
+                    self.set_comment_check_section(lines[line_number])
                     next_index += 1
             else:
                 break

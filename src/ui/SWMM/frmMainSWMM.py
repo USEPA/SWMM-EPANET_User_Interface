@@ -32,7 +32,8 @@ from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmGenericPropertyEditor import  frmGenericPropertyEditor
 
 from core.swmm.project import Project
-
+from core.swmm.hydrology.aquifer import Aquifer
+from core.swmm.quality import Pollutant
 
 class frmMainSWMM(frmMain):
     def __init__(self, parent=None, *args):
@@ -224,9 +225,27 @@ class frmMainSWMM(frmMain):
             self._frmTransect = frmTransect(self)
             self._frmTransect.show()
         if itm.data(0, 0) == 'Aquifers':
-            self._frmGenericPropertyEditor = frmGenericPropertyEditor(self)
-            self._frmGenericPropertyEditor.setWindowTitle('SWMM Aquifer Editor')
-            self._frmGenericPropertyEditor.show()
+            edit_these = []
+            if isinstance(self.project.aquifers.value, list) and len(self.project.aquifers.value) > 0:
+                edit_these.extend(self.project.aquifers.value)
+            else:
+                new_aquifer = Aquifer()
+                new_aquifer.name = "NewAquifer"
+                edit_these.append(new_aquifer)
+            self._frmAquifers = frmGenericPropertyEditor(self, edit_these)
+            self._frmAquifers.setWindowTitle('SWMM Aquifer Editor')
+            self._frmAquifers.show()
+        if itm.data(0, 0) == 'Pollutants':
+            edit_these = []
+            if isinstance(self.project.pollutants.value, list) and len(self.project.pollutants.value) > 0:
+                edit_these.extend(self.project.pollutants.value)
+            else:
+                new_item = Pollutant()
+                new_item.name = "NewPollutant"
+                edit_these.append(new_item)
+            self._frmPollutants = frmGenericPropertyEditor(self, edit_these)
+            self._frmPollutants.setWindowTitle('SWMM Pollutant Editor')
+            self._frmPollutants.show()
 
         # the following items will respond to a click on a conduit form, not the tree diagram
         if itm.data(0, 0) == 'Conduits':

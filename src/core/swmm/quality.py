@@ -1,5 +1,6 @@
 from enum import Enum
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class BuildupFunction(Enum):
@@ -207,6 +208,22 @@ class Pollutant(Section):
     """Identifies the pollutants being analyzed"""
     field_format = " {:16}\t{:6}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:16}\t{:10}\t{:10}\t{:10}\n"
 
+    #    attribute                      label                    default  hint
+    metadata = Metadata((
+        ("name",                  "Name",          "",     "User-assigned name of the pollutant."),
+        ("units",                 "Units",         "MG/L", "Concentration units for the pollutant."),
+        ("rain_concentration",    "Rain Concen.",  "0.0",  "Concentration of the pollutant in rain water."),
+        ("gw_concentration",      "GW Concen.",    "0.0",  "Concentration of the pollutant in ground water."),
+        ("ii_concentration",      "I&I Concen.",   "0.0",  "Concentration of the pollutant in infiltration/inflow flow."),
+        ("dwf_concentration",     "DWF Concen.",   "0.0",  "Concentration of the pollutant in dry weather sanitary flow."),
+        ("initial_concentration", "Init. Concen.", "0.0",  "Initial concentration of the pollutant throughout the conveyance system."),
+        ("decay_coefficient",     "Decay Coeff.",  "0.0",  "First-order decay coefficient of the pollutant (1/days)."),
+        ("snow_only",             "Snow Only",     False,  "Does the pollutant build up only during snowfall events?"),
+        ("co_pollutant",          "Co-Pollutant",  "",     "Name of another pollutant to whose runoff concentration the current pollutant is dependent on."),
+        ("co_fraction",           "Co-Fraction",   "",     "Fraction of the co-pollutant''s runoff concentration that becomes the current pollutant''s runoff concentration.")
+    ))
+
+
     def __init__(self, new_text=None):
         Section.__init__(self)
         self.name = ''
@@ -227,6 +244,8 @@ class Pollutant(Section):
         self.dwf_concentration = '0.0'
         """float: Concentration of the pollutant in any dry weather sanitary flow"""
 
+        self.initial_concentration = ''
+        
         self.decay_coefficient = '0.0'
         """float: First-order decay coefficient of the pollutant (1/days)"""
 
@@ -240,8 +259,6 @@ class Pollutant(Section):
         self.co_fraction = '0.0'
         """float: Fraction of the co-pollutant's runoff concentration that contributes to the
             runoff concentration of the current pollutant"""
-
-        self.initial_concentration = ''
 
         if new_text:
             self.set_text(new_text)

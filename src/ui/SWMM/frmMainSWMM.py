@@ -23,6 +23,7 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmLID import frmLID
+from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
@@ -236,6 +237,11 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Outfalls' or itm.data(0, 0) == 'Dividers' or itm.data(0, 0) == 'Storage Units':
             self._frmInflows = frmInflows(self)
             self._frmInflows.show()
+
+        # the following items will respond to a click on a subcatchment form, not the tree diagram
+        if itm.data(0, 0) == 'Subcatchments':
+            self._frmLIDControls = frmLIDControls(self)
+            self._frmLIDControls.show()
 
     def proj_run_simulation(self):
         run = 0

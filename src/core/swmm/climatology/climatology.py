@@ -112,7 +112,7 @@ class Evaporation(Section):
         self.format = EvaporationFormat.UNSET
         """format used for evaporation data"""
 
-        self.constant = 0.0
+        self.constant = ''
         """a constant evaporation rate"""
 
         self.monthly = ()

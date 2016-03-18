@@ -18,7 +18,6 @@ from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
 from ui.SWMM.frmClimatology import  frmClimatology
-
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -29,6 +28,7 @@ from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
+from ui.SWMM.frmGenericPropertyEditor import  frmGenericPropertyEditor
 
 from core.swmm.project import Project
 
@@ -222,6 +222,10 @@ class frmMainSWMM(frmMain):
         if itm.data(0, 0) == 'Transects':
             self._frmTransect = frmTransect(self)
             self._frmTransect.show()
+        if itm.data(0, 0) == 'Aquifers':
+            self._frmGenericPropertyEditor = frmGenericPropertyEditor(self)
+            self._frmGenericPropertyEditor.setWindowTitle('SWMM Aquifer Editor')
+            self._frmGenericPropertyEditor.show()
 
         # the following items will respond to a click on a conduit form, not the tree diagram
         if itm.data(0, 0) == 'Conduits':

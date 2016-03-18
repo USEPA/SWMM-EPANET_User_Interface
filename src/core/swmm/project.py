@@ -122,7 +122,11 @@ class Project(InputFile):
                                                 ";;--------------\t----------\t----------")
         # subcatchment snow pack parameters
 
-        # self.junctions = [Junction]             # JUNCTIONS     junction node information
+        self.junctions = SectionAsListOf("[JUNCTIONS]", Junction,
+                                         ";;Name          \tElevation \tMaxDepth  \tInitDepth \tSurDepth  \tAponded\n"
+                                         ";;--------------\t----------\t----------\t----------\t----------\t----------")
+        # junction node information
+
         # self.outfalls = [Outfall] # OUTFALLS # outfall node information
         # self.dividers = [Divider] # DIVIDERS # flow divider node information
         # self.storage = [StorageUnit] # STORAGE # storage node information

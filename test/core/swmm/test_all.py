@@ -16,6 +16,7 @@ from test_options_timesteps import OptionsTimestepTest
 # from test_energy import SimpleEnergyTest
 from test_aquifers import SimpleAquifersTest
 from test_hydrographs import SimpleHydrographsTest
+from test_evaporation import SimpleEvaporationTest
 
 my_suite = unittest.TestSuite()
 
@@ -36,6 +37,7 @@ my_suite.addTest(ProjectTest())
 
 my_suite.addTest(SimpleAquifersTest())
 my_suite.addTest(SimpleHydrographsTest())
+my_suite.addTest(SimpleEvaporationTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

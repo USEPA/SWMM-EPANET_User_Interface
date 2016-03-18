@@ -1,11 +1,12 @@
 ﻿from enum import Enum
 from core.coordinates import Coordinates
+from core.inputfile import Section
 
 
 class Node(object):
     """A node in a SWMM model"""
     def __init__(self):
-        self.name = "Unnamed"
+        self.node_id = ''
         """Node Name"""
 
         self.centroid = Coordinates(0.0, 0.0)
@@ -33,32 +34,66 @@ class Node(object):
         """Invert elevation of the Node (feet or meters)"""
 
 
-class Junction(Node):
+class Junction(Section):
     """A Junction node"""
-    def __init__(self):
-        Node.__init__(self)
 
-        self.max_depth = 0.0
-        """Maximum depth of junction (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used. """
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
-        self.initial_depth = 0.0
-        """Depth of water at the junction at the start of the simulation
-            (feet or meters)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
 
-        self.surcharge_depth = 0.0
-        """Additional depth of water beyond the maximum depth that is
-            allowed before the junction floods (feet or meters).
-            This parameter can be used to simulate bolted manhole covers
-            or force main connections. """
+            self.node_id = ''
+            """name assigned to junction node"""
 
-        self.ponded_area = 0.0
-        """Area occupied by ponded water atop the junction after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists."""
+            self.elevation = ''
+            """Invert elevation of the Node (feet or meters)"""
+
+            self.max_depth = ''
+            """Maximum depth of junction (i.e., from ground surface to invert)
+                (feet or meters). If zero, then the distance from the invert to
+                the top of the highest connecting link will be used.  (Ymax)"""
+
+            self.initial_depth = ''
+            """Depth of water at the junction at the start of the simulation
+                (feet or meters) (Y0)"""
+
+            self.surcharge_depth = ''
+            """Additional depth of water beyond the maximum depth that is
+                allowed before the junction floods (feet or meters).
+                This parameter can be used to simulate bolted manhole covers
+                or force main connections. (Ysur)"""
+
+            self.ponded_area = ''
+            """Area occupied by ponded water atop the junction after flooding
+                occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+                option is turned on, a non-zero value of this parameter will allow
+                ponded water to be stored and subsequently returned to the
+                conveyance system when capacity exists. (Apond)"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return self.field_format.format(self.node_id, self.elevation,
+                                        self.max_depth, self.initial_depth, self.surcharge_depth, self.ponded_area)
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node_id = fields[0]
+        if len(fields) > 1:
+            self.elevation = fields[1]
+        if len(fields) > 2:
+            self.max_depth = fields[2]
+        if len(fields) > 3:
+            self.initial_depth = fields[3]
+        if len(fields) > 4:
+            self.surcharge_depth = fields[4]
+        if len(fields) > 5:
+            self.ponded_area = fields[5]
 
 
 class OutfallType(Enum):

@@ -162,10 +162,15 @@ class frmMainEPANET(frmMain):
 
         # the following items will respond to a click on a node form, not the tree diagram
         if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Reservoirs' or itm.data(0, 0) == 'Tanks':
+            # assume we're editing the first node for now
             self._frmSourcesQuality = frmSourcesQuality(self)
+            self._frmSourcesQuality.setWindowTitle('EPANET Source Editor for Node ' + '1')
+            self._frmSourcesQuality.set_from(self.project, '1')
             self._frmSourcesQuality.show()
         if itm.data(0, 0) == 'Junctions':
+            # assume we're editing the first node for now
             self._frmDemands = frmDemands(self)
+            self._frmDemands.set_from(self.project, 1)
             self._frmDemands.show()
 
         # mitm = itm

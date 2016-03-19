@@ -6,7 +6,7 @@ from core.inputfile import Section
 
 class SourceType(Enum):
     """Water Quality Source Type"""
-    CONCENTRATION = 1
+    CONCEN = 1
     MASS = 2
     FLOWPACED = 3
     SETPOINT = 4
@@ -175,8 +175,8 @@ class Source(Section):
 
         self.node_id = ''
 
-        self.source_type = SourceType.CONCENTRATION
-        """Source type (CONCENTRATION, MASS, FLOWPACED, or SETPOINT)"""
+        self.source_type = SourceType.CONCEN # TRATION
+        """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
 
         self.baseline_strength = '0.0'                  # real, but stored as string
         """Baseline source strength"""

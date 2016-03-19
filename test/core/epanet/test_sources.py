@@ -8,11 +8,11 @@ class SimpleSourcesTest(unittest.TestCase):
 
     TEST_TEXT = ("[SOURCES]",
                  ";Node         \tType         \tQuality \tPattern",
-                 " JUNCTION-9090\tCONCENTRATION\t8330    \tPattern-A",
+                 " JUNCTION-9090\tCONCEN       \t8330    \tPattern-A",
                  " JUNCTION-9091\tMASS         \t8331    \tPattern-B",
                  " JUNCTION-9092\tFLOWPACED    \t8332    \tPattern-C",
                  " JUNCTION-9093\tSETPOINT     \t8333    \tPattern-D",
-                 " JUNCTION-9094\tCONCENTRATION\t8334")
+                 " JUNCTION-9094\tCONCEN       \t8334")
 
     def runTest(self):
         from_text = Project()
@@ -23,7 +23,7 @@ class SimpleSourcesTest(unittest.TestCase):
         assert Section.match_omit(project_sources.get_text(), source_text, " \t-;\n")
 
         assert project_sources.value[0].node_id == "JUNCTION-9090"
-        assert project_sources.value[0].source_type == SourceType.CONCENTRATION
+        assert project_sources.value[0].source_type == SourceType.CONCEN
         assert project_sources.value[0].baseline_strength == "8330"
         assert project_sources.value[0].pattern_id == "Pattern-A"
 
@@ -43,7 +43,7 @@ class SimpleSourcesTest(unittest.TestCase):
         assert project_sources.value[3].pattern_id == "Pattern-D"
 
         assert project_sources.value[4].node_id == "JUNCTION-9094"
-        assert project_sources.value[4].source_type == SourceType.CONCENTRATION
+        assert project_sources.value[4].source_type == SourceType.CONCEN
         assert project_sources.value[4].baseline_strength == "8334"
         assert project_sources.value[4].pattern_id == ""
 

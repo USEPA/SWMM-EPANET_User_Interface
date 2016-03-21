@@ -1,10 +1,9 @@
-from enum import Enum
-import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
+import PyQt4.QtGui as QtGui
+from enum import Enum
+
 import ui.convenience
-from core.swmm.patterns import PatternType
-from ui.SWMM.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
+from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 
 
 class cBox(QtGui.QComboBox):

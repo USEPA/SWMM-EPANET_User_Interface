@@ -168,9 +168,10 @@ class frmMainEPANET(frmMain):
             self._frmSourcesQuality.set_from(self.project, '1')
             self._frmSourcesQuality.show()
         if itm.data(0, 0) == 'Junctions':
-            # assume we're editing the first node for now
+            # assume we're editing the first junction for now
             self._frmDemands = frmDemands(self)
-            self._frmDemands.set_from(self.project, 1)
+            self._frmDemands.setWindowTitle('EPANET Demands for Junction ' + '1')
+            self._frmDemands.set_from(self.project, '1')
             self._frmDemands.show()
 
         # mitm = itm

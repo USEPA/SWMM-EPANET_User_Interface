@@ -1,9 +1,10 @@
-import os, sys
+import os
+import sys
+
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from ui.ui_utility import *
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QMessageBox
@@ -29,7 +30,7 @@ from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
-from ui.SWMM.frmGenericPropertyEditor import  frmGenericPropertyEditor
+from ui.frmGenericPropertyEditor import  frmGenericPropertyEditor
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer

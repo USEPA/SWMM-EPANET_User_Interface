@@ -75,25 +75,25 @@ class Junction(Section):
     field_format = "{:16}\t{:6}\t{:6}\t{:7}"
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-        self.node_id = ''
-        """elevation of junction"""
-
-        self.elevation = '0.0'
-        """elevation of junction"""
-
-        self.base_demand_flow = ''
-        """Base demand flow, characteristic of all demands at this node"""
-
-        self.demand_pattern = ''
-        """Demand pattern ID, optional"""
-
-        self.emitter_coefficient = '0.0'
-        """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
-            the product of the flow coefficient and the junction pressure raised to power  """
-
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.node_id = ''
+            """elevation of junction"""
+
+            self.elevation = ''
+            """elevation of junction"""
+
+            self.base_demand_flow = ''
+            """Base demand flow, characteristic of all demands at this node"""
+
+            self.demand_pattern = ''
+            """Demand pattern ID, optional"""
+
+            self.emitter_coefficient = ''
+            """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
+                the product of the flow coefficient and the junction pressure raised to power  """
 
     def get_text(self):
         """format contents of this item for writing to file"""

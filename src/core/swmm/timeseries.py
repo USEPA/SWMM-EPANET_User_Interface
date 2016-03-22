@@ -47,9 +47,9 @@ class TimeSeries(Section):
             if len(check_split) != 3:
                 check_split = test_string.strip().split('-')
             if len(check_split) == 3 and ''.join(check_split).isdigit() and \
-               int(check_split[0]) > 0 and int(check_split[0]) <= 12 and \
-               int(check_split[1]) > 0 and int(check_split[1]) <= 31 and \
-               int(check_split[2]) > 0 and int(check_split[2]) <= 3000:
+               0 < int(check_split[0]) <= 12 and \
+               0 < int(check_split[1]) <= 31 and \
+               0 < int(check_split[2]) <= 3000:
                 return True
         return False
 

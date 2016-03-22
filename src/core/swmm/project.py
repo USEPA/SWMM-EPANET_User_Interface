@@ -1,6 +1,6 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 # from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Node, Junction, Outfall, Divider, StorageUnit
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
@@ -113,8 +113,9 @@ class Project(InputFile):
 
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer,
             ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat\n" +\
-            ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------"
-)  # groundwater aquifer parameters
+            ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------")
+        # groundwater aquifer parameters
+
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
 
         self.snowpacks = SectionAsListGroupByID("[SNOWPACKS]", SnowPack,

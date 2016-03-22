@@ -18,33 +18,33 @@ class Routing(Enum):
 class Subcatchment:
     """Subcatchment geometry, location, parameters, and time-series data"""
 
-    #    attribute                  label              default   hint
+    #    attribute                  label              default   eng, metric, hint
     metadata = Metadata((
-        ("name",                    "Name",            "",       "User-assigned name of subcatchment"),
-        ("centroid.X",              "X-Coordinate",    "",       "X coordinate of subcatchment centroid on map"),
-        ("centroid.Y",              "Y-Coordinate",    "",       "Y coordinate of subcatchment centroid on map"),
-        ("description",             "Description",     "",       "Optional comment or description"),
-        ("tag",                     "Tag",             "",       "Optional category or classification"),
-        ("rain_gage",               "Rain Gage",       "*",      "Rain gage assigned to subcatchment"),
-        ("outlet",                  "Outlet",          "*",      "Name of node or another subcatchment that receives runoff"),
-        ("area",                    "Area",            "5",      "Area of subcatchment"),
-        ("width",                   "Width",           "500",    "Width of overland flow path"),
-        ("percent_slope",           "% Slope",         "0.5",    "Average surface slope"),
-        ("percent_impervious",      "% Imperv",        "25",     "Percent of impervious area"),
-        ("n_imperv",                "N-Imperv",        "0.01",   "Mannings N for impervious area"),
-        ("n_perv",                  "N-Perv",          "0.1",    "Mannings N for pervious area"),
-        ("storage_depth_imperv",    "Dstore-Imperv",   "0.05",   "Depth of depression storage on impervious area"),
-        ("storage_depth_perv",      "Dstore-Perv",     "0.05",   "Depth of depression storage on pervious area"),
-        ("percent_zero_impervious", "%Zero-Imperv",    "25",     "Percent of impervious area with no depression storage"),
-        ("subarea_routing",         "Subarea Routing", "OUTLET", "Choice of internal routing between pervious and impervious sub-areas"),
-        ("percent_routed",          "Percent Routed",  "100",    "Percent of runoff routed between sub-areas"),
-        ("infiltration_parameters", "Infiltration",    "HORTON", "Infiltration parameters (click to edit)"),
-        ("groundwater",             "Groundwater",     "NO",     "Groundwater flow parameters (click to edit)"),
-        ("snow_pack",               "Snow Pack",       "",       "Name of snow pack parameter set (for snow melt analysis only)"),
-        ("LIDUsage",                "LID Controls",    "0",      "LID controls (click to edit)"),
-        ("coverages",               "Land Uses",       "0",      "Assignment of land uses to subcatchment (click to edit)"),
-        ("initial_loadings",        "Initial Buildup", "NONE",   "Initial pollutant buildup on subcatchment (click to edit)"),
-        ("curb_length",             "Curb Length",     "0",      "Curb length (if needed for pollutant buildup functions)")
+        ("name",                    "Name",            "",       '', '', "User-assigned name of subcatchment"),
+        ("centroid.X",              "X-Coordinate",    "",       '', '', "X coordinate of subcatchment centroid on map"),
+        ("centroid.Y",              "Y-Coordinate",    "",       '', '', "Y coordinate of subcatchment centroid on map"),
+        ("description",             "Description",     "",       '', '', "Optional comment or description"),
+        ("tag",                     "Tag",             "",       '', '', "Optional category or classification"),
+        ("rain_gage",               "Rain Gage",       "*",      '', '', "Rain gage assigned to subcatchment"),
+        ("outlet",                  "Outlet",          "*",      '', '', "Name of node or another subcatchment that receives runoff"),
+        ("area",                    "Area",            "5",      '', '', "Area of subcatchment"),
+        ("width",                   "Width",           "500",    '', '', "Width of overland flow path"),
+        ("percent_slope",           "% Slope",         "0.5",    '', '', "Average surface slope"),
+        ("percent_impervious",      "% Imperv",        "25",     '', '', "Percent of impervious area"),
+        ("n_imperv",                "N-Imperv",        "0.01",   '', '', "Mannings N for impervious area"),
+        ("n_perv",                  "N-Perv",          "0.1",    '', '', "Mannings N for pervious area"),
+        ("storage_depth_imperv",    "Dstore-Imperv",   "0.05",   '', '', "Depth of depression storage on impervious area"),
+        ("storage_depth_perv",      "Dstore-Perv",     "0.05",   '', '', "Depth of depression storage on pervious area"),
+        ("percent_zero_impervious", "%Zero-Imperv",    "25",     '', '', "Percent of impervious area with no depression storage"),
+        ("subarea_routing",         "Subarea Routing", "OUTLET", '', '', "Choice of internal routing between pervious and impervious sub-areas"),
+        ("percent_routed",          "Percent Routed",  "100",    '', '', "Percent of runoff routed between sub-areas"),
+        ("infiltration_parameters", "Infiltration",    "HORTON", '', '', "Infiltration parameters (click to edit)"),
+        ("groundwater",             "Groundwater",     "NO",     '', '', "Groundwater flow parameters (click to edit)"),
+        ("snow_pack",               "Snow Pack",       "",       '', '', "Name of snow pack parameter set (for snow melt analysis only)"),
+        ("LIDUsage",                "LID Controls",    "0",      '', '', "LID controls (click to edit)"),
+        ("coverages",               "Land Uses",       "0",      '', '', "Assignment of land uses to subcatchment (click to edit)"),
+        ("initial_loadings",        "Initial Buildup", "NONE",   '', '', "Initial pollutant buildup on subcatchment (click to edit)"),
+        ("curb_length",             "Curb Length",     "0",      '', '', "Curb length (if needed for pollutant buildup functions)")
     ))
 
     def __init__(self, name):

@@ -3,35 +3,35 @@ from core.coordinates import Coordinates
 from core.inputfile import Section
 
 
-class Node(object):
-    """A node in a SWMM model"""
-    def __init__(self):
-        self.node_id = ''
-        """Node Name"""
-
-        self.centroid = Coordinates(0.0, 0.0)
-        """Coordinates of Node location (x, y)"""
-
-        self.description = None
-        """Optional description of the Node"""
-
-        self.tag = None
-        """Optional label used to categorize or classify the Node"""
-
-        self.direct_inflows = {}
-        """List of external direct, dry weather, or RDII inflows"""
-
-        self.dry_weather_inflows = {}
-        """List of external direct, dry weather, or RDII inflows"""
-
-        self.rdi_inflows = {}
-        """List of external direct, dry weather, or RDII inflows"""
-
-        self.treatments = {}
-        """List of treatment functions for pollutants entering the node"""
-
-        self.invert_elev = None
-        """Invert elevation of the Node (feet or meters)"""
+# class Node(object):
+#     """A node in a SWMM model"""
+#     def __init__(self):
+#         self.node_id = ''
+#         """Node Name"""
+#
+#         self.centroid = Coordinates(0.0, 0.0)
+#         """Coordinates of Node location (x, y)"""
+#
+#         self.description = None
+#         """Optional description of the Node"""
+#
+#         self.tag = None
+#         """Optional label used to categorize or classify the Node"""
+#
+#         self.direct_inflows = {}
+#         """List of external direct, dry weather, or RDII inflows"""
+#
+#         self.dry_weather_inflows = {}
+#         """List of external direct, dry weather, or RDII inflows"""
+#
+#         self.rdi_inflows = {}
+#         """List of external direct, dry weather, or RDII inflows"""
+#
+#         self.treatments = {}
+#         """List of treatment functions for pollutants entering the node"""
+#
+#         self.invert_elev = None
+#         """Invert elevation of the Node (feet or meters)"""
 
 
 class Junction(Section):
@@ -114,7 +114,7 @@ class OutfallType(Enum):
     TIMESERIES = 5
 
 
-class Outfall(Node):
+class Outfall(Section):
     """A terminal node of the drainage system
         Defines a final downstream boundary under Dynamic Wave flow routing.
         For other types of flow routing they behave as a junction.
@@ -131,7 +131,7 @@ class Outfall(Node):
             presence of a flap gate to prevent backflow through the outfall.
     """
     def __init__(self):
-        Node.__init__(self)
+        Section.__init__(self)
 
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""
@@ -188,7 +188,7 @@ class Divider(Junction):
         and are treated as simple junctions under Dynamic Wave routing.
     """
     def __init__(self):
-        Node.__init__(self)
+        Junction.__init__(self)
 
         self.diverted_link = None
         """Name of link which receives the diverted flow."""
@@ -229,14 +229,6 @@ class Divider(Junction):
 
 
 class StorageCurveType(Enum):
-    """Type of flow divider. Choices are:
-        CUTOFF (diverts all inflow above a defined cutoff value),
-        OVERFLOW (diverts all inflow above the flow capacity of the
-                non-diverted link),
-        TABULAR (uses a Diversion Curve to express diverted flow as a
-                function of the total inflow),
-        WEIR (uses a weir equation to compute diverted flow).
-    """
     FUNCTIONAL = 1
     TABULAR = 2
 
@@ -249,57 +241,57 @@ class StorageUnit(Junction):
         surface area versus height.
     """
     def __init__(self):
-        Node.__init__(self)
-        self.max_depth = 0.0
+        Junction.__init__(self)
+        self.max_depth = ''
         """Maximum depth of node (i.e., from ground surface to invert)
             (feet or meters). If zero, then the distance from the invert to
             the top of the highest connecting link will be used. """
 
-        self.initial_depth = 0.0
+        self.initial_depth = ''
         """Depth of water at the node at the start of the simulation
             (feet or meters)."""
 
         self.storage_curve_type = StorageCurveType.TABULAR
         """StorageCurveType: FUNCTIONAL or TABULAR"""
 
-        self.storage_curve = None
+        self.storage_curve = ''
         """Storage Curve containing the relationship between
             surface area and storage depth"""
 
-        self.coefficient = 0.0
+        self.coefficient = ''
         """A-value in the functional relationship
             between surface area and storage depth."""
 
-        self.exponent = 0.0
+        self.exponent = ''
         """B-value in the functional relationship
             between surface area and storage depth."""
 
-        self.constant = 0.0
+        self.constant = ''
         """C-value in the functional relationship
             between surface area and storage depth."""
 
-        self.ponded_area = 0.0
+        self.ponded_area = ''
         """Area occupied by ponded water atop the node after flooding
             occurs (sq. feet or sq. meters). If the Allow Ponding simulation
             option is turned on, a non-zero value of this parameter will allow
             ponded water to be stored and subsequently returned to the
             conveyance system when capacity exists."""
 
-        self.evaporation_factor = 0.0
+        self.evaporation_factor = ''
         """The fraction of the potential evaporation from the storage units
             water surface that is actually realized."""
 
-        self.seepage_loss = None
+        self.seepage_loss = ''
         """The following Green-Ampt infiltration parameters are only used when the storage
             node is intended to act as an infiltration basin:"""
 
-        self.seepage_suction_head = 0.0
+        self.seepage_suction_head = ''
         """Soil capillary suction head (in or mm)."""
 
-        self.seepage_hydraulic_conductivity = 0.0
+        self.seepage_hydraulic_conductivity = ''
         """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
-        self.seepage_initial_moisture_deficit = 0.0
+        self.seepage_initial_moisture_deficit = ''
         """Initial soil moisture deficit (volume of voids / total volume)."""
 
 
@@ -311,26 +303,26 @@ class DirectInflowType(Enum):
 class DirectInflow:
     """Defines characteristics of direct inflows added directly into a node"""
     def __init__(self):
-        self.constituent = ""
+        self.constituent = ''
         """str: Name of constituent"""
 
-        self.timeseries = ""
+        self.timeseries = ''
         """str: Name of the time series that contains inflow data for the selected constituent"""
 
         self.format = DirectInflowType.CONCENTRATION
         """DirectInflowType: Type of inflow data contained in the time series, concentration or mass flow rate"""
 
-        self.conversion_factor = 0.0
+        self.conversion_factor = ''
         """float: Numerical factor used to convert the units of pollutant mass flow rate in the time series data
         into concentration mass units per second"""
 
-        self.scale_factor = 0.0
+        self.scale_factor = ''
         """float: Multiplier used to adjust the values of the constituent's inflow time series"""
 
-        self.baseline = 0.0
+        self.baseline = ''
         """float: Value of the constant baseline component of the constituent's inflow"""
 
-        self.baseline_pattern = ""
+        self.baseline_pattern = ''
         """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
 
 

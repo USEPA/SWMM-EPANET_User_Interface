@@ -55,4 +55,4 @@ class SimpleAquifersTest(unittest.TestCase):
         assert val.upper_evaporation_pattern == "14"
 
         assert Aquifer.metadata.label_of("name") == "Aquifer Name"
-        assert Aquifer.metadata.hint_of("name") == "User-assigned aquifer name"
+        assert Aquifer.metadata.hint_of("name") == "User-assigned aquifer name."

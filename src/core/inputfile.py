@@ -200,7 +200,7 @@ class Section(object):
                 text_list.append(self.name)
             if self.comment:
                 text_list.append(self.comment)
-                if not hasattr(self, "DEFAULT_COMMENT") or self.comment != self.DEFAULT_COMMENT:
+                if self.comment != getattr(self, "DEFAULT_COMMENT", ''):
                     found_any = True
             for label, attr_name in self.field_dict.items():
                 attr_line = self._get_attr_line(label, attr_name)

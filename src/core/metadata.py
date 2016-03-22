@@ -2,26 +2,40 @@ from enum import Enum
 
 
 class MetadataItem:
-    """Metadata about one attribute
-        attribute: name of attribute
-        label:     how to label this attribute in a user interface
-        default:   default value for this attribute
-        hint:      description of this attribute
+    """Metadata about an attribute.
+        attribute:     attribute name in the python object
+        label:         how to label this attribute in a user interface
+        default:       default value for this attribute
+        units_english: units label when using English units
+        units_metric:  units label when using Metric units
+        hint:          description to display when editing this attribute
     """
     def __init__(self, attr_specification):
-        (self.attribute, self.label, self.default, self.hint) = attr_specification
+        (self.attribute,
+         self.label,
+         self.default,
+         self.units_english,
+         self.units_metric,
+         self.hint) = attr_specification
 
     def __str__(self):
         """Override default method to return string representation"""
-        return '(' + ", ".join((self.attribute, self.label, self.default, self.hint)) + ')'
+        return '(' + ", ".join((self.attribute,
+                                self.label,
+                                self.default,
+                                self.units_english,
+                                self.units_metric,
+                                self.hint)) + ')'
 
 
 class Metadata(list):
-    """List of MetadataItem items about a collection of attributes"""
+    """List of MetadataItem items about a set of attributes.
+    Useful when populating a form for editing these attributes."""
 
-    empty_meta_item = MetadataItem(('', '', '', ''))
+    empty_meta_item = MetadataItem(('', '', '', '', '', ''))  # a blank MetadataItem to use when one is not found
 
     def __init__(self, specification):
+        list.__init__(self)
         for attr_spec in specification:
             self.append(MetadataItem(attr_spec))
 

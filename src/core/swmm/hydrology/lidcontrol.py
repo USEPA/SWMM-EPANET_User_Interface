@@ -193,7 +193,7 @@ class LIDControl(Section):
                         raise ValueError("LIDControl.set_text: Unknown LID type in second field: " + line)
                 elif len(fields) > 2:
                     if fields[0] != self.control_name:
-                        raise ValueError("LIDControl.set_text: LID name: " +  fields[0] + " != " + self.control_name)
+                        raise ValueError("LIDControl.set_text: LID name: {} != {}".format(fields[0], self.control_name))
                     check_type = fields[1].upper()
                     found_type = False
                     for field_names in LIDControl.LineTypes:

@@ -25,6 +25,7 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         self._parent = parent
 
     def set_from(self, project, edit_these):
+        self.edit_these = edit_these
         if edit_these:
             self.meta = edit_these[0].metadata
             self.tblGeneric.horizontalHeader().hide()
@@ -36,13 +37,17 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
                 row = 0
                 for meta_item in self.meta:
                     value = self.meta.value(meta_item, edit_this)
+                    if isinstance(value, bool):
+                        checkbox = QtGui.QCheckBox()
+                        checkbox.setChecked(value)
+                        self.tblGeneric.setCellWidget(row, column, checkbox)
                     if isinstance(value, Enum):
                         combobox = QtGui.QComboBox()
                         ui.convenience.set_combo_items(type(value), combobox)
                         ui.convenience.set_combo(combobox, value)
                         self.tblGeneric.setCellWidget(row, column, combobox)
                     else:
-                        print "row " + str(row) + " col " + str(column) + " = " + str(value)
+                        # print "row " + str(row) + " col " + str(column) + " = " + str(value)
                         self.tblGeneric.setItem(row, column, QtGui.QTableWidgetItem(value))
                     row += 1
                 column += 1
@@ -54,6 +59,39 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
             self.tblGeneric.setItem(-1,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
+        # column = 1
+        # for edit_this in self.edit_these:
+        #     row = 0
+        #     label_item = self.tblGeneric.verticalHeaderItem(row)
+        #     if label_item:
+        #         label = label_item.text()
+        #         if label:
+        #             for meta_item in self.meta:
+        #                 if meta_item.label == label:
+        #                     old_value = self.meta.value(meta_item, edit_this)
+        #                     new_value = None
+        #                     if isinstance(old_value, bool):
+        #                         checkbox = self.tblGeneric.item(row, column)
+        #                         if isinstance(checkbox, QtGui.QCheckBox):
+        #                             new_value = checkbox.isChecked()
+        #                     if isinstance(old_value, Enum):
+        #                         combobox = self.tblGeneric.item(row, column)
+        #                         if isinstance(checkbox, QtGui.QComboBox):
+        #                             try:
+        #                                 new_value = type(old_value)[combobox.currentText()]
+        #                             except Exception as ex:
+        #                                 print "Could not interpret " + str(combobox.currentText()) + " as Enum " + str(type(old_value))
+        #                     else:
+        #                         widget = self.tblGeneric.item(row, column)
+        #                         if widget:
+        #                             new_value = widget.text()
+        #                     if new_value is not None:
+        #                         try:
+        #                             setattr(edit_this, meta_item.attribute, new_value)
+        #                         except Exception as ex:
+        #                             print "Could not set " + str(meta_item.attribute) + " to " + str(widget.text())
+        #                     row += 1
+        #     column += 1
         self.close()
 
     def cmdCancel_Clicked(self):

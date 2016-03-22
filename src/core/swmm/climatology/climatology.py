@@ -216,7 +216,7 @@ class WindSpeed:
             if fields[0].strip().upper() != self.SECTION_NAME:
                 raise ValueError("Could not set " + self.SECTION_NAME + " from: " + new_text)
             self.source = WindSource[fields[1].upper()]
-        if len(fields) > 2 and self.units == WindSource.MONTHLY:
+        if len(fields) > 2 and self.source == WindSource.MONTHLY:
             self.wind_speed_monthly = fields[2:]
 
 

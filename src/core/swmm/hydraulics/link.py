@@ -1,4 +1,6 @@
 from enum import Enum
+from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Link(object):
@@ -188,65 +190,140 @@ class Outlet(Link):
 
 class CrossSectionShape(Enum):
     NotSet = 0
-    Circular = 1                  # Full Height
-    CircularForceMain = 2         # Full Height, Roughness
-    FilledCircular = 3            # Full Height, Filled Depth
-    RectangularClosed = 4         # Full Height, Width
-    RectangularOpen = 5           # Full Height, Width
-    Trapezoidal = 6               # Full Height, Base Width, Side Slopes
-    Triangular = 7                # Full Height, Top Width
-    HorizontalEllipse = 8         # Full Height, Max. Width
-    VerticalEllipse = 9           # Full Height, Max. Width
-    Arch = 10                     # Full Height, Max. Width
-    Parabolic = 11                # Full Height, Top Width
-    Power = 12                    # Full Height, Top Width, Exponent
-    RectangularTriangular = 13    # Full Height, Top Width, Triangle Height
-    RectangularRound = 14         # Full Height, Top Width, Bottom Radius
-    ModifiedBaskethandle = 15     # Full Height, Bottom Width, Top Radius
-    Egg = 16                      # Full Height
-    Horseshoe = 17                # Full Height Gothic Full Height
-    Catenary = 18                 # Full Height
-    SemiElliptical = 19           # Full Height
-    Baskethandle = 20             # Full Height
-    SemiCircular = 21             # Full Height
-    IrregularNaturalChannel = 22  # TransectCoordinates
-    CustomClosedShape = 23        # Full Height, ShapeCurveCoordinates
+    CIRCULAR = 1            # Full Height = Diameter
+    FORCE_MAIN = 2          # Full Height = Diameter, Roughness
+    FILLED_CIRCULAR = 3     # Full Height = Diameter, Filled Depth
+    RECT_CLOSED = 4         # Rectangular: Full Height, Top Width
+    RECT_OPEN = 5           # Rectangular: Full Height, Top Width
+    TRAPEZOIDAL = 6         # Full Height, Base Width, Side Slopes
+    TRIANGULAR = 7          # Full Height, Top Width
+    HORIZ_ELLIPSE = 8       # Full Height, Max. Width
+    VERT_ELLIPSE = 9        # Full Height, Max. Width
+    ARCH = 10               # Size Code or Full Height, Max. Width
+    PARABOLIC = 11          # Full Height, Top Width
+    POWER = 12              # Full Height, Top Width, Exponent
+    RECT_TRIANGULAR = 13    # Full Height, Top Width, Triangle Height
+    RECT_ROUND = 14         # Full Height, Top Width, Bottom Radius
+    MODBASKETHANDLE = 15    # Full Height, Bottom Width, Top Radius
+    EGG = 16                # Full Height
+    HORSESHOE = 17          # Full Height Gothic Full Height
+    GOTHIC = 18             # Full Height
+    CATENARY = 19           # Full Height
+    SEMIELLIPTICAL = 19     # Full Height
+    BASKETHANDLE = 20       # Full Height
+    SEMICIRCULAR = 21       # Full Height
+    IRREGULAR = 22          # TransectCoordinates (Natural Channel)
+    CUSTOM = 23             # Full Height, ShapeCurveCoordinates
 
 
-class CrossSection:
+class CrossSection(Section):
     """A cross section of a Conduit, Orifice, or Weir
 
     Attributes:
-        shape (CrossSectionShape): Description of `shape`.
+        link (str): name of the conduit, orifice, or weir this is a cross-section of.
+        shape (CrossSectionShape): name of cross-section shape.
+        geometry1 (str): full height of the cross-section (ft or m)
+        geometry2 (str): auxiliary parameters (width, side slopes, etc.)
+        geometry3 (str): auxiliary parameters (width, side slopes, etc.)
+        geometry4 (str): auxiliary parameters (width, side slopes, etc.)
+        barrels (str): number of barrels (i.e., number of parallel pipes of equal size, slope, and
+                       roughness) associated with a conduit (default is 1).
+        culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
+        curve (str): associated Shape Curve ID that defines how width varies with depth.
+        transect (str): name of cross-section geometry of an irregular channel
     """
-    def __init__(self, shape):
-        self.shape = shape  # class CrossSectionShape
-        """cross-section shape"""
 
-        self.geometry1 = 0.0
-        """float: full height of the cross-section (ft or m)"""
+    field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
+    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}"
+    field_format_irregular = "{:16}\t{:12}\t{:16}"
 
-        self.geometry2 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
 
-        self.geometry3 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+            self.link = ''
+            """name of the conduit, orifice, or weir this is a cross-section of."""
 
-        self.geometry4 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+            self.shape = CrossSectionShape.NotSet
+            """cross-section shape"""
 
-        self.barrels = 0.0
-        """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
-        roughness) associated with a conduit (default is 1)."""
+            self.geometry1 = ''
+            """float as str: full height of the cross-section (ft or m)"""
 
-        self.culvert_code = None
-        """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
+            self.geometry2 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.curve = ""
-        """str: associated Shape Curve ID that defines how width varies with depth."""
+            self.geometry3 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.transect = Transect(None)
-        """ cross-section geometry of an irregular channel"""
+            self.geometry4 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
+
+            self.barrels = ''
+            """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
+            roughness) associated with a conduit (default is 1)."""
+
+            self.culvert_code = ''
+            """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
+
+            self.curve = ''
+            """str: associated Shape Curve ID that defines how width varies with depth."""
+
+            self.transect = ''
+            """str: name of cross-section geometry of an irregular channel"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        if self.shape == CrossSectionShape.CUSTOM:
+            inp += self.field_format_custom.format(self.link, self.shape.name, self.geometry1, self.curve, self.barrels)
+        elif self.shape == CrossSectionShape.IRREGULAR:
+            inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
+        else:
+            inp += self.field_format_shape.format(self.link,
+                                                  self.shape.name,
+                                                  self.geometry1,
+                                                  self.geometry2,
+                                                  self.geometry3,
+                                                  self.geometry4,
+                                                  self.barrels,
+                                                  self.culvert_code)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.link = fields[0]
+        if len(fields) > 1:
+            self.setattr_keep_type("shape", fields[1])
+        if self.shape == CrossSectionShape.CUSTOM:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.curve = fields[3]
+            if len(fields) > 4:
+                self.barrels = fields[4]
+        elif self.shape == CrossSectionShape.IRREGULAR:
+            if len(fields) > 2:
+                self.transect = fields[2]
+        else:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.geometry2 = fields[3]
+            if len(fields) > 4:
+                self.geometry3 = fields[4]
+            if len(fields) > 5:
+                self.geometry4 = fields[5]
+            if len(fields) > 6:
+                self.barrels = fields[6]
+            if len(fields) > 7:
+                self.culvert_code = fields[7]
 
 
 class Transect:

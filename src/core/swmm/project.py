@@ -102,24 +102,24 @@ class Project(InputFile):
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
 
         self.lid_controls = SectionAsListGroupByID("[LID_CONTROLS]", LIDControl,
-                                                   ";;Name          \tType/Layer\tParameters\n" + \
+                                                   ";;Name          \tType/Layer\tParameters\n"
                                                    ";;--------------\t----------\t----------")
         # low impact development control information
 
         self.lid_usage = SectionAsListOf("[LID_USAGE]", LIDUsage,
-            ";;Subcatchment  \tLID Process     \tNumber \tArea      \tWidth     \tInitSat   \tFromImp   \tToPerv    \tRptFile                 \tDrainTo\n" +\
+            ";;Subcatchment  \tLID Process     \tNumber \tArea      \tWidth     \tInitSat   \tFromImp   \tToPerv    \tRptFile                 \tDrainTo\n"
             ";;--------------\t----------------\t-------\t----------\t----------\t----------\t----------\t----------\t------------------------\t----------------")
         # assignment of LID controls to subcatchments
 
         self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer,
-            ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat\n" +\
+            ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat\n"
             ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------")
         # groundwater aquifer parameters
 
         # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
 
         self.snowpacks = SectionAsListGroupByID("[SNOWPACKS]", SnowPack,
-                                                ";;Name          \tSurface   \tParameters\n" + \
+                                                ";;Name          \tSurface   \tParameters\n"
                                                 ";;--------------\t----------\t----------")
         # subcatchment snow pack parameters
 
@@ -136,28 +136,33 @@ class Project(InputFile):
         # self.orifices = [Orifice] # ORIFICES # orifice link information
         # self.weirs = [Weir] # WEIRS # weir link information
         # self.outlets = [Outlet] # OUTLETS # outlet link information
-        # self.xsections = [CrossSection] # XSECTIONS # conduit, orifice, and weir cross-section geometry
+
+        self.xsections = SectionAsListOf("[XSECTIONS]", CrossSection,
+            ";;Link          \tShape       \tGeom1           \tGeom2     \tGeom3     \tGeom4     \tBarrels   \tCulvert   \n"
+            ";;--------------\t------------\t----------------\t----------\t----------\t----------\t----------\t----------")
+        # conduit, orifice, and weir cross-section geometry
+
         # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
         self.controls = SectionAsListOf("[CONTROLS]", basestring)  # rules that control pump and regulator operation
         self.landuses = SectionAsListOf("[LANDUSES]", Landuse,
-                                        ";;              \tSweeping  \tFraction  \tLast\n" +\
-                                        ";;Name          \tInterval  \tAvailable \tSwept\n" +\
+                                        ";;              \tSweeping  \tFraction  \tLast\n"
+                                        ";;Name          \tInterval  \tAvailable \tSwept\n"
                                         ";;--------------\t----------\t----------\t----------")
         # land use categories
 
         self.buildup = SectionAsListOf("[BUILDUP]", Buildup,
-            ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tCoeff3    \tPer Unit\n" +\
+            ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tCoeff3    \tPer Unit\n"
             ";;--------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # buildup functions for pollutants and land uses
 
         self.washoff = SectionAsListOf("[WASHOFF]", Washoff,
-            ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tSweepRmvl \tBmpRmvl\n" +\
+            ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tSweepRmvl \tBmpRmvl\n"
             ";;--------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # washoff functions for pollutants and land uses
 
         self.pollutants = SectionAsListOf("[POLLUTANTS]", Pollutant,
-            ";;Name          \tUnits \tCrain     \tCgw       \tCrdii     \tKdecay    \tSnowOnly  \tCo-Pollutant    \tCo-Frac   \tCdwf      \tCinit\n" +\
+            ";;Name          \tUnits \tCrain     \tCgw       \tCrdii     \tKdecay    \tSnowOnly  \tCo-Pollutant    \tCo-Frac   \tCdwf      \tCinit\n"
             ";;--------------\t------\t----------\t----------\t----------\t----------\t----------\t----------------\t----------\t----------\t----------")
         # pollutant information
 
@@ -167,19 +172,19 @@ class Project(InputFile):
         # self.dwf = [Section]                    # DWF           baseline dry weather sanitary inflow at nodes
 
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
-                                               ";;Name          \tType      \tMultipliers\n" + \
+                                               ";;Name          \tType      \tMultipliers\n"
                                                ";;--------------\t----------\t-----------")
         # PATTERNS      periodic variation in dry weather inflow
 
         # self.rdii = [Section]                   # RDII          rainfall-dependent I/I information at nodes
         # self.loadings = [Section]               # LOADINGS      initial pollutant loads on subcatchments
         self.curves = SectionAsListGroupByID("[CURVES]", Curve,
-                                             ";;Name          \tType      \tX-Value   \tY-Value   \n" + \
+                                             ";;Name          \tType      \tX-Value   \tY-Value   \n"
                                              ";;--------------\t----------\t----------\t----------")
         # CURVES        x-y tabular data referenced in other sections
 
         self.timeseries = SectionAsListGroupByID("[TIMESERIES]", TimeSeries,
-                                                 ";;Name          \tDate      \tTime      \tValue\n" +\
+                                                 ";;Name          \tDate      \tTime      \tValue\n"
                                                  ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 

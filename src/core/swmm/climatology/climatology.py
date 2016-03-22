@@ -77,6 +77,7 @@ class Temperature(Section):
                 if len(fields) > 1:
                     if fields[0].upper() == "TIMESERIES":
                         self.timeseries = ' '.join(fields[1:])
+                        self.source = TemperatureSource.TIMESERIES
                     elif fields[0].upper() == "FILE":
                         # Check for optional start date as last field
                         if TimeSeries.is_date(fields[-1]):
@@ -84,6 +85,7 @@ class Temperature(Section):
                             self.filename = ' '.join(fields[1:-1])
                         else:
                             self.filename = ' '.join(fields[1:])
+                        self.source = TemperatureSource.FILE
                     elif fields[0].upper() == WindSpeed.SECTION_NAME:
                         self.wind_speed = WindSpeed()
                         self.wind_speed.set_text(line)

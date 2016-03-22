@@ -326,18 +326,87 @@ class CrossSection(Section):
                 self.culvert_code = fields[7]
 
 
-class Transect:
-    """"""
-    def __init__(self, name):
-        self.name = name
+class Transects(Section):
+
+    SECTION_NAME = "[TRANSECTS]"
+
+    def get_text(self):
+        text_list = [self.name]
+        if self.comment:
+            text_list.append(self.comment)
+        for item in self.value:
+            text_list.append(str(item))
+        return '\n'.join(text_list)
+
+
+class Transect(Section):
+    """the cross-section geometry of a natural channel or conduit with irregular shapes"""
+    def __init__(self):
+        self.name = ''
         """Transect Name"""
 
         self.description = None
         """Optional description of the Transect"""
 
-        self.station_elevation_data_grid = None
-        self.roughness = 0.0
-        self.bank_stations = None
-        self.stations_modifier = None
-        self.elevations_modifier = None
-        self.meander_modifier = None
+        self.station_elevation = []  # list of (station, elevation) pairs
+        self.n_left = ''  # Manning’s n of right overbank portion of channel (use 0 if no change from previous NC line).
+        self.n_right = ''  # Manning’s n of right overbank portion of channel (use 0 if no change from previous NC line.
+        self.n_channel = ''  # Manning’s n of main channel portion of channel (use 0 if no change from previous NC line.
+        self.overbank_left = ''   # station position which ends   the left  overbank portion of the channel (ft or m).
+        self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
+        self.stations_modifier = ''  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
+        self.elevations_modifier = ''  # amount added (or subtracted) from the elevation of each station (ft or m).
+        self.meander_modifier = ''  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        if self.description:
+            inp = self.description + '\n'
+        if self.shape == CrossSectionShape.CUSTOM:
+            inp += self.field_format_custom.format(self.link, self.shape.name, self.geometry1, self.curve, self.barrels)
+        elif self.shape == CrossSectionShape.IRREGULAR:
+            inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
+        else:
+            inp += self.field_format_shape.format(self.link,
+                                                  self.shape.name,
+                                                  self.geometry1,
+                                                  self.geometry2,
+                                                  self.geometry3,
+                                                  self.geometry4,
+                                                  self.barrels,
+                                                  self.culvert_code)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.link = fields[0]
+        if len(fields) > 1:
+            self.setattr_keep_type("shape", fields[1])
+        if self.shape == CrossSectionShape.CUSTOM:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.curve = fields[3]
+            if len(fields) > 4:
+                self.barrels = fields[4]
+        elif self.shape == CrossSectionShape.IRREGULAR:
+            if len(fields) > 2:
+                self.transect = fields[2]
+        else:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.geometry2 = fields[3]
+            if len(fields) > 4:
+                self.geometry3 = fields[4]
+            if len(fields) > 5:
+                self.geometry4 = fields[5]
+            if len(fields) > 6:
+                self.barrels = fields[6]
+            if len(fields) > 7:
+                self.culvert_code = fields[7]

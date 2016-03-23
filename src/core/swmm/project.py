@@ -1,6 +1,6 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 # from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow, DryWeatherInflow
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow, DryWeatherInflow, RDIInflow
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
@@ -188,7 +188,11 @@ class Project(InputFile):
                                                ";;--------------\t----------\t-----------")
         # PATTERNS      periodic variation in dry weather inflow
 
-        # self.rdii = [Section]                   # RDII          rainfall-dependent I/I information at nodes
+        self.rdii = SectionAsListOf("[RDII]", RDIInflow,
+                                    ";;Node          \tUnit Hydrograph \tSewer Area\n"
+                                    ";;--------------\t----------------\t----------")
+        # rainfall-dependent I/I information at nodes
+
         # self.loadings = [Section]               # LOADINGS      initial pollutant loads on subcatchments
         self.curves = SectionAsListGroupByID("[CURVES]", Curve,
                                              ";;Name          \tType      \tX-Value   \tY-Value   \n"

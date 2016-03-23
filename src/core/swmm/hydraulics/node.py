@@ -420,14 +420,43 @@ class DryWeatherInflow(Section):
                 self.time_patterns = fields[3:]
 
 
-class RDIInflow:
-    """Defines characteristics of Rainfall-Dependent Infiltration/Inflows at a node"""
-    def __init__(self):
-        self.hydrograph_group = ""
-        """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+class RDIInflow(Section):
+    """Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node"""
 
-        self.sewershed_area = 0.0
-        """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
+    field_format = "{:16}\t{:16}\t{:10}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.node = ''
+            """str: name of node where external inflow enters."""
+
+            self.hydrograph_group = ""
+            """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+
+            self.sewershed_area = ''
+            """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node,
+                                        self.hydrograph_group,
+                                        self.sewershed_area)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.node = fields[0]
+            self.hydrograph_group = fields[1]
+            self.sewershed_area = fields[2]
 
 
 class TreatmentResult(Enum):

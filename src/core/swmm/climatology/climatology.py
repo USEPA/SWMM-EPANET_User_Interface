@@ -258,21 +258,21 @@ class SnowMelt:
     def set_text(self, new_text):
         self.__init__()
         fields = new_text.split()
-        if len(fields) > 1:
+        if len(fields) > 0:
             if fields[0].strip().upper() != self.SECTION_NAME:
                 raise ValueError("Could not set " + self.SECTION_NAME + " from: " + new_text)
+        if len(fields) > 1:
+           self.snow_temp = fields[1]
         if len(fields) > 2:
-           self.snow_temp = fields[2]
+           self.ati_weight = fields[2]
         if len(fields) > 3:
-           self.ati_weight = fields[3]
+           self.negative_melt_ratio = fields[3]
         if len(fields) > 4:
-           self.negative_melt_ratio = fields[4]
+           self.elevation = fields[4]
         if len(fields) > 5:
-           self.elevation = fields[5]
+           self.latitude = fields[5]
         if len(fields) > 6:
-           self.latitude = fields[6]
-        if len(fields) > 7:
-           self.time_correction = fields[7]
+           self.time_correction = fields[6]
 
 
 class ArealDepletion:

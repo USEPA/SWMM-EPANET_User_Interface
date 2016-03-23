@@ -300,53 +300,163 @@ class DirectInflowType(Enum):
     MASS = 2
 
 
-class DirectInflow:
-    """Defines characteristics of direct inflows added directly into a node"""
-    def __init__(self):
-        self.constituent = ''
-        """str: Name of constituent"""
+class DirectInflow(Section):
+    """Defines characteristics of inflows added directly into a node"""
 
-        self.timeseries = ''
-        """str: Name of the time series that contains inflow data for the selected constituent"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
 
-        self.format = DirectInflowType.CONCENTRATION
-        """DirectInflowType: Type of inflow data contained in the time series, concentration or mass flow rate"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
 
-        self.conversion_factor = ''
-        """float: Numerical factor used to convert the units of pollutant mass flow rate in the time series data
-        into concentration mass units per second"""
+            self.node = ''
+            """str: name of node where external inflow enters."""
 
-        self.scale_factor = ''
-        """float: Multiplier used to adjust the values of the constituent's inflow time series"""
+            self.timeseries = ''
+            """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
-        self.baseline = ''
-        """float: Value of the constant baseline component of the constituent's inflow"""
+            self.constituent = ''
+            """str: Name of constituent (pollutant) or FLOW"""
 
-        self.baseline_pattern = ''
-        """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+            self.format = DirectInflowType.CONCENTRATION
+            """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
+
+            self.conversion_factor = '1.0'
+            """float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
+            into project mass units per second as specified in [POLLUTANTS]"""
+
+            self.scale_factor = '1.0'
+            """float: Scaling factor that multiplies the recorded time series values."""
+
+            self.baseline = '0.0'
+            """float: Constant baseline added to the time series values."""
+
+            self.baseline_pattern = ''
+            """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        if self.constituent.upper() == "FLOW":
+            inp_format = "FLOW"
+        else:
+            inp_format = self.format.name
+        inp += self.field_format.format(self.node,
+                                        self.constituent,
+                                        self.timeseries,
+                                        inp_format,
+                                        self.conversion_factor,
+                                        self.scale_factor,
+                                        self.baseline,
+                                        self.baseline_pattern)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node = fields[0]
+        if len(fields) > 1:
+            self.constituent = fields[1]
+        if len(fields) > 2:
+            self.timeseries = fields[2]
+        if len(fields) > 3 and self.constituent.upper() != "FLOW":
+            self.setattr_keep_type("format", DirectInflowType[fields[3]])
+        if len(fields) > 4:
+            self.conversion_factor = fields[4]
+        if len(fields) > 5:
+            self.scale_factor = fields[5]
+        if len(fields) > 6:
+            self.baseline = fields[6]
+        if len(fields) > 7:
+            self.baseline_pattern = fields[7]
 
 
-class DryWeatherInflow:
-    """Defines characteristics of dry weather inflows added to a node"""
-    def __init__(self):
-        self.constituent = ""
-        """str: Name of constituent"""
+class DryWeatherInflow(Section):
+    """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
 
-        self.average = 0.0
-        """float: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+    field_format = "{:16}\t{:16}\t{:10}"
 
-        self.time_pattern = ""    # (Subclass Pattern)
-        """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.node = ''
+            """str: name of node where external inflow enters."""
+
+            self.constituent = ''
+            """str: Name of constituent (pollutant) or FLOW"""
+
+            self.average = ''
+            """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+
+            self.time_patterns = []
+            """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node,
+                                        self.constituent,
+                                        self.average) + '\t' + '\t'.join(self.time_patterns)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.node = fields[0]
+            self.constituent = fields[1]
+            self.average = fields[2]
+            if len(fields) > 3:
+                self.time_patterns = fields[3:]
 
 
-class RDIInflow:
-    """Defines characteristics of Rainfall-Dependent Infiltration/Inflows at a node"""
-    def __init__(self):
-        self.hydrograph_group = ""
-        """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+class RDIInflow(Section):
+    """Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node"""
 
-        self.sewershed_area = 0.0
-        """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
+    field_format = "{:16}\t{:16}\t{:10}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.node = ''
+            """str: name of node where external inflow enters."""
+
+            self.hydrograph_group = ""
+            """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+
+            self.sewershed_area = ''
+            """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node,
+                                        self.hydrograph_group,
+                                        self.sewershed_area)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.node = fields[0]
+            self.hydrograph_group = fields[1]
+            self.sewershed_area = fields[2]
 
 
 class TreatmentResult(Enum):

@@ -180,45 +180,116 @@ class CurveNumberInfiltration:
         """Time it takes for fully saturated soil to dry (days)."""
 
 
-class Groundwater:
+class Groundwater(Section):
     """Link a subcatchment to an aquifer and to a drainage system node"""
 
-    def __init__(self, aquifer, receiving_node):
-        self.aquifer = aquifer
-        """Aquifer that supplies groundwater. None = no groundwater flow."""
+    field_format = "{:16}\t{:16}\t{:16}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}"
 
-        self.receiving_node = receiving_node
-        """Node that receives groundwater from the aquifer."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+            self.subcatchment = ''
+            """Subcatchment name"""
 
-        self.surface_elevation = ''
-        """Elevation of ground surface for the subcatchment
-            that lies above the aquifer (feet or meters)."""
+            self.aquifer = ''
+            """Aquifer that supplies groundwater. None = no groundwater flow."""
 
-        self.groundwater_flow_coefficient = ''
-        """Value of A1 in the groundwater flow formula."""
+            self.receiving_node = ''
+            """Node that receives groundwater from the aquifer."""
 
-        self.groundwater_flow_exponent = ''
-        """Value of B1 in the groundwater flow formula."""
+            self.surface_elevation = ''
+            """Elevation of ground surface for the subcatchment
+                that lies above the aquifer (feet or meters)."""
 
-        self.surface_water_flow_coefficient = ''
-        """Value of A2 in the groundwater flow formula."""
+            self.groundwater_flow_coefficient = ''
+            """Value of A1 in the groundwater flow formula."""
 
-        self.surface_water_flow_exponent = ''
-        """Value of B2 in the groundwater flow formula."""
+            self.groundwater_flow_exponent = ''
+            """Value of B1 in the groundwater flow formula."""
 
-        self.surface_gw_interaction_coefficient = ''
-        """Value of A3 in the groundwater flow formula."""
+            self.surface_water_flow_coefficient = ''
+            """Value of A2 in the groundwater flow formula."""
 
-        self.fixed_surface_water_depth = ''
-        """Fixed depth of surface water at the receiving node (feet or meters)
-            (set to zero if surface water depth will vary
-             as computed by flow routing).
-            This value is used to compute HSW."""
+            self.surface_water_flow_exponent = ''
+            """Value of B2 in the groundwater flow formula."""
 
-        self.threshold_groundwater_elevation = ''
-        """Groundwater elevation that must be reached before any flow occurs
-            (feet or meters).
-            Leave blank to use the receiving node's invert elevation."""
+            self.surface_gw_interaction_coefficient = ''
+            """Value of A3 in the groundwater flow formula."""
+
+            self.fixed_surface_water_depth = ''
+            """Fixed depth of surface water at the receiving node (feet or meters)
+                (set to zero if surface water depth will vary
+                 as computed by flow routing).
+                This value is used to compute HSW."""
+
+            self.threshold_groundwater_elevation = ''
+            """Groundwater elevation that must be reached before any flow occurs
+                (feet or meters).
+                Leave blank to use the receiving node's invert elevation."""
+
+            self.bottom_elevation = ''
+            """override bottom elevation aquifer parameter"""
+
+            self.water_table_elevation = ''
+            """override initial water table elevation aquifer parameter"""
+
+            self.unsaturated_zone_moisture = ''
+            """override initial upper moisture content aquifer parameter"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.subcatchment,
+                                        self.aquifer,
+                                        self.receiving_node,
+                                        self.surface_elevation,
+                                        self.groundwater_flow_coefficient,
+                                        self.groundwater_flow_exponent,
+                                        self.surface_water_flow_coefficient,
+                                        self.surface_water_flow_exponent,
+                                        self.surface_gw_interaction_coefficient,
+                                        self.fixed_surface_water_depth,
+                                        self.threshold_groundwater_elevation,
+                                        self.bottom_elevation,
+                                        self.water_table_elevation,
+                                        self.unsaturated_zone_moisture)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.subcatchment = fields[0]
+        if len(fields) > 1:
+            self.aquifer = fields[1]
+        if len(fields) > 2:
+            self.receiving_node = fields[2]
+        if len(fields) > 3:
+            self.surface_elevation = fields[3]
+        if len(fields) > 4:
+            self.groundwater_flow_coefficient = fields[4]
+        if len(fields) > 5:
+            self.groundwater_flow_exponent = fields[5]
+        if len(fields) > 6:
+            self.surface_water_flow_coefficient = fields[6]
+        if len(fields) > 7:
+            self.surface_water_flow_exponent = fields[7]
+        if len(fields) > 8:
+            self.surface_gw_interaction_coefficient = fields[8]
+        if len(fields) > 9:
+            self.fixed_surface_water_depth = fields[9]
+        if len(fields) > 10:
+            self.threshold_groundwater_elevation = fields[10]
+        if len(fields) > 11:
+            self.bottom_elevation = fields[11]
+        if len(fields) > 12:
+            self.water_table_elevation = fields[12]
+        if len(fields) > 13:
+            self.unsaturated_zone_moisture = fields[13]
 
 
 class LIDUsage(Section):

@@ -349,10 +349,10 @@ class Transect(Section):
         """Optional description of the Transect"""
 
         self.station_elevation = []  # list of (station, elevation) pairs
-        self.n_left = ''  # Manning’s n of right overbank portion of channel (use 0 if no change from previous NC line).
-        self.n_right = ''  # Manning’s n of right overbank portion of channel (use 0 if no change from previous NC line.
-        self.n_channel = ''  # Manning’s n of main channel portion of channel (use 0 if no change from previous NC line.
-        self.overbank_left = ''   # station position which ends   the left  overbank portion of the channel (ft or m).
+        self.n_left = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
+        self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
         self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
         self.stations_modifier = ''  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
         self.elevations_modifier = ''  # amount added (or subtracted) from the elevation of each station (ft or m).

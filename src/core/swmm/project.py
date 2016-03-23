@@ -1,6 +1,6 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 # from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
@@ -18,7 +18,7 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater
 from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
@@ -118,7 +118,10 @@ class Project(InputFile):
             ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------")
         # groundwater aquifer parameters
 
-        # self.groundwater = [Section]            # GROUNDWATER   subcatchment groundwater parameters
+        self.groundwater = SectionAsListOf("[GROUNDWATER]", Groundwater,
+            ";;Subcatchment  \tAquifer         \tNode            \tEsurf \tA1    \tB1    \tA2    \tB2    \tA3    \tDsw   \tEgwt  \tEbot  \tWgr   \tUmc   \n"
+            ";;--------------\t----------------\t----------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------")
+        # subcatchment groundwater parameters
 
         self.snowpacks = SectionAsListGroupByID("[SNOWPACKS]", SnowPack,
                                                 ";;Name          \tSurface   \tParameters\n"
@@ -170,7 +173,11 @@ class Project(InputFile):
 
         # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
         # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
-        # self.inflows = [Section] # INFLOWS # external hydrograph/pollutograph inflow at nodes
+        self.inflows = SectionAsListOf("[INFLOWS]", DirectInflow,
+            ";;Node          \tConstituent     \tTime Series     \tType    \tMfactor \tSfactor \tBaseline\tPattern\n"
+            ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------")
+        # INFLOWS # external hydrograph/pollutograph inflow at nodes
+
         # self.dwf = [Section]                    # DWF           baseline dry weather sanitary inflow at nodes
 
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,

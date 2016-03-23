@@ -300,30 +300,80 @@ class DirectInflowType(Enum):
     MASS = 2
 
 
-class DirectInflow:
+class DirectInflow(Section):
     """Defines characteristics of direct inflows added directly into a node"""
-    def __init__(self):
-        self.constituent = ''
-        """str: Name of constituent"""
 
-        self.timeseries = ''
-        """str: Name of the time series that contains inflow data for the selected constituent"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
 
-        self.format = DirectInflowType.CONCENTRATION
-        """DirectInflowType: Type of inflow data contained in the time series, concentration or mass flow rate"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
 
-        self.conversion_factor = ''
-        """float: Numerical factor used to convert the units of pollutant mass flow rate in the time series data
-        into concentration mass units per second"""
+            self.node = ''
+            """str: name of node where external inflow enters."""
 
-        self.scale_factor = ''
-        """float: Multiplier used to adjust the values of the constituent's inflow time series"""
+            self.timeseries = ''
+            """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
-        self.baseline = ''
-        """float: Value of the constant baseline component of the constituent's inflow"""
+            self.constituent = ''
+            """str: Name of constituent (pollutant)"""
 
-        self.baseline_pattern = ''
-        """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+            self.format = DirectInflowType.CONCENTRATION
+            """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
+
+            self.conversion_factor = '1.0'
+            """float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
+            into project mass units per second as specified in [POLLUTANTS]"""
+
+            self.scale_factor = '1.0'
+            """float: Scaling factor that multiplies the recorded time series values."""
+
+            self.baseline = '0.0'
+            """float: Constant baseline added to the time series values."""
+
+            self.baseline_pattern = ''
+            """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        if self.constituent.upper() == "FLOW":
+            inp_format = "FLOW"
+        else:
+            inp_format = self.format.name
+        inp += self.field_format.format(self.node,
+                                        self.constituent,
+                                        self.timeseries,
+                                        inp_format,
+                                        self.conversion_factor,
+                                        self.scale_factor,
+                                        self.baseline,
+                                        self.baseline_pattern)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node = fields[0]
+        if len(fields) > 1:
+            self.constituent = fields[1]
+        if len(fields) > 2:
+            self.timeseries = fields[2]
+        if len(fields) > 3 and self.constituent.upper() != "FLOW":
+            self.setattr_keep_type("format", DirectInflowType[fields[3]])
+        if len(fields) > 4:
+            self.conversion_factor = fields[4]
+        if len(fields) > 5:
+            self.scale_factor = fields[5]
+        if len(fields) > 6:
+            self.baseline = fields[6]
+        if len(fields) > 7:
+            self.baseline_pattern = fields[7]
 
 
 class DryWeatherInflow:

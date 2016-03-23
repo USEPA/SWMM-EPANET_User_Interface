@@ -1,6 +1,6 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 # from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow, DryWeatherInflow
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
@@ -178,7 +178,10 @@ class Project(InputFile):
             ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------")
         # INFLOWS # external hydrograph/pollutograph inflow at nodes
 
-        # self.dwf = [Section]                    # DWF           baseline dry weather sanitary inflow at nodes
+        self.dwf = SectionAsListOf("[DWF]", DryWeatherInflow,
+                                   ";;Node          \tConstituent     \tBaseline  \tPatterns  \n"
+                                   ";;--------------\t----------------\t----------\t----------")
+        # baseline dry weather sanitary inflow at nodes
 
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
                                                ";;Name          \tType      \tMultipliers\n"

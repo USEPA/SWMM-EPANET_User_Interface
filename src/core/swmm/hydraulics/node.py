@@ -301,7 +301,7 @@ class DirectInflowType(Enum):
 
 
 class DirectInflow(Section):
-    """Defines characteristics of direct inflows added directly into a node"""
+    """Defines characteristics of inflows added directly into a node"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
 
@@ -318,7 +318,7 @@ class DirectInflow(Section):
             """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
             self.constituent = ''
-            """str: Name of constituent (pollutant)"""
+            """str: Name of constituent (pollutant) or FLOW"""
 
             self.format = DirectInflowType.CONCENTRATION
             """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
@@ -376,17 +376,48 @@ class DirectInflow(Section):
             self.baseline_pattern = fields[7]
 
 
-class DryWeatherInflow:
-    """Defines characteristics of dry weather inflows added to a node"""
-    def __init__(self):
-        self.constituent = ""
-        """str: Name of constituent"""
+class DryWeatherInflow(Section):
+    """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
 
-        self.average = 0.0
-        """float: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+    field_format = "{:16}\t{:16}\t{:10}"
 
-        self.time_pattern = ""    # (Subclass Pattern)
-        """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.node = ''
+            """str: name of node where external inflow enters."""
+
+            self.constituent = ''
+            """str: Name of constituent (pollutant) or FLOW"""
+
+            self.average = ''
+            """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+
+            self.time_patterns = []
+            """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node,
+                                        self.constituent,
+                                        self.average) + '\t' + '\t'.join(self.time_patterns)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.node = fields[0]
+            self.constituent = fields[1]
+            self.average = fields[2]
+            if len(fields) > 3:
+                self.time_patterns = fields[3:]
 
 
 class RDIInflow:

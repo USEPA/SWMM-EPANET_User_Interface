@@ -308,17 +308,53 @@ class ArealDepletion:
                     self.adc_pervious = fields[2:]
 
 
-class Adjustments:
+class Adjustments(Section):
     """monthly adjustments from undocumented table [ADJUSTMENTS]"""
+
+    SECTION_NAME = "[ADJUSTMENTS]"
+
     def __init__(self):
-        self.temperature_adjustments = ()
+        Section.__init__(self)
+        self.temperature = []
         """monthly temperature adjustments"""
 
-        self.evaporation_adjustments = ()
+        self.evaporation = []
         """monthly evaporation adjustments"""
 
-        self.rain_adjustments = ()
+        self.rainfall = []
         """monthly rain adjustments"""
 
-        self.soil_conductivity_adjustments = ()
+        self.soil_conductivity = []
         """monthly soil_conductivity adjustments"""
+
+    def get_text(self):
+        text_list = [self.SECTION_NAME]
+        if self.comment:
+            text_list.append(self.comment)
+        if self.temperature:
+            text_list.append("TEMPERATURE\t" + '\t'.join(self.temperature))
+        if self.evaporation:
+            text_list.append("EVAPORATION\t" + '\t'.join(self.evaporation))
+        if self.rainfall:
+            text_list.append("RAINFALL\t" + '\t'.join(self.rainfall))
+        if self.soil_conductivity:
+            text_list.append("CONDUCTIVITY\t" + '\t'.join(self.soil_conductivity))
+        return '\n'.join(text_list)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            try:
+                line = self.set_comment_check_section(line)
+                fields = line.split()
+                if len(fields) > 12:
+                    if fields[0].upper() == "TEMPERATURE":
+                        self.temperature = fields[1:]
+                    elif fields[0].upper() == "EVAPORATION":
+                        self.evaporation = fields[1:]
+                    elif fields[0].upper() == "RAINFALL":
+                        self.rainfall = fields[1:]
+                    elif fields[0].upper() == "CONDUCTIVITY":
+                        self.soil_conductivity = fields[1:]
+            except:
+                print(self.SECTION_NAME + " skipping input line: " + line)

@@ -11,6 +11,7 @@ from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.map import MapOptions
 from core.swmm.climatology.climatology import Evaporation
 from core.swmm.climatology.climatology import Temperature
+from core.swmm.climatology.climatology import Adjustments
 from core.swmm.curves import Curve
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.lidcontrol import LIDControl
@@ -97,6 +98,7 @@ class Project(InputFile):
 
         self.evaporation = Evaporation()        # EVAPORATION   evaporation data
         self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
+        self.adjustments = Adjustments()        # ADJUSTMENTS   monthly climate adjustments
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
         # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters

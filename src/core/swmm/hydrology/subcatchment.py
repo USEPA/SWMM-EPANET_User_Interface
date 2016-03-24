@@ -298,38 +298,39 @@ class LIDUsage(Section):
     field_format = " {:15}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}"  # TODO: add fields? \t{:24}\t{:16}
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-        self.subcatchment_name = ''
-        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
-
-        self.control_name = ''
-        """Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment"""
-
-        self.number_replicate_units = '0'
-        """Number of equal size units of the LID practice deployed within the subcatchment"""
-
-        self.area_each_unit = ''
-        """Surface area devoted to each replicate LID unit"""
-
-        self.top_width_overland_flow_surface = ''
-        """Width of the outflow face of each identical LID unit"""
-
-        self.percent_initially_saturated = ''
-        """Degree to which storage zone is initially filled with water"""
-
-        self.percent_impervious_area_treated = ''
-        """Percent of the impervious portion of the subcatchment's non-LID area whose runoff
-        is treated by the LID practice"""
-
-        self.send_outflow_pervious_area = '0'
-        """1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
-        than going to the subcatchment's outlet"""
-
-        self.detailed_report_file = ""
-        """Name of an optional file where detailed time series results for the LID will be written"""
 
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.subcatchment_name = ''
+            """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
+
+            self.control_name = ''
+            """Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment"""
+
+            self.number_replicate_units = '0'
+            """Number of equal size units of the LID practice deployed within the subcatchment"""
+
+            self.area_each_unit = ''
+            """Surface area devoted to each replicate LID unit"""
+
+            self.top_width_overland_flow_surface = ''
+            """Width of the outflow face of each identical LID unit"""
+
+            self.percent_initially_saturated = ''
+            """Degree to which storage zone is initially filled with water"""
+
+            self.percent_impervious_area_treated = ''
+            """Percent of the impervious portion of the subcatchment's non-LID area whose runoff
+            is treated by the LID practice"""
+
+            self.send_outflow_pervious_area = '0'
+            """1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
+            than going to the subcatchment's outlet"""
+
+            self.detailed_report_file = ""
+            """Name of an optional file where detailed time series results for the LID will be written"""
 
     def get_text(self):
         inp = ''
@@ -379,11 +380,39 @@ class Coverage:
         """percent of subcatchment area"""
 
 
-class InitialLoading:
+class InitialLoading(Section):
     """Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation."""
-    def __init__(self):
-        self.pollutant_name = ""
-        """name of a pollutant"""
 
-        self.initial_buildup = 0
-        """initial buildup of pollutant (lbs/acre or kg/hectare)"""
+    field_format = "{:16}\t{:16}\t{:10}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.subcatchment_name = ''
+            """Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs"""
+
+            self.pollutant_name = ""
+            """name of a pollutant"""
+
+            self.initial_buildup = 0
+            """initial buildup of pollutant (lbs/acre or kg/hectare)"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.subcatchment_name,
+                                        self.pollutant_name,
+                                        self.initial_buildup)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.subcatchment_name = fields[0]
+            self.pollutant_name = fields[1]
+            self.initial_buildup = fields[2]

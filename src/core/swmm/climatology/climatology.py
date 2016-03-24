@@ -4,8 +4,9 @@ from core.swmm.timeseries import TimeSeries
 
 
 class TemperatureSource(Enum):
-    TIMESERIES = 0
-    FILE = 1
+    UNSET = 0
+    TIMESERIES = 1
+    FILE = 2
 
 
 class EvaporationFormat(Enum):
@@ -32,7 +33,7 @@ class Temperature(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.source = TemperatureSource.TIMESERIES
+        self.source = TemperatureSource.UNSET
         """source of temperature data; timeseries or file"""
 
         self.timeseries = ''
@@ -51,6 +52,10 @@ class Temperature(Section):
         self.areal_depletion = ArealDepletion()
 
     def get_text(self):
+        # If not set, need to leave entire section out of inp file
+        if self.source == TemperatureSource.UNSET:
+            return ''
+
         text_list = [self.name]
 
         if self.comment:
@@ -58,9 +63,9 @@ class Temperature(Section):
 
         field_start = Temperature.first_field_format.format(self.source.name) + '\t'
         if self.source == TemperatureSource.TIMESERIES and self.timeseries:
-           text_list.append(field_start + self.timeseries)
+            text_list.append(field_start + self.timeseries)
         elif self.source == TemperatureSource.FILE and self.filename:
-           text_list.append(field_start + self.filename + '\t' + self.start_date)
+            text_list.append(field_start + self.filename + '\t' + self.start_date)
 
         text_list.append(self.wind_speed.get_text())
         text_list.append(self.snow_melt.get_text())

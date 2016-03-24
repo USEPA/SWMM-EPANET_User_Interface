@@ -333,18 +333,50 @@ class Adjustments(Section):
         """monthly soil_conductivity adjustments"""
 
     def get_text(self):
-        text_list = [self.SECTION_NAME]
-        if self.comment:
-            text_list.append(self.comment)
+        text_list = []
         if self.temperature:
-            text_list.append("TEMPERATURE\t" + '\t'.join(self.temperature))
+            values = self.format_values(self.temperature, "0.0")
+            if values:
+                text_list.append("TEMPERATURE\t" + values)
         if self.evaporation:
-            text_list.append("EVAPORATION\t" + '\t'.join(self.evaporation))
+            values = self.format_values(self.evaporation, "0.0")
+            if values:
+                text_list.append("EVAPORATION\t" + values)
         if self.rainfall:
-            text_list.append("RAINFALL\t" + '\t'.join(self.rainfall))
+            values = self.format_values(self.rainfall, "1.0")
+            if values:
+                text_list.append("RAINFALL\t" + values)
         if self.soil_conductivity:
-            text_list.append("CONDUCTIVITY\t" + '\t'.join(self.soil_conductivity))
+            values = self.format_values(self.soil_conductivity, "1.0")
+            if values:
+                text_list.append("CONDUCTIVITY\t" + values)
+
+        # Only add section name and comment if there is some content in this section
+        if len(text_list) > 0:
+            text_list.insert(0, self.SECTION_NAME)
+            if self.comment:
+                text_list.insert(1, self.comment)
         return '\n'.join(text_list)
+
+    @staticmethod
+    def format_values(list, default):
+        """Format list of values into a string. Blank values are replaced by default.
+         If all are blank or default, return empty string, otherwise return tab-separated values."""
+        any_value = False
+        formatted = ''
+        for value in list:
+            value = str(value).strip()
+            if len(value) == 0:
+                value = default
+            if value != default and value != default.rstrip(".0"):
+                any_value = True
+            if formatted:
+                formatted += '\t'
+            formatted += value
+        if any_value:
+            return formatted
+        else:
+            return ''
 
     def set_text(self, new_text):
         self.__init__()

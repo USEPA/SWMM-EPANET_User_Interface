@@ -14,11 +14,65 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
         self.set_from(parent.project)
+        # set for first link for now
+        self.set_link(parent.project,'1')
         self._parent = parent
 
+    def set_link(self, project, link_id):
+        # section = core.swmm.project.CrossSection()
+        section = project.find_section("XSECTIONS")
+        link_list = section.value[0:]
+        # assume we want to edit the first one
+        for value in link_list:
+            if value.link == link_id:
+                # this is the link we want to edit
+                for list_index in range(0,self.listWidget.count()):
+                    list_item = self.listWidget.item(list_index)
+                    if str(list_item.text()).upper() == value.shape.name:
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Force Main' and value.shape.name == 'FORCE_MAIN':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Filled Circular' and value.shape.name == 'FILLED_CIRCULAR':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Closed Rectangular' and value.shape.name == 'RECT_CLOSED':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Rectangular' and value.shape.name == 'RECT_OPEN':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Horizontal Elliptical' and value.shape.name == 'HORIZ_ELLIPSE':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Vertical Elliptical' and value.shape.name == 'VERT_ELLIPSE':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Rectangular Triangular' and value.shape.name == 'RECT_TRIANGULAR':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Rectangular Round' and value.shape.name == 'RECT_ROUND':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Modified Baskethandle' and value.shape.name == 'MODBASKETHANDLE':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Semi-Elliptical' and value.shape.name == 'SEMIELLIPTICAL':
+                        self.listWidget.setCurrentItem(list_item)
+                    elif str(list_item.text()) == 'Semi-Circular' and value.shape.name == 'SEMICIRCULAR':
+                        self.listWidget.setCurrentItem(list_item)
+                self.sbxNumber.setValue(int(value.barrels))
+                self.txt1.setText(value.geometry1)
+                self.txt2.setText(value.geometry2)
+                self.txt3.setText(value.geometry3)
+                self.txt4.setText(value.geometry4)
+                self.cboCombo
+                self.btnDialog
+
+                # for rect_open sidewalls, set geom3 to 0,1,2 for None, One, Both
+                # for irregular, combo needs transect names, dialog opens transect buttons
+                # for horizonal and vertical elliptical and arch, combo gets standard sizes
+                # for custom, combo needs shape curves, dialog opens shape curve editor
+
+                #       section.curve
+                #    section.transect
+                # section.culvert_code not used in ui
+
+
     def set_from(self, project):
-        # section = core.epanet.project.Control()
-        section = project.find_section("CONTROLS")
+        # section = core.swmm.project.CrossSection()
+        # section = project.find_section("CONTROLS")
         # self.txtControls.setPlainText(str(section.get_text()))
         self.listWidget.addItems(('Rectangular', 'Trapezoidal', 'Triangular', 'Parabolic', 'Power',
                                   'Irregular', 'Circular', 'Force Main', 'Filled Circular',

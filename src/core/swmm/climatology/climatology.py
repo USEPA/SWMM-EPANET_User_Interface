@@ -334,22 +334,13 @@ class Adjustments(Section):
 
     def get_text(self):
         text_list = []
-        if self.temperature:
-            values = self.format_values(self.temperature, "0.0")
+        for (data, default, label) in ((self.temperature,       "0.0", "TEMPERATURE"),
+                                       (self.evaporation,       "0.0", "EVAPORATION"),
+                                       (self.rainfall,          "1.0", "RAINFALL"),
+                                       (self.soil_conductivity, "1.0", "CONDUCTIVITY")):
+            values = self.format_values(data, default)
             if values:
-                text_list.append("TEMPERATURE\t" + values)
-        if self.evaporation:
-            values = self.format_values(self.evaporation, "0.0")
-            if values:
-                text_list.append("EVAPORATION\t" + values)
-        if self.rainfall:
-            values = self.format_values(self.rainfall, "1.0")
-            if values:
-                text_list.append("RAINFALL\t" + values)
-        if self.soil_conductivity:
-            values = self.format_values(self.soil_conductivity, "1.0")
-            if values:
-                text_list.append("CONDUCTIVITY\t" + values)
+                text_list.append(label + '\t' + values)
 
         # Only add section name and comment if there is some content in this section
         if len(text_list) > 0:
@@ -359,20 +350,21 @@ class Adjustments(Section):
         return '\n'.join(text_list)
 
     @staticmethod
-    def format_values(list, default):
-        """Format list of values into a string. Blank values are replaced by default.
+    def format_values(data, default):
+        """Format list of data values into a string. Blank values are replaced by default.
          If all are blank or default, return empty string, otherwise return tab-separated values."""
-        any_value = False
         formatted = ''
-        for value in list:
-            value = str(value).strip()
-            if len(value) == 0:
-                value = default
-            if value != default and value != default.rstrip(".0"):
-                any_value = True
-            if formatted:
-                formatted += '\t'
-            formatted += value
+        any_value = False
+        if data and len(data) > 11:
+            for value in data:
+                value = str(value).strip()
+                if len(value) == 0:
+                    value = default
+                elif value != default and value != default.rstrip(".0"):
+                    any_value = True
+                if formatted:
+                    formatted += '\t'
+                formatted += value
         if any_value:
             return formatted
         else:

@@ -58,23 +58,30 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         # evap_section = core.swmm.climatology
         evap_section = project.find_section("EVAPORATION")
         # "Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"
-        if evap_section.format == EvaporationFormat.UNSET:
-            self.cboEvap_currentIndexChanged(0)
-        elif evap_section.format == EvaporationFormat.CONSTANT:
-            self.cboEvap_currentIndexChanged(0)
-            # self.cboEvap.setCurrentIndex(1)
-        elif evap_section.format == EvaporationFormat.MONTHLY:
-            self.cboEvap_currentIndexChanged(3)
-        elif evap_section.format == EvaporationFormat.TIMESERIES:
-            self.cboEvap_currentIndexChanged(1)
-        elif evap_section.format == EvaporationFormat.TEMPERATURE:
-            self.cboEvap_currentIndexChanged(4)
-        elif evap_section.format == EvaporationFormat.FILE:
-            self.cboEvap_currentIndexChanged(2)
-
-        self.txtDaily.setText(str(evap_section.constant))
         self.evap_pan_list = evap_section.monthly_pan_coefficients
         self.evap_monthly_list = evap_section.monthly
+
+        if evap_section.format == EvaporationFormat.UNSET:
+            self.cboEvap.setCurrentIndex(0)
+            self.cboEvap_currentIndexChanged(0)
+        elif evap_section.format == EvaporationFormat.CONSTANT:
+            self.cboEvap.setCurrentIndex(0)
+            self.cboEvap_currentIndexChanged(0)
+        elif evap_section.format == EvaporationFormat.MONTHLY:
+            self.cboEvap.setCurrentIndex(3)
+            self.cboEvap_currentIndexChanged(3)
+        elif evap_section.format == EvaporationFormat.TIMESERIES:
+            self.cboEvap.setCurrentIndex(1)
+            self.cboEvap_currentIndexChanged(1)
+        elif evap_section.format == EvaporationFormat.TEMPERATURE:
+            self.cboEvap.setCurrentIndex(4)
+            self.cboEvap_currentIndexChanged(4)
+        elif evap_section.format == EvaporationFormat.FILE:
+            self.cboEvap.setCurrentIndex(2)
+            self.cboEvap_currentIndexChanged(2)
+        if evap_section.constant == '':
+            evap_section.constant = 0.0
+        self.txtDaily.setText(str(evap_section.constant))
         self.cbxDry.setChecked(evap_section.dry_only)
 
         time_series_section = project.find_section("TIMESERIES")
@@ -84,7 +91,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         for value in time_series_list:
             self.cboEvapTs.addItem(value.name)
             if value.name == evap_section.timeseries:
-                selected_index = int(self.cboEvapTs.count())
+                selected_index = int(self.cboEvapTs.count())-1
         self.cboEvapTs.setCurrentIndex(selected_index)
 
         pattern_section = project.find_section("PATTERNS")
@@ -98,12 +105,16 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
                  self.cboMonthly.addItem(value.name)
                  previous_pattern = value.name
                  if value.name == evap_section.recovery_pattern:
-                    selected_index = self.cboMonthly.count()
+                    selected_index = int(self.cboMonthly.count())-1
         self.cboMonthly.setCurrentIndex(selected_index)
 
         # temp_section = core.swmm.climatology.climatology
         temp_section = project.find_section("TEMPERATURE")
-        if temp_section.source == TemperatureSource.TIMESERIES and temp_section.timeseries:
+        if temp_section.source == TemperatureSource.UNSET:
+            self.rbnTimeseries.setChecked(False)
+            self.rbnExternal.setChecked(False)
+            self.rbnNoData.setChecked(True)
+        elif temp_section.source == TemperatureSource.TIMESERIES and temp_section.timeseries:
             self.rbnTimeseries.setChecked(True)
             self.rbnExternal.setChecked(False)
             self.rbnNoData.setChecked(False)
@@ -119,6 +130,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         time_series_section = project.find_section("TIMESERIES")
         time_series_list = time_series_section.value[0:]
         self.cboTimeSeries.clear()
+        self.cboTimeSeries.addItem('')
         selected_index = 0
         for value in time_series_list:
             self.cboTimeSeries.addItem(value.name)
@@ -206,17 +218,19 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             evap_section.monthly_pan_coefficients = []
             for column in range(0,12):
                 if self.tblEvap.item(0,column):
-                    x = self.tblEvap.item(0,column).text()
-                    if len(x) > 0:
-                        evap_section.monthly_pan_coefficients.append(x)
+                    x = str(self.tblEvap.item(0,column).text())
+                else:
+                    x = ''
+                evap_section.monthly_pan_coefficients.append(x)
         elif self.cboEvap.currentIndex() == 3:
             evap_section.format = EvaporationFormat.MONTHLY
             evap_section.monthly = []
             for column in range(0,12):
                 if self.tblEvap.item(0,column):
-                    x = self.tblEvap.item(0,column).text()
-                    if len(x) > 0:
-                        evap_section.monthly.append(x)
+                    x = str(self.tblEvap.item(0,column).text())
+                else:
+                    x = ''
+                evap_section.monthly.append(x)
         elif self.cboEvap.currentIndex() == 4:
             evap_section.format = EvaporationFormat.TEMPERATURE
         evap_section.constant = float(self.txtDaily.text())
@@ -234,7 +248,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         elif self.rbnExternal.isChecked():
             temp_section.source = TemperatureSource.FILE
         else:
-            temp_section.source = TemperatureSource.TIMESERIES
+            temp_section.source = TemperatureSource.UNSET
         temp_section.timeseries = str(self.cboTimeSeries.currentText())
         temp_section.filename = self.txtClimate.text()
         if self.cbxStart.isChecked():
@@ -264,38 +278,46 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         temp_section.areal_depletion.adc_impervious = []
         for row in range(0,10):
             if self.tblAreal.item(row,0):
-                    x = self.tblAreal.item(row,0).text()
-                    if len(x) > 0:
-                        temp_section.areal_depletion.adc_impervious.append(x)
+                x = self.tblAreal.item(row,0).text()
+                if len(x) > 0:
+                    temp_section.areal_depletion.adc_impervious.append(x)
         temp_section.areal_depletion.adc_pervious = []
         for row in range(0,10):
             if self.tblAreal.item(row,1):
-                    x = self.tblAreal.item(row,1).text()
-                    if len(x) > 0:
-                        temp_section.areal_depletion.adc_pervious.append(x)
+                x = self.tblAreal.item(row,1).text()
+                if len(x) > 0:
+                    temp_section.areal_depletion.adc_pervious.append(x)
 
         # save adjustments for temp, evap, rain, cond
         adjustments_section = self._parent.project.find_section("ADJUSTMENTS")
         adjustments_section.temperature = []
         for row in range(0,12):
-            x = self.tblAdjustments.item(row,0).text()
+            if self.tblAdjustments.item(row,0):
+                x = str(self.tblAdjustments.item(row,0).text())
+            else:
+                x = ''
             adjustments_section.temperature.append(x)
         adjustments_section.evaporation = []
         for row in range(0,12):
-            x = self.tblAdjustments.item(row,1).text()
+            if self.tblAdjustments.item(row,1):
+                x = str(self.tblAdjustments.item(row,1).text())
+            else:
+                x = ''
             adjustments_section.evaporation.append(x)
         adjustments_section.rainfall = []
         for row in range(0,12):
-            x = self.tblAdjustments.item(row,2).text()
+            if self.tblAdjustments.item(row,2):
+                x = str(self.tblAdjustments.item(row,2).text())
+            else:
+                x = ''
             adjustments_section.rainfall.append(x)
         adjustments_section.soil_conductivity = []
         for row in range(0,12):
-            x = self.tblAdjustments.item(row,3).text()
+            if self.tblAdjustments.item(row,3):
+                x = str(self.tblAdjustments.item(row,3).text())
+            else:
+                x = ''
             adjustments_section.soil_conductivity.append(x)
-
-        if self.rbnNoData.isChecked():
-            # need to clear out this section
-            temp_section = self._parent.project.find_section("TEMPERATURE")
 
         self.close()
 

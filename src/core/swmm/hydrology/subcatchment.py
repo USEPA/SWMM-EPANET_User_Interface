@@ -124,13 +124,7 @@ class Subcatchment:
         self.snow_pack = ''
         """Snow pack parameter set (if any) of the subcatchment."""
 
-        self.coverages = []
-        """Land uses in the subcatchment."""
-
-        self.initial_loadings = {}
-        """Initial quantities of pollutant in the Subcatchment."""
-
-        self.curb_length = 0
+        self.curb_length = ''
         """ Total length of curbs in the subcatchment (any length units).
             Used only when initial_loadings are normalized to curb length."""
 
@@ -370,14 +364,64 @@ class LIDUsage(Section):
             self.detailed_report_file = fields[8]
 
 
-class Coverage:
+class Coverage(Section):
     """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
-    def __init__(self):
-        self.land_use_name = ""
-        """land use name"""
 
-        self.percent_subcatchment_area = 0
-        """percent of subcatchment area"""
+    field_format = "{:16}\t{:16}\t{:10}"
+
+    def __init__(self, subcatchment_name = '', land_use_name = '', percent_subcatchment_area = ''):
+        Section.__init__(self)
+
+        self.subcatchment_name = subcatchment_name
+        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this coverage occurs"""
+
+        self.land_use_name = land_use_name
+        """land use name from [LANDUSE] of this coverage"""
+
+        self.percent_subcatchment_area = percent_subcatchment_area
+        """percent of subcatchment area covered by this land use"""
+
+    def get_text(self):
+        return self.field_format.format(self.subcatchment_name, self.land_use_name, self.percent_subcatchment_area)
+
+
+class Coverages(Section):
+    """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
+
+    SECTION_NAME = "[COVERAGES]"
+    DEFAULT_COMMENT = ";;Subcatchment  \tLand Use        \tPercent\n"\
+                      ";;--------------\t----------------\t----------"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.value = []
+
+    def get_text(self):
+        lines = []
+        if len(self.value) > 0:
+            lines.append(self.SECTION_NAME)
+            if self.comment:
+                if self.comment.startswith(';'):
+                    lines.append(self.comment)
+                else:
+                    lines.append(';' + self.comment.replace('\n', '\n;'))
+            num_this_line = 0
+            for coverage in self.value:
+                lines.append(coverage.get_text())
+        return '\n'.join(lines)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            line = self.set_comment_check_section(line)
+            fields = line.split()
+            if len(fields) > 2:
+                subcatchment = fields[0]
+                for landuse_index in range(1, len(fields) - 1, 2):
+                    self.value.append(Coverage(subcatchment, fields[landuse_index], fields[landuse_index+1]))
 
 
 class InitialLoading(Section):

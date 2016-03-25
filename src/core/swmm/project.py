@@ -19,7 +19,7 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoading
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoading, Coverages
 from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
@@ -172,7 +172,7 @@ class Project(InputFile):
             ";;--------------\t------\t----------\t----------\t----------\t----------\t----------\t----------------\t----------\t----------\t----------")
         # pollutant information
 
-        # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
+        self.coverages = Coverages() # COVERAGES # assignment of land uses to subcatchments
         self.treatment = SectionAsListOf("[TREATMENT]", Treatment,
                                          ";;Node          \tPollutant       \tFunction\n"
                                          ";;--------------\t----------------\t--------")

@@ -37,7 +37,7 @@ class Landuse(Section):
 
     field_format = " {:15}\t{:10}\t{:10}\t{:10}\n"
 
-    #    attribute                       label                       default hint
+    #    attribute                       label                           default, eng, met, hint
     metadata = Metadata((
         ("land_use_name",                "Land Use Name",                '', '', '',
          "User-assigned name of the land use."),
@@ -46,7 +46,7 @@ class Landuse(Section):
         ("street_sweeping_availability", "Street Sweeping Availability", '', '', '',
          "Fraction of pollutant buildup that is available for removal by sweeping."),
         ("last_swept",                   "Last Swept",                   '', "days", "days",
-         "Time since land use was last swept at the start of the simulation."),
+         "Time since land use was last swept at the start of the simulation.")
     ))
 
     def __init__(self, new_text=None):
@@ -108,7 +108,7 @@ class Buildup(Section):
         ("power_sat_constant", "Power/Sat. Constant", "0.0",  "days", "days",
          "Time exponent for power buildup or half saturation constant for saturation buildup."),
         ("normalizer",         "Normalizer",          "AREA", "acres", "hectares",
-         "Subcatchment variable to which buildup is normalized: curb length (any units) or area."),
+         "Subcatchment variable to which buildup is normalized: curb length (any units) or area.")
     ))
 
     #    attribute                                    label   eng met default hint
@@ -124,7 +124,7 @@ class Buildup(Section):
                                                               "kg per normalizer per day",
          "Name of Time Series containing loading rates."),
         ("normalizer",         "Normalizer",          "AREA", "acres", "hectares",
-         "Subcatchment variable to which buildup is normalized: curb length (any units) or area"),
+         "Subcatchment variable to which buildup is normalized: curb length (any units) or area")
     ))
 
     def __init__(self, new_text=None):
@@ -196,7 +196,7 @@ class Washoff(Section):
 
     field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
 
-    #    attribute                                    label   default hint
+    #    attribute              label              default, eng, met, hint
     metadata = Metadata((
         ("function",            "Function",        "EMC", '', '',
          "Washoff function: EXP = exponential, RC = rating curve, EMC = event mean concentration."),
@@ -207,7 +207,7 @@ class Washoff(Section):
         ("cleaning_efficiency", "Cleaning Effic.", "0.0", "percent", "percent",
          "Street cleaning removal efficiency for the pollutant."),
         ("bmp_efficiency",      "BMP Effic.",      "0.0", "percent", "percent",
-         "Removal efficiency associated with any Best Management Practice utilized."),
+         "Removal efficiency associated with any Best Management Practice utilized.")
     ))
 
     def __init__(self, new_text=None):
@@ -267,7 +267,7 @@ class Pollutant(Section):
     """Identifies the pollutants being analyzed"""
     field_format = " {:16}\t{:6}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:16}\t{:10}\t{:10}\t{:10}\n"
 
-    #    attribute                label            default hint
+    #    attribute                label            default, eng, met, hint
     metadata = Metadata((
         ("name",                  "Name",          '',     '', '',
          "User-assigned name of the pollutant."),

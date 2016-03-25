@@ -2,6 +2,8 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
 from ui.SWMM.frmCrossSectionDesigner import Ui_frmCrossSection
+from ui.SWMM.frmTransect import frmTransect
+from ui.SWMM.frmCurveEditor import frmCurveEditor
 
 
 class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
@@ -12,6 +14,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        QtCore.QObject.connect(self.btnDialog, QtCore.SIGNAL("clicked()"), self.btnDialog_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
         self.set_from(parent.project)
         # set for first link for now
@@ -57,16 +60,31 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                 self.txt2.setText(value.geometry2)
                 self.txt3.setText(value.geometry3)
                 self.txt4.setText(value.geometry4)
-                self.cboCombo
-                self.btnDialog
 
                 # for rect_open sidewalls, set geom3 to 0,1,2 for None, One, Both
-                # for irregular, combo needs transect names, dialog opens transect buttons
-                # for horizonal and vertical elliptical and arch, combo gets standard sizes
-                # for custom, combo needs shape curves, dialog opens shape curve editor
+                if value.shape.name == 'RECTANGULAR':
+                    self.cboCombo.setCurrentIndex(int(value.geometry3))
 
-                #       section.curve
-                #    section.transect
+                # for horizonal and vertical elliptical and arch, combo gets standard sizes
+                #if value.shape.name == 'HORIZ_ELLIPSE':
+                    # self.cboCombo.setCurrentIndex
+                #if value.shape.name == 'VERT_ELLIPSE':
+                    # self.cboCombo.setCurrentIndex
+                #if value.shape.name == 'ARCH':
+                    # self.cboCombo.setCurrentIndex
+
+                if value.shape.name == 'IRREGULAR':
+                    # for irregular, combo needs transect names, dialog opens transect buttons
+                    for index in range(0,self.cboCombo.count):
+                        if value.transect == self.cboCombo.itemText(index):
+                            self.cboCombo.setCurrentIndex(index)
+
+                if value.shape.name == 'CUSTOM':
+                    # for custom, combo needs shape curves, dialog opens shape curve editor
+                    for index in range(0,self.cboCombo.count):
+                        if value.curve == self.cboCombo.itemText(index):
+                            self.cboCombo.setCurrentIndex(index)
+
                 # section.culvert_code not used in ui
 
 
@@ -116,6 +134,23 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+
+    def btnDialog_Clicked(self):
+        cur = self.listWidget.currentItem()
+        current_selection = ""
+        if cur:
+            current_selection = str(cur.text())
+
+        if current_selection == "Irregular":
+            self._frmTransect = frmTransect(self.parent())
+            self._frmTransect.show()
+        elif current_selection == 'Custom':
+            self._frmCurveEditor = frmCurveEditor(self.parent())
+            self._frmCurveEditor.setWindowTitle('SWMM Shape Curves')
+            self._frmCurveEditor.set_from(self._parent.project, "SHAPE")
+            self._frmCurveEditor.show()
+
 
     def listWidget_currentItemChanged(self):
 
@@ -254,7 +289,13 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.lblBottom.setText('Open irregular natural channel described by transect coordinates.')
             self.lblCombo.setText('Transect Name')
             self.cboCombo.clear()
-            # self.cboCombo.addItems('None','One','Both') # need to set from available transects
+            # self.cboCombo.addItems() # need to set from available transects
+            transect_section = self._parent.project.find_section("TRANSECTS")
+            transect_list = transect_section.value[0:]
+            self.cboCombo.addItem("")
+            for value in transect_list:
+                if value.name:
+                    self.cboCombo.addItem(value.name)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
             self.btnDialog.setVisible(True)
@@ -436,7 +477,13 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setText('Shape Curve Name')
             self.cboCombo.clear()
-            # self.cboCombo.addItems('Custom','XX','XX') # need to set from available transects
+            # self.cboCombo.addItems('Custom','XX','XX') # need to set from available shape curves
+            curves_section = self._parent.project.find_section("CURVES")
+            curves_list = curves_section.value[0:]
+            self.cboCombo.addItem("")
+            for value in curves_list:
+                if value.name and value.type == 'SHAPE':
+                    self.cboCombo.addItem(value.name)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
             self.btnDialog.setVisible(True)

@@ -1,6 +1,7 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 # from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit, DirectInflow, DryWeatherInflow, RDIInflow
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
+from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
 from core.swmm.title import Title
 from core.swmm.options.general import General
@@ -172,7 +173,12 @@ class Project(InputFile):
         # pollutant information
 
         # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
-        # self.treatment = [Section] # TREATMENT # pollutant removal functions at conveyance system nodes
+        self.treatment = SectionAsListOf("[TREATMENT]", Treatment,
+                                         ";;Node          \tPollutant       \tFunction\n"
+                                         ";;--------------\t----------------\t--------")
+
+        # pollutant removal functions at conveyance system nodes
+
         self.inflows = SectionAsListOf("[INFLOWS]", DirectInflow,
             ";;Node          \tConstituent     \tTime Series     \tType    \tMfactor \tSfactor \tBaseline\tPattern\n"
             ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------")

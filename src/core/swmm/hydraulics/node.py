@@ -1,6 +1,7 @@
 ﻿from enum import Enum
 from core.coordinates import Coordinates
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 # class Node(object):
@@ -459,22 +460,66 @@ class RDIInflow(Section):
             self.sewershed_area = fields[2]
 
 
-class TreatmentResult(Enum):
-    CONCENTRATION = 1
-    REMOVAL = 2
-
-
-class Treatment:
+class Treatment(Section):
     """Define the treatment properties of a node using a treatment expression"""
-    def __init__(self):
-        self.pollutant = ""
-        """Name of pollutant receiving treatment"""
 
-        self.result = TreatmentResult.CONCENTRATION
-        """TreatmentResult: Result computed by treatment function. Choices are:
-        C function computes effluent concentration
-        R function computes fractional removal."""
+    field_format = "{:16}\t{:16}\t{}"
 
-        self.function = ""
-        """str: mathematical function expressing treatment result in terms of pollutant concentrations,
-        pollutant removals, and other standard variables"""
+    hint = "Treatment expressions have the general form:"
+    "  R = f(P, R_P, V)"
+    "or"
+    "  C = f(P, R_P, V)"
+    "where:"
+    "  R   = fractional removal,"
+    "  C   = outlet concentration,"
+    "  P   = one or more pollutant names,"
+    "  R_P = one or more pollutant removals"
+    "        (prepend R_ to pollutant name),"
+    "  V   = one or more process variables:"
+    "        FLOW (inflow rate)"
+    "        DEPTH (water depth)"
+    "        HRT (hydraulic residence time)"
+    "        DT (time step in seconds)"
+    "        AREA (surface area)."
+    "Some example expressions are:"
+    "  C = BOD * exp(-0.05*HRT)"
+    "  R = 0.75 * R_TSS"
+
+    #    attribute    label                   default, eng, met, hint
+    metadata = Metadata((
+        ("pollutant", "Pollutant",            '',  '',  '', hint),
+        ("function",  "Treatment Expression", '',  '',  '', hint)))
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.node = ''
+            """str: name of node where external inflow enters."""
+
+            self.pollutant = ''
+            """Name of pollutant receiving treatment"""
+
+            self.function = ''
+            """str: mathematical function expressing treatment result in terms of pollutant concentrations,
+            pollutant removals, and other standard variables. Starts with C for concentration or R for removal."""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.node,
+                                        self.pollutant,
+                                        self.function)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.node = fields[0]
+            self.pollutant = fields[1]
+            self.function = ' '.join(fields[2:])

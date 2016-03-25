@@ -154,9 +154,10 @@ class Evaporation(Section):
             pass
         elif self.format == EvaporationFormat.FILE:
             format_line += '\t'.join(self.monthly_pan_coefficients)
-        elif self.format == EvaporationFormat.RECOVERY:
-            format_line += self.recovery_pattern
         text_list.append(format_line)
+
+        if self.recovery_pattern:
+            text_list.append("RECOVERY\t" + self.recovery_pattern)
 
         if self.dry_only:
             text_list.append("DRY_ONLY\tYES")
@@ -172,6 +173,8 @@ class Evaporation(Section):
             if len(fields) > 1:
                 if fields[0].upper() == "DRY_ONLY":
                     self.dry_only = fields[1].upper() == "YES"
+                elif fields[0].upper() == "RECOVERY":
+                    self.recovery_pattern = ' '.join(fields[1:])
                 else:
                     try:
                         self.format = EvaporationFormat[fields[0]]
@@ -185,8 +188,6 @@ class Evaporation(Section):
                             pass
                         elif self.format == EvaporationFormat.FILE:
                             self.monthly_pan_coefficients = fields[1:]
-                        elif self.format == EvaporationFormat.RECOVERY:
-                            self.recovery_pattern = fields[1]
                     except Exception as ex:
                         raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
 

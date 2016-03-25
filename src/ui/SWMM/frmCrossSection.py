@@ -1,9 +1,13 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+import core.swmm.hydraulics
+import core.swmm.hydraulics.link
+import core.swmm.options.dynamic_wave
 from ui.SWMM.frmCrossSectionDesigner import Ui_frmCrossSection
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCurveEditor import frmCurveEditor
+
 
 
 class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
@@ -16,16 +20,87 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.btnDialog, QtCore.SIGNAL("clicked()"), self.btnDialog_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
+        self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(parent.project)
+        self._parent = parent
+        self.link_id = ''
+        self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
+        self.ellipse_major_axis_in = (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180)
+        self.ellipse_minor_axis_mm = (356,483,559,610,686,737,813,864,965,1092,1219,1346,1473,1600,1727,1829,1956,2083,
+                                     2210,2337,2464,2692,2946)
+        self.ellipse_major_axis_mm = (584,762,864,965,1067,1143,1245,1346,1524,1727,1930,2108,2311,2489,2692,2870,3073,
+                                     3251,3454,3632,3835,4216,4572)
+
+        self.arch_type = ('Concrete','Concrete','Concrete','Concrete','Concrete','Concrete','Concrete','Concrete',
+                          'Concrete','Concrete','Concrete','Concrete','Concrete','Concrete','Concrete','Concrete',
+                          'Concrete',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 2-2/3 x 1/2" Corrugation','Corrugated Steel - 2-2/3 x 1/2" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation','Corrugated Steel - 3 x 1" Corrugation',
+                          'Corrugated Steel - 3 x 1" Corrugation',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 18" Corner Radius','Structural Plate - 18" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius',
+                          'Structural Plate - 31" Corner Radius','Structural Plate - 31" Corner Radius')
+        self.arch_height_in = ('11','13.5','15.5','18','22.5','26.625','31.3125','36','40','45','54','62',
+                               '72','77.5','87.125','96.875','106.5','13','15','18','20','24','29','33','38',
+                               '43','47','52','57','31','36','41','46','51','55','59','63','67','71','75','79',
+                               '83','87','91','55','57','59','61','63','65','67','69','71','73','75','77','79',
+                               '81','83','85','87','89','91','93','95','97','100','101','103','105','107','109',
+                               '111','113','115','118','119','121','112','114','116','118','120','122','124','126',
+                               '128','130','132','134','136','138','140','142','144','146','148','150','152','154',
+                               '156','158')
+        self.arch_width_in = ('18','22','26','28.5','36.25','43.75','51.125','58.5','65','73','88','102','115','122',
+                              '138','154','168.75','17','21','24','28','35','42','49','57','64','71','77','83','40',
+                              '46','53','60','66','73','81','87','95','103','112','117','128','137','142',
+                              '73','76','81','84','87','92','95','98','103','106','112','114','117','123','128','131',
+                              '137','139','142','148','150','152','154','161','167','169','171','178','184','186',
+                              '188','190','197','199','159','162','168','170','173','179','184','187','190','195',
+                              '198','204','206','209','215','217','223','225','231','234','236','239','245','247')
         # set for first link for now
         self.set_link(parent.project,'1')
-        self._parent = parent
 
     def set_link(self, project, link_id):
         # section = core.swmm.project.CrossSection()
         section = project.find_section("XSECTIONS")
         link_list = section.value[0:]
         # assume we want to edit the first one
+        self.link_id = link_id
         for value in link_list:
             if value.link == link_id:
                 # this is the link we want to edit
@@ -65,13 +140,13 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                 if value.shape.name == 'RECTANGULAR':
                     self.cboCombo.setCurrentIndex(int(value.geometry3))
 
-                # for horizonal and vertical elliptical and arch, combo gets standard sizes
-                #if value.shape.name == 'HORIZ_ELLIPSE':
-                    # self.cboCombo.setCurrentIndex
-                #if value.shape.name == 'VERT_ELLIPSE':
-                    # self.cboCombo.setCurrentIndex
-                #if value.shape.name == 'ARCH':
-                    # self.cboCombo.setCurrentIndex
+                # for horizontal and vertical elliptical and arch, combo gets standard sizes
+                if value.shape.name == 'HORIZ_ELLIPSE':
+                    self.cboCombo.setCurrentIndex(int(value.geometry3))
+                if value.shape.name == 'VERT_ELLIPSE':
+                    self.cboCombo.setCurrentIndex(int(value.geometry3))
+                if value.shape.name == 'ARCH':
+                    self.cboCombo.setCurrentIndex(int(value.geometry3))
 
                 if value.shape.name == 'IRREGULAR':
                     # for irregular, combo needs transect names, dialog opens transect buttons
@@ -90,8 +165,6 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
 
     def set_from(self, project):
         # section = core.swmm.project.CrossSection()
-        # section = project.find_section("CONTROLS")
-        # self.txtControls.setPlainText(str(section.get_text()))
         self.listWidget.addItems(('Rectangular', 'Trapezoidal', 'Triangular', 'Parabolic', 'Power',
                                   'Irregular', 'Circular', 'Force Main', 'Filled Circular',
                                   'Closed Rectangular', 'Horizontal Elliptical', 'Vertical Elliptical',
@@ -126,11 +199,83 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
 
         self.listWidget_currentItemChanged()
 
+
     def cmdOK_Clicked(self):
         # will need to do some validating, see dxsect.pas
-        section = self._parent.project.find_section("CONTROLS")
-        section.set_text(str(self.txtControls.toPlainText()))
+        cur = self.listWidget.currentItem()
+        current_selection = ""
+        if cur:
+            current_selection = str(cur.text())
+
+        section = self._parent.project.find_section("XSECTIONS")
+        link_list = section.value[0:]
+        for value in link_list:
+            if value.link == self.link_id:
+                # this is the link we are editing
+                value.barrels = self.sbxNumber.text()
+                value.geometry1 = self.txt1.text()
+                value.geometry2 = self.txt2.text()
+                value.geometry3 = self.txt3.text()
+                value.geometry4 = self.txt4.text()
+                value.transect = ''
+                value.curve = ''
+                XType = ''
+                if current_selection == 'Rectangular':
+                    XType = 'RECT_OPEN'
+                    value.geometry3 = int(self.cboCombo.currentIndex())
+                elif current_selection == 'Trapezoidal':
+                    XType = 'TRAPEZOIDAL'
+                elif current_selection == 'Triangular':
+                    XType = 'TRIANGULAR'
+                elif current_selection == 'Parabolic':
+                    XType = 'PARABOLIC'
+                elif current_selection == 'Power':
+                    XType = 'POWER'
+                elif current_selection == 'Irregular':
+                    XType = 'IRREGULAR'
+                    value.transect = self.cboCombo.itemText(self.cboCombo.currentIndex())
+                elif current_selection == 'Circular':
+                    XType = 'CIRCULAR'
+                elif current_selection == 'Force Main':
+                    XType = 'FORCE_MAIN'
+                elif current_selection == 'Filled Circular':
+                    XType = 'FILLED_CIRCULAR'
+                elif current_selection == 'Closed Rectangular':
+                    XType = 'RECT_CLOSED'
+                elif current_selection == 'Horizontal Elliptical':
+                    XType = 'HORIZ_ELLIPSE'
+                elif current_selection == 'Vertical Elliptical':
+                    XType = 'VERT_ELLIPSE'
+                elif current_selection == 'Arch':
+                    XType = 'ARCH'
+                elif current_selection == 'Rectangular Triangular':
+                    XType = 'RECT_TRIANGULAR'
+                elif current_selection == 'Rectangular Round':
+                    XType = 'RECT_ROUND'
+                elif current_selection == 'Modified Baskethandle':
+                    XType = 'MODBASKETHANDLE'
+                elif current_selection == 'Egg':
+                    XType = 'EGG'
+                elif current_selection == 'Horseshoe':
+                    XType = 'HORSESHOE'
+                elif current_selection == 'Gothic':
+                    XType = 'GOTHIC'
+                elif current_selection == 'Catenary':
+                    XType = 'CATENARY'
+                elif current_selection == 'Semi-Elliptical':
+                    XType = 'SEMIELLIPTICAL'
+                elif current_selection == 'Baskethandle':
+                    XType = 'BASKETHANDLE'
+                elif current_selection == 'Semi-Circular':
+                    XType = 'SEMICIRCULAR'
+                elif current_selection == 'Custom':
+                    XType = 'CUSTOM'
+                    value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
+                elif current_selection == 'Dummy':
+                    XType = 'DUMMY'
+                value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
         self.close()
+
 
     def cmdCancel_Clicked(self):
         self.close()
@@ -181,56 +326,6 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.lblCombo.setVisible(False)
         self.cboCombo.setVisible(False)
         self.btnDialog.setVisible(False)
-
-  # // Minor and major axis lengths for standard ellipsoid pipes
-  # // in both inches and mm
-  # EllipseMinorAxisIN: array[1..23] of Integer =
-  # (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116);
-  #
-  # EllipseMajorAxisIN: array[1..23] of Integer =
-  # (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180);
-  #
-  # EllipseMinorAxisMM: array[1..23] of Integer =
-  # (356,483,559,610,686,737,813,864,965,1092,1219,1346,1473,1600,
-  #  1727,1829,1956,2083,2210,2337,2464,2692,2946);
-  #
-  # EllipseMajorAxisMM: array[1..23] of Integer =
-  # (584,762,864,965,1067,1143,1245,1346,1524,1727,1930,2108,2311,
-  #  2489,2692,2870,3073,3251,3454,3632,3835,4216,4572);
-  #
-  #  ArchHeightIN: array[1..102] of String =
-  #  // Concrete
-  #  ('11','13.5','15.5','18','22.5','26.625','31.3125','36','40','45','54','62',
-  #   '72','77.5','87.125','96.875','106.5',
-  #  // Corrugated Steel - 2-2/3 x 1/2" corrugations
-  #   '13','15','18','20','24','29','33','38','43','47','52','57',
-  #  // Corrugated Steel - 3 x 1" corrugations
-  #   '31','36','41','46','51','55','59','63','67','71','75','79','83','87','91',
-  #  // Structural Plate - 18" Corner Radius
-  #   '55','57','59','61','63','65','67','69','71','73','75','77','79','81','83',
-  #   '85','87','89','91','93','95','97','100','101','103','105','107','109',
-  #   '111','113','115','118','119','121',
-  #  // Structural Plate - 31" Corner Radius
-  #   '112','114','116','118','120','122','124','126','128','130','132','134',
-  #   '136','138','140','142','144','146','148','150','152','154','156','158');
-  #
-  #   ArchWidthIN: array[1..102] of String =
-  #  // Concrete
-  #   ('18','22','26','28.5','36.25','43.75','51.125','58.5','65','73','88','102',
-  #   '115','122','138','154','168.75',
-  #  // Corrugated Steel - 2-2/3 x 1/2" corrugations
-  #    '17','21','24','28','35','42','49','57','64','71','77','83',
-  #  // Corrugated Steel - 3 x 1" corrugations
-  #    '40','46','53','60','66','73','81','87','95','103','112','117','128',
-  #    '137','142',
-  #  // Structural Plate - 18" Corner Radius
-  #    '73','76','81','84','87','92','95','98','103','106','112','114','117',
-  #    '123','128','131','137','139','142','148','150','152','154','161','167',
-  #    '169','171','178','184','186','188','190','197','199',
-  #  // Structural Plate - 31" Corner Radius
-  #    '159','162','168','170','173','179','184','187','190','195','198','204',
-  #    '206','209','215','217','223','225','231','234','236','239','245','247');
-
 
         if current_selection == 'Rectangular':
             XType = 'RECT_OPEN'
@@ -316,11 +411,14 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblBottom.setText('Circular pipe with a special friction loss equation for pressurized flow.')
-                # if SameText(Project.Options.Data[FORCE_MAIN_EQN_INDEX], 'H-W') then
-                #   ForceMainNote.Caption := '*Hazen-Williams C-factor'
-                # else if Uglobals.UnitSystem = usUS
-                # then ForceMainNote.Caption := '*Darcy-Weisbach roughness height (inches)'
-                # else ForceMainNote.Caption := '*Darcy-Weisbach roughness height (mm)'
+            dw_section = self._parent.project.find_section("OPTIONS")
+            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
+                self.lblFootnote.setText('*Hazen-Williams C-factor')
+            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
+                if units == 1:
+                    self.lblFootnote.setText('*Darcy-Weisbach roughness height (inches)')
+                else:
+                    self.lblFootnote.setText('*Darcy-Weisbach roughness height (mm)')
             self.lblFootnote.setVisible(True)
         elif current_selection == 'Filled Circular':
             XType = 'FILLED_CIRCULAR'
@@ -346,12 +444,16 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
+            self.cboCombo.clear()
+            self.cboCombo.addItem('Custom')
             if units == 1:
                 self.lblCombo.setText('Standard Sizes (inches)')
+                for index in range(0,self.ellipse_major_axis_in.__len__()):
+                    self.cboCombo.addItem(str(self.ellipse_minor_axis_in[index]) + ' x ' + str(self.ellipse_major_axis_in[index]))
             else:
                 self.lblCombo.setText('Standard Sizes (mm)')
-            self.cboCombo.clear()
-            self.cboCombo.addItems(('Custom','XX','XX'))
+                for index in range(0,self.ellipse_major_axis_mm.__len__()):
+                    self.cboCombo.addItem(str(self.ellipse_minor_axis_mm[index]) + ' x ' + str(self.ellipse_major_axis_mm[index]))
             self.lblBottom.setText('Closed horizontal elliptical pipe. Select a standard size or "Custom" to enter a custom height and width.')
         elif current_selection == 'Vertical Elliptical':
             XType = 'VERT_ELLIPSE'
@@ -361,12 +463,16 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
+            self.cboCombo.clear()
+            self.cboCombo.addItem('Custom')
             if units == 1:
                 self.lblCombo.setText('Standard Sizes (inches)')
+                for index in range(0,self.ellipse_major_axis_in.__len__()):
+                    self.cboCombo.addItem(str(self.ellipse_major_axis_in[index]) + ' x ' + str(self.ellipse_minor_axis_in[index]))
             else:
                 self.lblCombo.setText('Standard Sizes (mm)')
-            self.cboCombo.clear()
-            self.cboCombo.addItems(('Custom','XX','XX'))
+                for index in range(0,self.ellipse_major_axis_mm.__len__()):
+                    self.cboCombo.addItem(str(self.ellipse_major_axis_mm[index]) + ' x ' + str(self.ellipse_minor_axis_mm[index]))
             self.lblBottom.setText('Closed vertical elliptical pipe. Select a standard size or "Custom" to enter a custom height and width.')
         elif current_selection == 'Arch':
             XType = 'ARCH'
@@ -376,12 +482,19 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
+            self.cboCombo.clear()
+            self.cboCombo.addItem('Custom')
             if units == 1:
                 self.lblCombo.setText('Standard Sizes (inches)')
+                for index in range(0,self.arch_type.__len__()):
+                    self.cboCombo.addItem(str(self.arch_type[index]) + ' ' + str(self.arch_height_in[index] + ' x '
+                                            + str(self.arch_width_in[index])))
             else:
                 self.lblCombo.setText('Standard Sizes (mm)')
-            self.cboCombo.clear()
-            self.cboCombo.addItems(('Custom','XX','XX'))
+                for index in range(0,self.ellipse_major_axis_mm.__len__()):
+                    width_mm = str(float(self.arch_width_in[index]) * 25.4)
+                    height_mm = str(float(self.arch_height_in[index]) * 25.4)
+                    self.cboCombo.addItem(str(self.arch_type[index]) + ' ' + height_mm + ' x ' + width_mm)
             self.lblBottom.setText('Closed arch pipe. Select a standard size or "Custom" to enter a custom height and width.')
         elif current_selection == 'Rectangular Triangular':
             XType = 'RECT_TRIANGULAR'
@@ -477,7 +590,6 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setText('Shape Curve Name')
             self.cboCombo.clear()
-            # self.cboCombo.addItems('Custom','XX','XX') # need to set from available shape curves
             curves_section = self._parent.project.find_section("CURVES")
             curves_list = curves_section.value[0:]
             self.cboCombo.addItem("")
@@ -502,3 +614,34 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblBottom.setText('There are no parameters for a dummy cross-section.')
             self.lblDimensions.setVisible(False)
+
+    def cboCombo_currentIndexChanged(self):
+        cur = self.listWidget.currentItem()
+        current_selection = ""
+        if cur:
+            current_selection = str(cur.text())
+
+        units = 1
+        if units == 1:
+            factor = 12
+        else:
+            factor = 39.3701
+
+        if current_selection == 'Horizontal Elliptical':
+            selected_index = self.cboCombo.currentIndex()
+            if self.ellipse_minor_axis_in:
+                self.txt1.setText(str(float(self.ellipse_minor_axis_in[selected_index-1])/factor))
+                self.txt2.setText(str(float(self.ellipse_major_axis_in[selected_index-1])/factor))
+                self.txt3.setText(str(selected_index))
+        elif current_selection == 'Vertical Elliptical':
+            selected_index = self.cboCombo.currentIndex()
+            if self.ellipse_minor_axis_in:
+                self.txt1.setText(str(float(self.ellipse_major_axis_in[selected_index-1])/factor))
+                self.txt2.setText(str(float(self.ellipse_minor_axis_in[selected_index-1])/factor))
+                self.txt3.setText(str(selected_index))
+        elif current_selection == 'Arch':
+            selected_index = self.cboCombo.currentIndex()
+            if self.arch_height_in:
+                self.txt1.setText(str(float(self.arch_height_in[selected_index-1])/factor))
+                self.txt2.setText(str(float(self.arch_width_in[selected_index-1])/factor))
+                self.txt3.setText(str(selected_index))

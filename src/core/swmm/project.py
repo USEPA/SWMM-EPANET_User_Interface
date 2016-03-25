@@ -2,7 +2,7 @@
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
-from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
+from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
 from core.swmm.title import Title
 from core.swmm.options.general import General
 # from core.swmm.options.time_steps import TimeSteps
@@ -148,7 +148,7 @@ class Project(InputFile):
             ";;--------------\t------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # conduit, orifice, and weir cross-section geometry
 
-        # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
+        self.transects = Transects() # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
         self.controls = SectionAsListOf("[CONTROLS]", basestring)  # rules that control pump and regulator operation
         self.landuses = SectionAsListOf("[LANDUSES]", Landuse,

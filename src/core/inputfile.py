@@ -444,14 +444,17 @@ class SectionAsListOf(Section):
 
 
 class SectionAsListGroupByID(SectionAsListOf):
+    """
+    A Section that contains items which may each span more than one line.
+    Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
+    """
 
     def set_text(self, new_text):
         """
         Parse new_text into a section comment (column headers) followed by items of type self.list_type.
-        Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
-        new_text is split into items (comment plus lines starting with the same ID).
-        self.value is created as a list of self.list_type.
-        Each item text is made into an item_type using a constructor that takes a string, then added to self.value.
+        self.value is created as a list of items of self.list_type.
+        self.list_type was set by the SectionAsListOf constructor.
+        Each item text is made into a self.list_type using a constructor that takes a string, then added to self.value.
             Args:
                 new_text (str): Text of whole section to parse into comments and a list of items.
         """
@@ -476,10 +479,13 @@ class SectionAsListGroupByID(SectionAsListOf):
         item_id = ""
         for line in lines[next_index:]:
             if line.startswith(';'):    # Found a comment, must be the start of a new item
-                if item_text:
+                if len(item_id) > 0:
                     self.value.append(self.list_type(item_text))
-                item_text = line
-                item_id = ""
+                    item_text = ''
+                elif item_text:
+                    item_text += '\n'
+                item_text += line
+                item_id = ''
             else:
                 id_split = line.split()
                 if len(id_split) > 1:
@@ -493,7 +499,7 @@ class SectionAsListGroupByID(SectionAsListOf):
                                                                                             item_text,
                                                                                             str(ex),
                                                                                             str(traceback.print_exc())))
-                            item_text = ""          # clear the buffer after using it to create/append an item
+                            item_text = ''          # clear the buffer after using it to create/append an item
                     item_id = new_item_id
                     if item_text:
                         item_text += '\n'

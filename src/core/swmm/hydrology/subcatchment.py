@@ -129,49 +129,157 @@ class Subcatchment:
             Used only when initial_loadings are normalized to curb length."""
 
 
-class HortonInfiltration:
+class HortonInfiltration(Section):
     """Horton Infiltration parameters"""
-    def __init__(self):
-        self.max_rate = ''
-        """Maximum infiltration rate on Horton curve (in/hr or mm/hr)"""
 
-        self.min_rate = ''
-        """Minimum infiltration rate on Horton curve (in/hr or mm/hr)."""
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
 
-        self.decay = ''
-        """Decay rate constant of Horton curve (1/hr)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
 
-        self.dry_time = ''
-        """Time it takes for fully saturated soil to dry (days)."""
+            self.subcatchment = ''
+            """Subcatchment name"""
 
-        self.max_volume = ''
-        """Maximum infiltration volume possible (in or mm)."""
+            self.max_rate = ''
+            """Maximum infiltration rate on Horton curve (in/hr or mm/hr)"""
+
+            self.min_rate = ''
+            """Minimum infiltration rate on Horton curve (in/hr or mm/hr)."""
+
+            self.decay = ''
+            """Decay rate constant of Horton curve (1/hr)."""
+
+            self.dry_time = ''
+            """Time it takes for fully saturated soil to dry (days)."""
+
+            self.max_volume = ''
+            """Maximum infiltration volume possible (in or mm)."""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.subcatchment,
+                                        self.max_rate,
+                                        self.min_rate,
+                                        self.decay,
+                                        self.dry_time,
+                                        self.max_volume)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.subcatchment = fields[0]
+        if len(fields) > 1:
+            self.max_rate = fields[1]
+        if len(fields) > 2:
+            self.min_rate = fields[2]
+        if len(fields) > 3:
+            self.decay = fields[3]
+        if len(fields) > 4:
+            self.dry_time = fields[4]
+        if len(fields) > 5:
+            self.max_volume = fields[5]
 
 
-class GreenAmptInfiltration:
+class GreenAmptInfiltration(Section):
     """Green-Ampt Infiltration parameters"""
-    def __init__(self):
-        self.suction = ''
-        """Soil capillary suction (in or mm)."""
 
-        self.hydraulic_conductivity = ''
-        """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
-        self.initial_moisture_deficit = ''
-        """Initial soil moisture deficit (volume of voids / total volume)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.subcatchment = ''
+            """Subcatchment name"""
+
+            self.suction = ''
+            """Soil capillary suction (in or mm)."""
+
+            self.hydraulic_conductivity = ''
+            """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
+
+            self.initial_moisture_deficit = ''
+            """Initial soil moisture deficit (volume of voids / total volume)."""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.subcatchment,
+                                        self.suction,
+                                        self.hydraulic_conductivity,
+                                        self.initial_moisture_deficit)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.subcatchment = fields[0]
+        if len(fields) > 1:
+            self.suction = fields[1]
+        if len(fields) > 2:
+            self.hydraulic_conductivity = fields[2]
+        if len(fields) > 3:
+            self.initial_moisture_deficit = fields[3]
 
 
-class CurveNumberInfiltration:
+class CurveNumberInfiltration(Section):
     """Curve Number Infiltration parameters"""
-    def __init__(self):
-        self.curve_number = None
-        """SCS Curve Number"""
 
-        self.hydraulic_conductivity = ''
-        """Soil saturated hydraulic conductivity (no longer used for curve number infiltration)."""
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
-        self.dry_days = ''
-        """Time it takes for fully saturated soil to dry (days)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.subcatchment = ''
+            """Subcatchment name"""
+
+            self.curve_number = None
+            """SCS Curve Number"""
+
+            self.hydraulic_conductivity = ''
+            """Soil saturated hydraulic conductivity (no longer used for curve number infiltration)."""
+
+            self.dry_days = ''
+            """Time it takes for fully saturated soil to dry (days)."""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        inp += self.field_format.format(self.subcatchment,
+                                        self.curve_number,
+                                        self.hydraulic_conductivity,
+                                        self.dry_days)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.subcatchment = fields[0]
+        if len(fields) > 1:
+            self.curve_number = fields[1]
+        if len(fields) > 2:
+            self.hydraulic_conductivity = fields[2]
+        if len(fields) > 3:
+            self.dry_days = fields[3]
 
 
 class Groundwater(Section):

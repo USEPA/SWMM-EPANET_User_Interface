@@ -300,6 +300,38 @@ class Section(object):
         """
         return Section.match_omit(string_one.upper(), string_two.upper(), omit_chars.upper())
 
+    def matches(self, other):
+        """Test whether this section and other have the same contents ignoring case, whitespace, order of lines.
+        Args:
+            other: a Section or anything with a get_text method or will be converted to string with str()
+        """
+        if other is None:
+            return False
+        if hasattr(other, "get_text"):
+            other_str = other.get_text()
+        else:
+            other_str = str(other)
+        this_str = self.get_text()
+        # other_str and this_str are the raw versions, next we process out unimportant differences
+        if other_str and this_str:  # Both are not empty
+            # Split into lines, strip comments, and keep only lines that are not blank
+            # this_sorted = [s for s in this_str.upper().splitlines() if (s.strip() and not s.startswith(';'))]
+            # other_sorted = [s for s in other_str.upper().splitlines() if (s.strip() and not s.startswith(';'))]
+            this_sorted  = [s.split(';')[0].strip() for s in  this_str.upper().splitlines() if s.split(';')[0].strip()]
+            other_sorted = [s.split(';')[0].strip() for s in other_str.upper().splitlines() if s.split(';')[0].strip()]
+            if len(this_sorted) != len(other_sorted):
+                return False  # Different number of significant lines means they do not match.
+            # sort lines because we don't care if the same options are in a different order
+            this_sorted.sort()
+            other_sorted.sort()
+            for (this_line, other_line) in zip(this_sorted, other_sorted):
+                # Compare each line by replacing any group of spaces and tabs with one space
+                if ' '.join(this_line.split()) != ' '.join(other_line.split()):
+                    return False
+        elif other_str or this_str:
+            return False  # Only one is empty, so they don't match
+        return True
+
     def set_text_line(self, line):
         """Set part of this section from one line of text.
             Args:

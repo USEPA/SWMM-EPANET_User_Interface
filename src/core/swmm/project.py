@@ -2,7 +2,7 @@
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
-from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transect
+from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
 from core.swmm.title import Title
 from core.swmm.options.general import General
 # from core.swmm.options.time_steps import TimeSteps
@@ -19,7 +19,8 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoading
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoading, Coverages
+from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration, CurveNumberInfiltration
 from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
@@ -102,7 +103,10 @@ class Project(InputFile):
         self.adjustments = Adjustments()        # ADJUSTMENTS   monthly climate adjustments
         # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
-        # self.infiltration = [Section]           # INFILTRATION  subcatchment infiltration parameters
+
+        self.infiltration = SectionAsListOf("[INFILTRATION]", basestring)
+        # This is set to SectionAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration on read
+        # subcatchment infiltration parameters
 
         self.lid_controls = SectionAsListGroupByID("[LID_CONTROLS]", LIDControl,
                                                    ";;Name          \tType/Layer\tParameters\n"
@@ -148,7 +152,7 @@ class Project(InputFile):
             ";;--------------\t------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # conduit, orifice, and weir cross-section geometry
 
-        # self.transects = [Transect] # TRANSECTS # transect geometry for conduits with irregular cross-sections
+        self.transects = Transects() # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
         self.controls = SectionAsListOf("[CONTROLS]", basestring)  # rules that control pump and regulator operation
         self.landuses = SectionAsListOf("[LANDUSES]", Landuse,
@@ -172,7 +176,7 @@ class Project(InputFile):
             ";;--------------\t------\t----------\t----------\t----------\t----------\t----------\t----------------\t----------\t----------\t----------")
         # pollutant information
 
-        # self.coverages = [Section] # COVERAGES # assignment of land uses to subcatchments
+        self.coverages = Coverages() # COVERAGES # assignment of land uses to subcatchments
         self.treatment = SectionAsListOf("[TREATMENT]", Treatment,
                                          ";;Node          \tPollutant       \tFunction\n"
                                          ";;--------------\t----------------\t--------")
@@ -223,3 +227,21 @@ class Project(InputFile):
         # [TAGS]
         InputFile.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
+    def add_section(self, section_name, section_text, section_index):
+        if section_name == self.infiltration.SECTION_NAME:
+            if self.options.infiltration.upper() == "HORTON":
+                self.infiltration = SectionAsListOf(
+                    self.infiltration.SECTION_NAME, HortonInfiltration,
+                    ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
+                    ";;--------------\t----------\t----------\t----------\t----------\t----------")
+            elif self.options.infiltration.upper().startswith("GREEN"):
+                self.infiltration = SectionAsListOf(
+                    self.infiltration.SECTION_NAME, GreenAmptInfiltration,
+                    ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"
+                    ";;--------------\t----------\t----------\t----------")
+            elif self.options.infiltration.upper().startswith("CURVE"):
+                self.infiltration = SectionAsListOf(
+                    self.infiltration.SECTION_NAME, CurveNumberInfiltration,
+                    ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
+                    ";;--------------\t----------\t----------\t----------")
+        InputFile.add_section(self, section_name, section_text, section_index)

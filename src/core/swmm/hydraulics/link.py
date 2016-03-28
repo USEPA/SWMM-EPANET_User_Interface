@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 from core.inputfile import Section
 from core.metadata import Metadata
@@ -329,84 +330,148 @@ class CrossSection(Section):
 class Transects(Section):
 
     SECTION_NAME = "[TRANSECTS]"
+    DEFAULT_COMMENT = ";;Transect Data in HEC-2 format"
+
+    def __init__(self):
+        Section.__init__(self)
+        self.list_type = Transect
+
+    def set_text(self, new_text):
+        self.value = []
+        item_lines = []
+        found_non_comment = False
+        for line in new_text.splitlines():
+            if line.startswith(";;") or line.startswith('['):
+                self.set_comment_check_section(line)
+            elif line.startswith(';'):
+                if found_non_comment:  # This comment must be the start of the next one, so build the previous one
+                    try:
+                        make_one = self.list_type()
+                        make_one.set_text('\n'.join(item_lines))
+                        self.value.append(make_one)
+                        item_lines = []
+                        found_non_comment = False
+                    except Exception as e:
+                        print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+                item_lines.append(line)
+            elif not line.strip():  # add blank row as a comment item in self.value list
+                comment = Section()
+                comment.name = "Comment"
+                comment.value = ''
+                self.value.append(comment)
+            else:
+                item_lines.append(line)
+                found_non_comment = True
+
+        if found_non_comment:  # Found a final one that has not been built yet, build it now
+            try:
+                make_one = self.list_type()
+                make_one.set_text('\n'.join(item_lines))
+                self.value.append(make_one)
+            except Exception as e:
+                print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
     def get_text(self):
-        text_list = [self.name]
-        if self.comment:
-            text_list.append(self.comment)
-        for item in self.value:
-            text_list.append(str(item))
-        return '\n'.join(text_list)
+        """Contents of this section formatted for writing to file"""
+        if self.value or (self.comment and self.comment != self.DEFAULT_COMMENT):
+            text_list = [self.name]
+            if self.comment:
+                text_list.append(self.comment)
+            else:
+                text_list.append(self.DEFAULT_COMMENT)
+            for item in self.value:
+                item_str = str(item)
+                text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
+            return '\n'.join(text_list)
+        else:
+            return ''
 
 
 class Transect(Section):
     """the cross-section geometry of a natural channel or conduit with irregular shapes"""
-    def __init__(self):
-        self.name = ''
-        """Transect Name"""
 
-        self.description = None
-        """Optional description of the Transect"""
+    field_format_nc = "NC\t{:8}\t{:8}\t{:8}"
+    field_format_x1 = "X1\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
+    field_format_gr = "\t{:8}\t{:8}"
 
-        self.station_elevation = []  # list of (station, elevation) pairs
-        self.n_left = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
-        self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
-        self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
-        self.stations_modifier = ''  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
-        self.elevations_modifier = ''  # amount added (or subtracted) from the elevation of each station (ft or m).
-        self.meander_modifier = ''  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.name = ''
+            """Transect Name"""
+
+            self.n_left = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+            self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+            self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
+            self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
+            self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
+            self.stations_modifier = '0'  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
+            self.elevations_modifier = '0'  # amount added (or subtracted) from the elevation of each station (ft or m).
+            self.meander_modifier = '0'  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
+            self.stations = []          # list of (station, elevation) pairs
 
     def get_text(self):
-        inp = ''
-        if self.comment:
-            inp = self.comment + '\n'
-        if self.description:
-            inp = self.description + '\n'
-        if self.shape == CrossSectionShape.CUSTOM:
-            inp += self.field_format_custom.format(self.link, self.shape.name, self.geometry1, self.curve, self.barrels)
-        elif self.shape == CrossSectionShape.IRREGULAR:
-            inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
-        else:
-            inp += self.field_format_shape.format(self.link,
-                                                  self.shape.name,
-                                                  self.geometry1,
-                                                  self.geometry2,
-                                                  self.geometry3,
-                                                  self.geometry4,
-                                                  self.barrels,
-                                                  self.culvert_code)
-        return inp
+        lines = []
+        if len(self.stations) > 0:
+            if self.comment:
+                if self.comment.startswith(';'):
+                    lines.append(self.comment)
+                else:
+                    lines.append(';' + self.comment.replace('\n', '\n;'))
+            if self.n_left or self.n_right or self.n_channel:
+                if len(self.n_left) == 0:
+                    self.n_left = '0'
+                if len(self.n_right) == 0:
+                    self.n_right = '0'
+                if len(self.n_channel) == 0:
+                    self.n_channel = '0'
+                if len((self.n_left + self.n_right + self.n_channel).replace('.', '').replace('0', '')) > 0:
+                    lines.append(self.field_format_nc.format(self.n_left, self.n_right, self.n_channel))
+            lines.append(self.field_format_x1.format(self.name,
+                                                     len(self.stations),
+                                                     self.overbank_left,
+                                                     self.overbank_right,
+                                                     "0.0", "0.0",
+                                                     self.meander_modifier,
+                                                     self.stations_modifier,
+                                                     self.elevations_modifier))
+            line = "GR"
+            stations_this_line = 0
+            for station in self.stations:
+                line += self.field_format_gr.format(station[0], station[1])
+                stations_this_line += 1
+                if stations_this_line > 4:
+                    lines.append(line)
+                    line = "GR"
+                    stations_this_line = 0
+            if stations_this_line > 0:
+                lines.append(line)
+
+        return '\n'.join(lines)
 
     def set_text(self, new_text):
         self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 0:
-            self.link = fields[0]
-        if len(fields) > 1:
-            self.setattr_keep_type("shape", fields[1])
-        if self.shape == CrossSectionShape.CUSTOM:
+        for line in new_text.splitlines():
+            line = self.set_comment_check_section(line)
+            fields = line.split()
             if len(fields) > 2:
-                self.geometry1 = fields[2]
-            if len(fields) > 3:
-                self.curve = fields[3]
-            if len(fields) > 4:
-                self.barrels = fields[4]
-        elif self.shape == CrossSectionShape.IRREGULAR:
-            if len(fields) > 2:
-                self.transect = fields[2]
-        else:
-            if len(fields) > 2:
-                self.geometry1 = fields[2]
-            if len(fields) > 3:
-                self.geometry2 = fields[3]
-            if len(fields) > 4:
-                self.geometry3 = fields[4]
-            if len(fields) > 5:
-                self.geometry4 = fields[5]
-            if len(fields) > 6:
-                self.barrels = fields[6]
-            if len(fields) > 7:
-                self.culvert_code = fields[7]
+                if fields[0].upper() == "GR":
+                    for elev_index in range(1, len(fields) - 1, 2):
+                        self.stations.append((fields[elev_index], fields[elev_index + 1]))
+                elif len(fields) > 3:
+                    if fields[0].upper() == "NC":
+                        (self.n_left, self.n_right, self.n_channel) = fields[1:4]
+                    elif fields[0].upper() == "X1":
+                        self.name = fields[1]
+                        self.overbank_left = fields[3]
+                        if len(fields) > 4:
+                            self.overbank_right = fields[4]
+                        if len(fields) > 7:
+                            self.meander_modifier = fields[7]
+                        if len(fields) > 8:
+                            self.stations_modifier = fields[8]
+                        if len(fields) > 9:
+                            self.elevations_modifier = fields[9]

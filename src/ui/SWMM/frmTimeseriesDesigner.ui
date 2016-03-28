@@ -85,33 +85,24 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="3" column="0">
-        <widget class="QLabel" name="lblNote">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
+       <item row="2" column="0">
+        <widget class="QLineEdit" name="txtExternalFile"/>
+       </item>
+       <item row="2" column="3">
+        <widget class="QToolButton" name="btnFile">
          <property name="text">
-          <string>No dates means times are relative to start of simulation.</string>
+          <string>...</string>
          </property>
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QRadioButton" name="rbnTable">
+        <widget class="QRadioButton" name="rbnExternal">
          <property name="text">
-          <string>Enter time series data in the table below</string>
+          <string>Use external data file named below</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="4">
-        <widget class="QPushButton" name="btnView">
-         <property name="text">
-          <string>View</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
+       <item row="5" column="3">
         <spacer name="hspView">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -124,20 +115,29 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0">
-        <widget class="QRadioButton" name="rbnExternal">
+       <item row="5" column="4">
+        <widget class="QPushButton" name="btnView">
          <property name="text">
-          <string>Use external data file named below</string>
+          <string>View</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLineEdit" name="txtExternalFile"/>
-       </item>
-       <item row="1" column="3">
-        <widget class="QToolButton" name="btnFile">
+       <item row="5" column="0">
+        <widget class="QLabel" name="lblNote">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>...</string>
+          <string>No dates means times are relative to start of simulation.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QRadioButton" name="rbnTable">
+         <property name="text">
+          <string>Enter time series data in the table below</string>
          </property>
         </widget>
        </item>

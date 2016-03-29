@@ -230,7 +230,7 @@
            <widget class="QLineEdit" name="txtLeftSta"/>
           </item>
           <item row="6" column="1">
-           <widget class="QLineEdit" name="lblRightSta"/>
+           <widget class="QLineEdit" name="txtRightSta"/>
           </item>
           <item row="6" column="0">
            <widget class="QLabel" name="lblRight">

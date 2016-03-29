@@ -210,11 +210,11 @@ class CrossSectionShape(Enum):
     HORSESHOE = 17          # Full Height Gothic Full Height
     GOTHIC = 18             # Full Height
     CATENARY = 19           # Full Height
-    SEMIELLIPTICAL = 19     # Full Height
-    BASKETHANDLE = 20       # Full Height
-    SEMICIRCULAR = 21       # Full Height
-    IRREGULAR = 22          # TransectCoordinates (Natural Channel)
-    CUSTOM = 23             # Full Height, ShapeCurveCoordinates
+    SEMIELLIPTICAL = 20     # Full Height
+    BASKETHANDLE = 21       # Full Height
+    SEMICIRCULAR = 22       # Full Height
+    IRREGULAR = 23          # TransectCoordinates (Natural Channel)
+    CUSTOM = 24             # Full Height, ShapeCurveCoordinates
 
 
 class CrossSection(Section):
@@ -309,6 +309,8 @@ class CrossSection(Section):
                 self.curve = fields[3]
             if len(fields) > 4:
                 self.barrels = fields[4]
+                if len(fields) > 6 and fields[6].isdigit():  # Old interface saves CUSTOM barrels in this field.
+                    self.barrels = fields[6]
         elif self.shape == CrossSectionShape.IRREGULAR:
             if len(fields) > 2:
                 self.transect = fields[2]

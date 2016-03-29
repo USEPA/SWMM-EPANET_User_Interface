@@ -1,0 +1,29 @@
+[XSECTIONS]
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels    Culvert   
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ---------- ----------
+dummy            CIRCULAR     1.5              0          0          0          1
+1                CIRCULAR     1.5              0          0          0          1
+2                FORCE_MAIN   11               12         0          0          6                    
+3                FILLED_CIRCULAR 9                13         0          0          6                    
+4                RECT_CLOSED  14               15         0          0          5                    
+5                RECT_OPEN    1                4          2          0          1                    
+6                TRAPEZOIDAL  3                4          5          6          2                    
+7                TRIANGULAR   4                6          0          0          2                    
+8                HORIZ_ELLIPSE 1.167            1.917      1          0          9                    
+9                VERT_ELLIPSE 2.833            1.833      3          0          1                    
+10               ARCH         1.250            1.750      19         0          10                   
+11               PARABOLIC    5                7          0          0          3                    
+12               POWER        13               15         17         0          2                    
+13               RECT_TRIANGULAR 17               18         19         0          1                    
+14               RECT_ROUND   19               20         21         0          13                   
+15               MODBASKETHANDLE 21               22         23         0          20                   
+16               EGG          24               0          0          0          23                   
+17               HORSESHOE    26               0          0          0          25                   
+18               GOTHIC       47.00            0          0          0          1                    
+19               CATENARY     19               0          0          0          6                    
+20               SEMIELLIPTICAL 20               0          0          0          6
+21               BASKETHANDLE 17               0          0          0          7                    
+22               SEMICIRCULAR 1.222            0          0          0          11                   
+23               IRREGULAR    Tran1            0          0          0          1                    
+24               CUSTOM       2.833            curve1     0          0          4
+25               CUSTOM       2.933            curve2     5

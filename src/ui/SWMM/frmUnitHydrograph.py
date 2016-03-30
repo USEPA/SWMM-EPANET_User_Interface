@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from ui.SWMM.frmUnitHydrographDesigner import Ui_frmUnitHydrograph
 
 
@@ -86,8 +87,87 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
                     #     self.cboRain.setCurrentIndex(selected_index)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.title
-        section.title = self.txtTitle.toPlainText()
+        section = self._parent.project.find_section("HYDROGRAPHS")
+        hydrograph_list = section.value[0:]
+        for hydrograph in hydrograph_list:
+            if hydrograph.group_name == self.hydrograph_id:
+                # this is the unit hydrograph group
+                hydrograph.group_name = self.txtGroup.text()
+                hydrograph.rain_gage_id = self.cboRain.currentText()
+                if self.cboHydrograph.currentIndex() == 0:
+                    month = 'All'
+                elif self.cboHydrograph.currentIndex() == 1:
+                    month = 'Jan'
+                elif self.cboHydrograph.currentIndex() == 2:
+                    month = 'Feb'
+                elif self.cboHydrograph.currentIndex() == 3:
+                    month = 'Mar'
+                elif self.cboHydrograph.currentIndex() == 4:
+                    month = 'Apr'
+                elif self.cboHydrograph.currentIndex() == 5:
+                    month = 'May'
+                elif self.cboHydrograph.currentIndex() == 6:
+                    month = 'Jun'
+                elif self.cboHydrograph.currentIndex() == 7:
+                    month = 'Jul'
+                elif self.cboHydrograph.currentIndex() == 8:
+                    month = 'Aug'
+                elif self.cboHydrograph.currentIndex() == 9:
+                    month = 'Sep'
+                elif self.cboHydrograph.currentIndex() == 10:
+                    month = 'Oct'
+                elif self.cboHydrograph.currentIndex() == 11:
+                    month = 'Nov'
+                elif self.cboHydrograph.currentIndex() == 12:
+                    month = 'Dec'
+                month_found = False
+                for value in hydrograph.value:
+                    if value.hydrograph_month == month:
+                        # this is one we want to save
+                        month_found = True
+                        row = 2
+                        if value.term == 'Short':
+                            row = 0
+                        elif value.term == 'Medium':
+                            row = 1
+                        value.response_ratio = self.tblPack.item(row,0).text()
+                        value.time_to_peak = self.tblPack.item(row,1).text()
+                        value.recession_limb_ratio = self.tblPack.item(row,2).text()
+                        value.initial_abstraction_depth = self.tblAbstraction.item(row,0).text()
+                        value.initial_abstraction_rate = self.tblAbstraction.item(row,1).text()
+                        value.initial_abstraction_amount = self.tblAbstraction.item(row,2).text()
+                if month_found == False:
+                    # add new records for this month
+                    value1 = UnitHydrographEntry()
+                    value1.hydrograph_month = month
+                    value1.term = 'Short'
+                    value1.response_ratio = self.tblPack.item(0,0).text()
+                    value1.time_to_peak = self.tblPack.item(0,1).text()
+                    value1.recession_limb_ratio = self.tblPack.item(0,2).text()
+                    value1.initial_abstraction_depth = self.tblAbstraction.item(0,0).text()
+                    value1.initial_abstraction_rate = self.tblAbstraction.item(0,1).text()
+                    value1.initial_abstraction_amount = self.tblAbstraction.item(0,2).text()
+                    hydrograph.value.append(value1)
+                    value2 = UnitHydrographEntry()
+                    value2.hydrograph_month = month
+                    value2.term = 'Medium'
+                    value2.response_ratio = self.tblPack.item(1,0).text()
+                    value2.time_to_peak = self.tblPack.item(1,1).text()
+                    value2.recession_limb_ratio = self.tblPack.item(1,2).text()
+                    value2.initial_abstraction_depth = self.tblAbstraction.item(1,0).text()
+                    value2.initial_abstraction_rate = self.tblAbstraction.item(1,1).text()
+                    value2.initial_abstraction_amount = self.tblAbstraction.item(1,2).text()
+                    hydrograph.value.append(value2)
+                    value3 = UnitHydrographEntry()
+                    value3.hydrograph_month = month
+                    value3.term = 'Long'
+                    value3.response_ratio = self.tblPack.item(2,0).text()
+                    value3.time_to_peak = self.tblPack.item(2,1).text()
+                    value3.recession_limb_ratio = self.tblPack.item(2,2).text()
+                    value3.initial_abstraction_depth = self.tblAbstraction.item(2,0).text()
+                    value3.initial_abstraction_rate = self.tblAbstraction.item(2,1).text()
+                    value3.initial_abstraction_amount = self.tblAbstraction.item(2,2).text()
+                    hydrograph.value.append(value3)
         self.close()
 
     def cmdCancel_Clicked(self):

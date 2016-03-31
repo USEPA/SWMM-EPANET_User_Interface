@@ -129,18 +129,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         row = self.tblControls.currentRow()
         lid_selected = str(self.tblControls.item(row,0).text())
         # edit the lid for this subcatchment and this lid name
-        number_replicate_units = self.tblControls.item(row,5).text()
-        area_each_unit = self.tblControls.item(row,6).text()
-        top_width_overland_flow_surface = self.tblControls.item(row,7).text()
-        percent_initially_saturated = self.tblControls.item(row,8).text()
-        percent_impervious_area_treated = self.tblControls.item(row,3).text()
-        detailed_report_file = self.tblControls.item(row,4).text()
-        send_outflow_pervious_area = self.tblControls.item(row,9).text()
-
-        self._frmLIDUsage.set_edit(self._parent.project, row, lid_selected,
-                 number_replicate_units, area_each_unit, top_width_overland_flow_surface,
-                 percent_initially_saturated, percent_impervious_area_treated,
-                 detailed_report_file, send_outflow_pervious_area)
+        self._frmLIDUsage.set_edit(self._parent.project, self, row, lid_selected)
         self._frmLIDUsage.show()
 
     def btnDelete_Clicked(self):

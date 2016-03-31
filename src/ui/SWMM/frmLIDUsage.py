@@ -33,10 +33,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.txtDrain.setText('')
         self.txtFile.setText('')
 
-    def set_edit(self, project, row_id, lid_selected,
-                 number_replicate_units, area_each_unit, top_width_overland_flow_surface,
-                 percent_initially_saturated, percent_impervious_area_treated,
-                 detailed_report_file, send_outflow_pervious_area):
+    def set_edit(self, project, parent_form, row_id, lid_selected):
         section = project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
@@ -49,7 +46,14 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
                 selected_index = item_count
         self.cboLIDControl.setCurrentIndex(selected_index)
 
-        # number_replicate_units = self.parent.tblControls.item(row_id,5).text()
+        number_replicate_units = parent_form.tblControls.item(row_id,5).text()
+        area_each_unit = parent_form.tblControls.item(row_id,6).text()
+        top_width_overland_flow_surface = parent_form.tblControls.item(row_id,7).text()
+        percent_initially_saturated = parent_form.tblControls.item(row_id,8).text()
+        percent_impervious_area_treated = parent_form.tblControls.item(row_id,3).text()
+        detailed_report_file = parent_form.tblControls.item(row_id,4).text()
+        send_outflow_pervious_area = parent_form.tblControls.item(row_id,9).text()
+
         self.lblPercent.setText('0.000')
         self.spxUnits.setValue(int(number_replicate_units))
         self.txtArea.setText(area_each_unit)

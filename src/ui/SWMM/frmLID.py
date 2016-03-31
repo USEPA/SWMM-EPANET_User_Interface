@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from core.swmm.hydrology.lidcontrol import LIDType
 from ui.SWMM.frmLIDDesigner import Ui_frmLID
 
 
@@ -13,17 +14,180 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboLIDType.currentIndexChanged.connect(self.cboLIDType_currentIndexChanged)
-        self.set_from(parent.project)
         self._parent = parent
+        self.lid_id = ''
+        # set for first lid control for now
+        self.set_from(parent.project,'rg')
 
-    def set_from(self, project):
-        section = project.title
-        # self.txtTitle.setPlainText(project.title.title)
+    def set_from(self, project, lid_id):
         self.cboLIDType_currentIndexChanged(0)
+        # section = core.swmm.project.LIDControl
+        section = project.find_section("LID_CONTROLS")
+        lid_list = section.value[0:]
+        # assume we want to edit the first one
+        self.lid_id = lid_id
+        for lid in lid_list:
+            if lid.control_name == lid_id:
+                # this is the lid control we want to edit
+                self.txtName.setText(lid.control_name)
+                if lid.lid_type == LIDType.BC:
+                    self.cboLIDType.setCurrentIndex(0)
+                elif lid.lid_type == LIDType.RG:
+                    self.cboLIDType.setCurrentIndex(1)
+                elif lid.lid_type == LIDType.GR:
+                    self.cboLIDType.setCurrentIndex(2)
+                elif lid.lid_type == LIDType.IT:
+                    self.cboLIDType.setCurrentIndex(3)
+                elif lid.lid_type == LIDType.PP:
+                    self.cboLIDType.setCurrentIndex(4)
+                elif lid.lid_type == LIDType.RB:
+                    self.cboLIDType.setCurrentIndex(5)
+                elif lid.lid_type == LIDType.RD:
+                    self.cboLIDType.setCurrentIndex(6)
+                elif lid.lid_type == LIDType.VS:
+                    self.cboLIDType.setCurrentIndex(7)
+
+                # if lid.has_surface_layer:
+                self.txtSurface1.setText(lid.surface_layer_storage_depth)
+                self.txtSurface2.setText(lid.surface_layer_vegetative_cover_fraction)
+                self.txtSurface3.setText(lid.surface_layer_surface_roughness)
+                self.txtSurface4.setText(lid.surface_layer_surface_slope)
+                self.txtSurface5.setText(lid.surface_layer_swale_side_slope)
+                # if lid.has_pavement_layer:
+                self.txtPavement1.setText(lid.pavement_layer_thickness)
+                self.txtPavement2.setText(lid.pavement_layer_void_ratio)
+                self.txtPavement3.setText(lid.pavement_layer_impervious_surface_fraction)
+                self.txtPavement4.setText(lid.pavement_layer_permeability)
+                self.txtPavement5.setText(lid.pavement_layer_clogging_factor)
+                # if lid.has_soil_layer:
+                self.txtSoil1.setText(lid.soil_layer_thickness)
+                self.txtSoil2.setText(lid.soil_layer_porosity)
+                self.txtSoil3.setText(lid.soil_layer_field_capacity)
+                self.txtSoil4.setText(lid.soil_layer_wilting_point)
+                self.txtSoil5.setText(lid.soil_layer_conductivity)
+                self.txtSoil6.setText(lid.soil_layer_conductivity_slope)
+                self.txtSoil7.setText(lid.soil_layer_suction_head)
+                # if lid.has_storage_layer:
+                self.txtStorage1.setText(lid.storage_layer_height)
+                self.txtStorage2.setText(lid.storage_layer_void_ratio)
+                self.txtStorage3.setText(lid.storage_layer_filtration_rate)
+                self.txtStorage4.setText(lid.storage_layer_clogging_factor)
+                # if lid.has_underdrain_system:
+                self.txtDrain1.setText(lid.drain_coefficient)
+                self.txtDrain2.setText(lid.drain_exponent)
+                self.txtDrain3.setText(lid.drain_offset_height)
+                self.txtDrain4.setText(lid.drain_delay)
+                # if lid.has_drainmat_system:
+                self.txtDrain1.setText(lid.drainmat_thickness)
+                self.txtDrain2.setText(lid.drainmat_void_fraction)
+                self.txtDrain3.setText(lid.drainmat_roughness)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.title
-        section.title = self.txtTitle.toPlainText()
+        section = self._parent.project.find_section("LID_CONTROLS")
+        lid_list = section.value[0:]
+        for lid in lid_list:
+            if lid.control_name == self.lid_id:
+                # this is the lid
+                lid.control_name = self.txtName.text()
+                if self.cboLIDType.currentIndex() == 0:
+                    lid.lid_type = LIDType.BC
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = True
+                    lid.has_storage_layer = True
+                    lid.has_underdrain_system = True
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 1:
+                    lid.lid_type = LIDType.RG
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = True
+                    lid.has_storage_layer = False
+                    lid.has_underdrain_system = False
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 2:
+                    lid.lid_type = LIDType.GR
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = True
+                    lid.has_storage_layer = False
+                    lid.has_underdrain_system = False
+                    lid.has_drainmat_system = True
+                elif self.cboLIDType.currentIndex() == 3:
+                    lid.lid_type = LIDType.IT
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = True
+                    lid.has_storage_layer = False
+                    lid.has_underdrain_system = True
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 4:
+                    lid.lid_type = LIDType.PP
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = True
+                    lid.has_soil_layer = True
+                    lid.has_storage_layer = True
+                    lid.has_underdrain_system = True
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 5:
+                    lid.lid_type = LIDType.RB
+                    lid.has_surface_layer = False
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = False
+                    lid.has_storage_layer = True
+                    lid.has_underdrain_system = True
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 6:
+                    lid.lid_type = LIDType.RD
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = False
+                    lid.has_storage_layer = False
+                    lid.has_underdrain_system = True
+                    lid.has_drainmat_system = False
+                elif self.cboLIDType.currentIndex() == 7:
+                    lid.lid_type = LIDType.VS
+                    lid.has_surface_layer = True
+                    lid.has_pavement_layer = False
+                    lid.has_soil_layer = False
+                    lid.has_storage_layer = False
+                    lid.has_underdrain_system = False
+                    lid.has_drainmat_system = False
+
+                # if lid.has_surface_layer:
+                lid.surface_layer_storage_depth = self.txtSurface1.text()
+                lid.surface_layer_vegetative_cover_fraction = self.txtSurface2.text()
+                lid.surface_layer_surface_roughness = self.txtSurface3.text()
+                lid.surface_layer_surface_slope = self.txtSurface4.text()
+                lid.surface_layer_swale_side_slope = self.txtSurface5.text()
+                # if lid.has_pavement_layer:
+                lid.pavement_layer_thickness = self.txtPavement1.text()
+                lid.pavement_layer_void_ratio = self.txtPavement2.text()
+                lid.pavement_layer_impervious_surface_fraction = self.txtPavement3.text()
+                lid.pavement_layer_permeability = self.txtPavement4.text()
+                lid.pavement_layer_clogging_factor = self.txtPavement5.text()
+                # if lid.has_soil_layer:
+                lid.soil_layer_thickness = self.txtSoil1.text()
+                lid.soil_layer_porosity = self.txtSoil2.text()
+                lid.soil_layer_field_capacity = self.txtSoil3.text()
+                lid.soil_layer_wilting_point = self.txtSoil4.text()
+                lid.soil_layer_conductivity = self.txtSoil5.text()
+                lid.soil_layer_conductivity_slope = self.txtSoil6.text()
+                lid.soil_layer_suction_head = self.txtSoil7.text()
+                # if lid.has_storage_layer:
+                lid.storage_layer_height = self.txtStorage1.text()
+                lid.storage_layer_void_ratio = self.txtStorage2.text()
+                lid.storage_layer_filtration_rate = self.txtStorage3.text()
+                lid.storage_layer_clogging_factor = self.txtStorage4.text()
+                # if lid.has_underdrain_system:
+                lid.drain_coefficient = self.txtDrain1.text()
+                lid.drain_exponent = self.txtDrain2.text()
+                lid.drain_offset_height = self.txtDrain3.text()
+                lid.drain_delay = self.txtDrain4.text()
+                # if lid.has_drainmat_system:
+                lid.drainmat_thickness = self.txtDrain1.text()
+                lid.drainmat_void_fraction = self.txtDrain2.text()
+                lid.drainmat_roughness = self.txtDrain3.text()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -3,13 +3,16 @@ from core.inputfile import Section
 
 
 class LIDType(Enum):
-    # BC for bio-retention cell; PP for porous pavement; IT for infiltration trench; RB for rain barrel;
-        # VS for vegetative swale.
+    # BC for bio-retention cell; RG for rain garden; GR for green roof; PP for porous pavement;
+        # IT for infiltration trench; RB for rain barrel;RD for rooftup disconnect; VS for vegetative swale.
     BC = 1
-    PP = 2
-    IT = 3
-    RB = 4
-    VS = 5
+    RG = 2
+    GR = 3
+    IT = 4
+    PP = 5
+    RB = 6
+    RD = 7
+    VS = 8
 
 
 class LIDControl(Section):
@@ -50,7 +53,12 @@ class LIDControl(Section):
          "drain_coefficient",
          "drain_exponent",
          "drain_offset_height",
-         "drain_delay"))
+         "drain_delay"),
+        ("has_drainmat_system",
+         "DRAINMAT",
+         "drainmat_thickness",
+         "drainmat_void_fraction",
+         "drainmat_roughness"))
 
     def __init__(self, new_text=None):
         Section.__init__(self)
@@ -75,6 +83,9 @@ class LIDControl(Section):
 
         self.has_underdrain_system = False
         """does lid have underdrain system"""
+
+        self.has_drainmat_system = False
+        """does lid have drainmat system"""
 
         self.surface_layer_storage_depth = "0.0"
         """When confining walls or berms are present this is the maximum depth to
@@ -158,6 +169,12 @@ class LIDControl(Section):
 
         self.drain_delay = "0.0"
         """Number of dry weather hours that must elapse before the drain line in a rain barrel is opened"""
+
+        self.drainmat_thickness = "0.0"
+
+        self.drainmat_void_fraction = "0.5"
+
+        self.drainmat_roughness = "0.1"
 
         if new_text:
             self.set_text(new_text)

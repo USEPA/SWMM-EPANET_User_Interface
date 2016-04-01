@@ -38,48 +38,8 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                 led = QtGui.QLineEdit(value.control_name)
                 self.tblControls.setItem(lid_count,0,QtGui.QTableWidgetItem(str(led.text())))
 
-                lid_name = value.control_name
-                lid_control_section = self._parent.project.find_section("LID_CONTROLS")
-                lid_control_list = lid_control_section.value[0:]
-                for lid in lid_control_list:
-                    if lid.control_name == value.control_name:
-                        # this is the lid
-                        if lid.lid_type == LIDType.BC:
-                            lid_name = 'Bio-Retention'
-                        elif lid.lid_type == LIDType.RG:
-                            lid_name = 'Rain Garden'
-                        elif lid.lid_type == LIDType.GR:
-                            lid_name = 'Green Roof'
-                        elif lid.lid_type == LIDType.IT:
-                            lid_name = 'Infiltration Trench'
-                        elif lid.lid_type == LIDType.PP:
-                            lid_name = 'Permeable Pavement'
-                        elif lid.lid_type == LIDType.RB:
-                            lid_name = 'Rain Barrel'
-                        elif lid.lid_type == LIDType.RD:
-                            lid_name = 'Rooftop Disconnection'
-                        elif lid.lid_type == LIDType.VS:
-                            lid_name = 'Vegetative Swale'
-                led = QtGui.QLineEdit(lid_name)
-                self.tblControls.setItem(lid_count,1,QtGui.QTableWidgetItem(str(led.text())))
-
-                area = float(value.number_replicate_units) * float(value.area_each_unit)
-                units = 1
-                if units == 1:
-                    conversion_factor = 43560.0
-                else:
-                    conversion_factor = 10000.0
-
-                subcatchment_area = core.swmm.project.Subcatchment(subcatchment_id).area
-                if len(subcatchment_area) < 1:
-                    subcatchment_area = 10.0
-                elif subcatchment_area <= 0:
-                    subcatchment_area = 10.0
-
-                subcatchment_area = float(subcatchment_area) * conversion_factor
-
-                led = QtGui.QLineEdit('{:5.3f}'.format(100.0 * area/subcatchment_area))
-                self.tblControls.setItem(lid_count,2,QtGui.QTableWidgetItem(str(led.text())))
+                self.SetLongLIDName(value.control_name,lid_count)
+                self.SetAreaTerm(subcatchment_id, lid_count, value.number_replicate_units, value.area_each_unit)
 
                 led = QtGui.QLineEdit(str(value.percent_impervious_area_treated))
                 self.tblControls.setItem(lid_count,3,QtGui.QTableWidgetItem(str(led.text())))
@@ -110,12 +70,43 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         self.tblControls.setColumnHidden(10,True)
 
     def cmdOK_Clicked(self):
+        row_count = self.tblControls.rowCount()
         section = self._parent.project.find_section("LID_USAGE")
         lid_list = section.value[0:]
-        lid_count = -1
+        lid_count = 0
         for value in lid_list:
             if value.subcatchment_name == self.subcatchment_id:
                 lid_count += 1
+                if lid_count <= row_count:
+                    # put this lid back in this spot
+                    value.control_name = self.tblControls.item(lid_count-1,0).text()
+                    value.percent_impervious_area_treated = self.tblControls.item(lid_count-1,3).text()
+                    value.detailed_report_file = self.tblControls.item(lid_count-1,4).text()
+                    value.number_replicate_units = self.tblControls.item(lid_count-1,5).text()
+                    value.area_each_unit = self.tblControls.item(lid_count-1,6).text()
+                    value.top_width_overland_flow_surface = self.tblControls.item(lid_count-1,7).text()
+                    value.percent_initially_saturated = self.tblControls.item(lid_count-1,8).text()
+                    value.send_outflow_pervious_area = self.tblControls.item(lid_count-1,9).text()
+                    value.subcatchment_drains_to = self.tblControls.item(lid_count-1,10).text()
+                if lid_count > row_count:
+                    # we removed some rows, remove from the lid list
+                    section.value.remove(value)
+        if row_count > lid_count:
+            # we added some rows, need to add to the lid list
+            for row in range(self.tblControls.rowCount()):
+                if row > lid_count-1:
+                    new_lid = core.swmm.project.LIDUsage()
+                    new_lid.subcatchment_name = self.subcatchment_id
+                    new_lid.control_name = self.tblControls.item(row,0).text()
+                    new_lid.percent_impervious_area_treated = self.tblControls.item(row,3).text()
+                    new_lid.detailed_report_file = self.tblControls.item(row,4).text()
+                    new_lid.number_replicate_units = self.tblControls.item(row,5).text()
+                    new_lid.area_each_unit = self.tblControls.item(row,6).text()
+                    new_lid.top_width_overland_flow_surface = self.tblControls.item(row,7).text()
+                    new_lid.percent_initially_saturated = self.tblControls.item(row,8).text()
+                    new_lid.send_outflow_pervious_area = self.tblControls.item(row,9).text()
+                    new_lid.subcatchment_drains_to = self.tblControls.item(row,10).text()
+                    section.value.append(new_lid)
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -124,7 +115,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
     def btnAdd_Clicked(self):
         self._frmLIDUsage = frmLIDUsage(self._parent)
         # add to this subcatchment
-        self._frmLIDUsage.set_add(self._parent.project,self.subcatchment_id)
+        self._frmLIDUsage.set_add(self._parent.project, self, self.subcatchment_id)
         self._frmLIDUsage.show()
 
     def btnEdit_Clicked(self):
@@ -138,3 +129,49 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
     def btnDelete_Clicked(self):
         row = self.tblControls.currentRow()
         self.tblControls.removeRow(row)
+
+    def SetLongLIDName(self, short_name, row):
+        lid_name = short_name
+        lid_control_section = self._parent.project.find_section("LID_CONTROLS")
+        lid_control_list = lid_control_section.value[0:]
+        for lid in lid_control_list:
+            if lid.control_name == short_name:
+                # this is the lid
+                if lid.lid_type == LIDType.BC:
+                    lid_name = 'Bio-Retention'
+                elif lid.lid_type == LIDType.RG:
+                    lid_name = 'Rain Garden'
+                elif lid.lid_type == LIDType.GR:
+                    lid_name = 'Green Roof'
+                elif lid.lid_type == LIDType.IT:
+                    lid_name = 'Infiltration Trench'
+                elif lid.lid_type == LIDType.PP:
+                    lid_name = 'Permeable Pavement'
+                elif lid.lid_type == LIDType.RB:
+                    lid_name = 'Rain Barrel'
+                elif lid.lid_type == LIDType.RD:
+                    lid_name = 'Rooftop Disconnection'
+                elif lid.lid_type == LIDType.VS:
+                    lid_name = 'Vegetative Swale'
+        led = QtGui.QLineEdit(lid_name)
+        self.tblControls.setItem(row,1,QtGui.QTableWidgetItem(str(led.text())))
+
+    def SetAreaTerm(self, subcatchment_id, row, number_replicate_units, area_each_unit):
+        area = float(number_replicate_units) * float(area_each_unit)
+
+        units = 1
+        if units == 1:
+            conversion_factor = 43560.0
+        else:
+            conversion_factor = 10000.0
+
+        subcatchment_area = core.swmm.project.Subcatchment(subcatchment_id).area
+        if len(subcatchment_area) < 1:
+            subcatchment_area = 10.0
+        elif subcatchment_area <= 0:
+            subcatchment_area = 10.0
+
+        subcatchment_area = float(subcatchment_area) * conversion_factor
+
+        led = QtGui.QLineEdit('{:5.3f}'.format(100.0 * area/subcatchment_area))
+        self.tblControls.setItem(row,2,QtGui.QTableWidgetItem(str(led.text())))

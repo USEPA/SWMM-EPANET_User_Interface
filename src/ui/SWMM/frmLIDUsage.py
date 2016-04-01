@@ -21,8 +21,10 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.btnClear.clicked.connect(self.btnClear_clicked)
         # self.set_from(parent.parent.project)
         self.subcatchment_id = ''
+        self.row_id = -1
 
-    def set_add(self, project, subcatchment_id):
+    def set_add(self, project, parent_form, subcatchment_id):
+        self.parent_form = parent_form
         section = project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
@@ -39,6 +41,8 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.txtFile.setText('')
 
     def set_edit(self, project, parent_form, row_id, lid_selected, subcatchment_id):
+        self.row_id = row_id
+        self.parent_form = parent_form
         section = project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
@@ -77,8 +81,49 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.calculate_area()
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("CONTROLS")
-        section.set_text(str(self.txtControls.toPlainText()))
+        lid_control = self.cboLIDControl.currentText()
+        percent_impervious_area_treated =  self.txtTreated.text()
+        detailed_report_file = self.txtFile.text()
+        number_replicate_units = self.spxUnits.value()
+        area_each_unit = self.txtArea.text()
+        top_width_overland_flow_surface = self.txtWidth.text()
+        percent_initially_saturated = self.txtSat.text()
+        subcatchment_drains_to = self.txtDrain.text()
+        if self.cbkReturn.isChecked():
+            send_outflow_pervious_area = 1
+        else:
+            send_outflow_pervious_area = 0
+
+        if self.row_id < 0:
+            # this is a new lid usage, put after all others
+            self.row_id = self.parent_form.tblControls.rowCount()
+            self.parent_form.tblControls.setRowCount(self.parent_form.tblControls.rowCount()+1)
+
+        if self.row_id >= 0:
+            # editing an existing lid usage, put back
+            led = QtGui.QLineEdit(lid_control)
+            self.parent_form.tblControls.setItem(self.row_id,0,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(percent_impervious_area_treated)
+            self.parent_form.tblControls.setItem(self.row_id,3,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(detailed_report_file)
+            self.parent_form.tblControls.setItem(self.row_id,4,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(str(number_replicate_units))
+            self.parent_form.tblControls.setItem(self.row_id,5,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(area_each_unit)
+            self.parent_form.tblControls.setItem(self.row_id,6,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(top_width_overland_flow_surface)
+            self.parent_form.tblControls.setItem(self.row_id,7,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(percent_initially_saturated)
+            self.parent_form.tblControls.setItem(self.row_id,8,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(str(send_outflow_pervious_area))
+            self.parent_form.tblControls.setItem(self.row_id,9,QtGui.QTableWidgetItem(str(led.text())))
+            led = QtGui.QLineEdit(subcatchment_drains_to)
+            self.parent_form.tblControls.setItem(self.row_id,10,QtGui.QTableWidgetItem(str(led.text())))
+
+            # recalculate area and lid name
+            self.parent_form.SetLongLIDName(lid_control,self.row_id)
+            self.parent_form.SetAreaTerm(self.subcatchment_id, self.row_id, number_replicate_units, area_each_unit)
+
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -130,8 +175,9 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         else:
             number_replicate_units = self.spxUnits.value()
             area_each_unit = self.txtArea.text()
-            area = float(number_replicate_units) * float(area_each_unit)
-            self.lblPercent.setText('{:5.3f}'.format(100.0 * area/subcatchment_area))
+            if len(area_each_unit) > 0:
+                area = float(number_replicate_units) * float(area_each_unit)
+                self.lblPercent.setText('{:5.3f}'.format(100.0 * area/subcatchment_area))
 
     def spxUnits_valueChanged(self):
         self.calculate_area()

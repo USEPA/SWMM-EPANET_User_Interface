@@ -434,6 +434,9 @@ class LIDUsage(Section):
             self.detailed_report_file = ""
             """Name of an optional file where detailed time series results for the LID will be written"""
 
+            self.subcatchment_drains_to = ""
+            """ID of a subcatchment that this LID drains to"""
+
     def get_text(self):
         inp = ''
         if self.comment:

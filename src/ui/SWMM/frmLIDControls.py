@@ -28,7 +28,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         # assume we want to edit the first one
         self.subcatchment_id = subcatchment_id
         self.setWindowTitle("LID Controls for Subcatchment " + subcatchment_id)
-        self.tblControls.setColumnCount(self.tblControls.columnCount()+5)  # add for hidden columns
+        self.tblControls.setColumnCount(self.tblControls.columnCount()+6)  # add for hidden columns
         lid_count = -1
         for value in lid_list:
             if value.subcatchment_name == subcatchment_id:
@@ -98,6 +98,8 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                 self.tblControls.setItem(lid_count,8,QtGui.QTableWidgetItem(str(led.text())))
                 led = QtGui.QLineEdit(str(value.send_outflow_pervious_area))
                 self.tblControls.setItem(lid_count,9,QtGui.QTableWidgetItem(str(led.text())))
+                led = QtGui.QLineEdit(str(value.subcatchment_drains_to))
+                self.tblControls.setItem(lid_count,10,QtGui.QTableWidgetItem(str(led.text())))
 
         self.tblControls.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tblControls.setColumnHidden(5,True)
@@ -105,6 +107,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         self.tblControls.setColumnHidden(7,True)
         self.tblControls.setColumnHidden(8,True)
         self.tblControls.setColumnHidden(9,True)
+        self.tblControls.setColumnHidden(10,True)
 
     def cmdOK_Clicked(self):
         section = self._parent.project.find_section("LID_USAGE")
@@ -129,7 +132,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         row = self.tblControls.currentRow()
         lid_selected = str(self.tblControls.item(row,0).text())
         # edit the lid for this subcatchment and this lid name
-        self._frmLIDUsage.set_edit(self._parent.project, self, row, lid_selected)
+        self._frmLIDUsage.set_edit(self._parent.project, self, row, lid_selected, self.subcatchment_id)
         self._frmLIDUsage.show()
 
     def btnDelete_Clicked(self):

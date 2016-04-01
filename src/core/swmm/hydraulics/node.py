@@ -485,10 +485,10 @@ class Treatment(Section):
     "  C = BOD * exp(-0.05*HRT)"
     "  R = 0.75 * R_TSS"
 
-    #    attribute    label                   default, eng, met, hint
+    #    attribute, input_name, label,             default, english, metric, hint
     metadata = Metadata((
-        ("pollutant", "Pollutant",            '',  '',  '', hint),
-        ("function",  "Treatment Expression", '',  '',  '', hint)))
+        ("pollutant",       '', "Pollutant",            '',  '',         '', hint),
+        ("function",        '', "Treatment Expression", '',  '',         '', hint)))
 
     def __init__(self, new_text=None):
         if new_text:

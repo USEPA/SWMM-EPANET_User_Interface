@@ -7,35 +7,35 @@ class Aquifer(Section):
 
     field_format = " {:16}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}"
 
-    #    attribute                      label                    default  hint
+    #    attribute,             input_name, label,              default,      english,    metric, hint
     metadata = Metadata((
-        ("name",                        "Aquifer Name",          "",      '', '',
+        ("name",                        '', "Aquifer Name",          "",      '',         '',
          "User-assigned aquifer name."),
-        ("porosity",                    "Porosity",              "0.5",   "fraction", "fraction",
+        ("porosity",                    '', "Porosity",              "0.5",   "fraction", "fraction",
          "Volume of voids / total soil volume."),
-        ("wilting_point",               "Wilting Point",         "0.15",  "fraction", "fraction",
+        ("wilting_point",               '', "Wilting Point",         "0.15",  "fraction", "fraction",
          "Residual moisture content of a completely dry soil."),
-        ("field_capacity",              "Field Capacity",        "0.30",  "fraction", "fraction",
+        ("field_capacity",              '', "Field Capacity",        "0.30",  "fraction", "fraction",
          "Soil moisture content after all free water has drained off."),
-        ("conductivity",                "Conductivity",          "5.0",   "in/hr", "mm/hr",
+        ("conductivity",                '', "Conductivity",          "5.0",   "in/hr",    "mm/hr",
          "Soil's saturated hydraulic conductivity."),
-        ("conductivity_slope",          "Conductivity Slope",    "10.0",  '', '',
+        ("conductivity_slope",          '', "Conductivity Slope",    "10.0",  '',         '',
          "Slope of log(conductivity) v. soil moisture deficit curve."),
-        ("tension_slope",               "Tension Slope",         "15.0",  '', '',
+        ("tension_slope",               '', "Tension Slope",         "15.0",  '',         '',
          "Slope of soil tension v. soil moisture content curve."),
-        ("upper_evaporation_fraction",  "Upper Evap. Fraction",  "0.35",  '', '',
+        ("upper_evaporation_fraction",  '', "Upper Evap. Fraction",  "0.35",  '',         '',
          "Fraction of total evaporation available for upper unsaturated zone."),
-        ("lower_evaporation_depth",     "Lower Evap. Depth",     "14.0",  "ft", "m",
+        ("lower_evaporation_depth",     '', "Lower Evap. Depth",     "14.0",  "ft",       "m",
          "Depth into saturated zone over which evaporation can occur."),
-        ("lower_groundwater_loss_rate", "Lower GW Loss Rate",    "0.002", "in/hr", "mm/hr",
+        ("lower_groundwater_loss_rate", '', "Lower GW Loss Rate",    "0.002", "in/hr",    "mm/hr",
          "Rate of seepage to deep groundwater when aquifer is completely saturated."),
-        ("bottom_elevation",            "Bottom Elevation",      "0.0",   "ft", "m",
+        ("bottom_elevation",            '', "Bottom Elevation",      "0.0",   "ft",       "m",
          "Elevation of the bottom of the aquifer."),
-        ("water_table_elevation",       "Water Table Elevation", "10.0",  "ft", "m",
+        ("water_table_elevation",       '', "Water Table Elevation", "10.0",  "ft",       "m",
          "Initial water table elevation."),
-        ("unsaturated_zone_moisture",   "Unsat. Zone Moisture",  "0.30",  "fraction", "fraction",
+        ("unsaturated_zone_moisture",   '', "Unsat. Zone Moisture",  "0.30",  "fraction", "fraction",
          "Initial moisture content of the unsaturated upper zone."),
-        ("upper_evaporation_pattern",   "Upper Evap. Pattern",   "",      '', '',
+        ("upper_evaporation_pattern",   '', "Upper Evap. Pattern",   "",      '',         '',
          "Monthly pattern of adjustments to upper evaporation fraction. (optional)")
     ))
 

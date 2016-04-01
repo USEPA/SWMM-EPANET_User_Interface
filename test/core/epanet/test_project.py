@@ -12,7 +12,7 @@ class ProjectTest(unittest.TestCase):
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
 
-        for inp_filename in ["Net1.inp"]:
+        for inp_filename in ["Examples/Net1.inp"]:
             self.my_project.read_file(os.path.join(directory, inp_filename))
             assert len(self.my_project.sections) == 28
 

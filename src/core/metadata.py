@@ -4,6 +4,7 @@ from enum import Enum
 class MetadataItem:
     """Metadata about an attribute.
         attribute:     attribute name in the python object
+        input_name:    how this item is named at the start of the line in an input file, blank if not named this way.
         label:         how to label this attribute in a user interface
         default:       default value for this attribute
         units_english: units label when using English units
@@ -11,17 +12,27 @@ class MetadataItem:
         hint:          description to display when editing this attribute
     """
     def __init__(self, attr_specification):
-        (self.attribute,
-         self.label,
-         self.default,
-         self.units_english,
-         self.units_metric,
-         self.hint) = attr_specification
+        self.attribute     = self.__value_from_list(attr_specification, 0)
+        self.input_name    = self.__value_from_list(attr_specification, 1)
+        self.label         = self.__value_from_list(attr_specification, 2)
+        self.default       = self.__value_from_list(attr_specification, 3)
+        self.units_english = self.__value_from_list(attr_specification, 4)
+        self.units_metric  = self.__value_from_list(attr_specification, 5)
+        self.hint          = self.__value_from_list(attr_specification, 6)
+
+    @staticmethod
+    def __value_from_list(values, index):
+        """Return values[index] or if values is not that long, return empty string"""
+        if len(values) > index:
+            return values[index]
+        else:
+            return ''
 
     def __str__(self):
         """Override default method to return string representation"""
         return '(' + ", ".join((self.attribute,
                                 self.label,
+                                self.input_name,
                                 self.default,
                                 self.units_english,
                                 self.units_metric,
@@ -32,7 +43,7 @@ class Metadata(list):
     """List of MetadataItem items about a set of attributes.
     Useful when populating a form for editing these attributes."""
 
-    empty_meta_item = MetadataItem(('', '', '', '', '', ''))  # a blank MetadataItem to use when one is not found
+    empty_meta_item = MetadataItem(())  # a blank MetadataItem to use when one is not found
 
     def __init__(self, specification):
         list.__init__(self)

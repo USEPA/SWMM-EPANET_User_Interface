@@ -40,6 +40,27 @@ class Junction(Section):
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("node_id",         '', "Name",            '',   '',   '', "User-assigned name of junction"),
+        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
+        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
+        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
+        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
+        ('',                '', "Inflows",         'NO', '',   '',
+         "Click to specify any external inflows received at the junction"),
+        ('.treatment(node_id)',                '', "Treatment",       'NO', '',   '',
+         "Click to specify any pollutant removal supplied at the junction"),
+        ("elevation",       '', "Invert El.",      '0', "ft",  "m", "Elevation of junction's invert"),
+        ("max_depth",       '', "Max. Depth",      '0', "ft",  "m",
+         "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance "
+         "from invert to top of highest connecting link)"),
+        ("initial_depth",   '', "Initial Depth",   '0', "ft",  "m",
+         "Initial water depth in junction"),
+        ("surcharge_depth", '', "Surcharge Depth", '0', "ft",  "m",
+         "Depth in excess of maximum depth before flooding occurs"),
+        ("ponded_area",     '', "Ponded Area",     '0', "ft2", "m2", "Area of ponded water when flooded")))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)

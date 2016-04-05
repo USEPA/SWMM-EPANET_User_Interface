@@ -13,7 +13,7 @@ import ui.convenience
 
 
 class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
-    def __init__(self, parent=None):
+    def __init__(self, parent, climate_type):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.cboEvap.clear()
@@ -36,9 +36,12 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         QtCore.QObject.connect(self.btnClear, QtCore.SIGNAL("clicked()"), self.btnClear_Clicked)
         # QtCore.QObject.connect(self.cboEvap, QtCore.SIGNAL("clicked()"), self.cboEvap_currentIndexChanged)
         self.cboEvap.currentIndexChanged.connect(self.cboEvap_currentIndexChanged)
-        self.set_all(parent.project)
-        self._parent = parent
-        self.curve_type = ""
+        self.climate_type = climate_type
+        if parent and parent.project:
+            self.set_all(parent.project)
+            self._parent = parent
+            if climate_type:
+                self.set_from(parent.project, climate_type)
 
     def set_from(self, project, climate_type):
         if climate_type == "Temperature":

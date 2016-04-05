@@ -35,6 +35,7 @@ from ui.frmGenericPropertyEditor import  frmGenericPropertyEditor
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.quality import Pollutant
+from core.swmm.hydraulics.node import Junction
 
 class frmMainSWMM(frmMain):
     def __init__(self, parent=None, *args):
@@ -53,28 +54,21 @@ class frmMainSWMM(frmMain):
 
         assembly_path = os.path.dirname(os.path.abspath(__file__))
         exe_name = "swmm5.exe"
-        pexe = os.path.join(assembly_path, exe_name)
-        if not os.path.exists(pexe):
+        exe_path = os.path.join(assembly_path, exe_name)
+        if not os.path.exists(exe_path):
             pp = os.path.dirname(os.path.dirname(assembly_path))
-            pexe = os.path.join(pp, "Externals", exe_name)
-        if not os.path.exists(pexe):
-            pexe = QtGui.QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/',
-                                                        'exe files (*.exe)')
-        if os.path.exists(pexe):
-            os.environ[self.modelenv1] = pexe
+            exe_path = os.path.join(pp, "Externals", exe_name)
+        if not os.path.exists(exe_path):
+            exe_path = QtGui.QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
+        if os.path.exists(exe_path):
+            os.environ[self.modelenv1] = exe_path
         else:
             os.environ[self.modelenv1] = ''
 
         self.on_load(model=self.model)
 
-        self._frmDates = None
-        self._frmDynamicWave = None
-        self._frmMapBackdropOptions = None
-        self._frmGeneralOptions = None
-        self._frmInterfaceFiles = None
-        self._frmReportOptions = None
-        self._frmTimeSteps = None
-        self._frmTitle = None
+        self._editors = []
+        """List of editor windows used during this session, kept here so they are not automatically closed."""
 
     def std_newproj(self):
         self.project = Project()
@@ -117,151 +111,122 @@ class frmMainSWMM(frmMain):
     def edit_options(self, itm, column):
         if not self.project:
             return
+        edit_name = itm.data(0, 0)
+        if edit_name:
+            window = self.get_editor(edit_name)
+            if window:
+                self._editors.append(window)
+                # window.closeEvent = lambda s, e: self._editors.remove(window)
+                window.show()
 
-        if itm.data(0, 0) == 'Dates':
-            self._frmDates = frmDates(self)
-            self._frmDates.show()
-        if itm.data(0, 0) == 'Dynamic Wave':
-            self._frmDynamicWave = frmDynamicWave(self)
-            self._frmDynamicWave.show()
-        if itm.data(0, 0) == 'Map/Backdrop':
-            self._frmMapBackdropOptions = frmMapBackdropOptions(self)
-            self._frmMapBackdropOptions.show()
-        if itm.data(0, 0) == 'General':
-            self._frmGeneralOptions = frmGeneralOptions(self)
-            self._frmGeneralOptions.show()
-        if itm.data(0, 0) == 'Interface Files':
-            self._frmInterfaceFiles = frmInterfaceFiles(self)
-            self._frmInterfaceFiles.show()
-        if itm.data(0, 0) == 'Reporting':
-            self._frmReportOptions = frmReportOptions(self)
-            self._frmReportOptions.show()
-        if itm.data(0, 0) == 'Time Steps':
-            self._frmTimeSteps = frmTimeSteps(self)
-            self._frmTimeSteps.show()
-        if itm.data(0, 0) == 'Title/Notes':
-            self._frmTitle = frmTitle(self)
-            self._frmTitle.show()
-        if itm.data(0, 0) == 'Controls':
-            self._frmControls = frmControls(self)
-            self._frmControls.show()
+    # def editor_closing(self, event):
+    #     print "Editor Closing: " + str(event)
+    #     # self._editors.remove(event.)
 
-        if itm.data(0, 0) == "Temperature":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
-        elif itm.data(0, 0) == "Evaporation":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
-        elif itm.data(0, 0) == "Wind Speed":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
-        elif itm.data(0, 0) == "Snow Melt":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
-        elif itm.data(0, 0) == "Areal Depletion":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
-        elif itm.data(0, 0) == "Adjustment":
-            self._frmClimatology = frmClimatology(self)
-            self._frmClimatology.set_from(self.project, itm.data(0, 0))
-            self._frmClimatology.show()
+    def get_editor(self, edit_name):
+        if edit_name == "Dates":
+            return frmDates(self)
+        elif edit_name == "Dynamic Wave":
+            return frmDynamicWave(self)
+        elif edit_name == "Map/Backdrop":
+            return frmMapBackdropOptions(self)
+        elif edit_name == "General":
+            return frmGeneralOptions(self)
+        elif edit_name == "Interface Files":
+            return frmInterfaceFiles(self)
+        elif edit_name == "Reporting":
+            return frmReportOptions(self)
+        elif edit_name == "Time Steps":
+            return frmTimeSteps(self)
+        elif edit_name == "Title/Notes":
+            return frmTitle(self)
+        elif edit_name == "Controls":
+            return frmControls(self)
+
+        if edit_name == "Temperature":
+            return frmClimatology(self, edit_name)
+        elif edit_name == "Evaporation":
+            return frmClimatology(self, edit_name)
+        elif edit_name == "Wind Speed":
+            return frmClimatology(self, edit_name)
+        elif edit_name == "Snow Melt":
+            return frmClimatology(self, edit_name)
+        elif edit_name == "Areal Depletion":
+            return frmClimatology(self, edit_name)
+        elif edit_name == "Adjustment":
+            return frmClimatology(self, edit_name)
 
         # the following items will respond to a click in the list, not the tree diagram
-        if itm.data(0, 0) == 'Time Patterns':
-            self._frmPatternEditor = frmPatternEditor(self)
-            self._frmPatternEditor.show()
-        if itm.data(0, 0) == 'Time Series':
-            self._frmTimeseries = frmTimeseries(self)
-            self._frmTimeseries.show()
-        if itm.data(0, 0) == 'Control Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Control Curves')
-            self._frmCurveEditor.set_from(self.project, "CONTROL")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Diversion Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Diversion Curves')
-            self._frmCurveEditor.set_from(self.project, "DIVERSION")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Pump Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Pump Curves')
-            self._frmCurveEditor.set_from(self.project, "PUMP")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Rating Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Rating Curves')
-            self._frmCurveEditor.set_from(self.project, "RATING")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Shape Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Shape Curves')
-            self._frmCurveEditor.set_from(self.project, "SHAPE")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Storage Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Storage Curves')
-            self._frmCurveEditor.set_from(self.project, "STORAGE")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'Tidal Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.setWindowTitle('SWMM Tidal Curves')
-            self._frmCurveEditor.set_from(self.project, "TIDAL")
-            self._frmCurveEditor.show()
-        if itm.data(0, 0) == 'LID Controls':
-            self._frmLID = frmLID(self)
-            self._frmLID.show()
-        if itm.data(0, 0) == 'Snow Packs':
-            self._frmSnowPack = frmSnowPack(self)
-            self._frmSnowPack.show()
-        if itm.data(0, 0) == 'Unit Hydrographs':
-            self._frmUnitHydrograph = frmUnitHydrograph(self)
-            self._frmUnitHydrograph.show()
-        if itm.data(0, 0) == 'Transects':
-            self._frmTransect = frmTransect(self)
-            self._frmTransect.show()
-        if itm.data(0, 0) == 'Aquifers':
+        elif edit_name == "Time Patterns":
+            return frmPatternEditor(self)
+        elif edit_name == "Time Series":
+            return frmTimeseries(self)
+        elif edit_name == "Control Curves":
+            return frmCurveEditor(self, 'SWMM Control Curves', "CONTROL")
+        elif edit_name == "Diversion Curves":
+            return frmCurveEditor(self, 'SWMM Diversion Curves', "DIVERSION")
+        elif edit_name == "Pump Curves":
+            return frmCurveEditor(self, 'SWMM Pump Curves', "PUMP")
+        elif edit_name == "Rating Curves":
+            return frmCurveEditor(self, 'SWMM Rating Curves', "RATING")
+        elif edit_name == "Shape Curves":
+            return frmCurveEditor(self, 'SWMM Shape Curves', "SHAPE")
+        elif edit_name == "Storage Curves":
+            return frmCurveEditor(self, 'SWMM Storage Curves', "STORAGE")
+        elif edit_name == "Tidal Curves":
+            return frmCurveEditor(self, 'SWMM Tidal Curves', "TIDAL")
+        elif edit_name == "LID Controls":
+            return frmLID(self)
+        elif edit_name == "Snow Packs":
+            return frmSnowPack(self)
+        elif edit_name == "Unit Hydrographs":
+            return frmUnitHydrograph(self)
+        elif edit_name == "Transects":
+            return frmTransect(self)
+        elif edit_name == "Aquifers":
             edit_these = []
-            if isinstance(self.project.aquifers.value, list) and len(self.project.aquifers.value) > 0:
-                edit_these.extend(self.project.aquifers.value)
-            else:
-                new_aquifer = Aquifer()
-                new_aquifer.name = "NewAquifer"
-                edit_these.append(new_aquifer)
-            self._frmAquifers = frmGenericPropertyEditor(self, edit_these)
-            self._frmAquifers.setWindowTitle('SWMM Aquifer Editor')
-            self._frmAquifers.show()
-        if itm.data(0, 0) == 'Pollutants':
+            if isinstance(self.project.aquifers.value, list):
+                if len(self.project.aquifers.value) == 0:
+                    new_aquifer = Aquifer()
+                    new_aquifer.name = "NewAquifer"
+                    self.project.aquifers.value.append(new_aquifer)
+
+            edit_these.extend(self.project.aquifers.value)
+            return frmGenericPropertyEditor(self, edit_these, "SWMM Aquifer Editor")
+
+        elif edit_name == "Pollutants":
             edit_these = []
-            if isinstance(self.project.pollutants.value, list) and len(self.project.pollutants.value) > 0:
-                edit_these.extend(self.project.pollutants.value)
-            else:
-                new_item = Pollutant()
-                new_item.name = "NewPollutant"
-                edit_these.append(new_item)
-            self._frmPollutants = frmGenericPropertyEditor(self, edit_these)
-            self._frmPollutants.setWindowTitle('SWMM Pollutant Editor')
-            self._frmPollutants.show()
+            if isinstance(self.project.pollutants.value, list):
+                if len(self.project.pollutants.value) == 0:
+                    new_item = Pollutant()
+                    new_item.name = "NewPollutant"
+                    self.project.pollutants.value.append(new_item)
+
+            edit_these.extend(self.project.pollutants.value)
+            return frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
+
+        elif edit_name == "Junctions":
+            edit_these = []
+            if isinstance(self.project.junctions.value, list):
+                if len(self.project.junctions.value) == 0:
+                    new_item = Junction()
+                    new_item.name = "NewJunction"
+                    self.project.junctions.value.append(new_item)
+
+            edit_these.extend(self.project.junctions.value)
+            return frmGenericPropertyEditor(self, edit_these, "SWMM Junction Editor")
 
         # the following items will respond to a click on a conduit form, not the tree diagram
-        if itm.data(0, 0) == 'Conduits':
-            self._frmCrossSection = frmCrossSection(self)
-            self._frmCrossSection.show()
+        elif edit_name == "Conduits":
+            return frmCrossSection(self)
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Outfalls' or itm.data(0, 0) == 'Dividers' or itm.data(0, 0) == 'Storage Units':
-            self._frmInflows = frmInflows(self)
-            self._frmInflows.show()
+        elif edit_name == "Outfalls' or edit_name == 'Dividers' or edit_name == 'Storage Units":
+            return frmInflows(self)
 
         # the following items will respond to a click on a subcatchment form, not the tree diagram
-        if itm.data(0, 0) == 'Subcatchments':
-            self._frmLIDControls = frmLIDControls(self)
-            self._frmLIDControls.show()
+        elif edit_name == "Subcatchments":
+            return frmLIDControls(self)
 
     def proj_run_simulation(self):
         run = 0

@@ -5,10 +5,10 @@ from property_editor_backend import PropertyEditorBackend
 
 
 class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
-    def __init__(self, parent, edit_these):
+    def __init__(self, parent, edit_these, title):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
-
+        self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, parent, edit_these)

@@ -9,9 +9,11 @@ from core.swmm.curves import CurveType
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, parent=None):
+    def __init__(self, parent, title, curve_type):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        if title:
+            self.setWindowTitle(title)
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.swmm.curves.CurveType, self.cboCurveType)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -20,7 +22,9 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         # self.set_from(parent.project)   # do after init to set curve type
         self._parent = parent
-        self.curve_type = ""
+        self.curve_type = curve_type
+        if parent and parent.project and curve_type:
+            self.set_from(parent.project, curve_type)
 
     def set_from(self, project, curve_type):
         self.curve_type = curve_type

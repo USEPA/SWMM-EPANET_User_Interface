@@ -151,6 +151,9 @@ class Outfall(Section):
         """Name of time series containing time history of outfall elevations
             for a TIMESERIES outfall"""
 
+        self.route_to = None
+        """Optional name of a subcatchment that receives the outfall's discharge"""
+
 
 class FlowDividerType(Enum):
     """Type of flow divider. Choices are:

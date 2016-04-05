@@ -315,23 +315,24 @@ class ArealDepletion:
 
 
 class Adjustments(Section):
-    """monthly adjustments from undocumented table [ADJUSTMENTS]"""
+    """Specifies optional monthly adjustments to be made to temperature, evaporation rate,
+    rainfall intensity and hydraulic conductivity in each time period of a simulation."""
 
     SECTION_NAME = "[ADJUSTMENTS]"
 
     def __init__(self):
         Section.__init__(self)
         self.temperature = []
-        """monthly temperature adjustments"""
+        """monthly temperature adjustments as plus or minus degrees F (degrees C)"""
 
         self.evaporation = []
-        """monthly evaporation adjustments"""
+        """monthly evaporation adjustments as plus or minus in/day (mm/day)"""
 
         self.rainfall = []
-        """monthly rain adjustments"""
+        """monthly rain adjustments as multipliers applied to precipitation rate"""
 
         self.soil_conductivity = []
-        """monthly soil_conductivity adjustments"""
+        """monthly soil_conductivity adjustments as multipliers applied to soil hydraulic conductivity"""
 
     def get_text(self):
         text_list = []

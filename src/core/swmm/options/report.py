@@ -15,10 +15,11 @@ class Report(Section):
      "CONTROLS": "controls",
      "SUBCATCHMENTS": "subcatchments",  # ALL / NONE / <list of subcatchment names>
      "NODES": "nodes",                  # ALL / NONE / <list of node names>
-     "LINKS": "links"}                  # ALL / NONE / <list of link names>
+     "LINKS": "links",                  # ALL / NONE / <list of link names>
+     "LID": "lids"}                     # ALL / NONE / <list of lid specs>
     """Mapping from label used in file to field name"""
 
-    LISTS = ("subcatchments", "nodes", "links")
+    LISTS = ("subcatchments", "nodes", "links", "lids")
 
     EMPTY_LIST = ["NONE"]
 
@@ -45,6 +46,10 @@ class Report(Section):
 
         self.links = Report.EMPTY_LIST
         """List of links whose results are to be reported, or ALL or NONE"""
+
+        self.lids = Report.EMPTY_LIST
+        """List of lid specifications whose results are to be reported.
+        Includes LID control name, subcatchment id and file name."""
 
     def set_text(self, new_text):
         """Read properties from text.

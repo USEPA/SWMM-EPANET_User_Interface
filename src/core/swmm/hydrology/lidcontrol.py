@@ -171,10 +171,13 @@ class LIDControl(Section):
         """Number of dry weather hours that must elapse before the drain line in a rain barrel is opened"""
 
         self.drainmat_thickness = "0.0"
+        """Thickness of the drainage mat (inches or mm)"""
 
         self.drainmat_void_fraction = "0.5"
+        """Ratio of void volume to total volume in the mat"""
 
         self.drainmat_roughness = "0.1"
+        """Manning's n constant used to compute the horizontal flow rate of drained water through the mat"""
 
         if new_text:
             self.set_text(new_text)

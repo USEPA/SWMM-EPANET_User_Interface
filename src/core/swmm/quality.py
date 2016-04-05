@@ -313,7 +313,8 @@ class Pollutant(Section):
         self.dwf_concentration = '0.0'
         """float: Concentration of the pollutant in any dry weather sanitary flow"""
 
-        self.initial_concentration = ''
+        self.initial_concentration = '0.0'
+        """pollutant concentration throughout the conveyance system at the start of the simulation (default is 0)"""
         
         self.decay_coefficient = '0.0'
         """float: First-order decay coefficient of the pollutant (1/days)"""

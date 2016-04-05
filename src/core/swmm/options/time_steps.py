@@ -26,8 +26,8 @@ class TimeSteps(core.inputfile.Section):
      "MIN_SURFAREA": "",
      "MAX_TRIALS": "",
      "HEAD_TOLERANCE": "",
-     "SYS_FLOW_TOL": "sys_flow_tol",
-     "LAT_FLOW_TOL": "lat_flow_tol",
+     "SYS_FLOW_TOL": "system_flow_tolerance",
+     "LAT_FLOW_TOL": "lateral_inflow_tolerance",
      "MINIMUM_STEP": "",
      "THREADS": ""}
     """Mapping from label used in file to field name"""
@@ -62,11 +62,13 @@ class TimeSteps(core.inputfile.Section):
         """
 
         self.sys_flow_tol = 5
-        """
-        Undocumented but shows up in SWMM 5 UI as 'system flow tolerance'
+        """the maximum percent difference between total system inflow and
+        total system outflow which can occur in order for the SKIP_STEADY_STATE
+        option to take effect. The default is 5 percent.
         """
 
         self.lat_flow_tol = 5
-        """
-        Undocumented but shows up in SWMM 5 UI as 'lateral flow tolerance'
+        """the maximum percent difference between the current and previous
+        lateral inflow at all nodes in the conveyance system in order for the
+        SKIP_STEADY_STATE option to take effect. The default is 5 percent.
         """

@@ -37,8 +37,8 @@ class DynamicWave(core.inputfile.Section):
      "MIN_SURFAREA": "min_surface_area",
      "MAX_TRIALS": "max_trials",
      "HEAD_TOLERANCE": "head_tolerance",
-     "SYS_FLOW_TOL": "sys_flow_tol",
-     "LAT_FLOW_TOL": "lat_flow_tol",
+     "SYS_FLOW_TOL": "system_flow_tolerance",
+     "LAT_FLOW_TOL": "lateral_inflow_tolerance",
      "MINIMUM_STEP": "minimum_step",
      "THREADS": "threads"}
     """Mapping from label used in file to field name"""
@@ -86,20 +86,25 @@ class DynamicWave(core.inputfile.Section):
 
         self.max_trials = 8
         """
-        Undocumented but shows up in SWMM 5 UI as 'maximum trials per time step'
+        The maximum number of trials allowed during a time step to reach convergence
+        when updating hydraulic heads at the conveyance system’s nodes. The default value is 8.
         """
 
         self.head_tolerance = 0.005
         """
-        Undocumented but shows up in SWMM 5 UI as 'head convergence tolerance'
+        Difference in computed head at each node between successive trials below
+        which the flow solution for the current time step is assumed to have converged.
+        The default tolerance is 0.005 ft (0.0015 m).
         """
 
         self.minimum_step = 0.5
         """
-        Undocumented but shows up in SWMM 5 UI as 'minimum variable timestep'
+        Smallest time step allowed when variable time steps are used for dynamic
+        wave flow routing. The default value is 0.5 seconds.
         """
 
         self.threads = 1
         """
-        Undocumented but shows up in SWMM 5 UI as 'number of threads'
+        Number of parallel computing threads to use for dynamic wave flow routing
+        on machines equipped with multi-core processors. The default is 1.
         """

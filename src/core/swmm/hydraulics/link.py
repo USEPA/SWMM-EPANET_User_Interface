@@ -65,6 +65,9 @@ class Conduit(Link):
         self.flap_gate = False
         """True if a flap gate exists that prevents backflow."""
 
+        self.seepage = 0.0
+        """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
+
 
 class Pump(Link):
     """A pump link in a SWMM model"""

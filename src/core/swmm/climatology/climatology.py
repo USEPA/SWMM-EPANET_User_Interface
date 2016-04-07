@@ -56,7 +56,7 @@ class Temperature(Section):
         if self.source == TemperatureSource.UNSET:
             return ''
 
-        text_list = [self.name]
+        text_list = [self.SECTION_NAME]
 
         if self.comment:
             text_list.append(self.comment)
@@ -138,7 +138,7 @@ class Evaporation(Section):
         """determines if evaporation only occurs during periods with no precipitation."""
 
     def get_text(self):
-        text_list = [self.name]
+        text_list = [self.SECTION_NAME]
 
         if self.comment:
             text_list.append(self.comment)

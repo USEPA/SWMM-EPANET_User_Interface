@@ -160,7 +160,8 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         else:
             conversion_factor = 10000.0
 
-        subcatchment_area = core.swmm.project.Subcatchment(self.subcatchment_id).area
+        # TODO: get area from subcatchment: core.swmm.project.find_subcatchment(self.subcatchment_id).area
+        subcatchment_area = 1
         if len(subcatchment_area) < 1:
             subcatchment_area = 10.0
         elif subcatchment_area <= 0:

@@ -24,8 +24,8 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmJunction import frmJunction
+from ui.SWMM.frmSubcatchments import frmSubcatchments
 from ui.SWMM.frmLID import frmLID
-from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
@@ -119,7 +119,9 @@ class frmMainSWMM(frmMain):
     def show_edit_window(self, window):
         if window:
             self._editors.append(window)
-            # window.closeEvent = lambda s, e: self._editors.remove(window)
+            # window.destroyed.connect(lambda s, e, a: self._editors.remove(s))
+            # window.destroyed = lambda s, e, a: self._editors.remove(s)
+            # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
             window.show()
 
     # def editor_closing(self, event):
@@ -209,15 +211,15 @@ class frmMainSWMM(frmMain):
 
         # the following items will respond to a click on a subcatchment form, not the tree diagram
         elif edit_name == "Subcatchments":
-            return frmLIDControls(self)
+            return frmSubcatchments(self)
 
     def run_simulation(self):
         run = 0
         inp_dir = ''
-        margs=[]
+        args=[]
 
-        prog = os.environ[self.modelenv1]
-        if not os.path.exists(prog):
+        program = os.environ[self.modelenv1]
+        if not os.path.exists(program):
             QMessageBox.information(None, "SWMM", "SWMM Executable not found", QMessageBox.Ok)
             return -1
 
@@ -227,15 +229,15 @@ class frmMainSWMM(frmMain):
         else:
             filename = self.project.file_name
         if os.path.exists(filename):
-            fpre, fext = os.path.splitext(filename)
-            margs.append(filename)
-            margs.append(fpre + '.rpt')
-            margs.append(fpre + '.out')
+            prefix, extension = os.path.splitext(filename)
+            args.append(filename)
+            args.append(prefix + '.rpt')
+            args.append(prefix + '.out')
         else:
             QMessageBox.information(None, "SWMM", "SWMM input file not found", QMessageBox.Ok)
 
         # running the Exe (modified version to rid of the \b printout
-        status = StatusMonitor0(prog, margs, self, model='SWMM')
+        status = StatusMonitor0(program, args, self, model='SWMM')
         status.show()
 
     def on_load(self, **kwargs):

@@ -45,9 +45,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.proj_save)
         QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.proj_save_as)
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), \
-                               self.proj_run_simulation)
+                               self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), \
-                               self.proj_run_simulation)
+                               self.run_simulation)
 
         self.layers = []
     #     self.canvas = QgsMapCanvas(self, 'mapCanvas')

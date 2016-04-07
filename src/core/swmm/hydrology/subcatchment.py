@@ -47,8 +47,8 @@ class Subcatchment:
         ("curb_length",             '', "Curb Length",     "0",      '', '', "Curb length (if needed for pollutant buildup functions)")
     ))
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = "NewSubcatchment"
         """str: User-assigned Subcatchment name."""
 
         self.centroid = Coordinates(None, None)

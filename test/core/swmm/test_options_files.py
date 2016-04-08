@@ -3,6 +3,7 @@ from core.swmm.options import files
 import unittest
 
 class OptionsFilesTest(unittest.TestCase):
+
     def __init__(self):
         unittest.TestCase.__init__(self)
         self.my_options = Files()
@@ -21,8 +22,44 @@ class OptionsFilesTest(unittest.TestCase):
         actual_text = self.my_options.get_text()
         assert actual_text == ""
 
-        #20160407xw: if all assigned with a file name, text in [:19]\t format
-        #This test would fail because dictionary is not sorted.
+        # 20160408xw: Test set_text:
+        # ---normal space delimited keyword and parameter
+        # ---One space
+        # These fail as USE RAINFALL keyword has space in it. The value passed to use_rainfall is RAINFALL use_rainfall.txt
+        TEST_TEXT = """[FILES]
+        ;;Interfacing Files
+         USE RAINFALL use_rainfall.txt"""
+        self.my_options.set_text(TEST_TEXT)
+        assert self.my_options.use_rainfall ==  "use_rainfall.txt"
+        assert self.my_options.save_rainfall == None
+        assert self.my_options.save_outflows == None
+
+        #----More spaces beyond [:19]
+        TEST_TEXT = """[FILES]
+        ;;Interfacing Files
+         SAVE OUTFLOWS                   save_outflows.txt"""
+        self.my_options.set_text(TEST_TEXT)
+        assert self.my_options.use_rainfall == None
+        assert self.my_options.save_outflows == "save_outflows.txt"
+
+        #---Space in file name
+        TEST_TEXT = """[FILES]
+        ;;Interfacing Files
+         SAVE OUTFLOWS                   save outflows.txt"""
+        self.my_options.set_text(TEST_TEXT)
+        assert self.my_options.use_rainfall == None
+        assert self.my_options.save_outflows == "save_outflows.txt"  # ---Space in file name
+
+        #---Filename with path
+        TEST_TEXT = """[FILES]
+        ;;Interfacing Files
+         SAVE OUTFLOWS   .\My Documents\save_outflows.txt"""
+        self.my_options.set_text(TEST_TEXT)
+        assert self.my_options.use_rainfall == None
+        assert self.my_options.save_outflows == "save_outflows.txt"
+
+        # 20160407xw: if all assigned with a file name, text in [:19]\t format
+        #  This test would fail because dictionary is not sorted.
         expected_text = "[FILES]\n" + \
                         ";;Interfacing Files\n" + \
                         " USE RAINFALL       \tuse_rainfall\n" + \
@@ -36,7 +73,7 @@ class OptionsFilesTest(unittest.TestCase):
                         " USE INFLOWS        \tuse_inflows\n" + \
                         " SAVE OUTFLOWS	     \tsave_outflows"
 
-        self.my_options.use_rainfall =  "use_rainfall"
+        self.my_options.use_rainfall = "use_rainfall"
         self.my_options.save_rainfall = "save_rainfall"
         self.my_options.use_runoff = "use_runoff"
         self.my_options.save_runoff = "save_runoff"
@@ -46,8 +83,8 @@ class OptionsFilesTest(unittest.TestCase):
         self.my_options.save_rdii = "save_rdii"
         self.my_options.use_inflows = "use_inflows"
         self.my_options.save_outflows = "save_outflows"
-
         actual_text = self.my_options.get_text()
         assert actual_text == expected_text
 
-        #20160407xw: if some with nones
+
+

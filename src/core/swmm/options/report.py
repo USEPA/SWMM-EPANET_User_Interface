@@ -1,4 +1,5 @@
 ﻿from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Report(Section):
@@ -8,16 +9,17 @@ class Report(Section):
 
     DEFAULT_COMMENT = ";;Reporting Options"
 
-    field_dict = {
-     "INPUT": "input",
-     "CONTINUITY": "continuity",
-     "FLOWSTATS": "flow_stats",
-     "CONTROLS": "controls",
-     "SUBCATCHMENTS": "subcatchments",  # ALL / NONE / <list of subcatchment names>
-     "NODES": "nodes",                  # ALL / NONE / <list of node names>
-     "LINKS": "links",                  # ALL / NONE / <list of link names>
-     "LID": "lids"}                     # ALL / NONE / <list of lid specs>
-    """Mapping from label used in file to field name"""
+    #    attribute,            input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("input", "INPUT"),
+        ("continuity", "CONTINUITY"),
+        ("flow_stats", "FLOWSTATS"),
+        ("controls", "CONTROLS"),
+        ("subcatchments", "SUBCATCHMENTS"),
+        ("nodes", "NODES"),
+        ("links", "LINKS"),
+        ("lids", "LID")))
+    """Mapping between attribute name and name used in input file"""
 
     LISTS = ("subcatchments", "nodes", "links", "lids")
 
@@ -61,7 +63,7 @@ class Report(Section):
 
         for line in new_text.splitlines():
             line = self.set_comment_check_section(line)
-            (attr_name, attr_value) = self.get_field_dict_value(line)
+            (attr_name, attr_value) = self.get_attr_name_value(line)
             if attr_name:
                 if attr_name in Report.LISTS:
                     attr_value = attr_value.split()

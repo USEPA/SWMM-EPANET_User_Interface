@@ -24,5 +24,4 @@ class SimpleReportTest(unittest.TestCase):
                         " Page               \t64\n" + \
                         " Summary            	YES"
 
-        actual_text = self.my_report.get_text()
-        assert actual_text == expected_text
+        assert self.my_report.matches(expected_text)

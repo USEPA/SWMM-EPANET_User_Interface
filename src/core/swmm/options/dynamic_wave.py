@@ -1,6 +1,7 @@
 ﻿from enum import Enum
 
-import core.inputfile
+from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class InertialDamping(Enum):
@@ -23,28 +24,29 @@ class ForceMainEquation(Enum):
     D_W = 2
 
 
-class DynamicWave(core.inputfile.Section):
+class DynamicWave(Section):
     """SWMM Dynamic Wave Options"""
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "INERTIAL_DAMPING": "inertial_damping",
-     "NORMAL_FLOW_LIMITED": "normal_flow_limited",
-     "FORCE_MAIN_EQUATION": "force_main_equation",
-     "VARIABLE_STEP": "variable_step",
-     "LENGTHENING_STEP": "lengthening_step",
-     "MIN_SURFAREA": "min_surface_area",
-     "MAX_TRIALS": "max_trials",
-     "HEAD_TOLERANCE": "head_tolerance",
-     "SYS_FLOW_TOL": "system_flow_tolerance",
-     "LAT_FLOW_TOL": "lateral_inflow_tolerance",
-     "MINIMUM_STEP": "minimum_step",
-     "THREADS": "threads"}
-    """Mapping from label used in file to field name"""
+    #    attribute,                  input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("inertial_damping",         "INERTIAL_DAMPING"),
+        ("normal_flow_limited",      "NORMAL_FLOW_LIMITED"),
+        ("force_main_equation",      "FORCE_MAIN_EQUATION"),
+        ("variable_step",            "VARIABLE_STEP"),
+        ("lengthening_step",         "LENGTHENING_STEP"),
+        ("min_surface_area",         "MIN_SURFAREA"),
+        ("max_trials",               "MAX_TRIALS"),
+        ("head_tolerance",           "HEAD_TOLERANCE"),
+        ("system_flow_tolerance",    "SYS_FLOW_TOL"),
+        ("lateral_inflow_tolerance", "LAT_FLOW_TOL"),
+        ("minimum_step",             "MINIMUM_STEP"),
+        ("threads",                  "THREADS")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
-        core.inputfile.Section.__init__(self)
+        Section.__init__(self)
 
         self.inertial_damping = InertialDamping.NONE
         """

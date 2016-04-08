@@ -12,14 +12,13 @@ class frmJunction(frmGenericPropertyEditor):
     def __init__(self, parent):
         self.parent = parent
         self.project = parent.project
-        if isinstance(self.project.junctions.value, list):
-            edit_these = []
-            if len(self.project.junctions.value) == 0:
-                self.new_item = Junction()
-                self.new_item.name = "1"
-                edit_these.append(self.new_item)
-            else:
-                edit_these.extend(self.project.junctions.value)
+        edit_these = []
+        if self.project.junctions and isinstance(self.project.junctions.value, list):
+            edit_these.extend(self.project.junctions.value)
+        if len(edit_these) == 0:
+            self.new_item = Junction()
+            self.new_item.name = "1"
+            edit_these.append(self.new_item)
 
         frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM Junction Editor")
 
@@ -59,7 +58,7 @@ class frmJunction(frmGenericPropertyEditor):
         return local_show_treatments
 
     def cmdOK_Clicked(self):
-        if self.new_item:
+        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self.project.junctions.value.append(self.new_item)
         self.backend.apply_edits()
         self.close()

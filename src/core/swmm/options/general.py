@@ -1,9 +1,9 @@
 ﻿from enum import Enum
 from core.inputfile import Section
+from core.metadata import Metadata
 from core.swmm.options.dates import Dates
 from core.swmm.options.dynamic_wave import DynamicWave
 from core.swmm.options.time_steps import TimeSteps
-import core.swmm.hydrology.subcatchment
 
 
 class FlowUnits(Enum):
@@ -34,26 +34,25 @@ class General(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "COMPATIBILITY": "compatibility",
-     "REPORT_CONTROLS": "",
-     "REPORT_INPUT": "",
-
-     "FLOW_UNITS": "flow_units",
-     "INFILTRATION": "infiltration",
-     "FLOW_ROUTING": "flow_routing",
-     "LINK_OFFSETS": "link_offsets",
-     "MIN_SLOPE": "min_slope",
-     "ALLOW_PONDING": "allow_ponding",
-     "SKIP_STEADY_STATE": "",
-
-     "IGNORE_RAINFALL": "ignore_rainfall",
-     "IGNORE_RDII": "ignore_rdii",
-     "IGNORE_SNOWMELT": "ignore_snowmelt",
-     "IGNORE_GROUNDWATER": "ignore_groundwater",
-     "IGNORE_ROUTING": "ignore_routing",
-     "IGNORE_QUALITY": "ignore_quality"}
-    """Mapping from label used in file to field name"""
+    #    attribute,            input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("compatibility",      "COMPATIBILITY"),
+        ("",                   "REPORT_CONTROLS"),
+        ("",                   "REPORT_INPUT"),
+        ("flow_units",         "FLOW_UNITS"),
+        ("infiltration",       "INFILTRATION"),
+        ("flow_routing",       "FLOW_ROUTING"),
+        ("link_offsets",       "LINK_OFFSETS"),
+        ("min_slope",          "MIN_SLOPE"),
+        ("allow_ponding",      "ALLOW_PONDING"),
+        ("",                   "SKIP_STEADY_STATE"),
+        ("ignore_rainfall",    "IGNORE_RAINFALL"),
+        ("ignore_rdii",        "IGNORE_RDII"),
+        ("ignore_snowmelt",    "IGNORE_SNOWMELT"),
+        ("ignore_groundwater", "IGNORE_GROUNDWATER"),
+        ("ignore_routing",     "IGNORE_ROUTING"),
+        ("ignore_quality",     "IGNORE_QUALITY")))
+    """Mapping between attribute name and name used in input file"""
 
     old_flow_routing = {
         "UF": FlowRouting.STEADY,
@@ -156,10 +155,10 @@ class General(Section):
         for line in new_text.splitlines():
             line = self.set_comment_check_section(line)
             if line.strip():
-                # Set fields from field_dict if this section has one
+                # Set fields from metadata if this section has metadata
                 tried_set = False
                 for set_here in (self, self.dates, self.time_steps, self.dynamic_wave):
-                    (attr_name, attr_value) = set_here.get_field_dict_value(line)
+                    (attr_name, attr_value) = set_here.get_attr_name_value(line)
                     if attr_name:
                         try:
                             tried_set = True

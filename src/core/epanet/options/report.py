@@ -1,5 +1,6 @@
 ﻿from enum import Enum
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class StatusWrite(Enum):
@@ -14,13 +15,14 @@ class ReportOptions(Section):
 
     SECTION_NAME = "[REPORT]"
 
-    field_dict = {
-        "Status": "status",
-        "Summary": "summary",
-        "Page": "pagesize",
-        "Energy": "energy",
-        "File": "file"}
-    """Mapping from label used in file to field name"""
+    #     attribute, input_name
+    metadata = Metadata((
+        ("status",   "Status"),
+        ("summary",  "Summary"),
+        ("pagesize", "Page"),
+        ("energy",   "Energy"),
+        ("file",     "File")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)

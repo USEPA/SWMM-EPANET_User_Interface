@@ -1,17 +1,18 @@
 ﻿from core.inputfile import Section
-
+from core.metadata import Metadata
 
 class EnergyOptions(Section):
     """Defines global parameters used to compute pumping energy and cost"""
 
     SECTION_NAME = "[ENERGY]"
 
-    field_dict = {
-        "Global Efficiency": "global_efficiency",
-        "Global Price": "global_price",
-        "Global Pattern": "global_pattern",
-        "Demand Charge": "demand_charge"}
-    """Mapping from label used in file to field name"""
+    #    attribute,            input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("global_efficiency", "Global Efficiency"),
+        ("global_price", "Global Price"),
+        ("global_pattern", "Global Pattern"),
+        ("demand_charge", "Demand Charge")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)

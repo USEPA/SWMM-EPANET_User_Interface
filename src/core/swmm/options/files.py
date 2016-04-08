@@ -1,4 +1,5 @@
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Files(Section):
@@ -8,18 +9,19 @@ class Files(Section):
 
     DEFAULT_COMMENT = ";;Interfacing Files"
 
-    field_dict = {
-     "USE RAINFALL": "use_rainfall",
-     "SAVE RAINFALL": "save_rainfall",
-     "USE RUNOFF": "use_runoff",
-     "SAVE RUNOFF": "save_runoff",
-     "USE HOTSTART": "use_hotstart",
-     "SAVE HOTSTART": "save_hotstart",
-     "USE RDII": "use_rdii",
-     "SAVE RDII": "save_rdii",
-     "USE INFLOWS": "use_inflows",
-     "SAVE OUTFLOWS": "save_outflows"}
-    """Mapping from label used in file to field name"""
+    #    attribute,       input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("use_rainfall",  "USE RAINFALL"),
+        ("save_rainfall", "SAVE RAINFALL"),
+        ("use_runoff",    "USE RUNOFF"),
+        ("save_runoff",   "SAVE RUNOFF"),
+        ("use_hotstart",  "USE HOTSTART"),
+        ("save_hotstart", "SAVE HOTSTART"),
+        ("use_rdii",      "USE RDII"),
+        ("save_rdii",     "SAVE RDII"),
+        ("use_inflows",   "USE INFLOWS"),
+        ("save_outflows", "SAVE OUTFLOWS")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)

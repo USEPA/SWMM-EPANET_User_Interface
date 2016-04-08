@@ -1,5 +1,6 @@
-﻿from core.inputfile import Section
-from enum import Enum
+﻿from enum import Enum
+from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class StatisticOptions(Enum):
@@ -16,18 +17,19 @@ class TimesOptions(Section):
 
     SECTION_NAME = "[TIMES]"
 
-    field_dict = {
-        "Duration": "duration",
-        "Hydraulic Timestep": "hydraulic_timestep",
-        "Quality Timestep": "quality_timestep",
-        "Rule Timestep": "rule_timestep",
-        "Pattern Timestep": "pattern_timestep",
-        "Pattern Start": "pattern_start",
-        "Report Timestep": "report_timestep",
-        "Report Start": "report_start",
-        "Start ClockTime": "start_clocktime",
-        "Statistic": "statistic"}
-    """Mapping from label used in file to field name"""
+    #    attribute,            input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("duration", "Duration"),
+        ("hydraulic_timestep", "Hydraulic Timestep"),
+        ("quality_timestep", "Quality Timestep"),
+        ("rule_timestep", "Rule Timestep"),
+        ("pattern_timestep", "Pattern Timestep"),
+        ("pattern_start", "Pattern Start"),
+        ("report_timestep", "Report Timestep"),
+        ("report_start", "Report Start"),
+        ("start_clocktime", "Start ClockTime"),
+        ("statistic", "Statistic")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)

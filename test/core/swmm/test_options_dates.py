@@ -29,5 +29,4 @@ class  OptionsDatesTest(unittest.TestCase):
                         " SWEEP_START        	1/1\n" + \
                         " REPORT_START_DATE  	1/1/2002"
 
-        actual_text = self.my_options.get_text()
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

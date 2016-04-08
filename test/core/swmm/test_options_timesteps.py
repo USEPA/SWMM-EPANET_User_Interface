@@ -27,5 +27,4 @@ class OptionsTimestepTest(unittest.TestCase):
                         " SYS_FLOW_TOL       	5\n" + \
                         " ROUTING_STEP       	00:05:00"
 
-        actual_text = self.my_options.get_text()
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

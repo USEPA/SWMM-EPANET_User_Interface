@@ -84,7 +84,7 @@ class InputFile(object):
         if section_attr is None:  # if there is not a class associated with this name, read it as generic Section
             if new_section is None:
                 new_section = Section()
-                new_section.name = section_name
+                new_section.SECTION_NAME = section_name
                 new_section.index = section_index
                 new_section.value = section_text
                 new_section.value_original = section_text
@@ -114,18 +114,19 @@ class InputFile(object):
                 if section_attr is not None:
                     self.__setattr__(attr_name, new_section)
 
-    def find_section(self, section_title):
-        """ Find an element of self.sections, ignoring square brackets and capitalization.
+    def find_section(self, section_name):
+        """ Find an element of self.sections by name, ignoring square brackets and capitalization.
             Args:
-                 section_title (str): Title of section to find.
+                 section_name (str): Name of section to find.
         """
-        compare_title = InputFile.printable_to_attribute(section_title)
+        compare_title = InputFile.printable_to_attribute(section_name)
         for section in self.sections:
+            this_section_name = ''
             if hasattr(section, "SECTION_NAME"):
                 this_section_name = section.SECTION_NAME
-            else:
+            elif hasattr(section, "name"):
                 this_section_name = section.name
-            if InputFile.printable_to_attribute(str(this_section_name)) == compare_title:
+            if this_section_name and InputFile.printable_to_attribute(str(this_section_name)) == compare_title:
                 return section
         return None
 
@@ -142,10 +143,8 @@ class Section(object):
 
     def __init__(self):
         """Initialize or reset section"""
-        if hasattr(self, "SECTION_NAME"):
-            self.name = self.SECTION_NAME
-        elif not hasattr(self, "name"):
-            self.name = "Unnamed"
+        # if not hasattr(self, "name"):
+        #     self.name = "Unnamed"
 
         if hasattr(self, "value") and type(self.value) is list:
             self.value = []
@@ -172,13 +171,15 @@ class Section(object):
 
     def get_text(self):
         """Contents of this section formatted for writing to file"""
-        txt = self._get_text_field_dict()
+        txt = self._get_text_using_metadata()
         if txt or txt == '':
             return txt
         if isinstance(self.value, basestring) and len(self.value) > 0:
             return self.value
         elif isinstance(self.value, (list, tuple)):
-            text_list = [self.name]
+            text_list = []
+            if hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
+                text_list.append(self.SECTION_NAME)
             if self.comment:
                 text_list.append(self.comment)
             for item in self.value:
@@ -189,29 +190,29 @@ class Section(object):
         else:
             return str(self.value)
 
-    def _get_text_field_dict(self):
-        """ Get string representation of attributes represented in field_dict, if any.
-            Private method intended for use by subclasses
-            Returns None if there is no field_dict, empty string if there is, but no attributes have values."""
-        if hasattr(self, "field_dict") and self.field_dict:
+    def _get_text_using_metadata(self):
+        """ Get input file representation of section using attributes represented in metadata, if any.
+            Private method intended for use by subclasses.
+            Returns empty string if the attributes in metadata have no values.
+            Returns None if there is no appropriate metadata."""
+        if hasattr(self, "metadata") and self.metadata:
             found_any = False
             text_list = []
-            if self.name and self.name.startswith('['):
-                text_list.append(self.name)
+            if hasattr(self, "SECTION_NAME"):
+                text_list.append(self.SECTION_NAME)
             if self.comment:
                 text_list.append(self.comment)
                 if self.comment != getattr(self, "DEFAULT_COMMENT", ''):
                     found_any = True
-            for label, attr_name in self.field_dict.items():
-                attr_line = self._get_attr_line(label, attr_name)
+            for metadata_item in self.metadata:
+                attr_line = self._get_attr_line(metadata_item.input_name, metadata_item.attribute)
                 if attr_line:
                     text_list.append(attr_line)
                     found_any = True
             if found_any:
                 return '\n'.join(text_list)
-            else:
-                return ''
-        return None  # Did not find field values from field_dict to return
+            return ''
+        return None
 
     def _get_attr_line(self, label, attr_name):
         if label and attr_name and hasattr(self, attr_name):
@@ -339,13 +340,13 @@ class Section(object):
         """
         line = self.set_comment_check_section(line)
         if line.strip():
-            # Set fields from field_dict if this section has one
+            # Set fields from metadata if this section has metadata
             attr_name = ""
             attr_value = ""
             tried_set = False
-            if hasattr(self, "field_dict") and self.field_dict:
-                (attr_name, attr_value) = self.get_field_dict_value(line)
-            else:  # This section does not have a field_dict, try to set its fields anyway
+            if hasattr(self, "metadata") and self.metadata:
+                (attr_name, attr_value) = self.get_attr_name_value(line)
+            else:  # This section does not have metadata, try to set its fields anyway
                 line_list = line.split()
                 if len(line_list) > 1:
                     if len(line_list) == 2:
@@ -370,24 +371,24 @@ class Section(object):
             if not tried_set:
                 print("Section.text skipped: " + line)
 
-    def get_field_dict_value(self, line):
-        """Search self.field_dict for attribute matching start of line.
+    def get_attr_name_value(self, line):
+        """Search self.metadata for attribute with input_name matching start of line.
             Args:
                 line (str): One line of text formatted as input file, with field name followed by field value.
             Returns:
-                Attribute name from field_dict and new attribute value from line as a tuple:
+                Attribute name from metadata and new attribute value from line as a tuple:
                 (attr_name, attr_value) or (None, None) if not found.
         """
-        if hasattr(self, "field_dict") and self.field_dict:
+        if hasattr(self, "metadata") and self.metadata:
             lower_line = line.lower().strip()
-            for dict_tuple in self.field_dict.items():
-                key = dict_tuple[0]
-                # if this line starts with this key followed by a space or tab
-                if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
-                    test_attr_name = dict_tuple[1]
-                    if hasattr(self, test_attr_name):
-                        # return attribute name and value to be assigned
-                        return(test_attr_name, line[len(key) + 1:].strip())
+            for meta_item in self.metadata:
+                key = meta_item.input_name.lower()
+                if len(lower_line) > len(key):
+                    # if this line starts with this key followed by a space or tab
+                    if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
+                        if hasattr(self, meta_item.attribute):
+                            # return attribute name and value specified on this line
+                            return(meta_item.attribute, line[len(key) + 1:].strip())
         return(None, None)
 
     def setattr_keep_type(self, attr_name, attr_value):
@@ -442,7 +443,7 @@ class SectionAsListOf(Section):
             if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
                 if self.value:  # If we have already added items to this section, add comment as a Section
                     comment = Section()
-                    comment.name = "Comment"
+                    comment.SECTION_NAME = "Comment"
                     comment.value = line
                     self.value.append(comment)
                 else:  # If we are still at the beginning of the section, set self.comment instead of adding a Section
@@ -462,13 +463,16 @@ class SectionAsListOf(Section):
         """Contents of this section formatted for writing to file"""
         if self.value \
            or (self.comment and (not hasattr(self, "DEFAULT_COMMENT") or self.comment != self.DEFAULT_COMMENT)):
-            text_list = [self.name]
+            text_list = []
+            if hasattr(self, "SECTION_NAME") and self.SECTION_NAME and self.SECTION_NAME != "Comment":
+                text_list.append(self.SECTION_NAME)
             if self.comment:
                 text_list.append(self.comment)
             for item in self.value:
                 item_str = str(item)
-                # Skip blank items unless they are a blank comment, those are purposely blank lines
-                # if item_str.strip() or isinstance(item, basestring) or (isinstance(item, Section) and item.name == "Comment"):
+                # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank lines
+                # if item_str.strip() or isinstance(item, basestring) or
+                #  (isinstance(item, Section) and item.SECTION_NAME == "Comment"):
                 text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
             return '\n'.join(text_list)
         else:

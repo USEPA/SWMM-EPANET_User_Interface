@@ -30,5 +30,4 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
                         " THREADS            	1\n" + \
                         " MINIMUM_STEP       	0.5"
 
-        actual_text = self.my_options.get_text()
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

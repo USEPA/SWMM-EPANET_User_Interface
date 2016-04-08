@@ -1,5 +1,6 @@
 from enum import Enum
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class FlowUnits(Enum):
@@ -40,24 +41,25 @@ class HydraulicsOptions(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-        "Units": "flow_units",
-        "Headloss": "head_loss",
-        "Specific Gravity": "specific_gravity",
-        "Viscosity": "viscosity",
-        "Trials": "maximum_trials",
-        "Accuracy": "accuracy",
-        "CHECKFREQ": "check_frequency",
-        "MAXCHECK": "max_check",
-        "DAMPLIMIT": "damp_limit",
-        "Unbalanced": "unbalanced_continue",
-        "Pattern": "default_pattern",
-        "Demand Multiplier": "demand_multiplier",
-        "Emitter Exponent": "emitter_exponent",
-        "Quality": "",
-        "Diffusivity": "",
-        "Tolerance": ""}
-    """Mapping from label used in file to field name"""
+    #    attribute,             input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("flow_units",          "Units"),
+        ("head_loss",           "Headloss"),
+        ("specific_gravity",    "Specific Gravity"),
+        ("viscosity",           "Viscosity"),
+        ("maximum_trials",      "Trials"),
+        ("accuracy",            "Accuracy"),
+        ("check_frequency",     "CHECKFREQ"),
+        ("max_check",           "MAXCHECK"),
+        ("damp_limit",          "DAMPLIMIT"),
+        ("unbalanced_continue", "Unbalanced"),
+        ("default_pattern",     "Pattern"),
+        ("demand_multiplier",   "Demand Multiplier"),
+        ("emitter_exponent",    "Emitter Exponent"),
+        ("",                    "Quality"),
+        ("",                    "Diffusivity"),
+        ("",                    "Tolerance")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)
@@ -114,17 +116,17 @@ class HydraulicsOptions(Section):
 
     def get_text(self):
         text_list = []
-        for label, attr_name in HydraulicsOptions.field_dict.items():
+        for meta_item in HydraulicsOptions.metadata:
             attr_value = ""
-            if label == "Unbalanced":
+            if meta_item.input_name == "Unbalanced":
                 if self.unbalanced == Unbalanced.STOP:
                     attr_value = "STOP"
                 else:
                     attr_value = "Continue " + str(self.unbalanced_continue)
             if attr_value:
-                text_list.append(self.field_format.format(label, attr_value))
+                text_list.append(self.field_format.format(meta_item.input_name, attr_value))
             else:
-                attr_line = self._get_attr_line(label, attr_name)
+                attr_line = self._get_attr_line(meta_item.input_name, meta_item.attribute)
                 if attr_line:
                     text_list.append(attr_line)
         return '\n'.join(text_list)
@@ -134,17 +136,17 @@ class HydraulicsOptions(Section):
             try:
                 if not line.startswith((';', '[')):
                     lower_line = line.lower().strip()
-                    for dict_tuple in self.field_dict.items():
-                        key = dict_tuple[0]
-                        if lower_line.startswith(key.lower()) and lower_line[len(key)] in (' ', '\t'):
-                            attr_name = dict_tuple[1]
-                            if attr_name == "unbalanced_continue":
-                                fields = line.split()
-                                self.unbalanced = Unbalanced[fields[1].upper()]
-                                if len(fields) > 2:
-                                    self.unbalanced_continue = fields[2]
-                            else:
-                                attr_value = line[len(key) + 1:].strip()
-                                self.setattr_keep_type(attr_name, attr_value)
+                    for meta_item in self.metadata:
+                        key = meta_item.input_name.lower()
+                        if len(lower_line) > len(key):
+                            if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
+                                if meta_item.attribute == "unbalanced_continue":
+                                    fields = line.split()
+                                    self.unbalanced = Unbalanced[fields[1].upper()]
+                                    if len(fields) > 2:
+                                        self.unbalanced_continue = fields[2]
+                                else:
+                                    attr_value = line[len(key) + 1:].strip()
+                                    self.setattr_keep_type(meta_item.attribute, attr_value)
             except:
                 print("HydraulicsOptions skipping input line: " + line)

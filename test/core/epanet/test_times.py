@@ -39,5 +39,4 @@ class SimpleTimesTest(unittest.TestCase):
                         " Pattern Start      	0:00\n" + \
                         " Rule Timestep      	0:05"
 
-        actual_text = self.my_times.get_text()
-        assert actual_text == expected_text
+        assert self.my_times.matches(expected_text)

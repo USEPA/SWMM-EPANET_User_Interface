@@ -1,4 +1,5 @@
 ﻿import core.inputfile
+from core.metadata import Metadata
 
 
 class TimeSteps(core.inputfile.Section):
@@ -6,31 +7,28 @@ class TimeSteps(core.inputfile.Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "COMPATIBILITY": "",
-     "REPORT_CONTROLS": "",
-     "REPORT_INPUT": "",
-
-     "SKIP_STEADY_STATE": "skip_steady_state",
-
-     "REPORT_STEP": "report_step",
-     "WET_STEP": "wet_step",
-     "DRY_STEP": "dry_step",
-     "ROUTING_STEP": "routing_step",
-
-     "INERTIAL_DAMPING": "",
-     "NORMAL_FLOW_LIMITED": "",
-     "FORCE_MAIN_EQUATION": "",
-     "VARIABLE_STEP": "",
-     "LENGTHENING_STEP": "",
-     "MIN_SURFAREA": "",
-     "MAX_TRIALS": "",
-     "HEAD_TOLERANCE": "",
-     "SYS_FLOW_TOL": "system_flow_tolerance",
-     "LAT_FLOW_TOL": "lateral_inflow_tolerance",
-     "MINIMUM_STEP": "",
-     "THREADS": ""}
-    """Mapping from label used in file to field name"""
+    #    attribute,                  input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("",                         "COMPATIBILITY"),
+        ("",                         "REPORT_CONTROLS"),
+        ("",                         "REPORT_INPUT"),
+        ("skip_steady_state",        "SKIP_STEADY_STATE"),
+        ("report_step",              "REPORT_STEP"),
+        ("wet_step",                 "WET_STEP"),
+        ("dry_step",                 "DRY_STEP"),
+        ("routing_step",             "ROUTING_STEP"),
+        ("",                         "INERTIAL_DAMPING"),
+        ("",                         "NORMAL_FLOW_LIMITED"),
+        ("",                         "FORCE_MAIN_EQUATION"),
+        ("",                         "VARIABLE_STEP"),
+        ("",                         "LENGTHENING_STEP"),
+        ("",                         "MIN_SURFAREA"),
+        ("",                         "HEAD_TOLERANCE"),
+        ("system_flow_tolerance",    "SYS_FLOW_TOL"),
+        ("lateral_inflow_tolerance", "LAT_FLOW_TOL"),
+        ("",                         "MINIMUM_STEP"),
+        ("",                         "THREADS")))
+    """Mapping between attribute name and name used in input file"""
 
     TIME_FORMAT = "hh:mm:ss"
 

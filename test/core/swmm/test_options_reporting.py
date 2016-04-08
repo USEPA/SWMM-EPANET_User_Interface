@@ -29,5 +29,4 @@ class OptionsReportingTest(unittest.TestCase):
                         " LID                	NONE\n" + \
                         " CONTROLS           	NO"
 
-        actual_text = self.my_options.get_text() #xw: this could fail due to a unsorted dictionary problem
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

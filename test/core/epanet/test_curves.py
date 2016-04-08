@@ -34,6 +34,7 @@ class SimpleCurveTest(unittest.TestCase):
         from_text.set_text('\n'.join(self.TEST_TEXT))
         project_curves = from_text.curves
         assert Section.match_omit(project_curves.get_text(), '\n'.join(self.TEST_TEXT), " -;\t\n")
+
         assert len(project_curves.value) == 1
         this_curve = project_curves.value[0]
         assert this_curve.curve_id == '1'

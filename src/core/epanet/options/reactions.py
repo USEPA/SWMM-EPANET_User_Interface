@@ -1,4 +1,5 @@
 ﻿from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Reactions(Section):
@@ -6,15 +7,16 @@ class Reactions(Section):
 
     SECTION_NAME = "[REACTIONS]"
 
-    field_dict = {
-        "Order Bulk": "order_bulk",
-        "Order Tank": "order_wall",
-        "Order Wall": "order_tank",
-        "Global Bulk": "global_bulk",
-        "Global Wall": "global_wall",
-        "Limiting Potential": "limiting_potential",
-        "Roughness Correlation": "roughness_correlation"}
-    """Mapping from label used in file to field name"""
+    #    attribute,               input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("order_bulk",            "Order Bulk"),
+        ("order_wall",            "Order Wall"),
+        ("order_tank",            "Order Tank"),
+        ("global_bulk",           "Global Bulk"),
+        ("global_wall",           "Global Wall"),
+        ("limiting_potential",    "Limiting Potential"),
+        ("roughness_correlation", "Roughness Correlation")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
         Section.__init__(self)

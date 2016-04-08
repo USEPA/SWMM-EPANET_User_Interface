@@ -1,4 +1,5 @@
 ﻿from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Dates(Section):
@@ -6,17 +7,18 @@ class Dates(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "START_DATE": "start_date",
-     "START_TIME": "start_time",
-     "REPORT_START_DATE": "report_start_date",
-     "REPORT_START_TIME": "report_start_time",
-     "END_DATE": "end_date",
-     "END_TIME": "end_time",
-     "SWEEP_START": "sweep_start",
-     "SWEEP_END": "sweep_end",
-     "DRY_DAYS": "dry_days"}
-    """Mapping from label used in file to field name"""
+    #    attribute,           input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("start_date",        "START_DATE"),
+        ("start_time",        "START_TIME"),
+        ("report_start_date", "REPORT_START_DATE"),
+        ("report_start_time", "REPORT_START_TIME"),
+        ("end_date",          "END_DATE"),
+        ("end_time",          "END_TIME"),
+        ("sweep_start",       "SWEEP_START"),
+        ("sweep_end",         "SWEEP_END"),
+        ("dry_days",          "DRY_DAYS")))
+    """Mapping between attribute name and name used in input file"""
 
     DATE_FORMAT = "MM/dd/yyyy"
     DATE_SWEEP_FORMAT = "MM/dd"

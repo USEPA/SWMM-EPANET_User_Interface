@@ -24,13 +24,12 @@ class SimpleReactionsTest(unittest.TestCase):
         name = self.my_reactions.SECTION_NAME
         assert name == "[REACTIONS]"
         expected_text = "[REACTIONS]\n" \
-            " Order Tank         	1.2\n" \
+            " Order Tank         	1.3\n" \
             " Global Wall        	2.2\n" \
             " Roughness Correlation	0.2\n" \
             " Limiting Potential 	0.1\n" \
             " Global Bulk        	2.1\n" \
             " Order Bulk         	1.1\n" \
-            " Order Wall         	1.3"
+            " Order Wall         	1.2"
 
-        actual_text = self.my_reactions.get_text()
-        assert actual_text == expected_text
+        assert self.my_reactions.matches(expected_text)

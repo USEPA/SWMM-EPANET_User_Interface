@@ -101,7 +101,11 @@ class Project(InputFile):
         self.evaporation = Evaporation()        # EVAPORATION   evaporation data
         self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         self.adjustments = Adjustments()        # ADJUSTMENTS   monthly climate adjustments
-        # self.subcatchments = [Subcatchment]     # SUBCATCHMENTS basic subcatchment information
+        self.subcatchments = SectionAsListOf("[SUBCATCHMENTS]", Subcatchment,
+            ";;Name          \tRain Gage       \tOutlet          \tArea    \t%Imperv \tWidth   \t%Slope  \tCurbLen \tSnowPack        \n"
+            ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------\t----------------")
+        # basic subcatchment information
+
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
 
         self.infiltration = SectionAsListOf("[INFILTRATION]", basestring)

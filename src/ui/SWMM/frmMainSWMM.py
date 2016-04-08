@@ -23,14 +23,15 @@ from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmTimeseries import frmTimeseries
+from ui.SWMM.frmJunction import frmJunction
+from ui.SWMM.frmSubcatchments import frmSubcatchments
 from ui.SWMM.frmLID import frmLID
-from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
-from ui.frmGenericPropertyEditor import  frmGenericPropertyEditor
+from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -113,11 +114,15 @@ class frmMainSWMM(frmMain):
             return
         edit_name = itm.data(0, 0)
         if edit_name:
-            window = self.get_editor(edit_name)
-            if window:
-                self._editors.append(window)
-                # window.closeEvent = lambda s, e: self._editors.remove(window)
-                window.show()
+            self.show_edit_window(self.get_editor(edit_name))
+
+    def show_edit_window(self, window):
+        if window:
+            self._editors.append(window)
+            # window.destroyed.connect(lambda s, e, a: self._editors.remove(s))
+            # window.destroyed = lambda s, e, a: self._editors.remove(s)
+            # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
+            window.show()
 
     # def editor_closing(self, event):
     #     print "Editor Closing: " + str(event)
@@ -142,20 +147,8 @@ class frmMainSWMM(frmMain):
             return frmTitle(self)
         elif edit_name == "Controls":
             return frmControls(self)
-
-        if edit_name == "Temperature":
+        elif edit_name in ("Temperature", "Evaporation", "Wind Speed", "Snow Melt", "Areal Depletion", "Adjustment"):
             return frmClimatology(self, edit_name)
-        elif edit_name == "Evaporation":
-            return frmClimatology(self, edit_name)
-        elif edit_name == "Wind Speed":
-            return frmClimatology(self, edit_name)
-        elif edit_name == "Snow Melt":
-            return frmClimatology(self, edit_name)
-        elif edit_name == "Areal Depletion":
-            return frmClimatology(self, edit_name)
-        elif edit_name == "Adjustment":
-            return frmClimatology(self, edit_name)
-
         # the following items will respond to a click in the list, not the tree diagram
         elif edit_name == "Time Patterns":
             return frmPatternEditor(self)
@@ -206,15 +199,7 @@ class frmMainSWMM(frmMain):
             return frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
 
         elif edit_name == "Junctions":
-            edit_these = []
-            if isinstance(self.project.junctions.value, list):
-                if len(self.project.junctions.value) == 0:
-                    new_item = Junction()
-                    new_item.name = "NewJunction"
-                    self.project.junctions.value.append(new_item)
-
-            edit_these.extend(self.project.junctions.value)
-            return frmGenericPropertyEditor(self, edit_these, "SWMM Junction Editor")
+            return frmJunction(self)
 
         # the following items will respond to a click on a conduit form, not the tree diagram
         elif edit_name == "Conduits":
@@ -226,15 +211,15 @@ class frmMainSWMM(frmMain):
 
         # the following items will respond to a click on a subcatchment form, not the tree diagram
         elif edit_name == "Subcatchments":
-            return frmLIDControls(self)
+            return frmSubcatchments(self)
 
-    def proj_run_simulation(self):
+    def run_simulation(self):
         run = 0
         inp_dir = ''
-        margs=[]
+        args=[]
 
-        prog = os.environ[self.modelenv1]
-        if not os.path.exists(prog):
+        program = os.environ[self.modelenv1]
+        if not os.path.exists(program):
             QMessageBox.information(None, "SWMM", "SWMM Executable not found", QMessageBox.Ok)
             return -1
 
@@ -244,15 +229,15 @@ class frmMainSWMM(frmMain):
         else:
             filename = self.project.file_name
         if os.path.exists(filename):
-            fpre, fext = os.path.splitext(filename)
-            margs.append(filename)
-            margs.append(fpre + '.rpt')
-            margs.append(fpre + '.out')
+            prefix, extension = os.path.splitext(filename)
+            args.append(filename)
+            args.append(prefix + '.rpt')
+            args.append(prefix + '.out')
         else:
             QMessageBox.information(None, "SWMM", "SWMM input file not found", QMessageBox.Ok)
 
         # running the Exe (modified version to rid of the \b printout
-        status = StatusMonitor0(prog, margs, self, model='SWMM')
+        status = StatusMonitor0(program, args, self, model='SWMM')
         status.show()
 
     def on_load(self, **kwargs):

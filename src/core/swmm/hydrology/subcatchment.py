@@ -18,6 +18,8 @@ class Routing(Enum):
 class Subcatchment:
     """Subcatchment geometry, location, parameters, and time-series data"""
 
+    field_format = "{:16}\t{:16}\t{:16}\t{:0}\t{:0}\t{:0}\t{:0}\t{:0}\t{:16}"
+
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                    '', "Name",            "",       '', '', "User-assigned name of subcatchment"),
@@ -47,86 +49,129 @@ class Subcatchment:
         ("curb_length",             '', "Curb Length",     "0",      '', '', "Curb length (if needed for pollutant buildup functions)")
     ))
 
-    def __init__(self, name):
-        self.name = name
-        """str: User-assigned Subcatchment name."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
 
-        self.centroid = Coordinates(None, None)
-        """Coordinates: Subcatchment's centroid on the Study Area Map.
-            If not set, the subcatchment will not appear on the map."""
+            self.name = "NewSubcatchment"
+            """str: Unique user-assigned Subcatchment name."""
 
-        self.polygon_vertices = []
-        """List[Coordinates]:the Subcatchment's polygon."""
+            self.centroid = Coordinates(None, None)
+            """Coordinates: Subcatchment's centroid on the Study Area Map.
+                If not set, the subcatchment will not appear on the map."""
 
-        self.description = ''
-        """str: Optional description of the Subcatchment."""
+            self.polygon_vertices = []
+            """List[Coordinates]:the Subcatchment's polygon."""
 
-        self.tag = ''
-        """Optional label used to categorize or classify the Subcatchment."""
+            self.description = ''
+            """str: Optional description of the Subcatchment."""
 
-        self.rain_gage = ''
-        """str: The RainGage ID associated with the Subcatchment."""
+            self.tag = ''
+            """Optional label used to categorize or classify the Subcatchment."""
 
-        self.outlet = ''
-        """The Node or Subcatchment which receives Subcatchment's runoff."""
+            self.rain_gage = ''
+            """str: The RainGage ID associated with the Subcatchment."""
 
-        self.area = ''
-        """float: Area of the subcatchment (acres or hectares)."""
+            self.outlet = ''
+            """The Node or Subcatchment which receives Subcatchment's runoff."""
 
-        self.percent_impervious = ''
-        """float: Percent of land area which is impervious."""
+            self.area = ''
+            """float: Area of the subcatchment (acres or hectares)."""
 
-        self.width = ''
-        """Characteristic width of the overland flow path for sheet flow
-            runoff (feet or meters). An initial estimate of the characteristic
-            width is given by the subcatchment area divided by the average
-            maximum overland flow length. The maximum overland flow
-            length is the length of the flow path from the the furthest drainage
-            point of the subcatchment before the flow becomes channelized.
-            Maximum lengths from several different possible flow paths
-            should be averaged. These paths should reflect slow flow, such as
-            over pervious surfaces, more than rapid flow over pavement, for
-            example. Adjustments should be made to the width parameter to
-            produce good fits to measured runoff hydrographs."""
+            self.percent_impervious = ''
+            """float: Percent of land area which is impervious."""
 
-        self.percent_slope = ''
-        """float: Average percent slope of the subcatchment."""
+            self.width = ''
+            """Characteristic width of the overland flow path for sheet flow
+                runoff (feet or meters). An initial estimate of the characteristic
+                width is given by the subcatchment area divided by the average
+                maximum overland flow length. The maximum overland flow
+                length is the length of the flow path from the the furthest drainage
+                point of the subcatchment before the flow becomes channelized.
+                Maximum lengths from several different possible flow paths
+                should be averaged. These paths should reflect slow flow, such as
+                over pervious surfaces, more than rapid flow over pavement, for
+                example. Adjustments should be made to the width parameter to
+                produce good fits to measured runoff hydrographs."""
 
-        self.n_imperv = ''
-        """float: Manning's n for overland flow in impervious part of Subcatchment"""
+            self.percent_slope = ''
+            """float: Average percent slope of the subcatchment."""
 
-        self.n_perv = ''
-        """Manning's n for overland flow in pervious part of Subcatchment"""
+            self.n_imperv = ''
+            """float: Manning's n for overland flow in impervious part of Subcatchment"""
 
-        self.storage_depth_imperv = ''
-        """float: Depth of depression storage on the impervious portion of the
-            Subcatchment (inches or millimeters) """
+            self.n_perv = ''
+            """Manning's n for overland flow in pervious part of Subcatchment"""
 
-        self.storage_depth_perv = ''
-        """float: Depth of depression storage on the pervious portion of the
-            Subcatchment (inches or millimeters)"""
+            self.storage_depth_imperv = ''
+            """float: Depth of depression storage on the impervious portion of the
+                Subcatchment (inches or millimeters) """
 
-        self.percent_zero_impervious = ''
-        """float: Percent of the impervious area with no depression storage."""
+            self.storage_depth_perv = ''
+            """float: Depth of depression storage on the pervious portion of the
+                Subcatchment (inches or millimeters)"""
 
-        self.subarea_routing = Routing.OUTLET
-        """Routing: Internal routing of runoff between pervious and impervious areas"""
+            self.percent_zero_impervious = ''
+            """float: Percent of the impervious area with no depression storage."""
 
-        self.percent_routed = ''
-        """float: Percent of runoff routed between subareas"""
+            self.subarea_routing = Routing.OUTLET
+            """Routing: Internal routing of runoff between pervious and impervious areas"""
 
-        self.infiltration_parameters = HortonInfiltration()
-        """infiltration parameters from horton, green-ampt, or scs classes"""
+            self.percent_routed = ''
+            """float: Percent of runoff routed between subareas"""
 
-        self.groundwater = ''
-        """Groundwater flow parameters for the subcatchment."""
+            self.infiltration_parameters = HortonInfiltration()
+            """infiltration parameters from horton, green-ampt, or scs classes"""
 
-        self.snow_pack = ''
-        """Snow pack parameter set (if any) of the subcatchment."""
+            self.groundwater = ''
+            """Groundwater flow parameters for the subcatchment."""
 
-        self.curb_length = ''
-        """ Total length of curbs in the subcatchment (any length units).
-            Used only when initial_loadings are normalized to curb length."""
+            self.snow_pack = ''
+            """Snow pack parameter set (if any) of the subcatchment."""
+
+            self.curb_length = ''
+            """ Total length of curbs in the subcatchment (any length units).
+                Used only when initial_loadings are normalized to curb length."""
+
+    def __str__(self):
+        """Override default method to return string representation"""
+        return self.get_text()
+
+    def get_text(self):
+        inp = self.field_format.format(self.name,
+                                       self.rain_gage,
+                                       self.outlet,
+                                       self.area,
+                                       self.percent_impervious,
+                                       self.width,
+                                       self.percent_slope,
+                                       self.curb_length,
+                                       self.snow_pack)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.name = fields[0]
+        if len(fields) > 1:
+            self.rain_gage = fields[1]
+        if len(fields) > 2:
+            self.outlet = fields[2]
+        if len(fields) > 3:
+            self.area = fields[3]
+        if len(fields) > 4:
+            self.percent_impervious = fields[4]
+        if len(fields) > 5:
+            self.width = fields[5]
+        if len(fields) > 6:
+            self.percent_slope = fields[6]
+        if len(fields) > 7:
+            self.curb_length = fields[7]
+        if len(fields) > 8:
+            self.snow_pack = fields[8]
 
 
 class HortonInfiltration(Section):

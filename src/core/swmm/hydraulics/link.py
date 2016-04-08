@@ -10,10 +10,10 @@ class Link(object):
         self.name = name
         """Link Name"""
 
-        self.description = None
+        self.description = ''
         """Optional description of the Link"""
 
-        self.tag = None
+        self.tag = ''
         """Optional label used to categorize or classify the Link"""
 
         self.inlet_node = inlet_node
@@ -22,7 +22,7 @@ class Link(object):
         self.outlet_node = outlet_node
         """Node on the outlet end of the Link"""
 
-        self.vertices = {}
+        self.vertices = []
         """Collection of intermediate vertices along the length of the link"""
 
 
@@ -98,8 +98,8 @@ class Orifice(Link):
         self.type = OrificeType.SIDE
         """OrificeType: Type of orifice"""
 
-        self.cross_section = None
-        """See class CrossSection"""
+        self.cross_section = ''
+        """Name of cross section in XSECTIONS Section"""
 
         self.inlet_offset = 0.0
         """float: Depth of bottom of orifice opening from inlet node invert"""
@@ -134,8 +134,8 @@ class Weir(Link):
         self.type = WeirType.TRANSVERSE
         """Type of weir"""
 
-        self.cross_section = None
-        """See class CrossSection"""
+        self.cross_section = ''
+        """Name of cross section in XSECTIONS Section"""
 
         self.inlet_offset = 0.0
         """float: Depth of bottom of weir opening from inlet node invert"""
@@ -379,7 +379,7 @@ class Transects(Section):
     def get_text(self):
         """Contents of this section formatted for writing to file"""
         if self.value or (self.comment and self.comment != self.DEFAULT_COMMENT):
-            text_list = [self.name]
+            text_list = [self.SECTION_NAME]
             if self.comment:
                 text_list.append(self.comment)
             else:

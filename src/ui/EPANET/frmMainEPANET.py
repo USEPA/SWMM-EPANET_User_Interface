@@ -183,39 +183,39 @@ class frmMainEPANET(frmMain):
         # result = dlg.exec_()
         # if result == 1:
         #    pass
-    def proj_run_simulation(self):
 
-        margs=[]
-        prog = os.environ[self.modelenv1]
-        if not os.path.exists(prog):
+    def run_simulation(self):
+
+        args = []
+        program = os.environ[self.modelenv1]
+        if not os.path.exists(program):
             QMessageBox.information(None, "EPANET", "EPANET Executable not found", QMessageBox.Ok)
             return -1
 
         filename = ''
-        if self.project == None:
-            #file_name = QtGui.QFileDialog.getOpenFileName(parent=self, caption='Input file')
-            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
-        else:
+        if self.project:
             filename = self.project.file_name
-            pass
+        else:
+            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
+
         if os.path.exists(filename):
-            fpre, fext = os.path.splitext(filename)
-            margs.append(filename)
-            margs.append(fpre + '.txt')
-            margs.append(fpre + '.out')
+            prefix, extension = os.path.splitext(filename)
+            args.append(filename)
+            args.append(prefix + '.txt')
+            args.append(prefix + '.out')
         else:
             QMessageBox.information(None, "EPANET", "EPANET input file not found", QMessageBox.Ok)
 
-        status = StatusMonitor0(prog, margs, self, model='EPANET')
+        status = StatusMonitor0(program, args, self, model='EPANET')
         status.show()
 
     def on_load(self, **kwargs):
-        #self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        #cleaner = QtCore.QObjectCleanupHandler()
-        #cleaner.add(self.tabProjMap.layout())
+        # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        # cleaner = QtCore.QObjectCleanupHandler()
+        # cleaner.add(self.tabProjMap.layout())
         self.obj_tree = ObjectTreeView(model=kwargs['model'])
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        #self.tabProjMap.addTab(self.obj_tree, 'Project')
+        # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.obj_tree)

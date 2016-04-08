@@ -42,7 +42,7 @@ class Junction(Section):
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("node_id",         '', "Name",            '',   '',   '', "User-assigned name of junction"),
+        ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
         ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
         ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
         ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
@@ -67,7 +67,7 @@ class Junction(Section):
         else:
             Section.__init__(self)
 
-            self.node_id = ''
+            self.name = ''
             """name assigned to junction node"""
 
             self.elevation = ''
@@ -97,7 +97,7 @@ class Junction(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.elevation,
+        return self.field_format.format(self.name, self.elevation,
                                         self.max_depth, self.initial_depth, self.surcharge_depth, self.ponded_area)
 
     def set_text(self, new_text):
@@ -105,7 +105,7 @@ class Junction(Section):
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.name = fields[0]
         if len(fields) > 1:
             self.elevation = fields[1]
         if len(fields) > 2:

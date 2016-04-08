@@ -21,12 +21,13 @@ class OptionsReportingTest(unittest.TestCase):
         expected_text = "[REPORT]\n" + \
                         ";;Reporting Options\n" + \
                         " CONTINUITY         	YES\n" + \
-                        " LINKS              	NONE\n" + \
-                        " CONTROLS           	NO\n" + \
                         " FLOWSTATS          	YES\n" + \
                         " SUBCATCHMENTS      	NONE\n" + \
+                        " LINKS              	NONE\n" + \
                         " INPUT              	NO\n" + \
-                        " NODES              	NONE"
+                        " NODES              	NONE\n" + \
+                        " LID                	NONE\n" + \
+                        " CONTROLS           	NO"
 
-        actual_text = self.my_options.get_text()
+        actual_text = self.my_options.get_text() #xw: this could fail due to a unsorted dictionary problem
         assert actual_text == expected_text

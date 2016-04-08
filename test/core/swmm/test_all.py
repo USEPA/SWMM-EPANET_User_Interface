@@ -18,6 +18,8 @@ from test_aquifers import SimpleAquifersTest
 from test_hydrographs import SimpleHydrographsTest
 from test_evaporation import SimpleEvaporationTest
 from test_xsection import XsectionTest
+from test_options_map import OptionsMapTest
+from test_options_files import OptionsFilesTest
 
 my_suite = unittest.TestSuite()
 
@@ -40,6 +42,8 @@ my_suite.addTest(SimpleAquifersTest())
 my_suite.addTest(SimpleHydrographsTest())
 my_suite.addTest(SimpleEvaporationTest())
 my_suite.addTest(XsectionTest())
+my_suite.addTest(OptionsMapTest())
+my_suite.addTest(OptionsFilesTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

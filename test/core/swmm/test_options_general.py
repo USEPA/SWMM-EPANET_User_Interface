@@ -95,34 +95,91 @@ class OptionsGeneralTest(unittest.TestCase):
 
     )
 
-    def runTest(self):
-        for current_text in self.TEST_TEXT:
-            options = General()
-            options.set_text(current_text[0])
-            assert options.flow_units == current_text[1]
-            assert options.infiltration == current_text[2]
-            assert options.flow_routing == current_text[3]
-            assert options.dates.start_date == current_text[4]
-            assert options.dates.start_time == current_text[5]
-            assert options.dates.report_start_date == current_text[6]
-            assert options.dates.report_start_time == current_text[7]
-            assert options.dates.end_date == current_text[8]
-            assert options.dates.end_time == current_text[9]
-            assert options.dates.dry_days == int(current_text[10])
-            assert options.time_steps.wet_step == current_text[11]
-            assert options.time_steps.dry_step == current_text[12]
-            assert options.time_steps.routing_step == current_text[13]
-            assert options.time_steps.report_step == current_text[14]
-            if (str(current_text[15]).upper() != "NO"):
-                assert options.allow_ponding
-            else:
-                assert not options.allow_ponding
-            assert options.dynamic_wave.inertial_damping.name == current_text[16]
-            assert options.dynamic_wave.variable_step == float(current_text[17])
-            assert options.dynamic_wave.lengthening_step == int(current_text[18])
-            assert options.dynamic_wave.min_surface_area == int(current_text[19])
-            assert options.compatibility == int(current_text[20])
+    def __init__(self):
+        unittest.TestCase.__init__(self)
 
+    def setUp(self):
+        self.options = General()
+
+    def runTest(self):
+        #--Test set_text
+        for current_text in self.TEST_TEXT:
+            self.options.set_text(current_text[0])
+            assert self.options.flow_units == current_text[1]
+            assert self.options.infiltration == current_text[2]
+            assert self.options.flow_routing == current_text[3]
+            assert self.options.dates.start_date == current_text[4]
+            assert self.options.dates.start_time == current_text[5]
+            assert self.options.dates.report_start_date == current_text[6]
+            assert self.options.dates.report_start_time == current_text[7]
+            assert self.options.dates.end_date == current_text[8]
+            assert self.options.dates.end_time == current_text[9]
+            assert self.options.dates.dry_days == int(current_text[10])
+            assert self.options.time_steps.wet_step == current_text[11]
+            assert self.options.time_steps.dry_step == current_text[12]
+            assert self.options.time_steps.routing_step == current_text[13]
+            assert self.options.time_steps.report_step == current_text[14]
+            if (str(current_text[15]).upper() != "NO"):
+                assert self.options.allow_ponding
+            else:
+                assert not self.options.allow_ponding
+            assert self.options.dynamic_wave.inertial_damping.name == current_text[16]
+            assert self.options.dynamic_wave.variable_step == float(current_text[17])
+            assert self.options.dynamic_wave.lengthening_step == int(current_text[18])
+            assert self.options.dynamic_wave.min_surface_area == int(current_text[19])
+            assert self.options.compatibility == int(current_text[20])
+
+        #--Test complete set_text for SWMM 5.1
+        test_all_test = r"""[OPTIONS]
+FLOW_UNITS CFS
+INFILTRATION HORTON
+FLOW_ROUTING STEADY
+LINK_OFFSETS DEPTH
+FORCE_MAIN_EQUATION H-W
+IGNORE_RAINFALL YES
+IGNORE_SNOWMELT YES
+IGNORE_GROUNDWATER YES
+IGNORE_RDII NO
+IGNORE_ROUTING YES
+IGNORE_QUALITY YES
+ALLOW_PONDING YES
+SKIP_STEADY_STATE YES
+SYS_FLOW_TOL 0.05
+LAT_FLOW_TOL 0.05
+START_DATE 1/1/2012
+START_TIME 0:0:0
+END_DATE 01/01/2012
+END_TIME 24:00:00
+REPORT_START_DATE 01/01/2012
+REPORT_START_TIME 00:00:00
+SWEEP_START 01/01
+SWEEP_END 12/31
+DRY_DAYS 0
+REPORT_STEP 00:15:00
+WET_STEP 00:05:00
+DRY_STEP 01:00:00
+ROUTING_STEP 600
+LENGTHENING_STEP 0
+VARIABLE_STEP 0
+MINIMUM_STEP 0.5
+INERTIAL_DAMPING NONE
+NORMAL_FLOW_LIMITED SLOPE
+MIN_SURFAREA 0
+MIN_SLOPE 0.001
+MAX_TRIALS 8
+HEAD_TOLERANCE 0.005
+THREADS 1
+TEMPDIR .\temp"""
+        self.options.set_text(test_all_test)
+        assert self.options.flow_units == FlowUnits.CFS
+        assert self.options.flow_routing == FlowRouting.STEADY
+        assert self.options.ignore_snowmelt == True
+        assert self.options.ignore_rdii == False
+        assert self.options.dates.start_date == '01/01/2012'
+        assert self.options.dates.start_time == '00:00:00'
+        assert self.options.temp_dir == r'.\temp'
+
+        #--Test get_text, this will fail due to dictionary
         expected_text = "[OPTIONS]\n" + \
                         " IGNORE_GROUNDWATER 	NO\n" + \
                         " IGNORE_QUALITY     	NO\n" + \
@@ -167,6 +224,8 @@ class OptionsGeneralTest(unittest.TestCase):
                         " THREADS            	1\n" + \
                         " MINIMUM_STEP       	0.5"
 
-        actual_text = options.get_text()
-        assert actual_text == expected_text
+        actual_text = self.options.get_text()
+        assert self.options.matches(expected_text)
+        #20160408xw assert actual_text == expected_text
+
 

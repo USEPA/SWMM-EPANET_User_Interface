@@ -2,9 +2,11 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
 from core.swmm.hydraulics.node import DirectInflowType
+from core.swmm.quality import ConcentrationUnitLabels
 from ui.SWMM.frmInflowsDesigner import Ui_frmInflows
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmPatternEditor import frmPatternEditor
+from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 
 class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
@@ -31,10 +33,21 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         QtCore.QObject.connect(self.btnDryPattern6, QtCore.SIGNAL("clicked()"), self.btnDryPattern6_Clicked)
         QtCore.QObject.connect(self.btnDryPattern7, QtCore.SIGNAL("clicked()"), self.btnDryPattern7_Clicked)
         QtCore.QObject.connect(self.btnDryPattern8, QtCore.SIGNAL("clicked()"), self.btnDryPattern8_Clicked)
+        QtCore.QObject.connect(self.btnUnitHydro1, QtCore.SIGNAL("clicked()"), self.btnUnitHydro1_Clicked)
+        QtCore.QObject.connect(self.btnUniHydro2, QtCore.SIGNAL("clicked()"), self.btnUniHydro2_Clicked)
+        self.node_id = '10'  # will need to get this connected, hard code for now
         self._parent = parent
         # local data structure to hold the inflow data as pollutant combos change
+        self.done_loading = False
         self.previous_constituent_index = -1
         self.local_pollutant_list = []
+        self.local_pollutant_list.append('FLOW')
+        self.local_pollutant_units = []
+        self.local_pollutant_units.append(parent.project.options.flow_units.name)
+        pollutants_section = parent.project.find_section("POLLUTANTS")
+        for value in pollutants_section.value:
+            self.local_pollutant_list.append(value.name)
+            self.local_pollutant_units.append(ConcentrationUnitLabels[value.units.value])
         self.local_timeseries_list = []
         self.local_format = []
         self.local_conversion_factor = []
@@ -50,23 +63,38 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.local_dry_pattern_4_list = []
         # now set form
         self.set_from(parent.project)
-        self.node_id = '10'  # will need to get this connected, hard code for now
+        self.cboConstituent_currentIndexChanged(0)
+        self.cboDryConstituent_currentIndexChanged(0)
         self.setWindowTitle('SWMM Inflows for Node ' + self.node_id)
+        self.done_loading = True
 
     def set_from(self, project):
+        # build a local data structure to hold the data at the present, will need to update as pollutants change
+        for item in self.local_pollutant_list:
+            self.local_timeseries_list.append('')
+            self.local_format.append('')
+            self.local_conversion_factor.append('')
+            self.local_scale_factor.append('')
+            self.local_baseline.append('')
+            self.local_baseline_pattern.append('')
+        for item in self.local_pollutant_list:
+            self.local_average_list.append('')
+            self.local_dry_pattern_1_list.append('')
+            self.local_dry_pattern_2_list.append('')
+            self.local_dry_pattern_3_list.append('')
+            self.local_dry_pattern_4_list.append('')
+
         # direct_section = core.swmm.project.DirectInflow()
         # direct_section = project.find_section("INFLOWS")
         self.cboConstituent.clear()
         self.cboDryConstituent.clear()
-        self.local_pollutant_list = []
         self.cboConstituent.addItem('FLOW')
         self.cboDryConstituent.addItem('FLOW')
-        self.local_pollutant_list.append('FLOW')
+        self.lblAverage.setText('Average Value (' + project.options.flow_units.name + ')')
         pollutants_section = project.find_section("POLLUTANTS")
         for value in pollutants_section.value:
             self.cboConstituent.addItem(value.name)
             self.cboDryConstituent.addItem(value.name)
-            self.local_pollutant_list.append(value.name)
         patterns_section = project.find_section("PATTERNS")
         self.cboPattern.clear()
         self.cboDryPattern1.clear()
@@ -94,14 +122,6 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.cboInflowType.addItem('MASS')
         self.cboConstituent.setCurrentIndex(0)
 
-        # build a local data structure to hold the data at the present, will need to update as pollutants change
-        for item in self.local_pollutant_list:
-            self.local_timeseries_list.append('')
-            self.local_format.append('')
-            self.local_conversion_factor.append('')
-            self.local_scale_factor.append('')
-            self.local_baseline.append('')
-            self.local_baseline_pattern.append('')
         direct_section = self._parent.project.find_section("INFLOWS")
         direct_list = direct_section.value[0:]
         for value in direct_list:
@@ -123,12 +143,6 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         # dry_section = core.swmm.project.DryWeatherInflow()
         dry_section = self._parent.project.find_section("DWF")
         dry_list = dry_section.value[0:]
-        for item in self.local_pollutant_list:
-            self.local_average_list.append('')
-            self.local_dry_pattern_1_list.append('')
-            self.local_dry_pattern_2_list.append('')
-            self.local_dry_pattern_3_list.append('')
-            self.local_dry_pattern_4_list.append('')
         for value in dry_list:
             if value.node == self.node_id:
                 index = -1
@@ -139,17 +153,31 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                         local_column = index
                 if local_column > -1:
                     self.local_average_list[local_column] = value.average
-                    if value.time_patterns.count > 0:
-                        self.local_dry_pattern_1_list[local_column] = value.time_patterns(0)
-                    if value.time_patterns.count > 1:
-                        self.local_dry_pattern_1_list[local_column] = value.time_patterns(1)
-                    if value.time_patterns.count > 2:
-                        self.local_dry_pattern_1_list[local_column] = value.time_patterns(2)
-                    if value.time_patterns.count > 3:
-                        self.local_dry_pattern_1_list[local_column] = value.time_patterns(3)
+                    if value.time_patterns.count(0) > 0:
+                        self.local_dry_pattern_1_list[local_column] = value.time_patterns[0]
+                    if value.time_patterns.count(0) > 1:
+                        self.local_dry_pattern_2_list[local_column] = value.time_patterns[1]
+                    if value.time_patterns.count(0) > 2:
+                        self.local_dry_pattern_3_list[local_column] = value.time_patterns[2]
+                    if value.time_patterns.count(0) > 3:
+                        self.local_dry_pattern_4_list[local_column] = value.time_patterns[3]
 
         # rdii_section = core.swmm.project.RDIInflow()
-        # rdii_section = project.find_section("RDII")
+        rdii_section = project.find_section("RDII")
+        hydrograph_section = project.find_section('HYDROGRAPHS')
+        self.cboUnitHydro.clear()
+        self.cboUnitHydro.addItem('')
+        for value in hydrograph_section.value:
+            self.cboUnitHydro.addItem(value.group_name)
+        rdii_list = rdii_section.value[0:]
+        for value in rdii_list:
+            if value.node == self.node_id:
+                self.txtSewershed.setText(value.sewershed_area)
+                selected_index = 0
+                for index in range(0,self.cboUnitHydro.count()):
+                    if self.cboUnitHydro.itemText(index) == value.hydrograph_group:
+                        selected_index = index
+                self.cboUnitHydro.setCurrentIndex(selected_index)
 
     def cmdOK_Clicked(self):
         # put data back to the local data structure
@@ -199,6 +227,8 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 new_inflow.scale_factor = self.local_scale_factor[index]
                 new_inflow.baseline = self.local_baseline[index]
                 new_inflow.baseline_pattern = self.local_baseline_pattern[index]
+                if direct_section.value == '':
+                    direct_section.value = []
                 direct_section.value.append(new_inflow)
 
         # dry section
@@ -229,13 +259,13 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                         found = True
                         value.average = self.local_average_list[index]
                         value.time_patterns = []
-                        if self.local_dry_pattern_1_list[index].len > 0:
+                        if len(str(self.local_dry_pattern_1_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_1_list[index])
-                        if self.local_dry_pattern_2_list[index].len > 0:
+                        if len(str(self.local_dry_pattern_2_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_2_list[index])
-                        if self.local_dry_pattern_3_list[index].len > 0:
+                        if len(str(self.local_dry_pattern_3_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_3_list[index])
-                        if self.local_dry_pattern_4_list[index].len > 0:
+                        if len(str(self.local_dry_pattern_4_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
             if found == False:
                 # have to add this dry inflow to the list
@@ -245,16 +275,36 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 new_inflow.average = self.local_average_list[index]
                 new_inflow.baseline_pattern = self.local_baseline_pattern[index]
                 new_inflow.time_patterns = []
-                if self.local_dry_pattern_1_list[index].len > 0:
+                if len(str(self.local_dry_pattern_1_list[index])) > 0:
                     new_inflow.time_patterns.append(self.local_dry_pattern_1_list[index])
-                if self.local_dry_pattern_2_list[index].len > 0:
+                if len(str(self.local_dry_pattern_2_list[index])) > 0:
                     new_inflow.time_patterns.append(self.local_dry_pattern_2_list[index])
-                if self.local_dry_pattern_3_list[index].len > 0:
+                if len(str(self.local_dry_pattern_3_list[index])) > 0:
                     new_inflow.time_patterns.append(self.local_dry_pattern_3_list[index])
-                if self.local_dry_pattern_4_list[index].len > 0:
+                if len(str(self.local_dry_pattern_4_list[index])) > 0:
                     new_inflow.time_patterns.append(self.local_dry_pattern_4_list[index])
+                if dry_section.value == '':
+                    dry_section.value = []
                 dry_section.value.append(new_inflow)
 
+        # rainfall dependent infiltration/inflow
+        rdii_section = self._parent.project.find_section("RDII")
+        rdii_list = rdii_section.value[0:]
+        found = False
+        for value in rdii_list:
+            if value.node == self.node_id:
+                found = True
+                value.sewershed_area = self.txtSewershed.text()
+                value.hydrograph_group = self.cboUnitHydro.currentText()
+        if found == False:
+            # have to add this rdii to the list
+            new_inflow = core.swmm.project.RDIInflow()
+            new_inflow.node = self.node_id
+            new_inflow.sewershed_area = self.txtSewershed.text()
+            new_inflow.hydrograph_group = self.cboUnitHydro.currentText()
+            if rdii_section.value == '':
+                rdii_section.value = []
+            rdii_section.value.append(new_inflow)
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -277,12 +327,9 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         else:
             self.lblSewershed.setText('Sewershed Area (hectares)')
 
-        # add flow units to average value lblAverage
-        self.lblAverage.setText('Average Value ()')
-
     def cboConstituent_currentIndexChanged(self, newIndex):
         # put data back to the local data structure
-        if self.previous_constituent_index > -1:
+        if self.previous_constituent_index > -1 and self.done_loading:
             index = -1
             local_column = -1
             for item in self.local_pollutant_list:
@@ -342,7 +389,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def cboDryConstituent_currentIndexChanged(self, newIndex):
         # put data back to the local data structure
-        if self.previous_dry_constituent_index > -1:
+        if self.previous_dry_constituent_index > -1 and self.done_loading:
             index = -1
             local_column = -1
             for item in self.local_pollutant_list:
@@ -385,6 +432,8 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if self.cboDryPattern4.itemText(index) == self.local_dry_pattern_4_list[local_column]:
                     selected_index = index
             self.cboDryPattern4.setCurrentIndex(selected_index)
+
+            self.lblAverage.setText('Average Value (' + self.local_pollutant_units[local_column] + ')')
 
         self.previous_dry_constituent_index = newIndex
 
@@ -441,4 +490,12 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def btnDryPattern8_Clicked(self):
         self.cboDryPattern4.setCurrentIndex(0)
+
+    def btnUnitHydro1_Clicked(self):
+        # edit unit hydrograph
+        self._frmUnitHydrograph = frmUnitHydrograph(self.parent())
+        self._frmUnitHydrograph.show()
+
+    def btnUniHydro2_Clicked(self):
+        self.cboUnitHydro.setCurrentIndex(0)
 

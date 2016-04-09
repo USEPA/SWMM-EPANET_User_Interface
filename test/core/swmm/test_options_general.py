@@ -102,35 +102,8 @@ class OptionsGeneralTest(unittest.TestCase):
         self.options = General()
 
     def runTest(self):
-        #--Test set_text
-        for current_text in self.TEST_TEXT:
-            self.options.set_text(current_text[0])
-            assert self.options.flow_units == current_text[1]
-            assert self.options.infiltration == current_text[2]
-            assert self.options.flow_routing == current_text[3]
-            assert self.options.dates.start_date == current_text[4]
-            assert self.options.dates.start_time == current_text[5]
-            assert self.options.dates.report_start_date == current_text[6]
-            assert self.options.dates.report_start_time == current_text[7]
-            assert self.options.dates.end_date == current_text[8]
-            assert self.options.dates.end_time == current_text[9]
-            assert self.options.dates.dry_days == int(current_text[10])
-            assert self.options.time_steps.wet_step == current_text[11]
-            assert self.options.time_steps.dry_step == current_text[12]
-            assert self.options.time_steps.routing_step == current_text[13]
-            assert self.options.time_steps.report_step == current_text[14]
-            if (str(current_text[15]).upper() != "NO"):
-                assert self.options.allow_ponding
-            else:
-                assert not self.options.allow_ponding
-            assert self.options.dynamic_wave.inertial_damping.name == current_text[16]
-            assert self.options.dynamic_wave.variable_step == float(current_text[17])
-            assert self.options.dynamic_wave.lengthening_step == int(current_text[18])
-            assert self.options.dynamic_wave.min_surface_area == int(current_text[19])
-            assert self.options.compatibility == int(current_text[20])
-
         #--Test complete set_text for SWMM 5.1
-        test_all_test = r"""[OPTIONS]
+        test_all_ops = r"""[OPTIONS]
 FLOW_UNITS CFS
 INFILTRATION HORTON
 FLOW_ROUTING STEADY
@@ -170,15 +143,60 @@ MAX_TRIALS 8
 HEAD_TOLERANCE 0.005
 THREADS 1
 TEMPDIR .\temp"""
-        self.options.set_text(test_all_test)
-        assert self.options.flow_units == FlowUnits.CFS
-        assert self.options.flow_routing == FlowRouting.STEADY
+        self.options.set_text(test_all_ops)
+        assert self.options.flow_units == 'CFS' #FlowUnits.CFS
+        assert self.options.flow_routing == 'STEADY' #FlowRouting.STEADY
         assert self.options.ignore_snowmelt == True
         assert self.options.ignore_rdii == False
-        assert self.options.dates.start_date == '01/01/2012'
-        assert self.options.dates.start_time == '00:00:00'
+        assert self.options.dates.start_date == '1/1/2012'
+        assert self.options.dates.start_time == '0:0:0'
+        #20160409xw -- below three assertions failed because
+        # sys_flow_tol, lat_flow_tol and temp_dir (provided in SWMM 5.1 manual) do not exist in current section
+        # see page 277/353 in http://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P100N3J6.TXT
+        assert self.options.sys_flow_tol == 0.05
+        assert self.options.lat_flow_tol == 0.05
         assert self.options.temp_dir == r'.\temp'
 
+        #--Test get_text
+        actual_text = self.options.get_text()
+        self.options.set_text(actual_text)
+        assert self.options.flow_units == 'CFS'
+        assert self.options.flow_routing == 'STEADY'
+        assert self.options.ignore_snowmelt == True
+        assert self.options.ignore_rdii == False
+        assert self.options.dates.start_date == '1/1/2012'
+        assert self.options.dates.start_time == '0:0:0'
+        #20160409xw -- match failed because
+        # 1. KEYWORD COMPATIBILITY does not exist in SWMM 5.1
+        # 2. missing sys_flow_tol, lat_flow_tol and temp_dir, new keyword in 5.1?
+        assert self.options.matches(test_all_ops), 'incorrect title block'
+
+        #--Test set_text--old
+        for current_text in self.TEST_TEXT:
+            self.options.set_text(current_text[0])
+            assert self.options.flow_units == current_text[1]
+            assert self.options.infiltration == current_text[2]
+            assert self.options.flow_routing == current_text[3]
+            assert self.options.dates.start_date == current_text[4]
+            assert self.options.dates.start_time == current_text[5]
+            assert self.options.dates.report_start_date == current_text[6]
+            assert self.options.dates.report_start_time == current_text[7]
+            assert self.options.dates.end_date == current_text[8]
+            assert self.options.dates.end_time == current_text[9]
+            assert self.options.dates.dry_days == int(current_text[10])
+            assert self.options.time_steps.wet_step == current_text[11]
+            assert self.options.time_steps.dry_step == current_text[12]
+            assert self.options.time_steps.routing_step == current_text[13]
+            assert self.options.time_steps.report_step == current_text[14]
+            if (str(current_text[15]).upper() != "NO"):
+                assert self.options.allow_ponding
+            else:
+                assert not self.options.allow_ponding
+            assert self.options.dynamic_wave.inertial_damping.name == current_text[16]
+            assert self.options.dynamic_wave.variable_step == float(current_text[17])
+            assert self.options.dynamic_wave.lengthening_step == int(current_text[18])
+            assert self.options.dynamic_wave.min_surface_area == int(current_text[19])
+            assert self.options.compatibility == int(current_text[20])
         #--Test get_text, this will fail due to dictionary
         expected_text = "[OPTIONS]\n" + \
                         " IGNORE_GROUNDWATER 	NO\n" + \

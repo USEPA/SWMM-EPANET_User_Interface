@@ -102,54 +102,54 @@ class OptionsGeneralTest(unittest.TestCase):
         self.options = General()
 
     def runTest(self):
-        #--Test complete set_text for SWMM 5.1
+        #--Test complete set_text for SWMM 5.1, consistent with all default values specified in 5.1
         test_all_ops = r"""[OPTIONS]
 FLOW_UNITS CFS
 INFILTRATION HORTON
-FLOW_ROUTING STEADY
+FLOW_ROUTING KINWAVE
 LINK_OFFSETS DEPTH
 FORCE_MAIN_EQUATION H-W
-IGNORE_RAINFALL YES
-IGNORE_SNOWMELT YES
-IGNORE_GROUNDWATER YES
+IGNORE_RAINFALL NO
+IGNORE_SNOWMELT NO
+IGNORE_GROUNDWATER NO
 IGNORE_RDII NO
-IGNORE_ROUTING YES
-IGNORE_QUALITY YES
-ALLOW_PONDING YES
-SKIP_STEADY_STATE YES
+IGNORE_ROUTING NO
+IGNORE_QUALITY NO
+ALLOW_PONDING NO
+SKIP_STEADY_STATE NO
 SYS_FLOW_TOL 0.05
 LAT_FLOW_TOL 0.05
-START_DATE 1/1/2012
-START_TIME 0:0:0
-END_DATE 01/01/2012
+START_DATE 1/1/2002
+START_TIME 0:00:00
+END_DATE 1/1/2002
 END_TIME 24:00:00
-REPORT_START_DATE 01/01/2012
-REPORT_START_TIME 00:00:00
-SWEEP_START 01/01
+REPORT_START_DATE 4/11/2016
+REPORT_START_TIME 09:00:00
+SWEEP_START 1/1
 SWEEP_END 12/31
 DRY_DAYS 0
-REPORT_STEP 00:15:00
-WET_STEP 00:05:00
-DRY_STEP 01:00:00
+REPORT_STEP 0:15:00
+WET_STEP 0:05:00
+DRY_STEP 1:00:00
 ROUTING_STEP 600
 LENGTHENING_STEP 0
 VARIABLE_STEP 0
 MINIMUM_STEP 0.5
 INERTIAL_DAMPING NONE
-NORMAL_FLOW_LIMITED SLOPE
+NORMAL_FLOW_LIMITED BOTH
 MIN_SURFAREA 0
-MIN_SLOPE 0.001
+MIN_SLOPE 0
 MAX_TRIALS 8
 HEAD_TOLERANCE 0.005
 THREADS 1
 TEMPDIR .\temp"""
         self.options.set_text(test_all_ops)
         assert self.options.flow_units == 'CFS' #FlowUnits.CFS
-        assert self.options.flow_routing == 'STEADY' #FlowRouting.STEADY
-        assert self.options.ignore_snowmelt == True
+        assert self.options.flow_routing == 'KINWAVE' #FlowRouting.KINWAVE
+        assert self.options.ignore_snowmelt == False
         assert self.options.ignore_rdii == False
         assert self.options.dates.start_date == '1/1/2012'
-        assert self.options.dates.start_time == '0:0:0'
+        assert self.options.dates.start_time == '0:00:00'
         #20160409xw -- below three assertions failed because
         # sys_flow_tol, lat_flow_tol and temp_dir (provided in SWMM 5.1 manual) do not exist in current section
         # see page 277/353 in http://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P100N3J6.TXT
@@ -161,11 +161,11 @@ TEMPDIR .\temp"""
         actual_text = self.options.get_text()
         self.options.set_text(actual_text)
         assert self.options.flow_units == 'CFS'
-        assert self.options.flow_routing == 'STEADY'
-        assert self.options.ignore_snowmelt == True
+        assert self.options.flow_routing == 'KINWAVE'
+        assert self.options.ignore_snowmelt == False
         assert self.options.ignore_rdii == False
-        assert self.options.dates.start_date == '1/1/2012'
-        assert self.options.dates.start_time == '0:0:0'
+        assert self.options.dates.start_date == '1/1/2002'
+        assert self.options.dates.start_time == '0:00:00'
         #20160409xw -- match failed because
         # 1. KEYWORD COMPATIBILITY does not exist in SWMM 5.1
         # 2. missing sys_flow_tol, lat_flow_tol and temp_dir, new keyword in 5.1?

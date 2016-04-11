@@ -36,16 +36,14 @@ class General(Section):
 
     #    attribute,            input_name, label, default, english, metric, hint
     metadata = Metadata((
+        ("temp_dir",           "TEMPDIR"),
         ("compatibility",      "COMPATIBILITY"),
-        ("",                   "REPORT_CONTROLS"),
-        ("",                   "REPORT_INPUT"),
         ("flow_units",         "FLOW_UNITS"),
         ("infiltration",       "INFILTRATION"),
         ("flow_routing",       "FLOW_ROUTING"),
         ("link_offsets",       "LINK_OFFSETS"),
         ("min_slope",          "MIN_SLOPE"),
         ("allow_ponding",      "ALLOW_PONDING"),
-        ("",                   "SKIP_STEADY_STATE"),
         ("ignore_rainfall",    "IGNORE_RAINFALL"),
         ("ignore_rdii",        "IGNORE_RDII"),
         ("ignore_snowmelt",    "IGNORE_SNOWMELT"),
@@ -121,19 +119,20 @@ class General(Section):
         and be re-introduced into the system as conditions permit
         """
 
-        self.min_slope = 0.0
+        self.min_slope = "0.0"
         """Minimum value allowed for a conduit slope"""
 
         self.temp_dir = ""
         """Directory where model writes its temporary files"""
 
-        self.compatibility = 5
+        self.compatibility = "5"
         """SWMM Version compatibility"""
 
     def get_text(self):
         """Contents of this item formatted for writing to file"""
         # First, add the values in this section stored directly in this class
-        text_list = [Section.get_text(self)]
+        # Omit COMPATIBILITY option if it is 5, this is assumed now and is no longer listed as an option in 5.1
+        text_list = [Section.get_text(self).replace(self.field_format.format("COMPATIBILITY", "5"), '')]
         if self.dates is not None:  # Add the values stored in Dates class
             text_list.append(General.section_comments[0])
             text_list.append(self.dates.get_text().replace(self.SECTION_NAME + '\n', ''))
@@ -147,6 +146,7 @@ class General(Section):
 
     def set_text(self, new_text):
         """Read this section from the text representation"""
+        self.__init__()
 
         # Skip the comments we insert automatically
         for comment in General.section_comments:

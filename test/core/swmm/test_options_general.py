@@ -28,7 +28,8 @@ class OptionsGeneralTest(unittest.TestCase):
  VARIABLE_STEP         \t0.75
  LENGTHENING_STEP      \t0
  MIN_SURFAREA          \t0
- COMPATIBILITY         \t5""",
+ COMPATIBILITY         \t5
+ IGNORE_GROUNDWATER    \tYES""",
 
          FlowUnits.CFS,
          "HORTON",
@@ -39,17 +40,18 @@ class OptionsGeneralTest(unittest.TestCase):
          "00:00:00",
          "01/02/1998",
          "12:00:00",
-         5,
+         "5",
          "00:15:00",
          "01:00:00",
          "00:01:00",
          "01:00:00",
-         "NO",
+         False,
          "PARTIAL",
-         0.75,
-         0,
-         0,
-         5),
+         "0.75",
+         "0",
+         "0",
+         "5",
+         True),
         ("""[OPTIONS]
  FLOW_UNITS            \tMGD
  INFILTRATION          \tGREEN_AMPT
@@ -70,7 +72,8 @@ class OptionsGeneralTest(unittest.TestCase):
  VARIABLE_STEP         \t0.6
  LENGTHENING_STEP      \t1
  MIN_SURFAREA          \t2
- COMPATIBILITY         \t4""",
+ COMPATIBILITY         \t4
+ IGNORE_GROUNDWATER    \tNO""",
 
          FlowUnits.MGD,
          "GREEN_AMPT",
@@ -81,18 +84,18 @@ class OptionsGeneralTest(unittest.TestCase):
          "00:02:00",
          "02/04/2000",
          "12:30:00",
-         4,
+         "4",
          "00:30:00",
          "01:30:00",
          "00:02:00",
          "02:00:00",
-         "YES",
+         True,
          "PARTIAL",
-         0.6,
-         1,
-         2,
-         4)
-
+         "0.6",
+         "1",
+         "2",
+         "4",
+         False)
     )
 
     def __init__(self):
@@ -117,8 +120,8 @@ IGNORE_ROUTING NO
 IGNORE_QUALITY NO
 ALLOW_PONDING NO
 SKIP_STEADY_STATE NO
-SYS_FLOW_TOL 0.05
-LAT_FLOW_TOL 0.05
+SYS_FLOW_TOL 5
+LAT_FLOW_TOL 5
 START_DATE 1/1/2002
 START_TIME 0:00:00
 END_DATE 1/1/2002
@@ -144,31 +147,26 @@ HEAD_TOLERANCE 0.005
 THREADS 1
 TEMPDIR .\temp"""
         self.options.set_text(test_all_ops)
-        assert self.options.flow_units == 'CFS' #FlowUnits.CFS
-        assert self.options.flow_routing == 'KINWAVE' #FlowRouting.KINWAVE
+        assert self.options.flow_units == FlowUnits.CFS
+        assert self.options.flow_routing == FlowRouting.KINWAVE
         assert self.options.ignore_snowmelt == False
+        assert self.options.ignore_groundwater == False
         assert self.options.ignore_rdii == False
-        assert self.options.dates.start_date == '1/1/2012'
+        assert self.options.dates.start_date == '1/1/2002'
         assert self.options.dates.start_time == '0:00:00'
-        #20160409xw -- below three assertions failed because
-        # sys_flow_tol, lat_flow_tol and temp_dir (provided in SWMM 5.1 manual) do not exist in current section
-        # see page 277/353 in http://nepis.epa.gov/Exe/ZyPDF.cgi?Dockey=P100N3J6.TXT
-        assert self.options.sys_flow_tol == 0.05
-        assert self.options.lat_flow_tol == 0.05
+        assert float(self.options.time_steps.system_flow_tolerance) == 5.0
+        assert float(self.options.time_steps.lateral_inflow_tolerance) == 5.0
         assert self.options.temp_dir == r'.\temp'
 
         #--Test get_text
         actual_text = self.options.get_text()
         self.options.set_text(actual_text)
-        assert self.options.flow_units == 'CFS'
-        assert self.options.flow_routing == 'KINWAVE'
+        assert self.options.flow_units == FlowUnits.CFS
+        assert self.options.flow_routing == FlowRouting.KINWAVE
         assert self.options.ignore_snowmelt == False
         assert self.options.ignore_rdii == False
         assert self.options.dates.start_date == '1/1/2002'
         assert self.options.dates.start_time == '0:00:00'
-        #20160409xw -- match failed because
-        # 1. KEYWORD COMPATIBILITY does not exist in SWMM 5.1
-        # 2. missing sys_flow_tol, lat_flow_tol and temp_dir, new keyword in 5.1?
         assert self.options.matches(test_all_ops), 'incorrect title block'
 
         #--Test set_text--old
@@ -183,67 +181,61 @@ TEMPDIR .\temp"""
             assert self.options.dates.report_start_time == current_text[7]
             assert self.options.dates.end_date == current_text[8]
             assert self.options.dates.end_time == current_text[9]
-            assert self.options.dates.dry_days == int(current_text[10])
+            assert int(self.options.dates.dry_days) == int(current_text[10])
             assert self.options.time_steps.wet_step == current_text[11]
             assert self.options.time_steps.dry_step == current_text[12]
             assert self.options.time_steps.routing_step == current_text[13]
             assert self.options.time_steps.report_step == current_text[14]
-            if (str(current_text[15]).upper() != "NO"):
-                assert self.options.allow_ponding
-            else:
-                assert not self.options.allow_ponding
+            assert self.options.allow_ponding == current_text[15]
             assert self.options.dynamic_wave.inertial_damping.name == current_text[16]
-            assert self.options.dynamic_wave.variable_step == float(current_text[17])
-            assert self.options.dynamic_wave.lengthening_step == int(current_text[18])
-            assert self.options.dynamic_wave.min_surface_area == int(current_text[19])
-            assert self.options.compatibility == int(current_text[20])
-        #--Test get_text, this will fail due to dictionary
-        expected_text = "[OPTIONS]\n" + \
-                        " IGNORE_GROUNDWATER 	NO\n" + \
-                        " IGNORE_QUALITY     	NO\n" + \
-                        " IGNORE_ROUTING     	NO\n" + \
-                        " LINK_OFFSETS       	DEPTH\n" + \
-                        " FLOW_UNITS         	MGD\n" + \
-                        " MIN_SLOPE          	0.0\n" + \
-                        " INFILTRATION       	GREEN_AMPT\n" + \
-                        " ALLOW_PONDING      	YES\n" + \
-                        " IGNORE_SNOWMELT    	NO\n" + \
-                        " IGNORE_RDII        	NO\n" + \
-                        " IGNORE_RAINFALL    	NO\n" + \
-                        " COMPATIBILITY      	4\n" + \
-                        " FLOW_ROUTING       	DYNWAVE\n" + \
-                        ";; Dates\n" + \
-                        " END_TIME           	12:30:00\n" + \
-                        " END_DATE           	02/04/2000\n" + \
-                        " SWEEP_END          	12/31\n" + \
-                        " START_TIME         	00:01:00\n" + \
-                        " DRY_DAYS           	4\n" + \
-                        " REPORT_START_TIME  	00:02:00\n" + \
-                        " START_DATE         	02/02/2000\n" + \
-                        " SWEEP_START        	1/1\n" + \
-                        " REPORT_START_DATE  	02/03/2000\n" + \
-                        ";; Time Steps\n" + \
-                        " SKIP_STEADY_STATE  	NO\n" + \
-                        " LAT_FLOW_TOL       	5\n" + \
-                        " DRY_STEP           	01:30:00\n" + \
-                        " REPORT_STEP        	02:00:00\n" + \
-                        " WET_STEP           	00:30:00\n" + \
-                        " SYS_FLOW_TOL       	5\n" + \
-                        " ROUTING_STEP       	00:02:00\n" + \
-                        ";; Dynamic Wave\n" + \
-                        " LENGTHENING_STEP   	1.0\n" + \
-                        " VARIABLE_STEP      	0.6\n" + \
-                        " INERTIAL_DAMPING   	PARTIAL\n" + \
-                        " FORCE_MAIN_EQUATION	H-W\n" + \
-                        " NORMAL_FLOW_LIMITED	BOTH\n" + \
-                        " MAX_TRIALS         	8\n" + \
-                        " MIN_SURFAREA       	2.0\n" + \
-                        " HEAD_TOLERANCE     	0.005\n" + \
-                        " THREADS            	1\n" + \
+            assert float(self.options.dynamic_wave.variable_step) == float(current_text[17])
+            assert int(self.options.dynamic_wave.lengthening_step) == int(current_text[18])
+            assert float(self.options.dynamic_wave.min_surface_area) == float(current_text[19])
+            assert int(self.options.compatibility) == int(current_text[20])
+            assert self.options.ignore_groundwater == current_text[21]
+
+        expected_text = "[OPTIONS]\n"\
+                        " IGNORE_GROUNDWATER 	NO\n"\
+                        " IGNORE_QUALITY     	NO\n"\
+                        " IGNORE_ROUTING     	NO\n"\
+                        " LINK_OFFSETS       	DEPTH\n"\
+                        " FLOW_UNITS         	MGD\n"\
+                        " MIN_SLOPE          	0.0\n"\
+                        " INFILTRATION       	GREEN_AMPT\n"\
+                        " ALLOW_PONDING      	YES\n"\
+                        " IGNORE_SNOWMELT    	NO\n"\
+                        " IGNORE_RDII        	NO\n"\
+                        " IGNORE_RAINFALL    	NO\n"\
+                        " COMPATIBILITY      	4\n"\
+                        " FLOW_ROUTING       	DYNWAVE\n"\
+                        ";; Dates\n"\
+                        " END_TIME           	12:30:00\n"\
+                        " END_DATE           	02/04/2000\n"\
+                        " SWEEP_END          	12/31\n"\
+                        " START_TIME         	00:01:00\n"\
+                        " DRY_DAYS           	4\n"\
+                        " REPORT_START_TIME  	00:02:00\n"\
+                        " START_DATE         	02/02/2000\n"\
+                        " SWEEP_START        	1/1\n"\
+                        " REPORT_START_DATE  	02/03/2000\n"\
+                        ";; Time Steps\n"\
+                        " SKIP_STEADY_STATE  	NO\n"\
+                        " LAT_FLOW_TOL       	5\n"\
+                        " DRY_STEP           	01:30:00\n"\
+                        " REPORT_STEP        	02:00:00\n"\
+                        " WET_STEP           	00:30:00\n"\
+                        " SYS_FLOW_TOL       	5\n"\
+                        " ROUTING_STEP       	00:02:00\n"\
+                        ";; Dynamic Wave\n"\
+                        " LENGTHENING_STEP   	1.0\n"\
+                        " VARIABLE_STEP      	0.6\n"\
+                        " INERTIAL_DAMPING   	PARTIAL\n"\
+                        " FORCE_MAIN_EQUATION	H-W\n"\
+                        " NORMAL_FLOW_LIMITED	BOTH\n"\
+                        " MAX_TRIALS         	8\n"\
+                        " MIN_SURFAREA       	2.0\n"\
+                        " HEAD_TOLERANCE     	0.005\n"\
+                        " THREADS            	1\n"\
                         " MINIMUM_STEP       	0.5"
 
-        actual_text = self.options.get_text()
         assert self.options.matches(expected_text)
-        #20160408xw assert actual_text == expected_text
-
-

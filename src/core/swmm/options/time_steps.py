@@ -9,25 +9,13 @@ class TimeSteps(core.inputfile.Section):
 
     #    attribute,                  input_name, label, default, english, metric, hint
     metadata = Metadata((
-        ("",                         "COMPATIBILITY"),
-        ("",                         "REPORT_CONTROLS"),
-        ("",                         "REPORT_INPUT"),
         ("skip_steady_state",        "SKIP_STEADY_STATE"),
         ("report_step",              "REPORT_STEP"),
         ("wet_step",                 "WET_STEP"),
         ("dry_step",                 "DRY_STEP"),
         ("routing_step",             "ROUTING_STEP"),
-        ("",                         "INERTIAL_DAMPING"),
-        ("",                         "NORMAL_FLOW_LIMITED"),
-        ("",                         "FORCE_MAIN_EQUATION"),
-        ("",                         "VARIABLE_STEP"),
-        ("",                         "LENGTHENING_STEP"),
-        ("",                         "MIN_SURFAREA"),
-        ("",                         "HEAD_TOLERANCE"),
-        ("system_flow_tolerance",    "SYS_FLOW_TOL"),
-        ("lateral_inflow_tolerance", "LAT_FLOW_TOL"),
-        ("",                         "MINIMUM_STEP"),
-        ("",                         "THREADS")))
+        ("system_flow_tolerance",    "SYS_FLOW_TOL", '', '5', '%', '%'),
+        ("lateral_inflow_tolerance", "LAT_FLOW_TOL", '', '5', '%', '%')))
     """Mapping between attribute name and name used in input file"""
 
     TIME_FORMAT = "hh:mm:ss"
@@ -59,13 +47,13 @@ class TimeSteps(core.inputfile.Section):
         water quality constituents through the conveyance system
         """
 
-        self.sys_flow_tol = 5
+        self.system_flow_tolerance = "5"
         """the maximum percent difference between total system inflow and
         total system outflow which can occur in order for the SKIP_STEADY_STATE
         option to take effect. The default is 5 percent.
         """
 
-        self.lat_flow_tol = 5
+        self.lateral_inflow_tolerance = "5"
         """the maximum percent difference between the current and previous
         lateral inflow at all nodes in the conveyance system in order for the
         SKIP_STEADY_STATE option to take effect. The default is 5 percent.

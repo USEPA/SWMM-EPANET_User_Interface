@@ -328,7 +328,16 @@ class Section(object):
             for (this_line, other_line) in zip(this_sorted, other_sorted):
                 # Compare each line by replacing any group of spaces and tabs with one space
                 if ' '.join(this_line.split()) != ' '.join(other_line.split()):
-                    return False
+                    # If whole line does not match, check for match of each field
+                    for (this_field, other_field) in zip(this_line.split(), other_line.split()):
+                        if this_field != other_field:
+                            try:  # Check for match when converted to floating point numbers
+                                this_float = float(this_field)
+                                other_float = float(other_field)
+                                if this_float != other_float:
+                                    return False
+                            except ValueError:
+                                return False
         elif other_str or this_str:
             return False  # Only one is empty, so they don't match
         return True

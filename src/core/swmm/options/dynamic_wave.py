@@ -39,8 +39,6 @@ class DynamicWave(Section):
         ("min_surface_area",         "MIN_SURFAREA"),
         ("max_trials",               "MAX_TRIALS"),
         ("head_tolerance",           "HEAD_TOLERANCE"),
-        ("system_flow_tolerance",    "SYS_FLOW_TOL"),
-        ("lateral_inflow_tolerance", "LAT_FLOW_TOL"),
         ("minimum_step",             "MINIMUM_STEP"),
         ("threads",                  "THREADS")))
     """Mapping between attribute name and name used in input file"""

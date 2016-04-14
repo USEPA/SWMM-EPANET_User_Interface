@@ -21,6 +21,7 @@ from test_xsection import XsectionTest
 from test_options_map import OptionsMapTest
 from test_options_files import OptionsFilesTest
 from test_climatology_adjustments import ClimatologyAdjustmentsTest
+from test_climatology_evaporation import ClimatologyEvaporationTest
 from test_timeseries import TimeSeriesTest
 
 my_suite = unittest.TestSuite()
@@ -48,6 +49,7 @@ my_suite.addTest(OptionsMapTest())
 my_suite.addTest(OptionsFilesTest())
 
 my_suite.addTest(ClimatologyAdjustmentsTest())
+my_suite.addTest(ClimatologyEvaporationTest())
 my_suite.addTest(TimeSeriesTest())
 if __name__ == "__main__":
     # execute only if run as a script

@@ -18,7 +18,8 @@ from ui.SWMM.frmReportOptions import frmReportOptions
 from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
-from ui.SWMM.frmClimatology import  frmClimatology
+from ui.SWMM.frmAquifers import frmAquifers
+from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -177,15 +178,16 @@ class frmMainSWMM(frmMain):
         elif edit_name == "Transects":
             return frmTransect(self)
         elif edit_name == "Aquifers":
-            edit_these = []
-            if isinstance(self.project.aquifers.value, list):
-                if len(self.project.aquifers.value) == 0:
-                    new_aquifer = Aquifer()
-                    new_aquifer.name = "NewAquifer"
-                    self.project.aquifers.value.append(new_aquifer)
-
-            edit_these.extend(self.project.aquifers.value)
-            return frmGenericPropertyEditor(self, edit_these, "SWMM Aquifer Editor")
+            return frmAquifers(self)
+            # edit_these = []
+            # if isinstance(self.project.aquifers.value, list):
+            #     if len(self.project.aquifers.value) == 0:
+            #         new_aquifer = Aquifer()
+            #         new_aquifer.name = "NewAquifer"
+            #         self.project.aquifers.value.append(new_aquifer)
+            #
+            # edit_these.extend(self.project.aquifers.value)
+            # return frmGenericPropertyEditor(self, edit_these, "SWMM Aquifer Editor")
 
         elif edit_name == "Pollutants":
             edit_these = []

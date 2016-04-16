@@ -24,6 +24,10 @@ from test_climatology_adjustments import ClimatologyAdjustmentsTest
 from test_climatology_evaporation import ClimatologyEvaporationTest
 from test_aquifers2 import HydrologyAquiferTest
 from test_subcatchment_groundwater import SubGroundwaterTest
+from test_subcatchment_subcatchment import SubSubcatchmentTest
+from test_subcatchment_horton_infiltration import SubHortonInfiltrationTest
+from test_subcatchment_greenampt_infiltration import SubGreenAmptInfiltrationTest
+from test_subcatchment_curvenum_infiltration import SubCurveNumberInfiltrationTest
 from test_timeseries import TimeSeriesTest
 
 my_suite = unittest.TestSuite()
@@ -54,6 +58,10 @@ my_suite.addTest(ClimatologyAdjustmentsTest())
 my_suite.addTest(ClimatologyEvaporationTest())
 my_suite.addTest(HydrologyAquiferTest())
 my_suite.addTest(SubGroundwaterTest())
+my_suite.addTest(SubSubcatchmentTest())
+my_suite.addTest(SubHortonInfiltrationTest())
+my_suite.addTest(SubGreenAmptInfiltrationTest())
+my_suite.addTest(SubCurveNumberInfiltrationTest())
 my_suite.addTest(TimeSeriesTest())
 if __name__ == "__main__":
     # execute only if run as a script

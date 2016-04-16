@@ -12,6 +12,7 @@ class SubSubcatchmentTest(unittest.TestCase):
 
     def runTest(self):
         # Subcatchment did not inherit from Section
+        # Ok this is MTP-3
         # Test default, default is empty string, no adjustments, Failed because
         # -- subcatchment does not have SECTION_NAME
         # -- get_text produced string with tabs instead of empty string

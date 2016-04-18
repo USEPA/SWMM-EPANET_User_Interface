@@ -56,7 +56,7 @@ class Metadata(list):
             if hasattr(instance, meta_item.attribute):
                 value = getattr(instance, meta_item.attribute)
                 if isinstance(value, Enum):
-                    return value.name
+                    return value     # return the whole enum type to populate combo box in editor
                 elif len(str(value)) > 0:
                     return str(value)
             return meta_item.default

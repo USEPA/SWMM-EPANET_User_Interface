@@ -14,7 +14,6 @@ class SnowPackTest(unittest.TestCase):
         # Test snow parameters from Example 1h, examined according to SWMM 5.1 manual
         # Modified on test purposes
         # This test passed for an individual snowpack parameter set
-        # However, a data structure for multiple snowpack parameter sets has not yet created.
         # Case 1: test all snowpack surface types
         test_snowpack_all = r"""
 ;;Name           Surface    Parameters
@@ -44,6 +43,7 @@ s                REMOVAL    1.0        0.0        0.0        0.0        0.0     
         assert self.my_options.matches(test_snowpack_removal)
         pass
 
+        # Test snowpacks not yet completed.
         test_snowpacks = r"""
 [SNOWPACKS]
 ;;Name           Surface    Parameters

@@ -6,6 +6,7 @@ from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
+# from ui.SWMM.frmInfiltration import frmInfiltration
 
 
 class frmSubcatchments(frmGenericPropertyEditor):
@@ -31,11 +32,27 @@ class frmSubcatchments(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
+            # text plus button for infiltration editor
+            option_section = self.project.find_section('OPTIONS')
+            tb = TextPlusButton(self)
+            tb.textbox.setText(option_section.infiltration)
+            tb.textbox.setEnabled(False)
+            tb.column = column
+            tb.button.clicked.connect(self.make_show_infilt(column))
+            self.tblGeneric.setCellWidget(18, column, tb)
+            # text plus button for lid controls
             tb = TextPlusButton(self)
             tb.textbox.setText("NO")
             tb.column = column
             tb.button.clicked.connect(self.make_show_lid_controls(column))
             self.tblGeneric.setCellWidget(21, column, tb)
+
+    def make_show_infilt(self, column):
+        def local_show():
+            print("Show for column " + str(column))
+            # editor = frmInfiltration(self.parent)
+            # self.parent.show_edit_window(editor)
+        return local_show
 
     def make_show_lid_controls(self, column):
         def local_show():

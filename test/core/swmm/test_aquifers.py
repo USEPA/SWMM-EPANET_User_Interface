@@ -56,3 +56,25 @@ class SimpleAquifersTest(unittest.TestCase):
 
         assert Aquifer.metadata.label_of("name") == "Aquifer Name"
         assert Aquifer.metadata.hint_of("name") == "User-assigned aquifer name."
+
+
+class SingleAquiferTest(unittest.TestCase):
+
+    def setUp(self):
+
+        self.my_options = Aquifer()
+
+    def runTest(self):
+        # Test aquifer parameters in Example 5
+        test_aquifer = r"""
+        ;;Aquifer       	Phi   	WP    	FC    	HydCon	Kslope	Tslope	UEF   	LED   	LGLR  	BEL   	WTEL  	UZM   	UEF Pat
+        ;;--------------	------	------	------	------	------	------	------	------	------	------	------	------	------
+               1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40
+        """
+        # --Test set_text
+        self.my_options.set_text(test_aquifer)
+        # --Test get_text through matches
+        # --Failed, this data structure appears to be messy
+        # --Error:Session name [AQUIFER] is after the parameters
+        actual_text = self.my_options.get_text() # display purpose
+        assert self.my_options.matches(test_aquifer)

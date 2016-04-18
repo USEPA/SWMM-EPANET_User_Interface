@@ -2,7 +2,7 @@ from core.swmm.hydrology.subcatchment import Subcatchment
 import unittest
 
 
-class SubSubcatchmentTest(unittest.TestCase):
+class SingleSubcatchmentTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
 

@@ -11,28 +11,40 @@ class SubSubcatchmentTest(unittest.TestCase):
         self.my_options = Subcatchment()
 
     def runTest(self):
-        # Subcatchment did not inherit from Section
-        # Test default, default is empty string, no adjustments, Failed because
-        # -- subcatchment does not have SECTION_NAME
-        # -- get_text produced string with tabs instead of empty string
-        #name = self.my_options.SECTION_NAME
-        #assert name == "[SUBCATCHMENTS]"
-        actual_text = self.my_options.get_text()
-        #assert actual_text == ''
-
-        # Test aquifer parameters in Example 5
-        test_subcatchment = r"""
-[SUBCATCHMENTS]
-;;Subcatchment  	Rain Gage       	Outlet          	Area    	%Imperv 	Width   	%Slope  	CurbLen 	Snow Pack
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------	----------------
-1               	1               	2               	5       	0       	140     	0.5     	0
+        # Test one set of subcatchment parameters with spack
+        test_subcatchment_all = r"""
+SUB1               	RG1              	OT2               	5       	0       	140     0.05     	0           s1
         """
         # --Test set_text
-        self.my_options.set_text(test_subcatchment)
+        self.my_options.set_text(test_subcatchment_all)
         # --Test get_text through matches
-        # --Failed, this data structure appears to be messy, similar to aquifer
-        # --Error:Session name [AQUIFER] is after the parameters
         actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_subcatchment)
+        assert self.my_options.matches(test_subcatchment_all)
+
+        pass
+
+        # Test one set of subcatchment parameters without spack
+        # This should print fine
+        test_subcatchment_wospack = r"""
+SUB1               	RG1              	OT2               	5       	0       	140     	0.5     	0
+        """
+        # --Test set_text
+        self.my_options.set_text(test_subcatchment_wospack)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text() # display purpose
+        assert self.my_options.matches(test_subcatchment_wospack)
+
+        pass
+
+        # Test one set of subcatchment parameters missing last two parameters Slope and Clength
+        # This should report error
+        test_subcatchment_partial = r"""
+SUB1               	RG1              	OT2               	5       	0       	140
+        """
+        # --Test set_text
+        self.my_options.set_text(test_subcatchment_partial)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text() # display purpose
+        assert self.my_options.matches(test_subcatchment_partial)
 
         pass

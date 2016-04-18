@@ -51,38 +51,43 @@ class PropertyEditorBackend:
             self.table.setItem(-1, 1, QtGui.QTableWidgetItem(led.text()))
 
     def apply_edits(self):
-        column = 1
+        column = 0
         for edit_this in self.edit_these:
-            row = 0
-            label_item = self.table.verticalHeaderItem(row)
-            if label_item:
-                label = label_item.text()
-                # if label:
-                #     for meta_item in self.meta:
-                #         if meta_item.label == label:
-                #             old_value = self.meta.value(meta_item, edit_this)
-                #             new_value = None
-                #             if isinstance(old_value, bool):
-                #                 checkbox = self.table.item(row, column)
-                #                 if isinstance(checkbox, QtGui.QCheckBox):
-                #                     new_value = checkbox.isChecked()
-                #             if isinstance(old_value, Enum):
-                #                 combobox = self.table.item(row, column)
-                #                 if isinstance(checkbox, QtGui.QComboBox):
-                #                     try:
-                #                         new_value = type(old_value)[combobox.currentText()]
-                #                     except Exception as ex:
-                #                         print "Could not interpret " + str(combobox.currentText()) + " as Enum " + str(type(old_value))
-                #             else:
-                #                 widget = self.table.item(row, column)
-                #                 if widget:
-                #                     new_value = widget.text()
-                #             if new_value is not None:
-                #                 try:
-                #                     setattr(edit_this, meta_item.attribute, new_value)
-                #                 except Exception as ex:
-                #                     print "Could not set " + str(meta_item.attribute) + " to " + str(widget.text())
-                #             row += 1
+            for row in range(self.table.rowCount()):
+                label_item = self.table.verticalHeaderItem(row)
+                if label_item:
+                    label = label_item.text()
+                    if label:
+                        for meta_item in self.meta:
+                            if meta_item.label == label:
+                                old_value = self.meta.value(meta_item, edit_this)
+                                new_value = None
+                                if isinstance(old_value, bool):
+                                    checkbox = self.table.cellWidget(row, column)
+                                    if isinstance(checkbox, QtGui.QCheckBox):
+                                        new_value = checkbox.isChecked()
+                                if isinstance(old_value, Enum):
+                                    combobox = self.table.cellWidget(row, column)
+                                    if isinstance(combobox, QtGui.QComboBox):
+                                        try:
+                                            new_value = type(old_value)[combobox.currentText()]
+                                        except Exception as ex:
+                                            print "Could not interpret " + str(combobox.currentText()) + " as Enum " + str(type(old_value))
+                                else:
+                                    if self.table.cellWidget(row, column):
+                                        # this is something besides a basic cell, assume a non-enum combo
+                                        if isinstance(self.table.cellWidget(row, column), QtGui.QComboBox):
+                                            combobox = self.table.cellWidget(row, column)
+                                            new_value = combobox.currentText()
+                                    else:
+                                        widget = self.table.item(row, column)
+                                        if widget:
+                                            new_value = widget.text()
+                                if new_value is not None:
+                                    try:
+                                        setattr(edit_this, meta_item.attribute, new_value)
+                                    except Exception as ex:
+                                        print "Could not set " + str(meta_item.attribute) + " to " + str(new_value)
             column += 1
 
     def table_currentCellChanged(self):

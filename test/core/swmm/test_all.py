@@ -24,7 +24,11 @@ from test_climatology_adjustments import ClimatologyAdjustmentsTest
 from test_climatology_evaporation import ClimatologyEvaporationTest
 from test_aquifers2 import HydrologyAquiferTest
 from test_subcatchment_groundwater import SubGroundwaterTest
+from test_subcatchment_coverages import SubCoveragesTest
 from test_timeseries import TimeSeriesTest
+from test_lidcontrol import SubLIDControlTest
+from test_subcatchment_LIDusage import SubLIDUsageTest
+from test_snowpack import SnowPackTest
 
 my_suite = unittest.TestSuite()
 
@@ -54,7 +58,11 @@ my_suite.addTest(ClimatologyAdjustmentsTest())
 my_suite.addTest(ClimatologyEvaporationTest())
 my_suite.addTest(HydrologyAquiferTest())
 my_suite.addTest(SubGroundwaterTest())
+my_suite.addTest(SubCoveragesTest())
 my_suite.addTest(TimeSeriesTest())
+my_suite.addTest(SubLIDControlTest())
+my_suite.addTest(SubLIDUsageTest())
+my_suite.addTest(SnowPackTest())
 if __name__ == "__main__":
     # execute only if run as a script
     # runner = unittest.TextTestRunner()

@@ -28,6 +28,7 @@ from test_subcatchment_coverages import SubCoveragesTest
 from test_timeseries import TimeSeriesTest
 from test_lidcontrol import SubLIDControlTest
 from test_subcatchment_LIDusage import SubLIDUsageTest
+from test_snowpack import SnowPackTest
 
 my_suite = unittest.TestSuite()
 
@@ -61,6 +62,7 @@ my_suite.addTest(SubCoveragesTest())
 my_suite.addTest(TimeSeriesTest())
 my_suite.addTest(SubLIDControlTest())
 my_suite.addTest(SubLIDUsageTest())
+my_suite.addTest(SnowPackTest())
 if __name__ == "__main__":
     # execute only if run as a script
     # runner = unittest.TextTestRunner()

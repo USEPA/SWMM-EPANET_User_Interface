@@ -1,8 +1,29 @@
+from core.swmm.hydrology.subcatchment import Coverage
 from core.swmm.hydrology.subcatchment import Coverages
 import unittest
 
 
-class SubCoveragesTest(unittest.TestCase):
+class SingleCoverageTest(unittest.TestCase):
+
+    def setUp(self):
+
+        self.my_options = Coverage()
+
+    def runTest(self):
+        # Test aquifer parameters in Example 5
+        test_coverages = r"""
+S2               Residential_1    27
+        """
+        # --Test set_text
+        self.my_options.set_text(test_coverages)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text() # display purpose
+        assert self.my_options.matches(test_coverages)
+
+        pass
+
+
+class MultiCoveragesTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
 

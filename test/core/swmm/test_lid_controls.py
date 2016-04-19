@@ -2,7 +2,7 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 import unittest
 
 
-class SubLIDControlTest(unittest.TestCase):
+class SingleLIDControlTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
 

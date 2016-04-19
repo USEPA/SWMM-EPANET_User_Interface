@@ -1,21 +1,16 @@
 from core.swmm.options.map import MapOptions
-from core.swmm.options import map
 import unittest
 
 
-class OptionsMapTest(unittest.TestCase):
+class SimpleMapTest(unittest.TestCase):
+
     TEST_TEXT = [("[MAP]\n"
                   "DIMENSIONS 0.000 0.000 10000.000 10000.000\n"
                   "Units      None")]
 
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = MapOptions()
-
     def setUp(self):
 
-        self.my_options = map.MapOptions()
-
+        self.my_options = MapOptions()
 
     def runTest(self):
 

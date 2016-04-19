@@ -1,16 +1,12 @@
 from core.swmm.options.files import Files
-from core.swmm.options import files
 import unittest
 
-class OptionsFilesTest(unittest.TestCase):
 
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = Files()
+class SimpleFilesTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.my_options = files.Files()
+        self.my_options = Files()
 
 
     def runTest(self):

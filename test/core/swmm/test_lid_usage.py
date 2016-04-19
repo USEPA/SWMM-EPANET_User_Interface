@@ -2,7 +2,28 @@ from core.swmm.hydrology.subcatchment import LIDUsage
 import unittest
 
 
-class SubLIDUsageTest(unittest.TestCase):
+class SingleLIDUsageTest(unittest.TestCase):
+    def __init__(self):
+        unittest.TestCase.__init__(self)
+
+    def setUp(self):
+
+        self.my_options = LIDUsage()
+
+    def runTest(self):
+
+        # Test aquifer parameters from SWMM 5.1 manual
+        test_lid_usage = r""" S2 Swale 1 10000 50 0 0 0 'swale.rpt' """
+        # --Test set_text
+
+        self.my_options.set_text(test_lid_usage)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text() # display purpose
+        #assert self.my_options.matches(test_lid_usage)
+
+        pass
+
+class MultiLIDUsageTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
 

@@ -2,9 +2,7 @@ from core.swmm.hydrology.snowpack import SnowPack
 import unittest
 
 
-class SnowPackTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+class SingleSnowPackTest(unittest.TestCase):
 
     def setUp(self):
 

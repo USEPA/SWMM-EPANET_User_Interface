@@ -40,12 +40,75 @@ class frmSubcatchments(frmGenericPropertyEditor):
             tb.column = column
             tb.button.clicked.connect(self.make_show_infilt(column))
             self.tblGeneric.setCellWidget(18, column, tb)
+            # text plus button for groundwater editor
+            tb = TextPlusButton(self)
+            tb.textbox.setText('NO')
+            groundwater_section = self.project.find_section('GROUNDWATER')
+            groundwater_list = groundwater_section.value[0:]
+            for value in groundwater_list:
+              if value.subcatchment == str(self.tblGeneric.item(0,column).text()):
+                tb.textbox.setText('YES')
+            tb.textbox.setEnabled(False)
+            tb.column = column
+            tb.button.clicked.connect(self.make_show_groundwater(column))
+            self.tblGeneric.setCellWidget(19, column, tb)
+            # for snowpacks, show available snowpacks
+            snowpack_section = self.project.find_section("SNOWPACKS")
+            snowpack_list = snowpack_section.value[0:]
+            combobox = QtGui.QComboBox()
+            combobox.addItem('')
+            selected_index = 0
+            for value in snowpack_list:
+                combobox.addItem(value.name)
+                if edit_these[column].snow_pack == value.name:
+                    selected_index = int(combobox.count())-1
+            combobox.setCurrentIndex(selected_index)
+            self.tblGeneric.setCellWidget(20, column, combobox)
             # text plus button for lid controls
             tb = TextPlusButton(self)
-            tb.textbox.setText("NO")
+            section = self.project.find_section("LID_USAGE")
+            lid_list = section.value[0:]
+            lid_count = 0
+            for value in lid_list:
+                if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                    lid_count += 1
+            tb.textbox.setText(str(lid_count))
+            tb.textbox.setEnabled(False)
             tb.column = column
             tb.button.clicked.connect(self.make_show_lid_controls(column))
             self.tblGeneric.setCellWidget(21, column, tb)
+            # text plus button for land use coverages
+            tb = TextPlusButton(self)
+            section = self.project.find_section("COVERAGES")
+            coverage_list = section.value[0:]
+            coverage_count = 0
+            for value in coverage_list:
+                if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                    coverage_count += 1
+            tb.textbox.setText(str(coverage_count))
+            tb.textbox.setEnabled(False)
+            tb.column = column
+            tb.button.clicked.connect(self.make_show_coverage_controls(column))
+            self.tblGeneric.setCellWidget(22, column, tb)
+            # text plus button for initial buildup
+            tb = TextPlusButton(self)
+            tb.textbox.setText('NONE')
+            loadings_section = self.project.find_section('LOADINGS')
+            loadings_list = loadings_section.value[0:]
+            for value in loadings_list:
+              if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                tb.textbox.setText('YES')
+            tb.textbox.setEnabled(False)
+            tb.column = column
+            tb.button.clicked.connect(self.make_show_loadings_controls(column))
+            self.tblGeneric.setCellWidget(23, column, tb)
+
+    def make_show_groundwater(self, column):
+        def local_show():
+            print("Show for column " + str(column))
+            # editor = frmInfiltration(self.parent)
+            # self.parent.show_edit_window(editor)
+        return local_show
 
     def make_show_infilt(self, column):
         def local_show():
@@ -61,6 +124,24 @@ class frmSubcatchments(frmGenericPropertyEditor):
             # TODO: Populate editor textbox
             # TODO: make button do something related to column
             self.parent.show_edit_window(editor)
+        return local_show
+
+    def make_show_coverage_controls(self, column):
+        def local_show():
+            print("Show for column " + str(column))
+        return local_show
+
+    def make_show_loadings_controls(self, column):
+        def local_show():
+            print("Show for column " + str(column))
+            edit_these = []
+            # if isinstance(self.project.loadings.value, list):
+                # if len(self.project.loadings.value) == 0:
+                    # new_item = Pollutant()
+                    # new_item.name = "NewPollutant"
+                    # self.project.pollutants.value.append(new_item)
+            edit_these.extend(self.project.loadings.value)
+            return frmGenericPropertyEditor(self, edit_these, "SWMM Initial Buildup Editor")
         return local_show
 
     def cmdOK_Clicked(self):

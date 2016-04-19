@@ -38,7 +38,7 @@ class frmAquifers(frmGenericPropertyEditor):
             selected_index = 0
             for value in pattern_list:
                 combobox.addItem(value.name)
-                if edit_these[0].upper_evaporation_pattern == value.name:
+                if edit_these[column].upper_evaporation_pattern == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(13, column, combobox)

@@ -6,6 +6,7 @@ from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
+from ui.SWMM.frmInitialBuildup import frmInitialBuildup
 # from ui.SWMM.frmInfiltration import frmInfiltration
 
 
@@ -32,26 +33,6 @@ class frmSubcatchments(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
-            # text plus button for infiltration editor
-            option_section = self.project.find_section('OPTIONS')
-            tb = TextPlusButton(self)
-            tb.textbox.setText(option_section.infiltration)
-            tb.textbox.setEnabled(False)
-            tb.column = column
-            tb.button.clicked.connect(self.make_show_infilt(column))
-            self.tblGeneric.setCellWidget(18, column, tb)
-            # text plus button for groundwater editor
-            tb = TextPlusButton(self)
-            tb.textbox.setText('NO')
-            groundwater_section = self.project.find_section('GROUNDWATER')
-            groundwater_list = groundwater_section.value[0:]
-            for value in groundwater_list:
-              if value.subcatchment == str(self.tblGeneric.item(0,column).text()):
-                tb.textbox.setText('YES')
-            tb.textbox.setEnabled(False)
-            tb.column = column
-            tb.button.clicked.connect(self.make_show_groundwater(column))
-            self.tblGeneric.setCellWidget(19, column, tb)
             # for snowpacks, show available snowpacks
             snowpack_section = self.project.find_section("SNOWPACKS")
             snowpack_list = snowpack_section.value[0:]
@@ -64,44 +45,80 @@ class frmSubcatchments(frmGenericPropertyEditor):
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(20, column, combobox)
-            # text plus button for lid controls
-            tb = TextPlusButton(self)
-            section = self.project.find_section("LID_USAGE")
-            lid_list = section.value[0:]
-            lid_count = 0
-            for value in lid_list:
-                if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
-                    lid_count += 1
-            tb.textbox.setText(str(lid_count))
-            tb.textbox.setEnabled(False)
-            tb.column = column
-            tb.button.clicked.connect(self.make_show_lid_controls(column))
-            self.tblGeneric.setCellWidget(21, column, tb)
-            # text plus button for land use coverages
-            tb = TextPlusButton(self)
-            section = self.project.find_section("COVERAGES")
-            coverage_list = section.value[0:]
-            coverage_count = 0
-            for value in coverage_list:
-                if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
-                    coverage_count += 1
-            tb.textbox.setText(str(coverage_count))
-            tb.textbox.setEnabled(False)
-            tb.column = column
-            tb.button.clicked.connect(self.make_show_coverage_controls(column))
-            self.tblGeneric.setCellWidget(22, column, tb)
-            # text plus button for initial buildup
-            tb = TextPlusButton(self)
-            tb.textbox.setText('NONE')
-            loadings_section = self.project.find_section('LOADINGS')
-            loadings_list = loadings_section.value[0:]
-            for value in loadings_list:
-              if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+            # also set special text plus button cells
+            self.set_infiltration_cell(column)
+            self.set_groundwater_cell(column)
+            self.set_lid_control_cell(column)
+            self.set_land_use_cell(column)
+            self.set_initial_buildup_cell(column)
+
+    def set_infiltration_cell(self, column):
+        # text plus button for infiltration editor
+        option_section = self.project.find_section('OPTIONS')
+        tb = TextPlusButton(self)
+        tb.textbox.setText(option_section.infiltration)
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_infilt(column))
+        self.tblGeneric.setCellWidget(18, column, tb)
+
+    def set_groundwater_cell(self, column):
+        # text plus button for groundwater editor
+        tb = TextPlusButton(self)
+        tb.textbox.setText('NO')
+        groundwater_section = self.project.find_section('GROUNDWATER')
+        groundwater_list = groundwater_section.value[0:]
+        for value in groundwater_list:
+            if value.subcatchment == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')
-            tb.textbox.setEnabled(False)
-            tb.column = column
-            tb.button.clicked.connect(self.make_show_loadings_controls(column))
-            self.tblGeneric.setCellWidget(23, column, tb)
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_groundwater(column))
+        self.tblGeneric.setCellWidget(19, column, tb)
+
+    def set_lid_control_cell(self, column):
+        # text plus button for lid controls
+        tb = TextPlusButton(self)
+        section = self.project.find_section("LID_USAGE")
+        lid_list = section.value[0:]
+        lid_count = 0
+        for value in lid_list:
+            if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                lid_count += 1
+        tb.textbox.setText(str(lid_count))
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_lid_controls(column))
+        self.tblGeneric.setCellWidget(21, column, tb)
+
+    def set_land_use_cell(self, column):
+        # text plus button for land use coverages
+        tb = TextPlusButton(self)
+        section = self.project.find_section("COVERAGES")
+        coverage_list = section.value[0:]
+        coverage_count = 0
+        for value in coverage_list:
+            if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                coverage_count += 1
+        tb.textbox.setText(str(coverage_count))
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_coverage_controls(column))
+        self.tblGeneric.setCellWidget(22, column, tb)
+
+    def set_initial_buildup_cell(self, column):
+        # text plus button for initial buildup
+        tb = TextPlusButton(self)
+        tb.textbox.setText('NONE')
+        loadings_section = self.project.find_section('LOADINGS')
+        loadings_list = loadings_section.value[0:]
+        for value in loadings_list:
+            if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+                tb.textbox.setText('YES')
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_loadings_controls(column))
+        self.tblGeneric.setCellWidget(23, column, tb)
 
     def make_show_groundwater(self, column):
         def local_show():
@@ -133,15 +150,11 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_loadings_controls(self, column):
         def local_show():
-            print("Show for column " + str(column))
-            edit_these = []
-            # if isinstance(self.project.loadings.value, list):
-                # if len(self.project.loadings.value) == 0:
-                    # new_item = Pollutant()
-                    # new_item.name = "NewPollutant"
-                    # self.project.pollutants.value.append(new_item)
-            edit_these.extend(self.project.loadings.value)
-            return frmGenericPropertyEditor(self, edit_these, "SWMM Initial Buildup Editor")
+            editor = frmInitialBuildup(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor.setWindowModality(QtCore.Qt.ApplicationModal)
+            editor.show()
+            # self.parent.show_edit_window(editor)
+            self.set_initial_buildup_cell(column)
         return local_show
 
     def cmdOK_Clicked(self):

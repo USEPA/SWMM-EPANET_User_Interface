@@ -73,6 +73,7 @@ class Temperature(Section):
         return '\n'.join(text_list)
 
     def set_text(self, new_text):
+        # type: (object) -> object
         self.__init__()
         areal_depletion_text = ''
         for line in new_text.splitlines():

@@ -3,19 +3,16 @@ from core.swmm.options import report
 import unittest
 
 
-class OptionsReportingTest(unittest.TestCase):
+class SimpleReportTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
         self.my_options = Report()
 
     def setUp(self):
-
         self.my_options = report.Report()
 
-
     def runTest(self):
-
-        #--Test default with formats (old--may be removed unless keep the format testing xw20160411)
+        # --Test default with formats (old--may be removed unless keep the format testing xw20160411)
         name = self.my_options.SECTION_NAME
         assert name == "[REPORT]"
 

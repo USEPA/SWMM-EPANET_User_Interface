@@ -15,10 +15,10 @@ class Routing(Enum):
     OUTLET = 3
 
 
-class Subcatchment:
+class Subcatchment(Section):
     """Subcatchment geometry, location, parameters, and time-series data"""
 
-    field_format = "{:16}\t{:16}\t{:16}\t{:0}\t{:0}\t{:0}\t{:0}\t{:0}\t{:16}"
+    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:16}"
 
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((

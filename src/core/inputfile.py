@@ -266,7 +266,7 @@ class Section(object):
                     self.comment += '\n'    # Separate from existing comment with newline
             self.comment += this_comment
         if line.startswith('['):
-            if hasattr(self, "SECTION_NAME") and line.strip().upper() != self.SECTION_NAME:
+            if hasattr(self, "SECTION_NAME") and line.strip().upper() != self.SECTION_NAME.upper():
                 raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
             else:
                 line = ''

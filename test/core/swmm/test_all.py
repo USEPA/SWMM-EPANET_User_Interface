@@ -27,7 +27,9 @@ from test_lid_controls import SingleLIDControlTest
 from test_raingages import SingleRainGageTest
 from test_snowpack import SingleSnowPackTest
 from test_subcatchments import SingleSubcatchmentTest
-# -- Infiltrations
+from test_infiltrations import SingleHortonInfiltrationTest
+from test_infiltrations import SingleGreenAmptInfiltrationTest
+from test_infiltrations import SingleCurveNumberInfiltrationTest
 from test_groundwater import SingleGroundwaterTest
 from test_lid_usage import SingleLIDUsageTest
 from test_coverages import SingleCoverageTest
@@ -53,10 +55,10 @@ from test_junctions import SingleJunctionTest
 from test_outfalls import SingleOutfallTest
 from test_dividers import SingleDividerTest
 # Storage
-# Inflows - Direct Inflows
-# DWf - dry weather inflow
-# RDII - RDI inflow
-# Treatment
+from test_inflows import SingleInflowTest
+from test_dwf import SingleDWITest
+from test_RDII import SingleRDIITest
+from test_treatment import SingleTreatmentTest
 
 # Quality:
 from test_pollutants import SinglePollutantTest
@@ -64,14 +66,26 @@ from test_buildup import SingleBuildupTest
 from test_washoff import SingleWashoffTest
 from test_landuses import SingleLanduseTest
 
-# Mislaneous
-# from test_curves import SimpleCurveTest
+# Map related:
+# -- Map is in options group
+# Coordinates
+# Vertices
+# Polygons
+# Symbols
+# Labels
 # from test_labels import SimpleLableTest
+# -- Backdrop is in options group
+
+# Mislaneous relations:
+# from test_curves import SimpleCurveTest
+# -- Hydrographs in Hydrology section
+from test_patterns import SinglePatternTest
+from test_timeseries import SingleTimeSeriesTest
+
+# Mislaneous
 # from test_energy import SimpleEnergyTest
-# from test_patterns import SimplePatternTest
 from test_project import ProjectTest
 from test_title import SimpleTitleTest
-from test_timeseries import SingleTimeSeriesTest
 
 my_suite = unittest.TestSuite()
 
@@ -99,7 +113,9 @@ my_suite.addTest(SingleLIDControlTest())
 my_suite.addTest(SingleRainGageTest())
 my_suite.addTest(SingleSnowPackTest())
 my_suite.addTest(SingleSubcatchmentTest())
-# -- Place holder for infiltrations
+my_suite.addTest(SingleHortonInfiltrationTest())
+my_suite.addTest(SingleGreenAmptInfiltrationTest())
+my_suite.addTest(SingleCurveNumberInfiltrationTest())
 my_suite.addTest(SingleGroundwaterTest())
 my_suite.addTest(SingleLIDUsageTest())
 my_suite.addTest(SingleCoverageTest())
@@ -125,10 +141,10 @@ my_suite.addTest(SingleJunctionTest())
 my_suite.addTest(SingleOutfallTest())
 my_suite.addTest(SingleDividerTest())
 # Storage
-# Inflows - Direct Inflows
-# DWf - dry weather inflow
-# RDII - RDI inflow
-# Treatment
+my_suite.addTest(SingleInflowTest())
+my_suite.addTest(SingleDWITest())
+my_suite.addTest(SingleRDIITest())
+my_suite.addTest(SingleTreatmentTest())
 
 # Quality:
 my_suite.addTest(SinglePollutantTest())
@@ -141,7 +157,7 @@ my_suite.addTest(SimpleTitleTest())
 my_suite.addTest(SingleTimeSeriesTest())
 my_suite.addTest(ProjectTest())
 # will need for later MTPs:
-# my_suite.addTest(SimplePatternTest())
+my_suite.addTest(SinglePatternTest())
 # my_suite.addTest(SimpleCurveTest())
 # my_suite.addTest(SimpleLabelTest())
 

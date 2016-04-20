@@ -67,6 +67,8 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     value1.subcatchment_name = self.subcatchment_name
                     value1.pollutant_name = pollutant
                     value1.initial_buildup = str(self.tblGeneric.item(pollutant_count,0).text())
+                    if section.value == '':
+                        section.value = []
                     section.value.append(value1)
         self.close()
 

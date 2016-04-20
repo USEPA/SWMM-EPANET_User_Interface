@@ -489,25 +489,25 @@ class Treatment(Section):
 
     field_format = "{:16}\t{:16}\t{}"
 
-    hint = "Treatment expressions have the general form:"
-    "  R = f(P, R_P, V)"
-    "or"
-    "  C = f(P, R_P, V)"
-    "where:"
-    "  R   = fractional removal,"
-    "  C   = outlet concentration,"
-    "  P   = one or more pollutant names,"
-    "  R_P = one or more pollutant removals"
-    "        (prepend R_ to pollutant name),"
-    "  V   = one or more process variables:"
-    "        FLOW (inflow rate)"
-    "        DEPTH (water depth)"
-    "        HRT (hydraulic residence time)"
-    "        DT (time step in seconds)"
-    "        AREA (surface area)."
-    "Some example expressions are:"
-    "  C = BOD * exp(-0.05*HRT)"
-    "  R = 0.75 * R_TSS"
+    hint = "Treatment expressions have the general form:\n" \
+           "  R = f(P, R_P, V)\n" \
+           "or\n" \
+           "  C = f(P, R_P, V)\n" \
+           "where:\n" \
+           "  R   = fractional removal,\n" \
+           "  C   = outlet concentration,\n" \
+           "  P   = one or more pollutant names,\n" \
+           "  R_P = one or more pollutant removals\n" \
+           "        (prepend R_ to pollutant name),\n" \
+           "  V   = one or more process variables:\n" \
+           "        FLOW (inflow rate)\n" \
+           "        DEPTH (water depth)\n" \
+           "        HRT (hydraulic residence time)\n" \
+           "        DT (time step in seconds)\n" \
+           "        AREA (surface area).\n" \
+           "Some example expressions are:\n" \
+           "  C = BOD * exp(-0.05*HRT)\n" \
+           "  R = 0.75 * R_TSS"
 
     #    attribute, input_name, label,             default, english, metric, hint
     metadata = Metadata((

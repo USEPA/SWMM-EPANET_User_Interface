@@ -63,6 +63,8 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     value1.subcatchment_name = self.subcatchment_name
                     value1.land_use_name = land_use
                     value1.percent_subcatchment_area = str(self.tblGeneric.item(land_use_count,0).text())
+                    if section.value == '':
+                        section.value = []
                     section.value.append(value1)
         self.close()
 

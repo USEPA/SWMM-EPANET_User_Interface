@@ -3,6 +3,7 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
+import traceback
 from ui.ui_utility import *
 
 from PyQt4 import QtCore, QtGui
@@ -24,7 +25,8 @@ from ui.EPANET.frmDemands import frmDemands
 
 from ui.model_utility import *
 from core.epanet.project import Project
-
+import Externals.epanet2 as pyepanet
+from frmRunEPANET import frmRunEPANET
 
 class frmMainEPANET(frmMain):
     def __init__(self, parent=None, *args):
@@ -39,20 +41,9 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
 
         self.model = 'EPANET'
+        self.model_path = ''  # Set this only if needed later when running model
         self.modelenv1 = 'EXE_EPANET'
-        assembly_path = os.path.dirname(os.path.abspath(__file__))
-        exe_name = "epanet2d.exe"
-        pexe = os.path.join(assembly_path, exe_name)
-        if not os.path.exists(pexe):
-            pp = os.path.dirname(os.path.dirname(assembly_path))
-            pexe = os.path.join(pp, "Externals", exe_name)
-        if not os.path.exists(pexe):
-            pexe = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
-                                                        'exe files (*.exe)')
-        if os.path.exists(pexe):
-            os.environ[self.modelenv1] = pexe
-        else:
-            os.environ[self.modelenv1] = ''
+        self.assembly_path = os.path.dirname(os.path.abspath(__file__))
 
         self.on_load(model=self.model)
 
@@ -69,6 +60,7 @@ class frmMainEPANET(frmMain):
         self._frmCurveEditor = None
         self._frmPatternEditor = None
 
+        self._forms = []
 
     def std_newproj(self):
         self.project = Project()
@@ -114,8 +106,8 @@ class frmMainEPANET(frmMain):
             self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
 
     def edit_options(self, itm, column):
-        if self.project == None:
-             return
+        if self.project is None:
+            return
 
         if itm.data(0, 0) == 'Energy':
             self._frmEnergyOptions = frmEnergyOptions(self)
@@ -185,29 +177,102 @@ class frmMainEPANET(frmMain):
         #    pass
 
     def run_simulation(self):
-
-        args = []
-        program = os.environ[self.modelenv1]
-        if not os.path.exists(program):
-            QMessageBox.information(None, "EPANET", "EPANET Executable not found", QMessageBox.Ok)
-            return -1
-
-        filename = ''
-        if self.project:
-            filename = self.project.file_name
+        # Find input file to run
+        file_name = ''
+        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
+        if use_existing:
+            file_name = self.project.file_name
+            # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
-            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
+            qsettings = QtCore.QSettings(self.model, "GUI")
+            directory = qsettings.value("ProjectDir", "")
+            file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
+                                                          "Inp files (*.inp);;All files (*.*)")
 
-        if os.path.exists(filename):
-            prefix, extension = os.path.splitext(filename)
-            args.append(filename)
-            args.append(prefix + '.txt')
-            args.append(prefix + '.out')
+        if os.path.exists(file_name):
+            prefix, extension = os.path.splitext(file_name)
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libepanet.dylib.dylib'
+                    ext = '.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'epanet2_amd64.dll'
+                    ext = '.dll'
+                else:  # Linux
+                    lib_name = 'libepanet2_amd64.so'
+                    ext = '.so'
+
+                self.model_path = os.path.join(self.assembly_path, lib_name)
+                if not os.path.exists(self.model_path):
+                    pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                    self.model_path = os.path.join(pp, "Externals", lib_name)
+                if not os.path.exists(self.model_path):
+                    self.model_path = QtGui.QFileDialog.getOpenFileName(self,
+                                                                        'Locate ' + self.model + ' Library',
+                                                                        '/', '(*{1})'.format(ext))
+            if os.path.exists(self.model_path):
+                try:
+                    model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+                    frmRun = frmRunEPANET(model_api, self.project, self)
+                    self._forms.append(frmRun)
+                    if not use_existing:
+                        # Read this project so we can refer to it while running
+                        frmRun.progressBar.setVisible(False)
+                        frmRun.lblTime.setVisible(False)
+                        frmRun.fraTime.setVisible(False)
+                        frmRun.fraBottom.setVisible(False)
+                        frmRun.showNormal()
+                        frmRun.set_status_text("Reading " + file_name)
+
+                        self.project = Project()
+                        self.project.read_file(file_name)
+                        frmRun.project = self.project
+
+                    frmRun.Execute()
+                    return
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                finally:
+                    try:
+                        if model_api and model_api.isOpen():
+                            model_api.ENclose()
+                    except:
+                        pass
+                    return
+
+            # # Could not run with library, try running with executable
+            # # Run executable with StatusMonitor0
+            # args = []
+            # program = os.environ[self.modelenv1]
+            #
+            # exe_name = "epanet2d.exe"
+            # exe_path = os.path.join(self.assembly_path, exe_name)
+            # if not os.path.exists(exe_path):
+            #     pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            #     exe_path = os.path.join(pp, "Externals", exe_name)
+            # if not os.path.exists(exe_path):
+            #     exe_path = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
+            #                                              'exe files (*.exe)')
+            # if os.path.exists(exe_path):
+            #     os.environ[self.modelenv1] = exe_path
+            # else:
+            #     os.environ[self.modelenv1] = ''
+            #
+            # if not os.path.exists(program):
+            #     QMessageBox.information(None, "EPANET", "EPANET Executable not found", QMessageBox.Ok)
+            #     return -1
+            #
+            # args.append(file_name)
+            # args.append(prefix + '.txt')
+            # args.append(prefix + '.out')
+            # status = StatusMonitor0(program, args, self, model='EPANET')
+            # status.show()
         else:
-            QMessageBox.information(None, "EPANET", "EPANET input file not found", QMessageBox.Ok)
-
-        status = StatusMonitor0(program, args, self, model='EPANET')
-        status.show()
+            QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
     def on_load(self, **kwargs):
         # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

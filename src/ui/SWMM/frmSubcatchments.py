@@ -7,6 +7,7 @@ from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmInitialBuildup import frmInitialBuildup
+from ui.SWMM.frmLandUseAssignment import frmLandUseAssignment
 # from ui.SWMM.frmInfiltration import frmInfiltration
 
 
@@ -150,16 +151,18 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_lid_controls(self, column):
         def local_show():
-            print("Show for column " + str(column))
-            editor = frmLIDControls(self.parent)
-            # TODO: Populate editor textbox
-            # TODO: make button do something related to column
-            self.parent.show_edit_window(editor)
+            editor = frmLIDControls(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor.setWindowModality(QtCore.Qt.ApplicationModal)
+            editor.show()
+            self.refresh_column = column
         return local_show
 
     def make_show_coverage_controls(self, column):
         def local_show():
-            print("Show for column " + str(column))
+            editor = frmLandUseAssignment(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor.setWindowModality(QtCore.Qt.ApplicationModal)
+            editor.show()
+            self.refresh_column = column
         return local_show
 
     def make_show_loadings_controls(self, column):

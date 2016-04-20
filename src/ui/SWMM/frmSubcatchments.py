@@ -18,6 +18,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
     def __init__(self, parent):
         self.parent = parent
         self.project = parent.project
+        self.refresh_column = -1
         edit_these = []
         project_section = self.project.find_section(self.SECTION_NAME)
         if project_section and\
@@ -51,6 +52,19 @@ class frmSubcatchments(frmGenericPropertyEditor):
             self.set_lid_control_cell(column)
             self.set_land_use_cell(column)
             self.set_initial_buildup_cell(column)
+
+        self.installEventFilter(self)
+
+    def eventFilter(self, object, event):
+        if event.type() == QtCore.QEvent.WindowUnblocked:
+            if self.refresh_column > -1:
+                self.set_infiltration_cell(self.refresh_column)
+                self.set_groundwater_cell(self.refresh_column)
+                self.set_lid_control_cell(self.refresh_column)
+                self.set_land_use_cell(self.refresh_column)
+                self.set_initial_buildup_cell(self.refresh_column)
+                self.refresh_column = -1
+        return False
 
     def set_infiltration_cell(self, column):
         # text plus button for infiltration editor
@@ -153,8 +167,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             editor = frmInitialBuildup(self.parent, str(self.tblGeneric.item(0,column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
-            # self.parent.show_edit_window(editor)
-            self.set_initial_buildup_cell(column)
+            self.refresh_column = column
         return local_show
 
     def cmdOK_Clicked(self):

@@ -87,24 +87,6 @@ class frmMainEPANET(frmMain):
                 self.setWindowTitle(self.model)
         pass
 
-    def proj_save(self):
-        self.project.write_file(self.project.file_name)
-
-    def proj_save_as(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
-        if file_name:
-            self.project.write_file(file_name)
-            path_only, file_only = os.path.split(file_name)
-            self.setWindowTitle(self.model + " - " + file_only)
-            if path_only != directory:
-                qsettings.setValue("ProjectDir", path_only)
-                del qsettings
-        if file_name:
-            self.project.write_file(file_name)
-            self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
-
     def edit_options(self, itm, column):
         if self.project is None:
             return

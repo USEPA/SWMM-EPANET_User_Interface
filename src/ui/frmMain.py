@@ -41,9 +41,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
         # QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
         # QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
-        QtCore.QObject.connect(self.actionStdSave, QtCore.SIGNAL('triggered()'), self.proj_save)
-        QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.proj_save)
-        QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.proj_save_as)
+        QtCore.QObject.connect(self.actionStdSave, QtCore.SIGNAL('triggered()'), self.save_project)
+        QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.save_project)
+        QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.save_project_as)
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), \
                                self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), \
@@ -254,6 +254,24 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
+
+    def save_project(self):
+        self.project.write_file(self.project.file_name)
+
+    def save_project_as(self):
+        qsettings = QtCore.QSettings(self.model, "GUI")
+        directory = qsettings.value("ProjectDir", "")
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
+        if file_name:
+            self.project.write_file(file_name)
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+            if path_only != directory:
+                qsettings.setValue("ProjectDir", path_only)
+                del qsettings
+        if file_name:
+            self.project.write_file(file_name)
+            self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
 
     def __unicode__(self):
         return unicode(self)

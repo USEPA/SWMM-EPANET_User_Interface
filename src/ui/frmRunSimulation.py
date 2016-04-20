@@ -136,7 +136,6 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
             self.txtDays.setText(str(int_days))
             self.txtDays.update()
             update = True
-        # TODO: re-create code for displaying hours and minutes
         if total_days <= self.SHORT_TERM_LIMIT:
             float_hours = (elapsed_days - int_days) * 24
             int_hours = int(float_hours)

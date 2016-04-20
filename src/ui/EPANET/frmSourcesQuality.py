@@ -14,7 +14,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)
         self._parent = parent
-        self.control_type = ""
+        self.node_id = ''
 
     def set_from(self, project, node_id):
         self.node_id = node_id
@@ -27,7 +27,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
                 self.txtQuality.setText(str(source.baseline_strength))
                 self.txtPattern.setText(str(source.pattern_id))
                 if source.source_type == SourceType.CONCEN:
-                   self.rbnConcentration.setChecked(True)
+                    self.rbnConcentration.setChecked(True)
                 elif source.source_type == SourceType.FLOWPACED:
                     self.rbnFlow.setChecked(True)
                 elif source.source_type == SourceType.MASS:
@@ -45,11 +45,11 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
                 source.pattern_id = self.txtPattern.text()
                 if self.rbnConcentration.isChecked():
                     source.source_type = SourceType.CONCEN
-                if self.rbnFlow.isChecked():
+                elif self.rbnFlow.isChecked():
                     source.source_type = SourceType.FLOWPACED
-                if self.rbnMass.isChecked():
+                elif self.rbnMass.isChecked():
                     source.source_type = SourceType.MASS
-                if self.rbnSetPoint.isChecked():
+                elif self.rbnSetPoint.isChecked():
                     source.source_type = SourceType.SETPOINT
         self.close()
 

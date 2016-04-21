@@ -329,7 +329,7 @@ class Section(object):
                 # Compare each line by replacing any group of spaces and tabs with one space
                 this_line_split  = this_line.split()
                 other_line_split = other_line.split()
-                if len(this_line_joined) != len(other_line_joined):
+                if len(this_line_split) != len(other_line_split):
                     return False  # Different number of significant columns in a line means they do not match
                 this_line_joined  = ' '.join(this_line_split)
                 other_line_joined = ' '.join(other_line_split)

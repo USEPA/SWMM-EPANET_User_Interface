@@ -327,14 +327,15 @@ class Section(object):
             other_sorted.sort()
             for (this_line, other_line) in zip(this_sorted, other_sorted):
                 # Compare each line by replacing any group of spaces and tabs with one space
-                this_joined  = ' '.join(this_line.split())
-                other_joined = ' '.join(other_line.split())
-                if len(this_joined) != len(other_joined):
+                this_line_split  = this_line.split()
+                other_line_split = other_line.split()
+                if len(this_line_joined) != len(other_line_joined):
                     return False  # Different number of significant columns in a line means they do not match
-                # if ' '.join(this_line.split()) != ' '.join(other_line.split()):
-                if this_joined != other_joined:
+                this_line_joined  = ' '.join(this_line_split)
+                other_line_joined = ' '.join(other_line_split)
+                if this_line_joined != other_line_joined:
                     # If whole line does not match, check for match of each field
-                    for (this_field, other_field) in zip(this_line.split(), other_line.split()):
+                    for (this_field, other_field) in zip(this_line_split, other_line_split):
                         if this_field != other_field:
                             try:  # Check for match when converted to floating point numbers
                                 this_float = float(this_field)

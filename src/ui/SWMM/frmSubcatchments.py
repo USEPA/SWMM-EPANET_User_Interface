@@ -4,12 +4,14 @@ from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
+from core.swmm.hydrology.subcatchment import Groundwater
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmInitialBuildup import frmInitialBuildup
 from ui.SWMM.frmLandUseAssignment import frmLandUseAssignment
 from ui.SWMM.frmInfiltration import frmInfiltration
+from ui.SWMM.frmGroundwaterFlow import frmGroundwaterFlow
 
 
 class frmSubcatchments(frmGenericPropertyEditor):
@@ -138,9 +140,22 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_groundwater(self, column):
         def local_show():
-            print("Show for column " + str(column))
-            # editor = frmInfiltration(self.parent)
-            # self.parent.show_edit_window(editor)
+            edit_these = []
+            groundwater_section = self.project.find_section('GROUNDWATER')
+            if isinstance(groundwater_section.value, list):
+                if len(groundwater_section.value) == 0:
+                    new_item = Groundwater()
+                    groundwater_section.value.append(new_item)
+                edit_these.extend(groundwater_section.value)
+            else:
+                new_item = Groundwater()
+                groundwater_section.value = []
+                groundwater_section.value.append(new_item)
+                edit_these.extend(groundwater_section.value)
+            editor = frmGroundwaterFlow(self, edit_these, "SWMM Groundwater Flow Editor")
+            editor.setWindowModality(QtCore.Qt.ApplicationModal)
+            editor.show()
+            self.refresh_column = column
         return local_show
 
     def make_show_infilt(self, column):

@@ -358,6 +358,26 @@ class Groundwater(Section):
 
     field_format = "{:16}\t{:16}\t{:16}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}\t{:6}"
 
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("subcatchment",                        '', "Subcatchment Name",            "", '', '', "User-assigned name of subcatchment"),
+        ("aquifer",                             '', "Aquifer Name",                 "", '', '', "Name of Aquifer object that lies below subcatchment. Leave blank for no groundwater."),
+        ("receiving_node",                      '', "Receiving Node",               "", '', '', "Name of node that receives groundwater flow"),
+        ("surface_elevation",                   '', "Surface Elevation",            "", '', '', "Elevation of the ground surface (ft or m)"),
+        ("groundwater_flow_coefficient",        '', "A1 Coefficient",               "", '', '', "Groundwater influence multiplier."),
+        ("groundwater_flow_exponent",           '', "B1 Exponent",                  "", '', '', "Groundwater influence exponent."),
+        ("surface_water_flow_coefficient",      '', "A2 Coefficient",               "", '', '', "Tailwater influence multiplier."),
+        ("surface_water_flow_exponent",         '', "B2 Exponent",                  "", '', '', "Tailwater influence exponent."),
+        ("surface_gw_interaction_coefficient",  '', "A3 Coefficient",               "", '', '', "Combined groundwater/tailwater influence multiplier."),
+        ("fixed_surface_water_depth",           '', "Surface Water Depth",          "", '', '', "Depth of surface water above channel bottom (ft or m). Enter 0 to use depth from flow routing."),
+        ("threshold_groundwater_elevation",     '', "Threshold Water Table Elev.",  "", '', '', "Minimum water table elevation for flow to occur (ft or m). Leave blank to use node's invert elevation."),
+        ("bottom_elevation",                    '', "Aquifer Bottom Elevation",     "", '', '', "Elevation of aquifer bottom (ft or m). Leave blank to use Aquifer value."),
+        ("water_table_elevation",               '', "Initial Water Table Elev.",    "", '', '', "Initial water table elevation (ft or m). Leave blank to use Aquifer value."),
+        ("unsaturated_zone_moisture",           '', "Unsat. Zone Moisture",         "", '', '', "Initial moisture content of the unsaturated upper zone (fraction). Leave blank to use Aquifer value."),
+        ("custom_lateral_flow_equation",        '', "Custom Lateral Flow Equation", "", '', '', "Click to supply a custom equation for lateral GW flow."),
+        ("custom_deep_flow_equation",           '', "Custom Deep Flow Equation",    "", '', '', "Click to supply a custom equation for deep GW flow.")
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
@@ -410,6 +430,12 @@ class Groundwater(Section):
 
             self.unsaturated_zone_moisture = ''
             """override initial upper moisture content aquifer parameter"""
+
+            self.custom_lateral_flow_equation = ''
+            """expression for lateral groundwater flow (to a node of the conveyance network)"""
+
+            self.custom_deep_flow_equation = ''
+            """expression for vertical loss to deep groundwater"""
 
     def get_text(self):
         inp = ''

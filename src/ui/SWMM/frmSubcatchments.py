@@ -1,14 +1,15 @@
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 from core.swmm.hydrology.subcatchment import Subcatchment
-from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
+from core.swmm.hydrology.subcatchment import HortonInfiltration
+from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
+from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
-from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
 from ui.SWMM.frmInitialBuildup import frmInitialBuildup
 from ui.SWMM.frmLandUseAssignment import frmLandUseAssignment
-# from ui.SWMM.frmInfiltration import frmInfiltration
+from ui.SWMM.frmInfiltration import frmInfiltration
 
 
 class frmSubcatchments(frmGenericPropertyEditor):
@@ -144,9 +145,26 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_infilt(self, column):
         def local_show():
-            print("Show for column " + str(column))
-            # editor = frmInfiltration(self.parent)
-            # self.parent.show_edit_window(editor)
+            edit_these = []
+            infiltration_section = self.project.find_section('INFILTRATION')
+            if isinstance(infiltration_section.value, list):
+                if len(infiltration_section.value) == 0:
+                    option_section = self.project.find_section('OPTIONS')
+                    new_item = HortonInfiltration()
+                    if option_section.infiltration == "HORTON":
+                        new_item = HortonInfiltration()
+                    elif option_section.infiltration == "MODIFIED_HORTON":
+                        new_item = HortonInfiltration()
+                    elif option_section.infiltration == "GREEN_AMPT":
+                        new_item = GreenAmptInfiltration()
+                    elif option_section.infiltration == "MODIFIED_GREEN_AMPT":
+                        new_item = GreenAmptInfiltration()
+                    elif option_section.infiltration == "CURVE_NUMBER":
+                        new_item = CurveNumberInfiltration()
+                    infiltration_section.value.append(new_item)
+                edit_these.extend(infiltration_section.value)
+            editor = frmInfiltration(self, edit_these, "SWMM Infiltration Editor")
+            editor.show()
         return local_show
 
     def make_show_lid_controls(self, column):

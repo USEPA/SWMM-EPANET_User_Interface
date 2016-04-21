@@ -327,7 +327,7 @@ class Section(object):
             other_sorted.sort()
             for (this_line, other_line) in zip(this_sorted, other_sorted):
                 # Compare each line by replacing any group of spaces and tabs with one space
-                this_line_split  = this_line.split()
+                this_line_split = this_line.split()
                 other_line_split = other_line.split()
                 if len(this_line_split) != len(other_line_split):
                     return False  # Different number of significant columns in a line means they do not match

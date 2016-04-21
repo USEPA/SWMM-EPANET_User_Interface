@@ -179,6 +179,16 @@ class HortonInfiltration(Section):
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
 
+    #    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("subcatchment",     '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
+        ("max_rate",         '', "Max. Infil. Rate",   "", '', '', "Maximum rate on the Horton infiltration curve (in/hr or mm/hr)"),
+        ("min_rate",         '', "Min. Infil. Rate",   "", '', '', "Minimum rate on the Horton infiltration curve (in/hr or mm/hr)"),
+        ("decay",            '', "Decay Constant",     "", '', '', "Decay constant for the Horton infiltration curve (1/hr)"),
+        ("dry_time",         '', "Drying Time",        "", '', '', "Time for a fully saturated soil to completely dry (days)"),
+        ("max_volume",       '', "Max. Volume",        "", '', '', "Maximum infiltration volume possible (in or mm, 0 if not applicable)")
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
@@ -238,6 +248,14 @@ class GreenAmptInfiltration(Section):
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
+    #    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("subcatchment",             '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
+        ("suction",                  '', "Suction Head",       "", '', '', "Soil capillary suction head (in or mm)"),
+        ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "Soil saturated hydraulic conductivity (in/hr or mm/hr)"),
+        ("initial_moisture_deficit", '', "Initial Deficit",    "", '', '', "Difference between soil porosity and initial moisture content (a fraction)")
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
@@ -284,6 +302,14 @@ class CurveNumberInfiltration(Section):
     """Curve Number Infiltration parameters"""
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}"
+
+    #    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("subcatchment",             '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
+        ("curve_number",             '', "Curve Number",       "", '', '', "SCS runoff curve number"),
+        ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "This property has been deprecated and its value is ignored."),
+        ("dry_days",                 '', "Drying Time",        "", '', '', "Time for a fully saturated soil to completely dry (days)")
+    ))
 
     def __init__(self, new_text=None):
         if new_text:

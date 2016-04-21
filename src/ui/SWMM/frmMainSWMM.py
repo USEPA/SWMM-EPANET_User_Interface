@@ -179,16 +179,6 @@ class frmMainSWMM(frmMain):
             return frmTransect(self)
         elif edit_name == "Aquifers":
             return frmAquifers(self)
-            # edit_these = []
-            # if isinstance(self.project.aquifers.value, list):
-            #     if len(self.project.aquifers.value) == 0:
-            #         new_aquifer = Aquifer()
-            #         new_aquifer.name = "NewAquifer"
-            #         self.project.aquifers.value.append(new_aquifer)
-            #
-            # edit_these.extend(self.project.aquifers.value)
-            # return frmGenericPropertyEditor(self, edit_these, "SWMM Aquifer Editor")
-
         elif edit_name == "Pollutants":
             edit_these = []
             if isinstance(self.project.pollutants.value, list):
@@ -211,7 +201,6 @@ class frmMainSWMM(frmMain):
         elif edit_name == "Outfalls' or edit_name == 'Dividers' or edit_name == 'Storage Units":
             return frmInflows(self)
 
-        # the following items will respond to a click on a subcatchment form, not the tree diagram
         elif edit_name == "Subcatchments":
             return frmSubcatchments(self)
 

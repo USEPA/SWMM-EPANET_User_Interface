@@ -182,12 +182,15 @@ class frmMainSWMM(frmMain):
 
         if edit_name == "Pollutants":
             edit_these = []
-            if isinstance(self.project.pollutants.value, list):
-                if len(self.project.pollutants.value) == 0:
+            if self.project and self.project.pollutants:
+                if not isinstance(self.project.pollutants.value, basestring):
+                    if isinstance(self.project.pollutants.value, list):
+                        edit_these.extend(self.project.pollutants.value)
+                if len(edit_these) == 0:
                     new_item = Pollutant()
                     new_item.name = "NewPollutant"
-                    self.project.pollutants.value.append(new_item)
-            edit_these.extend(self.project.pollutants.value)
+                    edit_these.append(new_item)
+                    self.project.pollutants.value = edit_these
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
 
         # the following items will respond to a click on a conduit form, not the tree diagram

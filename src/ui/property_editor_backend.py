@@ -94,4 +94,7 @@ class PropertyEditorBackend:
         row = self.table.currentRow()
         # col = self.table.currentColumn()
         if self.hint_label:
-            self.hint_label.setText(self.meta[row].hint)
+            if self.meta and self.meta[row]:
+                self.hint_label.setText(self.meta[row].hint)
+            else:
+                self.hint_label.setText('')

@@ -13,25 +13,25 @@ from core.metadata import Metadata
 #         self.centroid = Coordinates(0.0, 0.0)
 #         """Coordinates of Node location (x, y)"""
 #
-#         self.description = None
+#         self.description = ''
 #         """Optional description of the Node"""
 #
-#         self.tag = None
+#         self.tag = ''
 #         """Optional label used to categorize or classify the Node"""
 #
-#         self.direct_inflows = {}
+#         self.direct_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.dry_weather_inflows = {}
+#         self.dry_weather_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.rdi_inflows = {}
+#         self.rdi_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.treatments = {}
+#         self.treatments = []
 #         """List of treatment functions for pollutants entering the node"""
 #
-#         self.invert_elev = None
+#         self.invert_elev = ''
 #         """Invert elevation of the Node (feet or meters)"""
 
 

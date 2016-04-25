@@ -7,14 +7,18 @@ from ui.EPANET.frmControlsDesigner import Ui_frmControls
 class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
 
-    def __init__(self, parent=None):
+    def __init__(self, parent, title, control_type):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        if title:
+            self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
         self._parent = parent
-        self.control_type = ""
+        self.control_type = control_type
+        if parent and parent.project and control_type:
+            self.set_from(parent.project, control_type)
 
     def set_from(self, project, control_type):
         # section = core.epanet.project.Control()

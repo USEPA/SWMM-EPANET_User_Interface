@@ -28,135 +28,97 @@ from core.epanet.project import Project
 import Externals.epanet2 as pyepanet
 from frmRunEPANET import frmRunEPANET
 
+
 class frmMainEPANET(frmMain):
+    """Main form for EPANET user interface, based on frmMain which is shared with SWMM."""
+
+    # Variables used to populate the tree control
+    # Each item is a list: label plus either editing form for this section or a child list.
+    # Special cases may just have a label and no editing form or children.
+    # *_items are a lists of items in a section
+    tree_options_Hydraulics = ["Hydraulics", frmHydraulicsOptions]
+    tree_options_Quality = ["Quality", frmQualityOptions]
+    tree_options_Reactions = ["Reactions", frmReactionsOptions]
+    tree_options_Times = ["Times", frmTimesOptions]
+    tree_options_Energy = ["Energy", frmEnergyOptions]
+    tree_options_Report = ["Report", frmReportOptions]
+    tree_options_MapBackdrop = ["Map/Backdrop", frmMapBackdropOptions]
+    tree_options_items = [tree_options_Hydraulics,
+                          tree_options_Quality,
+                          tree_options_Reactions,
+                          tree_options_Times,
+                          tree_options_Energy,
+                          tree_options_Report,
+                          tree_options_MapBackdrop]
+
+    tree_controls_Simple = ["Simple", frmControls, ["EPANET Simple Controls", "CONTROLS"]]
+    tree_controls_RuleBased = ["Rule-Based", frmControls, ["EPANET Rule-Based Controls", "RULES"]]
+    tree_controls_items = [tree_controls_Simple,
+                           tree_controls_RuleBased]
+
+    tree_TitleNotes = ["Title/Notes", frmTitle]
+    tree_Options = ["Options", tree_options_items]
+    tree_Junctions = ["Junctions", None]
+    tree_Reservoirs = ["Reservoirs", None]
+    tree_Tanks = ["Tanks", None]
+    tree_Pipes = ["Pipes", None]
+    tree_Pumps = ["Pumps", None]
+    tree_Valves = ["Valves", None]
+    tree_Labels = ["Labels", None]
+    tree_Patterns = ["Patterns", frmPatternEditor]
+    tree_Curves = ["Curves", frmCurveEditor]
+    tree_Controls = ["Controls", tree_controls_items]
+    tree_top_items = [tree_TitleNotes,
+                      tree_Options,
+                      tree_Junctions,
+                      tree_Reservoirs,
+                      tree_Tanks,
+                      tree_Pipes,
+                      tree_Pumps,
+                      tree_Valves,
+                      tree_Labels,
+                      tree_Patterns,
+                      tree_Curves,
+                      tree_Controls]
+
     def __init__(self, parent=None, *args):
         frmMain.__init__(self, parent)
-
-        QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.std_newproj)
-        QtCore.QObject.connect(self.actionStdNewProject, QtCore.SIGNAL('triggered()'), self.std_newproj)
-
-        QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.std_openproj)
-        QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
-
-        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
-
-        self.model = 'EPANET'
+        self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
-        self.modelenv1 = 'EXE_EPANET'
-        self.assembly_path = os.path.dirname(os.path.abspath(__file__))
-
-        self.on_load(model=self.model)
-
-        self._frmEnergyOptions = None
-        self._frmHydraulicsOptions = None
-        self._frmMapBackdropOptions = None
-        self._frmQualityOptions = None
-        self._frmReactionsOptions = None
-        self._frmReportOptions = None
-        self._frmTimesOptions = None
-        self._frmTitle = None
-
-        self._frmControls = None
-        self._frmCurveEditor = None
-        self._frmPatternEditor = None
-
-        self._forms = []
-
-    def std_newproj(self):
+        self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
         self.project = Project()
-        self.setWindowTitle(self.model + " - New")
-        self.project.file_name = "New.inp"
-        pass
+        self.assembly_path = os.path.dirname(os.path.abspath(__file__))
+        self.on_load(tree_top_item_list=self.tree_top_items)
 
-    def std_openproj(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
-                                                      "Inp files (*.inp);;All files (*.*)")
-        if file_name:
-            self.project = Project()
-            try:
-                self.project.read_file(file_name)
-                path_only, file_only = os.path.split(file_name)
-                self.setWindowTitle(self.model + " - " + file_only)
-                if path_only != directory:
-                    qsettings.setValue("ProjectDir", path_only)
-                    del qsettings
-            except:
-                self.project = None
-                self.setWindowTitle(self.model)
-        pass
+    def get_editor(self, edit_name):
+        frm = None
+        # First handle special cases where forms need more than simply being created
 
-    def edit_options(self, itm, column):
-        if self.project is None:
-            return
-
-        if itm.data(0, 0) == 'Energy':
-            self._frmEnergyOptions = frmEnergyOptions(self)
-            self._frmEnergyOptions.show()
-        if itm.data(0, 0) == 'Hydraulics':
-            self._frmHydraulicsOptions = frmHydraulicsOptions(self)
-            self._frmHydraulicsOptions.show()
-        if itm.data(0, 0) == 'Map/Backdrop':
-            self._frmMapBackdropOptions = frmMapBackdropOptions(self)
-            self._frmMapBackdropOptions.show()
-        if itm.data(0, 0) == 'Quality':
-            self._frmQualityOptions = frmQualityOptions(self)
-            self._frmQualityOptions.show()
-        if itm.data(0, 0) == 'Reactions':
-            self._frmReactionsOptions = frmReactionsOptions(self)
-            self._frmReactionsOptions.show()
-        if itm.data(0, 0) == 'Report':
-            self._frmReportOptions = frmReportOptions(self)
-            self._frmReportOptions.show()
-        if itm.data(0, 0) == 'Times':
-            self._frmTimesOptions = frmTimesOptions(self)
-            self._frmTimesOptions.show()
-        if itm.data(0, 0) == 'Title/Notes':
-            self._frmTitle = frmTitle(self)
-            self._frmTitle.show()
-        if itm.data(0, 0) == 'Simple':
-            self._frmControls = frmControls(self)
-            self._frmControls.setWindowTitle('EPANET Simple Controls')
-            self._frmControls.set_from(self.project, "CONTROLS")
-            self._frmControls.show()
-        if itm.data(0, 0) == 'Rule-Based':
-            self._frmControls = frmControls(self)
-            self._frmControls.setWindowTitle('EPANET Rule-Based Controls')
-            self._frmControls.set_from(self.project, "RULES")
-            self._frmControls.show()
+        # if edit_name == 'Simple':
+        #     frm = frmControls(self, 'EPANET Simple Controls', "CONTROLS")
+        # elif edit_name == 'Rule-Based':
+        #     frm = frmControls(self, 'EPANET Rule-Based Controls', "RULES")
 
         # the following items will respond to a click in the list, not the tree diagram
-        if itm.data(0, 0) == 'Patterns':
-            self._frmPatternEditor = frmPatternEditor(self)
-            self._frmPatternEditor.show()
-        if itm.data(0, 0) == 'Curves':
-            self._frmCurveEditor = frmCurveEditor(self)
-            self._frmCurveEditor.show()
+        # elif edit_name == 'Patterns':
+        #    return frmPatternEditor(self)
+        # elif edit_name == 'Curves':
+        #    return frmCurveEditor(self)
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if itm.data(0, 0) == 'Junctions' or itm.data(0, 0) == 'Reservoirs' or itm.data(0, 0) == 'Tanks':
+        if edit_name == 'Reservoirs' or edit_name == 'Tanks':
             # assume we're editing the first node for now
-            self._frmSourcesQuality = frmSourcesQuality(self)
-            self._frmSourcesQuality.setWindowTitle('EPANET Source Editor for Node ' + '1')
-            self._frmSourcesQuality.set_from(self.project, '1')
-            self._frmSourcesQuality.show()
-        if itm.data(0, 0) == 'Junctions':
+            frm = frmSourcesQuality(self)
+            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
+            frm.set_from(self.project, '1')
+        elif edit_name == 'Junctions':
             # assume we're editing the first junction for now
-            self._frmDemands = frmDemands(self)
-            self._frmDemands.setWindowTitle('EPANET Demands for Junction ' + '1')
-            self._frmDemands.set_from(self.project, '1')
-            self._frmDemands.show()
-
-        # mitm = itm
-        # if self.project == None or mitm.data(0, 0) != 'Options':
-        #     return
-        # from ui.frmOptions import frmOptions
-        # dlg = frmOptions(self, self.project.options)
-        # dlg.show()
-        # result = dlg.exec_()
-        # if result == 1:
-        #    pass
+            frm = frmDemands(self)
+            frm.setWindowTitle('EPANET Demands for Junction ' + '1')
+            frm.set_from(self.project, '1')
+        else:  # General-purpose case finds most editors from tree information
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        return frm
 
     def run_simulation(self):
         # Find input file to run
@@ -166,8 +128,7 @@ class frmMainEPANET(frmMain):
             file_name = self.project.file_name
             # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
-            qsettings = QtCore.QSettings(self.model, "GUI")
-            directory = qsettings.value("ProjectDir", "")
+            directory = QtCore.QSettings(self.model, "GUI").value("ProjectDir", "")
             file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                           "Inp files (*.inp);;All files (*.*)")
 
@@ -229,6 +190,7 @@ class frmMainEPANET(frmMain):
             # # Could not run with library, try running with executable
             # # Run executable with StatusMonitor0
             # args = []
+            # self.modelenv1 = 'EXE_EPANET'
             # program = os.environ[self.modelenv1]
             #
             # exe_name = "epanet2d.exe"
@@ -256,33 +218,9 @@ class frmMainEPANET(frmMain):
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
-    def on_load(self, **kwargs):
-        # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        # cleaner = QtCore.QObjectCleanupHandler()
-        # cleaner.add(self.tabProjMap.layout())
-        self.obj_tree = ObjectTreeView(model=kwargs['model'])
-        self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        # self.tabProjMap.addTab(self.obj_tree, 'Project')
-        layout = QVBoxLayout(self.tabProject)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.obj_tree)
-        self.tabProject.setLayout(layout)
-        self.setWindowTitle(self.model)
-
-        self.obj_list = ObjectListView(model=kwargs['model'],ObjRoot='',ObjType='',ObjList=None)
-        mlayout = self.dockw_more.layout()
-        #mlayout.setContentsMargins(0, 0, 0, 0)
-        mlayout.addWidget(self.obj_list)
-        #layout1 = QVBoxLayout(self.dockw_more)
-        self.dockw_more.setLayout(mlayout)
-        #self.actionPan.setEnabled(False)
-
-    def action_exit(self):
-        # TODO: check project status and prompt if there are unsaved changed
-        app.quit()
-
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    MainApp = frmMainEPANET()
-    MainApp.show()
-    sys.exit(app.exec_())
+    application = QtGui.QApplication(sys.argv)
+    main_form = frmMainEPANET()
+    main_form.q_application = application
+    main_form.show()
+    sys.exit(application.exec_())

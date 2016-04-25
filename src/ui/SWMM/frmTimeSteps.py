@@ -16,8 +16,8 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
     def set_from(self, project):
         section = project.options.time_steps
         self.cbxSkip.setChecked(section.skip_steady_state)
-        self.sbxLateral.setValue(section.lateral_inflow_tolerance)
-        self.sbxSystem.setValue(section.system_flow_tolerance)
+        self.sbxLateral.setValue(int(section.lateral_inflow_tolerance))
+        self.sbxSystem.setValue(int(section.system_flow_tolerance))
 
         (days, hours, minutes, seconds) = frmTimeSteps.split_days(section.dry_step)
         self.sbxDry.setValue(days)
@@ -59,8 +59,8 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
     def cmdOK_Clicked(self):
         section = self._parent.project.options.time_steps
         section.skip_steady_state = self.cbxSkip.isChecked()
-        section.lateral_inflow_tolerance = self.sbxLateral.value()
-        section.system_flow_tolerance = self.sbxSystem.value()
+        section.lateral_inflow_tolerance = str(self.sbxLateral.value())
+        section.system_flow_tolerance = str(self.sbxSystem.value())
 
         section.dry_step = frmTimeSteps.controls_to_hms(self.sbxDry, self.tmeDry)
         section.wet_step = frmTimeSteps.controls_to_hms(self.sbxWet, self.tmeWet)

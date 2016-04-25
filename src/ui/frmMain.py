@@ -15,8 +15,10 @@ from frmMainDesigner import Ui_frmMain
 #from RestrictedPython import compile_restricted
 #import py_compile
 import imp
+import traceback
 # from qgis.core import *
 # from qgis.gui import *
+from core.inputfile import InputFile as Project
 
 CURR = os.path.abspath(os.path.dirname('__file__'))
 
@@ -27,11 +29,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __init__(self, parent=None, *args):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        self.q_application = None
+        self._forms = []
+        """List of editor windows used during this session, kept here so they are not automatically closed."""
+        self.model = "Not Set"
+        self.project_type = Project
         self.project = None
         self.obj_tree = None
         self.obj_list = None
         self.plugins = self.get_plugins()
         self.populate_plugins_menu()
+        QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.new_project)
+        QtCore.QObject.connect(self.actionStdNewProject, QtCore.SIGNAL('triggered()'), self.new_project)
+        QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.open_project)
+        QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.open_project)
+        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
         # QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
         # QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
         QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
@@ -114,6 +126,27 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     #     if len(filename) > 0:
     #         self.map_widget.addRasterLayer(filename)
 
+    def on_load(self, tree_top_item_list):
+        # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        # cleaner = QtCore.QObjectCleanupHandler()
+        # cleaner.add(self.tabProjMap.layout())
+        self.obj_tree = ObjectTreeView(self, tree_top_item_list)
+        self.obj_tree.itemDoubleClicked.connect(self.edit_options)
+        # self.tabProjMap.addTab(self.obj_tree, 'Project')
+        layout = QVBoxLayout(self.tabProject)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.obj_tree)
+        self.tabProject.setLayout(layout)
+        self.setWindowTitle(self.model)
+
+        self.obj_list = ObjectListView(model=self.model, ObjRoot='', ObjType='', ObjList=None)
+        mlayout = self.dockw_more.layout()
+        # mlayout.setContentsMargins(0, 0, 0, 0)
+        mlayout.addWidget(self.obj_list)
+        # layout1 = QVBoxLayout(self.dockw_more)
+        self.dockw_more.setLayout(mlayout)
+        # self.actionPan.setEnabled(False)
+
     def populate_plugins_menu(self):
         if self.plugins:
             menu = self.menuPlugins
@@ -162,70 +195,42 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 return
 
     def add_plugin_menu(self, plugin):
-        '''
-        lnew_custom_menu = self.find_plugin_main_menu(plugin)
-        if not lnew_custom_menu  == None:
-            pass
-            '''
-        lnew_custom_menu = self.menubar.addMenu(plugin.plugin_name)
-        lnew_custom_menu.menuTag = 'plugin_mainmenu_' + plugin.plugin_name
-        Action1=QtGui.QAction('Menu 1 0',self)
-        Action1.setVisible(False)
-        Action1.triggered.connect(self.action_1)
-        lnew_custom_menu.addAction(Action1)
-        '''
-        self.menuPluginCustom = QtGui.QMenu(self.menubar)
-        self.menuPluginCustom.setObjectName("menu" + plugin.plugin_name)
-        '''
+        new_custom_menu = self.menubar.addMenu(plugin.plugin_name)
+        new_custom_menu.menuTag = 'plugin_mainmenu_' + plugin.plugin_name
         for m in plugin.__all__:
-            lnewAction = QtGui.QAction(m, self)
-            lnewAction.setStatusTip(m)
-            lnewAction.setData(plugin.plugin_name + '|' + m)
-            lnewAction.setCheckable(False)
-            QtCore.QObject.connect(lnewAction, QtCore.SIGNAL('triggered()'), self.run_plugin_custom)
-            lnew_custom_menu.addAction(lnewAction)
+            new_action = QtGui.QAction(m, self)
+            new_action.setStatusTip(m)
+            new_action.setData(plugin.plugin_name + '|' + m)
+            new_action.setCheckable(False)
+            # new_action.triggered.connect(self.run_plugin_custom)
+            QtCore.QObject.connect(new_action, QtCore.SIGNAL('triggered()'), self.run_plugin_custom)
+            new_custom_menu.addAction(new_action)
 
     def find_plugin_main_menu(self, plugin):
-        lfound = False
         for qm in self.menubar.children():
             if hasattr(qm, 'menuTag'):
                 if qm.menuTag == 'plugin_mainmenu_' + plugin.plugin_name:
                     return qm
-        if not lfound:
-            return None
+        return None
 
     def remove_plugin_menu(self, plugin):
-        lcustom_pluginmenu = self.find_plugin_main_menu(plugin)
-        if lcustom_pluginmenu  == None:
-            pass
-        else:
-            lcustom_pluginmenu.clear()
-            menu_act = lcustom_pluginmenu.menuAction()
+        custom_plugin_menu = self.find_plugin_main_menu(plugin)
+        if custom_plugin_menu:
+            custom_plugin_menu.clear()
+            menu_act = custom_plugin_menu.menuAction()
             self.menubar.removeAction(menu_act)
             menu_act.deleteLater()
-            lcustom_pluginmenu.deleteLater()
-            '''
-            lplugins2remove = []
-            for a in lcustom_pluginmenu.actions():
-                lplugins2remove.append(a)
-            for p in lplugins2remove:
-                lcustom_pluginmenu.removeAction(p)
-            for p in self.menubar.actions():
-                lstop = 'stop here'
-            '''
+            custom_plugin_menu.deleteLater()
 
     def run_plugin_custom(self):
-        ltxt = str(self.sender().data())
-        (plugin_name, method_name) = ltxt.split('|', 2)
-        for p in self.plugins:
-            if p['name'] == plugin_name:
-                lp = self.load_plugin(p)
-                if lp:
-                    lp.run(self, int(lp.__all__[str(method_name)]))
+        menu_text = str(self.sender().data())
+        (plugin_name, method_name) = menu_text.split('|', 2)
+        for plugin in self.plugins:
+            if plugin['name'] == plugin_name:
+                loaded_plugin = self.load_plugin(plugin)
+                if loaded_plugin:
+                    loaded_plugin.run(self, int(loaded_plugin.__all__[str(method_name)]))
                     return
-
-    def action_1(self):
-        pass
 
     def script_ipython(self):
         widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=MainModule)
@@ -234,13 +239,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             ipy_win.show()
 
     def script_exec(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ScriptDir", "")
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", directory, "All files (*.*)")
         if file_name:
             path_only, file_only = os.path.split(file_name)
-            qsettings.setValue("ScriptDir", path_only)
-            qsettings.sync()
+            if path_only != directory:
+                gui_settings.setValue("ScriptDir", path_only)
+                gui_settings.sync()
+                del gui_settings
+
             save_handle = sys.stdout
             try:
                 redirected_output = StringIO()
@@ -255,23 +263,102 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
 
+    def make_editor_from_tree(self, search_for, tree_list):
+        for tree_item in tree_list:
+            if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
+                if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
+                    args = [self]
+                    if len(tree_item) > 2:
+                        # We recommend this is a list, but if not, try to treat it as a single argument
+                        if isinstance(tree_item[2], basestring) or not isinstance(tree_item[2], list):
+                            args.append(str(tree_item[2]))
+                        else:  # tree_item[2] is a list that is not a string
+                            args.extend(tree_item[2])
+                    return tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                return None
+            if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
+                edit_form = self.make_editor_from_tree(search_for, tree_item[1])
+                if edit_form:
+                    return edit_form
+
+    def edit_options(self, itm, column):
+        if not self.project or not self.get_editor:
+            return
+        edit_name = itm.data(0, 0)
+        if edit_name:
+            self.show_edit_window(self.get_editor(edit_name))
+
+    def show_edit_window(self, window):
+        if window:
+            print "Show edit window " + str(window)
+            self._forms.append(window)
+            # window.destroyed.connect(lambda s, e, a: self._forms.remove(s))
+            # window.destroyed = lambda s, e, a: self._forms.remove(s)
+            # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
+            window.show()
+
+            # def editor_closing(self, event):
+            #     print "Editor Closing: " + str(event)
+            #     # self._forms.remove(event.)
+
+    def new_project(self):
+        self.project = self.project_type()
+        self.setWindowTitle(self.model + " - New")
+        self.project.file_name = "New.inp"
+
+    def open_project(self):
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("ProjectDir", "")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
+                                                      "Inp files (*.inp);;All files (*.*)")
+        if file_name:
+            self.project = self.project_type()
+            try:
+                self.project.read_file(file_name)
+                path_only, file_only = os.path.split(file_name)
+                self.setWindowTitle(self.model + " - " + file_only)
+                if path_only != directory:
+                    gui_settings.setValue("ProjectDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except:
+                self.project = Project()
+                self.setWindowTitle(self.model)
+
     def save_project(self):
         self.project.write_file(self.project.file_name)
 
     def save_project_as(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ProjectDir", "")
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
-            self.project.write_file(file_name)
             path_only, file_only = os.path.split(file_name)
-            self.setWindowTitle(self.model + " - " + file_only)
-            if path_only != directory:
-                qsettings.setValue("ProjectDir", path_only)
-                del qsettings
-        if file_name:
-            self.project.write_file(file_name)
-            self.setWindowTitle(self.model + " - " + os.path.split(file_name)[1])
+            try:
+                self.project.write_file(file_name)
+                self.setWindowTitle(self.model + " - " + file_only)
+                if path_only != directory:
+                    gui_settings.setValue("ProjectDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except Exception as ex:
+                print(str(ex) + '\n' + str(traceback.print_exc()))
+                QMessageBox.information(self, self.model,
+                                        "Error saving {0}\nin {1}\n{2}\n{2}".format(
+                                            file_only, path_only,
+                                            str(ex), str(traceback.print_exc())),
+                                        QMessageBox.Ok)
+
+    def action_exit(self):
+        # TODO: check project status and prompt if there are unsaved changed
+        if self.q_application:
+            try:
+                self.q_application.quit()
+            except:
+                try:
+                    self.close()
+                except:
+                    pass
 
     def __unicode__(self):
         return unicode(self)

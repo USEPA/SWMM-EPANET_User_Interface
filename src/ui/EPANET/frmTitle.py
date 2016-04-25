@@ -15,11 +15,10 @@ class frmTitle(QtGui.QMainWindow, Ui_frmTitle):
 
     def set_from(self, project):
         # section = core.epanet.project.Title()
-        section = project.find_section("TITLE")
-        self.txtTitle.setPlainText(str(section.title))
+        self.txtTitle.setPlainText(str(project.title.title))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("TITLE")
+        section = self._parent.project.title
         section.title = self.txtTitle.toPlainText()
         self.close()
 

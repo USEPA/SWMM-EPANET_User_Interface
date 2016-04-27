@@ -90,6 +90,51 @@ class frmMainEPANET(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
 
+        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
+        self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
+        self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
+        self.menuReport.addAction(self.actionStatus_ReportMenu)
+        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+
+        self.actionEnergy_ReportMenu = QtGui.QAction(self)
+        self.actionEnergy_ReportMenu.setObjectName(from_utf8("actionEnergy_ReportMenu"))
+        self.actionEnergy_ReportMenu.setText(transl8("frmMain", "Energy", None))
+        self.actionEnergy_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Energy", None))
+        self.menuReport.addAction(self.actionEnergy_ReportMenu)
+        QtCore.QObject.connect(self.actionEnergy_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_energy)
+
+        self.actionCalibration_ReportMenu = QtGui.QAction(self)
+        self.actionCalibration_ReportMenu.setObjectName(from_utf8("actionCalibration_ReportMenu"))
+        self.actionCalibration_ReportMenu.setText(transl8("frmMain", "Calibration", None))
+        self.actionCalibration_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Calibration", None))
+        self.menuReport.addAction(self.actionCalibration_ReportMenu)
+        QtCore.QObject.connect(self.actionCalibration_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_calibration)
+
+        self.actionReaction_ReportMenu = QtGui.QAction(self)
+        self.actionReaction_ReportMenu.setObjectName(from_utf8("actionReaction_ReportMenu"))
+        self.actionReaction_ReportMenu.setText(transl8("frmMain", "Reaction", None))
+        self.actionReaction_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Reaction", None))
+        self.menuReport.addAction(self.actionReaction_ReportMenu)
+        QtCore.QObject.connect(self.actionReaction_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_reaction)
+
+    def report_status(self):
+        print "report_status"
+        # TODO: open ~.rpt
+        pass
+
+    def report_energy(self):
+        print "report_energy"
+        pass
+
+    def report_calibration(self):
+        print "report_calibration"
+        pass
+
+    def report_reaction(self):
+        print "report_reaction"
+        pass
+
     def get_editor(self, edit_name):
         frm = None
         # First handle special cases where forms need more than simply being created

@@ -5,6 +5,19 @@ try:
 except ImportError:
     QString = str
 
+try:
+    from_utf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def from_utf8(s):
+        return s
+
+try:
+    transl8_encoding = QtGui.QApplication.UnicodeUTF8
+    def transl8(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, transl8_encoding)
+except AttributeError:
+    def transl8(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class ObjectTreeView(QTreeWidget):
     def __init__(self, parent, tree_top_item_list):

@@ -1,18 +1,13 @@
 """
-# {                    Unit:    Ureport.pas                           }
-# {                    Project: EPANET2W                              }
-# {                    Version: 2.0                                   }
-# {                    Date:    5/29/00                               }
-# {                             9/7/00                                }
-# {                    Author:  L. Rossman                            }
-# {                                                                   }
-# {   Delphi Pascal unit that writes full report to text file.        }
+    EPANET Report Generation
+    Based on Ureport.pas from EPANET2W 2.0 9/7/00 Author: L. Rossman
+    Converted to Python April 2016 by Mark Gray, RESPEC
 """
 
 import sys
-from core.epanet.options.report import ReportOptions
+# See Also: from core.epanet.options.report import ReportOptions
 
-class Report:
+class Reports:
     FORMFEED = '\f'
     PAGESIZE = 55
     ULINE = '----------------------------------------------------------------------'
@@ -53,7 +48,7 @@ class Report:
 
         self.F = open(report_file_name, 'w')  # File being written to
         self.input_file = input_file
-        self.RptTitle = ''
+        self.RptTitle = self.input_file.title.title
         self.PageNum = 0
         self.LineNum = 0
         self.Progstep = 0
@@ -79,24 +74,22 @@ class Report:
     def WriteLogo(self):
         self.PageNum = 1
         self.LineNum = 2
-        S = self.FMT18.format( DateTimeToStr(Now))
+        # TODO: S = self.FMT18.format(DateTimeToStr(Now))
         self.WriteLine(S)
         for line in self.LogoTxt:
             self.WriteLine(line)
         self.Writeline('')
         self.Writeline(self.TXT_INPUT_FILE + self.input_file.file_name)
         self.Writeline('')
-        self.RptTitle = self.input_file.options.report.title
         self.Writeline(self.RptTitle)
-    #       for I = 0 to Notes.Count-1 do
-    #         Writeline(Notes[I])
-    #     Writeline('')
+        self.WriteLine(self.input_file.title.notes)
+        self.Writeline('')
 
     def WriteEnergyHeader(self, ContinueFlag):
         # var
         #   S:  String
         #   S2: String
-        if self.LineNum + 11 > PAGESIZE:
+        if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
             if self.input_file.metric:
                 S2 = self.TXT_perM3

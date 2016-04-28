@@ -27,3 +27,16 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def keyPressEvent(self, event):
+        if event.key() == 16777264:
+            # open qt assistant for help
+            program = "/Qt/Qt5.5.1/5.5/msvc2013_64/bin/assistant.exe"
+            arguments = ["-collectionFile", "/dev/Python/SWMM-EPANET_User_Interface_svn/trunk/doc/SWMM/swmm.qhc", "-enableRemoteControl"]
+            self.process = QtCore.QProcess()
+            self.process.start(program, arguments)
+
+            # set to the right page
+            ba = QtCore.QByteArray()
+            ba.append("setSource qthelp://swmm/src/src/controlrules.htm\n")
+            self.process.write(ba)

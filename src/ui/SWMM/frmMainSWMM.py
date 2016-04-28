@@ -167,8 +167,8 @@ class frmMainSWMM(frmMain):
                       tree_TimePatterns,
                       tree_MapLabels]
 
-    def __init__(self, parent=None, *args):
-        frmMain.__init__(self, parent)
+    def __init__(self, q_application):
+        frmMain.__init__(self, q_application)
         self.model = "SWMM"
         self.model_path = ''  # Set this only if needed later when running model
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
@@ -280,12 +280,12 @@ class frmMainSWMM(frmMain):
             args = []
             exe_name = "swmm5.exe"
             exe_path = os.path.join(self.assembly_path, exe_name)
-            if not os.path.exists(exe_path):
+            if not os.path.isfile(exe_path):
                 pp = os.path.dirname(os.path.dirname(self.assembly_path))
                 exe_path = os.path.join(pp, "Externals", exe_name)
-            if not os.path.exists(exe_path):
+            if not os.path.isfile(exe_path):
                 exe_path = QtGui.QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
-            if os.path.exists(exe_path):
+            if os.path.isfile(exe_path):
                 args.append(file_name)
                 args.append(prefix + '.rpt')
                 args.append(prefix + '.out')
@@ -297,7 +297,6 @@ class frmMainSWMM(frmMain):
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)
-    main_form = frmMainSWMM()
-    main_form.q_application = application
+    main_form = frmMainSWMM(application)
     main_form.show()
     sys.exit(application.exec_())

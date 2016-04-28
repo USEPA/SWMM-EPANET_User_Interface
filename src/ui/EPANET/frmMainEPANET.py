@@ -81,8 +81,8 @@ class frmMainEPANET(frmMain):
                       tree_Curves,
                       tree_Controls]
 
-    def __init__(self, parent=None, *args):
-        frmMain.__init__(self, parent)
+    def __init__(self, q_application):
+        frmMain.__init__(self, q_application)
         self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
@@ -265,7 +265,6 @@ class frmMainEPANET(frmMain):
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)
-    main_form = frmMainEPANET()
-    main_form.q_application = application
+    main_form = frmMainEPANET(application)
     main_form.show()
     sys.exit(application.exec_())

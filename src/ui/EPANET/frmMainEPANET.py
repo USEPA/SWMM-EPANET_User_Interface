@@ -3,8 +3,8 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-import traceback
-from ui.ui_utility import *
+
+from ui.model_utility import *
 
 from PyQt4 import QtCore, QtGui
 from ui.frmMain import frmMain
@@ -23,7 +23,6 @@ from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 from ui.EPANET.frmDemands import frmDemands
 
-from ui.model_utility import *
 from core.epanet.project import Project
 import Externals.epanet2 as pyepanet
 from frmRunEPANET import frmRunEPANET
@@ -81,8 +80,8 @@ class frmMainEPANET(frmMain):
                       tree_Curves,
                       tree_Controls]
 
-    def __init__(self, parent=None, *args):
-        frmMain.__init__(self, parent)
+    def __init__(self, q_application):
+        frmMain.__init__(self, q_application)
         self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
@@ -197,7 +196,7 @@ class frmMainEPANET(frmMain):
                 if not os.path.exists(self.model_path):
                     self.model_path = QtGui.QFileDialog.getOpenFileName(self,
                                                                         'Locate ' + self.model + ' Library',
-                                                                        '/', '(*{1})'.format(ext))
+                                                                        '/', '(*{0})'.format(ext))
             if os.path.exists(self.model_path):
                 try:
                     model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
@@ -265,7 +264,6 @@ class frmMainEPANET(frmMain):
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)
-    main_form = frmMainEPANET()
-    main_form.q_application = application
+    main_form = frmMainEPANET(application)
     main_form.show()
     sys.exit(application.exec_())

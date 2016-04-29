@@ -2,7 +2,7 @@ import os
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from datetime import datetime
-from ui.frmRunSimulation import frmRunSimulation
+from ui.frmRunSimulation import frmRunSimulation, RunStatus
 
 
 class frmRunSWMM(frmRunSimulation):
@@ -116,7 +116,7 @@ class frmRunSWMM(frmRunSimulation):
         self.total_days = self.compute_total_days()
         #
         #  Gray-out the Hrs:Min display for long-term simulations
-        if Duration >= self.SHORT_TERM_LIMIT:
+        if self.total_days >= self.SHORT_TERM_LIMIT:
             self.txtHrsMin.setVisible(False)
             # Panel2.Font.Color = clGrayText
             # DaysPanel.Caption = '0'
@@ -132,7 +132,7 @@ class frmRunSWMM(frmRunSimulation):
         #     Err = swmm_step(ElapsedTime)
         #     NewTime = Time
         #     if MilliSecondsBetween(NewTime, OldTime) > 100:
-        #         UpdateProgressDisplay(ElapsedTime, Duration)
+        #         UpdateProgressDisplay(ElapsedTime, self.total_days)
         #     OldTime = NewTime
         #     until(ElapsedTime==0) or (Err > 0) or (self.run_status == RunStatus.rsStopped)
         #   # End the simulation and retrieve mass balance errors

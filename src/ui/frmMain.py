@@ -6,7 +6,7 @@ sip.setapi("QVariant", 2)
 from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
 #from ui.ui_utility import EmbedMap
-from ui.ui_utility import *
+# from ui.ui_utility import *
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from frmMainDesigner import Ui_frmMain
@@ -15,8 +15,8 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
-from qgis.core import *
-from qgis.gui import *
+# from qgis.core import *
+# from qgis.gui import *
 from core.inputfile import InputFile as Project
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))

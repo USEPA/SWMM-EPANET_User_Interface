@@ -5,9 +5,6 @@ sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
 
 from ui.model_utility import *
-from ui.ui_utility import *
-
-from PyQt4 import QtCore, QtGui
 from ui.frmMain import frmMain
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave

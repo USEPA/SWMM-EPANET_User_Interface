@@ -27,16 +27,12 @@ class ObjectTreeView(QTreeWidget):
         # QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
         # self.itemDoubleClicked.connect(self.edit_options)
         self.setHeaderHidden(True)
-        # self.addItems(self.invisibleRootItem())
         self.setColumnCount(1)
-        # self.itemChanged.connect(self.handleChanged)
         for top_list in tree_top_item_list:
             top_name = top_list[0]
-            top_item = self.addParent(self, 0, top_name, top_name)
-            #top_item = QtGui.QTreeWidgetItem(self, [top_name])
-            #top_item.setData(0, QtCore.Qt.UserRole, top_name)
-            #top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
-            #top_item.setExpanded(True)
+            top_item = self.add_tree_item(self, 0, top_name, top_name)
+            top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
+            top_item.setExpanded(True)
 
             if len(top_list) > 1:
                 children = top_list[1]
@@ -44,19 +40,12 @@ class ObjectTreeView(QTreeWidget):
                     for child in children:
                         if child and len(child) > 0:
                             child_name = child[0]
-                            child_control = self.addChild(top_item, 0, child_name, child_name)
+                            child_control = self.add_tree_item(top_item, 0, child_name, child_name)
                             if len(child) > 0 and type(child[1]) is list:
                                 for grandchild in child[1]:
-                                    self.addChild(child_control, 0, grandchild[0], grandchild[0])
+                                    self.add_tree_item(child_control, 0, grandchild[0], grandchild[0])
 
-    def addParent(self, parent, column, title, data):
-        itm = QtGui.QTreeWidgetItem(parent, [title])
-        itm.setData(column, QtCore.Qt.UserRole, data)
-        itm.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
-        itm.setExpanded(True)
-        return itm
-
-    def addChild(self, parent, column, title, data):
+    def add_tree_item(self, parent, column, title, data):
         item = QtGui.QTreeWidgetItem(parent, [title])
         item.setData(column, QtCore.Qt.UserRole, data)
         return item

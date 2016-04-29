@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>SWMM</namespace>
+    <virtualFolder>src</virtualFolder>
+    <filterSection>
+        <filterAttribute>swmm</filterAttribute>
+        <toc>
+            <section title="Introducing EPA SWMM" ref="./src/introduction.htm">
+                <section title="Hydrologic Modeling Features" ref="./src/hydrologicmodelingfeatures.htm"></section>
+                <section title="Hydraulic Modeling Features" ref="./src/hydraulicmodelingfeatures.htm"></section>
+                <section title="Water Quality Modeling Features" ref="./src/waterqualitymodelingfeatures.htm"></section>
+                <section title="Typical Applications of SWMM" ref="./src/typicalusesofswmm.htm"></section>
+                <section title="Steps in Using SWMM" ref="./src/stepsinusingswmm.htm"></section>
+            </section>
+            <section title="SWMM's Conceptual Model" ref="./src/componentobjects.htm">
+                <section title="Visual Objects" ref="./src/visualobjects.htm">
+                    <section title="Rain Gages" ref="./src/raingages.htm"></section>
+                    <section title="Subcatchments" ref="./src/subcatchments.htm"></section>
+                    <section title="Nodes" ref="./src/nodes.htm">
+                        <section title="Junctions" ref="./src/junctions.htm"></section>
+                        <section title="Outfalls" ref="./src/outfalls.htm"></section>
+                        <section title="Flow Dividers" ref="./src/flowdividers.htm"></section>
+                        <section title="Storage Units" ref="./src/storageunits.htm"></section>
+                    </section>
+                    <section title="Links" ref="./src/links.htm">
+                        <section title="Conduits" ref="./src/conduits.htm"></section>
+                        <section title="Pumps" ref="./src/pumps.htm"></section>
+                        <section title="Flow Regulators" ref="./src/flowregulators.htm">
+                            <section title="Orifices" ref="./src/orifices.htm"></section>
+                            <section title="Weirs" ref="./src/weirs.htm"></section>
+                            <section title="Outlets" ref="./src/outlets.htm"></section>
+                        </section>
+                    </section>
+                    <section title="Map Labels" ref="./src/maplabels.htm"></section>
+                </section>
+                <section title="Non-visual Objects" ref="./src/non_visualobjects.htm">
+                    <section title="Climatology" ref="./src/climatology.htm">
+                        <section title="Temperature" ref="./src/temperature.htm"></section>
+                        <section title="Evaporation" ref="./src/evaporation.htm"></section>
+                        <section title="Wind Speed" ref="./src/windspeed.htm"></section>
+                        <section title="Snowmelt" ref="./src/snowmelt.htm"></section>
+                        <section title="Areal Depletion" ref="./src/arealdepletion.htm"></section>
+                        <section title="Climate Adjustments" ref="./src/climate_adjustments.htm"></section>
+                    </section>
+                    <section title="Hydrology" ref="./src/hydrology.htm">
+                        <section title="Aquifers" ref="./src/aquifers.htm"></section>
+                        <section title="Snow Packs" ref="./src/snowpacks.htm"></section>
+                        <section title="Unit Hydrographs" ref="./src/unithydrographs.htm"></section>
+                        <section title="LID Controls" ref="./src/lidcontrols.htm">
+                            <section title="LID Representation" ref="./src/lidrepresentation.htm"></section>
+                            <section title="LID Utilization" ref="./src/lidutilization.htm"></section>
+                            <section title="LID Placement" ref="./src/lidplacement.htm"></section>
+                            <section title="LID Results" ref="./src/lidresults.htm"></section>
+                        </section>
+                    </section>
+                    <section title="Hydraulics" ref="./src/hydraulics.htm">
+                        <section title="Transects" ref="./src/transects.htm"></section>
+                        <section title="External Inflows" ref="./src/externalinflows.htm"></section>
+                        <section title="Control Rules" ref="./src/controlrules.htm">
+                            <section title="Example Rules" ref="./src/examplerules.htm"></section>
+                            <section title="Rule Format" ref="./src/ruleformat.htm"></section>
+                            <section title="Condition Clauses" ref="./src/conditionclauses.htm"></section>
+                            <section title="Action Clauses" ref="./src/actionclauses.htm"></section>
+                            <section title="Modulated Controls" ref="./src/modulatedcontrols.htm"></section>
+                            <section title="PID Controller" ref="./src/pidcontrol.htm"></section>
+                        </section>
+                    </section>
+                    <section title="Water Quality" ref="./src/waterquality.htm">
+                        <section title="Pollutants" ref="./src/pollutants.htm"></section>
+                        <section title="Land Uses" ref="./src/landuses.htm">
+                            <section title="Pollutant Buildup" ref="./src/pollutantbuildup.htm"></section>
+                            <section title="Pollutant Washoff" ref="./src/pollutantwashoff.htm"></section>
+                            <section title="Street Sweeping" ref="./src/streetsweeping.htm"></section>
+                        </section>
+                        <section title="Treatment" ref="./src/treatment.htm"></section>
+                    </section>
+                    <section title="Tabular Data" ref="./src/tabulardata.htm">
+                        <section title="Curves" ref="./src/curves.htm"></section>
+                        <section title="Time Series" ref="./src/timeseries.htm"></section>
+                        <section title="Time Patterns" ref="./src/timepatterns.htm"></section>
+                    </section>
+                </section>
+                <section title="Computational Methods" ref="./src/computationalmethods.htm">
+                    <section title="Surface Runoff" ref="./src/surfacerunoff.htm"></section>
+                    <section title="Infiltration" ref="./src/infiltration.htm"></section>
+                    <section title="Groundwater" ref="./src/groundwater.htm"></section>
+                    <section title="Snowmelt" ref="./src/snowmeltmethod.htm"></section>
+                    <section title="Flow Routing" ref="./src/flowrouting.htm">
+                        <section title="Steady Flow Routing" ref="./src/steadyflowrouting.htm"></section>
+                        <section title="Kinematic Wave Routing" ref="./src/kinematicwaverouting.htm"></section>
+                        <section title="Dynamic Wave Routing" ref="./src/dynamicwaverouting.htm"></section>
+                    </section>
+                    <section title="Ponding and Pressurization" ref="./src/surfaceponding.htm"></section>
+                    <section title="Water Quality Routing" ref="./src/waterqualityrouting.htm"></section>
+                </section>
+            </section>
+            <section title="SWMM's Main Window" ref="./src/swmmsmainwindow.htm">
+                <section title="Main Menu" ref="./src/mainmenubar.htm">
+                    <section title="File Menu" ref="./src/filemenu.htm"></section>
+                    <section title="Edit Menu" ref="./src/editmenu.htm"></section>
+                    <section title="View Menu" ref="./src/viewmenu.htm"></section>
+                    <section title="Project Menu" ref="./src/projectmenu.htm"></section>
+                    <section title="Report Menu" ref="./src/reportmenu.htm"></section>
+                    <section title="Tools Menu" ref="./src/toolsmenu.htm"></section>
+                    <section title="Window Menu" ref="./src/windowmenu.htm"></section>
+                    <section title="Help Menu" ref="./src/helpmenu.htm"></section>
+                </section>
+                <section title="Toolbars" ref="./src/toolbars.htm">
+                    <section title="Standard Toolbar" ref="./src/standardtoolbar.htm"></section>
+                    <section title="Map Toolbar" ref="./src/maptoolbar.htm"></section>
+                    <section title="Object Toolbar" ref="./src/object_toolbar.htm"></section>
+                </section>
+                <section title="Status Bar" ref="./src/statusbar.htm"></section>
+                <section title="Study Area Map" ref="./src/studyareamap.htm"></section>
+                <section title="Project Browser" ref="./src/projectbrowser.htm"></section>
+                <section title="Map Browser" ref="./src/mapbrowser.htm">
+                    <section title="Map Browser - Themes" ref="./src/mapbrowser_themes.htm"></section>
+                    <section title="Map Browser - Time Period" ref="./src/mapbrowser_timeperiod.htm"></section>
+                    <section title="Map Browser - Animator" ref="./src/mapbrowser_animator.htm"></section>
+                </section>
+                <section title="Property Editor" ref="./src/propertyeditor.htm"></section>
+                <section title="Setting Program Preferences" ref="./src/settingprogrampreferences.htm">
+                    <section title="General Preferences" ref="./src/generalpreferences.htm"></section>
+                    <section title="Numerical Precision" ref="./src/numberformats.htm"></section>
+                </section>
+            </section>
+            <section title="Working with Projects" ref="./src/workingwithprojects.htm">
+                <section title="Creating a New Project" ref="./src/creatinganewproject.htm"></section>
+                <section title="Opening an Existing Project" ref="./src/openinganexistingproject.htm"></section>
+                <section title="Saving a Project" ref="./src/savingaproject.htm"></section>
+                <section title="Setting Project Defaults" ref="./src/settingprojectdefaults.htm"></section>
+                <section title="Units of Measurement" ref="./src/unitsofmeasurement.htm"></section>
+                <section title="Link Offset Conventions" ref="./src/linkoffsets.htm"></section>
+                <section title="Registering Calibration Data" ref="./src/registeringcalibrationdata.htm"></section>
+                <section title="Viewing All Project Data" ref="./src/viewingallprojectdata.htm"></section>
+            </section>
+            <section title="Working with Objects" ref="./src/workingwithobjects.htm">
+                <section title="Types of Objects" ref="./src/typesofobjects.htm"></section>
+                <section title="Adding an Object" ref="./src/addinganobject.htm"></section>
+                <section title="Selecting an Object" ref="./src/selectinganobject.htm"></section>
+                <section title="Moving an Object" ref="./src/movinganobject.htm"></section>
+                <section title="Editing an Object" ref="./src/editinganobject.htm"></section>
+                <section title="Converting an Object" ref="./src/convertinganobject.htm"></section>
+                <section title="Copying and Pasting Objects" ref="./src/copyingandpastingobjects.htm"></section>
+                <section title="Deleting an Object" ref="./src/deletinganobject.htm"></section>
+                <section title="Shaping a Link" ref="./src/shapingalink.htm"></section>
+                <section title="Shaping a Subcatchment" ref="./src/shapingasubcatchment.htm"></section>
+                <section title="Selecting a Group of Objects" ref="./src/selectingagroupofobjects.htm"></section>
+                <section title="Deleting a Group of Objects" ref="./src/deletingagroupofobjects.htm"></section>
+                <section title="Editing a Group of Objects" ref="./src/editingagroupofobjects.htm"></section>
+            </section>
+            <section title="Working with the Map" ref="./src/workingwiththemap.htm">
+                <section title="Selecting a Map Theme" ref="./src/selectingamaptheme.htm"></section>
+                <section title="Setting the Map Dimensions" ref="./src/settingthemapdimensions.htm"></section>
+                <section title="Utilizing a Backdrop Image" ref="./src/utilizingabackdropimage.htm">
+                    <section title="Loading a Backdrop Image" ref="./src/loadingabackdropimage.htm"></section>
+                    <section title="Aligning a Backdrop Image" ref="./src/aligningabackdropimage.htm"></section>
+                    <section title="Resizing a Backdrop Image" ref="./src/resizingabackdropimage.htm"></section>
+                </section>
+                <section title="Measuring Distances" ref="./src/measuringdistances.htm"></section>
+                <section title="Zooming the Map" ref="./src/zoomingthemap.htm"></section>
+                <section title="Panning the Map" ref="./src/panningthemap.htm"></section>
+                <section title="Viewing at Full Extent" ref="./src/viewingatfullextent.htm"></section>
+                <section title="Finding an Object" ref="./src/findinganobject.htm"></section>
+                <section title="Submitting a Map Query" ref="./src/submittingamapquery.htm"></section>    
+                <section title="Using the Map Legends" ref="./src/usingthemaplegends.htm"></section>
+                <section title="Using the Overview Map" ref="./src/usingtheoverviewmap.htm"></section>
+                <section title="Setting Map Display Options" ref="./src/settingmapdisplayoptions.htm"></section>
+                <section title="Exporting the Map" ref="./src/exportingthemap.htm"></section>
+            </section>
+            <section title="Running a Simulation" ref="./src/runningasimulation.htm">
+                <section title="Setting Simulation Options" ref="./src/settingsimulationoptions.htm"></section>
+                <section title="Starting a Simulation" ref="./src/startingasimulation.htm"></section>
+                <section title="Troubleshooting Results" ref="./src/troubleshootingresults.htm">
+                    <section title="Unknown ID Errors" ref="./src/unknowniderrors.htm"></section>
+                    <section title="File Errors" ref="./src/fileerrors.htm"></section>
+                    <section title="Drainage System Layout Errors" ref="./src/drainagesystemlayouterrors.htm"></section>
+                    <section title="Excessive Continuity Errors" ref="./src/excessivecontinuityerrors.htm"></section>
+                    <section title="Unstable Flow Routing Results" ref="./src/unstableflowroutingresults.htm"></section>
+                </section>
+            </section>
+            <section title="Viewing Simulation Results" ref="./src/viewingsimulationresults.htm">
+                <section title="Viewing a Status Report" ref="./src/viewingastatusreport.htm"></section>
+                <section title="Viewing Summary Results" ref="./src/viewing_a_summary_report.htm"></section>
+                <section title="Variables That Can be Viewed" ref="./src/variablesthatcanbeviewed.htm"></section>
+                <section title="Viewing Results on the Map" ref="./src/viewingresultsonthemap.htm"></section>
+                <section title="Viewing Results with a Graph" ref="./src/viewingresultswithagraph.htm">
+                    <section title="Time Series Plots" ref="./src/timeseriesplots.htm"></section>
+                    <section title="Profile Plots" ref="./src/profileplots.htm"></section>
+                    <section title="Scatter Plots" ref="./src/scatterplots.htm"></section>
+                </section>
+                <section title="Viewing Results with a Table" ref="./src/viewingresultswithatable.htm"></section>
+                <section title="Viewing a Statistics Report" ref="./src/viewingastatisticsreport.htm"></section>
+            </section>
+            <section title="Printing and Copying" ref="./src/printingandcopying.htm">
+                <section title="Selecting a Printer" ref="./src/selectingaprinter.htm"></section>
+                <section title="Setting the Page Format" ref="./src/settingthepageformat.htm"></section>
+                <section title="Previewing the Page" ref="./src/previewingthepage.htm"></section>
+                <section title="Printing the Current View" ref="./src/printingthecurrentview.htm"></section>
+                <section title="Copying the Current View" ref="./src/copyingthecurrentview.htm"></section>
+            </section>
+            <section title="Files Used by SWMM" ref="./src/files.htm">
+                <section title="Project File" ref="./src/projectfile.htm"></section>
+                <section title="Report and Output Files" ref="./src/reportandoutputfiles.htm"></section>
+                <section title="Rainfall Files" ref="./src/rainfallfiles.htm"></section>
+                <section title="Climate Files" ref="./src/climatefiles.htm"></section>
+                <section title="Calibration Files" ref="./src/calibrationfiles.htm"></section>
+                <section title="Time Series Files" ref="./src/timeseriesfiles.htm"></section>
+                <section title="Interface Files" ref="./src/interfacefiles.htm">
+                    <section title="Rainfall and Runoff Files" ref="./src/rainfallrunofffiles.htm"></section>
+                    <section title="Hot Start Files" ref="./src/hotstartfiles.htm"></section>
+                    <section title="RDII Files" ref="./src/rdiifiles.htm"></section>
+                    <section title="Routing Files" ref="./src/routingfiles.htm"></section>
+                    <section title="RDII / Routing File Format" ref="./src/rdiiandroutingfileformat.htm"></section>
+                </section>
+            </section>
+            <section title="Using Add-In Tools" ref="./src/usingadd_intools.htm">
+                <section title="What are Add-In Tools" ref="./src/whatareadd_intools.htm"></section>
+                <section title="Configuring Add-In Tools" ref="./src/configuringadd_intools.htm"></section>
+            </section>
+            <section title="Reference">
+                <section title="Measurement Units">
+                    <section title="US Standard Units" ref="./src/usstandardunits.htm"></section>
+                    <section title="SI Metric Units" ref="./src/simetricunits.htm"></section>
+                </section>
+                <section title="Tables of Parameter Values">
+                    <section title="Soil Characteristics" ref="./src/soilcharacteristics.htm"></section>
+                    <section title="SCS Curve Numbers" ref="./src/scscurvenumbers.htm"></section>
+                    <section title="Soil Group Definitions" ref="./src/soilclasses.htm"></section>
+                    <section title="Depression Storage" ref="./src/depressionstorage2.htm"></section>
+                    <section title="Manning's n - Overland Flow" ref="./src/manningsn_overlandflow.htm"></section>
+                    <section title="Manning's n - Closed Conduits" ref="./src/manningscoefficient_closed.htm"></section>
+                    <section title="Manning's n - Open Channels" ref="./src/manningscoefficient_open.htm"></section>
+                    <section title="Water Quality Characteristics of Urban Runoff" ref="./src/waterqualitycharacteristics.htm"></section>
+                    <section title="Culvert Code Numbers" ref="./src/culvertcodenumbers.htm"></section>
+                    <section title="Culvert Inlet Loss Coefficients" ref="./src/culvertinletlosscoefficient.htm"></section>
+                    <section title="Standard Elliptical Pipe Sizes" ref="./src/elliptical_pipe_sizes.htm"></section>
+                    <section title="Standard Arch Pipe Sizes" ref="./src/standard_arch_pipe_sizes.htm"></section>
+                </section>
+                <section title="Visual Object Properties">
+                    <section title="Rain Gage Properties" ref="./src/raingageproperties.htm"></section>
+                    <section title="Subcatchment Properties" ref="./src/subcatchmentproperties.htm"></section>
+                    <section title="Junction Properties" ref="./src/junctionproperties.htm"></section>
+                    <section title="Outfall Properties" ref="./src/outfallproperties.htm"></section>
+                    <section title="Flow Divider Properties" ref="./src/flowdividerproperties.htm"></section>
+                    <section title="Storage Unit Properties" ref="./src/storageunitproperties.htm"></section>
+                    <section title="Conduit Properties" ref="./src/conduitproperties.htm"></section>
+                    <section title="Pump Properties" ref="./src/pumpproperties.htm"></section>
+                    <section title="Orifice Properties" ref="./src/orificeproperties.htm"></section>
+                    <section title="Weir Properties" ref="./src/weirproperties.htm"></section>
+                    <section title="Outlet Properties" ref="./src/outletproperties.htm"></section>
+                    <section title="Map Label Properties" ref="./src/maplabelproperties.htm"></section>
+                </section>
+                <section title="Special Dialog Forms">
+                    <section title="Aquifer Editor" ref="./src/aquifereditordialog.htm"></section>
+                    <section title="Backdrop Dimensions Dialog" ref="./src/backdropdimensionsdialog.htm"></section>
+                    <section title="Backdrop Image Selector Dialog" ref="./src/backdropimageselectordialog.htm"></section>
+                    <section title="Climatology Editor" ref="./src/climatologyeditordialog.htm">
+                        <section title="Temperature Page" ref="./src/climateeditor_temperature.htm"></section>
+                        <section title="Evaporation Page" ref="./src/climateeditor_evaporation.htm"></section>
+                        <section title="Wind Speed Page" ref="./src/climateeditor_windspeed.htm"></section>
+                        <section title="Snowmelt Page" ref="./src/climateeditor_snowmelt.htm"></section>
+                        <section title="Areal Depletion Page" ref="./src/climateeditor_arealdepletion.htm"></section>
+                        <section title="Adjustments Page" ref="./src/climatology_editor___adjustmen.htm"></section>
+                    </section>
+                    <section title="Copy Dialog" ref="./src/copydialog.htm"></section>
+                    <section title="Cross-Section Editor" ref="./src/cross_sectioneditordialog.htm"></section>
+                    <section title="Curve Editor" ref="./src/curveeditordialog.htm"></section>
+                    <section title="Graph Options Dialog" ref="./src/graphoptionsdialog.htm">
+                        <section title="Graph Options - General" ref="./src/graphoptions_general.htm"></section>
+                        <section title="Graph Options - Axes" ref="./src/graphoptions_axes.htm"></section>
+                        <section title="Graph Options - Legend" ref="./src/graphoptions_legend.htm"></section>
+                        <section title="Graph Options - Styles" ref="./src/graphoptions_series.htm"></section>
+                    </section>
+                    <section title="Groundwater Flow Editor" ref="./src/groundwaterfloweditordialog.htm"></section>
+                    <section title="Groundwater Equation Editor" ref="./src/groundwater_equation_editor.htm"></section>
+                    <section title="Group Edit Dialog" ref="./src/groupeditordialog.htm"></section>
+                    <section title="Infiltration Editor" ref="./src/infiltrationeditordialog.htm">
+                        <section title="Horton Infiltration Parameters" ref="./src/hortoninfiltrationparameters.htm"></section>
+                        <section title="Green-Ampt Infiltration Parameters" ref="./src/green_amptinfiltrationparame.htm"></section>
+                        <section title="Curve Number Infiltration Parameters" ref="./src/curvenumberinfiltrationpara.htm"></section>
+                    </section>
+                    <section title="Inflows Editor" ref="./src/inflowseditordialog.htm">
+                        <section title="Direct Inflow Page" ref="./src/directinfloweditor.htm"></section>
+                        <section title="Dry Weather Inflow Page" ref="./src/dryweatherinfloweditor.htm"></section>
+                        <section title="RDII Inflow Page" ref="./src/rdiiinfloweditor.htm"></section>
+                    </section>
+                    <section title="Initial Buildup Editor" ref="./src/initialbuildupeditor.htm"></section>
+                    <section title="Interface File Combine Dialog" ref="./src/interfacefilecombinedialog.htm"></section>
+                    <section title="Interface File Selection Dialog" ref="./src/interfacefileselectiondialog.htm"></section>
+                    <section title="Land Use Assignment Editor" ref="./src/landuseassignmenteditor.htm"></section>
+                    <section title="Land Use Editor" ref="./src/landuseeditordialog.htm">
+                        <section title="Land Use Editor - General Page" ref="./src/landuseeditorgeneralpage.htm"></section>
+                        <section title="Land Use Editor - Buildup Page" ref="./src/landuseeditorbuilduppage.htm"></section>
+                        <section title="Land Use Editor - Washoff Page" ref="./src/landuseeditorwashoffpage.htm"></section>
+                    </section>
+                    <section title="Legend Editor" ref="./src/legendeditordialog.htm"></section>
+                    <section title="LID Editors" ref="./src/lideditors.htm">
+                        <section title="LID Control Editor" ref="./src/lidcontroleditor.htm">
+                            <section title="LID Surface Layer" ref="./src/lidcontroleditor_surfacel.htm"></section>
+                            <section title="LID Pavement Layer" ref="./src/lidcontroleditor_pavement.htm"></section>
+                            <section title="LID Soil Layer" ref="./src/lidcontroleditor_soillaye.htm"></section>
+                            <section title="LID Storage Layer" ref="./src/lidcontroleditor_storagel.htm"></section>
+                            <section title="LID Drain System" ref="./src/lidcontroleditor_drain.htm">
+                                <section title="Drain Advisor" ref="./src/drain_advisor.htm"></section>
+                            </section>
+                            <section title="LID Drainage Mat" ref="./src/lid_control_editor___drainage_.htm"></section>
+                        </section>
+                        <section title="LID Group Editor" ref="./src/lidgroupeditor.htm"></section>
+                        <section title="LID Usage Editor" ref="./src/lidusageeditor.htm"></section>
+                    </section>
+                    <section title="Map Dimensions Dialog" ref="./src/mapdimensionsdialog.htm"></section>
+                    <section title="Map Options Dialog" ref="./src/mapoptionsdialog.htm">
+                        <section title="Map Options - Subcatchments" ref="./src/mapoptions_subcatchments.htm"></section>
+                        <section title="Map Options - Nodes" ref="./src/mapoptions_nodes.htm"></section>
+                        <section title="Map Options - Links" ref="./src/mapoptions_links.htm"></section>
+                        <section title="Map Options - Labels" ref="./src/mapoptions_labels.htm"></section>
+                        <section title="Map Options - Annotation" ref="./src/mapoptions_annotation.htm"></section>
+                        <section title="Map Options - Symbols" ref="./src/mapoptions_symbols.htm"></section>
+                        <section title="Map Options - Flow Arrows" ref="./src/mapoptions_flowarrows.htm"></section>
+                        <section title="Map Options - Background" ref="./src/mapoptions_background.htm"></section>
+                    </section>
+                    <section title="Pollutant Editor" ref="./src/pollutanteditordialog.htm"></section>
+                    <section title="Profile Plot Selection Dialog" ref="./src/profileplotdialog.htm"></section>
+                    <section title="Profile Plot Options Dialog" ref="./src/profileplotoptionsdialog.htm"></section>
+                    <section title="Project Defaults Dialog" ref="./src/projectdefaultsdialog.htm">
+                        <section title="Default ID Labels" ref="./src/defaultidlabels.htm"></section>
+                        <section title="Default Subcatchment Properties" ref="./src/defaultsubcatchmentproperties.htm"></section>
+                        <section title="Default Node/Link Properties" ref="./src/defaultnodelinkproperties.htm"></section>
+                    </section>
+                    <section title="Reporting Options Dialog" ref="./src/reportingoptionsdialog.htm"></section>
+                    <section title="Scatter Plot Dialog" ref="./src/scatterplotdialog.htm"></section>
+                    <section title="Simulation Options Dialog" ref="./src/simulationoptionsdialog.htm">
+                        <section title="Simulation Options - General" ref="./src/simulationoptions_general.htm"></section>
+                        <section title="Simulation Options - Dates" ref="./src/simulationoptions_dates.htm"></section>
+                        <section title="Simulation Options - Time Steps" ref="./src/simulationoptions_timesteps.htm"></section>
+                        <section title="Simulation Options - Dynamic Wave" ref="./src/simulationoptions_dynamicwave.htm"></section>
+                        <section title="Simulation Options - Interface Files" ref="./src/simulationoptions_interface.htm"></section>
+                    </section>
+                    <section title="Snow Pack Editor" ref="./src/snowpackeditordialog.htm">
+                        <section title="Snow Pack Editor -  Parameters Page" ref="./src/snowpackparameterseditor.htm"></section>
+                        <section title="Snow Pack Editor - Removal Page" ref="./src/snowremovalparameterseditor.htm"></section>
+                    </section>
+                    <section title="Statistics Selection Dialog" ref="./src/statisticsselectiondialog.htm"></section>
+                    <section title="Table by Object Dialog" ref="./src/tablebyobjectdialog.htm"></section>
+                    <section title="Table by Variable Dialog" ref="./src/tablebyvariabledialog.htm"></section>
+                    <section title="Time Pattern Editor" ref="./src/timepatterneditordialog.htm"></section>
+                    <section title="Time Series Editor" ref="./src/timeserieseditordialog.htm"></section>
+                    <section title="Time Series Plot Selection Dialog" ref="./src/timeseriesplotdialog.htm"></section>
+                    <section title="Data Series Selection Dialog" ref="./src/time_series_selection_dialog.htm"></section>
+                    <section title="Tool Properties Dialog" ref="./src/toolpropertiesdialog.htm"></section>
+                    <section title="Transect Editor" ref="./src/transecteditordialog.htm"></section>
+                    <section title="Treatment Editor" ref="./src/treatmenteditor.htm"></section>
+                    <section title="Unit Hydrograph Editor" ref="./src/unithydrographeditordialog.htm"></section>
+                </section>
+                <section title="Error Messages" ref="./src/errormessages.htm">
+                    <section title="Run Time Errors" ref="./src/runtimeerrors.htm"></section>
+                    <section title="Property Errors" ref="./src/propertyerrors.htm"></section>
+                    <section title="Format Errors" ref="./src/formaterrors.htm"></section>
+                    <section title="File Errors" ref="./src/fileerrors2.htm"></section>
+                    <section title="Warning Messages" ref="./src/warningmessages.htm"></section>
+                </section>
+            </section>
+        </toc>
+        <keywords>
+            <keyword name="Add-In Tools" ref="./src/whatareadd_intools.htm"/>
+            <keyword name="Add-In Tools" ref="./src/configuringadd_intools.htm"/>
+            <keyword name="Aquifers Description" ref="./src/aquifers.htm"/>
+            <keyword name="Aquifers Editing" ref="./src/aquifereditordialog.htm"/>
+            <keyword name="AutoLength" ref="./src/statusbar.htm"/>
+            <keyword name="Backdrop Image" ref="./src/utilizingabackdropimage.htm"/>     
+	    <keyword name="Calibration Data Files" ref="./src/calibrationfiles.htm"/>
+	    <keyword name="Calibration Data Registering" ref="./src/registeringcalibrationdata.htm"/>
+            <keyword name="Climatology" ref="./src/climatology.htm"/>
+            <keyword name="Computational Methods" ref="./src/computationalmethods.htm"/>
+            <keyword name="Flow Routing" ref="./src/flowrouting.htm"/>
+	    <keyword name="Groundwater" ref="./src/groundwater.htm"/>
+	    <keyword name="Infiltration" ref="./src/infiltration.htm"/>
+	    <keyword name="Runoff" ref="./src/surfacerunoff.htm"/>
+	    <keyword name="Snow Melt" ref="./src/snowmeltmethod.htm"/>
+	    <keyword name="Water Quality Routing" ref="./src/waterqualityrouting.htm"/>
+	    <keyword name="Conduits Description" ref="./src/conduits.htm"/>
+	    <keyword name="Conduits Properties" ref="./src/conduitproperties.htm"/>
+            <keyword name="Control Rules" ref="./src/controlrules.htm"/>
+	    <keyword name="Action Clauses" ref="./src/actionclauses.htm"/>
+	    <keyword name="Condition Clauses" ref="./src/conditionclauses.htm"/>
+	    <keyword name="Examples" ref="./src/examplerules.htm"/>
+	    <keyword name="Modulated Controls" ref="./src/modulatedcontrols.htm"/>
+	    <keyword name="Rule Format" ref="./src/ruleformat.htm"/>
+	    <keyword name="Copying Objects" ref="./src/copyingandpastingobjects.htm"/>
+	    <keyword name="Copying the current window" ref="./src/copyingthecurrentview.htm"/>
+	    <keyword name="Curves Description" ref="./src/curves.htm"/>
+	    <keyword name="Curves Editing" ref="./src/curveeditordialog.htm"/>
+	    <keyword name="Deleting a Group of Objects" ref="./src/deletingagroupofobjects.htm"/>
+	    <keyword name="Deleting an Object" ref="./src/deletinganobject.htm"/>
+            <keyword name="Dry Weather Inflows" ref="./src/externalinflows.htm"/>
+	    <keyword name="Editing Group" ref="./src/editingagroupofobjects.htm"/>
+	    <keyword name="Editing Object Properties" ref="./src/editinganobject.htm"/>
+            <keyword name="Error Messages" ref="./src/errormessages.htm"/>
+	    <keyword name="File Errors" ref="./src/fileerrors2.htm"/>
+	    <keyword name="Format Errors" ref="./src/formaterrors.htm"/>
+	    <keyword name="Property Errors" ref="./src/propertyerrors.htm"/>
+	    <keyword name="Run Time Errors" ref="./src/runtimeerrors.htm"/>
+            <keyword name="Evaporation" ref="./src/evaporation.htm"/>
+            <keyword name="External Inflows" ref="./src/externalinflows.htm"/>
+	    <keyword name="Features Hydraulic" ref="./src/hydraulicmodelingfeatures.htm"/>
+	    <keyword name="Features Hydrologic" ref="./src/hydrologicmodelingfeatures.htm"/>
+	    <keyword name="Features Water Quality" ref="./src/waterqualitymodelingfeatures.htm"/>
+	    <keyword name="Flow Dividers Description" ref="./src/flowdividers.htm"/>
+	    <keyword name="Flow Dividers Properties" ref="./src/flowdividerproperties.htm"/>
+            <keyword name="Graphs" ref="./src/viewingresultswithagraph.htm"/>
+	    <keyword name="Customize" ref="./src/graphoptionsdialog.htm"/>
+	    <keyword name="Profile Plot" ref="./src/profileplots.htm"/>
+	    <keyword name="Scatter Plot" ref="./src/scatterplots.htm"/>
+	    <keyword name="Time Series Plot" ref="./src/timeseriesplots.htm"/>
+	    <keyword name="Groundwater Editing Flow" ref="./src/groundwaterfloweditordialog.htm"/>
+	    <keyword name="How do I add an object to a project" ref="./src/addinganobject.htm"/>
+	    <keyword name="How do I add external inflows" ref="./src/inflowseditordialog.htm"/>
+	    <keyword name="How do I auto-compute lengths and areas" ref="./src/statusbar.htm"/>
+	    <keyword name="How do I change flow units" ref="./src/statusbar.htm"/>
+	    <keyword name="How do I change map display options" ref="./src/settingmapdisplayoptions.htm"/>
+	    <keyword name="How do I change measurement units" ref="./src/unitsofmeasurement.htm"/>
+	    <keyword name="How do I change simulation options" ref="./src/settingsimulationoptions.htm"/>
+	    <keyword name="How do I change the Offsets convention" ref="./src/statusbar.htm"/>
+	    <keyword name="How do I change the Offsets convention" ref="./src/linkoffsets.htm"/>
+	    <keyword name="How do I compare results to measured data" ref="./src/registeringcalibrationdata.htm"/>
+	    <keyword name="How do I configure an add-in tool" ref="./src/configuringadd_intools.htm"/>
+	    <keyword name="How do I convert an object to another type" ref="./src/convertinganobject.htm"/>
+	    <keyword name="How do I copy the contents of the current window" ref="./src/copyingthecurrentview.htm"/>
+	    <keyword name="How do I create a new project" ref="./src/creatinganewproject.htm"/>
+	    <keyword name="How do I create a profile plot" ref="./src/profileplots.htm"/>
+	    <keyword name="How do I create a scatter plot" ref="./src/scatterplots.htm"/>
+	    <keyword name="How do I create a statistical report" ref="./src/viewingastatisticsreport.htm"/>
+	    <keyword name="How do I create a table of results" ref="./src/viewingresultswithatable.htm"/>
+	    <keyword name="How do I create a time series plot" ref="./src/timeseriesplots.htm"/>
+	    <keyword name="How do I customize a graph" ref="./src/graphoptionsdialog.htm"/>
+	    <keyword name="How do I delete an object" ref="./src/deletinganobject.htm"/>
+	    <keyword name="How do I edit an object's properties" ref="./src/editinganobject.htm"/>
+	    <keyword name="How do I find an object on the map" ref="./src/findinganobject.htm"/>
+	    <keyword name="How do I get an overiew of the current map view" ref="./src/usingtheoverviewmap.htm"/>
+	    <keyword name="How do I measure distances on the map" ref="./src/measuringdistances.htm"/>
+	    <keyword name="How do I open an existing project" ref="./src/openinganexistingproject.htm"/>
+	    <keyword name="How do I pan the map" ref="./src/panningthemap.htm"/>
+	    <keyword name="How do I prevent a graph from updating itself" ref="./src/viewingresultswithagraph.htm"/>
+	    <keyword name="How do I print the current window" ref="./src/printingthecurrentview.htm"/>
+	    <keyword name="How do I query the map" ref="./src/submittingamapquery.htm"/>
+	    <keyword name="How do I run a simulation" ref="./src/startingasimulation.htm"/>
+	    <keyword name="How do I save a project" ref="./src/savingaproject.htm"/>
+	    <keyword name="How do I select a map theme to view" ref="./src/selectingamaptheme.htm"/>
+	    <keyword name="How do I set project defaults" ref="./src/settingprojectdefaults.htm"/>
+	    <keyword name="How do I set reporting options" ref="./src/reportingoptionsdialog.htm"/>
+	    <keyword name="How do I set the number of decimal places for results" ref="./src/numberformats.htm"/>
+	    <keyword name="How do I shape a link" ref="./src/shapingalink.htm"/>
+	    <keyword name="How do I shape a subcatchment" ref="./src/shapingasubcatchment.htm"/>
+	    <keyword name="How do I use LID controls" ref="./src/lideditors.htm"/>
+	    <keyword name="How do I utilize a backdrop image" ref="./src/utilizingabackdropimage.htm"/>
+	    <keyword name="How do I view a status report" ref="./src/viewingastatusreport.htm"/>
+	    <keyword name="How do I view a summary report" ref="./src/viewing_a_summary_report.htm"/>
+	    <keyword name="How do I view all project data at once" ref="./src/viewingallprojectdata.htm"/>
+	    <keyword name="How do I view or modify a map legend" ref="./src/usingthemaplegends.htm"/>
+	    <keyword name="How do I zoom in/out on the map" ref="./src/zoomingthemap.htm"/>
+	    <keyword name="Infiltration Editing" ref="./src/infiltrationeditordialog.htm"/>
+	    <keyword name="Infiltration Methods" ref="./src/infiltration.htm"/>
+            <keyword name="Introduction" ref="./src/introduction.htm"/>
+	    <keyword name="Junctions Description" ref="./src/junctions.htm"/>
+	    <keyword name="Junctions Properties" ref="./src/junctionproperties.htm"/>
+            <keyword name="Land Uses" ref="./src/landuses.htm"/>
+	    <keyword name="Buildup" ref="./src/pollutantbuildup.htm"/>
+	    <keyword name="Street Cleaning" ref="./src/streetsweeping.htm"/>
+	    <keyword name="Washoff" ref="./src/pollutantwashoff.htm"/>
+	    <keyword name="Legends Description" ref="./src/usingthemaplegends.htm"/>
+            <keyword name="LID Controls" ref="./src/lidcontrols.htm"/>
+	    <keyword name="Links Conduits" ref="./src/conduits.htm"/>
+	    <keyword name="Links Offsets" ref="./src/linkoffsets.htm"/>
+	    <keyword name="Links Orifices" ref="./src/orifices.htm"/>
+	    <keyword name="Links Outlets" ref="./src/outlets.htm"/>
+	    <keyword name="Links Pumps" ref="./src/pumps.htm"/>
+	    <keyword name="Links Shaping" ref="./src/shapingalink.htm"/>
+	    <keyword name="Links Weirs" ref="./src/weirs.htm"/>
+            <keyword name="Main Menu" ref="./src/mainmenubar.htm"/>
+	    <keyword name="Edit Menu" ref="./src/editmenu.htm"/>
+	    <keyword name="File Menu" ref="./src/filemenu.htm"/>
+	    <keyword name="Help Menu" ref="./src/helpmenu.htm"/>
+	    <keyword name="Project Menu" ref="./src/projectmenu.htm"/>
+	    <keyword name="Report Menu" ref="./src/reportmenu.htm"/>
+	    <keyword name="View Menu" ref="./src/viewmenu.htm"/>
+	    <keyword name="Window Menu" ref="./src/windowmenu.htm"/>
+            <keyword name="Main Window" ref="./src/swmmsmainwindow.htm"/>
+	    <keyword name="Map Backdrop Image" ref="./src/utilizingabackdropimage.htm"/>
+	    <keyword name="Map Description" ref="./src/studyareamap.htm"/>
+	    <keyword name="Map Dimensions" ref="./src/settingthemapdimensions.htm"/>
+	    <keyword name="Map Display Options" ref="./src/settingmapdisplayoptions.htm"/>
+	    <keyword name="Map Exporting" ref="./src/exportingthemap.htm"/>
+	    <keyword name="Map Finding an Object" ref="./src/findinganobject.htm"/>
+	    <keyword name="Map Full Extent" ref="./src/viewingatfullextent.htm"/>
+	    <keyword name="Map Legends" ref="./src/usingthemaplegends.htm"/>
+	    <keyword name="Map Query" ref="./src/submittingamapquery.htm"/>
+	    <keyword name="Map Measuring Distances" ref="./src/measuringdistances.htm"/>
+	    <keyword name="Map Overview" ref="./src/usingtheoverviewmap.htm"/>
+	    <keyword name="Map Panning" ref="./src/panningthemap.htm"/>
+	    <keyword name="Map Selecting a Theme" ref="./src/selectingamaptheme.htm"/>
+	    <keyword name="Map Viewing Simulation Results" ref="./src/viewingresultsonthemap.htm"/>
+	    <keyword name="Map Zooming" ref="./src/zoomingthemap.htm"/>
+            <keyword name="Map Browser" ref="./src/mapbrowser.htm"/>
+ 	    <keyword name="Map Labels Description" ref="./src/maplabels.htm"/>
+	    <keyword name="Map Labels Properties" ref="./src/maplabelproperties.htm"/>
+            <keyword name="Map Query" ref="./src/submittingamapquery.htm"/>
+            <keyword name="Metric Units" ref="./src/simetricunits.htm"/>
+            <keyword name="Nodes" ref="./src/nodes.htm"/>
+            <keyword name="Nodes" ref="./src/externalinflows.htm"/>
+            <keyword name="Nodes" ref="./src/treatment.htm"/>
+	    <keyword name="Flow Dividers" ref="./src/flowdividers.htm"/>
+	    <keyword name="Junctions" ref="./src/junctions.htm"/>
+	    <keyword name="Outfalls" ref="./src/outfalls.htm"/>
+	    <keyword name="Storage Units" ref="./src/storageunits.htm"/>
+	    <keyword name="Objects Adding" ref="./src/addinganobject.htm"/>
+	    <keyword name="Objects Converting" ref="./src/convertinganobject.htm"/>
+	    <keyword name="Objects Copying and Pasting" ref="./src/copyingandpastingobjects.htm"/>
+	    <keyword name="Objects Deleting" ref="./src/deletinganobject.htm"/>
+	    <keyword name="Objects Deleting a Group" ref="./src/deletingagroupofobjects.htm"/>
+	    <keyword name="Objects Editing" ref="./src/editinganobject.htm"/>
+	    <keyword name="Objects Editing a Group" ref="./src/editingagroupofobjects.htm"/>
+	    <keyword name="Objects Moving" ref="./src/movinganobject.htm"/>
+	    <keyword name="Objects Selecting" ref="./src/selectinganobject.htm"/>
+	    <keyword name="Objects Selecting a Group" ref="./src/selectingagroupofobjects.htm"/>
+            <keyword name="Offsets" ref="./src/linkoffsets.htm"/>
+	    <keyword name="Orifices Description" ref="./src/orifices.htm"/>
+	    <keyword name="Orifices Properties" ref="./src/orificeproperties.htm"/>
+	    <keyword name="Outfalls Description" ref="./src/outfalls.htm"/>
+	    <keyword name="Outfalls Properties" ref="./src/outfallproperties.htm"/>
+	    <keyword name="Outlets Description" ref="./src/outlets.htm"/>
+	    <keyword name="Outlets Properties" ref="./src/outletproperties.htm"/>
+            <keyword name="Overview Map" ref="./src/usingtheoverviewmap.htm"/>
+            <keyword name="Pollutant Buildup" ref="./src/pollutantbuildup.htm"/>
+            <keyword name="Pollutant Washoff" ref="./src/pollutantwashoff.htm"/>
+            <keyword name="Pollutants" ref="./src/pollutants.htm"/>
+            <keyword name="Preferences" ref="./src/settingprogrampreferences.htm"/>
+	    <keyword name="General Preferences" ref="./src/generalpreferences.htm"/>
+	    <keyword name="Number Formats" ref="./src/numberformats.htm"/>
+	    <keyword name="Printing Previewing the Page" ref="./src/previewingthepage.htm"/>
+	    <keyword name="Printing the Current View" ref="./src/printingthecurrentview.htm"/>
+	    <keyword name="Printing Selecting a Printer" ref="./src/selectingaprinter.htm"/>
+	    <keyword name="Printing Setting the Page Format" ref="./src/settingthepageformat.htm"/>
+            <keyword name="Profile Plot" ref="./src/profileplots.htm"/>
+            <keyword name="Project Browser" ref="./src/projectbrowser.htm"/>
+            <keyword name="Project Defaults" ref="./src/settingprojectdefaults.htm"/>
+	    <keyword name="Node/Link Properties" ref="./src/defaultnodelinkproperties.htm"/>
+	    <keyword name="Object Names" ref="./src/defaultidlabels.htm"/>
+	    <keyword name="Subcatchment Properties" ref="./src/defaultsubcatchmentproperties.htm"/>
+            <keyword name="Projects" ref="./src/workingwithprojects.htm"/>
+	    <keyword name="Calibration Data" ref="./src/registeringcalibrationdata.htm"/>
+	    <keyword name="Creating a Project" ref="./src/creatinganewproject.htm"/>
+	    <keyword name="Opening a Project" ref="./src/openinganexistingproject.htm"/>
+	    <keyword name="Saving a Project" ref="./src/savingaproject.htm"/>
+	    <keyword name="Setting Defaults" ref="./src/settingprojectdefaults.htm"/>
+	    <keyword name="Viewing All Data" ref="./src/viewingallprojectdata.htm"/>
+            <keyword name="Property Editor" ref="./src/propertyeditor.htm"/>
+	    <keyword name="Pumps Description" ref="./src/pumps.htm"/>
+	    <keyword name="Pumps Properties" ref="./src/pumpproperties.htm"/>
+	    <keyword name="Rain Gages Description" ref="./src/raingages.htm"/>
+	    <keyword name="Rain Gages Properties" ref="./src/raingageproperties.htm"/>
+            <keyword name="RDII Inflows" ref="./src/externalinflows.htm"/>  
+            <keyword name="Scatter Plot" ref="./src/scatterplots.htm"/>
+	    <keyword name="Selecting a Group of Objects" ref="./src/selectingagroupofobjects.htm"/>
+	    <keyword name="Selecting an Object" ref="./src/selectinganobject.htm"/>
+            <keyword name="Simulation Options" ref="./src/settingsimulationoptions.htm"/>
+	    <keyword name="Snow Packs Description" ref="./src/snowpacks.htm"/>
+	    <keyword name="Snow Packs Editing" ref="./src/snowpackeditordialog.htm"/>
+            <keyword name="Starting a Simulation" ref="./src/startingasimulation.htm"/>
+            <keyword name="Statistical Reports" ref="./src/viewingastatisticsreport.htm"/>
+            <keyword name="Status Bar" ref="./src/statusbar.htm"/>
+            <keyword name="Status Report" ref="./src/viewingastatusreport.htm"/>
+	    <keyword name="Storage Units Description" ref="./src/storageunits.htm"/>
+	    <keyword name="Storage Units Properties" ref="./src/storageunitproperties.htm"/>
+            <keyword name="Street Cleaning" ref="./src/streetsweeping.htm"/>
+            <keyword name="Study Area Map" ref="./src/studyareamap.htm"/>
+	    <keyword name="Subcatchments Description" ref="./src/subcatchments.htm"/>
+	    <keyword name="Subcatchments Properties" ref="./src/subcatchmentproperties.htm"/>
+	    <keyword name="Subcatchments Shaping" ref="./src/shapingasubcatchment.htm"/>
+            <keyword name="Summary Report" ref="./src/viewing_a_summary_report.htm"/>
+            <keyword name="Tabular Reports" ref="./src/viewingresultswithatable.htm"/>
+	    <keyword name="Time Patterns Description" ref="./src/timepatterns.htm"/>
+	    <keyword name="Time Patterns Editing" ref="./src/timepatterneditordialog.htm"/>
+	    <keyword name="Time Series Description" ref="./src/timeseries.htm"/>
+	    <keyword name="Time Series Editing" ref="./src/timeserieseditordialog.htm"/>
+            <keyword name="Time Series Inflows" ref="./src/externalinflows.htm"/>
+            <keyword name="Time Series Plot" ref="./src/timeseriesplots.htm"/>
+            <keyword name="Toolbars" ref="./src/toolbars.htm"/>
+ 	    <keyword name="Map Toolbar" ref="./src/maptoolbar.htm"/>
+	    <keyword name="Standard Toolbar" ref="./src/standardtoolbar.htm"/>
+	    <keyword name="Transects Description" ref="./src/transects.htm"/>
+	    <keyword name="Transects Editing" ref="./src/transecteditordialog.htm"/>
+            <keyword name="Treatment" ref="./src/treatment.htm"/>
+ 	    <keyword name="Unit Hydrographs Description" ref="./src/unithydrographs.htm"/>
+	    <keyword name="Unit Hydrographs Editing" ref="./src/unithydrographeditordialog.htm"/>
+            <keyword name="Units of Measurement" ref="./src/unitsofmeasurement.htm"/>
+	    <keyword name="Metric" ref="./src/simetricunits.htm"/>
+	    <keyword name="US" ref="./src/usstandardunits.htm"/>
+            <keyword name="US Standard Units" ref="./src/usstandardunits.htm"/>
+	    <keyword name="Viewing Simulation Results Graphs" ref="./src/viewingresultswithagraph.htm"/>
+	    <keyword name="Viewing Simulation Results on the Map" ref="./src/viewingresultsonthemap.htm"/>
+	    <keyword name="Viewing Simulation Results Statistics Report" ref="./src/viewingastatisticsreport.htm"/>
+	    <keyword name="Status Report" ref="./src/viewingastatusreport.htm"/>
+	    <keyword name="Summary Report" ref="./src/viewing_a_summary_report.htm"/>
+	    <keyword name="Tables" ref="./src/viewingresultswithatable.htm"/>
+	    <keyword name="Variables That Can be Viewed" ref="./src/variablesthatcanbeviewed.htm"/>
+	    <keyword name="Weirs Description" ref="./src/weirs.htm"/>
+            <keyword name="Weirs Properties" ref="./src/weirproperties.htm"/>
+        </keywords>
+        <files>
+            <file>src/default.css</file>
+            <file>src/*.htm</file>
+            <file>src/*.gif</file>
+	    <file>src/*.js</file>
+            <file>src/*.png</file>
+        </files>
+    </filterSection>
+</QtHelpProject>

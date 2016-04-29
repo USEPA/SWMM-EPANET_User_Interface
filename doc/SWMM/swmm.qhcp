@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+<assistant>
+    <title>EPA SWMM Help</title>
+    <applicationIcon>src/dwrd.gif</applicationIcon>
+    <cacheDirectory>mycompany/myapplication</cacheDirectory>
+<startPage>qthelp://SWMM/src/introduction.htm</startPage>
+<aboutMenuText>
+        <text>Storm Water Management Model, Version 5.1</text>
+    </aboutMenuText>
+    <aboutDialog>
+        <file>src/introduction.htm</file>
+        <icon>src/dwrd.gif</icon>
+    </aboutDialog>
+    <enableDocumentationManager>false</enableDocumentationManager>
+    <enableAddressBar>false</enableAddressBar>
+    <enableFilterFunctionality>false</enableFilterFunctionality>
+</assistant>
+  <docFiles>
+    <register>
+        <file>swmm.qch</file>
+    </register>
+  </docFiles>
+</QHelpCollectionProject>

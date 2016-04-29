@@ -93,7 +93,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                               '188','190','197','199','159','162','168','170','173','179','184','187','190','195',
                               '198','204','206','209','215','217','223','225','231','234','236','239','245','247')
         # set for first link for now
-        self.set_link(parent.project,'1')
+        self.set_link(parent.project, '1')
 
     def set_link(self, project, link_id):
         # section = core.swmm.project.CrossSection()
@@ -288,10 +288,10 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             current_selection = str(cur.text())
 
         if current_selection == "Irregular":
-            self._frmTransect = frmTransect(self.parent())
+            self._frmTransect = frmTransect(self._parent)
             self._frmTransect.show()
         elif current_selection == 'Custom':
-            self._frmCurveEditor = frmCurveEditor(self.parent())
+            self._frmCurveEditor = frmCurveEditor(self._parent)
             self._frmCurveEditor.setWindowTitle('SWMM Shape Curves')
             self._frmCurveEditor.set_from(self._parent.project, "SHAPE")
             self._frmCurveEditor.show()

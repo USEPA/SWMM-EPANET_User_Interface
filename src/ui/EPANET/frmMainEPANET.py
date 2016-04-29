@@ -3,10 +3,12 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
+import traceback
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QMessageBox, QFileDialog
 
-from ui.model_utility import *
+from ui.model_utility import QString, from_utf8, transl8, process_events
 
-from PyQt4 import QtCore, QtGui
 from ui.frmMain import frmMain
 from ui.EPANET.frmEnergyOptions import frmEnergyOptions
 from ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
@@ -173,7 +175,7 @@ class frmMainEPANET(frmMain):
             # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
             directory = QtCore.QSettings(self.model, "GUI").value("ProjectDir", "")
-            file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
+            file_name = QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                           "Inp files (*.inp);;All files (*.*)")
 
         if os.path.exists(file_name):
@@ -194,7 +196,7 @@ class frmMainEPANET(frmMain):
                     pp = os.path.dirname(os.path.dirname(self.assembly_path))
                     self.model_path = os.path.join(pp, "Externals", lib_name)
                 if not os.path.exists(self.model_path):
-                    self.model_path = QtGui.QFileDialog.getOpenFileName(self,
+                    self.model_path = QFileDialog.getOpenFileName(self,
                                                                         'Locate ' + self.model + ' Library',
                                                                         '/', '(*{0})'.format(ext))
             if os.path.exists(self.model_path):
@@ -243,7 +245,7 @@ class frmMainEPANET(frmMain):
             #     pp = os.path.dirname(os.path.dirname(self.assembly_path))
             #     exe_path = os.path.join(pp, "Externals", exe_name)
             # if not os.path.exists(exe_path):
-            #     exe_path = QtGui.QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
+            #     exe_path = QFileDialog.getOpenFileName(self, 'Locate EPANET Executable', '/',
             #                                              'exe files (*.exe)')
             # if os.path.exists(exe_path):
             #     os.environ[self.modelenv1] = exe_path
@@ -257,7 +259,7 @@ class frmMainEPANET(frmMain):
             # args.append(file_name)
             # args.append(prefix + '.txt')
             # args.append(prefix + '.out')
-            # status = StatusMonitor0(program, args, self, model='EPANET')
+            # status = model_utility.StatusMonitor0(program, args, self, model='EPANET')
             # status.show()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)

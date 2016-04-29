@@ -1,5 +1,4 @@
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import *
 try:
     from PyQt4.QtCore import QString
 except ImportError:
@@ -19,24 +18,22 @@ except AttributeError:
     def transl8(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class ObjectTreeView(QTreeWidget):
+process_events = QtGui.QApplication.processEvents
+
+class ObjectTreeView(QtGui.QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
-        QTreeWidget.__init__(self, parent)
+        QtGui.QTreeWidget.__init__(self, parent)
         # self.setEditTriggers(QAbstractItemView.EditKeyPressed | QAbstractItemView.SelectedClicked)
         # self.setExpandsOnDoubleClick(False)
         # QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
         # self.itemDoubleClicked.connect(self.edit_options)
         self.setHeaderHidden(True)
-        # self.addItems(self.invisibleRootItem())
         self.setColumnCount(1)
-        # self.itemChanged.connect(self.handleChanged)
         for top_list in tree_top_item_list:
             top_name = top_list[0]
-            top_item = self.addParent(self, 0, top_name, top_name)
-            #top_item = QtGui.QTreeWidgetItem(self, [top_name])
-            #top_item.setData(0, QtCore.Qt.UserRole, top_name)
-            #top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
-            #top_item.setExpanded(True)
+            top_item = self.add_tree_item(self, 0, top_name, top_name)
+            top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
+            top_item.setExpanded(True)
 
             if len(top_list) > 1:
                 children = top_list[1]
@@ -44,27 +41,20 @@ class ObjectTreeView(QTreeWidget):
                     for child in children:
                         if child and len(child) > 0:
                             child_name = child[0]
-                            child_control = self.addChild(top_item, 0, child_name, child_name)
+                            child_control = self.add_tree_item(top_item, 0, child_name, child_name)
                             if len(child) > 0 and type(child[1]) is list:
                                 for grandchild in child[1]:
-                                    self.addChild(child_control, 0, grandchild[0], grandchild[0])
+                                    self.add_tree_item(child_control, 0, grandchild[0], grandchild[0])
 
-    def addParent(self, parent, column, title, data):
-        itm = QtGui.QTreeWidgetItem(parent, [title])
-        itm.setData(column, QtCore.Qt.UserRole, data)
-        itm.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
-        itm.setExpanded(True)
-        return itm
-
-    def addChild(self, parent, column, title, data):
+    def add_tree_item(self, parent, column, title, data):
         item = QtGui.QTreeWidgetItem(parent, [title])
         item.setData(column, QtCore.Qt.UserRole, data)
         return item
 
 
-class ObjectListView(QListWidget):
+class ObjectListView(QtGui.QListWidget):
     def __init__(self, parent=None, **kwargs):
-        QListWidget.__init__(self, parent)
+        QtGui.QListWidget.__init__(self, parent)
         self.model = kwargs['model']
         self.ObjRoot = kwargs['ObjRoot']
         self.ObjType = kwargs['ObjType']
@@ -77,8 +67,8 @@ class ObjectListView(QListWidget):
     def set_root(self, root):
         self.ObjRoot = root
 
-    def set_type(self, type):
-        self.ObjType = type
+    def set_type(self, obj_type):
+        self.ObjType = obj_type
 
     def set_list(self, objList):
         self.ObjList = objList
@@ -101,9 +91,9 @@ class StatusMonitor0(QtGui.QDialog):
         self.keepGoing = True
         self.prog = kwargs['model']
 
-        layout = QVBoxLayout()
+        layout = QtGui.QVBoxLayout()
         self.output = QtGui.QTextEdit()
-        self.butt = QPushButton('Close')
+        self.butt = QtGui.QPushButton('Close')
         self.setupConnections()
         self.setWindowTitle('Running ' + self.prog)
         layout.addWidget(self.output)

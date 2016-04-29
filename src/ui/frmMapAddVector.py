@@ -11,8 +11,9 @@ class frmMapAddVector(QtGui.QDialog):
         self.specs = {}
         self.ui.cboEncoding.addItem("System")
         self.ui.cboEncoding.addItem("UTF-8")
-        QtCore.QObject.connect(self.ui.cboEncoding, QtCore.SIGNAL("currentIndexChanged(QString)"), \
-                                                               self.cboEncoding_currentIndexChanged)
+        QtCore.QObject.connect(self.ui.cboEncoding,
+                               QtCore.SIGNAL("currentIndexChanged(QString)"),
+                               self.cboEncoding_currentIndexChanged)
         QtCore.QObject.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.btnBrowse_Clicked)
         #QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("clicked(QAbstractButton)"), self.btnBox_Clicked)
         QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("accepted()"), self.btnBox_Accepted)
@@ -23,7 +24,6 @@ class frmMapAddVector(QtGui.QDialog):
 
     def btnBrowse_Clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
-        # pymsgbox.alert('Data file:' + filename,'Add Vector Layer')
         self.ui.txtDataset.text = filename
         self.ui.txtDataset.setText(filename)
         self.specs['filename'] = filename

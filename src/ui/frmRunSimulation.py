@@ -2,7 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from enum import Enum
 from ui.frmRunSimulationDesigner import Ui_frmRunSimulation
-
+from ui.model_utility import process_events
 
 class RunStatus(Enum):
     rsSuccess = 0
@@ -116,7 +116,7 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
     def set_status_text(self, text):
         self.StatusLabel.setText(text)
         self.StatusLabel.update()
-        QtGui.QApplication.processEvents()
+        process_events()
 
     def update_progress_bar(self, elapsed, total):
         if total <= 0:
@@ -126,7 +126,7 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
         if percent != self.progressBar.value():
             self.progressBar.setValue(percent)
             # self.progressBar.update()
-            # QtGui.QApplication.processEvents()
+            # process_events()
 
     def update_progress_days(self, elapsed_days, total_days):
         int_days = int(elapsed_days)
@@ -144,4 +144,4 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
             self.txtHrsMin.update()
             update = True
         if update:
-            QtGui.QApplication.processEvents()
+            process_events()

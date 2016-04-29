@@ -216,7 +216,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                         value.scale_factor = self.local_scale_factor[index]
                         value.baseline = self.local_baseline[index]
                         value.baseline_pattern = self.local_baseline_pattern[index]
-            if found == False:
+            if not found:
                 # have to add this inflow to the list
                 new_inflow = core.swmm.project.DirectInflow()
                 new_inflow.node = self.node_id
@@ -267,7 +267,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                             value.time_patterns.append(self.local_dry_pattern_3_list[index])
                         if len(str(self.local_dry_pattern_4_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
-            if found == False:
+            if not found:
                 # have to add this dry inflow to the list
                 new_inflow = core.swmm.project.DryWeatherInflow()
                 new_inflow.node = self.node_id
@@ -296,7 +296,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 found = True
                 value.sewershed_area = self.txtSewershed.text()
                 value.hydrograph_group = self.cboUnitHydro.currentText()
-        if found == False:
+        if not found:
             # have to add this rdii to the list
             new_inflow = core.swmm.project.RDIInflow()
             new_inflow.node = self.node_id

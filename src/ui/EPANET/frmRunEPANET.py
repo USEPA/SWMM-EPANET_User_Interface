@@ -6,6 +6,7 @@ import PyQt4.QtCore as QtCore
 import Externals.epanet2 as pyepanet
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
+from ui.model_utility import process_events
 
 
 class frmRunEPANET(frmRunSimulation):
@@ -118,7 +119,7 @@ class frmRunEPANET(frmRunSimulation):
                 self.cmdMinimize.setVisible(False)
                 self.cmdOK.setVisible(True)
                 self.update()
-                QtGui.QApplication.processEvents()
+                process_events()
             except:  # Ignore exception closing model object?
                 pass
             try:
@@ -163,7 +164,7 @@ class frmRunEPANET(frmRunSimulation):
                 self.update_progress_bar(elapsed_days, total_days * 2)
                 self.update_progress_days(elapsed_days, total_days)
                 # print ("RunH:", elapsed_days, elapsed_seconds / 3600, seconds_this_step)
-                QtGui.QApplication.processEvents()
+                process_events()
 
         finally:
             try:
@@ -241,7 +242,7 @@ class frmRunEPANET(frmRunSimulation):
                 self.update_progress_bar(elapsed_days + total_days, total_days * 2)
                 # print (elapsed_days, elapsed_seconds / 3600, seconds_this_step)
                 # print ("RunQ:", elapsed_days, elapsed_seconds / 3600 / 24, seconds_this_step)
-                QtGui.QApplication.processEvents()
+                process_events()
         finally:
             try:
                 self.model_api.ENcloseQ()

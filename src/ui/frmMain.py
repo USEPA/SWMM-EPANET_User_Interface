@@ -1,4 +1,4 @@
-import os
+import os, sys
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
@@ -15,8 +15,6 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
-# from qgis.core import *
-# from qgis.gui import *
 from core.inputfile import InputFile as Project
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
@@ -51,44 +49,52 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
 
-        # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
-        search_paths = [os.path.join(INSTALL_DIR, "qgis"),
-                        os.path.join(INSTALL_DIR, "../qgis"),
-                        os.path.join(INSTALL_DIR, "../../qgis"),
-                        "C:/OSGeo4W/apps/qgis/",
-                        "/usr",
-                        "/Applications/QGIS.app/Contents/MacOS"]
-        if os.environ.has_key("QGIS_HOME"):
-            search_paths.insert(0, os.environ.get("QGIS_HOME"))
-        if os.environ.has_key("QGIS_PREFIX_PATH"):
-            search_paths.insert(0, os.environ.get("QGIS_PREFIX_PATH"))
         try:
-            for qgis_home in search_paths:
-                if os.path.isdir(qgis_home):
-                    QgsApplication.setPrefixPath(qgis_home, True)
-                    QgsApplication.initQgis()
-                    self.canvas = QgsMapCanvas(self, 'mapCanvas')
-                    self.canvas.setMouseTracking(True)
-                    self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas)
-                    self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
-                    if self.map_win:
-                        self.map_win.setGeometry(0, 0, 600, 400)
-                        self.map_win.setWindowTitle('Study Area Map')
-                        self.map_win.show()
-                        QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
-                        QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
-                        QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                        QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                        QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                        QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
-                        QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
-                        break  # Success, done looking for a qgis_home
-            else:
-                QMessageBox.information(None, "Cannot load mapping library", "QGIS Home not found", QMessageBox.Ok)
-        except Exception as e1:
-            msg = str(e1) + '\n' + str(traceback.print_exc())
-            print(msg)
-            QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
+            from qgis.core import QgsApplication
+            from qgis.gui import QgsMapCanvas
+            from map_tools import EmbedMap
+
+            # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
+            search_paths = [os.path.join(INSTALL_DIR, "qgis"),
+                            os.path.join(INSTALL_DIR, "../qgis"),
+                            os.path.join(INSTALL_DIR, "../../qgis"),
+                            "C:/OSGeo4W/apps/qgis/",
+                            "/usr",
+                            "/Applications/QGIS.app/Contents/MacOS"]
+            if os.environ.has_key("QGIS_HOME"):
+                search_paths.insert(0, os.environ.get("QGIS_HOME"))
+            if os.environ.has_key("QGIS_PREFIX_PATH"):
+                search_paths.insert(0, os.environ.get("QGIS_PREFIX_PATH"))
+            try:
+                for qgis_home in search_paths:
+                    if os.path.isdir(qgis_home):
+                        QgsApplication.setPrefixPath(qgis_home, True)
+                        QgsApplication.initQgis()
+                        self.canvas = QgsMapCanvas(self, 'mapCanvas')
+                        self.canvas.setMouseTracking(True)
+                        self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas)
+                        self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
+                        if self.map_win:
+                            self.map_win.setGeometry(0, 0, 600, 400)
+                            self.map_win.setWindowTitle('Study Area Map')
+                            self.map_win.show()
+                            QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
+                            QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
+                            QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
+                            QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
+                            break  # Success, done looking for a qgis_home
+                else:
+                    QMessageBox.information(None, "QGIS Home not found", "Not creating map", QMessageBox.Ok)
+            except Exception as e1:
+                msg = str(e1) + '\n' + str(traceback.print_exc())
+                print(msg)
+                QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
+
+        except Exception as eImport:
+            QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
 
     def setQgsMapTool(self):
         self.map_widget.setZoomInMode()
@@ -106,9 +112,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def onGeometryAdded(self):
         print 'Geometry Added'
-
-    def showCoords(self, event):
-        pass
 
     def mouseMoveEvent(self, event):
         pass

@@ -3,7 +3,6 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-import sys
 from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
 #from ui.ui_utility import EmbedMap
@@ -20,9 +19,8 @@ from qgis.core import *
 from qgis.gui import *
 from core.inputfile import InputFile as Project
 
-CURR = os.path.abspath(os.path.dirname('__file__'))
-
-MainModule = "__init__"
+INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
+INIT_MODULE = "__init__"
 
 
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
@@ -54,9 +52,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
 
         # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
-        search_paths = [os.path.join(CURR, "qgis"),
-                        os.path.join(CURR, "../qgis"),
-                        os.path.join(CURR, "../../qgis"),
+        search_paths = [os.path.join(INSTALL_DIR, "qgis"),
+                        os.path.join(INSTALL_DIR, "../qgis"),
+                        os.path.join(INSTALL_DIR, "../../qgis"),
                         "C:/OSGeo4W/apps/qgis/",
                         "/usr",
                         "/Applications/QGIS.app/Contents/MacOS"]
@@ -179,20 +177,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def get_plugins(self):
         found_plugins = []
-        plugin_folder = os.path.join(CURR, "plugins")
+        plugin_folder = os.path.join(INSTALL_DIR, "plugins")
         if not os.path.exists(plugin_folder):
-            plugin_folder = os.path.normpath(os.path.join(CURR, "../../plugins"))
+            plugin_folder = os.path.normpath(os.path.join(INSTALL_DIR, "../../plugins"))
         if os.path.exists(plugin_folder):
             for folder_name in os.listdir(plugin_folder):
                 location = os.path.join(plugin_folder, folder_name)
-                if os.path.isdir(location) and MainModule + ".py" in os.listdir(location):
-                    info = imp.find_module(MainModule, [location])
+                if os.path.isdir(location) and INIT_MODULE + ".py" in os.listdir(location):
+                    info = imp.find_module(INIT_MODULE, [location])
                     found_plugins.append({"name": folder_name, "info": info})
         return found_plugins
 
     def load_plugin(self, plugin):
         try:
-            return imp.load_module(MainModule, *plugin["info"])
+            return imp.load_module(INIT_MODULE, *plugin["info"])
         except Exception as ex:
             QMessageBox.information(None, "Exception Loading Plugin", plugin['name'] + '\n' + str(ex), QMessageBox.Ok)
             return None
@@ -254,7 +252,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     return
 
     def script_ipython(self):
-        widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=MainModule)
+        widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE)
         ipy_win = self.map.addSubWindow(widget,QtCore.Qt.Widget)
         if ipy_win:
             ipy_win.show()

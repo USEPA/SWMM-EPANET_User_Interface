@@ -1,13 +1,13 @@
 import os
-import sys
-
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
+
 from ui.model_utility import *
+from ui.ui_utility import *
+
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QMessageBox
 from ui.frmMain import frmMain
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave
@@ -227,14 +227,15 @@ class frmMainSWMM(frmMain):
                     lib_name = 'swmm5_x86.dll'
                     ext = '.dll'
 
-                self.model_path = os.path.join(self.assembly_path, lib_name)
-                if not os.path.exists(self.model_path):
-                    pp = os.path.dirname(os.path.dirname(self.assembly_path))
-                    self.model_path = os.path.join(pp, "Externals", lib_name)
-                if not os.path.exists(self.model_path):
-                    self.model_path = QtGui.QFileDialog.getOpenFileName(self,
-                                                                        'Locate ' + self.model +' Library',
-                                                                        '/', '(*{1})'.format(ext))
+                if lib_name:
+                    self.model_path = os.path.join(self.assembly_path, lib_name)
+                    if not os.path.exists(self.model_path):
+                        pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                        self.model_path = os.path.join(pp, "Externals", lib_name)
+                    if not os.path.exists(self.model_path):
+                        self.model_path = QtGui.QFileDialog.getOpenFileName(self,
+                                                                            'Locate ' + self.model +' Library',
+                                                                            '/', '(*{1})'.format(ext))
 
             if os.path.exists(self.model_path):
                 try:
@@ -244,23 +245,23 @@ class frmMainSWMM(frmMain):
                     print(swmm_object.swmm_getVersion())
                     print(swmm_object.swmm_getMassBalErr())
 
-                    model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
-                    frmRun = frmRunEPANET(model_api, self.project, self)
-                    self._forms.append(frmRun)
-                    if not use_existing:
-                        # Read this project so we can refer to it while running
-                        frmRun.progressBar.setVisible(False)
-                        frmRun.lblTime.setVisible(False)
-                        frmRun.fraTime.setVisible(False)
-                        frmRun.fraBottom.setVisible(False)
-                        frmRun.showNormal()
-                        frmRun.set_status_text("Reading " + file_name)
-
-                        self.project = Project()
-                        self.project.read_file(file_name)
-                        frmRun.project = self.project
-
-                    frmRun.Execute()
+                    # model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+                    # frmRun = frmRunEPANET(model_api, self.project, self)
+                    # self._forms.append(frmRun)
+                    # if not use_existing:
+                    #     # Read this project so we can refer to it while running
+                    #     frmRun.progressBar.setVisible(False)
+                    #     frmRun.lblTime.setVisible(False)
+                    #     frmRun.fraTime.setVisible(False)
+                    #     frmRun.fraBottom.setVisible(False)
+                    #     frmRun.showNormal()
+                    #     frmRun.set_status_text("Reading " + file_name)
+                    #
+                    #     self.project = Project()
+                    #     self.project.read_file(file_name)
+                    #     frmRun.project = self.project
+                    #
+                    # frmRun.Execute()
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
@@ -268,13 +269,13 @@ class frmMainSWMM(frmMain):
                                             "Error running model with library:\n {0}\n{1}\n{2}".format(
                                                 self.model_path, str(e1), str(traceback.print_exc())),
                                             QMessageBox.Ok)
-                finally:
-                    try:
-                        if model_api and model_api.isOpen():
-                            model_api.ENclose()
-                    except:
-                        pass
-                    return
+                # finally:
+                #     try:
+                #         if model_api and model_api.isOpen():
+                #             model_api.ENclose()
+                #     except:
+                #         pass
+                #     return
 
             # Could not run with library, try running with executable
             args = []

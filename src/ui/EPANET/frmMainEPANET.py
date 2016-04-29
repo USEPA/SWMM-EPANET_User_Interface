@@ -1,9 +1,10 @@
-import os, sys
+import os
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-import traceback
+
+from ui.model_utility import *
 from ui.ui_utility import *
 
 from PyQt4 import QtCore, QtGui
@@ -23,7 +24,6 @@ from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 from ui.EPANET.frmDemands import frmDemands
 
-from ui.model_utility import *
 from core.epanet.project import Project
 import Externals.epanet2 as pyepanet
 from frmRunEPANET import frmRunEPANET
@@ -197,7 +197,7 @@ class frmMainEPANET(frmMain):
                 if not os.path.exists(self.model_path):
                     self.model_path = QtGui.QFileDialog.getOpenFileName(self,
                                                                         'Locate ' + self.model + ' Library',
-                                                                        '/', '(*{1})'.format(ext))
+                                                                        '/', '(*{0})'.format(ext))
             if os.path.exists(self.model_path):
                 try:
                     model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)

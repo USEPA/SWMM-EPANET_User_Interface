@@ -9,6 +9,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
     SECTION_NAME = "[LOADINGS]"
 
     def __init__(self, parent, subcatchment_name):
+        # purposely not calling frmGenericPropertyEditor.__init__
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name

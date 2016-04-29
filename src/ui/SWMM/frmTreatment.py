@@ -9,6 +9,7 @@ class frmTreatment(frmGenericPropertyEditor):
     SECTION_NAME = "[TREATMENT]"
 
     def __init__(self, parent, node_name):
+        # purposely not calling frmGenericPropertyEditor.__init__
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.node_name = node_name
@@ -17,8 +18,7 @@ class frmTreatment(frmGenericPropertyEditor):
         self.setWindowTitle('SWMM Treatment Editor for Node ' + node_name)
         self.lblNotes.setText(Treatment.hint)
         self.tblGeneric.setColumnCount(1)
-        local_column_list = []
-        local_column_list.append('Treatment Expression')
+        local_column_list = ['Treatment Expression']
         self.tblGeneric.setHorizontalHeaderLabels(local_column_list)
         self.tblGeneric.setColumnWidth(0,400)
         self.local_pollutant_list = []

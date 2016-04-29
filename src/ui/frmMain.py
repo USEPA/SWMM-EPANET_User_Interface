@@ -156,7 +156,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
-        layout = QVBoxLayout(self.tabProject)
+        layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)

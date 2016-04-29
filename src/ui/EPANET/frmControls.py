@@ -6,7 +6,6 @@ from ui.EPANET.frmControlsDesigner import Ui_frmControls
 
 class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
-
     def __init__(self, parent, title, control_type):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)

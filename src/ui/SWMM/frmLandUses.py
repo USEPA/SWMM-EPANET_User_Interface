@@ -23,8 +23,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         self.land_use_id = ''
         self.tblGeneral.setColumnCount(1)
         self.tblGeneral.setRowCount(6)
-        header_labels = []
-        header_labels.append("Value")
+        header_labels = ["Value"]
         self.tblGeneral.setHorizontalHeaderLabels(header_labels)
         self.tblGeneral.setVerticalHeaderLabels(("Land Use Name","Description","STREET SWEEPING","    Interval","    Availability","    Last Swept"))
         self.local_pollutant_list = []

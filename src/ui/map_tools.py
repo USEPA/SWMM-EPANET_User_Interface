@@ -38,8 +38,7 @@ try:
 
             self.qgisNewFeatureTool = None
 
-            QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), \
-                                   self.canvasMoveEvent)
+            QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
 
             layout = QVBoxLayout(self)
             layout.setContentsMargins(0, 0, 0, 0)
@@ -89,13 +88,13 @@ try:
 
         def setAddFeatureMode(self):
             if self.session.actionAdd_Feature.isChecked():
-                if self.qgisNewFeatureTool == None:
-                    if self.layers != None and len(self.layers) > 0:
-                        self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0), \
-                                                  self.session.onGeometryAdded, \
-                                                  CaptureTool.CAPTURE_POLYGON)
+                if self.qgisNewFeatureTool is None:
+                    if self.layers and len(self.layers) > 0:
+                        self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
+                                                              self.session.onGeometryAdded,
+                                                              CaptureTool.CAPTURE_POLYGON)
                         self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
-                if self.qgisNewFeatureTool != None:
+                if self.qgisNewFeatureTool:
                     self.canvas.setMapTool(self.qgisNewFeatureTool)
             else:
                 self.canvas.unsetMapTool(self.qgisNewFeatureTool)
@@ -188,11 +187,11 @@ try:
             elif event.button() == QtCore.Qt.RightButton:
                 points = self.getCapturedGeometry()
                 self.stopCapturing()
-                if points != None:
+                if points:
                     self.geometryCaptured(points)
 
         def canvasMoveEvent(self, event):
-            if self.tempRubberBand != None and self.capturing:
+            if self.tempRubberBand and self.capturing:
                 mapPt,layerPt = self.transformCoordinates(event.pos())
                 self.tempRubberBand.movePoint(mapPt)
 
@@ -204,12 +203,11 @@ try:
             if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
                 points = self.getCapturedGeometry()
                 self.stopCapturing()
-                if points != None:
+                if points:
                     self.geometryCaptured(points)
 
         def transformCoordinates(self, canvasPt):
-            return (self.toMapCoordinates(canvasPt), \
-                    self.toLayerCoordinates(self.layer, canvasPt))
+            return self.toMapCoordinates(canvasPt), self.toLayerCoordinates(self.layer, canvasPt)
 
         def startCapturing(self):
             color = QColor("red")

@@ -1,5 +1,4 @@
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import *
 try:
     from PyQt4.QtCore import QString
 except ImportError:
@@ -19,9 +18,11 @@ except AttributeError:
     def transl8(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class ObjectTreeView(QTreeWidget):
+process_events = QtGui.QApplication.processEvents
+
+class ObjectTreeView(QtGui.QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
-        QTreeWidget.__init__(self, parent)
+        QtGui.QTreeWidget.__init__(self, parent)
         # self.setEditTriggers(QAbstractItemView.EditKeyPressed | QAbstractItemView.SelectedClicked)
         # self.setExpandsOnDoubleClick(False)
         # QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
@@ -51,9 +52,9 @@ class ObjectTreeView(QTreeWidget):
         return item
 
 
-class ObjectListView(QListWidget):
+class ObjectListView(QtGui.QListWidget):
     def __init__(self, parent=None, **kwargs):
-        QListWidget.__init__(self, parent)
+        QtGui.QListWidget.__init__(self, parent)
         self.model = kwargs['model']
         self.ObjRoot = kwargs['ObjRoot']
         self.ObjType = kwargs['ObjType']
@@ -66,8 +67,8 @@ class ObjectListView(QListWidget):
     def set_root(self, root):
         self.ObjRoot = root
 
-    def set_type(self, type):
-        self.ObjType = type
+    def set_type(self, obj_type):
+        self.ObjType = obj_type
 
     def set_list(self, objList):
         self.ObjList = objList
@@ -90,9 +91,9 @@ class StatusMonitor0(QtGui.QDialog):
         self.keepGoing = True
         self.prog = kwargs['model']
 
-        layout = QVBoxLayout()
+        layout = QtGui.QVBoxLayout()
         self.output = QtGui.QTextEdit()
-        self.butt = QPushButton('Close')
+        self.butt = QtGui.QPushButton('Close')
         self.setupConnections()
         self.setWindowTitle('Running ' + self.prog)
         layout.addWidget(self.output)

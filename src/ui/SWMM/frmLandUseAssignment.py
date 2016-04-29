@@ -9,6 +9,7 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
     SECTION_NAME = "[COVERAGES]"
 
     def __init__(self, parent, subcatchment_name):
+        # purposely not calling frmGenericPropertyEditor.__init__
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
@@ -17,8 +18,7 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
         self.setWindowTitle('SWMM Land Use Assignment for Subcatchment ' + subcatchment_name)
         self.lblNotes.setText('')
         self.tblGeneric.setColumnCount(1)
-        local_column_list = []
-        local_column_list.append('% of Area')
+        local_column_list = ['% of Area']
         self.tblGeneric.setHorizontalHeaderLabels(local_column_list)
         self.tblGeneric.setColumnWidth(0,200)
         self.local_land_use_list = []

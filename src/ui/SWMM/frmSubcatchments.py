@@ -59,7 +59,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
         self.installEventFilter(self)
 
-    def eventFilter(self, object, event):
+    def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:
                 self.set_infiltration_cell(self.refresh_column)

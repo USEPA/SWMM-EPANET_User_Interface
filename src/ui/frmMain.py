@@ -94,7 +94,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
 
         except Exception as eImport:
-            QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
+            print "QGIS libraries not found, Not creating map\n" + str(eImport)
+            # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
 
     def setQgsMapTool(self):
         self.map_widget.setZoomInMode()

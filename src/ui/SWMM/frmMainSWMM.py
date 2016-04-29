@@ -8,7 +8,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
-
+from ui.help import HelpHandler
 from ui.frmMain import frmMain
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave
@@ -118,7 +118,7 @@ class frmMainSWMM(frmMain):
     tree_hydraulics_Nodes = ["Nodes", tree_nodes_items]
     tree_hydraulics_Links = ["Links", tree_links_items]
     tree_hydraulics_Transects = ["Transects", frmTransect]
-    tree_hydraulics_Controls = ["Controls", frmControls]
+    tree_hydraulics_Controls = ["Controls", frmControls, ["swmm/src/src/controlrules.htm"]]
     tree_hydraulics_items = [
         tree_hydraulics_Nodes,
         tree_hydraulics_Links,
@@ -176,6 +176,7 @@ class frmMainSWMM(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+        HelpHandler.init_class(os.path.join(self.assembly_path, "QHelp/swmm.qhc"))
 
     def get_editor(self, edit_name):
         frm = None
@@ -292,7 +293,7 @@ class frmMainSWMM(frmMain):
                 args.append(prefix + '.rpt')
                 args.append(prefix + '.out')
                 # running the Exe
-                status =  StatusMonitor0(exe_path, args, self, model='SWMM')
+                status = StatusMonitor0(exe_path, args, self, model='SWMM')
                 status.show()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)

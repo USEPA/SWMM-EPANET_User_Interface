@@ -176,7 +176,7 @@ class frmMainSWMM(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
-        HelpHandler.init_class(os.path.join(self.assembly_path, "QHelp/swmm.qhc"))
+        HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
 
     def get_editor(self, edit_name):
         frm = None

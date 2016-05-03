@@ -75,7 +75,7 @@ class Project(InputFile):
         self.report = ReportOptions()
         self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate, ";Node            \tX-Coord         \tY-Coord")
         # "[VERTICES]": [Vertex]
-        # "[LABELS]": [Label]
+        self.labels = SectionAsListOf("[LABELS]", Label, ";X-Coord        \tY-Coord         \tLabel & Anchor Node")
         self.backdrop = BackdropOptions()
 
         InputFile.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

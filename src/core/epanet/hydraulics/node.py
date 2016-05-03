@@ -4,6 +4,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 from core.inputfile import Section
 
+
 class SourceType(Enum):
     """Water Quality Source Type"""
     CONCEN = 1
@@ -88,16 +89,17 @@ class Junction(Section):
             self.base_demand_flow = ''
             """Base demand flow, characteristic of all demands at this node"""
 
-            self.demand_pattern = ''
+            self.demand_pattern_id = ''
             """Demand pattern ID, optional"""
 
             self.emitter_coefficient = ''
-            """Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
-                the product of the flow coefficient and the junction pressure raised to power  """
+            """ Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
+                the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which
+                defaults to 0.5 and can be set in OPTIONS section."""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.elevation, self.base_demand_flow, self.demand_pattern)
+        return self.field_format.format(self.node_id, self.elevation, self.base_demand_flow, self.demand_pattern_id)
 
     def set_text(self, new_text):
         self.__init__()
@@ -110,19 +112,42 @@ class Junction(Section):
         if len(fields) > 2:
             self.base_demand_flow = fields[2]
         if len(fields) > 3:
-            self.demand_pattern = fields[3]
+            self.demand_pattern_id = fields[3]
 
 
-class Reservoir(Node):
+class Reservoir(Section):
     """A Reservoir node"""
-    def __init__(self, name, coordinates):
-        Node.__init__(self, name, coordinates)
 
-        self.total_head = 0.0
-        """Head is the hydraulic head (elevation + pressure head) of water in the reservoir"""
+    field_format = "{:16}\t{:6}\t{:6}\t{}"
 
-        self.head_pattern = Pattern
-        """head pattern can be used to make the reservoir head vary with time"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.node_id = ''
+            """node identifier/name"""
+
+            self.total_head = "0.0"
+            """Head is the hydraulic head (elevation + pressure head) of water in the reservoir"""
+
+            self.head_pattern_id = ''
+            """head pattern can be used to make the reservoir head vary with time"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return self.field_format.format(self.node_id, self.total_head, self.head_pattern_id, self.comment)
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node_id = fields[0]
+        if len(fields) > 1:
+            self.total_head = fields[1]
+        if len(fields) > 2:
+            self.head_pattern_id = fields[2]
 
 
 class Tank(Section):
@@ -159,8 +184,7 @@ class Tank(Section):
             self.volume_curve = ''
             """If a volume curve is supplied the diameter value can be any non-zero number"""
 
-            self.reaction_coefficient = 0.0
-            """used to override the global reaction coefficient"""
+            # refer to [REACTIONS] section for reaction coefficient
 
     def get_text(self):
         """format contents of this item for writing to file"""
@@ -188,14 +212,12 @@ class Tank(Section):
             self.minimum_volume = fields[6]
         if len(fields) > 7:
             self.volume_curve = fields[7]
-        if len(fields) > 8:
-            self.comment = fields[8]
 
 
 class Mixing(Section):
     """Mixing model and volume fraction of a Tank"""
 
-    field_format = " {:16}\t{:12}\t{:12}\t{}"
+    field_format = "{:16}\t{:12}\t{:12}\t{}"
 
     def __init__(self, new_text=None):
         if new_text:
@@ -212,12 +234,15 @@ class Mixing(Section):
                 Plug Flow (FIFO)
                 Stacked Plug Flow (LIFO)"""
 
-            self.mixing_fraction = 0.0
+            self.mixing_fraction = "0.0"
             """fraction of the total tank volume devoted to the inlet/outlet compartment"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.mixing_model, self.mixing_fraction, self.comment)
+        return self.field_format.format(self.node_id,
+                                        self.mixing_model.name.replace("TWO_", "2"),
+                                        self.mixing_fraction,
+                                        self.comment)
 
     def set_text(self, new_text):
         self.__init__()
@@ -226,34 +251,32 @@ class Mixing(Section):
         if len(fields) > 0:
             self.node_id = fields[0]
         if len(fields) > 1:
-            self.mixing_model = MixingModel[fields[1]]
+            self.mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
         if len(fields) > 2:
             self.mixing_fraction = fields[2]
-        if len(fields) > 3:
-            self.comment = fields[3]
 
 
 class Source(Section):
     """Defines locations of water quality sources"""
 
-    field_format = "{:16}\t{:14}\t{:12}\t{}\n"
+    field_format = "{:16}\t{:14}\t{:12}\t{}"
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-
-        self.node_id = ''
-
-        self.source_type = SourceType.CONCEN # TRATION
-        """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
-
-        self.baseline_strength = '0.0'                  # real, but stored as string
-        """Baseline source strength"""
-
-        self.pattern_id = ""                            # string
-        """Time pattern ID (optional)"""
-
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+
+            self.node_id = ''
+
+            self.source_type = SourceType.CONCEN # TRATION
+            """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
+
+            self.baseline_strength = '0.0'                  # real, but stored as string
+            """Baseline source strength"""
+
+            self.pattern_id = ""                            # string
+            """Time pattern ID (optional)"""
 
     def get_text(self):
         inp = ''
@@ -271,7 +294,7 @@ class Source(Section):
         if len(fields) > 0:
             self.node_id = fields[0]
         if len(fields) > 1:
-            self.source_type = SourceType[fields[1]]
+            self.source_type = SourceType[fields[1].upper()]
         if len(fields) > 2:
             self.baseline_strength = fields[2]
         if len(fields) > 3:

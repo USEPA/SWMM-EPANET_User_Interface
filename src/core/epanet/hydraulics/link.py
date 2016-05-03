@@ -54,7 +54,7 @@ class Link(Section):
         Section.__init__(self)
 
         self.id = "Unnamed"
-        """Link Name"""
+        """Link Identifier/Name"""
 
         self.inlet_node = ''
         """Node on the inlet end of the Link"""
@@ -100,10 +100,7 @@ class Pipe(Link):
         if new_text:
             self.set_text(new_text)
         else:
-            Section.__init__(self)
-
-            self.id = ''
-            """Identifier/name of this pipe"""
+            Link.__init__(self)
 
             self.length = "0.0"
             """pipe length"""
@@ -120,10 +117,11 @@ class Pipe(Link):
             self.status = InitialStatusPipe.OPEN
             """initial status of a pipe, open, closed, or check valve"""
 
-            self.bulk_reaction_coefficient = "0.0"
+            # See REACTIONS section for these parameters
+            # self.bulk_reaction_coefficient = "0.0"
             """bulk reaction coefficient for this pipe"""
 
-            self.wall_reaction_coefficient = "0.0"
+            # self.wall_reaction_coefficient = "0.0"
             """wall reaction coefficient for this pipe"""
 
     def get_text(self):
@@ -142,9 +140,7 @@ class Pipe(Link):
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 8)
         if len(fields) > 2:
-            self.id = fields[0]
-            self.inlet_node = fields[1]
-            self.outlet_node = fields[2]
+            self.id, self.inlet_node, self.outlet_node = fields[0:3]
         if len(fields) > 6:
             self.length = fields[3]
             self.diameter = fields[4]
@@ -156,48 +152,73 @@ class Pipe(Link):
 
 class Pump(Link):
     """A Pump link in an EPANET model"""
-    def __init__(self):
-        Link.__init__(self)
 
-        self.type = PumpType.POWER
-        """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
+    field_format = "{:16}\t{:16}\t{:16}"
 
-        self.power = 0.0
-        """power value for constant energy pump, hp (kW)"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.head_curve_id = ""
-        """curve that describes head versus flow for the pump"""
+            self.id = ''
+            """Identifier/name of this pipe"""
 
-        self.speed = 0.0
-        """relative speed setting (normal speed is 1.0, 0 means pump is off)"""
+            self.type = PumpType.POWER
+            """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
 
-        self.pattern = Pattern()
-        """time pattern that describes how speed setting varies with time"""
+            self.power = "0.0"
+            """power value for constant energy pump, hp (kW)"""
 
-        self.initial_status = InitialStatusPump.OPEN
-        """initial status of a pump, can also include a speed setting"""
+            self.head_curve_id = ''
+            """curve that describes head versus flow for the pump"""
 
-        self.energy = PumpEnergy()
-        """parameters used to compute pumping energy and cost"""
+            self.speed = "0.0"
+            """relative speed setting (normal speed is 1.0, 0 means pump is off)"""
+
+            self.pattern = ''
+            """time pattern that describes how speed setting varies with time"""
+
+            self.initial_status = InitialStatusPump.OPEN
+            """initial status of a pump, can also include a speed setting"""
+
+            self.energy = PumpEnergy()
+            """parameters used to compute pumping energy and cost"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return str(self.link_id) + '\t'\
-            + str(self.inlet_node) + '\t'\
-            + str(self.outlet_node) + '\t'\
-            + str(self.head_curve_id)\
-            + ('\t' + self.comment if self.comment else '')
-        # TODO: format for remaining fields?
-        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
+        txt = self.field_format.format(self.id, self.inlet_node, self.outlet_node)
+        if self.type == PumpType.HEAD:
+            txt += "\tHEAD " + self.head_curve_id
+        else:
+            txt += "\tPOWER " + self.power
+        if self.pattern:
+            txt += "\tPATTERN " + self.pattern
+        if self.speed != "0.0":
+            txt += "\tSPEED " + self.speed
+        if self.comment:
+            comment_stripped = self.comment.replace(';', '').strip()
+            if comment_stripped:
+                txt += "\t; " + comment_stripped
+        return txt
 
     def set_text(self, new_text):
         new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split(None, 3)
-        self.link_id = fields[0]
-        self.inlet_node = fields[1]
-        self.outlet_node = fields[2]
-        self.head_curve_id = fields[3]
-        # TODO: Populate additional fields: self.speed = ... """
+        fields = new_text.split()
+        if len(fields) > 2:
+            self.id, self.inlet_node, self.outlet_node = fields[0:3]
+            for key_index in range(3, len(fields) - 1, 2):
+                value_index = key_index + 1
+                if fields[key_index].upper() == "HEAD":
+                    self.type = PumpType.HEAD
+                    self.head_curve_id = fields[value_index]
+                elif fields[key_index].upper() == "POWER":
+                    self.type = PumpType.POWER
+                    self.power = fields[value_index]
+                elif fields[key_index].upper() == "PATTERN":
+                    self.pattern = fields[value_index]
+                elif fields[key_index].upper() == "SPEED":
+                    self.speed = fields[value_index]
 
 
 class Valve(Link):

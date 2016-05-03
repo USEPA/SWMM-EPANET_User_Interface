@@ -94,6 +94,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
 
         except Exception as eImport:
+            self.canvas = None
             print "QGIS libraries not found, Not creating map\n" + str(eImport)
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
 
@@ -118,8 +119,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
         x = event.x()
         y = event.y()
-        p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
+        if self.canvas:
+            p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+            self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
 
     def eventFilter(self, source, event):
         if event.type() == QtCore.QEvent.MouseMove:
@@ -127,8 +129,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pos = event.pos()
                 x = pos.x()
                 y = pos.y()
-                p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-                self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
+                if self.canvas:
+                    p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+                    self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
             else:
                 pass
 

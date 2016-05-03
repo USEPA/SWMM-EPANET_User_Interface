@@ -53,25 +53,25 @@ class Link(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.link_id = "Unnamed"
+        self.id = "Unnamed"
         """Link Name"""
 
-        self.inlet_node = None
+        self.inlet_node = ''
         """Node on the inlet end of the Link"""
 
-        self.outlet_node = None
+        self.outlet_node = ''
         """Node on the outlet end of the Link"""
 
-        self.description = None
+        self.description = ''
         """Optional description of the Link"""
 
-        self.tag = None
+        self.tag = ''
         """Optional label used to categorize or classify the Link"""
 
-        self.vertices = [Vertex]  # Collection of Vertices
+        self.vertices = []  # list of Vertex
         """Coordinates of interior vertex points """
 
-        self.report_flag = ""
+        self.report_flag = ''
         """Flag indicating whether an output report is desired for this link"""
 
     def get_text(self):
@@ -93,45 +93,46 @@ class Link(Section):
 
 class Pipe(Link):
     """A Pipe link in an EPANET model"""
-    def __init__(self):
-        Link.__init__(self)
 
-        self.length = 0.0
-        """pipe length"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:6}\t{}"
 
-        self.diameter = 0.0
-        """pipe diameter"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
 
-        self.roughness = 0.0
-        """Manning's roughness coefficient"""
+            self.id = ''
+            """Identifier/name of this pipe"""
 
-        self.loss_coefficient = 0.0
-        """Minor loss coefficient"""
+            self.length = "0.0"
+            """pipe length"""
 
-        self.status = InitialStatusPipe.OPEN
-        """initial status of a pipe, open, closed, or check valve"""
+            self.diameter = "0.0"
+            """pipe diameter"""
 
-        self.bulk_reaction_coefficient = 0.0
-        """bulk reaction coefficient for this pipe"""
+            self.roughness = "0.0"
+            """Manning's roughness coefficient"""
 
-        self.wall_reaction_coefficient = 0.0
-        """wall reaction coefficient for this pipe"""
+            self.loss_coefficient = "0.0"
+            """Minor loss coefficient"""
+
+            self.status = InitialStatusPipe.OPEN
+            """initial status of a pipe, open, closed, or check valve"""
+
+            self.bulk_reaction_coefficient = "0.0"
+            """bulk reaction coefficient for this pipe"""
+
+            self.wall_reaction_coefficient = "0.0"
+            """wall reaction coefficient for this pipe"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        if self.link_id:
-            return str(self.link_id) + '\t'\
-                   + str(self.inlet_node) + '\t'\
-                   + str(self.outlet_node) + '\t'\
-                   + str(self.length) + '\t'\
-                   + str(self.diameter) + '\t'\
-                   + str(self.roughness) + '\t'\
-                   + str(self.loss_coefficient) + '\t'\
-                   + str(self.status) \
-                   + ('\t' + self.comment if self.comment else '')
+        if self.id:
+            return self.field_format.format(self.id, self.inlet_node, self.outlet_node, self.length, self.diameter,
+                                            self.roughness, self.loss_coefficient, self.status.name, self.comment)
         elif self.comment:
             return self.comment
-        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
 
     def set_text(self, new_text):
         """Read properties from text.
@@ -139,9 +140,9 @@ class Pipe(Link):
                 new_text (str): Text to parse into properties.
         """
         new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split(None, 7)
+        fields = new_text.split(None, 8)
         if len(fields) > 2:
-            self.link_id = fields[0]
+            self.id = fields[0]
             self.inlet_node = fields[1]
             self.outlet_node = fields[2]
         if len(fields) > 6:
@@ -150,7 +151,7 @@ class Pipe(Link):
             self.roughness = fields[5]
             self.loss_coefficient = fields[6]
         if len(fields) > 7:
-            self.status = fields[7]
+            self.status = InitialStatusPipe[fields[7].upper()]
 
 
 class Pump(Link):

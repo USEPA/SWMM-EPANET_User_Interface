@@ -21,28 +21,53 @@ class MixingModel(Enum):
     LIFO = 4
 
 
-class Node(Coordinates):
-    """A node in an EPANET model"""
-    def __init__(self, x, y):
-        Coordinates.__init__(self, x, y)
+# class Node(Coordinates):
+#     """A node in an EPANET model"""
+#     def __init__(self, x, y):
+#         Coordinates.__init__(self, x, y)
+#
+#         self.name = "Unnamed"
+#         """Node Name"""
+#
+#         self.description = ""
+#         """Optional description of the Node"""
+#
+#         self.tag = ""
+#         """Optional label used to categorize or classify the Node"""
+#
+#         self.initial_quality = 0.0
+#         """"""
+#
+#         self.source_quality = Source()
+#         """defines characteristics of water quality source"""
+#
+#         self.report_flag = ""
+#         """Indicates whether reporting is desired at this node"""
 
-        self.name = "Unnamed"
-        """Node Name"""
+class Coordinate(Section):
+    field_format = "{:16}\t{:16}\t{:16}"
 
-        self.description = ""
-        """Optional description of the Node"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
 
-        self.tag = ""
-        """Optional label used to categorize or classify the Node"""
+            self.node_id = ''
+            """Identifier of node at this location"""
 
-        self.initial_quality = 0.0
-        """"""
+            self.x = '0.0'
+            """east/west location coordinate"""
 
-        self.source_quality = Source()
-        """defines characteristics of water quality source"""
+            self.y = '0.0'
+            """north/south location coordinate"""
 
-        self.report_flag = ""
-        """Indicates whether reporting is desired at this node"""
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return self.field_format.format(self.node_id, self.x, self.y)
+
+    def set_text(self, new_text):
+        (self.node_id, self.x, self.y) = new_text.split()
 
 
 class Quality(Section):
@@ -51,16 +76,16 @@ class Quality(Section):
     field_format = "{:16}\t{}"
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-
-        self.node_id = ''
-        """elevation of junction"""
-
-        self.initial_quality = '0.0'
-        """concentration for chemicals, hours for water age, or percent for source tracing"""
-
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+
+            self.node_id = ''
+            """elevation of junction"""
+
+            self.initial_quality = '0.0'
+            """concentration for chemicals, hours for water age, or percent for source tracing"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
@@ -307,22 +332,22 @@ class Demand(Section):
     field_format = "{:16}\t{:9}\t{:10}\t{}"
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-
-        self.junction_id = ''
-        """Junction this demand applies to"""
-
-        self.base_demand = "0.0"       # real, stored as string
-        """Base demand (flow units)"""
-
-        self.demand_pattern = ''     # string
-        """Demand pattern ID (optional)"""
-
-        self.category = ''          # string
-        """Name of demand category preceded by a semicolon (optional)"""
-
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+
+            self.junction_id = ''
+            """Junction this demand applies to"""
+
+            self.base_demand = "0.0"       # real, stored as string
+            """Base demand (flow units)"""
+
+            self.demand_pattern = ''     # string
+            """Demand pattern ID (optional)"""
+
+            self.category = ''          # string
+            """Name of demand category preceded by a semicolon (optional)"""
 
     def get_text(self):
         inp = ''

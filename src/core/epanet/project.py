@@ -4,6 +4,7 @@ from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
+from core.epanet.hydraulics.node import Coordinate
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
@@ -41,7 +42,8 @@ class Project(InputFile):
 
         self.mixing = SectionAsListOf("[MIXING]", Mixing, ";Tank           \tModel       \tMixing Volume Fraction\n"
                                                           ";---------------\t------------\t----------------------")
-        # self.pipes = [Pipe]
+        self.pipes = SectionAsListOf("[PIPES]", Pipe, ";ID             \tNode1           \tNode2           \t"
+                                     "Length      \tDiameter    \tRoughness   \tMinorLoss   \tStatus")
         # self.pumps = [Pump]
         # self.valves = [Valve]
         # self.emitters = [(Junction, "emitter_coefficient")]
@@ -71,7 +73,7 @@ class Project(InputFile):
         self.options = Options()
         self.times = TimesOptions()
         self.report = ReportOptions()
-        # "[COORDINATES]": [Coordinates]  # X,Y coordinates for nodes
+        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate, ";Node            \tX-Coord         \tY-Coord")
         # "[VERTICES]": [Vertex]
         # "[LABELS]": [Label]
         self.backdrop = BackdropOptions()

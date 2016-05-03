@@ -138,39 +138,29 @@ class Tank(Section):
             self.node_id = ''
             """node identifier/name"""
 
-        self.elevation = "0.0"
-        """Bottom elevation, ft (m)"""
+            self.elevation = "0.0"
+            """Bottom elevation, ft (m)"""
 
-        self.initial_level = "0.0"
-        """Initial water level, ft (m)"""
+            self.initial_level = "0.0"
+            """Initial water level, ft (m)"""
 
-        self.minimum_level = "0.0"
-        """Minimum water level, ft (m)"""
+            self.minimum_level = "0.0"
+            """Minimum water level, ft (m)"""
 
-        self.maximum_level = "0.0"
-        """Maximum water level, ft (m)"""
+            self.maximum_level = "0.0"
+            """Maximum water level, ft (m)"""
 
-        self.diameter = "0.0"
-        """Nominal diameter, ft (m)"""
+            self.diameter = "0.0"
+            """Nominal diameter, ft (m)"""
 
-        self.minimum_volume = "0.0"
-        """Minimum volume, cubic ft (cubic meters)"""
+            self.minimum_volume = "0.0"
+            """Minimum volume, cubic ft (cubic meters)"""
 
-        self.volume_curve = ''
-        """If a volume curve is supplied the diameter value can be any non-zero number"""
+            self.volume_curve = ''
+            """If a volume curve is supplied the diameter value can be any non-zero number"""
 
-        self.mixing_model = MixingModel.MIXED
-        """Mixing models include:
-            Completely Mixed (MIXED)
-            Two-Compartment Mixing (2COMP)
-            Plug Flow (FIFO)
-            Stacked Plug Flow (LIFO)"""
-
-        self.mixing_fraction = 0.0
-        """fraction of the total tank volume devoted to the inlet/outlet compartment"""
-
-        self.reaction_coefficient = 0.0
-        """used to override the global reaction coefficient"""
+            self.reaction_coefficient = 0.0
+            """used to override the global reaction coefficient"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
@@ -200,6 +190,47 @@ class Tank(Section):
             self.volume_curve = fields[7]
         if len(fields) > 8:
             self.comment = fields[8]
+
+
+class Mixing(Section):
+    """Mixing model and volume fraction of a Tank"""
+
+    field_format = " {:16}\t{:12}\t{:12}\t{}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.node_id = ''
+            """node identifier/name"""
+
+            self.mixing_model = MixingModel.MIXED
+            """Mixing models include:
+                Completely Mixed (MIXED)
+                Two-Compartment Mixing (2COMP)
+                Plug Flow (FIFO)
+                Stacked Plug Flow (LIFO)"""
+
+            self.mixing_fraction = 0.0
+            """fraction of the total tank volume devoted to the inlet/outlet compartment"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        return self.field_format.format(self.node_id, self.mixing_model, self.mixing_fraction, self.comment)
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.node_id = fields[0]
+        if len(fields) > 1:
+            self.mixing_model = MixingModel[fields[1]]
+        if len(fields) > 2:
+            self.mixing_fraction = fields[2]
+        if len(fields) > 3:
+            self.comment = fields[3]
 
 
 class Source(Section):

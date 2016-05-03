@@ -7,6 +7,7 @@ from core.epanet.hydraulics.link import Valve
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
+from core.epanet.hydraulics.node import Tank
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
 from core.epanet.options.options import Options
@@ -32,7 +33,8 @@ class Project(InputFile):
                                          ";ID             \tElev  \tDemand\tPattern\n"
                                          ";---------------\t------\t------\t-------")
         # [RESERVOIRS]
-        # [TANKS]
+        self.tanks = SectionAsListOf("[TANKS]", Tank,
+            ";ID              \tElevation   \tInitLevel   \tMinLevel    \tMaxLevel    \tDiameter    \tMinVol      \tVolCurve")
         # self.pipes = [Pipe]
         # self.pumps = [Pump]
         # self.valves = [Valve]

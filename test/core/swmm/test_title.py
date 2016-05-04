@@ -1,27 +1,64 @@
-from core.swmm import title
+from core.swmm.title import Title
 import unittest
 
 
 class SimpleTitleTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_title = title.Title()
 
     def setUp(self):
-        self.my_title = title.Title()
-        self.my_title.title = "test title"
+        self.my_title = Title()
 
     def runTest(self):
 
-        name = self.my_title.SECTION_NAME
-        assert self.my_title.title == "test title"
+        default_text = self.my_title.get_text()
 
-        # Test get_text with matches (matches includes get_text)
-        expected_text = "[TITLE]\ntest title"
-        assert self.my_title.matches(expected_text), 'incorrect title block'
+        # Bare section read/write
+        test_text = r"""[TITLE]"""
+        # --Test set_text
+        self.my_title.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_title.get_text()  # display purpose
+        # assert self.my_title.matches(test_text)
+        assert actual_text == default_text
 
-        # Test set_text, loop through three cases
-        new_titles = ["test set_text title", "","test \n test","test \n\n test"]
-        for new_title in new_titles:
-            self.my_title.set_text(self.my_title.SECTION_NAME + "\n"+new_title)
-            self.assertEqual(self.my_title.title,new_title, 'wrong title read by set_text({})'.format(new_title))
+        # Test title
+        # Normal one row title
+        test_text = r"""[TITLE]
+        Test Title
+        """
+        # --Test set_text
+        self.my_title.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_title.get_text()  # display purpose
+        assert self.my_title.matches(test_text)
+
+
+        # Multiple lines with empty lines
+        test_text = r"""[TITLE]
+
+        test_title
+
+        test this title
+        """
+        # --Test set_text
+        self.my_title.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_title.get_text()  # display purpose
+        assert self.my_title.matches(test_text)
+
+        # Empty first row before Section title
+        # ---- Failed as the first row can not be \n
+        test_text = r"""
+        [TITLE]
+        test_title
+        """
+        # --Test set_text
+        self.my_title.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_title.get_text()  # display purpose
+        assert self.my_title.matches(test_text)
+
+        pass
+
+

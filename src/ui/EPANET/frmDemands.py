@@ -13,7 +13,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)
         self._parent = parent
-        self.control_type = ""
+        self.node_id = ''
 
     def set_from(self, project, node_id):
         self.node_id = node_id
@@ -50,7 +50,6 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                     self.junction_only = True
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section(self.control_type)
         section = self._parent.project.find_section('JUNCTIONS')
         junctions_list = section.value[0:]
         # assume we want to edit the first one

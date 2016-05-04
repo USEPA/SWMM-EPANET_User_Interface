@@ -9,16 +9,23 @@ class Title(Section):
     def __init__(self):
         Section.__init__(self)
         self.title = ""
+        self.notes = ""
         """str: Descriptive title"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return Title.SECTION_NAME + '\n' + self.title
+        return Title.SECTION_NAME + '\n' + self.title + '\n' + self.notes
 
     def set_text(self, new_text):
         """Read properties from text.
             Args:
                 new_text (str): Text to parse into properties.
         """
-        lines = new_text.splitlines()
-        self.title = '\n'.join(lines[1:])  # include all after [TITLE] line
+        self.__init__()
+        for line in new_text.splitlines()[1:]:  # include all after first [TITLE] line
+            if len(self.title) == 0:
+                self.title = line
+            else:
+                if len(self.notes) > 0:
+                    self.notes += '\n'
+                self.notes += line

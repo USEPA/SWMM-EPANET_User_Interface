@@ -1,113 +1,60 @@
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import *
 try:
     from PyQt4.QtCore import QString
 except ImportError:
     QString = str
-from enum import Enum
 
-class SWMMTreeObjects(object):
-    ObjRoot = ['Title/Notes','Options','Climatology', 'Hydrology', \
-               'Hydraulics','Quality','Curves', 'Time Series', 'Time Patterns', 'Map Labels']
-    ObjOptions = ['General','Dates','Time Steps','Dynamic Wave','Interface Files','Reporting','Map/Backdrop']
-    ObjClimatology = ['Temperature','Evaporation','Wind Speed','Snow Melt','Areal Depletion',\
-                      'Adjustment']
-    ObjHydrology = ['Rain Gages','Subcatchments','Aquifers','Snow Packs','Unit Hydrographs', \
-                    'LID Controls']
-    ObjHydraulics = ['Nodes','Links','Transects','Controls']
-    ObjQuality = ['Pollutants','Land Uses']
-    ObjCurves = ['Control Curves','Diversion Curves','Pump Curves','Rating Curves','Shape Curves', \
-                 'Storage Curves','Tidal Curves']
+try:
+    from_utf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def from_utf8(s):
+        return s
 
-    ObjNodes = ['Junctions','Outfalls','Dividers','Storage Units']
-    ObjLinks = ['Conduits','Pumps','Orifices','Weirs','Outlets']
+try:
+    transl8_encoding = QtGui.QApplication.UnicodeUTF8
+    def transl8(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, transl8_encoding)
+except AttributeError:
+    def transl8(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
-class EPANETTreeObjects(object):
-    ObjRoot = ['Title/Notes','Options','Junctions', 'Reservoirs', \
-               'Tanks','Pipes', 'Pumps', 'Valves', 'Labels', 'Patterns', 'Curves', 'Controls']
-    ObjOptions=['Hydraulics','Quality','Reactions','Times','Energy','Report','Map/Backdrop']
-    ObjControls = ['Simple','Rule-Based']
+process_events = QtGui.QApplication.processEvents
 
-class ObjectTreeView(QTreeWidget):
-    def __init__(self, parent=None, **kwargs):
-        super(ObjectTreeView, self).__init__(parent)
-        self.model = kwargs['model'] #either SWMM or EPANET
-        self.treeItems = None
-        #self.setEditTriggers(QAbstractItemView.EditKeyPressed | QAbstractItemView.SelectedClicked)
-        #self.setExpandsOnDoubleClick(False)
-        #QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
-        #self.itemDoubleClicked.connect(self.edit_options)
-        if self.model == 'SWMM':
-            self.treeItems = SWMMTreeObjects()
-            self.setupUISWMM()
-        elif self.model == 'EPANET':
-            self.treeItems = EPANETTreeObjects()
-            self.setupUIEPANET()
-
-    def setupUIEPANET(self):
+class ObjectTreeView(QtGui.QTreeWidget):
+    def __init__(self, parent, tree_top_item_list):
+        QtGui.QTreeWidget.__init__(self, parent)
+        # self.setEditTriggers(QAbstractItemView.EditKeyPressed | QAbstractItemView.SelectedClicked)
+        # self.setExpandsOnDoubleClick(False)
+        # QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
+        # self.itemDoubleClicked.connect(self.edit_options)
         self.setHeaderHidden(True)
-        #self.addItems(self.invisibleRootItem())
         self.setColumnCount(1)
-        #self.itemChanged.connect(self.handleChanged)
-        for tnode in self.treeItems.ObjRoot:
-            itm = self.addParent(self, 0, tnode, tnode)
-            if tnode == 'Options':
-                for cnode in self.treeItems.ObjOptions:
-                    citm = self.addChild(itm,0, cnode, cnode)
-            elif tnode == 'Controls':
-                for cnode in self.treeItems.ObjControls:
-                    citm = self.addChild(itm,0, cnode, cnode)
+        for top_list in tree_top_item_list:
+            top_name = top_list[0]
+            top_item = self.add_tree_item(self, 0, top_name, top_name)
+            top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
+            top_item.setExpanded(True)
 
-    def setupUISWMM(self):
-        self.setHeaderHidden(True)
-        #self.addItems(self.invisibleRootItem())
-        self.setColumnCount(1)
-        #self.itemChanged.connect(self.handleChanged)
-        for tnode in self.treeItems.ObjRoot:
-            itm = self.addParent(self, 0, tnode, tnode)
-            if tnode == 'Options':
-                for cnode in self.treeItems.ObjOptions:
-                    citm = self.addChild(itm,0, cnode, cnode)
-            elif tnode == 'Climatology':
-                for cnode in self.treeItems.ObjClimatology:
-                    citm = self.addChild(itm,0, cnode, cnode)
-            elif tnode == 'Hydrology':
-                for cnode in self.treeItems.ObjHydrology:
-                    citm = self.addChild(itm,0, cnode, cnode)
-            elif tnode == 'Hydraulics':
-                for cnode in self.treeItems.ObjHydraulics:
-                    citm = self.addChild(itm,0, cnode, cnode)
-                    if cnode=='Nodes':
-                        for cnode1 in self.treeItems.ObjNodes:
-                            citm1 = self.addChild(citm,0, cnode1, cnode1)
-                    elif cnode=='Links':
-                        for cnode1 in self.treeItems.ObjLinks:
-                            citm1 = self.addChild(citm,0, cnode1, cnode1)
-            elif tnode == 'Quality':
-                for cnode in self.treeItems.ObjQuality:
-                    citm = self.addChild(itm,0, cnode, cnode)
-            elif tnode == 'Curves':
-                for cnode in self.treeItems.ObjCurves:
-                    citm = self.addChild(itm,0, cnode, cnode)
+            if len(top_list) > 1:
+                children = top_list[1]
+                if children and type(children) is list:
+                    for child in children:
+                        if child and len(child) > 0:
+                            child_name = child[0]
+                            child_control = self.add_tree_item(top_item, 0, child_name, child_name)
+                            if len(child) > 0 and type(child[1]) is list:
+                                for grandchild in child[1]:
+                                    self.add_tree_item(child_control, 0, grandchild[0], grandchild[0])
 
-    def addParent(self, parent, column, title, data):
-        itm = QtGui.QTreeWidgetItem(parent, [title])
-        itm.setData(column, QtCore.Qt.UserRole, data)
-        itm.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
-        itm.setExpanded(True)
-        return itm
+    def add_tree_item(self, parent, column, title, data):
+        item = QtGui.QTreeWidgetItem(parent, [title])
+        item.setData(column, QtCore.Qt.UserRole, data)
+        return item
 
-    def addChild(self, parent, column, title, data):
-        itm = QtGui.QTreeWidgetItem(parent, [title])
-        itm.setData(column, QtCore.Qt.UserRole, data)
-        return itm
 
-    def edit_options(self, itm, column):
-        pass
-
-class ObjectListView(QListWidget):
+class ObjectListView(QtGui.QListWidget):
     def __init__(self, parent=None, **kwargs):
-        super(ObjectListView, self).__init__(parent)
+        QtGui.QListWidget.__init__(self, parent)
         self.model = kwargs['model']
         self.ObjRoot = kwargs['ObjRoot']
         self.ObjType = kwargs['ObjType']
@@ -116,19 +63,25 @@ class ObjectListView(QListWidget):
 
     def set_model(self, model):
         self.model = model
+
     def set_root(self, root):
         self.ObjRoot = root
-    def set_type(self, type):
-        self.ObjType = type
+
+    def set_type(self, obj_type):
+        self.ObjType = obj_type
+
     def set_list(self, objList):
         self.ObjList = objList
 
     def setupUI(self):
-        if self.ObjRoot == '':
-            return
-        for obj in self.ObjList:
-            self.addItem(obj)
-        pass
+        # self.addItem("Test")
+        if self.ObjRoot:
+            if self.ObjList:
+                self.clear()
+                for obj in self.ObjList:
+                    self.addItem(obj)
+                pass
+
 
 class StatusMonitor0(QtGui.QDialog):
     def __init__(self, cmd, args, parent=None, **kwargs):
@@ -138,9 +91,9 @@ class StatusMonitor0(QtGui.QDialog):
         self.keepGoing = True
         self.prog = kwargs['model']
 
-        layout = QVBoxLayout()
+        layout = QtGui.QVBoxLayout()
         self.output = QtGui.QTextEdit()
-        self.butt = QPushButton('Close')
+        self.butt = QtGui.QPushButton('Close')
         self.setupConnections()
         self.setWindowTitle('Running ' + self.prog)
         layout.addWidget(self.output)

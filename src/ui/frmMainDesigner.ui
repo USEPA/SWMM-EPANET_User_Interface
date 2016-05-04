@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmMain</class>
+ <widget class="QMainWindow" name="frmMain">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>832</width>
+    <height>603</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SWMM 5.1</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</normaloff>D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</iconset>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QMdiArea" name="map">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QComboBox" name="cbAutoLength">
+        <item>
+         <property name="text">
+          <string>Auto-Length: Off</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Auto-Length: On</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbOffset">
+        <item>
+         <property name="text">
+          <string>Offsets: Elevation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Offsets: Depth</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbFlowUnits">
+        <item>
+         <property name="text">
+          <string>Flow Units: CFS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: GPM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: MGD</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: CMS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units:  LPS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flow Units: MLD</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnZoom100">
+        <property name="text">
+         <string>Zoom Level: 100%</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnCoord">
+        <property name="text">
+         <string>x,y</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>832</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionStdImportMap"/>
+     <addaction name="actionStdImportScenario"/>
+     <addaction name="actionStdImportNetwork"/>
+    </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionStdExportMap"/>
+    </widget>
+    <addaction name="actionStdNewProjectMenu"/>
+    <addaction name="actionStdOpenProjMenu"/>
+    <addaction name="actionStdRecent_Project"/>
+    <addaction name="actionStdSaveMenu"/>
+    <addaction name="actionStdSave_As"/>
+    <addaction name="separator"/>
+    <addaction name="menuImport"/>
+    <addaction name="menuExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdPage_Setup"/>
+    <addaction name="actionStdPrint_Preview"/>
+    <addaction name="actionStdPrint"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionStdCopy_To"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdSelect_Object"/>
+    <addaction name="actionStdSelect_Vertex"/>
+    <addaction name="actionStdSelect_Region"/>
+    <addaction name="actionStdSelect_All"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdGroup_Edit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionStdProjSummary"/>
+    <addaction name="actionStdProjDetails"/>
+    <addaction name="actionStdProjDefault"/>
+    <addaction name="actionStdProjCalibration_Data"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdProjSimulation_Options"/>
+    <addaction name="actionRun_SimulationMenu"/>
+   </widget>
+   <widget class="QMenu" name="menuReport">
+    <property name="title">
+     <string>Report</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <widget class="QMenu" name="menuScripting">
+     <property name="title">
+      <string>Scripting</string>
+     </property>
+     <addaction name="actionIPython"/>
+     <addaction name="actionExec"/>
+    </widget>
+    <addaction name="menuScripting"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuProject"/>
+   <addaction name="menuReport"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuPlugins"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar_Object">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionObjAddGage"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_Map">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="actionMapSelectObj"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_Standard">
+   <property name="windowTitle">
+    <string>toolBar_3</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>23</width>
+     <height>22</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="actionStdNewProject"/>
+   <addaction name="actionStdOpenProj"/>
+   <addaction name="actionStdSave"/>
+   <addaction name="separator"/>
+   <addaction name="actionStdRun_Simulation"/>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QDockWidget" name="dockw_tab">
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::TopDockWidgetArea</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QTabWidget" name="tabProjMap">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabProject">
+        <attribute name="title">
+         <string>Project</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabMap">
+        <attribute name="title">
+         <string>Map</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabGIS">
+        <attribute name="title">
+         <string>GIS</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockw_more">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QGridLayout" name="gridLayout_3"/>
+   </widget>
+  </widget>
+  <action name="actionStdNewProject">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_new.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>Start a new project</string>
+   </property>
+  </action>
+  <action name="actionMapSelectObj">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_pointer.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Select an object</string>
+   </property>
+   <property name="toolTip">
+    <string>Select an object from a map</string>
+   </property>
+  </action>
+  <action name="actionObjAddGage">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_gage.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Add Gage</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a rain gage</string>
+   </property>
+  </action>
+  <action name="actionIPython">
+   <property name="text">
+    <string>IPython</string>
+   </property>
+  </action>
+  <action name="actionExec">
+   <property name="text">
+    <string>exec</string>
+   </property>
+  </action>
+  <action name="actionShow_coordinates">
+   <property name="text">
+    <string>show coordinates</string>
+   </property>
+  </action>
+  <action name="actionStdOpenProjMenu">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open existing project</string>
+   </property>
+  </action>
+  <action name="actionStdOpenProj">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_open.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open existing project</string>
+   </property>
+  </action>
+  <action name="actionStdNewProjectMenu">
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new project</string>
+   </property>
+  </action>
+  <action name="actionStdRecent_Project">
+   <property name="text">
+    <string>Recent</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Recent Project</string>
+   </property>
+  </action>
+  <action name="actionStdSaveMenu">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Project</string>
+   </property>
+  </action>
+  <action name="actionStdSave">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_save.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save project</string>
+   </property>
+  </action>
+  <action name="actionStdSave_As">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save project as</string>
+   </property>
+  </action>
+  <action name="actionStdImportMap">
+   <property name="text">
+    <string>Map...</string>
+   </property>
+   <property name="toolTip">
+    <string>Import a map</string>
+   </property>
+  </action>
+  <action name="actionStdImportScenario">
+   <property name="text">
+    <string>Scenario...</string>
+   </property>
+   <property name="toolTip">
+    <string>Import a scenario file</string>
+   </property>
+  </action>
+  <action name="actionStdImportNetwork">
+   <property name="text">
+    <string>Network...</string>
+   </property>
+   <property name="toolTip">
+    <string>Import an existing input file</string>
+   </property>
+  </action>
+  <action name="actionStdExportMap">
+   <property name="text">
+    <string>Map...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export current schematic</string>
+   </property>
+  </action>
+  <action name="actionStdPage_Setup">
+   <property name="text">
+    <string>Page Setup...</string>
+   </property>
+   <property name="toolTip">
+    <string>Page setup</string>
+   </property>
+  </action>
+  <action name="actionStdPrint_Preview">
+   <property name="text">
+    <string>Print Preview</string>
+   </property>
+   <property name="toolTip">
+    <string>Print preview</string>
+   </property>
+  </action>
+  <action name="actionStdPrint">
+   <property name="text">
+    <string>Print</string>
+   </property>
+   <property name="toolTip">
+    <string>Print</string>
+   </property>
+  </action>
+  <action name="actionStdExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit program</string>
+   </property>
+  </action>
+  <action name="actionStdCopy_To">
+   <property name="text">
+    <string>Copy To...</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy map at current extent</string>
+   </property>
+  </action>
+  <action name="actionStdSelect_Object">
+   <property name="text">
+    <string>Select Object</string>
+   </property>
+   <property name="toolTip">
+    <string>Select object</string>
+   </property>
+  </action>
+  <action name="actionStdSelect_Vertex">
+   <property name="text">
+    <string>Select Vertex</string>
+   </property>
+   <property name="toolTip">
+    <string>Select vertex of object geometry</string>
+   </property>
+  </action>
+  <action name="actionStdSelect_Region">
+   <property name="text">
+    <string>Select Region</string>
+   </property>
+   <property name="toolTip">
+    <string>Select a region on the map</string>
+   </property>
+  </action>
+  <action name="actionStdSelect_All">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all objects on the map</string>
+   </property>
+  </action>
+  <action name="actionStdGroup_Edit">
+   <property name="text">
+    <string>Group Edit...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit a selected group of objects</string>
+   </property>
+  </action>
+  <action name="actionStdProjSummary">
+   <property name="text">
+    <string>Summary...</string>
+   </property>
+   <property name="toolTip">
+    <string>Project summary</string>
+   </property>
+  </action>
+  <action name="actionStdProjDefault">
+   <property name="text">
+    <string>Default...</string>
+   </property>
+   <property name="toolTip">
+    <string>Project defaults</string>
+   </property>
+  </action>
+  <action name="actionStdProjCalibration_Data">
+   <property name="text">
+    <string>Calibration Data...</string>
+   </property>
+   <property name="toolTip">
+    <string>Set project calibration data</string>
+   </property>
+  </action>
+  <action name="actionStdProjSimulation_Options">
+   <property name="text">
+    <string>Simulation Options...</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Simulation Options</string>
+   </property>
+  </action>
+  <action name="actionRun_SimulationMenu">
+   <property name="text">
+    <string>Run Simulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Start running simulation</string>
+   </property>
+  </action>
+  <action name="actionStdRun_Simulation">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_runswmm.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Run Simulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Run Simulation</string>
+   </property>
+  </action>
+  <action name="actionStdProjDetails">
+   <property name="text">
+    <string>Details...</string>
+   </property>
+   <property name="toolTip">
+    <string>Show properties</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/ui/swmm.qrc"/>
+ </resources>
+ <connections/>
+</ui>

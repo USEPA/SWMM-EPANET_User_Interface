@@ -11,7 +11,7 @@ from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent, node_name):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -35,7 +35,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         QtCore.QObject.connect(self.btnDryPattern8, QtCore.SIGNAL("clicked()"), self.btnDryPattern8_Clicked)
         QtCore.QObject.connect(self.btnUnitHydro1, QtCore.SIGNAL("clicked()"), self.btnUnitHydro1_Clicked)
         QtCore.QObject.connect(self.btnUniHydro2, QtCore.SIGNAL("clicked()"), self.btnUniHydro2_Clicked)
-        self.node_id = '10'  # will need to get this connected, hard code for now
+        self.node_id = node_name
         self._parent = parent
         # local data structure to hold the inflow data as pollutant combos change
         self.done_loading = False
@@ -216,7 +216,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                         value.scale_factor = self.local_scale_factor[index]
                         value.baseline = self.local_baseline[index]
                         value.baseline_pattern = self.local_baseline_pattern[index]
-            if found == False:
+            if not found:
                 # have to add this inflow to the list
                 new_inflow = core.swmm.project.DirectInflow()
                 new_inflow.node = self.node_id
@@ -267,7 +267,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                             value.time_patterns.append(self.local_dry_pattern_3_list[index])
                         if len(str(self.local_dry_pattern_4_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
-            if found == False:
+            if not found:
                 # have to add this dry inflow to the list
                 new_inflow = core.swmm.project.DryWeatherInflow()
                 new_inflow.node = self.node_id
@@ -296,7 +296,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 found = True
                 value.sewershed_area = self.txtSewershed.text()
                 value.hydrograph_group = self.cboUnitHydro.currentText()
-        if found == False:
+        if not found:
             # have to add this rdii to the list
             new_inflow = core.swmm.project.RDIInflow()
             new_inflow.node = self.node_id

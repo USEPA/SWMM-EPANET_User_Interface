@@ -1,13 +1,14 @@
-import os
-import sys
-
+import os, sys
 os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
-from ui.model_utility import *
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QMessageBox
+import traceback
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QMessageBox, QFileDialog
+
+from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
+from ui.help import HelpHandler
 from ui.frmMain import frmMain
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave
@@ -32,6 +33,7 @@ from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
+from ui.SWMM.frmLandUses import frmLandUses
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
 from core.swmm.project import Project
@@ -39,229 +41,265 @@ from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
 
+
 class frmMainSWMM(frmMain):
-    def __init__(self, parent=None, *args):
-        frmMain.__init__(self, parent)
-        QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.std_newproj)
-        QtCore.QObject.connect(self.actionStdNewProject, QtCore.SIGNAL('triggered()'), self.std_newproj)
+    """Main form for SWMM user interface, based on frmMain which is shared with EPANET."""
 
-        QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.std_openproj)
-        QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.std_openproj)
+    # Variables used to populate the tree control
+    # Each item is a list: label plus either editing form for this section or a child list of tree variables.
+    # If an editing form takes additional arguments, they follow the editing form as a list.
+    # Special cases may just have a label and no editing form or children.
+    # *_items are a lists of items in a section
+    tree_options_General = ["General", frmGeneralOptions]
+    tree_options_Dates = ["Dates", frmDates]
+    tree_options_TimeSteps = ["Time Steps", frmTimeSteps]
+    tree_options_DynamicWave = ["Dynamic Wave", frmDynamicWave]
+    tree_options_InterfaceFiles = ["Interface Files", frmInterfaceFiles]
+    tree_options_Reporting = ["Reporting", frmReportOptions]
+    tree_options_MapBackdrop = ["Map/Backdrop", frmMapBackdropOptions]
+    tree_options_items = [tree_options_General,
+                          tree_options_Dates,
+                          tree_options_TimeSteps,
+                          tree_options_DynamicWave,
+                          tree_options_InterfaceFiles,
+                          tree_options_Reporting,
+                          tree_options_MapBackdrop]
 
-        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
+    tree_climatology_Temperature = ["Temperature", frmClimatology, ["Temperature"]]
+    tree_climatology_Evaporation = ["Evaporation", frmClimatology, ["Evaporation"]]
+    tree_climatology_WindSpeed = ["Wind Speed", frmClimatology, ["Wind Speed"]]
+    tree_climatology_SnowMelt = ["Snow Melt", frmClimatology, ["Snow Melt"]]
+    tree_climatology_ArealDepletion = ["Areal Depletion", frmClimatology, ["Areal Depletion"]]
+    tree_climatology_Adjustment = ["Adjustment", frmClimatology, ["Adjustment"]]
+    tree_climatology_items = [
+        tree_climatology_Temperature,
+        tree_climatology_Evaporation,
+        tree_climatology_WindSpeed,
+        tree_climatology_SnowMelt,
+        tree_climatology_ArealDepletion,
+        tree_climatology_Adjustment]
 
-        self.model = 'SWMM'
-        self.modelenv1 = 'EXE_SWMM'
+    tree_hydrology_RainGages = ["Rain Gages", None]
+    tree_hydrology_Subcatchments = ["Subcatchments", frmSubcatchments]
+    tree_hydrology_Aquifers = ["Aquifers", frmAquifers]
+    tree_hydrology_SnowPacks = ["Snow Packs", frmSnowPack]
+    tree_hydrology_UnitHydrographs = ["Unit Hydrographs", frmUnitHydrograph]
+    tree_hydrology_LIDControls = ["LID Controls", frmLID]
+    tree_hydrology_items = [
+        tree_hydrology_RainGages,
+        tree_hydrology_Subcatchments,
+        tree_hydrology_Aquifers,
+        tree_hydrology_SnowPacks,
+        tree_hydrology_UnitHydrographs,
+        tree_hydrology_LIDControls]
+
+    tree_nodes_Junctions = ["Junctions", frmJunction]
+    tree_nodes_Outfalls = ["Outfalls", frmInflows, "1"]
+    tree_nodes_Dividers = ["Dividers", frmInflows, "1"]
+    tree_nodes_StorageUnits = ["Storage Units", frmInflows, "1"]
+    tree_nodes_items = [
+        tree_nodes_Junctions,
+        tree_nodes_Outfalls,
+        tree_nodes_Dividers,
+        tree_nodes_StorageUnits]
+
+    tree_links_Conduits = ["Conduits", frmCrossSection]
+    tree_links_Pumps = ["Pumps", None]
+    tree_links_Orifices = ["Orifices", None]
+    tree_links_Weirs = ["Weirs", None]
+    tree_links_Outlets = ["Outlets", None]
+    tree_links_items = [
+        tree_links_Conduits,
+        tree_links_Pumps,
+        tree_links_Orifices,
+        tree_links_Weirs,
+        tree_links_Outlets]
+
+    tree_hydraulics_Nodes = ["Nodes", tree_nodes_items]
+    tree_hydraulics_Links = ["Links", tree_links_items]
+    tree_hydraulics_Transects = ["Transects", frmTransect]
+    tree_hydraulics_Controls = ["Controls", frmControls, ["swmm/src/src/controlrules.htm"]]
+    tree_hydraulics_items = [
+        tree_hydraulics_Nodes,
+        tree_hydraulics_Links,
+        tree_hydraulics_Transects,
+        tree_hydraulics_Controls]
+
+    tree_quality_Pollutants = ["Pollutants", None]
+    tree_quality_LandUses = ["Land Uses", frmLandUses]
+    tree_quality_items = [
+        tree_quality_Pollutants,
+        tree_quality_LandUses]
+
+    tree_curves_ControlCurves = ["Control Curves", frmCurveEditor, ["SWMM Control Curves", "CONTROL"]]
+    tree_curves_DiversionCurves = ["Diversion Curves", frmCurveEditor, ["SWMM Diversion Curves", "DIVERSION"]]
+    tree_curves_PumpCurves = ["Pump Curves", frmCurveEditor, ["SWMM Pump Curves", "PUMP"]]
+    tree_curves_RatingCurves = ["Rating Curves", frmCurveEditor, ["SWMM Rating Curves", "RATING"]]
+    tree_curves_ShapeCurves = ["Shape Curves", frmCurveEditor, ["SWMM Shape Curves", "SHAPE"]]
+    tree_curves_StorageCurves = ["Storage Curves", frmCurveEditor, ["SWMM Storage Curves", "STORAGE"]]
+    tree_curves_TidalCurves = ["Tidal Curves", frmCurveEditor, ["SWMM Tidal Curves", "TIDAL"]]
+    tree_curves_items = [
+        tree_curves_ControlCurves,
+        tree_curves_DiversionCurves,
+        tree_curves_PumpCurves,
+        tree_curves_RatingCurves,
+        tree_curves_ShapeCurves,
+        tree_curves_StorageCurves,
+        tree_curves_TidalCurves]
+
+    tree_TitleNotes = ["Title/Notes", frmTitle]
+    tree_Options = ["Options", tree_options_items]
+    tree_Climatology = ["Climatology", tree_climatology_items]
+    tree_Hydrology = ["Hydrology", tree_hydrology_items]
+    tree_Hydraulics = ["Hydraulics", tree_hydraulics_items]
+    tree_Quality = ["Quality", tree_quality_items]
+    tree_Curves = ["Curves", tree_curves_items]
+    tree_TimeSeries = ["Time Series", frmTimeseries]
+    tree_TimePatterns = ["Time Patterns", frmPatternEditor]
+    tree_MapLabels = ["Map Labels", None]
+    tree_top_items = [tree_TitleNotes,
+                      tree_Options,
+                      tree_Climatology,
+                      tree_Hydrology,
+                      tree_Hydraulics,
+                      tree_Quality,
+                      tree_Curves,
+                      tree_TimeSeries,
+                      tree_TimePatterns,
+                      tree_MapLabels]
+
+    def __init__(self, q_application):
+        frmMain.__init__(self, q_application)
+        self.model = "SWMM"
+        self.model_path = ''  # Set this only if needed later when running model
+        self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
         self.project = Project()
-
-        assembly_path = os.path.dirname(os.path.abspath(__file__))
-        exe_name = "swmm5.exe"
-        exe_path = os.path.join(assembly_path, exe_name)
-        if not os.path.exists(exe_path):
-            pp = os.path.dirname(os.path.dirname(assembly_path))
-            exe_path = os.path.join(pp, "Externals", exe_name)
-        if not os.path.exists(exe_path):
-            exe_path = QtGui.QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
-        if os.path.exists(exe_path):
-            os.environ[self.modelenv1] = exe_path
-        else:
-            os.environ[self.modelenv1] = ''
-
-        self.on_load(model=self.model)
-
-        self._editors = []
-        """List of editor windows used during this session, kept here so they are not automatically closed."""
-
-    def std_newproj(self):
-        self.project = Project()
-        self.setWindowTitle(self.model + " - New")
-        self.project.file_name = "New.inp"
-
-    def std_openproj(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
-                                                      "Inp files (*.inp);;All files (*.*)")
-        if file_name:
-            self.project = Project()
-            try:
-                self.project.read_file(file_name)
-                path_only, file_only = os.path.split(file_name)
-                self.setWindowTitle(self.model + " - " + file_only)
-                if path_only != directory:
-                    qsettings.setValue("ProjectDir", path_only)
-                    del qsettings
-            except:
-                self.project = Project()
-                self.setWindowTitle(self.model)
-
-    def proj_save(self):
-        self.project.write_file(self.project.file_name)
-
-    def proj_save_as(self):
-        qsettings = QtCore.QSettings(self.model, "GUI")
-        directory = qsettings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
-        if file_name:
-            self.project.write_file(file_name)
-            path_only, file_only = os.path.split(file_name)
-            self.setWindowTitle(self.model + " - " + file_only)
-            if path_only != directory:
-                qsettings.setValue("ProjectDir", path_only)
-                del qsettings
-
-    def edit_options(self, itm, column):
-        if not self.project:
-            return
-        edit_name = itm.data(0, 0)
-        if edit_name:
-            self.show_edit_window(self.get_editor(edit_name))
-
-    def show_edit_window(self, window):
-        if window:
-            self._editors.append(window)
-            # window.destroyed.connect(lambda s, e, a: self._editors.remove(s))
-            # window.destroyed = lambda s, e, a: self._editors.remove(s)
-            # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
-            window.show()
-
-    # def editor_closing(self, event):
-    #     print "Editor Closing: " + str(event)
-    #     # self._editors.remove(event.)
+        self.assembly_path = os.path.dirname(os.path.abspath(__file__))
+        self.on_load(tree_top_item_list=self.tree_top_items)
+        HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
 
     def get_editor(self, edit_name):
-        if edit_name == "Dates":
-            return frmDates(self)
-        elif edit_name == "Dynamic Wave":
-            return frmDynamicWave(self)
-        elif edit_name == "Map/Backdrop":
-            return frmMapBackdropOptions(self)
-        elif edit_name == "General":
-            return frmGeneralOptions(self)
-        elif edit_name == "Interface Files":
-            return frmInterfaceFiles(self)
-        elif edit_name == "Reporting":
-            return frmReportOptions(self)
-        elif edit_name == "Time Steps":
-            return frmTimeSteps(self)
-        elif edit_name == "Title/Notes":
-            return frmTitle(self)
-        elif edit_name == "Controls":
-            return frmControls(self)
-        elif edit_name in ("Temperature", "Evaporation", "Wind Speed", "Snow Melt", "Areal Depletion", "Adjustment"):
-            return frmClimatology(self, edit_name)
-        # the following items will respond to a click in the list, not the tree diagram
-        elif edit_name == "Time Patterns":
-            return frmPatternEditor(self)
-        elif edit_name == "Time Series":
-            return frmTimeseries(self)
-        elif edit_name == "Control Curves":
-            return frmCurveEditor(self, 'SWMM Control Curves', "CONTROL")
-        elif edit_name == "Diversion Curves":
-            return frmCurveEditor(self, 'SWMM Diversion Curves', "DIVERSION")
-        elif edit_name == "Pump Curves":
-            return frmCurveEditor(self, 'SWMM Pump Curves', "PUMP")
-        elif edit_name == "Rating Curves":
-            return frmCurveEditor(self, 'SWMM Rating Curves', "RATING")
-        elif edit_name == "Shape Curves":
-            return frmCurveEditor(self, 'SWMM Shape Curves', "SHAPE")
-        elif edit_name == "Storage Curves":
-            return frmCurveEditor(self, 'SWMM Storage Curves', "STORAGE")
-        elif edit_name == "Tidal Curves":
-            return frmCurveEditor(self, 'SWMM Tidal Curves', "TIDAL")
-        elif edit_name == "LID Controls":
-            return frmLID(self)
-        elif edit_name == "Snow Packs":
-            return frmSnowPack(self)
-        elif edit_name == "Unit Hydrographs":
-            return frmUnitHydrograph(self)
-        elif edit_name == "Transects":
-            return frmTransect(self)
-        elif edit_name == "Aquifers":
-            return frmAquifers(self)
-            # edit_these = []
-            # if isinstance(self.project.aquifers.value, list):
-            #     if len(self.project.aquifers.value) == 0:
-            #         new_aquifer = Aquifer()
-            #         new_aquifer.name = "NewAquifer"
-            #         self.project.aquifers.value.append(new_aquifer)
-            #
-            # edit_these.extend(self.project.aquifers.value)
-            # return frmGenericPropertyEditor(self, edit_these, "SWMM Aquifer Editor")
+        frm = None
+        # First handle special cases where forms need more than simply being created
 
-        elif edit_name == "Pollutants":
+        if edit_name == "Pollutants":
             edit_these = []
-            if isinstance(self.project.pollutants.value, list):
-                if len(self.project.pollutants.value) == 0:
+            if self.project and self.project.pollutants:
+                if not isinstance(self.project.pollutants.value, basestring):
+                    if isinstance(self.project.pollutants.value, list):
+                        edit_these.extend(self.project.pollutants.value)
+                if len(edit_these) == 0:
                     new_item = Pollutant()
                     new_item.name = "NewPollutant"
-                    self.project.pollutants.value.append(new_item)
-
-            edit_these.extend(self.project.pollutants.value)
-            return frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-
-        elif edit_name == "Junctions":
-            return frmJunction(self)
+                    edit_these.append(new_item)
+                    self.project.pollutants.value = edit_these
+            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
 
         # the following items will respond to a click on a conduit form, not the tree diagram
-        elif edit_name == "Conduits":
-            return frmCrossSection(self)
+        # elif edit_name == "Conduits":
+        #     frm = frmCrossSection(self)
 
         # the following items will respond to a click on a node form, not the tree diagram
-        elif edit_name == "Outfalls' or edit_name == 'Dividers' or edit_name == 'Storage Units":
-            return frmInflows(self)
+        # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
+        #     frm = frmInflows(self)
+        else:  # General-purpose case finds most editors from tree information
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
 
-        # the following items will respond to a click on a subcatchment form, not the tree diagram
-        elif edit_name == "Subcatchments":
-            return frmSubcatchments(self)
+        return frm
 
     def run_simulation(self):
-        run = 0
-        inp_dir = ''
-        args=[]
-
-        program = os.environ[self.modelenv1]
-        if not os.path.exists(program):
-            QMessageBox.information(None, "SWMM", "SWMM Executable not found", QMessageBox.Ok)
-            return -1
-
-        filename = ''
-        if self.project is None:
-            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open Existing Project', '/', 'Inp files (*.inp)')
+        # First find input file to run
+        file_name = ''
+        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
+        if use_existing:
+            file_name = self.project.file_name
+            # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
-            filename = self.project.file_name
-        if os.path.exists(filename):
-            prefix, extension = os.path.splitext(filename)
-            args.append(filename)
-            args.append(prefix + '.rpt')
-            args.append(prefix + '.out')
+            directory = QtCore.QSettings(self.model, "GUI").value("ProjectDir", "")
+            file_name = QFileDialog.getOpenFileName(self, "Open Project...", directory,
+                                                          "Inp files (*.inp);;All files (*.*)")
+        if os.path.exists(file_name):
+
+            prefix, extension = os.path.splitext(file_name)
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libswmm.dylib'
+                    ext = '.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'swmm5_x86.dll'
+                    ext = '.dll'
+
+                if lib_name:
+                    self.model_path = os.path.join(self.assembly_path, lib_name)
+                    if not os.path.exists(self.model_path):
+                        pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                        self.model_path = os.path.join(pp, "Externals", lib_name)
+                    if not os.path.exists(self.model_path):
+                        self.model_path = QFileDialog.getOpenFileName(self,
+                                                                      'Locate ' + self.model +' Library',
+                                                                      '/', '(*{0})'.format(ext))
+
+            if os.path.exists(self.model_path):
+                try:
+                    from Externals.swmm5 import pyswmm
+                    swmm_object = pyswmm(file_name, prefix + '.rpt', prefix + '.out', self.model_path)
+                    swmm_object.swmmExec()
+                    print(swmm_object.swmm_getVersion())
+                    print(swmm_object.swmm_getMassBalErr())
+
+                    # model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+                    # frmRun = frmRunEPANET(model_api, self.project, self)
+                    # self._forms.append(frmRun)
+                    # if not use_existing:
+                    #     # Read this project so we can refer to it while running
+                    #     frmRun.progressBar.setVisible(False)
+                    #     frmRun.lblTime.setVisible(False)
+                    #     frmRun.fraTime.setVisible(False)
+                    #     frmRun.fraBottom.setVisible(False)
+                    #     frmRun.showNormal()
+                    #     frmRun.set_status_text("Reading " + file_name)
+                    #
+                    #     self.project = Project()
+                    #     self.project.read_file(file_name)
+                    #     frmRun.project = self.project
+                    #
+                    # frmRun.Execute()
+                    return
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                # finally:
+                #     try:
+                #         if model_api and model_api.isOpen():
+                #             model_api.ENclose()
+                #     except:
+                #         pass
+                #     return
+
+            # Could not run with library, try running with executable
+            args = []
+            exe_name = "swmm5.exe"
+            exe_path = os.path.join(self.assembly_path, exe_name)
+            if not os.path.isfile(exe_path):
+                pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                exe_path = os.path.join(pp, "Externals", exe_name)
+            if not os.path.isfile(exe_path):
+                exe_path = QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
+            if os.path.isfile(exe_path):
+                args.append(file_name)
+                args.append(prefix + '.rpt')
+                args.append(prefix + '.out')
+                # running the Exe
+                status = StatusMonitor0(exe_path, args, self, model='SWMM')
+                status.show()
         else:
-            QMessageBox.information(None, "SWMM", "SWMM input file not found", QMessageBox.Ok)
-
-        # running the Exe (modified version to rid of the \b printout
-        status = StatusMonitor0(program, args, self, model='SWMM')
-        status.show()
-
-    def on_load(self, **kwargs):
-        self.obj_tree = ObjectTreeView(model=kwargs['model'])
-        self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        layout = QVBoxLayout(self.tabProject)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.obj_tree)
-        self.tabProject.setLayout(layout)
-        self.setWindowTitle(self.model)
-
-        self.obj_list = ObjectListView(model=kwargs['model'],ObjRoot='',ObjType='',ObjList=None)
-        mlayout = self.dockw_more.layout()
-        mlayout.addWidget(self.obj_list)
-        self.dockw_more.setLayout(mlayout)
-
-    def action_exit(self):
-        # TODO: check project status and prompt if there are unsaved changed
-        app.quit()
+            QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    MainApp = frmMainSWMM()
-    MainApp.show()
-    sys.exit(app.exec_())
+    application = QtGui.QApplication(sys.argv)
+    main_form = frmMainSWMM(application)
+    main_form.show()
+    sys.exit(application.exec_())

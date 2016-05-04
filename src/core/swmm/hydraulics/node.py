@@ -13,25 +13,25 @@ from core.metadata import Metadata
 #         self.centroid = Coordinates(0.0, 0.0)
 #         """Coordinates of Node location (x, y)"""
 #
-#         self.description = None
+#         self.description = ''
 #         """Optional description of the Node"""
 #
-#         self.tag = None
+#         self.tag = ''
 #         """Optional label used to categorize or classify the Node"""
 #
-#         self.direct_inflows = {}
+#         self.direct_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.dry_weather_inflows = {}
+#         self.dry_weather_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.rdi_inflows = {}
+#         self.rdi_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
 #
-#         self.treatments = {}
+#         self.treatments = []
 #         """List of treatment functions for pollutants entering the node"""
 #
-#         self.invert_elev = None
+#         self.invert_elev = ''
 #         """Invert elevation of the Node (feet or meters)"""
 
 
@@ -489,25 +489,25 @@ class Treatment(Section):
 
     field_format = "{:16}\t{:16}\t{}"
 
-    hint = "Treatment expressions have the general form:"
-    "  R = f(P, R_P, V)"
-    "or"
-    "  C = f(P, R_P, V)"
-    "where:"
-    "  R   = fractional removal,"
-    "  C   = outlet concentration,"
-    "  P   = one or more pollutant names,"
-    "  R_P = one or more pollutant removals"
-    "        (prepend R_ to pollutant name),"
-    "  V   = one or more process variables:"
-    "        FLOW (inflow rate)"
-    "        DEPTH (water depth)"
-    "        HRT (hydraulic residence time)"
-    "        DT (time step in seconds)"
-    "        AREA (surface area)."
-    "Some example expressions are:"
-    "  C = BOD * exp(-0.05*HRT)"
-    "  R = 0.75 * R_TSS"
+    hint = "Treatment expressions have the general form:\n" \
+           "  R = f(P, R_P, V)\n" \
+           "or\n" \
+           "  C = f(P, R_P, V)\n" \
+           "where:\n" \
+           "  R   = fractional removal,\n" \
+           "  C   = outlet concentration,\n" \
+           "  P   = one or more pollutant names,\n" \
+           "  R_P = one or more pollutant removals\n" \
+           "        (prepend R_ to pollutant name),\n" \
+           "  V   = one or more process variables:\n" \
+           "        FLOW (inflow rate)\n" \
+           "        DEPTH (water depth)\n" \
+           "        HRT (hydraulic residence time)\n" \
+           "        DT (time step in seconds)\n" \
+           "        AREA (surface area).\n" \
+           "Some example expressions are:\n" \
+           "  C = BOD * exp(-0.05*HRT)\n" \
+           "  R = 0.75 * R_TSS"
 
     #    attribute, input_name, label,             default, english, metric, hint
     metadata = Metadata((

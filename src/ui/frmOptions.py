@@ -74,7 +74,7 @@ class ComboBoxOptionItem(QtGui.QComboBox):
         self.column = args[1]
         QtCore.QObject.connect(self, QtCore.SIGNAL('currentIndexChanged(int)'), self.change_item)
 
-    def change_item(self, int):
+    def change_item(self, value):
         self.item.setText(self.column, self.currentText())
 
 

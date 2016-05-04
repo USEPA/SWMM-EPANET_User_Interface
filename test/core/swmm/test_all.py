@@ -41,11 +41,13 @@ from test_hydrographs import SimpleHydrographsTest
 # Hydraulics
 # Link:
 # Conduit
+# from test_conduits import SingleConduitTest
 # Pump
 # Orifice
 # Weir
 # Outlet
-# Crosssection
+# CrossSection
+from test_xsections import SingleCrossSectionTest
 # Transect
 # Transects
 from test_xsection import XsectionTest
@@ -126,12 +128,12 @@ my_suite.addTest(SimpleHydrographsTest())
 
 # Hydraulics
 # Link:
-# Conduit
+# my_suite.addTest(SingleConduitTest())
 # Pump
 # Orifice
 # Weir
 # Outlet
-# Crosssection
+my_suite.addTest(SingleCrossSectionTest())
 # Transect
 # Transects
 my_suite.addTest(XsectionTest())
@@ -155,12 +157,11 @@ my_suite.addTest(SingleLanduseTest())
 # Mislaneous
 my_suite.addTest(SimpleTitleTest())
 my_suite.addTest(SingleTimeSeriesTest())
-my_suite.addTest(ProjectTest())
 # will need for later MTPs:
 my_suite.addTest(SinglePatternTest())
 # my_suite.addTest(SimpleCurveTest())
 # my_suite.addTest(SimpleLabelTest())
-
+my_suite.addTest(ProjectTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

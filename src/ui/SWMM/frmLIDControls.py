@@ -8,7 +8,7 @@ from core.swmm.hydrology.lidcontrol import LIDType
 
 class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent, subcatchment_name):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -18,8 +18,8 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         QtCore.QObject.connect(self.btnDelete, QtCore.SIGNAL("clicked()"), self.btnDelete_Clicked)
         self._parent = parent
         # set for first subcatchment for now
-        self.subcatchment_id = ''
-        self.set_subcatchment(parent.project,'1')
+        self.subcatchment_id = subcatchment_name
+        self.set_subcatchment(parent.project,subcatchment_name)
 
     def set_subcatchment(self, project, subcatchment_id):
         # section = core.swmm.project.LIDUsage()

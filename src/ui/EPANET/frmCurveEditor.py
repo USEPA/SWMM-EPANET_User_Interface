@@ -35,9 +35,9 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 for point in curve.curve_xy:
                     point_count += 1
                     led = QtGui.QLineEdit(str(point[0]))
-                    self.tblMult.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
+                    self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
                     led = QtGui.QLineEdit(str(point[1]))
-                    self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+                    self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
                 self.lblEquation.setText("Equation: ")
 
     def cmdOK_Clicked(self):
@@ -55,8 +55,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 curve.curve_xy = []
                 for row in range(self.tblMult.rowCount()):
                     if self.tblMult.item(row,0) and self.tblMult.item(row,1):
-                        x = self.tblMult.item(row,0).text()
-                        y = self.tblMult.item(row,1).text()
+                        x = self.tblMult.item(row, 0).text()
+                        y = self.tblMult.item(row, 1).text()
                         if len(x) > 0 and len(y) > 0:
                             curve.curve_xy.append((x, y))
         self.close()

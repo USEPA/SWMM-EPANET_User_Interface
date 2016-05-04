@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmRunSimulationDesigner.ui'
+# Form implementation generated from reading ui file 'frmRunSimulationDesigner.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_frmRunSimulation(object):
     def setupUi(self, frmRunSimulation):
         frmRunSimulation.setObjectName(_fromUtf8("frmRunSimulation"))
-        frmRunSimulation.resize(558, 256)
+        frmRunSimulation.resize(558, 274)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmRunSimulation.setFont(font)
@@ -185,7 +185,7 @@ class Ui_frmRunSimulation(object):
         QtCore.QMetaObject.connectSlotsByName(frmRunSimulation)
 
     def retranslateUi(self, frmRunSimulation):
-        frmRunSimulation.setWindowTitle(_translate("frmRunSimulation", "SWMM Control Rules", None))
+        frmRunSimulation.setWindowTitle(_translate("frmRunSimulation", "Run Status", None))
         self.StatusLabel.setText(_translate("frmRunSimulation", "Computing ...", None))
         self.lblTime.setText(_translate("frmRunSimulation", "Simulated Time:", None))
         self.lblDays.setText(_translate("frmRunSimulation", "Days", None))

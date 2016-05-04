@@ -117,6 +117,7 @@ class Junction(Section):
             self.demand_pattern_id = ''
             """Demand pattern ID, optional"""
 
+            # TODO: sync with EMITTERS section
             self.emitter_coefficient = ''
             """ Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
                 the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which

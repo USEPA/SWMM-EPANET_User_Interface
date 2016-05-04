@@ -4,6 +4,7 @@ from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
+from core.epanet.hydraulics.link import Status
 from core.epanet.hydraulics.node import Coordinate
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Quality
@@ -56,7 +57,7 @@ class Project(InputFile):
                                              ";ID              \tX-Value     \tY-Value\n"
                                              ";----------------\t------------\t-------")
         self.energy = EnergyOptions()
-        # [STATUS]
+        self.status = SectionAsListOf("[STATUS]", Status, ";ID             \tStatus/Setting")
         self.controls = SectionAsListOf("[CONTROLS]", Control)
         self.rules = SectionAsListOf("[RULES]", basestring)
         self.demands = SectionAsListOf("[DEMANDS]", Demand,

@@ -6,23 +6,10 @@ from core.epanet.vertex import Vertex
 from core.epanet.patterns import Pattern
 
 
-class InitialStatusPipe(Enum):
-    """status of a pipe"""
-    OPEN = 1
-    CLOSED = 2
-    CV = 3
-
-
 class PumpType(Enum):
     """Pump Type"""
     POWER = 1
     HEAD = 2
-
-
-class InitialStatusPump(Enum):
-    """Initial status of a pump"""
-    OPEN = 1
-    CLOSED = 2
 
 
 class ValveType(Enum):
@@ -70,6 +57,10 @@ class Link(Section):
         self.report_flag = ''
         """Flag indicating whether an output report is desired for this link"""
 
+        # TODO: sync this with STATUS section:
+        self.initial_status = ''
+        """initial status of a pipe, pump, or valve; can be a speed setting for a pump"""
+
     def get_text(self):
         """format contents of this item for writing to file"""
         if len(self.id) > 0:
@@ -110,9 +101,6 @@ class Pipe(Link):
             self.loss_coefficient = "0.0"
             """Minor loss coefficient"""
 
-            self.status = InitialStatusPipe.OPEN
-            """initial status of a pipe, open, closed, or check valve"""
-
             # See REACTIONS section for this parameter; could add convenience function to find it
             # self.bulk_reaction_coefficient = "0.0"
             """bulk reaction coefficient for this pipe"""
@@ -125,7 +113,7 @@ class Pipe(Link):
         """format contents of this item for writing to file"""
         if len(self.id) > 0:
             return self.field_format.format(self.id, self.inlet_node, self.outlet_node, self.length, self.diameter,
-                                            self.roughness, self.loss_coefficient, self.status.name, self.comment)
+                                            self.roughness, self.loss_coefficient, self.initial_status, self.comment)
         elif self.comment:
             return self.comment
 
@@ -144,7 +132,7 @@ class Pipe(Link):
             self.roughness = fields[5]
             self.loss_coefficient = fields[6]
         if len(fields) > 7:
-            self.status = InitialStatusPipe[fields[7].upper()]
+            self.initial_status = fields[7]
 
 
 class Pump(Link):
@@ -172,9 +160,6 @@ class Pump(Link):
 
             self.pattern = ''
             """time pattern that describes how speed setting varies with time"""
-
-            # TODO: access this: self.initial_status = InitialStatusPump.OPEN
-            """initial status of a pump, can also include a speed setting"""
 
             # TODO: access pump-specific energy parameters in options/energy
 
@@ -228,7 +213,7 @@ class Valve(Link):
         else:
             Link.__init__(self)
 
-            self.diameter = 0.0
+            self.diameter = "0.0"
             """valve diameter"""
 
             self.type = ValveType.PRV
@@ -280,4 +265,40 @@ class Valve(Link):
                 self.minor_loss_coefficient = fields[6]
 
 
+class Status(Section):
+    """
+        Initial status of a link at the start of the simulation.
+        Pipes can have a status of OPEN, CLOSED, or CV.
+        Pumps can have a status of OPEN, CLOSED, or a speed.
+    """
 
+    field_format = "{:16}\t{}\t{}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+
+            self.id = ''
+            """Identifier of link whose initial status is being specified"""
+
+            self.status = ''
+            """Initial status of link"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if len(self.id) > 0:
+            return self.field_format.format(self.id,
+                                            self.status,
+                                            self.comment)
+        elif self.comment:
+            return self.comment
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 1:
+            self.id = fields[0]
+            self.status = fields[1]

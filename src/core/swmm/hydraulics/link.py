@@ -4,11 +4,13 @@ from core.inputfile import Section
 from core.metadata import Metadata
 
 
-class Link(object):
+class Link(Section):
     """A link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        self.name = name
-        """Link Name"""
+
+    def __init__(self):
+        Section.__init__(self)
+        self.name = "Unnamed"
+        """Link Identifier/Name"""
 
         self.description = ''
         """Optional description of the Link"""
@@ -16,74 +18,147 @@ class Link(object):
         self.tag = ''
         """Optional label used to categorize or classify the Link"""
 
-        self.inlet_node = inlet_node
+        self.inlet_node = ''
         """Node on the inlet end of the Link"""
 
-        self.outlet_node = outlet_node
+        self.outlet_node = ''
         """Node on the outlet end of the Link"""
 
         self.vertices = []
-        """Collection of intermediate vertices along the length of the link"""
+        """Intermediate vertices between inlet_node and outlet_node along the length of the link"""
 
 
 class Conduit(Link):
-    """A conduit in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
-        self.length = 0.0
-        """Conduit length (feet or meters)."""
+    """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
-        self.roughness = 0.0
-        """Manning's roughness coefficient."""
+    field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
-        self.inlet_offset = 0.0
-        """Depth or elevation of the conduit invert above the node invert
-            at the upstream end of the conduit (feet or meters)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.outlet_offset = 0.0
-        """Depth or elevation of the conduit invert above the node invert
-            at the downstream end of the conduit (feet or meters)."""
+            self.length = "0.0"
+            """Conduit length (feet or meters)."""
 
-        self.initial_flow = 0.0
-        """Initial flow in the conduit (flow units)."""
+            self.roughness = "0.0"
+            """Manning's N roughness coefficient."""
 
-        self.maximum_flow = 0.0
-        """Maximum flow allowed in the conduit (flow units)."""
+            self.inlet_offset = "0.0"
+            """ Depth or elevation of the conduit invert above the node invert
+                at the upstream end of the conduit (feet or meters)."""
 
-        self.cross_section = None
-        """See class CrossSection"""
+            self.outlet_offset = "0.0"
+            """ Depth or elevation of the conduit invert above the node invert
+                at the downstream end of the conduit (feet or meters)."""
 
-        self.entry_loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses at the entrance of the conduit"""
+            self.initial_flow = "0.0"
+            """Initial flow in the conduit (flow units)."""
 
-        self.exit_loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses at the exit of the conduit"""
+            self.maximum_flow = ''
+            """Maximum flow allowed in the conduit (flow units)."""
 
-        self.loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses along the length of the conduit"""
+            # TODO: provide access to the following:
 
-        self.flap_gate = False
-        """True if a flap gate exists that prevents backflow."""
+            # self.cross_section = ''
+            """See class CrossSection"""
 
-        self.seepage = 0.0
-        """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
+            # self.entry_loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses at the entrance of the conduit"""
+
+            # self.exit_loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses at the exit of the conduit"""
+
+            # self.loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses along the length of the conduit"""
+
+            # self.flap_gate = False
+            """True if a flap gate exists that prevents backflow."""
+
+            # self.seepage = 0.0
+            """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if len(self.name) > 0:
+            return self.field_format.format(self.name, self.inlet_node, self.outlet_node, self.length, self.roughness,
+                                            self.inlet_offset, self.outlet_offset, self.initial_flow, self.maximum_flow,
+                                            self.comment)
+        elif self.comment:
+            return self.comment
+
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 2:
+            self.name, self.inlet_node, self.outlet_node = fields[0:3]
+        if len(fields) > 3:
+            self.length = fields[3]
+        if len(fields) > 4:
+            self.roughness = fields[4]
+        if len(fields) > 5:
+            self.inlet_offset = fields[5]
+        if len(fields) > 6:
+            self.outlet_offset = fields[6]
+        if len(fields) > 7:
+            self.initial_flow = fields[7]
+        if len(fields) > 8:
+            self.maximum_flow = fields[8]
 
 
 class Pump(Link):
     """A pump link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
-        self.pump_curve = ""
-        """str: Associated pump curve"""
 
-        self.initial_status = 0.0
-        """float: Initial status of the pump"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{}"
 
-        self.startup_depth = 0.0
-        """float: Depth at inlet node when the pump turns on"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.shutoff_depth = 0.0
-        """float: Depth at inlet node when the pump turns off"""
+            self.pump_curve = ""
+            """str: Associated pump curve"""
+
+            self.initial_status = 0.0
+            """float: Initial status of the pump"""
+
+            self.startup_depth = 0.0
+            """float: Depth at inlet node when the pump turns on"""
+
+            self.shutoff_depth = 0.0
+            """float: Depth at inlet node when the pump turns off"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if len(self.name) > 0:
+            return self.field_format.format(self.name, self.inlet_node, self.outlet_node, self.pump_curve,
+                                            self.initial_status, self.startup_depth, self.shutoff_depth, self.comment)
+        elif self.comment:
+            return self.comment
+
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 2:
+            self.name, self.inlet_node, self.outlet_node = fields[0:3]
+        if len(fields) > 3:
+            self.pump_curve = fields[3]
+        if len(fields) > 4:
+            self.initial_status = fields[4]
+        if len(fields) > 5:
+            self.startup_depth = fields[5]
+        if len(fields) > 6:
+            self.shutoff_depth = fields[6]
 
 
 class OrificeType(Enum):

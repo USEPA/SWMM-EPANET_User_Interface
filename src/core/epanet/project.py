@@ -46,7 +46,8 @@ class Project(InputFile):
                                      "Length      \tDiameter    \tRoughness   \tMinorLoss   \tStatus")
         self.pumps = SectionAsListOf("[PUMPS]", Pump,
                                      ";ID             \tNode1           \tNode2           \tParameters")
-        # self.valves = [Valve]
+        self.valves = SectionAsListOf("[VALVES]", Valve,
+            ";ID              \tNode1           \tNode2           \tDiameter    \tType\tSetting     \tMinorLoss   ")
         # self.emitters = [(Junction, "emitter_coefficient")]
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
                                                ";ID              \tMultipliers\n"

@@ -19,13 +19,6 @@ class PumpType(Enum):
     HEAD = 2
 
 
-class PumpEnergyType(Enum):
-    """Pump Energy Type"""
-    PRICE = 1
-    PATTERN = 2
-    EFFICIENCY = 3
-
-
 class InitialStatusPump(Enum):
     """Initial status of a pump"""
     OPEN = 1
@@ -50,6 +43,9 @@ class FixedStatus(Enum):
 
 class Link(Section):
     """A link in an EPANET model"""
+
+    field_format = "{:16}\t{:16}\t{:16}"
+
     def __init__(self):
         Section.__init__(self)
 
@@ -76,17 +72,17 @@ class Link(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return str(self.link_id) + "   "\
-            + str(self.inlet_node) + "   "\
-            + str(self.outlet_node) + "   "\
-            + str(self.description)
-        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
+        if len(self.id) > 0:
+            return self.field_format.format(self.id, self.inlet_node, self.outlet_node)  # self.description
+        elif self.comment:
+            return self.comment
 
     def set_text(self, new_text):
+        self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 3)
         if len(fields) > 2:
-            (self.link_id, self.inlet_node, self.outlet_node) = fields[0:3]
+            (self.id, self.inlet_node, self.outlet_node) = fields[0:3]
             if len(fields) > 3:
                 self.description = fields[3]
 
@@ -117,16 +113,17 @@ class Pipe(Link):
             self.status = InitialStatusPipe.OPEN
             """initial status of a pipe, open, closed, or check valve"""
 
-            # See REACTIONS section for these parameters
+            # See REACTIONS section for this parameter; could add convenience function to find it
             # self.bulk_reaction_coefficient = "0.0"
             """bulk reaction coefficient for this pipe"""
 
+            # See REACTIONS section for this parameter; could add convenience function to find it
             # self.wall_reaction_coefficient = "0.0"
             """wall reaction coefficient for this pipe"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        if self.id:
+        if len(self.id) > 0:
             return self.field_format.format(self.id, self.inlet_node, self.outlet_node, self.length, self.diameter,
                                             self.roughness, self.loss_coefficient, self.status.name, self.comment)
         elif self.comment:
@@ -161,9 +158,6 @@ class Pump(Link):
         else:
             Link.__init__(self)
 
-            self.id = ''
-            """Identifier/name of this pipe"""
-
             self.type = PumpType.POWER
             """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
 
@@ -179,28 +173,30 @@ class Pump(Link):
             self.pattern = ''
             """time pattern that describes how speed setting varies with time"""
 
-            self.initial_status = InitialStatusPump.OPEN
+            # TODO: access this: self.initial_status = InitialStatusPump.OPEN
             """initial status of a pump, can also include a speed setting"""
 
-            self.energy = PumpEnergy()
-            """parameters used to compute pumping energy and cost"""
+            # TODO: access pump-specific energy parameters in options/energy
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        txt = self.field_format.format(self.id, self.inlet_node, self.outlet_node)
-        if self.type == PumpType.HEAD:
-            txt += "\tHEAD " + self.head_curve_id
-        else:
-            txt += "\tPOWER " + self.power
-        if self.pattern:
-            txt += "\tPATTERN " + self.pattern
-        if self.speed != "0.0":
-            txt += "\tSPEED " + self.speed
-        if self.comment:
-            comment_stripped = self.comment.replace(';', '').strip()
-            if comment_stripped:
-                txt += "\t; " + comment_stripped
-        return txt
+        if len(self.id) > 0:
+            txt = self.field_format.format(self.id, self.inlet_node, self.outlet_node)
+            if self.type == PumpType.HEAD:
+                txt += "\tHEAD " + self.head_curve_id
+            else:
+                txt += "\tPOWER " + self.power
+            if self.pattern:
+                txt += "\tPATTERN " + self.pattern
+            if self.speed != "0.0":
+                txt += "\tSPEED " + self.speed
+            if self.comment:
+                comment_stripped = self.comment.replace(';', '').strip()
+                if comment_stripped:
+                    txt += "\t; " + comment_stripped
+            return txt
+        elif self.comment:
+            return self.comment
 
     def set_text(self, new_text):
         new_text = self.set_comment_check_section(new_text)
@@ -223,68 +219,65 @@ class Pump(Link):
 
 class Valve(Link):
     """A valve link in an EPANET model"""
-    def __init__(self):
-        Link.__init__(self)
 
-        self.diameter = 0.0
-        """valve diameter"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:4}\t{:12}\t{:12}\t{}"
 
-        self.type = ValveType.PRV
-        """PRV (pressure reducing valve) Pressure, psi (m)
-        PSV (pressure sustaining valve) Pressure, psi (m)
-        PBV (pressure breaker valve) Pressure, psi (m)
-        FCV (flow control valve) Flow (flow units)
-        TCV (throttle control valve) Loss Coefficient
-        GPV (general purpose valve) ID of head loss curve"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.setting = 0.0
-        """Pressure for PRV, PSV, and PBV; flow for FCV"""
+            self.diameter = 0.0
+            """valve diameter"""
 
-        self.loss_coefficient = 0.0
-        """TCV (throttle control valve) Loss Coefficient"""
+            self.type = ValveType.PRV
+            """ PRV (pressure reducing valve) Pressure, psi (m)
+                PSV (pressure sustaining valve) Pressure, psi (m)
+                PBV (pressure breaker valve) Pressure, psi (m)
+                FCV (flow control valve) Flow (flow units)
+                TCV (throttle control valve) Loss Coefficient
+                GPV (general purpose valve) ID of head loss curve"""
 
-        self.valve_curve = Curve()
-        """GPV (general purpose valve) head loss curve"""
+            self.setting = "0.0"
+            """Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve ID for GPV"""
 
-        self.fixed_status = FixedStatus.OPEN
-        """valve is open or closed"""
+            self.minor_loss_coefficient = "0.0"
+            """TCV (throttle control valve) Loss Coefficient"""
+
+            # TODO: access this: self.fixed_status = FixedStatus.OPEN
+            """valve is open or closed"""
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return str(self.link_id) + '\t'\
-            + str(self.inlet_node) + '\t'\
-            + str(self.outlet_node) + '\t'\
-            + str(self.diameter) + '\t'\
-            + str(self.type) + '\t'\
-            + str(self.setting) + '\t'\
-            + str(self.loss_coefficient)
-        # TODO: What is the rule for creating columns? Will any amount of whitespace work?
+        if len(self.id) > 0:
+            return self.field_format.format(self.id,
+                                            self.inlet_node,
+                                            self.outlet_node,
+                                            self.diameter,
+                                            self.type.name,
+                                            self.setting,
+                                            self.minor_loss_coefficient,
+                                            self.comment)
+        elif self.comment:
+            return self.comment
 
     def set_text(self, new_text):
+        self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
-        self.link_id = fields[0]
-        self.inlet_node = fields[1]
-        self.outlet_node = fields[2]
-        self.diameter = fields[3]
-        self.type = fields[4]
-        self.setting = fields[5]
-        self.loss_coefficient = fields[6]
+        if len(fields) > 2:
+            self.id = fields[0]
+            self.inlet_node = fields[1]
+            self.outlet_node = fields[2]
+            if len(fields) > 3:
+                self.diameter = fields[3]
+            if len(fields) > 4:
+                self.type = ValveType[fields[4].upper()]
+            if len(fields) > 5:
+                self.setting = fields[5]
+            if len(fields) > 6:
+                self.minor_loss_coefficient = fields[6]
 
-
-class PumpEnergy:
-    """Defines parameters used to compute pumping energy and cost"""
-    def __init__(self):
-        self.PricePatternEfficiency = PumpEnergyType.PRICE 	# PRICE, PATTERN, or EFFICIENCY
-        """Indicator whether this pump energy specification is entered as price, pattern, or efficiency"""
-
-        self.value = 0.0		        # real
-        """Value of price or efficiency"""
-
-        self.energy_pattern = ""       # string
-        """If entered as pattern, this is the associated pattern ID"""
-
-        self.energy_curve = ""          # string
-        """If efficiency is entered as a curve, this is the associated curve ID"""
 
 

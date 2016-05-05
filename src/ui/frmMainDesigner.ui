@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</normaloff>D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</iconset>
+    <normaloff>../icons/icon_swmm.png</normaloff>../icons/icon_swmm.png</iconset>
   </property>
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
@@ -266,6 +266,13 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="actionAdd_Vector"/>
+   <addaction name="actionAdd_Raster"/>
+   <addaction name="actionZoom_in"/>
+   <addaction name="actionZoom_out"/>
+   <addaction name="actionZoom_full"/>
+   <addaction name="actionPan"/>
+   <addaction name="actionAdd_Feature"/>
    <addaction name="actionMapSelectObj"/>
   </widget>
   <widget class="QToolBar" name="toolBar_Standard">
@@ -391,9 +398,96 @@
     <string>exec</string>
    </property>
   </action>
+  <action name="actionAdd_Vector">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_add_v.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a vector layer</string>
+   </property>
+  </action>
+  <action name="actionAdd_Raster">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_add_r.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Add Raster</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a raster layer</string>
+   </property>
+  </action>
+  <action name="actionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_qgis_pan.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Pan</string>
+   </property>
+   <property name="toolTip">
+    <string>Pan</string>
+   </property>
+  </action>
   <action name="actionShow_coordinates">
    <property name="text">
     <string>show coordinates</string>
+   </property>
+  </action>
+  <action name="actionZoom_in">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_qgis_zoomin.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>zoom in</string>
+   </property>
+   <property name="toolTip">
+    <string>zoom in</string>
+   </property>
+  </action>
+  <action name="actionZoom_out">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_qgis_zoomout.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>zoom out</string>
+   </property>
+  </action>
+  <action name="actionZoom_full">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_qgis_zoomfull.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>zoom full</string>
+   </property>
+   <property name="toolTip">
+    <string>zoom full extent</string>
    </property>
   </action>
   <action name="actionStdOpenProjMenu">
@@ -423,6 +517,23 @@
    </property>
    <property name="toolTip">
     <string>Create a new project</string>
+   </property>
+  </action>
+  <action name="actionAdd_Feature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <activeoff>:/icons/map_qgis_edit_addfeature0.png</activeoff>
+     <activeon>:/icons/map_qgis_edit_addfeature.png</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Add Feature</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Feature</string>
    </property>
   </action>
   <action name="actionStdRecent_Project">
@@ -637,7 +748,7 @@
   </action>
  </widget>
  <resources>
-  <include location="D:/PycharmProjects/New2/New/SWMM-EPANET_User_Interface_map/src/ui/swmm.qrc"/>
+  <include location="swmm.qrc"/>
  </resources>
  <connections/>
 </ui>

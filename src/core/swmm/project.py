@@ -145,8 +145,17 @@ class Project(InputFile):
         # self.outfalls = [Outfall] # OUTFALLS # outfall node information
         # self.dividers = [Divider] # DIVIDERS # flow divider node information
         # self.storage = [StorageUnit] # STORAGE # storage node information
-        # self.conduits = [Conduit] # CONDUITS # conduit link information
-        # self.pumps = [Pump] # PUMPS # pump link information
+
+        self.conduits = SectionAsListOf("[CONDUITS]", Conduit,
+            ";;Name          \tFrom Node       \tTo Node         \tLength    \tRoughness \tInOffset  \tOutOffset \tInitFlow  \tMaxFlow   \n"
+            ";;--------------\t----------------\t----------------\t----------\t----------\t----------\t----------\t----------\t----------")
+        # conduit link information
+
+        self.pumps = SectionAsListOf("[PUMPS]", Pump,
+            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoff \n"
+            ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
+        # pump link information
+
         # self.orifices = [Orifice] # ORIFICES # orifice link information
         # self.weirs = [Weir] # WEIRS # weir link information
         # self.outlets = [Outlet] # OUTLETS # outlet link information

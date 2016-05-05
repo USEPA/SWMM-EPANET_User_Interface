@@ -4,10 +4,13 @@ from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
+from core.epanet.hydraulics.link import Status
+from core.epanet.hydraulics.node import Coordinate
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
-from core.epanet.hydraulics.node import Tank
+from core.epanet.hydraulics.node import Reservoir
+from core.epanet.hydraulics.node import Tank, Mixing
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
 from core.epanet.options.options import Options
@@ -32,12 +35,20 @@ class Project(InputFile):
         self.junctions = SectionAsListOf("[JUNCTIONS]", Junction,
                                          ";ID             \tElev  \tDemand\tPattern\n"
                                          ";---------------\t------\t------\t-------")
-        # [RESERVOIRS]
+        self.reservoirs = SectionAsListOf("[RESERVOIRS]", Reservoir,
+                                          ";ID             \tHead        \tPattern\n"
+                                          ";---------------\t------------\t-------")
         self.tanks = SectionAsListOf("[TANKS]", Tank,
             ";ID              \tElevation   \tInitLevel   \tMinLevel    \tMaxLevel    \tDiameter    \tMinVol      \tVolCurve")
-        # self.pipes = [Pipe]
-        # self.pumps = [Pump]
-        # self.valves = [Valve]
+
+        self.mixing = SectionAsListOf("[MIXING]", Mixing, ";Tank           \tModel       \tMixing Volume Fraction\n"
+                                                          ";---------------\t------------\t----------------------")
+        self.pipes = SectionAsListOf("[PIPES]", Pipe, ";ID             \tNode1           \tNode2           \t"
+                                     "Length      \tDiameter    \tRoughness   \tMinorLoss   \tStatus")
+        self.pumps = SectionAsListOf("[PUMPS]", Pump,
+                                     ";ID             \tNode1           \tNode2           \tParameters")
+        self.valves = SectionAsListOf("[VALVES]", Valve,
+            ";ID              \tNode1           \tNode2           \tDiameter    \tType\tSetting     \tMinorLoss   ")
         # self.emitters = [(Junction, "emitter_coefficient")]
         self.patterns = SectionAsListGroupByID("[PATTERNS]", Pattern,
                                                ";ID              \tMultipliers\n"
@@ -46,7 +57,7 @@ class Project(InputFile):
                                              ";ID              \tX-Value     \tY-Value\n"
                                              ";----------------\t------------\t-------")
         self.energy = EnergyOptions()
-        # [STATUS]
+        self.status = SectionAsListOf("[STATUS]", Status, ";ID             \tStatus/Setting")
         self.controls = SectionAsListOf("[CONTROLS]", Control)
         self.rules = SectionAsListOf("[RULES]", basestring)
         self.demands = SectionAsListOf("[DEMANDS]", Demand,
@@ -65,9 +76,9 @@ class Project(InputFile):
         self.options = Options()
         self.times = TimesOptions()
         self.report = ReportOptions()
-        # "[COORDINATES]": [Coordinates]  # X,Y coordinates for nodes
+        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate, ";Node            \tX-Coord         \tY-Coord")
         # "[VERTICES]": [Vertex]
-        # "[LABELS]": [Label]
+        self.labels = SectionAsListOf("[LABELS]", Label, ";X-Coord        \tY-Coord         \tLabel & Anchor Node")
         self.backdrop = BackdropOptions()
 
         InputFile.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

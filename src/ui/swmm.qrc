@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/map_qgis_edit_addfeature.png</file>
+    <file>icons/map_qgis_edit_addfeature0.png</file>
+    <file>icons/map_qgis_pan.png</file>
+    <file>icons/map_qgis_zoomfull.png</file>
+    <file>icons/map_qgis_zoomin.png</file>
+    <file>icons/map_qgis_zoomout.png</file>
     <file>icons/map_fullextent.png</file>
     <file>icons/map_measure.png</file>
     <file>icons/map_pan.png</file>

@@ -8,8 +8,8 @@
     <file>icons/map_selectvertices0.png</file>
     <file>icons/map_add_r.png</file>
     <file>icons/map_add_v.png</file>
-    <file>icons/map_selectvertices.png</file>
     <file>icons/map_zoomout.png</file>
+    <file>icons/map_selectvertices.png</file>
     <file>icons/std_project_scatterplot.png</file>
     <file>icons/std_project_statisticreport.png</file>
     <file>icons/std_project_tsplot.png</file>

@@ -749,6 +749,7 @@
  </widget>
  <resources>
   <include location="E:/PycharmProjects/New32bit/New/SWMM-EPANET_User_Interface_map/src/ui/swmm.qrc"/>
+  <include location="swmm.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+<assistant>
+    <title>EPANET 2 Help</title>
+    <applicationIcon>src/dwrd1.gif</applicationIcon>
+    <cacheDirectory>mycompany/myapplication</cacheDirectory>
+<startPage>qthelp://SWMM/src/introduction.htm</startPage>
+<aboutMenuText>
+        <text>EPANET, Version 2.0</text>
+    </aboutMenuText>
+    <aboutDialog>
+        <file>src/introduc.htm</file>
+        <icon>src/dwrd1.gif</icon>
+    </aboutDialog>
+    <enableDocumentationManager>false</enableDocumentationManager>
+    <enableAddressBar>false</enableAddressBar>
+    <enableFilterFunctionality>false</enableFilterFunctionality>
+</assistant>
+  <docFiles>
+    <register>
+        <file>epanet.qch</file>
+    </register>
+  </docFiles>
+</QHelpCollectionProject>

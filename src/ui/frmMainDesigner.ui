@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>E:/PycharmProjects/New32bit/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</normaloff>E:/PycharmProjects/New32bit/New/SWMM-EPANET_User_Interface_map/src/icons/epa_swmm.png</iconset>
+    <normaloff>../icons/icon_swmm.png</normaloff>../icons/icon_swmm.png</iconset>
   </property>
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>

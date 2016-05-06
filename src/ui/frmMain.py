@@ -9,6 +9,7 @@ from embed_ipython_new import EmbedIPython
 # from ui.ui_utility import *
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import *
 from frmMainDesigner import Ui_frmMain
 #from IPython import embed
 #from RestrictedPython import compile_restricted

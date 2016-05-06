@@ -1,5 +1,12 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/icon_swmm.png</file>
+    <file>icons/obj_add.png</file>
+    <file>icons/obj_delete.png</file>
+    <file>icons/obj_movedown.png</file>
+    <file>icons/obj_moveup.png</file>
+    <file>icons/obj_property.png</file>
+    <file>icons/obj_sort.png</file>
     <file>icons/map_qgis_edit_addfeature.png</file>
     <file>icons/map_qgis_edit_addfeature0.png</file>
     <file>icons/map_qgis_pan.png</file>

@@ -31,9 +31,11 @@ class ProjectTest(unittest.TestCase):
                             zip(self.my_project.sections, self.new_project.sections):
                         pass
                     # assert old_section == new_section
-            # assert len(self.my_project.sections) == 43
+                    # Sequences are different, how do we test these? Think about it now.
+                    # How about run the SWMM and check the results ?
             pass
 
+            # assert len(self.my_project.sections) == 43
             # with open(inp_filename + ".written.txt", 'w') as writer:
             #     writer.writelines(self.my_project.get_text())
             # with open(inp_filename + ".written_inp_spaces.inp", 'w') as writer:

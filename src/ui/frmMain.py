@@ -35,6 +35,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.project = None
         self.obj_tree = None
         self.obj_list = None
+        self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
         self.populate_plugins_menu()
         QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.new_project)
@@ -98,6 +99,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.canvas = None
             print "QGIS libraries not found, Not creating map\n" + str(eImport)
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
+        self.onLoad()
 
     def setQgsMapTool(self):
         self.map_widget.setZoomInMode()
@@ -159,6 +161,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # cleaner.add(self.tabProjMap.layout())
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
+        self.obj_tree.itemClicked.connect(self.list_objects)
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -173,6 +176,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # layout1 = QVBoxLayout(self.dockw_more)
         self.dockw_more.setLayout(mlayout)
         # self.actionPan.setEnabled(False)
+
 
     def populate_plugins_menu(self):
         if self.plugins:
@@ -390,6 +394,38 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __unicode__(self):
         return unicode(self)
 
+    def clear_object_listing(self):
+        self.obj_view_model.clear()
+
+    def list_objects(self, itm, column):
+        self.clear_object_listing()
+        self.dockw_more.setWindowTitle('')
+        if self.project == None:
+            return
+        ids = self.get_object_list(itm.data(0, 0))
+        if len(ids)> 0:
+            self.dockw_more.setWindowTitle(itm.data(0, 0))
+            for id in ids:
+                newItem = QStandardItem(str(id))
+                newItem.setEditable(False)
+                self.obj_view_model.appendRow(newItem)
+            self.listViewObjects.setModel(self.obj_view_model)
+
+    def get_object_list(self, category):
+        ids = []
+        if category.lower() == 'junctions':
+            for i in range(0, len(self.project.junctions.value) - 1):
+                ids.append(self.project.junctions.value[i].node_id)
+        elif category.lower() == 'pipes':
+            for i in range(0, len(self.project.pipes.value)-1):
+                ids.append(self.project.pipes.value[i].id)
+        return ids
+
+    def onLoad(self):
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
+        self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Mon Feb 22 14:46:32 2016
-#      by: PyQt4 UI code generator 4.10.2
+# Created: Fri May 06 11:34:00 2016
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -28,7 +28,7 @@ class Ui_frmMain(object):
         frmMain.setObjectName(_fromUtf8("frmMain"))
         frmMain.resize(832, 603)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../icons/epa_swmm.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../icons/icon_swmm.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         frmMain.setWindowIcon(icon)
         frmMain.setDockOptions(QtGui.QMainWindow.AllowNestedDocks|QtGui.QMainWindow.AllowTabbedDocks|QtGui.QMainWindow.AnimatedDocks)
         self.centralwidget = QtGui.QWidget(frmMain)

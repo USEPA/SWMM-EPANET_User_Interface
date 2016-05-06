@@ -48,8 +48,8 @@ from test_hydrographs import SimpleHydrographsTest
 # Outlet
 # CrossSection
 from test_xsections import SingleCrossSectionTest
-# Transect
-# Transects
+from test_transects import SingleTransectTest
+from test_transects import MultipleTransectsTest
 from test_xsection import XsectionTest
 
 # Node:
@@ -79,7 +79,7 @@ from test_landuses import SingleLanduseTest
 # -- Backdrop is in options group
 
 # Mislaneous relations:
-# from test_curves import SimpleCurveTest
+from test_curves import SingleCurveTest
 # -- Hydrographs in Hydrology section
 from test_patterns import SinglePatternTest
 from test_timeseries import SingleTimeSeriesTest
@@ -134,8 +134,8 @@ my_suite.addTest(SimpleHydrographsTest())
 # Weir
 # Outlet
 my_suite.addTest(SingleCrossSectionTest())
-# Transect
-# Transects
+my_suite.addTest(SingleTransectTest())
+my_suite.addTest(MultipleTransectsTest())
 my_suite.addTest(XsectionTest())
 
 # Node:
@@ -159,7 +159,7 @@ my_suite.addTest(SimpleTitleTest())
 my_suite.addTest(SingleTimeSeriesTest())
 # will need for later MTPs:
 my_suite.addTest(SinglePatternTest())
-# my_suite.addTest(SimpleCurveTest())
+my_suite.addTest(SingleCurveTest())
 # my_suite.addTest(SimpleLabelTest())
 my_suite.addTest(ProjectTest())
 

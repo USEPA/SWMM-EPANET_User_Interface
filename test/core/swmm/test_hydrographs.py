@@ -3,6 +3,7 @@ from core.swmm.project import Project
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 import unittest
 
+
 class SingleHydrographTest(unittest.TestCase):
 
     def setUp(self):
@@ -10,18 +11,18 @@ class SingleHydrographTest(unittest.TestCase):
 
     def runTest(self):
         # Test Example in SWMM 5.1 manual
-        test_text = r"""UH101 RG1
-                        UH101 ALL SHORT 0.033 1.0 2.0
-                        UH101 ALL MEDIUM 0.300 3.0 2.0
-                        UH101 ALL LONG 0.033 10.0 2.0
-                        UH101 JUL SHORT 0.033 0.5 2.0
-                        UH101 JUL MEDIUM 0.011 2.0 2.0
-                    """
-        # Test set_text
+        test_text = "UH101\tRG1\n" \
+                    "UH101\tALL\tSHORT\t0.033\t1.0\t2.0\t0.033\t1.0\t2.0\n" \
+                    "UH101\tALL\tMEDIUM\t0.300\t3.0\t2.0\t0.033\t1.0\t2.0\n" \
+                    "UH101\tALL\tLONG\t0.033\t10.0\t2.0\t0.033\t1.0\t2.0\n" \
+                    "UH101\tJUL\tSHORT\t0.033\t0.5\t2.0\t0.033\t1.0\t2.0\n" \
+                    "UH101\tJUL\tMEDIUM\t0.011\t2.0\t2.0\t0.033\t1.0\t2.0"
         self.my_options.set_text(test_text)
-        # Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
+        actual_text = self.my_options.get_text()
+        new_text = actual_text.replace(" ","")
+        assert test_text == new_text
         assert self.my_options.matches(test_text)
+
 
 class SimpleHydrographsTest(unittest.TestCase):
 

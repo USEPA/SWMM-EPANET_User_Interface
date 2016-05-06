@@ -33,6 +33,7 @@ class ProjectTest(unittest.TestCase):
                     # assert old_section == new_section
                     # Sequences are different, how do we test these? Think about it now.
                     # How about run the SWMM and check the results ?
+                os.remove(new_filename)
             pass
 
             # assert len(self.my_project.sections) == 43

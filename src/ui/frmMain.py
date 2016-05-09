@@ -168,7 +168,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)
         self.setWindowTitle(self.model)
-
+        '''
         self.obj_list = ObjectListView(model=self.model, ObjRoot='', ObjType='', ObjList=None)
         mlayout = self.dockw_more.layout()
         # mlayout.setContentsMargins(0, 0, 0, 0)
@@ -176,7 +176,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # layout1 = QVBoxLayout(self.dockw_more)
         self.dockw_more.setLayout(mlayout)
         # self.actionPan.setEnabled(False)
-
+        '''
 
     def populate_plugins_menu(self):
         if self.plugins:

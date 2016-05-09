@@ -66,3 +66,37 @@ class SimpleOptionsTest(unittest.TestCase):
         assert self.my_MapOptions.map == ""
         expected_text = ""
         assert self.my_MapOptions.matches(expected_text)
+
+
+class SimpleOptionsTest2(unittest.TestCase):
+    def __init__(self):
+        unittest.TestCase.__init__(self)
+
+    def setUp(self):
+        self.my_options = Options()
+
+    def runTest(self):
+        # data from Net1.inp
+        test_text = """
+        [OPTIONS]
+         Units              	GPM
+         Headloss           	H-W
+         Specific Gravity   	1.0
+         Viscosity          	1.0
+         Trials             	40
+         Accuracy           	0.001
+         CHECKFREQ          	2
+         MAXCHECK           	10
+         DAMPLIMIT          	0
+         Unbalanced         	Continue 10
+         Pattern            	1
+         Demand Multiplier  	1.0
+         Emitter Exponent   	0.5
+         Quality            	Chlorine mg/L
+         Diffusivity        	1.0
+         Tolerance          	0.01
+         """
+        self.my_options.set_text(test_text)
+        actual_text = self.my_options.get_text()
+        assert self.my_options.matches(test_text)
+        pass

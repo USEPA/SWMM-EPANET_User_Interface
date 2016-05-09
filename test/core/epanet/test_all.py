@@ -2,7 +2,7 @@ import webbrowser
 import unittest
 import test.HTMLTestRunner
 from test_title import SimpleTitleTest
-from test_options import SimpleOptionsTest
+from test_options import SimpleOptionsTest, SimpleOptionsTest2
 from test_quality import SimpleQualityTest
 from test_reactions import SimpleReactionsTest
 from test_times import SimpleTimesTest
@@ -17,22 +17,50 @@ from test_sources import SimpleSourcesTest
 
 my_suite = unittest.TestSuite()
 
-# for MTP 1:
+# Title - MTP 1:
 my_suite.addTest(SimpleTitleTest())
-my_suite.addTest(SimpleOptionsTest())
-my_suite.addTest(SimpleQualityTest())
-my_suite.addTest(SimpleReactionsTest())
-my_suite.addTest(SimpleTimesTest())
-my_suite.addTest(SimpleEnergyTest())
-my_suite.addTest(SimpleReportTest())
-my_suite.addTest(SimpleBackdropTest())
-my_suite.addTest(ProjectTest())
 
-# will need for later MTPs:
+# Options and reporting - MTP 1:
+my_suite.addTest(SimpleOptionsTest())
+my_suite.addTest(SimpleOptionsTest2())
+my_suite.addTest(SimpleTimesTest())
+my_suite.addTest(SimpleReportTest())
+
+# Network components - MTP 3:
+# junctions
+# Reservoirs
+# Tanks
+# Pipes
+# Pumps
+# Valves
+# Emitters
+
+# System operation - MTP 2
 my_suite.addTest(SimplePatternTest())
 my_suite.addTest(SimpleCurveTest())
+my_suite.addTest(SimpleEnergyTest())
+# Status - MTP 3
+# Controls
+# Rules
 my_suite.addTest(SimpleDemandsTest())
+
+# Water quality - MTP 2:
+my_suite.addTest(SimpleQualityTest())
+my_suite.addTest(SimpleReactionsTest())
 my_suite.addTest(SimpleSourcesTest())
+# Mixing - MTP 3?
+
+# Network Map/Tags - MTP 3:
+# Coordinates
+# Vertices
+# Labels
+# Backdrop - MTP2?
+my_suite.addTest(SimpleBackdropTest())
+# Tags
+
+# Project test
+my_suite.addTest(ProjectTest())
+
 
 if __name__ == "__main__":
     # execute only if run as a script

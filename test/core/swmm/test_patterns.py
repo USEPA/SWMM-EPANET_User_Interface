@@ -1,4 +1,4 @@
-from core.swmm.patterns import Pattern
+from core.swmm.patterns import Pattern, PatternType
 import unittest
 
 
@@ -11,15 +11,17 @@ class SinglePatternTest(unittest.TestCase):
     def runTest(self):
 
         # Test examples
+        temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
 
         # -- Daily total 7 per week
         test_text = "D1\tDAILY\t1.0\t1.0\t1.0\t1.0\t1.0\t0.5\t0.5"
         self.my_options.set_text(test_text)
         # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        new_text = actual_text.replace(" ","")
-        # assert actual_text == new_text
-        # assert self.my_options.matches(test_text)
+        temp_pattern.set_text(self.my_options.get_text())
+        for item in (self.my_options, temp_pattern):
+            assert item.name == 'D1'
+            assert item.pattern_type == PatternType.DAILY
+            assert ' '.join(item.multipliers) == '1.0 1.0 1.0 1.0 1.0 0.5 0.5'
 
         # -- Monthly total 12 per year
         test_text = "M1\tMONTHLY\t1.0\t1.0\t1.0\t1.0\t1.0\t1.0\n" \
@@ -27,8 +29,12 @@ class SinglePatternTest(unittest.TestCase):
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
         new_text = actual_text.replace(" ", "")
-        # assert actual_text == new_text
-        # assert self.my_options.matches(test_text)
+        temp_pattern.set_text(self.my_options.get_text())
+        for item in (self.my_options, temp_pattern):
+            assert item.name == 'M1'
+            assert item.pattern_type == PatternType.MONTHLY
+            assert ' '.join(item.multipliers) == '1.0 1.0 1.0 1.0 1.0 1.0 '\
+                                                 '1.0 1.0 1.0 1.0 1.0 1.0'
 
         # -- Hourly total 24 per day
         test_text = r"""
@@ -38,10 +44,14 @@ class SinglePatternTest(unittest.TestCase):
         DWF                         .02801 .03680 .02911 .02334 .02499 .02718"""
         # --Test set_text
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        #assert self.my_options.matches(test_text)
-
+        temp_pattern.set_text(self.my_options.get_text())
+        for item in (self.my_options, temp_pattern):
+            assert item.name == 'DWF'
+            assert item.pattern_type == PatternType.HOURLY
+            assert ' '.join(item.multipliers) == ".0151 .01373 .01812 .01098 .01098 .01922 "\
+                                                 ".02773 .03789 .03515 .03982 .02059 .02471 "\
+                                                 ".03021 .03789 .03350 .03158 .03954 .02114 "\
+                                                 ".02801 .03680 .02911 .02334 .02499 .02718"
         # -- Weekend total 24 per day
         test_text = r"""
         DWF              WEEKEND     .0151 .01373 .01812 .01098 .01098 .01922
@@ -50,9 +60,14 @@ class SinglePatternTest(unittest.TestCase):
         DWF                         .02801 .03680 .02911 .02334 .02499 .02718"""
         # --Test set_text
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        #assert self.my_options.matches(test_text)
+        temp_pattern.set_text(self.my_options.get_text())
+        for item in (self.my_options, temp_pattern):
+            assert item.name == 'DWF'
+            assert item.pattern_type == PatternType.WEEKEND
+            assert ' '.join(item.multipliers) == ".0151 .01373 .01812 .01098 .01098 .01922 "\
+                                                 ".02773 .03789 .03515 .03982 .02059 .02471 "\
+                                                 ".03021 .03789 .03350 .03158 .03954 .02114 "\
+                                                 ".02801 .03680 .02911 .02334 .02499 .02718"
 
         # -- Design pattern, no flag
         test_text = r"""
@@ -60,12 +75,16 @@ class SinglePatternTest(unittest.TestCase):
  1               	.85         	1.07        	.96         	1.1         	1.08        	1.19
  1               	1.16        	1.08        	.96         	.83         	.79         	.74
  1               	.64         	.64         	.85         	.96         	1.24        	1.67"""
+
         # --Test set_text
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        #assert self.my_options.matches(test_text)
-
+        temp_pattern.set_text(self.my_options.get_text())
+        for item in (self.my_options, temp_pattern):
+            assert item.name == '1'
+            assert ' '.join(item.multipliers) == "1.34 1.94 1.46 1.44 .76 .92 "\
+                                                 ".85 1.07 .96 1.1 1.08 1.19 "\
+                                                 "1.16 1.08 .96 .83 .79 .74 "\
+                                                 ".64 .64 .85 .96 1.24 1.67"
         pass
 
 class MultiPatternsTest(unittest.TestCase):

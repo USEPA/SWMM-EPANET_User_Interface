@@ -354,7 +354,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
-                    gui_settings.setValue("ProjectDir", path_only)
+                    gui_settings.setValue("epanet model library for linuxProjectDir", path_only)
                     gui_settings.sync()
                     del gui_settings
             except:
@@ -386,25 +386,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         QMessageBox.Ok)
 
     def dragEnterEvent(self, QDragEnterEvent):
-        if QDragEnterEvent.mimeData().hasFormat('text/plain'):
+        if QDragEnterEvent.mimeData().hasUrls():
             QDragEnterEvent.accept()
         else:
             QDragEnterEvent.ignore()
 
     def dropEvent(self, QDropEvent):
         #TODO: check project status and prompt if there are unsaved changes that would be overwritten
-        directory, file = os.path.split(QDropEvent.mimeData().text())
-        directory = str.lstrip(str(directory),'file:')
-        print(directory)
-        if os.path.isdir(directory):
-            print(' is directory')
-        file = str.rstrip(str(file),'\r\n')
-        print(file)
-        if file.endswith('.inp'):
-            gui_settings = QtCore.QSettings(self.model, "GUI")
-            self.open_project_quiet(os.path.join(directory,file),gui_settings,directory)
-        else:
-            QMessageBox.information(self, self.model,
+        for url in QDropEvent.mimeData().urls():
+            directory, file = os.path.split(str(url.encodedPath()))
+            directory = str.lstrip(str(directory),'file:')
+            print(directory)
+            if os.path.isdir(directory):
+                print(' is directory')
+            file = str.rstrip(str(file),'\r\n')
+            print(file)
+            if file.endswith('.inp'):
+                gui_settings = QtCore.QSettings(self.model, "GUI")
+                self.open_project_quiet(os.path.join(directory,file),gui_settings,directory)
+            else:
+                QMessageBox.information(self, self.model,
                             "Dropped file '" + file + "' is not an input file",
                             QMessageBox.Ok)
 

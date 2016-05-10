@@ -134,19 +134,21 @@ class HydraulicsOptions(Section):
     def set_text(self, new_text):
         for line in new_text.splitlines():
             try:
+                line = line.strip()
                 if not line.startswith((';', '[')):
-                    lower_line = line.lower().strip()
-                    for meta_item in self.metadata:
-                        key = meta_item.input_name.lower()
-                        if len(lower_line) > len(key):
-                            if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
-                                if meta_item.attribute == "unbalanced_continue":
-                                    fields = line.split()
-                                    self.unbalanced = Unbalanced[fields[1].upper()]
-                                    if len(fields) > 2:
-                                        self.unbalanced_continue = fields[2]
-                                else:
-                                    attr_value = line[len(key) + 1:].strip()
-                                    self.setattr_keep_type(meta_item.attribute, attr_value)
+                    lower_line = line.lower()
+                    if lower_line:
+                        for meta_item in self.metadata:
+                            key = meta_item.input_name.lower()
+                            if len(lower_line) > len(key):
+                                if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
+                                    if meta_item.attribute == "unbalanced_continue":
+                                        fields = line.split()
+                                        self.unbalanced = Unbalanced[fields[1].upper()]
+                                        if len(fields) > 2:
+                                            self.unbalanced_continue = fields[2]
+                                    else:
+                                        attr_value = line[len(key) + 1:].strip()
+                                        self.setattr_keep_type(meta_item.attribute, attr_value)
             except:
                 print("HydraulicsOptions skipping input line: " + line)

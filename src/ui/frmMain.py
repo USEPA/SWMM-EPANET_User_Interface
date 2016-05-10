@@ -51,6 +51,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
 
+        self.setAcceptDrops(True)
+
         try:
             from qgis.core import QgsApplication
             from qgis.gui import QgsMapCanvas
@@ -343,6 +345,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
+            self.open_project_quiet(file_name,gui_settings,directory)
+
+    def open_project_quiet(self,file_name,gui_settings,directory):
             self.project = self.project_type()
             try:
                 self.project.read_file(file_name)
@@ -379,6 +384,29 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                             file_only, path_only,
                                             str(ex), str(traceback.print_exc())),
                                         QMessageBox.Ok)
+
+    def dragEnterEvent(self, QDragEnterEvent):
+        if QDragEnterEvent.mimeData().hasFormat('text/plain'):
+            QDragEnterEvent.accept()
+        else:
+            QDragEnterEvent.ignore()
+
+    def dropEvent(self, QDropEvent):
+        #TODO: check project status and prompt if there are unsaved changes that would be overwritten
+        directory, file = os.path.split(QDropEvent.mimeData().text())
+        directory = str.lstrip(str(directory),'file:')
+        print(directory)
+        if os.path.isdir(directory):
+            print(' is directory')
+        file = str.rstrip(str(file),'\r\n')
+        print(file)
+        if file.endswith('.inp'):
+            gui_settings = QtCore.QSettings(self.model, "GUI")
+            self.open_project_quiet(os.path.join(directory,file),gui_settings,directory)
+        else:
+            QMessageBox.information(self, self.model,
+                            "Dropped file '" + file + "' is not an input file",
+                            QMessageBox.Ok)
 
     def action_exit(self):
         # TODO: check project status and prompt if there are unsaved changed

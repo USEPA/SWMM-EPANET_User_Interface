@@ -59,4 +59,5 @@ class Curve(Section):
                         x_index = 2
                     except:
                         x_index = 1
-                    self.curve_xy.append((fields[x_index], fields[x_index + 1]))
+                    for x in range(x_index, len(fields) - 1, 2):
+                        self.curve_xy.append((fields[x], fields[x + 1]))

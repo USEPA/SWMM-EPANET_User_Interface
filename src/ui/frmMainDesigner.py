@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'frmMainDesigner.ui'
+# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
 #
-# Created: Fri May 06 15:21:38 2016
-#      by: PyQt4 UI code generator 4.11.3
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -115,6 +114,12 @@ class Ui_frmMain(object):
         frmMain.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar_Standard)
         frmMain.insertToolBarBreak(self.toolBar_Standard)
         self.dockw_tab = QtGui.QDockWidget(frmMain)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.dockw_tab.sizePolicy().hasHeightForWidth())
+        self.dockw_tab.setSizePolicy(sizePolicy)
+        self.dockw_tab.setMinimumSize(QtCore.QSize(212, 270))
         self.dockw_tab.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.TopDockWidgetArea)
         self.dockw_tab.setObjectName(_fromUtf8("dockw_tab"))
         self.dockWidgetContents_6 = QtGui.QWidget()

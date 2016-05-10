@@ -14,7 +14,7 @@
    <string>SWMM 5.1</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="swmm.qrc">
+   <iconset>
     <normaloff>:/icons/icon_swmm.png</normaloff>:/icons/icon_swmm.png</iconset>
   </property>
   <property name="dockOptions">
@@ -299,6 +299,18 @@
    <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockw_tab">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>212</width>
+     <height>270</height>
+    </size>
+   </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::TopDockWidgetArea</set>
    </property>
@@ -352,7 +364,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -378,7 +390,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -404,7 +416,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -430,7 +442,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -456,7 +468,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -482,7 +494,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">
@@ -914,8 +926,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="swmm.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

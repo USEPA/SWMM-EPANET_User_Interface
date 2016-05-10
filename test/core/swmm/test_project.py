@@ -2,6 +2,7 @@ import os
 import core.swmm.project
 import unittest
 import inspect
+from ui.swmm.frmRunSWMM import frmRunSWMM
 
 
 class ProjectTest(unittest.TestCase):
@@ -39,6 +40,11 @@ class ProjectTest(unittest.TestCase):
                             zip(self.my_project.sections, self.new_project.sections):
 
                         pass
+                    os.chdir(example_path)
+                    my_run = frmRunSWMM()
+                    my_run.RunSimulation()
+                    #my_run.DisplayRunStatus()
+
                     # assert old_section == new_section
                     # Sequences are different, how do we test these? Think about it now.
                     # How about run the SWMM and check the results ?

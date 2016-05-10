@@ -5,10 +5,11 @@ from ui.SWMM.frmControlsDesigner import Ui_frmControls
 from ui.help import HelpHandler
 
 
-class frmControls(HelpHandler, Ui_frmControls):
+class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
-    def __init__(self, parent, help_topic):
-        HelpHandler.__init__(self, parent, help_topic)
+    def __init__(self, parent):
+        QtGui.QMainWindow.__init__(self, parent)
+        self.help_topic = "swmm/src/src/controlrules.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)

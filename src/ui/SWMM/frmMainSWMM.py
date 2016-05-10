@@ -118,7 +118,7 @@ class frmMainSWMM(frmMain):
     tree_hydraulics_Nodes = ["Nodes", tree_nodes_items]
     tree_hydraulics_Links = ["Links", tree_links_items]
     tree_hydraulics_Transects = ["Transects", frmTransect]
-    tree_hydraulics_Controls = ["Controls", frmControls, ["swmm/src/src/controlrules.htm"]]
+    tree_hydraulics_Controls = ["Controls", frmControls]
     tree_hydraulics_items = [
         tree_hydraulics_Nodes,
         tree_hydraulics_Links,
@@ -177,6 +177,8 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
+        self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
+        self.helper = HelpHandler(self)
 
     def get_editor(self, edit_name):
         frm = None
@@ -221,65 +223,66 @@ class frmMainSWMM(frmMain):
         if os.path.exists(file_name):
 
             prefix, extension = os.path.splitext(file_name)
-            if not os.path.exists(self.model_path):
-                if 'darwin' in sys.platform:
-                    lib_name = 'libswmm.dylib'
-                    ext = '.dylib'
-                elif 'win' in sys.platform:
-                    lib_name = 'swmm5_x86.dll'
-                    ext = '.dll'
-
-                if lib_name:
-                    self.model_path = os.path.join(self.assembly_path, lib_name)
-                    if not os.path.exists(self.model_path):
-                        pp = os.path.dirname(os.path.dirname(self.assembly_path))
-                        self.model_path = os.path.join(pp, "Externals", lib_name)
-                    if not os.path.exists(self.model_path):
-                        self.model_path = QFileDialog.getOpenFileName(self,
-                                                                      'Locate ' + self.model +' Library',
-                                                                      '/', '(*{0})'.format(ext))
-
-            if os.path.exists(self.model_path):
-                try:
-                    from Externals.swmm5 import pyswmm
-                    swmm_object = pyswmm(file_name, prefix + '.rpt', prefix + '.out', self.model_path)
-                    swmm_object.swmmExec()
-                    print(swmm_object.swmm_getVersion())
-                    print(swmm_object.swmm_getMassBalErr())
-
-                    # model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
-                    # frmRun = frmRunEPANET(model_api, self.project, self)
-                    # self._forms.append(frmRun)
-                    # if not use_existing:
-                    #     # Read this project so we can refer to it while running
-                    #     frmRun.progressBar.setVisible(False)
-                    #     frmRun.lblTime.setVisible(False)
-                    #     frmRun.fraTime.setVisible(False)
-                    #     frmRun.fraBottom.setVisible(False)
-                    #     frmRun.showNormal()
-                    #     frmRun.set_status_text("Reading " + file_name)
-                    #
-                    #     self.project = Project()
-                    #     self.project.read_file(file_name)
-                    #     frmRun.project = self.project
-                    #
-                    # frmRun.Execute()
-                    return
-                except Exception as e1:
-                    print(str(e1) + '\n' + str(traceback.print_exc()))
-                    QMessageBox.information(None, self.model,
-                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
-                                                self.model_path, str(e1), str(traceback.print_exc())),
-                                            QMessageBox.Ok)
-                # finally:
-                #     try:
-                #         if model_api and model_api.isOpen():
-                #             model_api.ENclose()
-                #     except:
-                #         pass
-                #     return
+            # if not os.path.exists(self.model_path):
+            #     if 'darwin' in sys.platform:
+            #         lib_name = 'libswmm.dylib'
+            #         ext = '.dylib'
+            #     elif 'win' in sys.platform:
+            #         lib_name = 'swmm5_x86.dll'
+            #         ext = '.dll'
+            #
+            #     if lib_name:
+            #         self.model_path = os.path.join(self.assembly_path, lib_name)
+            #         if not os.path.exists(self.model_path):
+            #             pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            #             self.model_path = os.path.join(pp, "Externals", lib_name)
+            #         if not os.path.exists(self.model_path):
+            #             self.model_path = QFileDialog.getOpenFileName(self,
+            #                                                           'Locate ' + self.model +' Library',
+            #                                                           '/', '(*{0})'.format(ext))
+            #
+            # if os.path.exists(self.model_path):
+            #     try:
+            #         from Externals.swmm5 import pyswmm
+            #         swmm_object = pyswmm(file_name, prefix + '.rpt', prefix + '.out', self.model_path)
+            #         swmm_object.swmmExec()
+            #         print(swmm_object.swmm_getVersion())
+            #         print(swmm_object.swmm_getMassBalErr())
+            #
+            #         # model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+            #         # frmRun = frmRunEPANET(model_api, self.project, self)
+            #         # self._forms.append(frmRun)
+            #         # if not use_existing:
+            #         #     # Read this project so we can refer to it while running
+            #         #     frmRun.progressBar.setVisible(False)
+            #         #     frmRun.lblTime.setVisible(False)
+            #         #     frmRun.fraTime.setVisible(False)
+            #         #     frmRun.fraBottom.setVisible(False)
+            #         #     frmRun.showNormal()
+            #         #     frmRun.set_status_text("Reading " + file_name)
+            #         #
+            #         #     self.project = Project()
+            #         #     self.project.read_file(file_name)
+            #         #     frmRun.project = self.project
+            #         #
+            #         # frmRun.Execute()
+            #         return
+            #     except Exception as e1:
+            #         print(str(e1) + '\n' + str(traceback.print_exc()))
+            #         QMessageBox.information(None, self.model,
+            #                                 "Error running model with library:\n {0}\n{1}\n{2}".format(
+            #                                     self.model_path, str(e1), str(traceback.print_exc())),
+            #                                 QMessageBox.Ok)
+            #     # finally:
+            #     #     try:
+            #     #         if model_api and model_api.isOpen():
+            #     #             model_api.ENclose()
+            #     #     except:
+            #     #         pass
+            #     #     return
 
             # Could not run with library, try running with executable
+            prefix, extension = os.path.splitext(file_name)
             args = []
             exe_name = "swmm5.exe"
             exe_path = os.path.join(self.assembly_path, exe_name)

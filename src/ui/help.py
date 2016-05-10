@@ -5,7 +5,7 @@ import os, sys
 from PyQt4 import Qt, QtCore, QtGui
 
 
-class HelpHandler(QtGui.QMainWindow):
+class HelpHandler(QtCore.QObject):
 
     HELP_KEYS = [QtCore.Qt.Key_F1, QtCore.Qt.Key_Help]
     help_assistant_executable = "assistant.exe"
@@ -27,9 +27,12 @@ class HelpHandler(QtGui.QMainWindow):
         HelpHandler.help_assistant_executable = assistant_executable_full_path
         HelpHandler.help_assistant_arguments[1] = help_filename
 
-    def __init__(self, parent, help_topic):
-        QtGui.QMainWindow.__init__(self, parent)
-        self.help_topic = help_topic
+    def __init__(self, listen_here_for_help_key):
+        QtCore.QObject.__init__(self)
+        """Create a HelpHandler that responds to Help key events on the Qt window listen_here_for_help_key"""
+        self.listen_here_for_help_key = listen_here_for_help_key
+        if listen_here_for_help_key:
+            listen_here_for_help_key.installEventFilter(self)
 
     def show_help(self, help_topic=None):
         # open qt assistant for help
@@ -41,18 +44,25 @@ class HelpHandler(QtGui.QMainWindow):
             HelpHandler.help_process = QtCore.QProcess()
             HelpHandler.help_process.start(HelpHandler.help_assistant_executable, HelpHandler.help_assistant_arguments)
 
-        if not help_topic:
-            help_topic = self.help_topic
+        # If there is a help_topic specified as an argument, use it.
+        # Otherwise if self.listen_here_for_help_key.help_topic is specified, use that topic.
+        if not help_topic and hasattr(self.listen_here_for_help_key, "help_topic"):
+            help_topic = self.listen_here_for_help_key.help_topic
 
-        # Trim leading slashes and backslashes
-        while help_topic.startswith('/') or help_topic.startswith('\\'):
-            help_topic = help_topic[1:]
+        # If we found a topic, open it, otherwise help is already open from above, just leave it open.
+        if help_topic:
+            # Trim leading slashes and backslashes
+            while help_topic.startswith('/') or help_topic.startswith('\\'):
+                help_topic = help_topic[1:]
 
-        # set to the right page
-        ba = QtCore.QByteArray()
-        ba.append("setSource qthelp://" + help_topic + '\n')
-        HelpHandler.help_process.write(ba)
+            # set to the right page
+            help_command = QtCore.QByteArray()
+            help_command.append("setSource qthelp://" + help_topic + '\n')
+            HelpHandler.help_process.write(help_command)
 
-    def keyPressEvent(self, event):
-        if event.key() in self.HELP_KEYS:
-            self.show_help()
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.KeyPress:
+            if event.key() in self.HELP_KEYS:
+                self.show_help()
+                return True
+        return False

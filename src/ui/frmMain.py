@@ -7,6 +7,7 @@ from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
+from ui.help import HelpHandler
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
@@ -307,7 +308,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             args.append(str(tree_item[2]))
                         else:  # tree_item[2] is a list that is not a string
                             args.extend(tree_item[2])
-                    return tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                    edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                    edit_form.helper = HelpHandler(edit_form)
+                    return edit_form
                 return None
             if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
                 edit_form = self.make_editor_from_tree(search_for, tree_item[1])
@@ -348,18 +351,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.open_project_quiet(file_name,gui_settings,directory)
 
     def open_project_quiet(self,file_name,gui_settings,directory):
-            self.project = self.project_type()
-            try:
-                self.project.read_file(file_name)
-                path_only, file_only = os.path.split(file_name)
-                self.setWindowTitle(self.model + " - " + file_only)
-                if path_only != directory:
-                    gui_settings.setValue("epanet model library for linuxProjectDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
-            except:
-                self.project = Project()
-                self.setWindowTitle(self.model)
+        self.project = self.project_type()
+        try:
+            self.project.read_file(file_name)
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+            if path_only != directory:
+                gui_settings.setValue("ProjectDir", path_only)
+                gui_settings.sync()
+                del gui_settings
+        except:
+            self.project = Project()
+            self.setWindowTitle(self.model)
 
     def save_project(self):
         self.project.write_file(self.project.file_name)
@@ -394,19 +397,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def dropEvent(self, QDropEvent):
         #TODO: check project status and prompt if there are unsaved changes that would be overwritten
         for url in QDropEvent.mimeData().urls():
-            directory, file = os.path.split(str(url.encodedPath()))
-            directory = str.lstrip(str(directory),'file:')
+            directory, filename = os.path.split(str(url.encodedPath()))
+            directory = str.lstrip(str(directory), 'file:')
             print(directory)
             if os.path.isdir(directory):
                 print(' is directory')
-            file = str.rstrip(str(file),'\r\n')
-            print(file)
-            if file.endswith('.inp'):
+            elif os.path.isdir(directory[1:]):
+                directory = directory[1:]
+            filename = str.rstrip(str(filename), '\r\n')
+            print(filename)
+            if filename.endswith('.inp'):
                 gui_settings = QtCore.QSettings(self.model, "GUI")
-                self.open_project_quiet(os.path.join(directory,file),gui_settings,directory)
+                self.open_project_quiet(os.path.join(directory, filename), gui_settings, directory)
             else:
                 QMessageBox.information(self, self.model,
-                            "Dropped file '" + file + "' is not an input file",
+                            "Dropped file '" + filename + "' is not an input file",
                             QMessageBox.Ok)
 
     def action_exit(self):

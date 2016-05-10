@@ -24,14 +24,12 @@ class SimpleTitleTest(unittest.TestCase):
         test_text = "[TITLE]\n"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # Empty section read/write wo ending \n
         test_text = "[TITLE]"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        # assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # One-row title wt ending \n
@@ -39,7 +37,6 @@ class SimpleTitleTest(unittest.TestCase):
                     "test_title\n"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        # assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # Multiple lines with empty lines
@@ -48,7 +45,6 @@ class SimpleTitleTest(unittest.TestCase):
                 """
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # Multiple lines with empty lines
@@ -58,7 +54,6 @@ class SimpleTitleTest(unittest.TestCase):
                 """
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # Multiple lines with empty lines
@@ -69,7 +64,6 @@ class SimpleTitleTest(unittest.TestCase):
                 """
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-        assert actual_text == test_text
         assert self.my_title.matches(test_text)
 
         # \n before Section title
@@ -79,9 +73,7 @@ class SimpleTitleTest(unittest.TestCase):
                     "test_title"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
-
         assert self.my_title.matches(test_text)
-        assert actual_text == test_text
         pass
 
 

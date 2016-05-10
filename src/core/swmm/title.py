@@ -20,5 +20,8 @@ class Title(Section):
             Args:
                 new_text (str): Text to parse into properties.
         """
-        lines = new_text.splitlines()
-        self.title = '\n'.join(lines[1:])  # include all after [TITLE] line
+        self.__init__()
+        # Skip section name and blank lines/spaces/tabs at beginning or end
+        lines = new_text.replace(self.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            self.title = '\n'.join(lines)

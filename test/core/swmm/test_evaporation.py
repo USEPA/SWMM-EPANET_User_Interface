@@ -58,7 +58,7 @@ class ClimatologyEvaporationTest(unittest.TestCase):
         self.my_options.set_text(test_constant_wo_dryonly)
         # Test get_text through matches
         actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_constant_wo_dryonly)
+        assert self.my_options.matches(test_constant_wo_dryonly), "If DRY_ONLY is not specified, match returns False."
 
         # Test constant with DRY_ONLY, consistent with most examples
         test_constant = r"""

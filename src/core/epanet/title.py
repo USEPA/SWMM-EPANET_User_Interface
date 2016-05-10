@@ -22,10 +22,8 @@ class Title(Section):
                 new_text (str): Text to parse into properties.
         """
         self.__init__()
-        for line in new_text.splitlines()[1:]:  # include all after first [TITLE] line
-            if len(self.title) == 0:
-                self.title = line
-            else:
-                if len(self.notes) > 0:
-                    self.notes += '\n'
-                self.notes += line
+        lines = new_text.replace(self.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            self.title = lines[0]
+        if len(lines) > 1:
+            self.notes = '\n'.join(lines[1:])

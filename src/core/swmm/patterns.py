@@ -1,4 +1,5 @@
 from enum import Enum
+from core.inputfile import Section
 
 
 class PatternType(Enum):
@@ -9,27 +10,25 @@ class PatternType(Enum):
     WEEKEND = 4
 
 
-class Pattern:
+class Pattern(Section):
     """Pattern multipliers define how some base quantity is adjusted for each time period"""
     def __init__(self, new_text=None):
-        self.name = ""
-        """Pattern name"""
-
-        self.pattern_type = PatternType.MONTHLY
-        """Pattern type"""
-
-        self.description = ""
-        """Pattern description"""
-
-        self.multipliers = []
-        """Array of multipliers for this pattern"""
-
         if new_text:
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
 
-    def __str__(self):
-        """Override default method to return string representation"""
-        return self.get_text()
+            self.name = ''
+            """Pattern name"""
+
+            self.pattern_type = PatternType.MONTHLY
+            """Pattern type"""
+
+            self.description = ''
+            """Pattern description"""
+
+            self.multipliers = []
+            """Array of multipliers for this pattern"""
 
     def get_text(self):
         """format contents of this item for writing to file"""

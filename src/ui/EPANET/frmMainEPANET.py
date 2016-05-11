@@ -140,16 +140,27 @@ class frmMainEPANET(frmMain):
         frm = None
         # First handle special cases where forms need more than simply being created
 
-        # if edit_name == 'Simple':
-        #     frm = frmControls(self, 'EPANET Simple Controls', "CONTROLS")
-        # elif edit_name == 'Rule-Based':
-        #     frm = frmControls(self, 'EPANET Rule-Based Controls', "RULES")
+        # the following items will respond to a click on a node form, not the tree diagram
+        if edit_name == 'Reservoirs' or edit_name == 'Tanks':
+            # assume we're editing the first node for now
+            frm = frmSourcesQuality(self)
+            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
+            frm.set_from(self.project, '1')
+        elif edit_name == 'Junctions':
+            # assume we're editing the first junction for now
+            frm = frmDemands(self)
+            frm.setWindowTitle('EPANET Demands for Junction ' + '1')
+            frm.set_from(self.project, '1')
+        elif edit_name == 'Patterns':
+            return None
+        elif edit_name == 'Curves':
+            return None
+        else:  # General-purpose case finds most editors from tree information
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        return frm
 
-        # the following items will respond to a click in the list, not the tree diagram
-        # elif edit_name == 'Patterns':
-        #    return frmPatternEditor(self)
-        # elif edit_name == 'Curves':
-        #    return frmCurveEditor(self)
+    def get_editor_with_selected_item(self, edit_name, selected_item):
+        frm = None
 
         # the following items will respond to a click on a node form, not the tree diagram
         if edit_name == 'Reservoirs' or edit_name == 'Tanks':
@@ -164,6 +175,7 @@ class frmMainEPANET(frmMain):
             frm.set_from(self.project, '1')
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+            frm.set_from(self.project, selected_item)
         return frm
 
     def run_simulation(self):

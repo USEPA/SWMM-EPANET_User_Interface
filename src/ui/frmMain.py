@@ -53,6 +53,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
 
         self.setAcceptDrops(True)
+        self.tree_section = ''
 
         try:
             from qgis.core import QgsApplication
@@ -165,6 +166,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
         self.obj_tree.itemClicked.connect(self.list_objects)
+        self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -337,6 +339,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     print "Editor Closing: " + str(event)
             #     # self._forms.remove(event.)
 
+    def list_item_clicked(self, item):
+        # self.listViewObjects.selectedIndexes()
+        if not self.project or not self.get_editor:
+            return
+        for item in self.listViewObjects.selectedIndexes():
+            # text = self.listViewObjects.model().index(item,0).data()
+            selected_text = str(item.data())
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
+
     def new_project(self):
         self.project = self.project_type()
         self.setWindowTitle(self.model + " - New")
@@ -429,6 +440,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return unicode(self)
 
     def clear_object_listing(self):
+        self.tree_section = ''
         self.obj_view_model.clear()
 
     def list_objects(self, itm, column):
@@ -438,6 +450,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             return
         ids = self.get_object_list(itm.data(0, 0))
         if len(ids)> 0:
+            self.tree_section = itm.data(0, 0)
             self.dockw_more.setWindowTitle(itm.data(0, 0))
             for id in ids:
                 newItem = QStandardItem(str(id))

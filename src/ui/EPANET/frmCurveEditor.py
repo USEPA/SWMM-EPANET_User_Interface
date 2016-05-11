@@ -18,16 +18,18 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
-        self.set_from(parent.project)
+        self.set_from(parent.project, '1')
+        self.selected_curve_id = '1'
         self._parent = parent
 
-    def set_from(self, project):
+    def set_from(self, project, selected_curve_id):
         # section = core.epanet.project.Curves()
         section = project.find_section("CURVES")
+        self.selected_curve_id = selected_curve_id
         curve_list = section.value[0:]
         # assume we want to edit the first one
         for curve in curve_list:
-            if curve.curve_id == '1':
+            if curve.curve_id == selected_curve_id:
                 self.txtCurveID.setText(str(curve.curve_id))
                 self.txtDescription.setText(str(curve.description))
                 ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
@@ -46,9 +48,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for legal pump curve
         section = self._parent.project.find_section("CURVES")
         curve_list = section.value[0:]
-        # assume we are editing the first one
         for curve in curve_list:
-            if curve.curve_id == '1':
+            if curve.curve_id == self.selected_curve_id:
                 curve.curve_id = self.txtCurveID.text()
                 curve.description = self.txtDescription.text()
                 curve.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]

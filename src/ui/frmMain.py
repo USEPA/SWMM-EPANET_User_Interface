@@ -341,6 +341,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     # self._forms.remove(event.)
 
     def list_item_clicked(self, item):
+        # on double click of an item in the 'bottom left' list
         if not self.project or not self.get_editor:
             return
         for item in self.listViewObjects.selectedIndexes():

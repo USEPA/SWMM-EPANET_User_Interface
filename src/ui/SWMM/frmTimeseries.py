@@ -24,7 +24,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         # assume we want to edit the first one
         self.timeseries_id = timeseries_id
         for timeseries in timeseries_list:
-            if timeseries.name: # == timeseries_id
+            if timeseries.name == timeseries_id:
                 # this is the timeseries we want to edit
                 self.txtTimeseriesName.setText(timeseries.name)
                 self.txtDescription.setText(timeseries.comment)

@@ -7,6 +7,7 @@ import core.swmm.options.dynamic_wave
 from ui.SWMM.frmCrossSectionDesigner import Ui_frmCrossSection
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCurveEditor import frmCurveEditor
+from core.swmm.curves import CurveType
 
 
 
@@ -291,9 +292,8 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self._frmTransect = frmTransect(self._parent)
             self._frmTransect.show()
         elif current_selection == 'Custom':
-            self._frmCurveEditor = frmCurveEditor(self._parent)
-            self._frmCurveEditor.setWindowTitle('SWMM Shape Curves')
-            self._frmCurveEditor.set_from(self._parent.project, "SHAPE")
+            self._frmCurveEditor = frmCurveEditor(self._parent, 'SWMM Shape Curves', "SHAPE")
+            self._frmCurveEditor.set_from(self._parent.project, '')
             self._frmCurveEditor.show()
 
 
@@ -594,8 +594,8 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             curves_list = curves_section.value[0:]
             self.cboCombo.addItem("")
             for value in curves_list:
-                if value.name and value.type == 'SHAPE':
-                    self.cboCombo.addItem(value.name)
+                if value.curve_id and value.curve_type == CurveType.SHAPE:
+                    self.cboCombo.addItem(value.curve_id)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
             self.btnDialog.setVisible(True)

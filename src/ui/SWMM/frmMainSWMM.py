@@ -40,6 +40,7 @@ from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
+from core.swmm.curves import CurveType
 
 
 class frmMainSWMM(frmMain):
@@ -196,7 +197,24 @@ class frmMainSWMM(frmMain):
                     edit_these.append(new_item)
                     self.project.pollutants.value = edit_these
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-
+        elif edit_name == 'Time Series':
+            return None
+        elif edit_name == 'Time Patterns':
+            return None
+        elif edit_name == 'Control Curves':
+            return None
+        elif edit_name == 'Diversion Curves':
+            return None
+        elif edit_name == 'Pump Curves':
+            return None
+        elif edit_name == 'Rating Curves':
+            return None
+        elif edit_name == 'Shape Curves':
+            return None
+        elif edit_name == 'Storage Curves':
+            return None
+        elif edit_name == 'Tidal Curves':
+            return None
         # the following items will respond to a click on a conduit form, not the tree diagram
         # elif edit_name == "Conduits":
         #     frm = frmCrossSection(self)
@@ -296,25 +314,34 @@ class frmMainSWMM(frmMain):
                 ids.append(self.project.landuses.value[i].land_use_name)
         elif category.lower() == 'control curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.CONTROL:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'diversion curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.DIVERSION:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'pump curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                curve_type = self.project.curves.value[i].curve_type
+                if curve_type == CurveType.PUMP1 or curve_type == CurveType.PUMP2 or \
+                    curve_type == CurveType.PUMP3 or curve_type == CurveType.PUMP4:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'rating curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.RATING:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'shape curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.SHAPE:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'storage curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.STORAGE:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'tidal curves':
             for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+                if self.project.curves.value[i].curve_type == CurveType.TIDAL:
+                    ids.append(self.project.curves.value[i].curve_id)
         elif category.lower() == 'time series':
             for i in range(0, len(self.project.timeseries.value)):
                 ids.append(self.project.timeseries.value[i].name)

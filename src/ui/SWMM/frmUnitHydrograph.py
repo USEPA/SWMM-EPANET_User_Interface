@@ -25,10 +25,9 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         # section = core.swmm.project.UnitHydrograph
         section = project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
-        # assume we want to edit the first one
         self.hydrograph_id = hydrograph_id
         for hydrograph in hydrograph_list:
-            if hydrograph.group_name:  # == hydrograph_id
+            if hydrograph.group_name == hydrograph_id:
                 # this is the unit hydrograph group we want to edit
                 self.txtGroup.setText(hydrograph.group_name)
 

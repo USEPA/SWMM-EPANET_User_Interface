@@ -197,23 +197,12 @@ class frmMainSWMM(frmMain):
                     edit_these.append(new_item)
                     self.project.pollutants.value = edit_these
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-        elif edit_name == 'Time Series':
-            return None
-        elif edit_name == 'Time Patterns':
-            return None
-        elif edit_name == 'Control Curves':
-            return None
-        elif edit_name == 'Diversion Curves':
-            return None
-        elif edit_name == 'Pump Curves':
-            return None
-        elif edit_name == 'Rating Curves':
-            return None
-        elif edit_name == 'Shape Curves':
-            return None
-        elif edit_name == 'Storage Curves':
-            return None
-        elif edit_name == 'Tidal Curves':
+        elif edit_name == 'LID Controls' or edit_name == 'Unit Hydrographs' or edit_name == 'Snow Packs' or \
+             edit_name == 'Transects' or edit_name == 'Land Uses' or edit_name == 'Time Series' or \
+             edit_name == 'Time Patterns' or edit_name == 'Control Curves' or edit_name == 'Diversion Curves' or \
+             edit_name == 'Pump Curves' or edit_name == 'Rating Curves' or edit_name == 'Shape Curves' or \
+             edit_name == 'Storage Curves' or edit_name == 'Tidal Curves':
+            # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
         # the following items will respond to a click on a conduit form, not the tree diagram
         # elif edit_name == "Conduits":
@@ -236,14 +225,13 @@ class frmMainSWMM(frmMain):
             if self.project and self.project.pollutants:
                 if not isinstance(self.project.pollutants.value, basestring):
                     if isinstance(self.project.pollutants.value, list):
-                        edit_these.extend(self.project.pollutants.value)
-                if len(edit_these) == 0:
-                    new_item = Pollutant()
-                    new_item.name = "NewPollutant"
-                    edit_these.append(new_item)
-                    self.project.pollutants.value = edit_these
+                        for value in self.project.pollutants.value:
+                            if value.name == selected_item:
+                                edit_these.append(value)
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-
+        elif edit_name == "Aquifers":
+            # do all of these for now, will want to restrict to only selected one
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         # the following items will respond to a click on a conduit form, not the tree diagram
         # elif edit_name == "Conduits":
         #     frm = frmCrossSection(self)

@@ -22,7 +22,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
         # assume we want to edit the first one
         self.transect_id = transect_id
         for transect in transect_list:
-            if transect.name: # == transect_id
+            if transect.name == transect_id:
                 # this is the transect we want to edit
                 self.txtName.setText(transect.name)
                 self.txtDescription.setText(transect.comment)

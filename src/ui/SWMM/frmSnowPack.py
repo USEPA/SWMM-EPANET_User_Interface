@@ -22,7 +22,7 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
         # assume we want to edit the first one
         self.pack_id = pack_id
         for pack in snow_list:
-            if pack.name: # == pack_id
+            if pack.name == pack_id:
                 # this is the snowpack we want to edit
                 self.txtSnow.setText(pack.name)
 

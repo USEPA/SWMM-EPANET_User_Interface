@@ -209,6 +209,123 @@ class frmMainSWMM(frmMain):
 
         return frm
 
+    def get_editor_with_selected_item(self, edit_name, selected_item):
+        frm = None
+        # First handle special cases where forms need more than simply being created
+
+        if edit_name == "Pollutants":
+            edit_these = []
+            if self.project and self.project.pollutants:
+                if not isinstance(self.project.pollutants.value, basestring):
+                    if isinstance(self.project.pollutants.value, list):
+                        edit_these.extend(self.project.pollutants.value)
+                if len(edit_these) == 0:
+                    new_item = Pollutant()
+                    new_item.name = "NewPollutant"
+                    edit_these.append(new_item)
+                    self.project.pollutants.value = edit_these
+            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
+
+        # the following items will respond to a click on a conduit form, not the tree diagram
+        # elif edit_name == "Conduits":
+        #     frm = frmCrossSection(self)
+
+        # the following items will respond to a click on a node form, not the tree diagram
+        # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
+        #     frm = frmInflows(self)
+        else:  # General-purpose case finds most editors from tree information
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+            frm.set_from(self.project, selected_item)
+        return frm
+
+    def get_object_list(self, category):
+        ids = []
+        if category.lower() == 'subcatchments':
+            for i in range(0, len(self.project.subcatchments.value)):
+                ids.append(self.project.subcatchments.value[i].name)
+        # elif category.lower() == 'rain gages':
+            # for i in range(0, len(self.project.raingages.value)):
+            #     ids.append(self.project.raingages.value[i].name)
+        elif category.lower() == 'aquifers':
+            for i in range(0, len(self.project.aquifers.value)):
+                ids.append(self.project.aquifers.value[i].name)
+        elif category.lower() == 'snow packs':
+            for i in range(0, len(self.project.snowpacks.value)):
+                ids.append(self.project.snowpacks.value[i].name)
+        elif category.lower() == 'unit hydrographs':
+            for i in range(0, len(self.project.hydrographs.value)):
+                ids.append(self.project.hydrographs.value[i].group_name)
+        elif category.lower() == 'lid controls':
+            for i in range(0, len(self.project.lid_controls.value)):
+                ids.append(self.project.lid_controls.value[i].control_name)
+        elif category.lower() == 'junctions':
+            for i in range(0, len(self.project.junctions.value)):
+                ids.append(self.project.junctions.value[i].name)
+        # elif category.lower() == 'outfalls':
+            # for i in range(0, len(self.project.outfalls.value)):
+            #     ids.append(self.project.outfalls.value[i].name)
+        # elif category.lower() == 'dividers':
+            # for i in range(0, len(self.project.dividers.value)):
+            #     ids.append(self.project.dividers.value[i].name)
+        # elif category.lower() == 'storage units':
+            # for i in range(0, len(self.project.storage.value)):
+            #     ids.append(self.project.storage.value[i].name)
+        elif category.lower() == 'conduits':
+            for i in range(0, len(self.project.conduits.value)):
+                ids.append(self.project.conduits.value[i].name)
+        elif category.lower() == 'pumps':
+            for i in range(0, len(self.project.pumps.value)):
+                ids.append(self.project.pumps.value[i].name)
+        # elif category.lower() == 'orifices':
+            # for i in range(0, len(self.project.orifices.value)):
+            #     ids.append(self.project.orifices.value[i].name)
+        # elif category.lower() == 'weirs':
+            # for i in range(0, len(self.project.weirs.value)):
+            #     ids.append(self.project.weirs.value[i].name)
+        # elif category.lower() == 'outlets':
+            # for i in range(0, len(self.project.outlets.value)):
+            #     ids.append(self.project.outlets.value[i].name)
+        elif category.lower() == 'transects':
+            for i in range(0, len(self.project.transects.value)):
+                ids.append(self.project.transects.value[i].name)
+        elif category.lower() == 'pollutants':
+            for i in range(0, len(self.project.pollutants.value)):
+                ids.append(self.project.pollutants.value[i].name)
+        elif category.lower() == 'land uses':
+            for i in range(0, len(self.project.landuses.value)):
+                ids.append(self.project.landuses.value[i].land_use_name)
+        elif category.lower() == 'control curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'diversion curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'pump curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'rating curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'shape curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'storage curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'tidal curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        elif category.lower() == 'time series':
+            for i in range(0, len(self.project.timeseries.value)):
+                ids.append(self.project.timeseries.value[i].name)
+        elif category.lower() == 'time patterns':
+            for i in range(0, len(self.project.patterns.value)):
+                ids.append(self.project.patterns.value[i].name)
+        # elif category.lower() == 'map labels':
+            # for i in range(0, len(self.project.labels.value)):
+            #     ids.append(self.project.labels.value[i].label_text)
+        return ids
+
     def run_simulation(self):
         # First find input file to run
         file_name = ''

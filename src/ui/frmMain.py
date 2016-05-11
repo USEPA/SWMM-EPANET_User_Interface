@@ -165,7 +165,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # cleaner.add(self.tabProjMap.layout())
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        self.obj_tree.itemClicked.connect(self.list_objects)
+        # self.obj_tree.itemClicked.connect(self.list_objects)
+        self.obj_tree.itemSelectionChanged.connect(self.list_objects)
         self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
@@ -340,11 +341,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     # self._forms.remove(event.)
 
     def list_item_clicked(self, item):
-        # self.listViewObjects.selectedIndexes()
         if not self.project or not self.get_editor:
             return
         for item in self.listViewObjects.selectedIndexes():
-            # text = self.listViewObjects.model().index(item,0).data()
             selected_text = str(item.data())
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
 
@@ -443,51 +442,25 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.tree_section = ''
         self.obj_view_model.clear()
 
-    def list_objects(self, itm, column):
+    def list_objects(self):
+        selected_text = ''
+        for item in self.obj_tree.selectedIndexes():
+            selected_text = str(item.data())
         self.clear_object_listing()
         self.dockw_more.setWindowTitle('')
         if self.project == None:
             return
-        ids = self.get_object_list(itm.data(0, 0))
+        if selected_text == '':
+            return
+        ids = self.get_object_list(selected_text)
         if len(ids)> 0:
-            self.tree_section = itm.data(0, 0)
-            self.dockw_more.setWindowTitle(itm.data(0, 0))
+            self.tree_section = selected_text
+            self.dockw_more.setWindowTitle(selected_text)
             for id in ids:
                 newItem = QStandardItem(str(id))
                 newItem.setEditable(False)
                 self.obj_view_model.appendRow(newItem)
             self.listViewObjects.setModel(self.obj_view_model)
-
-    def get_object_list(self, category):
-        ids = []
-        if category.lower() == 'junctions':
-            for i in range(0, len(self.project.junctions.value)):
-                ids.append(self.project.junctions.value[i].node_id)
-        elif category.lower() == 'reservoirs':
-            for i in range(0, len(self.project.reservoirs.value)):
-                ids.append(self.project.reservoirs.value[i].node_id)
-        elif category.lower() == 'tanks':
-            for i in range(0, len(self.project.tanks.value)):
-                ids.append(self.project.tanks.value[i].node_id)
-        elif category.lower() == 'pipes':
-            for i in range(0, len(self.project.pipes.value)):
-                ids.append(self.project.pipes.value[i].id)
-        elif category.lower() == 'pumps':
-            for i in range(0, len(self.project.pumps.value)):
-                ids.append(self.project.pumps.value[i].id)
-        elif category.lower() == 'valves':
-            for i in range(0, len(self.project.valves.value)):
-                ids.append(self.project.valves.value[i].id)
-        elif category.lower() == 'labels':
-            for i in range(0, len(self.project.labels.value)):
-                ids.append(self.project.labels.value[i].label)
-        elif category.lower() == 'patterns':
-            for i in range(0, len(self.project.patterns.value)):
-                ids.append(self.project.patterns.value[i].pattern_id)
-        elif category.lower() == 'curves':
-            for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
-        return ids
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

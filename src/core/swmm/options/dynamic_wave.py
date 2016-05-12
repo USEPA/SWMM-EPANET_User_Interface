@@ -103,8 +103,17 @@ class DynamicWave(Section):
         wave flow routing. The default value is 0.5 seconds.
         """
 
-        self.threads = 1
+        self.threads = 0
         """
         Number of parallel computing threads to use for dynamic wave flow routing
-        on machines equipped with multi-core processors. The default is 1.
+        on machines equipped with multi-core processors. If set to zero, this will not be written to inp file.
         """
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        # Use default get_text, but need to skip LID if it is NONE
+        lines = []
+        for line in Section.get_text(self).splitlines():
+            if line.split() != ["THREADS", "0"]:
+                lines.append(line)
+        return '\n'.join(lines)

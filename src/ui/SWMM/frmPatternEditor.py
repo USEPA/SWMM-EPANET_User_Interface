@@ -15,16 +15,17 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
-        self.set_from(parent.project)
+        self.set_from(parent.project, '1')
+        self.selected_pattern_id = '1'
         self._parent = parent
 
-    def set_from(self, project):
+    def set_from(self, project, selected_pattern_id):
         # section = core.swmm.project.Pattern()
         section = project.find_section("PATTERNS")
+        self.selected_pattern_id = selected_pattern_id
         pattern_list = section.value[0:]
-        # assume we want to edit the first one
         for value in pattern_list:
-             if value.name:
+             if value.name == selected_pattern_id:
                  self.txtPatternID.setText(str(value.name))
                  self.txtDescription.setText(str(value.description))
                  ui.convenience.set_combo(self.cboType, value.pattern_type)

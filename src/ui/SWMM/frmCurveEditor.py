@@ -23,52 +23,51 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # self.set_from(parent.project)   # do after init to set curve type
         self._parent = parent
         self.curve_type = curve_type
+        self.curve_id = ''
         if parent and parent.project and curve_type:
-            self.set_from(parent.project, curve_type)
+            self.set_from(parent.project, self.curve_id)
 
-    def set_from(self, project, curve_type):
-        self.curve_type = curve_type
+    def set_from(self, project, curve_id):
         # section = core.swmm.project.Curves()
         section = project.find_section("CURVES")
 
-        if curve_type == "CONTROL":
+        if self.curve_type == "CONTROL":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Controller Value","Control Setting"))
-        elif curve_type == "DIVERSION":
+        elif self.curve_type == "DIVERSION":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Inflow (CFS)","Outflow (CFS)"))
-        elif curve_type == "PUMP":
+        elif self.curve_type == "PUMP":
             self.cboCurveType.setVisible(True)
             self.lblCurveType.setVisible(True)
             self.tblMult.setHorizontalHeaderLabels(("Depth (ft)","Flow (CFS)"))
             self.cboCurveType.clear()
             self.cboCurveType.addItems(("TYPE1","TYPE2","TYPE3","TYPE4"))
-        elif curve_type == "RATING":
+        elif self.curve_type == "RATING":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Head (ft)","Outflow (CFS)"))
-        elif curve_type == "SHAPE":
+        elif self.curve_type == "SHAPE":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Depth/Full Depth","Width/Full Depth"))
-        elif curve_type == "STORAGE":
+        elif self.curve_type == "STORAGE":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Depth (ft)","Area (ft2)"))
-        elif curve_type == "TIDAL":
+        elif self.curve_type == "TIDAL":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             self.tblMult.setHorizontalHeaderLabels(("Hour of Day","Stage (ft)"))
 
         curve_list = section.value[0:]
-        # assume we want to edit the first one
         for curve in curve_list:
-            if curve.curve_id and curve.curve_type.name[:4] == curve_type[:4]:
+            if curve.curve_id == curve_id and curve.curve_type.name[:4] == self.curve_type[:4]:
                 self.txtCurveID.setText(str(curve.curve_id))
                 # self.txtDescription.setText(str(curve.description))
-                if curve_type == "PUMP":
+                if self.curve_type == "PUMP":
                     if curve.curve_type.name == "PUMP1":
                         self.cboCurveType.setCurrentIndex(0)
                     if curve.curve_type.name == "PUMP2":
@@ -92,7 +91,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         curve_list = section.value[0:]
         # assume we are editing the first one
         for curve in curve_list:
-            if curve.curve_id and curve.curve_type.name[:4] == self.curve_type[:4]:
+            if curve.curve_id == self.curve_id and curve.curve_type.name[:4] == self.curve_type[:4]:
                 curve.curve_id = self.txtCurveID.text()
                 # curve.description = self.txtDescription.text()
                 # curve.curve_type = core.swmm.curves.CurveType[self.cboCurveType.currentText()]

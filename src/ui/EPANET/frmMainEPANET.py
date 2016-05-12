@@ -178,6 +178,37 @@ class frmMainEPANET(frmMain):
             frm.set_from(self.project, selected_item)
         return frm
 
+    def get_object_list(self, category):
+        ids = []
+        if category.lower() == 'junctions':
+            for i in range(0, len(self.project.junctions.value)):
+                ids.append(self.project.junctions.value[i].node_id)
+        elif category.lower() == 'reservoirs':
+            for i in range(0, len(self.project.reservoirs.value)):
+                ids.append(self.project.reservoirs.value[i].node_id)
+        elif category.lower() == 'tanks':
+            for i in range(0, len(self.project.tanks.value)):
+                ids.append(self.project.tanks.value[i].node_id)
+        elif category.lower() == 'pipes':
+            for i in range(0, len(self.project.pipes.value)):
+                ids.append(self.project.pipes.value[i].id)
+        elif category.lower() == 'pumps':
+            for i in range(0, len(self.project.pumps.value)):
+                ids.append(self.project.pumps.value[i].id)
+        elif category.lower() == 'valves':
+            for i in range(0, len(self.project.valves.value)):
+                ids.append(self.project.valves.value[i].id)
+        elif category.lower() == 'labels':
+            for i in range(0, len(self.project.labels.value)):
+                ids.append(self.project.labels.value[i].label)
+        elif category.lower() == 'patterns':
+            for i in range(0, len(self.project.patterns.value)):
+                ids.append(self.project.patterns.value[i].pattern_id)
+        elif category.lower() == 'curves':
+            for i in range(0, len(self.project.curves.value)):
+                ids.append(self.project.curves.value[i].curve_id)
+        return ids
+
     def run_simulation(self):
         # Find input file to run
         file_name = ''

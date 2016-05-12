@@ -1,6 +1,7 @@
 from enum import Enum
 from core.inputfile import Section
 
+
 class CurveType(Enum):
     """Curve Type"""
     STORAGE = 1
@@ -55,7 +56,7 @@ class Curve(Section):
                 if len(fields) > 2:
                     self.curve_id = fields[0]
                     try:
-                        self.curve_type = CurveType[fields[1]]
+                        self.curve_type = CurveType[fields[1].upper()]
                         x_index = 2
                     except:
                         x_index = 1

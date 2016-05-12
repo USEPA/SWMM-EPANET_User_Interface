@@ -139,6 +139,9 @@ class Evaporation(Section):
         """determines if evaporation only occurs during periods with no precipitation."""
 
     def get_text(self):
+        if self.format == EvaporationFormat.UNSET:
+            return ''
+
         text_list = [self.SECTION_NAME]
 
         if self.comment:

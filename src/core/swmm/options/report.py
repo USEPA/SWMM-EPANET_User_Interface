@@ -53,6 +53,15 @@ class Report(Section):
         """List of lid specifications whose results are to be reported.
         Includes LID control name, subcatchment id and file name."""
 
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        # Use default get_text, but need to skip LID if it is NONE
+        lines = []
+        for line in Section.get_text(self).splitlines():
+            if line.split() != ["LID", "NONE"]:
+                lines.append(line)
+        return '\n'.join(lines)
+
     def set_text(self, new_text):
         """Read properties from text.
             Args:

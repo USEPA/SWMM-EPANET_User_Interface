@@ -19,9 +19,11 @@ class SingleHydrographTest(unittest.TestCase):
                     "UH101\tJUL\tMEDIUM\t0.011\t2.0\t2.0\t0.033\t1.0\t2.0"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
-        new_text = actual_text.replace(" ","")
-        assert test_text == new_text
+        nw_actual_text = actual_text.replace(" ","")
+        nw_test_text = test_text.replace(" ","")
+        assert nw_actual_text == nw_test_text
         assert self.my_options.matches(test_text)
+        pass
 
 
 class SimpleHydrographsTest(unittest.TestCase):

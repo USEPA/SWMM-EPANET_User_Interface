@@ -111,7 +111,7 @@ class DynamicWave(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        # Use default get_text, but need to skip LID if it is NONE
+        # Use default get_text, but need to skip THREADS if it is zero
         lines = []
         for line in Section.get_text(self).splitlines():
             if line.split() != ["THREADS", "0"]:

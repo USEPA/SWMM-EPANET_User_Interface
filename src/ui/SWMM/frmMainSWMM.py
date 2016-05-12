@@ -51,27 +51,28 @@ class frmMainSWMM(frmMain):
     # If an editing form takes additional arguments, they follow the editing form as a list.
     # Special cases may just have a label and no editing form or children.
     # *_items are a lists of items in a section
-    tree_options_General = ["General", frmGeneralOptions]
-    tree_options_Dates = ["Dates", frmDates]
-    tree_options_TimeSteps = ["Time Steps", frmTimeSteps]
-    tree_options_DynamicWave = ["Dynamic Wave", frmDynamicWave]
+    tree_options_General        = ["General",         frmGeneralOptions]
+    tree_options_Dates          = ["Dates",           frmDates]
+    tree_options_TimeSteps      = ["Time Steps",      frmTimeSteps]
+    tree_options_DynamicWave    = ["Dynamic Wave",    frmDynamicWave]
     tree_options_InterfaceFiles = ["Interface Files", frmInterfaceFiles]
-    tree_options_Reporting = ["Reporting", frmReportOptions]
-    tree_options_MapBackdrop = ["Map/Backdrop", frmMapBackdropOptions]
-    tree_options_items = [tree_options_General,
-                          tree_options_Dates,
-                          tree_options_TimeSteps,
-                          tree_options_DynamicWave,
-                          tree_options_InterfaceFiles,
-                          tree_options_Reporting,
-                          tree_options_MapBackdrop]
+    tree_options_Reporting      = ["Reporting",       frmReportOptions]
+    tree_options_MapBackdrop    = ["Map/Backdrop",    frmMapBackdropOptions]
+    tree_options_items = [
+        tree_options_General,
+        tree_options_Dates,
+        tree_options_TimeSteps,
+        tree_options_DynamicWave,
+        tree_options_InterfaceFiles,
+        tree_options_Reporting,
+        tree_options_MapBackdrop]
 
-    tree_climatology_Temperature = ["Temperature", frmClimatology, ["Temperature"]]
-    tree_climatology_Evaporation = ["Evaporation", frmClimatology, ["Evaporation"]]
-    tree_climatology_WindSpeed = ["Wind Speed", frmClimatology, ["Wind Speed"]]
-    tree_climatology_SnowMelt = ["Snow Melt", frmClimatology, ["Snow Melt"]]
+    tree_climatology_Temperature    = ["Temperature",     frmClimatology, ["Temperature"]]
+    tree_climatology_Evaporation    = ["Evaporation",     frmClimatology, ["Evaporation"]]
+    tree_climatology_WindSpeed      = ["Wind Speed",      frmClimatology, ["Wind Speed"]]
+    tree_climatology_SnowMelt       = ["Snow Melt",       frmClimatology, ["Snow Melt"]]
     tree_climatology_ArealDepletion = ["Areal Depletion", frmClimatology, ["Areal Depletion"]]
-    tree_climatology_Adjustment = ["Adjustment", frmClimatology, ["Adjustment"]]
+    tree_climatology_Adjustment     = ["Adjustment",      frmClimatology, ["Adjustment"]]
     tree_climatology_items = [
         tree_climatology_Temperature,
         tree_climatology_Evaporation,
@@ -80,12 +81,12 @@ class frmMainSWMM(frmMain):
         tree_climatology_ArealDepletion,
         tree_climatology_Adjustment]
 
-    tree_hydrology_RainGages = ["Rain Gages", None]
-    tree_hydrology_Subcatchments = ["Subcatchments", frmSubcatchments]
-    tree_hydrology_Aquifers = ["Aquifers", frmAquifers]
-    tree_hydrology_SnowPacks = ["Snow Packs", frmSnowPack]
+    tree_hydrology_RainGages       = ["Rain Gages",       None]
+    tree_hydrology_Subcatchments   = ["Subcatchments",    frmSubcatchments]
+    tree_hydrology_Aquifers        = ["Aquifers",         frmAquifers]
+    tree_hydrology_SnowPacks       = ["Snow Packs",       frmSnowPack]
     tree_hydrology_UnitHydrographs = ["Unit Hydrographs", frmUnitHydrograph]
-    tree_hydrology_LIDControls = ["LID Controls", frmLID]
+    tree_hydrology_LIDControls     = ["LID Controls",     frmLID]
     tree_hydrology_items = [
         tree_hydrology_RainGages,
         tree_hydrology_Subcatchments,
@@ -94,9 +95,9 @@ class frmMainSWMM(frmMain):
         tree_hydrology_UnitHydrographs,
         tree_hydrology_LIDControls]
 
-    tree_nodes_Junctions = ["Junctions", frmJunction]
-    tree_nodes_Outfalls = ["Outfalls", frmInflows, "1"]
-    tree_nodes_Dividers = ["Dividers", frmInflows, "1"]
+    tree_nodes_Junctions    = ["Junctions",     frmJunction]
+    tree_nodes_Outfalls     = ["Outfalls",      frmInflows, "1"]
+    tree_nodes_Dividers     = ["Dividers",      frmInflows, "1"]
     tree_nodes_StorageUnits = ["Storage Units", frmInflows, "1"]
     tree_nodes_items = [
         tree_nodes_Junctions,
@@ -105,10 +106,10 @@ class frmMainSWMM(frmMain):
         tree_nodes_StorageUnits]
 
     tree_links_Conduits = ["Conduits", frmCrossSection]
-    tree_links_Pumps = ["Pumps", None]
+    tree_links_Pumps    = ["Pumps",    None]
     tree_links_Orifices = ["Orifices", None]
-    tree_links_Weirs = ["Weirs", None]
-    tree_links_Outlets = ["Outlets", None]
+    tree_links_Weirs    = ["Weirs",    None]
+    tree_links_Outlets  = ["Outlets",  None]
     tree_links_items = [
         tree_links_Conduits,
         tree_links_Pumps,
@@ -116,10 +117,10 @@ class frmMainSWMM(frmMain):
         tree_links_Weirs,
         tree_links_Outlets]
 
-    tree_hydraulics_Nodes = ["Nodes", tree_nodes_items]
-    tree_hydraulics_Links = ["Links", tree_links_items]
+    tree_hydraulics_Nodes     = ["Nodes",     tree_nodes_items]
+    tree_hydraulics_Links     = ["Links",     tree_links_items]
     tree_hydraulics_Transects = ["Transects", frmTransect]
-    tree_hydraulics_Controls = ["Controls", frmControls]
+    tree_hydraulics_Controls  = ["Controls",  frmControls]
     tree_hydraulics_items = [
         tree_hydraulics_Nodes,
         tree_hydraulics_Links,
@@ -127,18 +128,18 @@ class frmMainSWMM(frmMain):
         tree_hydraulics_Controls]
 
     tree_quality_Pollutants = ["Pollutants", None]
-    tree_quality_LandUses = ["Land Uses", frmLandUses]
+    tree_quality_LandUses   = ["Land Uses",  frmLandUses]
     tree_quality_items = [
         tree_quality_Pollutants,
         tree_quality_LandUses]
 
-    tree_curves_ControlCurves = ["Control Curves", frmCurveEditor, ["SWMM Control Curves", "CONTROL"]]
+    tree_curves_ControlCurves   = ["Control Curves",   frmCurveEditor, ["SWMM Control Curves",   "CONTROL"]]
     tree_curves_DiversionCurves = ["Diversion Curves", frmCurveEditor, ["SWMM Diversion Curves", "DIVERSION"]]
-    tree_curves_PumpCurves = ["Pump Curves", frmCurveEditor, ["SWMM Pump Curves", "PUMP"]]
-    tree_curves_RatingCurves = ["Rating Curves", frmCurveEditor, ["SWMM Rating Curves", "RATING"]]
-    tree_curves_ShapeCurves = ["Shape Curves", frmCurveEditor, ["SWMM Shape Curves", "SHAPE"]]
-    tree_curves_StorageCurves = ["Storage Curves", frmCurveEditor, ["SWMM Storage Curves", "STORAGE"]]
-    tree_curves_TidalCurves = ["Tidal Curves", frmCurveEditor, ["SWMM Tidal Curves", "TIDAL"]]
+    tree_curves_PumpCurves      = ["Pump Curves",      frmCurveEditor, ["SWMM Pump Curves",      "PUMP"]]
+    tree_curves_RatingCurves    = ["Rating Curves",    frmCurveEditor, ["SWMM Rating Curves",    "RATING"]]
+    tree_curves_ShapeCurves     = ["Shape Curves",     frmCurveEditor, ["SWMM Shape Curves",     "SHAPE"]]
+    tree_curves_StorageCurves   = ["Storage Curves",   frmCurveEditor, ["SWMM Storage Curves",   "STORAGE"]]
+    tree_curves_TidalCurves     = ["Tidal Curves",     frmCurveEditor, ["SWMM Tidal Curves",     "TIDAL"]]
     tree_curves_items = [
         tree_curves_ControlCurves,
         tree_curves_DiversionCurves,
@@ -148,26 +149,42 @@ class frmMainSWMM(frmMain):
         tree_curves_StorageCurves,
         tree_curves_TidalCurves]
 
-    tree_TitleNotes = ["Title/Notes", frmTitle]
-    tree_Options = ["Options", tree_options_items]
-    tree_Climatology = ["Climatology", tree_climatology_items]
-    tree_Hydrology = ["Hydrology", tree_hydrology_items]
-    tree_Hydraulics = ["Hydraulics", tree_hydraulics_items]
-    tree_Quality = ["Quality", tree_quality_items]
-    tree_Curves = ["Curves", tree_curves_items]
-    tree_TimeSeries = ["Time Series", frmTimeseries]
+    tree_TitleNotes   = ["Title/Notes",   frmTitle]
+    tree_Options      = ["Options",       tree_options_items]
+    tree_Climatology  = ["Climatology",   tree_climatology_items]
+    tree_Hydrology    = ["Hydrology",     tree_hydrology_items]
+    tree_Hydraulics   = ["Hydraulics",    tree_hydraulics_items]
+    tree_Quality      = ["Quality",       tree_quality_items]
+    tree_Curves       = ["Curves",        tree_curves_items]
+    tree_TimeSeries   = ["Time Series",   frmTimeseries]
     tree_TimePatterns = ["Time Patterns", frmPatternEditor]
-    tree_MapLabels = ["Map Labels", None]
-    tree_top_items = [tree_TitleNotes,
-                      tree_Options,
-                      tree_Climatology,
-                      tree_Hydrology,
-                      tree_Hydraulics,
-                      tree_Quality,
-                      tree_Curves,
-                      tree_TimeSeries,
-                      tree_TimePatterns,
-                      tree_MapLabels]
+    tree_MapLabels    = ["Map Labels",    None]
+    tree_top_items = [
+        tree_TitleNotes,
+        tree_Options,
+        tree_Climatology,
+        tree_Hydrology,
+        tree_Hydraulics,
+        tree_Quality,
+        tree_Curves,
+        tree_TimeSeries,
+        tree_TimePatterns,
+        tree_MapLabels]
+
+    tree_items_using_id = (tree_hydrology_LIDControls,
+                           tree_hydrology_UnitHydrographs,
+                           tree_hydrology_SnowPacks,
+                           tree_hydraulics_Transects,
+                           tree_quality_LandUses,
+                           tree_TimeSeries,
+                           tree_TimePatterns,
+                           tree_curves_ControlCurves,
+                           tree_curves_DiversionCurves,
+                           tree_curves_PumpCurves,
+                           tree_curves_RatingCurves,
+                           tree_curves_ShapeCurves,
+                           tree_curves_StorageCurves,
+                           tree_curves_TidalCurves)
 
     def __init__(self, q_application):
         frmMain.__init__(self, q_application)
@@ -185,7 +202,7 @@ class frmMainSWMM(frmMain):
         frm = None
         # First handle special cases where forms need more than simply being created
 
-        if edit_name == "Pollutants":
+        if edit_name == self.tree_quality_Pollutants[0]:
             edit_these = []
             if self.project and self.project.pollutants:
                 if not isinstance(self.project.pollutants.value, basestring):
@@ -197,15 +214,11 @@ class frmMainSWMM(frmMain):
                     edit_these.append(new_item)
                     self.project.pollutants.value = edit_these
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-        elif edit_name == 'LID Controls' or edit_name == 'Unit Hydrographs' or edit_name == 'Snow Packs' or \
-             edit_name == 'Transects' or edit_name == 'Land Uses' or edit_name == 'Time Series' or \
-             edit_name == 'Time Patterns' or edit_name == 'Control Curves' or edit_name == 'Diversion Curves' or \
-             edit_name == 'Pump Curves' or edit_name == 'Rating Curves' or edit_name == 'Shape Curves' or \
-             edit_name == 'Storage Curves' or edit_name == 'Tidal Curves':
+        elif edit_name in [item[0] for item in self.tree_items_using_id]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
         # the following items will respond to a click on a conduit form, not the tree diagram
-        # elif edit_name == "Conduits":
+        # elif edit_name == tree_links_Conduits[0]:
         #     frm = frmCrossSection(self)
 
         # the following items will respond to a click on a node form, not the tree diagram
@@ -246,97 +259,97 @@ class frmMainSWMM(frmMain):
 
     def get_object_list(self, category):
         ids = []
-        if category.lower() == 'subcatchments':
+        if category == self.tree_hydrology_Subcatchments[0]:
             for i in range(0, len(self.project.subcatchments.value)):
                 ids.append(self.project.subcatchments.value[i].name)
         # elif category.lower() == 'rain gages':
             # for i in range(0, len(self.project.raingages.value)):
             #     ids.append(self.project.raingages.value[i].name)
-        elif category.lower() == 'aquifers':
+        elif category == self.tree_hydrology_Aquifers[0]:
             for i in range(0, len(self.project.aquifers.value)):
                 ids.append(self.project.aquifers.value[i].name)
-        elif category.lower() == 'snow packs':
+        elif category == self.tree_hydrology_SnowPacks[0]:
             for i in range(0, len(self.project.snowpacks.value)):
                 ids.append(self.project.snowpacks.value[i].name)
-        elif category.lower() == 'unit hydrographs':
+        elif category == self.tree_hydrology_UnitHydrographs[0]:
             for i in range(0, len(self.project.hydrographs.value)):
                 ids.append(self.project.hydrographs.value[i].group_name)
-        elif category.lower() == 'lid controls':
+        elif category == self.tree_hydrology_LIDControls[0]:
             for i in range(0, len(self.project.lid_controls.value)):
                 ids.append(self.project.lid_controls.value[i].control_name)
-        elif category.lower() == 'junctions':
+        elif category == self.tree_nodes_Junctions[0]:
             for i in range(0, len(self.project.junctions.value)):
                 ids.append(self.project.junctions.value[i].name)
-        # elif category.lower() == 'outfalls':
+        # elif category == self.tree_nodes_Outfalls[0]:
             # for i in range(0, len(self.project.outfalls.value)):
             #     ids.append(self.project.outfalls.value[i].name)
-        # elif category.lower() == 'dividers':
+        # elif category == self.tree_nodes_Dividers[0]:
             # for i in range(0, len(self.project.dividers.value)):
             #     ids.append(self.project.dividers.value[i].name)
-        # elif category.lower() == 'storage units':
+        # elif category == self.tree_nodes_StorageUnits[0]:
             # for i in range(0, len(self.project.storage.value)):
             #     ids.append(self.project.storage.value[i].name)
-        elif category.lower() == 'conduits':
+        elif category == self.tree_links_Conduits[0]:
             for i in range(0, len(self.project.conduits.value)):
                 ids.append(self.project.conduits.value[i].name)
-        elif category.lower() == 'pumps':
+        elif category == self.tree_links_Pumps:
             for i in range(0, len(self.project.pumps.value)):
                 ids.append(self.project.pumps.value[i].name)
-        # elif category.lower() == 'orifices':
+        # elif category == self.tree_links_Orifices[0]:
             # for i in range(0, len(self.project.orifices.value)):
             #     ids.append(self.project.orifices.value[i].name)
-        # elif category.lower() == 'weirs':
+        # elif category == self.tree_links_Weirs[0]:
             # for i in range(0, len(self.project.weirs.value)):
             #     ids.append(self.project.weirs.value[i].name)
-        # elif category.lower() == 'outlets':
+        # elif category == self.tree_links_Outlets[0]:
             # for i in range(0, len(self.project.outlets.value)):
             #     ids.append(self.project.outlets.value[i].name)
-        elif category.lower() == 'transects':
+        elif category == self.tree_hydraulics_Transects[0]:
             for i in range(0, len(self.project.transects.value)):
                 ids.append(self.project.transects.value[i].name)
-        elif category.lower() == 'pollutants':
+        elif category == self.tree_quality_Pollutants[0]:
             for i in range(0, len(self.project.pollutants.value)):
                 ids.append(self.project.pollutants.value[i].name)
-        elif category.lower() == 'land uses':
+        elif category == self.tree_quality_LandUses[0]:
             for i in range(0, len(self.project.landuses.value)):
                 ids.append(self.project.landuses.value[i].land_use_name)
-        elif category.lower() == 'control curves':
+        elif category == self.tree_curves_ControlCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.CONTROL:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'diversion curves':
+        elif category == self.tree_curves_DiversionCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.DIVERSION:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'pump curves':
+        elif category == self.tree_curves_PumpCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 curve_type = self.project.curves.value[i].curve_type
                 if curve_type == CurveType.PUMP1 or curve_type == CurveType.PUMP2 or \
                     curve_type == CurveType.PUMP3 or curve_type == CurveType.PUMP4:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'rating curves':
+        elif category == self.tree_curves_RatingCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.RATING:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'shape curves':
+        elif category == self.tree_curves_ShapeCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.SHAPE:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'storage curves':
+        elif category == self.tree_curves_StorageCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.STORAGE:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'tidal curves':
+        elif category == self.tree_curves_TidalCurves[0]:
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.TIDAL:
                     ids.append(self.project.curves.value[i].curve_id)
-        elif category.lower() == 'time series':
+        elif category == self.tree_TimeSeries[0]:
             for i in range(0, len(self.project.timeseries.value)):
                 ids.append(self.project.timeseries.value[i].name)
-        elif category.lower() == 'time patterns':
+        elif category == self.tree_TimePatterns[0]:
             for i in range(0, len(self.project.patterns.value)):
                 ids.append(self.project.patterns.value[i].name)
-        # elif category.lower() == 'map labels':
+        # elif category == self.tree_MapLabels[0]:
             # for i in range(0, len(self.project.labels.value)):
             #     ids.append(self.project.labels.value[i].label_text)
         return ids

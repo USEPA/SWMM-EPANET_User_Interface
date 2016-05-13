@@ -29,18 +29,18 @@ class DynamicWave(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    #    attribute,                  input_name, label, default, english, metric, hint
+    #     attribute,             input_name,            label,               default, english, metric, hint
     metadata = Metadata((
-        ("inertial_damping",         "INERTIAL_DAMPING"),
-        ("normal_flow_limited",      "NORMAL_FLOW_LIMITED"),
-        ("force_main_equation",      "FORCE_MAIN_EQUATION"),
-        ("variable_step",            "VARIABLE_STEP"),
-        ("lengthening_step",         "LENGTHENING_STEP"),
-        ("min_surface_area",         "MIN_SURFAREA"),
-        ("max_trials",               "MAX_TRIALS"),
-        ("head_tolerance",           "HEAD_TOLERANCE"),
-        ("minimum_step",             "MINIMUM_STEP"),
-        ("threads",                  "THREADS")))
+        ("inertial_damping",    "INERTIAL_DAMPING",    "Inertial Damping"),
+        ("normal_flow_limited", "NORMAL_FLOW_LIMITED", "Normal Flow Limited"),
+        ("force_main_equation", "FORCE_MAIN_EQUATION", "Force Main Equation"),
+        ("variable_step",       "VARIABLE_STEP",       "Variable Step",        "0.0", "sec", "sec"),
+        ("lengthening_step",    "LENGTHENING_STEP",    "Lengthening Step",     "0.0", "sec", "sec"),
+        ("min_surface_area",    "MIN_SURFAREA",        "Minimum Surface Area", "0.0"),
+        ("max_trials",          "MAX_TRIALS",          "Maximum Trials",       "8"),
+        ("head_tolerance",      "HEAD_TOLERANCE",      "Head Tolerance",     "0.005", "ft",  "m"),
+        ("minimum_step",        "MINIMUM_STEP",        "Minimum Step",         "0.5", "sec", "sec"),
+        ("threads",             "THREADS",             "Threads")))
     """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
@@ -65,55 +65,46 @@ class DynamicWave(Section):
         Main cross-section shape. The default is H-W.
         """
 
-        self.lengthening_step = 0.0
+        self.lengthening_step = ''
         """
         Time step, in seconds, used to lengthen conduits under 
         dynamic wave routing, so that they meet the 
         Courant stability criterion under full-flow conditions
         """
 
-        self.variable_step = 0.0
+        self.variable_step = ''
         """
         Safety factor applied to a variable time step computed for each
         time period under dynamic wave flow routing
         """
 
-        self.min_surface_area = 0.0
+        self.min_surface_area = ''
         """
         Minimum surface area used at nodes when computing 
         changes in water depth under dynamic wave routing
         """
 
-        self.max_trials = 8
+        self.max_trials = ''
         """
         The maximum number of trials allowed during a time step to reach convergence
         when updating hydraulic heads at the conveyance system’s nodes. The default value is 8.
         """
 
-        self.head_tolerance = 0.005
+        self.head_tolerance = ''
         """
         Difference in computed head at each node between successive trials below
         which the flow solution for the current time step is assumed to have converged.
         The default tolerance is 0.005 ft (0.0015 m).
         """
 
-        self.minimum_step = 0.5
+        self.minimum_step = ''
         """
         Smallest time step allowed when variable time steps are used for dynamic
         wave flow routing. The default value is 0.5 seconds.
         """
 
-        self.threads = 0
+        self.threads = ''
         """
         Number of parallel computing threads to use for dynamic wave flow routing
-        on machines equipped with multi-core processors. If set to zero, this will not be written to inp file.
+        on machines equipped with multi-core processors.
         """
-
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        # Use default get_text, but need to skip THREADS if it is zero
-        lines = []
-        for line in Section.get_text(self).splitlines():
-            if line.split() != ["THREADS", "0"]:
-                lines.append(line)
-        return '\n'.join(lines)

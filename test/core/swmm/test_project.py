@@ -106,7 +106,7 @@ class ProjectTest(unittest.TestCase):
 
         # Get path to swmm5.exe
         source_root_path = os.path.split(os.path.split(os.path.split(directory)[0])[0])[0]
-        exe_path = os.path.join(os.path.join(source_root_path, "src"), "Externals")
+        exe_path = os.path.join(source_root_path, "src", "Externals", "swmm", "model")
         exe_name = "swmm5.exe"
         exe_full_path = os.path.join(exe_path, exe_name)
 
@@ -146,8 +146,8 @@ class ProjectTest(unittest.TestCase):
             example_files = os.listdir(example_path)
 
             # Copy the exe file to each example directory
-            exe_to_example_path = os.path.join(example_path, exe_name)
-            shutil.copy(exe_full_path, exe_to_example_path)
+            # exe_to_example_path = os.path.join(example_path, exe_name)
+            # shutil.copy(exe_full_path, exe_to_example_path)
 
             # Loop through all .inp files in the /Examples folder
             for filename in example_files:
@@ -178,7 +178,7 @@ class ProjectTest(unittest.TestCase):
                         inp_file = filename
                         rpt_file = prefix + '.rpt'
                         out_file = prefix + '.out'
-                        command_line = exe_name + " " + inp_file + " " + rpt_file + " "+out_file
+                        command_line = '"' + exe_full_path + '" ' + inp_file + ' ' + rpt_file + ' ' + out_file
                         try:
                             os.system(command_line)
                         except:
@@ -202,7 +202,7 @@ class ProjectTest(unittest.TestCase):
                         inp_file = temp_file
                         rpt_file = prefix + '_copy'+ '.rpt'
                         out_file = prefix + '_copy'+ '.out'
-                        command_line = exe_name + " " + inp_file + " " + rpt_file + " "+out_file
+                        command_line = '"' + exe_full_path + '" ' + inp_file + ' ' + rpt_file + ' ' + out_file
                         try:
                             os.system(command_line)
                         except:
@@ -287,14 +287,14 @@ class ProjectTest(unittest.TestCase):
                         os.rename(temp_file, new_filename)
 
             # Do clean-up in the example directory:
-            try:
-                # Remove swmm5.exe from the example path
-                os.remove(exe_to_example_path)
-                # Keep the outputs for examining them.
-                # os.remove(original_)
-                # os.remove(copy_)
-            except:
-                pass
+            # try:
+            #     # Remove swmm5.exe from the example path
+            #     # os.remove(exe_to_example_path)
+            #     # Keep the outputs for examining them.
+            #     # os.remove(original_)
+            #     # os.remove(copy_)
+            # except:
+            #     pass
             # Return to current directory -- May not need since relative directory was not used anywhere
             os.chdir(current_directory)
 
@@ -303,14 +303,12 @@ class ProjectTest(unittest.TestCase):
         text_file.write("<htm><body><table border='1'>")
         # Print the content of the table, line by line ----
         for i in range(0, len(examples)):
-            if status[i] == 'Fail':
-                text_file.write("<tr><td>" + examples[i] + "</td><td>"
-                        + '<font color="red">' + status[i] + '</font>' + "</td><td>"
-                        + remarks[i] + "</td></tr>")
-            else:
-                text_file.write("<tr><td>" + examples[i] + "</td><td>"
-                        + status[i] + "</td><td>"
-                        + remarks[i] + "</td></tr>")
+            cur_status = status[i]
+            if cur_status == 'Fail':
+                cur_status = '<font color="red">' + status[i] + '</font>'
+            text_file.write("<tr><td>" + examples[i].replace(example_root_path, '').strip(os.pathsep) + "</td><td>"
+                        + cur_status + "</td><td>"
+                        + remarks[i].replace(example_root_path.strip(os.pathsep), '') + "</td></tr>")
         # Print closing HTML tags -------------------------
         text_file.write("</table></body></html>")
         text_file.close()
@@ -318,3 +316,9 @@ class ProjectTest(unittest.TestCase):
             webbrowser.open_new_tab('file://' + html_file)
         except:
             print("Error writing test results to " + html_file)
+
+
+if __name__ == '__main__':
+    my_test = ProjectTest()
+    my_test.setUp()
+    my_test.runTest()

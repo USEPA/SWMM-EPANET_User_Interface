@@ -82,6 +82,7 @@ class InputFile(object):
         new_section = self.find_section(section_name)
 
         if section_attr is None:  # if there is not a class associated with this name, read it as generic Section
+            print "Default Section for " + section_name
             if new_section is None:
                 new_section = Section()
                 new_section.SECTION_NAME = section_name
@@ -268,7 +269,7 @@ class Section(object):
         if line.startswith('['):
             if hasattr(self, "SECTION_NAME") and line.strip().upper() != self.SECTION_NAME.upper():
                 raise ValueError("Cannot set " + self.SECTION_NAME + " from: " + line.strip())
-            else:
+            else:  # subsection does not have a SECTION_NAME or SECTION_NAME matches: no further processing needed
                 line = ''
         return line  # Return the portion of the line that was not in the comment and was not a section header
 

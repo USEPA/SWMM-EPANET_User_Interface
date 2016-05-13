@@ -435,6 +435,9 @@ class frmMainSWMM(frmMain):
                 pp = os.path.dirname(os.path.dirname(self.assembly_path))
                 exe_path = os.path.join(pp, "Externals", exe_name)
             if not os.path.isfile(exe_path):
+                pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                exe_path = os.path.join(pp, "Externals", "swmm", "model", exe_name)
+            if not os.path.isfile(exe_path):
                 exe_path = QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
             if os.path.isfile(exe_path):
                 args.append(file_name)

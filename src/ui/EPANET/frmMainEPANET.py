@@ -28,7 +28,7 @@ from ui.EPANET.frmGraph import frmGraph
 from ui.EPANET.frmTable import frmTable
 
 from core.epanet.project import Project
-import Externals.epanet2 as pyepanet
+from Externals.epanet.model.epanet2 import
 from frmRunEPANET import frmRunEPANET
 
 
@@ -264,6 +264,9 @@ class frmMainEPANET(frmMain):
                 if not os.path.exists(self.model_path):
                     pp = os.path.dirname(os.path.dirname(self.assembly_path))
                     self.model_path = os.path.join(pp, "Externals", lib_name)
+                if not os.path.exists(self.model_path):
+                    pp = os.path.dirname(os.path.dirname(self.assembly_path))
+                    self.model_path = os.path.join(pp, "Externals", "epanet", "model", lib_name)
                 if not os.path.exists(self.model_path):
                     self.model_path = QFileDialog.getOpenFileName(self,
                                                                         'Locate ' + self.model + ' Library',

@@ -59,7 +59,7 @@ class TimeSeries(Section):
         needs_time = 2
         needs_value = 3
         for line in new_text.splitlines():
-            self.set_comment_check_section(line)
+            line = self.set_comment_check_section(line)
             try:
                 fields = line.split()
                 if len(fields) > 1:

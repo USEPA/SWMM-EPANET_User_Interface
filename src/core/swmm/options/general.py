@@ -167,6 +167,10 @@ class General(Section):
                                 # Translate from old flow routing name to new flow routing name
                                 attr_value = General.old_flow_routing[attr_value.upper()]
 
+                            if attr_name == "normal_flow_limited" and attr_value.upper() == "NO":
+                                # Translate from old value NO to new value SLOPE
+                                attr_value = "SLOPE"
+
                             set_here.setattr_keep_type(attr_name, attr_value)
                         except Exception as e:
                             print("options.General.text could not set " + attr_name + '\n' + str(e))

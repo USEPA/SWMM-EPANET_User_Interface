@@ -223,7 +223,7 @@ class ProjectTest(unittest.TestCase):
                             else:
                                 text_file.write(prefix + '.rpt does not exist' + '\n')
 
-                            # Rename file to .inp_test because .inp only for originals
+                            # Rename file to .inp_test because use .inp only for originals
                             os.rename(temp_file, new_filename)
 
                             # Return to current directory

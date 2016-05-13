@@ -5,7 +5,7 @@ from test_title import SimpleTitleTest
 from test_options import SimpleOptionsTest, SimpleOptionsTest2
 from test_quality import SimpleQualityTest
 from test_reactions import SimpleReactionsTest
-from test_times import SimpleTimesTest
+from test_times import SimpleTimesTest, SimpleTimesTest2
 from test_energy import SimpleEnergyTest
 from test_report import SimpleReportTest
 from test_backdrop import SimpleBackdropTest
@@ -24,6 +24,7 @@ my_suite.addTest(SimpleTitleTest())
 my_suite.addTest(SimpleOptionsTest())
 my_suite.addTest(SimpleOptionsTest2())
 my_suite.addTest(SimpleTimesTest())
+my_suite.addTest(SimpleTimesTest2())
 my_suite.addTest(SimpleReportTest())
 
 # Network components - MTP 3:

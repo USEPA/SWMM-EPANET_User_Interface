@@ -301,7 +301,7 @@ class CrossSection(Section):
     Attributes:
         link (str): name of the conduit, orifice, or weir this is a cross-section of.
         shape (CrossSectionShape): name of cross-section shape.
-        geometry1 (str): full height of the cross-section (ft or m)
+        geometry1 (str): full height of the cross-section (ft or m). For irregular, this is the cross-section name.
         geometry2 (str): auxiliary parameters (width, side slopes, etc.)
         geometry3 (str): auxiliary parameters (width, side slopes, etc.)
         geometry4 (str): auxiliary parameters (width, side slopes, etc.)
@@ -309,12 +309,11 @@ class CrossSection(Section):
                        roughness) associated with a conduit (default is 1).
         culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
         curve (str): associated Shape Curve ID that defines how width varies with depth.
-        transect (str): name of cross-section geometry of an irregular channel
     """
 
     field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
     field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}"
-    field_format_irregular = "{:16}\t{:12}\t{:16}"
+    # field_format_irregular = "{:16}\t{:12}\t{:16}"
 
     def __init__(self, new_text=None):
         if new_text:
@@ -350,8 +349,8 @@ class CrossSection(Section):
             self.curve = ''
             """str: associated Shape Curve ID that defines how width varies with depth."""
 
-            self.transect = ''
-            """str: name of cross-section geometry of an irregular channel"""
+    # TODO: access geometry1 as a name such as transect or xsection_name or geometry
+    # """str: name of cross-section geometry of an irregular channel"""
 
     def get_text(self):
         inp = ''
@@ -359,8 +358,8 @@ class CrossSection(Section):
             inp = self.comment + '\n'
         if self.shape == CrossSectionShape.CUSTOM:
             inp += self.field_format_custom.format(self.link, self.shape.name, self.geometry1, self.curve, self.barrels)
-        elif self.shape == CrossSectionShape.IRREGULAR:
-            inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
+        # elif self.shape == CrossSectionShape.IRREGULAR:
+        #     inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
         else:
             inp += self.field_format_shape.format(self.link,
                                                   self.shape.name,
@@ -389,9 +388,9 @@ class CrossSection(Section):
                 self.barrels = fields[4]
                 if len(fields) > 6 and fields[6].isdigit():  # Old interface saves CUSTOM barrels in this field.
                     self.barrels = fields[6]
-        elif self.shape == CrossSectionShape.IRREGULAR:
-            if len(fields) > 2:
-                self.transect = fields[2]
+        # elif self.shape == CrossSectionShape.IRREGULAR:
+        #     if len(fields) > 2:
+        #         self.transect = fields[2]
         else:
             if len(fields) > 2:
                 self.geometry1 = fields[2]

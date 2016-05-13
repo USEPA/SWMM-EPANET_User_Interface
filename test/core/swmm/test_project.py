@@ -134,13 +134,19 @@ class ProjectTest(unittest.TestCase):
         text_file = open(html_file, "w")
         text_file.write('<header><h1>'+'EXAMPLES TEST REPORT:'+'</h1></header>')
 
+        # Test all examples in /Examples or first level sub directory of /Examples
         for example_path in example_paths:
 
-            # Get all file names
+            # Get current_directory for restoring it later
+            current_directory = os.getcwd()  # current test/core/
+
+            # Get example directory
+            os.chdir(example_path)
+
+            # Get all file names under this example directory
             example_files = os.listdir(example_path)
 
-            # Test all examples in the /Examples folder
-            # Copy the exe file to /Examples or sub directory
+            # Copy the exe file to each example directory
             exe_to_example_path = os.path.join(example_path, exe_name)
             shutil.copy(exe_full_path, exe_to_example_path)
 
@@ -169,9 +175,6 @@ class ProjectTest(unittest.TestCase):
                     # Have trouble with path, copied swmm5.exe into the Examples folder
                     if number_of_sections == new_number_of_sections:
 
-                        # Get current_directory for restoring it later
-                        current_directory = os.getcwd() #current test/core/
-                        os.chdir(example_path)
                         # Run my_file
                         inp_file = filename
                         rpt_file = prefix + '.rpt'
@@ -284,8 +287,17 @@ class ProjectTest(unittest.TestCase):
                         # Rename file to .inp_test because use .inp only for originals
                         os.rename(temp_file, new_filename)
 
-                        # Return to current directory
-                        os.chdir(current_directory)
+            # Do clean-up in the example directory:
+            try:
+                # Remove swmm5.exe from the example path
+                os.remove(exe_to_example_path)
+                # Keep the outputs for examining them.
+                # os.remove(original_)
+                # os.remove(copy_)
+            except:
+                pass
+            # Return to current directory -- May not need since relative directory was not used anywhere
+            os.chdir(current_directory)
 
         # Write HTML table
         # Print opening HTML tags -------------------------

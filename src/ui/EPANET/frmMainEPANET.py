@@ -24,6 +24,8 @@ from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 from ui.EPANET.frmDemands import frmDemands
+from ui.EPANET.frmGraph import frmGraph
+from ui.EPANET.frmTable import frmTable
 
 from core.epanet.project import Project
 import Externals.epanet2 as pyepanet
@@ -119,6 +121,20 @@ class frmMainEPANET(frmMain):
         self.menuReport.addAction(self.actionReaction_ReportMenu)
         QtCore.QObject.connect(self.actionReaction_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_reaction)
 
+        self.actionGraph_ReportMenu = QtGui.QAction(self)
+        self.actionGraph_ReportMenu.setObjectName(from_utf8("actionGraph_ReportMenu"))
+        self.actionGraph_ReportMenu.setText(transl8("frmMain", "Graph...", None))
+        self.actionGraph_ReportMenu.setToolTip(transl8("frmMain", "Display graph selection options", None))
+        self.menuReport.addAction(self.actionGraph_ReportMenu)
+        QtCore.QObject.connect(self.actionGraph_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_graph)
+
+        self.actionTable_ReportMenu = QtGui.QAction(self)
+        self.actionTable_ReportMenu.setObjectName(from_utf8("actionTable_ReportMenu"))
+        self.actionTable_ReportMenu.setText(transl8("frmMain", "Table...", None))
+        self.actionTable_ReportMenu.setToolTip(transl8("frmMain", "Display table selection options", None))
+        self.menuReport.addAction(self.actionTable_ReportMenu)
+        QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
+
     def report_status(self):
         print "report_status"
         # TODO: open ~.rpt
@@ -134,6 +150,16 @@ class frmMainEPANET(frmMain):
 
     def report_reaction(self):
         print "report_reaction"
+        pass
+
+    def report_graph(self):
+        self._frmGraph = frmGraph(self.parent())
+        self._frmGraph.show()
+        pass
+
+    def report_table(self):
+        self._frmTable = frmTable(self.parent())
+        self._frmTable.show()
         pass
 
     def get_editor(self, edit_name):

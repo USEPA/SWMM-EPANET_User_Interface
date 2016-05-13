@@ -83,9 +83,8 @@ class ProjectTest(unittest.TestCase):
                         break
 
                 if is_diff:
-                    diff_msg = fname1+'\n'\
-                               +'>Line-'+str(line_no_f1)+':'+f1_line+'\n'\
-                               +'<Line-'+str(line_no_f2)+':'+f2_line+'\n'
+                    diff_msg = '<br>[old]Line-'+str(line_no_f1)+':'+f1_line+'<br>'+ \
+                               '[new]Line-'+str(line_no_f2)+':'+f2_line+'<br>'
                     # Break on the first difference
                     break
 

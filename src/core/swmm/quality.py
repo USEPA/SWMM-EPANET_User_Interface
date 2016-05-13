@@ -128,37 +128,37 @@ class Buildup(Section):
     ))
 
     def __init__(self, new_text=None):
-        Section.__init__(self)
-        self.land_use_name = ""
-        """land use name"""
-
-        self.pollutant = ''
-        """str: Pollutant name"""
-
-        self.function = BuildupFunction.POW
-        """BuildupFunction: Type of buildup function to use for the pollutant"""
-
-        self.rate_constant = '0.0'
-        """float: Time constant that governs the rate of pollutant buildup"""
-
-        self.power_sat_constant = '0.0'
-        """float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
-            Saturation buildup formula"""
-
-        self.max_buildup = '0.0'
-        """float: Maximum buildup that can occur"""
-
-        self.scaling_factor = '1.0'
-        """float: Multiplier used to adjust the buildup rates listed in the time series"""
-
-        self.timeseries = ''
-        """str: ID of Time Series that contains buildup rates"""
-
-        self.normalizer = Normalizer.AREA
-        """Variable to which buildup is normalized on a per unit basis"""
-
-        if new_text:
+        if new_text:  # if initialization text is provided, call set_text, which will call __init__ with no new_text
             self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.land_use_name = ""
+            """land use name"""
+
+            self.pollutant = ''
+            """str: Pollutant name"""
+
+            self.function = BuildupFunction.POW
+            """BuildupFunction: Type of buildup function to use for the pollutant"""
+
+            self.rate_constant = '0.0'
+            """float: Time constant that governs the rate of pollutant buildup"""
+
+            self.power_sat_constant = '0.0'
+            """float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
+                Saturation buildup formula"""
+
+            self.max_buildup = '0.0'
+            """float: Maximum buildup that can occur"""
+
+            self.scaling_factor = '1.0'
+            """float: Multiplier used to adjust the buildup rates listed in the time series"""
+
+            self.timeseries = ''
+            """str: ID of Time Series that contains buildup rates"""
+
+            self.normalizer = Normalizer.AREA
+            """Variable to which buildup is normalized on a per unit basis"""
 
     def get_text(self):
         c1 = self.max_buildup
@@ -189,6 +189,9 @@ class Buildup(Section):
             # C2, C3 mean different things for different values of function, assign to both
             self.rate_constant = fields[4]
             self.power_sat_constant = fields[5]
+            if fields[6].upper()[0:4] == "CURB":  # In some input files, CURBLENGTH is written as CURB, allow either
+                self.normalizer = Normalizer.CURBLENGTH
+                # If is is not curb length, it defaults to the other value: AREA
 
 
 class Washoff(Section):

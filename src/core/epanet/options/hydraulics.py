@@ -85,7 +85,7 @@ class HydraulicsOptions(Section):
         self.unbalanced = Unbalanced.STOP
         """Determines what happens if a hydraulic solution cannot be reached within the prescribed number of TRIALS"""
 
-        self.unbalanced_continue = 10
+        self.unbalanced_continue = ''
         """If continuing after n trials, continue this many more trials with links held fixed"""
 
         self.default_pattern = "1"
@@ -132,6 +132,7 @@ class HydraulicsOptions(Section):
         return '\n'.join(text_list)
 
     def set_text(self, new_text):
+        self.__init__()
         for line in new_text.splitlines():
             try:
                 line = line.strip()

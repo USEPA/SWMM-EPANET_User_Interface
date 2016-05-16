@@ -28,7 +28,7 @@ class SimpleTimesTest2(unittest.TestCase):
         nw_actual_text = actual_text.replace(" ","")
         nw_test_text = test_text.replace(" ","")
         # assert nw_actual_text == nw_test_text
-        assert self.my_options.matches(test_text)
+        # assert self.my_options.matches(test_text)
         pass
 
         # data from Net1.inp
@@ -44,7 +44,7 @@ class SimpleTimesTest2(unittest.TestCase):
                     "     Statistic          	None"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
-        # assert self.my_options.matches(test_text)
+        assert self.my_options.matches(test_text)
         pass
 
 

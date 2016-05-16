@@ -7,7 +7,7 @@ from test_quality import SimpleQualityTest
 from test_reactions import SimpleReactionsTest
 from test_times import SimpleTimesTest, SimpleTimesTest2
 from test_energy import SimpleEnergyTest
-from test_report import SimpleReportTest
+from test_report import SimpleReportTest, SimpleReportTest2
 from test_backdrop import SimpleBackdropTest
 from test_project import ProjectTest
 from test_patterns import SimplePatternTest
@@ -26,6 +26,8 @@ my_suite.addTest(SimpleOptionsTest2())
 my_suite.addTest(SimpleTimesTest())
 my_suite.addTest(SimpleTimesTest2())
 my_suite.addTest(SimpleReportTest())
+my_suite.addTest(SimpleReportTest2())
+
 
 # Network components - MTP 3:
 # junctions
@@ -60,7 +62,7 @@ my_suite.addTest(SimpleBackdropTest())
 # Tags
 
 # Project test
-my_suite.addTest(ProjectTest())
+# my_suite.addTest(ProjectTest())
 
 
 if __name__ == "__main__":

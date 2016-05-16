@@ -161,7 +161,7 @@ my_suite.addTest(SingleTimeSeriesTest())
 my_suite.addTest(SinglePatternTest())
 my_suite.addTest(SingleCurveTest())
 # my_suite.addTest(SimpleLabelTest())
-my_suite.addTest(ProjectTest())
+# my_suite.addTest(ProjectTest())
 
 if __name__ == "__main__":
     # execute only if run as a script

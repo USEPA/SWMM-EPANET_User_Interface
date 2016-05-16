@@ -11,15 +11,13 @@ class SingleCoverageTest(unittest.TestCase):
 
     def runTest(self):
         # Test aquifer parameters in Example 5
-        test_coverages = r"""
-S2               Residential_1    27
-        """
-        # --Test set_text
-        self.my_options.set_text(test_coverages)
-        # --Test get_text through matches
+        test_text = "S2               Residential_1    27"
+        self.my_options.set_text(test_text)
+        assert self.my_options.subcatchment_name == 'S2'
+        assert self.my_options.land_use_name == 'Residential_1'
+        assert self.my_options.percent_subcatchment_area == '27'
         actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_coverages)
-
+        assert self.my_options.matches(test_text)
         pass
 
 

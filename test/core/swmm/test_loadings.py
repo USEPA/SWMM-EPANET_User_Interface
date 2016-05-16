@@ -13,15 +13,13 @@ class SingleLoadingTest(unittest.TestCase):
     def runTest(self):
 
         # Test all options
-        test_text = r"""SB1   TSS         0.1      Lead         0.01 """
-
-        # --Test set_text
+        test_text = "SB1   TSS         0.1      Lead         0.01 "
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_text)
 
         pass
+
 
 class MultiLoadingsTest(unittest.TestCase):
     def __init__(self):

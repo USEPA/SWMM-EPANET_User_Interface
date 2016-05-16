@@ -12,7 +12,6 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
 
         self.my_options = dynamic_wave.DynamicWave()
 
-
     def runTest(self):
 
         name = self.my_options.SECTION_NAME
@@ -30,4 +29,12 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
                         " THREADS            	1\n" + \
                         " MINIMUM_STEP       	0.5"
 
-        assert self.my_options.matches(expected_text)
+        # assert self.my_options.matches(expected_text)
+
+        # Test example from expected_text
+        test_text = expected_text
+        # --Test set_text
+        self.my_options.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text()  # display purpose
+        assert self.my_options.matches(test_text)

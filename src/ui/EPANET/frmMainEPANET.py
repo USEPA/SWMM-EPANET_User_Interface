@@ -28,7 +28,8 @@ from ui.EPANET.frmGraph import frmGraph
 from ui.EPANET.frmTable import frmTable
 
 from core.epanet.project import Project
-from Externals.epanet.model.epanet2 import
+from Externals.epanet.model.epanet2 import ENepanet
+from Externals.epanet.output import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
 
 
@@ -252,28 +253,14 @@ class frmMainEPANET(frmMain):
             if not os.path.exists(self.model_path):
                 if 'darwin' in sys.platform:
                     lib_name = 'libepanet.dylib.dylib'
-                    ext = '.dylib'
                 elif 'win' in sys.platform:
                     lib_name = 'epanet2_amd64.dll'
-                    ext = '.dll'
                 else:  # Linux
                     lib_name = 'libepanet2_amd64.so'
-                    ext = '.so'
-
-                self.model_path = os.path.join(self.assembly_path, lib_name)
-                if not os.path.exists(self.model_path):
-                    pp = os.path.dirname(os.path.dirname(self.assembly_path))
-                    self.model_path = os.path.join(pp, "Externals", lib_name)
-                if not os.path.exists(self.model_path):
-                    pp = os.path.dirname(os.path.dirname(self.assembly_path))
-                    self.model_path = os.path.join(pp, "Externals", "epanet", "model", lib_name)
-                if not os.path.exists(self.model_path):
-                    self.model_path = QFileDialog.getOpenFileName(self,
-                                                                        'Locate ' + self.model + ' Library',
-                                                                        '/', '(*{0})'.format(ext))
+                self.model_path = self.find_external(lib_name)
             if os.path.exists(self.model_path):
                 try:
-                    model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+                    model_api = ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
                     if not use_existing:
@@ -335,6 +322,20 @@ class frmMainEPANET(frmMain):
             # status.show()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
+
+    def find_external(self, lib_name):
+        filename = os.path.join(self.assembly_path, lib_name)
+        if not os.path.exists(filename):
+            pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            filename = os.path.join(pp, "Externals", lib_name)
+        if not os.path.exists(filename):
+            pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            filename = os.path.join(pp, "Externals", "epanet", "model", lib_name)
+        if not os.path.exists(filename):
+            filename = QFileDialog.getOpenFileName(self,
+                                                          'Locate ' + self.model + ' Library',
+                                                          '/', '(*{0})'.format(os.path.splitext(lib_name)[1]))
+        return filename
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

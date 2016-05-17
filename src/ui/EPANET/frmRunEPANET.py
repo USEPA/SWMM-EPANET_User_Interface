@@ -3,7 +3,7 @@ from enum import Enum
 import traceback
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import Externals.epanet2 as pyepanet
+import Externals.epanet.model.epanet2 as pyepanet
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
 from ui.model_utility import process_events
@@ -123,6 +123,7 @@ class frmRunEPANET(frmRunSimulation):
             except:  # Ignore exception closing model object?
                 pass
             try:
+                self.model_api.ENreport()
                 self.model_api.ENclose()
             except:  # Ignore exception closing model object?
                 pass

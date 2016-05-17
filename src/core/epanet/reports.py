@@ -14,7 +14,6 @@ import Externals.epanet.output.functionalwrapper
 # See Also: from core.epanet.options.report import ReportOptions
 
 class Reports:
-    FORMFEED = '\f'
     PAGESIZE = 55
     ULINE = '----------------------------------------------------------------------'
     FMT18 = '  Page 1                                          %22s'
@@ -88,9 +87,7 @@ class Reports:
     def write_line(self, line):
         if (self.LineNum >= self.PAGESIZE):
             self.PageNum += 1
-            self.F.write('\n')
-            self.F.write(self.F, self.FORMFEED)
-            self.F.write('\n')
+            self.F.write('\n\f\n')  # newline form-feed newline
             self.F.write(self.FMT82.format(self.PageNum, self.RptTitle) + '\n')
             self.LineNum = 3
         self.F.write('  ' + line + '\n')

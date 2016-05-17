@@ -134,7 +134,12 @@ class frmRunEPANET(frmRunSimulation):
             (hours, minutes) = self.project.times.duration.split(':')
             return float(hours) / 24 + float(minutes) / 1440
         except:
-            return 0.0
+            try:
+                hours = self.project.times.duration.split()[0]
+                return float(hours) / 24
+            except:
+                pass
+        return 0.0
 
     def RunHydraulics(self, total_days):
         # // Runs hydraulic simulation

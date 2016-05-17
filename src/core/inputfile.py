@@ -9,6 +9,7 @@ class InputFile(object):
     def __init__(self):
         self.file_name = ""
         self.sections = []
+        self.metric = False
         self.add_sections_from_attributes()
 
     def get_text(self):

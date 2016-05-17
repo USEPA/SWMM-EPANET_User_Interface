@@ -31,6 +31,7 @@ from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 
 from core.epanet.project import Project
+import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.output import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
@@ -92,6 +93,7 @@ class frmMainEPANET(frmMain):
         frmMain.__init__(self, q_application)
         self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
@@ -124,6 +126,13 @@ class frmMainEPANET(frmMain):
         self.actionReaction_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Reaction", None))
         self.menuReport.addAction(self.actionReaction_ReportMenu)
         QtCore.QObject.connect(self.actionReaction_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_reaction)
+
+        self.actionFull_ReportMenu = QtGui.QAction(self)
+        self.actionFull_ReportMenu.setObjectName(from_utf8("actionFull_ReportMenu"))
+        self.actionFull_ReportMenu.setText(transl8("frmMain", "Full...", None))
+        self.actionFull_ReportMenu.setToolTip(transl8("frmMain", "Save full report as text file", None))
+        self.menuReport.addAction(self.actionFull_ReportMenu)
+        QtCore.QObject.connect(self.actionFull_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_full)
 
         self.actionGraph_ReportMenu = QtGui.QAction(self)
         self.actionGraph_ReportMenu.setObjectName(from_utf8("actionGraph_ReportMenu"))
@@ -158,6 +167,29 @@ class frmMainEPANET(frmMain):
     def report_reaction(self):
         self.reaction_report()
         pass
+
+    def report_full(self):
+        if self.output:
+            directory = os.path.dirname(self.project.file_name)
+            report_file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Full Report As...", directory, "Text files (*.txt)")
+            if report_file_name:
+                try:
+                    reporter = reports.Reports(self.project, self.output)
+                    reporter.write_report(report_file_name)
+                except Exception as e1:
+                    msg = str(e1) + '\n' + str(traceback.print_exc())
+                    print(msg)
+                    QMessageBox.information(None, self.model,
+                                            "Error writing report to \n" + report_file_name + '\n' + msg,
+                                            QMessageBox.Ok)
+
+        else:
+            QMessageBox.information(None, self.model,
+                                    "There is no model output currently open.\n"
+                                    "Model output is automatically opened after model is run.",
+                                    QMessageBox.Ok)
+
+
 
     def report_graph(self):
         self._frmGraph = frmGraph(self.parent())
@@ -348,6 +380,7 @@ class frmMainEPANET(frmMain):
                         frmRun.project = self.project
 
                     frmRun.Execute()
+                    self.output = ENOutputWrapper.OutputObject(prefix + '.bin')
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))

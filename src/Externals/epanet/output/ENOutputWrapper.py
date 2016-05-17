@@ -85,7 +85,7 @@ class OutputObject(object):
         2) Opens the output file.
         """
         self.enrapi = c_void_p()
-        ret = _lib.ENR_open(byref(self.enrapi), binfile)
+        ret = _lib.ENR_open(byref(self.enrapi), str(binfile))
         if ret != 0:
             self.RaiseError(ret)
         self._get_Units()

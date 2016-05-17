@@ -26,6 +26,7 @@ from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 from ui.EPANET.frmDemands import frmDemands
 from ui.EPANET.frmGraph import frmGraph
 from ui.EPANET.frmTable import frmTable
+from ui.EPANET.frmEnergyReport import frmEnergyReport
 
 from core.epanet.project import Project
 from Externals.epanet.model.epanet2 import ENepanet
@@ -142,7 +143,9 @@ class frmMainEPANET(frmMain):
         pass
 
     def report_energy(self):
-        print "report_energy"
+        self._frmEnergyReport = frmEnergyReport(self.parent())
+        # self._frmEnergyReport.set_data()
+        self._frmEnergyReport.show()
         pass
 
     def report_calibration(self):
@@ -151,6 +154,7 @@ class frmMainEPANET(frmMain):
 
     def report_reaction(self):
         print "report_reaction"
+        self.reaction_report()
         pass
 
     def report_graph(self):
@@ -162,6 +166,66 @@ class frmMainEPANET(frmMain):
         self._frmTable = frmTable(self.parent())
         self._frmTable.show()
         pass
+
+    def reaction_report(self):
+
+        # TXT_NO_REACTION = 'No reactions occurred'
+        # TXT_AVG_RATES = 'Average Reaction Rates (kg/day)'
+        # ' Reaction Report'
+
+        # // Find conversion factor to kilograms/day
+        # ucf := 1.0e6/24;
+        # if Pos('ug', NodeUnits[NODEQUAL].Units) > 0 then ucf := 1.0e9/24;
+        #
+        # if Chart1.SeriesCount > 0 then with Chart1.Series[0] do
+        # begin
+        #
+        # // Initialize the chart
+        # Clear;
+        # Active := False;
+        # Chart1.Title.Text.Clear;
+        # Chart1.Foot.Text.Clear;
+        #
+        # // Get average reaction rates from output file
+        # Uoutput.GetReactRates(r);
+        # for i := 0 to 3 do rate[i] := r[i] / ucf;
+        #
+        # // Check max. rate to see if any reactions occurred
+        # maxrate := MaxValue(Slice(rate,3));
+        # if maxrate = 0 then
+        # begin
+        #   Chart1.Foot.Text.Add(TXT_NO_REACTION);
+        # end
+        #
+        # // Add each rate category to chart
+        # else
+        # begin
+        # Chart1.Title.Text.Add(TXT_AVG_RATES);
+        # Add(rate[0],TXT_BULK,clBlue);
+        # Add(rate[1],TXT_WALL,clRed);
+        # Add(rate[2],TXT_TANKS,clGreen);
+        #  Active := True;
+        # Chart1.Foot.Text.Add(Format(FMT_INFLOW,[rate[3]]));
+        # end;
+        # end;
+
+        import matplotlib.pyplot as plt
+
+        # The slices will be ordered and plotted counter-clockwise.
+        labels = '2.8 Tanks', '0.5 Bulk', '2.1 Wall'
+        sizes = [52.49, 8.57, 38.93]
+        colors = ['green', 'blue', 'red']
+        explode = (0, 0, 0)
+
+        plt.figure("Reaction Report")
+        plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+                autopct='%1.2f%%', shadow=True, startangle=180)
+        # Set aspect ratio to be equal so that pie is drawn as a circle.
+        plt.axis('equal')
+        plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
+        plt.text(0.9,-0.9,"Inflow Rate = 6")
+
+        plt.show()
 
     def get_editor(self, edit_name):
         frm = None

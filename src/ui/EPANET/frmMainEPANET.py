@@ -4,6 +4,7 @@ import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
 import traceback
+import webbrowser
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog
 
@@ -94,6 +95,9 @@ class frmMainEPANET(frmMain):
         self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
+        self.status_suffix = "_status.txt"
+        self.status_file_name = ''  # Set this when model status is available
+        self.output_filename = ''   # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
@@ -150,8 +154,17 @@ class frmMainEPANET(frmMain):
 
     def report_status(self):
         print "report_status"
-        # TODO: open ~.rpt
-        pass
+        if not os.path.isfile(self.status_file_name):
+            prefix, extension = os.path.splitext(self.project.file_name)
+            if os.path.isfile(prefix + self.status_suffix):
+                self.status_file_name = prefix + self.status_suffix
+        if os.path.isfile(self.status_file_name):
+            webbrowser.open_new_tab(self.status_file_name)
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model status not found.\n"
+                                    "Run the model to generate model status.",
+                                    QMessageBox.Ok)
 
     def report_energy(self):
         self._frmEnergyReport = frmEnergyReport(self.parent())
@@ -176,6 +189,7 @@ class frmMainEPANET(frmMain):
                 try:
                     reporter = reports.Reports(self.project, self.output)
                     reporter.write_report(report_file_name)
+                    webbrowser.open_new_tab(report_file_name)
                 except Exception as e1:
                     msg = str(e1) + '\n' + str(traceback.print_exc())
                     print(msg)
@@ -363,7 +377,9 @@ class frmMainEPANET(frmMain):
                 self.model_path = self.find_external(lib_name)
             if os.path.exists(self.model_path):
                 try:
-                    model_api = ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+                    self.status_file_name = prefix + self.status_suffix
+                    self.output_filename = prefix + '.out'
+                    model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
                     if not use_existing:
@@ -380,7 +396,7 @@ class frmMainEPANET(frmMain):
                         frmRun.project = self.project
 
                     frmRun.Execute()
-                    self.output = ENOutputWrapper.OutputObject(prefix + '.bin')
+                    self.output = ENOutputWrapper.OutputObject(self.output_filename)
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))

@@ -51,6 +51,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.save_project_as)
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
+        QtCore.QObject.connect(self.actionStdProjCalibration_Data, QtCore.SIGNAL('triggered()'), self.calibration_data)
 
         self.setAcceptDrops(True)
         self.tree_section = ''

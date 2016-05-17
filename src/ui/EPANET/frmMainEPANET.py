@@ -27,6 +27,8 @@ from ui.EPANET.frmDemands import frmDemands
 from ui.EPANET.frmGraph import frmGraph
 from ui.EPANET.frmTable import frmTable
 from ui.EPANET.frmEnergyReport import frmEnergyReport
+from ui.EPANET.frmCalibrationData import frmCalibrationData
+from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 
 from core.epanet.project import Project
 from Externals.epanet.model.epanet2 import ENepanet
@@ -149,11 +151,11 @@ class frmMainEPANET(frmMain):
         pass
 
     def report_calibration(self):
-        print "report_calibration"
+        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self.parent())
+        self._frmCalibrationReportOptions.show()
         pass
 
     def report_reaction(self):
-        print "report_reaction"
         self.reaction_report()
         pass
 
@@ -226,6 +228,11 @@ class frmMainEPANET(frmMain):
         plt.text(0.9,-0.9,"Inflow Rate = 6")
 
         plt.show()
+
+    def calibration_data(self):
+        self._frmCalibrationData = frmCalibrationData(self.parent())
+        self._frmCalibrationData.show()
+        pass
 
     def get_editor(self, edit_name):
         frm = None

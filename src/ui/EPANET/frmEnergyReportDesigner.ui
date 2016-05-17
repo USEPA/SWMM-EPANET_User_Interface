@@ -111,42 +111,42 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
-               <widget class="QRadioButton" name="radioButton">
+               <widget class="QRadioButton" name="rbnUtilization">
                 <property name="text">
                  <string>Utilization</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_2">
+               <widget class="QRadioButton" name="rbnEfficiency">
                 <property name="text">
                  <string>Efficiency</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_3">
+               <widget class="QRadioButton" name="rbnKwHr">
                 <property name="text">
                  <string>Kw-hr/Mgal</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_4">
+               <widget class="QRadioButton" name="rbnAverageKw">
                 <property name="text">
                  <string>Average Kw</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_5">
+               <widget class="QRadioButton" name="rbnPeakKw">
                 <property name="text">
                  <string>Peak Kw</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_6">
+               <widget class="QRadioButton" name="rbnCost">
                 <property name="text">
                  <string>Cost / day</string>
                 </property>

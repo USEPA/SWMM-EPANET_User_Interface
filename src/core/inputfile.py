@@ -405,7 +405,7 @@ class Section(object):
                     if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
                         if hasattr(self, meta_item.attribute):
                             # return attribute name and value specified on this line
-                            return(meta_item.attribute, line[len(key) + 1:].strip())
+                            return(meta_item.attribute, line.strip()[len(key) + 1:].strip())
         return(None, None)
 
     def setattr_keep_type(self, attr_name, attr_value):

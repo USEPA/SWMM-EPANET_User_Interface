@@ -40,6 +40,9 @@ class SimpleReportTest2(unittest.TestCase):
 
         # Test based on P162 report
         test_text = "[REPORT]\n" + \
+                    "Status NO\n" + \
+                    "Energy NO\n" + \
+                    "Summary NO\n" + \
                     "NODES N1 N2 N3 N17\n" + \
                     "LINKS ALL\n" \
                     "FLOW YES\n" + \

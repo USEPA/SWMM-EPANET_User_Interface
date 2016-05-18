@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-04-01 16:50:34</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.022000</p>
-<p class='attribute'><strong>Status:</strong> Pass 13</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-05-18 16:43:15</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.039000</p>
+<p class='attribute'><strong>Status:</strong> Pass 15</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -250,7 +250,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_quality.SimpleQualityTest</td>
+    <td>test_options.SimpleOptionsTest2</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -264,7 +264,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_reactions.SimpleReactionsTest</td>
+    <td>test_times.SimpleTimesTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -278,7 +278,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_times.SimpleTimesTest</td>
+    <td>test_times.SimpleTimesTest2</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -288,11 +288,31 @@ function showOutput(id, name) {
 
 <tr id='pt5.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt5.1')" >
+        pass</a>
+
+    <div id='div_pt5.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt5.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+pt5.1: Section.text skipped:  [TIMES]
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_energy.SimpleEnergyTest</td>
+    <td>test_report.SimpleReportTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -306,7 +326,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_report.SimpleReportTest</td>
+    <td>test_report.SimpleReportTest2</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -320,7 +340,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_backdrop.SimpleBackdropTest</td>
+    <td>test_patterns.SimplePatternTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -334,7 +354,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_project.ProjectTest</td>
+    <td>test_curves.SimpleCurveTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -344,59 +364,11 @@ function showOutput(id, name) {
 
 <tr id='pt9.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt9.1')" >
-        pass</a>
-
-    <div id='div_pt9.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt9.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-pt9.1: Section.text skipped:  9               	800         	                	
-Section.text skipped:  2               	850         	120         	100         	150         	50.5        	0           	                	
-Section.text skipped:  10              	10              	11              	10530       	18          	100         	0           	Open  	
-Section.text skipped:  11              	11              	12              	5280        	14          	100         	0           	Open  	
-Section.text skipped:  12              	12              	13              	5280        	10          	100         	0           	Open  	
-Section.text skipped:  21              	21              	22              	5280        	10          	100         	0           	Open  	
-Section.text skipped:  22              	22              	23              	5280        	12          	100         	0           	Open  	
-Section.text skipped:  31              	31              	32              	5280        	6           	100         	0           	Open  	
-Section.text skipped:  110             	2               	12              	200         	18          	100         	0           	Open  	
-Section.text skipped:  111             	11              	21              	5280        	10          	100         	0           	Open  	
-Section.text skipped:  112             	12              	22              	5280        	12          	100         	0           	Open  	
-Section.text skipped:  113             	13              	23              	5280        	8           	100         	0           	Open  	
-Section.text skipped:  121             	21              	31              	5280        	8           	100         	0           	Open  	
-Section.text skipped:  122             	22              	32              	5280        	6           	100         	0           	Open  	
-Section.text skipped:  9               	9               	10              	HEAD 1	
-Section.text skipped:  10              	20.00           	70.00
-Section.text skipped:  11              	30.00           	70.00
-Section.text skipped:  12              	50.00           	70.00
-Section.text skipped:  13              	70.00           	70.00
-Section.text skipped:  21              	30.00           	40.00
-Section.text skipped:  22              	50.00           	40.00
-Section.text skipped:  23              	70.00           	40.00
-Section.text skipped:  31              	30.00           	10.00
-Section.text skipped:  32              	50.00           	10.00
-Section.text skipped:  9               	10.00           	70.00
-Section.text skipped:  2               	50.00           	90.00
-Section.text skipped:  6.99             73.63            "Source"
-Section.text skipped:  13.48            68.13            "Pump"
-Section.text skipped:  43.85            91.21            "Tank"
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_patterns.SimplePatternTest</td>
+    <td>test_energy.SimpleEnergyTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -410,7 +382,7 @@ Section.text skipped:  43.85            91.21            "Tank"
 </tr>
 
 <tr class='passClass'>
-    <td>test_curves.SimpleCurveTest</td>
+    <td>test_demands.SimpleDemandsTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -424,7 +396,7 @@ Section.text skipped:  43.85            91.21            "Tank"
 </tr>
 
 <tr class='passClass'>
-    <td>test_demands.SimpleDemandsTest</td>
+    <td>test_quality.SimpleQualityTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -438,7 +410,7 @@ Section.text skipped:  43.85            91.21            "Tank"
 </tr>
 
 <tr class='passClass'>
-    <td>test_sources.SimpleSourcesTest</td>
+    <td>test_reactions.SimpleReactionsTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -451,10 +423,38 @@ Section.text skipped:  43.85            91.21            "Tank"
     <td colspan='5' align='center'>pass</td>
 </tr>
 
+<tr class='passClass'>
+    <td>test_sources.SimpleSourcesTest</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c14',1)">Detail</a></td>
+</tr>
+
+<tr id='pt14.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_backdrop.SimpleBackdropTest</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c15',1)">Detail</a></td>
+</tr>
+
+<tr id='pt15.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
 <tr id='total_row'>
     <td>Total</td>
-    <td>13</td>
-    <td>13</td>
+    <td>15</td>
+    <td>15</td>
     <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>

@@ -17,6 +17,7 @@ class SimpleTimesTest2(unittest.TestCase):
                     "Duration\t24:00\n" \
                     "Hydraulic Timestep\t1:00\n" \
                     "Quality Timestep\t0:05\n" \
+                    "Rule Timestep\t0:05\n" \
                     "Pattern Timestep\t2:00\n" \
                     "Pattern Start\t0:00\n" \
                     "Report Timestep\t1:00\n" \
@@ -25,10 +26,8 @@ class SimpleTimesTest2(unittest.TestCase):
                     "Statistic\tNone"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
-        nw_actual_text = actual_text.replace(" ","")
-        nw_test_text = test_text.replace(" ","")
         # assert nw_actual_text == nw_test_text
-        # assert self.my_options.matches(test_text)
+        assert self.my_options.matches(test_text)
         pass
 
         # data from Net1.inp
@@ -36,6 +35,7 @@ class SimpleTimesTest2(unittest.TestCase):
                     "     Duration           	24:00\n" \
                     "     Hydraulic Timestep 	1:00\n" \
                     "     Quality Timestep   	0:05\n" \
+                    "     Rule Timestep      	0:05\n" \
                     "     Pattern Timestep   	2:00\n" \
                     "     Pattern Start      	0:00\n" \
                     "     Report Timestep    	1:00\n" \

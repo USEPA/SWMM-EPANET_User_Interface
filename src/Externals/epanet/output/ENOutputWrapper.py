@@ -91,6 +91,8 @@ class OutputObject(object):
         self._get_Units()
         self._get_NetSize()
         self._get_Times()
+        self._cache_node_ids()
+        self._cache_link_ids()
 
     def RaiseError(self, ErrNo):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
@@ -144,27 +146,66 @@ class OutputObject(object):
         _lib.ENR_getTimes(self.enrapi, _lib.ENR_numPeriods, byref(cint))
         self.numPeriods = cint.value
 
+    def _cache_node_ids(self):
+        self.nodeIds = []
+        for index in range(0, self.nodeCount - 1):
+            _lib.ENR_getNodeID(self.enrapi, index, label)
+            self.nodeIds.append(str(label))
+
+    def _cache_link_ids(self):
+        self.linkIds = []
+        for index in range(0, self.linkCount - 1):
+            _lib.ENR_getLinkID(self.enrapi, index, label)
+            self.linkIds.append(str(label))
+
     def get_NodeID(self, index):
          """Retrieves the ID label of a node with a specified index.
-       
          Arguments:
          index: node index"""
+         if self.nodeIds:
+             return self.nodeIds[index]
          _lib.ENR_getNodeID(self.enrapi, index, label)
          return str(label)
 
     def get_NodeIndex(self, NodeID):
-        for index in range(0, self.nodeCount - 1):
-            if self.get_NodeID(index) == NodeID:
-                return index
-        return -1
+        """Retrieves the index of a node with a specified ID.
+
+        Arguments:
+        NodeID: node ID label"""
+        if not self.nodeIds:
+            self._cache_node_ids()
+        try:
+            return self.nodeIds.index(NodeID)
+            # for index in range(0, self.nodeCount - 1):
+            #     if self.get_NodeID(index) == NodeID:
+            #         return index
+        except:
+            return -1
 
     def get_LinkID(self, index):
          """Retrieves the ID label of a link with a specified index.
        
          Arguments:
          index: link index"""
+         if self.linkIds:
+             return self.linkIds[index]
          _lib.ENR_getLinkID(self.enrapi, index, label)
          return str(label)
+
+    def get_LinkIndex(self, LinkID):
+        """Retrieves the index of a link with a specified ID.
+
+        Arguments:
+        LinkID: link ID label"""
+        if not self.linkIds:
+            self._cache_link_ids()
+        try:
+            return self.linkIds.index(LinkID)
+            # for index in range(0, self.linkCount - 1):
+            #     if self.get_LinkID(index) == LinkID:
+            #         return index
+        except:
+            return -1
 
     def get_NodeValue(self, NodeInd, TimeInd,  NodeAttr):
         """
@@ -175,6 +216,7 @@ class OutputObject(object):
         if ierr == 0:
             return xval.value
         else:
+            print "Error in get_NodeValue({}, {}, {})".format(str(NodeInd), str(TimeInd), str(NodeAttr))
             self.RaiseError(ierr)
            
     def get_LinkValue(self, NodeInd, TimeInd,  NodeAttr):

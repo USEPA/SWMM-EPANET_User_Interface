@@ -53,7 +53,7 @@ class Coordinate(Section):
         else:
             Section.__init__(self)
 
-            self.node_id = ''
+            self.id = ''
             """Identifier of node at this location"""
 
             self.x = '0.0'
@@ -64,10 +64,10 @@ class Coordinate(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.x, self.y)
+        return self.field_format.format(self.id, self.x, self.y)
 
     def set_text(self, new_text):
-        (self.node_id, self.x, self.y) = new_text.split()
+        (self.id, self.x, self.y) = new_text.split()
 
 
 class Quality(Section):
@@ -81,7 +81,7 @@ class Quality(Section):
         else:
             Section.__init__(self)
 
-            self.node_id = ''
+            self.id = ''
             """elevation of junction"""
 
             self.initial_quality = '0.0'
@@ -89,10 +89,10 @@ class Quality(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.initial_quality)
+        return self.field_format.format(self.id, self.initial_quality)
 
     def set_text(self, new_text):
-        (self.node_id, self.initial_quality) = new_text.split()
+        (self.id, self.initial_quality) = new_text.split()
 
 
 class Junction(Section):
@@ -105,7 +105,7 @@ class Junction(Section):
             self.set_text(new_text)
         else:
             Section.__init__(self)
-            self.node_id = ''
+            self.id = ''
             """node identifier/name"""
 
             self.elevation = ''
@@ -125,14 +125,14 @@ class Junction(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.elevation, self.base_demand_flow, self.demand_pattern_id)
+        return self.field_format.format(self.id, self.elevation, self.base_demand_flow, self.demand_pattern_id)
 
     def set_text(self, new_text):
         self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.id = fields[0]
         if len(fields) > 1:
             self.elevation = fields[1]
         if len(fields) > 2:
@@ -151,7 +151,7 @@ class Reservoir(Section):
             self.set_text(new_text)
         else:
             Section.__init__(self)
-            self.node_id = ''
+            self.id = ''
             """node identifier/name"""
 
             self.total_head = "0.0"
@@ -162,14 +162,14 @@ class Reservoir(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.total_head, self.head_pattern_id, self.comment)
+        return self.field_format.format(self.id, self.total_head, self.head_pattern_id, self.comment)
 
     def set_text(self, new_text):
         self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.id = fields[0]
         if len(fields) > 1:
             self.total_head = fields[1]
         if len(fields) > 2:
@@ -186,7 +186,7 @@ class Tank(Section):
             self.set_text(new_text)
         else:
             Section.__init__(self)
-            self.node_id = ''
+            self.id = ''
             """node identifier/name"""
 
             self.elevation = "0.0"
@@ -214,7 +214,7 @@ class Tank(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id, self.elevation, self.initial_level,
+        return self.field_format.format(self.id, self.elevation, self.initial_level,
                                         self.minimum_level, self.maximum_level, self.diameter,
                                         self.minimum_volume, self.volume_curve, self.comment)
 
@@ -223,7 +223,7 @@ class Tank(Section):
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.id = fields[0]
         if len(fields) > 1:
             self.elevation = fields[1]
         if len(fields) > 2:
@@ -250,7 +250,7 @@ class Mixing(Section):
             self.set_text(new_text)
         else:
             Section.__init__(self)
-            self.node_id = ''
+            self.id = ''
             """node identifier/name"""
 
             self.mixing_model = MixingModel.MIXED
@@ -265,7 +265,7 @@ class Mixing(Section):
 
     def get_text(self):
         """format contents of this item for writing to file"""
-        return self.field_format.format(self.node_id,
+        return self.field_format.format(self.id,
                                         self.mixing_model.name.replace("TWO_", "2"),
                                         self.mixing_fraction,
                                         self.comment)
@@ -275,7 +275,7 @@ class Mixing(Section):
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.id = fields[0]
         if len(fields) > 1:
             self.mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
         if len(fields) > 2:
@@ -293,7 +293,8 @@ class Source(Section):
         else:
             Section.__init__(self)
 
-            self.node_id = ''
+            self.id = ''
+            """node identifier/name"""
 
             self.source_type = SourceType.CONCEN # TRATION
             """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
@@ -308,7 +309,7 @@ class Source(Section):
         inp = ''
         if self.comment:
             inp = self.comment + '\n'
-        inp += self.field_format.format(self.node_id,
+        inp += self.field_format.format(self.id,
                                         self.source_type.name,
                                         self.baseline_strength,
                                         self.pattern_id)
@@ -318,7 +319,7 @@ class Source(Section):
         self.__init__()
         fields = new_text.split()
         if len(fields) > 0:
-            self.node_id = fields[0]
+            self.id = fields[0]
         if len(fields) > 1:
             self.source_type = SourceType[fields[1].upper()]
         if len(fields) > 2:

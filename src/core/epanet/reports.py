@@ -16,14 +16,14 @@ import Externals.epanet.output.functionalwrapper
 class Reports:
     PAGESIZE = 55
     ULINE = '----------------------------------------------------------------------'
-    FMT18 = '  Page 1                                          %22s'
+    FMT18 = '  Page 1                                          {:>22}'
     FMT_DATE = '%Y/%m/%d %I:%M%p'
-    FMT82 = '  Page %-4d %60s'
+    FMT82 = '  Page {:4d} {:60}'
     FMT71 = 'Energy Usage:'
     FMT72 = '                  Usage   Avg.     Kw-hr      Avg.      Peak      Cost'
-    FMT73 = 'Pump             Factor Effic.     %s        Kw        Kw      /day'
-    FMT74 = '%45s Demand Charge: %9.2f'
-    FMT75 = '%45s Total Cost:    %9.2f'
+    FMT73 = 'Pump             Factor Effic.     {:5}        Kw        Kw      /day'
+    FMT74 = '{:45} Demand Charge: {:9.2f}'
+    FMT75 = '{:45} Total Cost:    {:9.2f}'
     TXT_perM3 = '/m3'
     TXT_perMGAL = '/Mgal'
     TXT_CONTINUED = ' (continued)'
@@ -37,11 +37,7 @@ class Reports:
     TXT_LINK = 'Link'
     TXT_START = 'Start'
     TXT_END = 'End'
-    MSG_REPORT_SIZE1 = 'This full report will use over '
-    MSG_REPORT_SIZE2 = ' Mbytes of disk space. Do you wish to proceed?'
-    MSG_WRITING_REPORT = 'Writing full report...'
-    MSG_NO_WRITE = 'Could not write full report to file '
-    TXT_REPORT_FILTER = 'Report files (*.RPT)|*.RPT|All files|*.*'
+
     TimeStat = ['Single Period', 'Average', 'Minimum', 'Maximum', 'Range']
 
     def __init__(self, epanet_project, model_output):
@@ -78,12 +74,6 @@ class Reports:
         self.Progstep = 0
         self.Nprogress = 0
 
-    # def write_file(self, file_name):
-    #     if file_name:
-    #         with open(file_name, 'w') as writer:
-    #             writer.writelines(self.get_text())
-    #             self.file_name = file_name
-
     def write_line(self, line):
         if (self.LineNum >= self.PAGESIZE):
             self.PageNum += 1
@@ -95,7 +85,7 @@ class Reports:
 
     def write_logo(self):
         self.PageNum = 1
-        self.LineNum = 2
+        self.LineNum = 1
         self.write_line(self.FMT18.format(datetime.now().strftime(self.FMT_DATE)))
         for line in self.LogoTxt:
             self.write_line(line)
@@ -104,81 +94,75 @@ class Reports:
         self.write_line('')
         self.write_line(self.RptTitle)
         self.write_line(self.project.title.notes)
-        self.write_line('')
+        # self.write_line('')
 
-    def WriteEnergyHeader(self, ContinueFlag):
+    def write_energy_header(self, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
-            S2 = (self.TXT_perMGAL, self.TXT_perM3)[self.unit_system]
-            S = self.FMT71
+        units = (self.TXT_perMGAL, self.TXT_perM3)[self.unit_system]
+        line = self.FMT71
         if ContinueFlag:
-            S += self.TXT_CONTINUED
-            self.write_line(S)
-            self.write_line(self.ULINE)
-            S = self.FMT72
-            self.write_line(S)
-            S = self.FMT73.format(S2)
-            self.write_line(S)
-            self.write_line(self.ULINE)
+            line += self.TXT_CONTINUED
+        self.write_line(line)
+        self.write_line(self.ULINE)
+        line = self.FMT72
+        self.write_line(line)
+        line = self.FMT73.format(units)
+        self.write_line(line)
+        self.write_line(self.ULINE)
 
-    def WriteEnergy(self):
-# var
-#   j,k: Integer
-#   x: array[0..5] of Single
-#   Dcharge: Single
-#   Csum: Single
-#   S: String
-        self.WriteEnergyHeader(False)
+    def write_energy(self):
+        self.write_energy_header(False)
         Csum = 0.0
-    #  for j = 0 to Network.Lists[PUMPS].Count-1 do
-    #     begin
-    #       k = Link(PUMPS,j).Zindex
-    #       if k < 0: continue
-    #       Uoutput.GetPumpEnergy(k,x,Dcharge)
-    #       Csum = Csum + x[5]
-    #       if (self.LineNum == self.PageSize):
-    #           self.WriteEnergyHeader(True)
-    #       S = ''  # ('{:15}  %6.2f %6.2f %9.2f %9.2f %9.2f %9.2f'.format([GetID(PUMPS,j),x[0],x[1],x[2],x[3],x[4],x[5]])
-    #       self.write_line(S)
-    #     end
-    #   self.write_line(self.ULINE)
-    #   S = Format(FMT74,['', Dcharge])
-    #   self.write_line(S)
-    #   S = Format(FMT75, ['',Csum+Dcharge])
-    #   self.write_line(S)
+        for pump in self.project.pumps.value:
+            x = [0,0,0,0,0,0]
+            Dcharge = 0
+            # Uoutput.GetPumpEnergy(k,x,Dcharge)
+            Csum += x[5]
+            if (self.LineNum >= self.PAGESIZE):
+                self.write_energy_header(True)
+            line = '{:15}  {:6.2f} {:6.2f} {:9.2f} {:9.2f} {:9.2f} {:9.2f}'.format(
+                    pump.id, x[0],   x[1],   x[2],   x[3],   x[4],   x[5])
+            self.write_line(line)
+
+        self.write_line(self.ULINE)
+        line = self.FMT74.format('', Dcharge)
+        self.write_line(line)
+        line = self.FMT75.format('', Csum + Dcharge)
+        self.write_line(line)
         self.write_line('')
 
-    def WriteNodeHeader(self, T, ContinueFlag):
+    def write_node_header(self, period, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
-        S = self.TXT_NODE_RESULTS
+        line = self.TXT_NODE_RESULTS
         if self.output.numPeriods > 1:
-            S += self.TXT_AT + self.TimeStat[T]
-        S += ':'
-        if ContinueFlag: S += self.TXT_CONTINUED
-        self.write_line(S)
+            line += self.TXT_AT + self.get_time_string(period)
+        line += ':'
+        if ContinueFlag:
+            line += self.TXT_CONTINUED
+        self.write_line(line)
         self.write_line(self.ULINE)
-        self.output.get_Node
-        S = '{:15} {:10}{:10}{:10}{:10}'.format(self.TXT_NODE,
-                                                ENR_NodeAttributeNames[ENR_demand],
-                                                ENR_NodeAttributeNames[ENR_head],
-                                                ENR_NodeAttributeNames[ENR_pressure],
-                                                ENR_NodeAttributeNames[ENR_quality])
-        self.write_line(S)
-        S = '{:15} {:10}{:10}{:10}{:10}'.format(self.TXT_ID,
-                                                ENR_NodeAttributeUnits[ENR_demand][self.unit_system],
-                                                ENR_NodeAttributeNames[ENR_head][self.unit_system],
-                                                ENR_NodeAttributeNames[ENR_pressure][self.unit_system],
-                                                ENR_NodeAttributeNames[ENR_quality][self.unit_system])
-        self.write_line(S)
+        line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_NODE,
+                                                       ENR_NodeAttributeNames[ENR_demand],
+                                                       ENR_NodeAttributeNames[ENR_head],
+                                                       ENR_NodeAttributeNames[ENR_pressure],
+                                                       ENR_NodeAttributeNames[ENR_quality])
+        self.write_line(line)
+        line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_ID,
+                                                       ENR_NodeAttributeUnits[ENR_demand][self.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_head][self.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_pressure][self.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_quality][self.unit_system])
+        self.write_line(line)
         self.write_line(self.ULINE)
 
-    def WriteLinkHeader(self, T, ContinueFlag):
+    def write_link_header(self, period, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
         S = self.TXT_LINK_RESULTS
         if self.output.numPeriods > 1:
-            S += self.TXT_AT + self.TimeStat[T]
+            S += self.TXT_AT + self.get_time_string(period)
         S += ':'
         if ContinueFlag:
             S += self.TXT_CONTINUED
@@ -197,7 +181,7 @@ class Reports:
         self.write_line(S)
         self.write_line(self.ULINE)
 
-    def WriteLinkInfoHeader(self, ContinueFlag):
+    def write_link_info_header(self, ContinueFlag):
         S = self.TXT_LINK_INFO
         if ContinueFlag:
             S += self.TXT_CONTINUED
@@ -208,29 +192,29 @@ class Reports:
 
         len_units = ('ft','m')[self.unit_system]
         dia_units = ('in','mm')[self.unit_system]
-        S = '{:15}{:15}{:15}{:10}{:10}'.format(self.TXT_ID, self.TXT_NODE, self.TXT_NODE, len_units, dia_units)
+        S = '{:15}{:15}{:15}{:>10}{:>10}'.format(self.TXT_ID, self.TXT_NODE, self.TXT_NODE, len_units, dia_units)
         self.write_line(S)
         self.write_line(self.ULINE)
 
-    def WriteLinkInfo(self):
-        self.WriteLinkInfoHeader(False)
+    def write_link_info(self):
+        self.write_link_info_header(False)
         for conduits in (self.project.pipes, self.project.pumps, self.project.valves):
             # TODO: update progress bar: MainForm.UpdateProgressBar(Nprogress, ProgStep)
             for conduit in conduits.value:
                 # Note: Pascal report got these values from binary, we get them here from input
                 # length = self.output.get_LinkValue(conduits.id, 0, 1) # Uoutput.GetLinkValStr(LINKLENGTH,0,I,J)
                 if (self.LineNum >= self.PAGESIZE):
-                    self.WriteLinkInfoHeader(True)
+                    self.write_link_info_header(True)
                 if hasattr(conduit, "length"):
                     length = conduit.length
                 else:
-                    length = ""
+                    length = "#N/A"
                 if hasattr(conduit, "diameter"):
                     diameter = conduit.diameter
                 else:
-                    diameter = ""
-                S = '{:15}{:15}{:15}{:10}{:10}'.format(conduit.id, conduit.inlet_node, conduit.outlet_node,
-                                                       length, diameter)
+                    diameter = "#N/A"
+                S = '{:15}{:15}{:15}{:>10}{:>10}'.format(conduit.id, conduit.inlet_node, conduit.outlet_node,
+                                                         length, diameter)
                 if conduits is self.project.pumps:
                     S += ' Pump'
                 elif conduits is self.project.valves:
@@ -238,90 +222,89 @@ class Reports:
                 self.write_line(S)
         self.write_line('')
 
-    def WriteNodeTable(self, T):
-        self.WriteNodeHeader(T, False)
+    def write_node_table(self, period):
+        self.write_node_header(period, False)
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
             for node in nodes.value:
                 #         MainForm.UpdateProgressBar(Nprogress, ProgStep)
                 node_index = self.output.get_NodeIndex(node.id)
-                demand =   self.output.get_NodeValue(node_index, T, ENR_demand)
-                head =     self.output.get_NodeValue(node_index, T, ENR_head)
-                pressure = self.output.get_NodeValue(node_index, T, ENR_pressure)
-                quality =  self.output.get_NodeValue(node_index, T, ENR_quality)
-                S = '{:15} {:10}{:10}{:10}{:10}'.format(node.id, demand, head, pressure, quality)
+                if node_index < 0:
+                    line = '{:15} {}'.format(node.id, 'not found in output.')
+                else:
+                    demand     = self.output.get_NodeValue(node_index, period, ENR_demand)
+                    head       = self.output.get_NodeValue(node_index, period, ENR_head)
+                    pressure   = self.output.get_NodeValue(node_index, period, ENR_pressure)
+                    quality    = self.output.get_NodeValue(node_index, period, ENR_quality)
+                    line = '{:15} {:7.2f} {:7.2f} {:7.2f} {:7.2f}'.format(node.id, demand, head, pressure, quality)
                 if nodes is self.project.reservoirs:
-                    S += ' Reservoir'
+                    line += ' Reservoir'
                 elif nodes is self.project.tanks:
-                    S += ' Tank'
-                if (self.LineNum == self.PAGESIZE):
-                    self.WriteNodeHeader(T, True)
-                self.write_line(S)
+                    line += ' Tank'
+                if (self.LineNum >= self.PAGESIZE):
+                    self.write_node_header(period, True)
+                self.write_line(line)
         self.write_line('')
 
-    def WriteLinkTable(self, T):
-# var
-#   I,J: Integer
-#   ID,Q,V,H,S,R: String
-# begin
-#   try
-        self.WriteLinkHeader(T, False)
-#     for I = PIPES to VALVES do
-#     begin
-#       for J = 0 to Network.Lists[I].Count-1 do
-#       begin
-#         MainForm.UpdateProgressBar(Nprogress, ProgStep)
-#         if Link(I,J).Zindex < 0: continue
-#         ID = GetID(I,J)
-#         Q = Uoutput.GetLinkValStr(FLOW,T,I,J)
-#         V = Uoutput.GetLinkValStr(VELOCITY,T,I,J)
-#         H = Uoutput.GetLinkValStr(HEADLOSS,T,I,J)
-#         S = Uoutput.GetLinkValStr(LINKSTAT,T,I,J)
-#         if (LineNum == self.PAGESIZE): WriteLinkHeader(T,True)
-#         R = Format('{:15} {:10}{:10}{:10}{:10}',[ID,Q,V,H,S])
-#         if I > PIPES: R = R + ' ' + ObjectLabel[I]
-#         self.write_line(R)
-#       end
-#     end
-#     self.write_line('')
+    def write_link_table(self, period):
+        self.write_link_header(period, False)
+        for links in (self.project.pipes, self.project.pumps, self.project.valves):
+            for link in links.value:
+                # MainForm.UpdateProgressBar(Nprogress, ProgStep)
+                link_index = self.output.get_LinkIndex(link.id)
+                if link_index < 0:
+                    line = '{:15} {}'.format(link.id, 'not found in output.')
+                else:
+                    flow     = self.output.get_LinkValue(link_index, period, ENR_flow)
+                    velocity = self.output.get_LinkValue(link_index, period, ENR_velocity)
+                    headloss = self.output.get_LinkValue(link_index, period, ENR_headloss)
+                    linkstat = "Unknown"  # TODO: self.output.get_LinkValue(link_index, T, ENR_
+                    line = '{:15} {:9.2f} {:9.2f} {:9.2f} {:>10}'.format(link.id, flow, velocity, headloss, linkstat)
+                if links is self.project.pumps:
+                    line += ' Pump'
+                elif links is self.project.valves:
+                    line += ' Valve'
 
-    def WriteResults(self):
-# var
-#   N: Integer
-# begin
-#   try
-#     for N = 0 to self.output.numPeriods-1 do
-#     begin
-#       Application.ProcessMessages
-#       WriteNodeTable(N)
-#       Application.ProcessMessages
-#       WriteLinkTable(N)
-#     end
-        pass
+                if (self.LineNum >= self.PAGESIZE):
+                    self.write_link_header(period, True)
+                self.write_line(line)
+        self.write_line('')
+
+    def write_results(self):
+        for period in range(0, self.output.numPeriods - 1):
+            # Application.ProcessMessages
+            self.write_node_table(period)
+            # Application.ProcessMessages
+            self.write_link_table(period)
 
     def write_report(self, report_file_name):
-        #   MainForm.ShowProgressBar(MSG_WRITING_REPORT)
+        #   MainForm.ShowProgressBar('Writing full report...')
         with open(report_file_name, 'w') as self.F:
             try:
-                Total = self.output.nodeCount + self.output.linkCount
-                Total *= self.output.numPeriods
-                Total += self.output.linkCount
-                #     with MainForm.ProgressBar do
-                #       N = Max div Step
-                #     ProgStep = Round(Total/N)
-                #     Nprogress = 0
+                # Total = self.output.nodeCount + self.output.linkCount
+                # Total *= self.output.numPeriods
+                # Total += self.output.linkCount
+                # with MainForm.ProgressBar do
+                #   N = Max div Step
+                # ProgStep = Round(Total/N)
+                # Nprogress = 0
                 self.write_logo()
                 #     Application.ProcessMessages
-                self.WriteLinkInfo()
+                self.write_link_info()
                 if self.output.pumpCount > 0:
-                    self.WriteEnergy()
-                self.WriteResults()
-                # Result = True
-                #   finally
-                #   end
-                #   CloseFile(F)
-                #   MainForm.HideProgressBar
+                    self.write_energy()
+                self.write_results()
+                return True
             finally:
                 print "Finished writing report " + report_file_name
+                #   MainForm.HideProgressBar
+
+    def get_time_string(self, period):
+        # TODO: determine whether to use a value from self.TimeStat instead of a date
+        seconds = period * self.output.simDuration / self.output.numPeriods
+        hours = int(seconds / 3600)
+        minutes = int((seconds - (hours * 3600)) / 60)
+        return '{:02d}:{:02d}'.format(hours, minutes)
+
 
 #    def CreateFullReport(self, Filename):
 # var
@@ -331,8 +314,8 @@ class Reports:
 # // Check for huge file size
 #   Size = (Nlinks + (Nnodes + Nlinks)*self.output.numPeriods)*60*1e-6
 #   if Size > 10:
-#     if MessageDlg(MSG_REPORT_SIZE1 + IntToStr(Trunc(Size)) +
-#       MSG_REPORT_SIZE2, mtConfirmation, [mbYes,mbNo], 0) == mrNo
+#     if MessageDlg('This full report will use over ' + IntToStr(Trunc(Size)) +
+#       ' Mbytes of disk space. Do you wish to proceed?', mtConfirmation, [mbYes,mbNo], 0) == mrNo
 #        : Exit
 # 
 # // Get a report file name
@@ -341,7 +324,7 @@ class Reports:
 #   begin
 # 
 #   // Set options for Save File dialog
-#     Filter = TXT_REPORT_FILTER
+#     Filter = 'Report files (*.RPT)|*.RPT|All files|*.*'
 #     if Length(InputFileName) > 0: Filename :=
 #       ChangeFileExt(ExtractFileName(InputFileName),'.rpt')
 #     else Filename = '*.rpt'
@@ -354,5 +337,5 @@ class Reports:
 #       R = self.WriteReport(Filename)
 #       Screen.Cursor = crDefault
 #       if not R:
-#         MessageDlg(MSG_NO_WRITE + ExtractFileName(Filename),
+#         MessageDlg('Could not write full report to file ' + ExtractFileName(Filename),
 #           mtError, [mbOK], 0)

@@ -366,7 +366,6 @@ class frmMainEPANET(frmMain):
                                                           "Inp files (*.inp);;All files (*.*)")
 
         if os.path.exists(file_name):
-            prefix, extension = os.path.splitext(file_name)
             if not os.path.exists(self.model_path):
                 if 'darwin' in sys.platform:
                     lib_name = 'libepanet.dylib.dylib'
@@ -377,6 +376,7 @@ class frmMainEPANET(frmMain):
                 self.model_path = self.find_external(lib_name)
             if os.path.exists(self.model_path):
                 try:
+                    prefix, extension = os.path.splitext(file_name)
                     self.status_file_name = prefix + self.status_suffix
                     self.output_filename = prefix + '.out'
                     model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
@@ -396,6 +396,7 @@ class frmMainEPANET(frmMain):
                         frmRun.project = self.project
 
                     frmRun.Execute()
+                    self.report_status()
                     self.output = ENOutputWrapper.OutputObject(self.output_filename)
                     return
                 except Exception as e1:

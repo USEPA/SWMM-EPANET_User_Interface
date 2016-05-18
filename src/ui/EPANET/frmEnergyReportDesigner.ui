@@ -103,6 +103,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
             <widget class="QFrame" name="fraColumn">
+             <property name="maximumSize">
+              <size>
+               <width>400</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -154,6 +160,9 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widgetChart" native="true"/>
            </item>
           </layout>
          </widget>

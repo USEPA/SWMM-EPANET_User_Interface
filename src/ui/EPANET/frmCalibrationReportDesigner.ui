@@ -48,12 +48,21 @@
           <attribute name="title">
            <string>Correlation Plot</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QWidget" name="widgetPlot" native="true"/>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="tabMean">
           <attribute name="title">
            <string>Mean Comparisons</string>
           </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QWidget" name="widgetMean" native="true"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>

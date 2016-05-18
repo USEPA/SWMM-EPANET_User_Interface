@@ -35,6 +35,7 @@ from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmLandUses import frmLandUses
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
+from ui.SWMM.frmCalibrationData import frmCalibrationData
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -197,6 +198,11 @@ class frmMainSWMM(frmMain):
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
+
+    def calibration_data(self):
+        self._frmCalibrationData = frmCalibrationData(self.parent())
+        self._frmCalibrationData.show()
+        pass
 
     def get_editor(self, edit_name):
         frm = None

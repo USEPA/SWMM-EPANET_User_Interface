@@ -168,7 +168,7 @@ class frmMainEPANET(frmMain):
 
     def report_energy(self):
         self._frmEnergyReport = frmEnergyReport(self.parent())
-        # self._frmEnergyReport.set_data()
+        self._frmEnergyReport.set_data()
         self._frmEnergyReport.show()
         pass
 

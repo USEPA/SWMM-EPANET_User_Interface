@@ -8,9 +8,9 @@ import sys
 import traceback
 from datetime import datetime
 from core.epanet.project import Project
-import Externals.epanet.output.outputapi
-from Externals.epanet.output.ENOutputWrapper import *
-import Externals.epanet.output.functionalwrapper
+import Externals.epanet.outputapi.outputapi
+from Externals.epanet.outputapi.ENOutputWrapper import *
+import Externals.epanet.outputapi.functionalwrapper
 # See Also: from core.epanet.options.report import ReportOptions
 
 class Reports:

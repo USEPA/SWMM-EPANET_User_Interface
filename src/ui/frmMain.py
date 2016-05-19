@@ -421,6 +421,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if filename.endswith('.inp'):
                 gui_settings = QtCore.QSettings(self.model, "GUI")
                 self.open_project_quiet(os.path.join(directory, filename), gui_settings, directory)
+            elif filename.endswith('.shp'):
+                self.map_widget.addVectorLayer(os.path.join(directory, filename))
             else:
                 QMessageBox.information(self, self.model,
                             "Dropped file '" + filename + "' is not an input file",

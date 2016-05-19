@@ -34,7 +34,7 @@ from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 from core.epanet.project import Project
 import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet
-from Externals.epanet.output import ENOutputWrapper
+from Externals.epanet.outputapi import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
 
 

@@ -1,6 +1,6 @@
 import ctypes
 
-from Externals.epanet.output import outputapi as _lib
+from Externals.epanet.outputapi import outputapi as _lib
 
 label  = _lib.String( (_lib.MAXID+1)*'\0')
 errmsg = _lib.String( (_lib.MAXMSG+1)*'\0')

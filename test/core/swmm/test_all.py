@@ -16,7 +16,7 @@ from test_options_timesteps import OptionsTimestepTest
 
 # Climatology
 from test_evaporation import SimpleEvaporationTest
-from test_evaporation import ClimatologyEvaporationTest
+from test_evaporation import EvaporationTest
 from test_temperature import ClimatologyTemperatureTest
 from test_adjustments import ClimatologyAdjustmentsTest
 
@@ -104,7 +104,17 @@ my_suite.addTest(OptionsTimestepTest())
 
 # Climatology
 my_suite.addTest(SimpleEvaporationTest())
-my_suite.addTest(ClimatologyEvaporationTest())
+# my_suite.addTest(ClimatologyEvaporationTest())
+my_suite.addTest(EvaporationTest("test_bare"))
+my_suite.addTest(EvaporationTest("test_constant_only"))
+my_suite.addTest(EvaporationTest("test_constant_wt_dry_only"))
+my_suite.addTest(EvaporationTest("test_monthly"))
+my_suite.addTest(EvaporationTest("test_monthly_fail"))
+my_suite.addTest(EvaporationTest("test_timeseries"))
+my_suite.addTest(EvaporationTest("test_temperature"))
+my_suite.addTest(EvaporationTest("test_file"))
+my_suite.addTest(EvaporationTest("test_recovery"))
+
 my_suite.addTest(ClimatologyTemperatureTest())
 my_suite.addTest(ClimatologyAdjustmentsTest())
 

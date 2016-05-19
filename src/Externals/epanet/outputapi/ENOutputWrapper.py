@@ -7,7 +7,7 @@ Date: 12/7/2015
 Language: Anglais
 
 Edited for inclusion in SWMM-EPANET User Interface project
-26 April 2016
+April-May 2016
 Mark Gray, RESPEC
 for US EPA
 
@@ -15,7 +15,7 @@ for US EPA
 
 from ctypes import *
 
-import Externals.epanet.output.outputapi as _lib
+import Externals.epanet.outputapi.outputapi as _lib
 
 """
 #---- imported constants made available as local (not a good practice....)
@@ -35,7 +35,7 @@ from outputapi import ENR_flowUnits,ENR_pressUnits
 from outputapi import ENR_reportStart,ENR_reportStep,ENR_simDuration,ENR_numPeriods
 """
 ##ENR_NodeAttribute;
-from Externals.epanet.output.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
+from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
 ENR_NodeAttributes= (ENR_demand,
                      ENR_head,
                      ENR_pressure,
@@ -48,8 +48,8 @@ ENR_NodeAttributeUnits = (('CFS', 'LPS'), ('ft', 'm'), ('psi', 'm'), ('mg/L', 'm
 ENR_USFlowUnits = ('CFS', 'GPM', 'MGD', 'IMGD', 'AFD')
 ENR_SIFlowUnits = ('LPS', 'LPM', 'MLD', 'CMH', 'CMD')
 ##ENR_LinkAttribute;
-from Externals.epanet.output.outputapi import ENR_flow,ENR_velocity,ENR_headloss,ENR_avgQuality
-from Externals.epanet.output.outputapi import ENR_status,ENR_setting,ENR_rxRate,ENR_frctnFctr
+from Externals.epanet.outputapi.outputapi import ENR_flow,ENR_velocity,ENR_headloss,ENR_avgQuality
+from Externals.epanet.outputapi.outputapi import ENR_status,ENR_setting,ENR_rxRate,ENR_frctnFctr
 ENR_LinkAttributes= (ENR_flow,
                      ENR_velocity,
                      ENR_headloss,

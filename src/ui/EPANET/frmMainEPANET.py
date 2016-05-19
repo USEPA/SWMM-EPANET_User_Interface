@@ -167,13 +167,13 @@ class frmMainEPANET(frmMain):
                                     QMessageBox.Ok)
 
     def report_energy(self):
-        self._frmEnergyReport = frmEnergyReport(self.parent())
+        self._frmEnergyReport = frmEnergyReport(self)
         self._frmEnergyReport.set_data()
         self._frmEnergyReport.show()
         pass
 
     def report_calibration(self):
-        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self.parent())
+        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self)
         self._frmCalibrationReportOptions.show()
         pass
 
@@ -206,12 +206,13 @@ class frmMainEPANET(frmMain):
 
 
     def report_graph(self):
-        self._frmGraph = frmGraph(self.parent())
+        self._frmGraph = frmGraph(self)
+        self._frmGraph.set_from(self.project, self.output)
         self._frmGraph.show()
         pass
 
     def report_table(self):
-        self._frmTable = frmTable(self.parent())
+        self._frmTable = frmTable(self)
         self._frmTable.show()
         pass
 
@@ -276,7 +277,7 @@ class frmMainEPANET(frmMain):
         plt.show()
 
     def calibration_data(self):
-        self._frmCalibrationData = frmCalibrationData(self.parent())
+        self._frmCalibrationData = frmCalibrationData(self)
         self._frmCalibrationData.show()
         pass
 

@@ -42,6 +42,7 @@ from ui.SWMM.frmTimeSeriesPlot import frmTimeSeriesPlot
 from ui.SWMM.frmProfilePlot import frmProfilePlot
 from ui.SWMM.frmScatterPlot import frmScatterPlot
 from ui.SWMM.frmTableSelection import frmTableSelection
+from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -294,8 +295,8 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_statistics(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
+        self._frmStatisticsReportSelection = frmStatisticsReportSelection(self.parent())
+        self._frmStatisticsReportSelection.show()
         pass
 
     def report_summary(self):

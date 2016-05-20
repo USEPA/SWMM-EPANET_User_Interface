@@ -1,0 +1,146 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\SWMM\frmStatisticsReportSelectionDesigner.ui'
+#
+# Created by: PyQt4 UI code generator 4.11.4
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
+
+class Ui_frmStatisticsReportSelection(object):
+    def setupUi(self, frmStatisticsReportSelection):
+        frmStatisticsReportSelection.setObjectName(_fromUtf8("frmStatisticsReportSelection"))
+        frmStatisticsReportSelection.resize(329, 395)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        frmStatisticsReportSelection.setFont(font)
+        self.centralWidget = QtGui.QWidget(frmStatisticsReportSelection)
+        self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
+        self.verticalLayout.setMargin(11)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.fraTop = QtGui.QFrame(self.centralWidget)
+        self.fraTop.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.fraTop.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraTop.setObjectName(_fromUtf8("fraTop"))
+        self.gridLayout_2 = QtGui.QGridLayout(self.fraTop)
+        self.gridLayout_2.setMargin(11)
+        self.gridLayout_2.setSpacing(6)
+        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
+        self.cboCategory = QtGui.QComboBox(self.fraTop)
+        self.cboCategory.setObjectName(_fromUtf8("cboCategory"))
+        self.gridLayout_2.addWidget(self.cboCategory, 0, 2, 1, 1)
+        self.lblCategory = QtGui.QLabel(self.fraTop)
+        self.lblCategory.setObjectName(_fromUtf8("lblCategory"))
+        self.gridLayout_2.addWidget(self.lblCategory, 0, 1, 1, 1)
+        self.lblName = QtGui.QLabel(self.fraTop)
+        self.lblName.setObjectName(_fromUtf8("lblName"))
+        self.gridLayout_2.addWidget(self.lblName, 1, 1, 1, 1)
+        self.cboVariable = QtGui.QComboBox(self.fraTop)
+        self.cboVariable.setObjectName(_fromUtf8("cboVariable"))
+        self.gridLayout_2.addWidget(self.cboVariable, 2, 2, 1, 1)
+        self.lstName = QtGui.QListWidget(self.fraTop)
+        self.lstName.setObjectName(_fromUtf8("lstName"))
+        self.gridLayout_2.addWidget(self.lstName, 1, 2, 1, 1)
+        self.lblVariable = QtGui.QLabel(self.fraTop)
+        self.lblVariable.setObjectName(_fromUtf8("lblVariable"))
+        self.gridLayout_2.addWidget(self.lblVariable, 2, 1, 1, 1)
+        self.lblEvent = QtGui.QLabel(self.fraTop)
+        self.lblEvent.setObjectName(_fromUtf8("lblEvent"))
+        self.gridLayout_2.addWidget(self.lblEvent, 3, 1, 1, 1)
+        self.cboEvent = QtGui.QComboBox(self.fraTop)
+        self.cboEvent.setObjectName(_fromUtf8("cboEvent"))
+        self.gridLayout_2.addWidget(self.cboEvent, 3, 2, 1, 1)
+        self.lblStatistic = QtGui.QLabel(self.fraTop)
+        self.lblStatistic.setObjectName(_fromUtf8("lblStatistic"))
+        self.gridLayout_2.addWidget(self.lblStatistic, 4, 1, 1, 1)
+        self.cboStatistic = QtGui.QComboBox(self.fraTop)
+        self.cboStatistic.setObjectName(_fromUtf8("cboStatistic"))
+        self.gridLayout_2.addWidget(self.cboStatistic, 4, 2, 1, 1)
+        self.verticalLayout.addWidget(self.fraTop)
+        self.gbxThresholds = QtGui.QGroupBox(self.centralWidget)
+        self.gbxThresholds.setObjectName(_fromUtf8("gbxThresholds"))
+        self.gridLayout = QtGui.QGridLayout(self.gbxThresholds)
+        self.gridLayout.setMargin(11)
+        self.gridLayout.setSpacing(6)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.lblPrecip = QtGui.QLabel(self.gbxThresholds)
+        self.lblPrecip.setObjectName(_fromUtf8("lblPrecip"))
+        self.gridLayout.addWidget(self.lblPrecip, 0, 0, 1, 1)
+        self.lblVolume = QtGui.QLabel(self.gbxThresholds)
+        self.lblVolume.setObjectName(_fromUtf8("lblVolume"))
+        self.gridLayout.addWidget(self.lblVolume, 3, 0, 1, 1)
+        self.txtPrecip = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtPrecip.setObjectName(_fromUtf8("txtPrecip"))
+        self.gridLayout.addWidget(self.txtPrecip, 0, 1, 1, 1)
+        self.txtVolume = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtVolume.setObjectName(_fromUtf8("txtVolume"))
+        self.gridLayout.addWidget(self.txtVolume, 3, 1, 1, 1)
+        self.txtSeparation = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtSeparation.setObjectName(_fromUtf8("txtSeparation"))
+        self.gridLayout.addWidget(self.txtSeparation, 4, 1, 1, 1)
+        self.lblSeparation = QtGui.QLabel(self.gbxThresholds)
+        self.lblSeparation.setObjectName(_fromUtf8("lblSeparation"))
+        self.gridLayout.addWidget(self.lblSeparation, 4, 0, 1, 1)
+        self.verticalLayout.addWidget(self.gbxThresholds)
+        self.fraOKCancel = QtGui.QFrame(self.centralWidget)
+        self.fraOKCancel.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
+        self.horizontalLayout.setMargin(11)
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.fraMid = QtGui.QFrame(self.fraOKCancel)
+        self.fraMid.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.fraMid.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraMid.setObjectName(_fromUtf8("fraMid"))
+        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.fraMid)
+        self.horizontalLayout_3.setMargin(11)
+        self.horizontalLayout_3.setSpacing(6)
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.horizontalLayout.addWidget(self.fraMid)
+        spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.cmdOK = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdOK.setObjectName(_fromUtf8("cmdOK"))
+        self.horizontalLayout.addWidget(self.cmdOK)
+        self.cmdCancel = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdCancel.setObjectName(_fromUtf8("cmdCancel"))
+        self.horizontalLayout.addWidget(self.cmdCancel)
+        self.verticalLayout.addWidget(self.fraOKCancel)
+        frmStatisticsReportSelection.setCentralWidget(self.centralWidget)
+
+        self.retranslateUi(frmStatisticsReportSelection)
+        QtCore.QMetaObject.connectSlotsByName(frmStatisticsReportSelection)
+
+    def retranslateUi(self, frmStatisticsReportSelection):
+        frmStatisticsReportSelection.setWindowTitle(_translate("frmStatisticsReportSelection", "SWMM Statistics Report Selection", None))
+        self.lblCategory.setText(_translate("frmStatisticsReportSelection", "Object Category", None))
+        self.lblName.setText(_translate("frmStatisticsReportSelection", "Object Name", None))
+        self.lblVariable.setText(_translate("frmStatisticsReportSelection", "Variable Analyzed", None))
+        self.lblEvent.setText(_translate("frmStatisticsReportSelection", "Event Time Period", None))
+        self.lblStatistic.setText(_translate("frmStatisticsReportSelection", "Statistic", None))
+        self.gbxThresholds.setTitle(_translate("frmStatisticsReportSelection", "Event Thresholds", None))
+        self.lblPrecip.setText(_translate("frmStatisticsReportSelection", "Precipitation", None))
+        self.lblVolume.setText(_translate("frmStatisticsReportSelection", "Event Volume", None))
+        self.lblSeparation.setText(_translate("frmStatisticsReportSelection", "Separation Time", None))
+        self.cmdOK.setText(_translate("frmStatisticsReportSelection", "OK", None))
+        self.cmdCancel.setText(_translate("frmStatisticsReportSelection", "Cancel", None))
+

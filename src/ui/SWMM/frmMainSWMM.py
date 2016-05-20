@@ -3,6 +3,7 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 sip.setapi("QString", 2)
 sip.setapi("QVariant", 2)
+import webbrowser
 import traceback
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog
@@ -36,6 +37,7 @@ from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmLandUses import frmLandUses
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.SWMM.frmCalibrationData import frmCalibrationData
+from ui.SWMM.frmSummaryReport import frmSummaryReport
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -198,6 +200,121 @@ class frmMainSWMM(frmMain):
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
+
+        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
+        self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
+        self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
+        self.menuReport.addAction(self.actionStatus_ReportMenu)
+        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+
+        self.actionSummary_ReportMenu = QtGui.QAction(self)
+        self.actionSummary_ReportMenu.setObjectName(from_utf8("actionSummary_ReportMenu"))
+        self.actionSummary_ReportMenu.setText(transl8("frmMain", "Summary", None))
+        self.actionSummary_ReportMenu.setToolTip(transl8("frmMain", "Display Results Summary", None))
+        self.menuReport.addAction(self.actionSummary_ReportMenu)
+        QtCore.QObject.connect(self.actionSummary_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_summary)
+
+        menu = QtGui.QMenu()
+        submenuGraph = QtGui.QMenu(self.menuReport)
+        submenuGraph.setTitle("Graph")
+        self.menuReport.addMenu(submenuGraph)
+
+        self.actionGraph_ProfileMenu = QtGui.QAction(self)
+        self.actionGraph_ProfileMenu.setObjectName(from_utf8("actionGraph_ProfileMenu"))
+        self.actionGraph_ProfileMenu.setText(transl8("frmMain", "Profile", None))
+        self.actionGraph_ProfileMenu.setToolTip(transl8("frmMain", "Display Profile Plot", None))
+        submenuGraph.addAction(self.actionGraph_ProfileMenu)
+        QtCore.QObject.connect(self.actionGraph_ProfileMenu, QtCore.SIGNAL('triggered()'), self.report_profile)
+
+        self.actionGraph_TimeSeriesMenu = QtGui.QAction(self)
+        self.actionGraph_TimeSeriesMenu.setObjectName(from_utf8("actionGraph_TimeSeriesMenu"))
+        self.actionGraph_TimeSeriesMenu.setText(transl8("frmMain", "Time Series", None))
+        self.actionGraph_TimeSeriesMenu.setToolTip(transl8("frmMain", "Display Time Series Plot", None))
+        submenuGraph.addAction(self.actionGraph_TimeSeriesMenu)
+        QtCore.QObject.connect(self.actionGraph_TimeSeriesMenu, QtCore.SIGNAL('triggered()'), self.report_timeseries)
+
+        self.actionGraph_ScatterMenu = QtGui.QAction(self)
+        self.actionGraph_ScatterMenu.setObjectName(from_utf8("actionGraph_ScatterMenu"))
+        self.actionGraph_ScatterMenu.setText(transl8("frmMain", "Scatter", None))
+        self.actionGraph_ScatterMenu.setToolTip(transl8("frmMain", "Display Scatter Plot", None))
+        submenuGraph.addAction(self.actionGraph_ScatterMenu)
+        QtCore.QObject.connect(self.actionGraph_ScatterMenu, QtCore.SIGNAL('triggered()'), self.report_scatter)
+
+        menu = QtGui.QMenu()
+        submenuTable = QtGui.QMenu(self.menuReport)
+        submenuTable.setTitle("Table")
+        self.menuReport.addMenu(submenuTable)
+
+        self.actionTable_ObjectMenu = QtGui.QAction(self)
+        self.actionTable_ObjectMenu.setObjectName(from_utf8("actionTable_ObjectMenu"))
+        self.actionTable_ObjectMenu.setText(transl8("frmMain", "By Object", None))
+        self.actionTable_ObjectMenu.setToolTip(transl8("frmMain", "Display Table by Object", None))
+        submenuTable.addAction(self.actionTable_ObjectMenu)
+        QtCore.QObject.connect(self.actionTable_ObjectMenu, QtCore.SIGNAL('triggered()'), self.report_object)
+
+        self.actionTable_VariableMenu = QtGui.QAction(self)
+        self.actionTable_VariableMenu.setObjectName(from_utf8("actionTable_VariableMenu"))
+        self.actionTable_VariableMenu.setText(transl8("frmMain", "By Variable", None))
+        self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table by Variable", None))
+        submenuTable.addAction(self.actionTable_VariableMenu)
+        QtCore.QObject.connect(self.actionTable_VariableMenu, QtCore.SIGNAL('triggered()'), self.report_variable)
+
+        self.actionStatistics_ReportMenu = QtGui.QAction(self)
+        self.actionStatistics_ReportMenu.setObjectName(from_utf8("actionStatistics_ReportMenu"))
+        self.actionStatistics_ReportMenu.setText(transl8("frmMain", "Statistics", None))
+        self.actionStatistics_ReportMenu.setToolTip(transl8("frmMain", "Display Results Statistics", None))
+        self.menuReport.addAction(self.actionStatistics_ReportMenu)
+        QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
+
+    def report_status(self):
+        print "report_status"
+        if not os.path.isfile(self.status_file_name):
+            prefix, extension = os.path.splitext(self.project.file_name)
+            if os.path.isfile(prefix + self.status_suffix):
+                self.status_file_name = prefix + self.status_suffix
+        if os.path.isfile(self.status_file_name):
+            webbrowser.open_new_tab(self.status_file_name)
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model status not found.\n"
+                                    "Run the model to generate model status.",
+                                    QMessageBox.Ok)
+
+    def report_profile(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_timeseries(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_scatter(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_object(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_variable(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_statistics(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
+
+    def report_summary(self):
+        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport.show()
+        pass
 
     def calibration_data(self):
         self._frmCalibrationData = frmCalibrationData(self.parent())

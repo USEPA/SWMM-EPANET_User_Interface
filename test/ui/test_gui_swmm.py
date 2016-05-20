@@ -38,6 +38,14 @@ class UserInterfaceTest(unittest.TestCase):
                 # Individual actions within a test
                 elif a_line.replace(' ','').replace('\n','').replace('\t','') != '':
                     list_actions.append(a_line)
+
+                    # The first line must be a title
+                    # if not use the file name as test name
+                    # test_num increase to 1
+                    if test_num == 0:
+                        test_num = 1
+                        list_tests.append(str(self.file))
+                        num_actions.append(0)
                     num_actions[test_num-1] += 1
 
         # Create a tree widget
@@ -83,15 +91,15 @@ if __name__ == "__main__":
 
     my_suite = unittest.TestSuite()
 
-    # for test_file in glob.glob("*.txt"):
-    #     make_test = UserInterfaceTest()
-    #     make_test.set_file(test_file)
-    #     my_suite.addTest(make_test)
+    for test_file in glob.glob("*.txt"):
+        make_test = UserInterfaceTest()
+        make_test.set_file(test_file)
+        my_suite.addTest(make_test)
 
-    test_file = 'SWMM_UI_Testing.txt'
-    make_test = UserInterfaceTest()
-    make_test.set_file(test_file)
-    my_suite.addTest(make_test)
+    # test_file = 'SWMM_UI_Testing.txt'
+    # make_test = UserInterfaceTest()
+    # make_test.set_file(test_file)
+    # my_suite.addTest(make_test)
 
     report_filename = "test_results_ui.html"
     fp = file(report_filename, 'wb')

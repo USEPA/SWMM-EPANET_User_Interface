@@ -29,7 +29,7 @@ class UserInterfaceTest(unittest.TestCase):
         test_num = 0
 
         with open(self.file, 'r') as myfile:
-            list_items = myfile.read().split("\n\n")
+            list_items = myfile.read().split("\n")
             for a_line in list_items:
                 # Test title line denoted with #
                 if a_line.startswith('#'):

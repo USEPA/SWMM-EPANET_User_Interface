@@ -10,8 +10,8 @@ from test_energy import SimpleEnergyTest
 from test_report import SimpleReportTest, SimpleReportTest2
 from test_backdrop import SimpleBackdropTest
 from test_project import ProjectTest
-from test_patterns import SimplePatternTest
-from test_curves import SimpleCurveTest
+from test_patterns import SimplePatternTest, SimplePatternTest2
+from test_curves import SimpleCurveTest, SimpleCurveTest2
 from test_demands import SimpleDemandsTest
 from test_sources import SimpleSourcesTest
 
@@ -40,7 +40,9 @@ my_suite.addTest(SimpleReportTest2())
 
 # System operation - MTP 2
 my_suite.addTest(SimplePatternTest())
+my_suite.addTest(SimplePatternTest2())
 my_suite.addTest(SimpleCurveTest())
+my_suite.addTest(SimpleCurveTest2())
 my_suite.addTest(SimpleEnergyTest())
 # Status - MTP 3
 # Controls

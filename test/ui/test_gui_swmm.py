@@ -26,6 +26,7 @@ class UserInterfaceTest(unittest.TestCase):
         list_actions = []
         num_actions = []
         test_num = 0
+
         with open(self.file, 'r') as myfile:
             for a_line in myfile:
                 # Test title line denoted with #
@@ -43,7 +44,7 @@ class UserInterfaceTest(unittest.TestCase):
         frm = frmTreeViewUITest.frmTreeViewUITest()
 
         # Populate the tree list with list_tests (as parent), list_actions(as children)
-        frm.set_list(list_tests, list_actions, num_actions)
+        frm.set_tree(list_tests, list_actions, num_actions)
 
         # Execute the form
         frm.exec_()
@@ -53,17 +54,24 @@ class UserInterfaceTest(unittest.TestCase):
         else:
             failed = []
 
-            # Evaluting the status of parents and Children
-            # ---- still working xw 5/19/2016
-            a = frm.tree.topLevelItemCount()
-            b = frm.tree.topLevelItem(0)
-            c = b.flags()
-            pass
+            # Evaluating the status of parents and Children
+            num_tests = frm.tree.topLevelItemCount()
 
-            for row in range(frm.model.rowCount()):
-                item = frm.model.item(row)
-                if item.checkState() != Qt.Qt.Checked:
-                    failed.append(str(item.text()))
+            for i in range(num_tests):
+                test_ = frm.tree.topLevelItem(i)
+                test_state = test_.checkState(0) #0-not checked, 1-checked in child, 2-all
+                n_actions = test_.childCount()
+
+                if test_state == 0:
+                    failed.append('\nUI test failed: '+ str(test_.text(0)))
+
+                elif test_state == 1:
+                    failed.append('\nUI test failed: ' + str(test_.text(0)))
+                    for j in range(n_actions):
+                        action = test_.child(j)
+                        action_state = action.checkState(0)
+                        if action_state == 0:
+                            failed.append('Action: '+str(action.text(0)))
 
             if failed:
                 self.fail(str(len(failed)) + " steps failed in " + self.file + ':\n' + '\n'.join(failed))
@@ -75,7 +83,12 @@ if __name__ == "__main__":
 
     my_suite = unittest.TestSuite()
 
-    test_file = "SWMM_UI_Testing.txt"
+    # for test_file in glob.glob("*.txt"):
+    #     make_test = UserInterfaceTest()
+    #     make_test.set_file(test_file)
+    #     my_suite.addTest(make_test)
+
+    test_file = 'SWMM_UI_Testing.txt'
     make_test = UserInterfaceTest()
     make_test.set_file(test_file)
     my_suite.addTest(make_test)

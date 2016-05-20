@@ -39,6 +39,9 @@ from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.SWMM.frmCalibrationData import frmCalibrationData
 from ui.SWMM.frmSummaryReport import frmSummaryReport
 from ui.SWMM.frmTimeSeriesPlot import frmTimeSeriesPlot
+from ui.SWMM.frmProfilePlot import frmProfilePlot
+from ui.SWMM.frmScatterPlot import frmScatterPlot
+from ui.SWMM.frmTableSelection import frmTableSelection
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -242,23 +245,11 @@ class frmMainSWMM(frmMain):
         submenuGraph.addAction(self.actionGraph_ScatterMenu)
         QtCore.QObject.connect(self.actionGraph_ScatterMenu, QtCore.SIGNAL('triggered()'), self.report_scatter)
 
-        menu = QtGui.QMenu()
-        submenuTable = QtGui.QMenu(self.menuReport)
-        submenuTable.setTitle("Table")
-        self.menuReport.addMenu(submenuTable)
-
-        self.actionTable_ObjectMenu = QtGui.QAction(self)
-        self.actionTable_ObjectMenu.setObjectName(from_utf8("actionTable_ObjectMenu"))
-        self.actionTable_ObjectMenu.setText(transl8("frmMain", "By Object", None))
-        self.actionTable_ObjectMenu.setToolTip(transl8("frmMain", "Display Table by Object", None))
-        submenuTable.addAction(self.actionTable_ObjectMenu)
-        QtCore.QObject.connect(self.actionTable_ObjectMenu, QtCore.SIGNAL('triggered()'), self.report_object)
-
         self.actionTable_VariableMenu = QtGui.QAction(self)
         self.actionTable_VariableMenu.setObjectName(from_utf8("actionTable_VariableMenu"))
-        self.actionTable_VariableMenu.setText(transl8("frmMain", "By Variable", None))
-        self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table by Variable", None))
-        submenuTable.addAction(self.actionTable_VariableMenu)
+        self.actionTable_VariableMenu.setText(transl8("frmMain", "Table", None))
+        self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table", None))
+        self.menuReport.addAction(self.actionTable_VariableMenu)
         QtCore.QObject.connect(self.actionTable_VariableMenu, QtCore.SIGNAL('triggered()'), self.report_variable)
 
         self.actionStatistics_ReportMenu = QtGui.QAction(self)
@@ -283,8 +274,8 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def report_profile(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
+        self._frmProfilePlot = frmProfilePlot(self.parent())
+        self._frmProfilePlot.show()
         pass
 
     def report_timeseries(self):
@@ -293,18 +284,13 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_scatter(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
-        pass
-
-    def report_object(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
+        self._frmScatterPlot = frmScatterPlot(self.parent())
+        self._frmScatterPlot.show()
         pass
 
     def report_variable(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
+        self._frmTableSelection = frmTableSelection(self.parent())
+        self._frmTableSelection.show()
         pass
 
     def report_statistics(self):

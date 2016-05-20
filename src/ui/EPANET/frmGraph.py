@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import matplotlib.pyplot as plt
 import core.epanet.project
+from ui.model_utility import transl8
 from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import *
 
@@ -25,11 +26,14 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     def set_from(self, project, output):
         self.project = project
         self.output = output
-        for period in range(0, self.output.numPeriods - 1):
-            self.cboTime.addItem(str(period))
+        self.cboTime.clear()
+        if self.output:
+            for time_index in range(0, self.output.numPeriods - 1):
+                self.cboTime.addItem(self.time_string(time_index))
 
     def rbnNodes_Clicked(self):
         if self.rbnNodes.isChecked():
+            self.gbxToGraph.setTitle(transl8("frmGraph", "Nodes to Graph", None))
             self.cboParameter.clear()
             self.cboParameter.addItems(ENR_NodeAttributeNames)
             self.lstToGraph.clear()
@@ -42,6 +46,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
+            self.gbxToGraph.setTitle(transl8("frmGraph", "Links to Graph", None))
             self.cboParameter.clear()
             self.cboParameter.addItems(ENR_LinkAttributeNames)
             self.lstToGraph.clear()
@@ -79,7 +84,22 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                                ENR_LinkAttributes[self.cboParameter.currentIndex()],
                                self.cboParameter.currentText())
 
-                # for node_item in [self.lstToGraph.item(i) for i in range(self.lstToGraph.count())]:
+        if self.rbnProfile.isChecked():
+            if self.rbnNodes.isChecked():
+                self.plot_profile(self.output.get_NodeIndex,
+                                  self.output.get_NodeValue,
+                                  ENR_NodeAttributes[self.cboParameter.currentIndex()],
+                                  self.cboParameter.currentText(),
+                                  self.cboTime.currentIndex())
+
+            if self.rbnLinks.isChecked():
+                self.plot_profile(self.output.get_LinkIndex,
+                                  self.output.get_LinkValue,
+                                  ENR_LinkAttributes[self.cboParameter.currentIndex()],
+                                  self.cboParameter.currentText(),
+                                  self.cboTime.currentIndex())
+
+                    # for node_item in [self.lstToGraph.item(i) for i in range(self.lstToGraph.count())]:
                 # parameter_label = self.cboParameter.currentText()
                 # parameter_code = self.cboParameter.currentIndex()
                 # for list_item in self.lstToGraph.selectedItems():
@@ -118,18 +138,20 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def plot_time(self, get_index, get_value, parameter_code, parameter_label):
         fig = plt.figure()
-        fig.canvas.set_window_title("Time Series Plot")
+        title = "Time Series Plot of " + parameter_label
+        fig.canvas.set_window_title(title)
+        plt.title(title)
         x_values = []
-        for period in range(0, self.output.numPeriods - 1):
-            x_values.append(period * self.output.reportStep / 3600)  # translate period into number of hours
+        for time_index in range(0, self.output.numPeriods - 1):
+            x_values.append(time_index * self.output.reportStep / 3600)  # translate period into number of hours
 
         for list_item in self.lstToGraph.selectedItems():
             id = str(list_item.text())
             output_index = get_index(id)
             y_values = []
-            for period in range(0, self.output.numPeriods - 1):
-                y_values.append(get_value(output_index, period, parameter_code))
-            plt.plot(x_values, y_values, label="Node " + id)
+            for time_index in range(0, self.output.numPeriods - 1):
+                y_values.append(get_value(output_index, time_index, parameter_code))
+            plt.plot(x_values, y_values, label=id)
 
         # fig.suptitle("Time Series Plot")
         plt.ylabel(parameter_label)
@@ -137,6 +159,45 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.grid(True)
         plt.legend()
         plt.show()
+
+    def plot_profile(self, get_index, get_value, parameter_code, parameter_label, time_index):
+        fig = plt.figure()
+        title = "Profile Plot of " + parameter_label + " at " + self.time_string(time_index)
+        fig.canvas.set_window_title(title)
+        plt.title(title)
+        x_values = []
+        y_values = []
+        min_y = 999.9
+
+        x = 0
+        for list_item in self.lstToGraph.selectedItems():
+            x += 1
+            x_values.append(x)
+            id = str(list_item.text())
+            output_index = get_index(id)
+            y = get_value(output_index, time_index, parameter_code)
+            if min_y == 999.9 or y < min_y:
+                min_y = y
+            y_values.append(y)
+            plt.annotate(
+                id,
+                xy=(x, y), xytext=(0, 20),
+                textcoords='offset points', ha='center', va='bottom',
+                bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
+            #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        plt.fill_between(x_values, y_values, min_y)
+
+        # fig.suptitle("Time Series Plot")
+        plt.ylabel(parameter_label)
+        plt.xlabel("Index")
+        plt.grid(True)
+        plt.show()
+
+    def time_string(self, time_index):
+        hours = int(time_index * self.output.reportStep / 3600)
+        minutes = int(time_index * self.output.reportStep / 600 - (hours * 60))
+        return '{:02d}:{:02d}'.format(hours, minutes)
 
     def cmdCancel_Clicked(self):
         self.close()

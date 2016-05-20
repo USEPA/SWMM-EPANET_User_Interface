@@ -11,6 +11,10 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     def __init__(self, parent):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        self.cmdAdd.setVisible(False)
+        self.cmdDelete.setVisible(False)
+        self.cmdUp.setVisible(False)
+        self.cmdDown.setVisible(False)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.rbnNodes, QtCore.SIGNAL("clicked()"), self.rbnNodes_Clicked)

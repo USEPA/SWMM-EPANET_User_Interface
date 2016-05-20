@@ -20,6 +20,13 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.rbnNodes, QtCore.SIGNAL("clicked()"), self.rbnNodes_Clicked)
         QtCore.QObject.connect(self.rbnLinks, QtCore.SIGNAL("clicked()"), self.rbnLinks_Clicked)
+
+        QtCore.QObject.connect(self.rbnTime, QtCore.SIGNAL("clicked()"), self.rbnTime_Clicked)
+        QtCore.QObject.connect(self.rbnProfile, QtCore.SIGNAL("clicked()"), self.rbnProfile_Clicked)
+        QtCore.QObject.connect(self.rbnContour, QtCore.SIGNAL("clicked()"), self.rbnContour_Clicked)
+        QtCore.QObject.connect(self.rbnFrequency, QtCore.SIGNAL("clicked()"), self.rbnFrequency_Clicked)
+        QtCore.QObject.connect(self.rbnSystem, QtCore.SIGNAL("clicked()"), self.rbnSystem_Clicked)
+
         self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self._parent = parent
 
@@ -57,6 +64,61 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                     if self.output.get_LinkIndex(link.id) > -1:
                         self.lstToGraph.addItem(link.id)
 
+    def rbnTime_Clicked(self):
+        self.cboParameter.setVisible(True)
+        self.gbxParameter.setEnabled(True)
+        self.cboTime.setVisible(False)
+        self.gbxTime.setVisible(False)
+        self.gbxObject.setEnabled(True)
+        self.rbnNodes.setEnabled(True)
+        self.rbnLinks.setVisible(True)
+        self.gbxToGraph.setEnabled(True)
+        self.lstToGraph.setVisible(True)
+
+    def rbnProfile_Clicked(self):
+        self.cboParameter.setVisible(True)
+        self.gbxParameter.setEnabled(True)
+        self.cboTime.setVisible(True)
+        self.gbxTime.setVisible(True)
+        self.gbxObject.setEnabled(False)
+        self.rbnNodes.setEnabled(False)
+        self.rbnLinks.setEnabled(False)
+        self.gbxToGraph.setEnabled(True)
+        self.lstToGraph.setVisible(True)
+
+    def rbnContour_Clicked(self):
+        self.cboParameter.setVisible(True)
+        self.gbxParameter.setEnabled(True)
+        self.cboTime.setVisible(True)
+        self.gbxTime.setVisible(True)
+        self.gbxObject.setEnabled(False)
+        self.rbnNodes.setEnabled(False)
+        self.rbnLinks.setEnabled(False)
+        self.gbxToGraph.setEnabled(False)
+        self.lstToGraph.setVisible(False)
+
+    def Frequency_Clicked(self):
+        self.cboParameter.setVisible(True)
+        self.gbxParameter.setEnabled(True)
+        self.cboTime.setVisible(True)
+        self.gbxTime.setVisible(True)
+        self.gbxObject.setEnabled(True)
+        self.rbnNodes.setEnabled(True)
+        self.rbnLinks.setEnabled(True)
+        self.gbxToGraph.setEnabled(False)
+        self.lstToGraph.setVisible(False)
+
+    def rbnSystem_Clicked(self):
+        self.cboParameter.setVisible(False)
+        self.gbxParameter.setEnabled(False)
+        self.cboTime.setVisible(False)
+        self.gbxTime.setVisible(False)
+        self.gbxObject.setEnabled(False)
+        self.rbnNodes.setEnabled(False)
+        self.rbnLinks.setEnabled(False)
+        self.gbxToGraph.setEnabled(False)
+        self.lstToGraph.setVisible(False)
+
     def cmdOK_Clicked(self):
         if self.rbnNodes.isChecked():
             get_index = self.output.get_NodeIndex
@@ -79,6 +141,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnFrequency.isChecked():
             self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
 
+        if self.rbnSystem.isChecked():
+            self.plot_system_flow(get_index, get_value, parameter_code, parameter_label)
+
         # self.close()
 
     def plot_time(self, get_index, get_value, parameter_code, parameter_label):
@@ -88,7 +153,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.title(title)
         x_values = []
         for time_index in range(0, self.output.numPeriods - 1):
-            x_values.append(time_index * self.output.reportStep / 3600)  # translate period into number of hours
+            x_values.append(self.elapsed_hours_at_index(time_index))
 
         for list_item in self.lstToGraph.selectedItems():
             id = str(list_item.text())
@@ -165,9 +230,107 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.grid(True)
         plt.show()
 
-    def time_string(self, time_index):
-        hours = int(time_index * self.output.reportStep / 3600)
-        minutes = int(time_index * self.output.reportStep / 600 - (hours * 60))
+    def plot_system_flow(self, get_index, get_value, parameter_code, parameter_label):
+        fig = plt.figure()
+        title = "System Flow Balance"
+        fig.canvas.set_window_title(title)
+        plt.title(title)
+        x_values = []
+        for time_index in range(0, self.output.numPeriods - 1):
+            x_values.append(self.elapsed_hours_at_index(time_index))
+
+        for list_item in self.lstToGraph.selectedItems():
+            id = str(list_item.text())
+            output_index = get_index(id)
+            self.output.get_NodeSeries
+            y_values = []
+            for time_index in range(0, self.output.numPeriods - 1):
+                y_values.append(get_value(output_index, time_index, parameter_code))
+            plt.plot(x_values, y_values, label=id)
+
+        # fig.suptitle("Time Series Plot")
+        plt.ylabel(parameter_label)
+        plt.xlabel("Time (hours)")
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+
+    #  Rstart        : Longint;              //Start of reporting period (sec) = output.reportStart
+    #  Rstep         : Longint;              //Interval between reporting (sec) = output.reportStep
+    # // Refreshes the display of a system flow plot.
+    # //---------------------------------------------
+    # var
+    #   j, k       : Integer;
+    #   n, n1, n2  : Integer;
+    #   dt         : Single;
+    #   x          : Single;
+    #   sysflow    : Array[PRODUCED..CONSUMED] of Double;
+    # begin
+    # //Determine number of points to plot
+    #   n1 := 0;
+    #   n2 := Nperiods - 1;
+    #   n  := n2 - n1 + 1;
+    #   dt := Rstep/3600.;
+    #
+    # //Fill in system flow time series
+    #   for k := PRODUCED to CONSUMED do
+    #   begin
+    #     Chart1.Series[k].Clear;
+    #     Chart1.Series[k].Active := False;
+    #   end;
+    #   x := (Rstart + n1*Rstep)/3600;
+    #   for j := 0 to n-1 do
+    #   begin
+    #     GetSysFlow(j,sysflow);
+    #     for k := PRODUCED to CONSUMED do
+    #       Chart1.Series[k].AddXY(x, sysflow[k], '', clTeeColor);
+    #     x := x + dt;
+    #   end;
+    #   for k := PRODUCED to CONSUMED do Chart1.Series[k].Active := True;
+
+    # procedure TGraphForm.GetSysFlow(const Period: Integer;
+    #   var SysFlow: array of Double);
+    # //--------------------------------------------------------------
+    # // Sums up flow produced and consumed in network in time Period.
+    # //--------------------------------------------------------------
+    # var
+    #   i,j,k: Integer;
+    #   aNode: TNode;
+    #   Z  : PSingleArray;
+    # begin
+    # // Allocate scratch array to hold nodal demands
+    #   for i := PRODUCED to CONSUMED do SysFlow[i] := 0;
+    #   GetMem(Z, Nnodes*SizeOf(Single));
+    #   try
+    #
+    #   // Retrieve nodal demands from output file for time Period
+    #     k := NodeVariable[DEMAND].SourceIndex[JUNCS];
+    #     GetNodeValues(k,Period,Z);
+    #
+    #   // Update total consumption/production depending on sign of demand
+    #     for i := JUNCS to RESERVS do
+    #     begin
+    #       for j := 0 to Network.Lists[i].Count-1 do
+    #       begin
+    #         aNode := Node(i,j);
+    #         k := aNode.Zindex;
+    #         if k >= 0 then
+    #         begin
+    #           if Z[k] > 0 then SysFlow[CONSUMED] := SysFlow[CONSUMED] + Z[k]
+    #           else SysFlow[PRODUCED] := SysFlow[PRODUCED] - Z[k];
+    #         end;
+    #       end;
+    #     end;
+    #   finally
+    #     FreeMem(Z, Nnodes*SizeOf(Single));
+
+    def elapsed_hours_at_index(self, report_time_index):
+        return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600
+
+    def time_string(self, report_time_index):
+        total_hours = self.elapsed_hours_at_index(report_time_index)
+        hours = int(total_hours)
+        minutes = int((total_hours - hours) * 60)
         return '{:02d}:{:02d}'.format(hours, minutes)
 
     def cmdCancel_Clicked(self):

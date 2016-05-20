@@ -58,6 +58,7 @@ class frmTreeViewUITest(QtGui.QDialog):
                 child_.setText(0, child_text)
                 child_.setCheckState(0, QtCore.Qt.Unchecked)
                 self.model_actions.append(child_)
+        self.tree.expandAll()
 
     def clicked_ok(self):
         self.OK = True

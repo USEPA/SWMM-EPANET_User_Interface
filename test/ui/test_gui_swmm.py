@@ -1,3 +1,4 @@
+import os
 import sys
 import glob
 import webbrowser
@@ -28,23 +29,23 @@ class UserInterfaceTest(unittest.TestCase):
         test_num = 0
 
         with open(self.file, 'r') as myfile:
-            for a_line in myfile:
+            list_items = myfile.read().split("\n\n")
+            for a_line in list_items:
                 # Test title line denoted with #
                 if a_line.startswith('#'):
-                    list_tests.append(a_line.strip(' ').replace('#','').replace('\n',''))
+                    list_tests.append(a_line[1:].strip().replace('\n',' '))
                     test_num = len(list_tests)
                     num_actions.append(0)
 
                 # Individual actions within a test
-                elif a_line.replace(' ','').replace('\n','').replace('\t','') != '':
+                elif a_line:
                     list_actions.append(a_line)
 
-                    # The first line must be a title
-                    # if not use the file name as test name
-                    # test_num increase to 1
+                    # If the first line is not a title starting with #, use the file name as test name
                     if test_num == 0:
                         test_num = 1
-                        list_tests.append(str(self.file))
+                        prefix, extension = os.path.splitext(str(self.file))
+                        list_tests.append(prefix)
                         num_actions.append(0)
                     num_actions[test_num-1] += 1
 
@@ -79,7 +80,7 @@ class UserInterfaceTest(unittest.TestCase):
                         action = test_.child(j)
                         action_state = action.checkState(0)
                         if action_state == 0:
-                            failed.append('Action: '+str(action.text(0)))
+                            failed.append('Action: ' + str(action.text(0)))
 
             if failed:
                 self.fail(str(len(failed)) + " steps failed in " + self.file + ':\n' + '\n'.join(failed))

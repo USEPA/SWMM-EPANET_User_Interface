@@ -14,6 +14,8 @@ class frmTreeViewUITest(QtGui.QDialog):
 
         # Create Tree widget
         self.tree = QtGui.QTreeWidget()
+        self.model_tests = []
+        self.model_actions = []
         self.tree.setHeaderHidden(True)
 
         # Create Ok and skip button
@@ -30,10 +32,13 @@ class frmTreeViewUITest(QtGui.QDialog):
         self.setLayout(layout)
         self.OK = False
 
-    def set_list(self, parent_list, child_list, num_actions):
+    def set_tree(self, parent_list, child_list, num_actions):
         test_num = 0
         action_start = 0
         action_end = num_actions[test_num] # First set = actions[0-4]
+
+        if not parent_list:
+            parent_list = ['Test']
 
         for parent_text in parent_list:
             parent_ = QtGui.QTreeWidgetItem(self.tree)
@@ -41,6 +46,7 @@ class frmTreeViewUITest(QtGui.QDialog):
             parent_.setFlags(parent_.flags() |
                              QtCore.Qt.ItemIsTristate |
                              QtCore.Qt.ItemIsUserCheckable)
+            self.model_tests.append(parent_)
             test_num +=1
             if test_num > 1:
                 action_start = action_end
@@ -51,6 +57,8 @@ class frmTreeViewUITest(QtGui.QDialog):
                 child_.setFlags(child_.flags() | QtCore.Qt.ItemIsUserCheckable)
                 child_.setText(0, child_text)
                 child_.setCheckState(0, QtCore.Qt.Unchecked)
+                self.model_actions.append(child_)
+        self.tree.expandAll()
 
     def clicked_ok(self):
         self.OK = True

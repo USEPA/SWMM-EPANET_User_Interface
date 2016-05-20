@@ -3,6 +3,31 @@ from core.epanet.project import Project
 import unittest
 
 
+class SimplePatternTest2(unittest.TestCase):
+    def __init__(self):
+        unittest.TestCase.__init__(self)
+
+    def setUp(self):
+        self.my_options = patterns.Pattern()
+
+    def runTest(self):
+
+        # Test created based on manual
+        # Multiple lines
+        # set_text takes input test_text
+        # get_text writes output actual_text
+        # will rewrite string to three rows each with 6, 6, 3 numbers.
+        # So to compare I stripped P1, space, and \n
+        test_text = "P1\t1.2\t1.4\t1.6\t1.8\t2.0\n" \
+                    "P1\t2.2\t2.4\t2.6\t2.8\t3.0\n" \
+                    "P1\t3.2\t3.4\t3.6\t3.8\t4.0"
+        self.my_options.set_text(test_text)
+        new_test = test_text.replace(' ','').replace('\n','').replace('P1','')
+        actual_text = self.my_options.get_text().replace(' ','').replace('\n','').replace('P1','')
+        self.assertEquals(actual_text,new_test)
+        pass
+
+
 class SimplePatternTest(unittest.TestCase):
 
     TEST_TEXT = ("[PATTERNS]",
@@ -68,3 +93,8 @@ if __name__ == '__main__':
     my_test = SimplePatternTest()
     my_test.setUp()
     my_test.runTest()
+
+    my_test = SimplePatternTest2()
+    my_test.setUp()
+    my_test.runTest()
+

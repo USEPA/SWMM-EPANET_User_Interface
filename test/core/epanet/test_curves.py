@@ -4,6 +4,20 @@ from core.epanet.project import Project
 import unittest
 
 
+class SimpleCurveTest2(unittest.TestCase):
+    def __init__(self):
+        unittest.TestCase.__init__(self)
+
+    def setUp(self):
+        self.my_options = curves.Curve()
+
+    def runTest(self):
+        test_text = "C1 0 200"
+        self.my_options.set_text(test_text)
+        actual_text = self.my_options.get_text()
+        assert self.my_options.matches(test_text)
+
+
 class SimpleCurveTest(unittest.TestCase):
 
     TEST_TEXT = ("[CURVES]",
@@ -44,5 +58,9 @@ class SimpleCurveTest(unittest.TestCase):
 
 if __name__ == '__main__':
     my_test = SimpleCurveTest()
+    my_test.setUp()
+    my_test.runTest()
+
+    my_test = SimpleCurveTest2()
     my_test.setUp()
     my_test.runTest()

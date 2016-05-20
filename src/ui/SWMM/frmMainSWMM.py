@@ -38,6 +38,7 @@ from ui.SWMM.frmLandUses import frmLandUses
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.SWMM.frmCalibrationData import frmCalibrationData
 from ui.SWMM.frmSummaryReport import frmSummaryReport
+from ui.SWMM.frmTimeSeriesPlot import frmTimeSeriesPlot
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
@@ -287,8 +288,8 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_timeseries(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
-        self._frmSummaryReport.show()
+        self._frmTimeSeriesPlot = frmTimeSeriesPlot(self.parent())
+        self._frmTimeSeriesPlot.show()
         pass
 
     def report_scatter(self):

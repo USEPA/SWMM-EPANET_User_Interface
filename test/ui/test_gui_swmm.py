@@ -83,7 +83,14 @@ class UserInterfaceTest(unittest.TestCase):
                             failed.append('Action: ' + str(action.text(0)))
 
             if failed:
-                self.fail(str(len(failed)) + " steps failed in " + self.file + ':\n' + '\n'.join(failed))
+                tester_notes = ''
+                if frm.notes:
+                    tester_notes  = frm.notes.toPlainText()
+                self.fail(str(len(failed)) +
+                          " steps failed in " +
+                          self.file + ':\n' +
+                          '\n'.join(failed)+
+                          '\n'+ tester_notes)
 
 
 if __name__ == "__main__":

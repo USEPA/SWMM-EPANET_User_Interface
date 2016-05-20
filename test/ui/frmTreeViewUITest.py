@@ -18,6 +18,10 @@ class frmTreeViewUITest(QtGui.QDialog):
         self.model_actions = []
         self.tree.setHeaderHidden(True)
 
+        # Create TextEdit for tester comment section
+        self.label = QtGui.QLabel()
+        self.notes = QtGui.QTextEdit()
+
         # Create Ok and skip button
         self.ok_button = QtGui.QPushButton("OK")
         self.skip_button = QtGui.QPushButton("Skip")
@@ -27,10 +31,15 @@ class frmTreeViewUITest(QtGui.QDialog):
         # Set lay out
         layout = QtGui.QVBoxLayout()
         layout.addWidget(self.tree, 1)
+        layout.addWidget(self.label, 1)
+        layout.addWidget(self.notes, 1)
         layout.addWidget(self.ok_button, 0)
         layout.addWidget(self.skip_button, 0)
         self.setLayout(layout)
         self.OK = False
+        self.label.setText('Tester Comments:')
+        self.tree.setFixedHeight(600)
+        self.notes.setFixedHeight(100)
 
     def set_tree(self, parent_list, child_list, num_actions):
         test_num = 0

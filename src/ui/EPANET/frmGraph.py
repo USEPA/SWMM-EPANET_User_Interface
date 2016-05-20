@@ -58,83 +58,28 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                         self.lstToGraph.addItem(link.id)
 
     def cmdOK_Clicked(self):
-        # section = self._parent.project.find_section(self.control_type)
-        # section.set_text(str(self.txtControls.toPlainText()))
+        if self.rbnNodes.isChecked():
+            get_index = self.output.get_NodeIndex
+            get_value = self.output.get_NodeValue
+            parameter_code = ENR_NodeAttributes[self.cboParameter.currentIndex()]
+        else:
+            get_index = self.output.get_LinkIndex
+            get_value = self.output.get_LinkValue
+            parameter_code = ENR_NodeAttributes[self.cboParameter.currentIndex()]
 
-        import matplotlib.pyplot as plt1
-        # plt1.plot([1,2,3,4])
-        # plt1.ylabel('some numbers')
-        # plt1.show()
-
-        import numpy as np
-        import matplotlib.pyplot as plt
-        import matplotlib.dates as mdates
-        # days, impressions = np.loadtxt("page-impressions.csv", unpack=True,
-        # converters={ 0: mdates.strpdate2num('%Y-%m-%d')})
+        parameter_label = self.cboParameter.currentText()
+        time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():
-            if self.rbnNodes.isChecked():
-                self.plot_time(self.output.get_NodeIndex,
-                               self.output.get_NodeValue,
-                               ENR_NodeAttributes[self.cboParameter.currentIndex()],
-                               self.cboParameter.currentText())
-            if self.rbnLinks.isChecked():
-                self.plot_time(self.output.get_LinkIndex,
-                               self.output.get_LinkValue,
-                               ENR_LinkAttributes[self.cboParameter.currentIndex()],
-                               self.cboParameter.currentText())
+            self.plot_time(get_index, get_value, parameter_code, parameter_label)
 
         if self.rbnProfile.isChecked():
-            if self.rbnNodes.isChecked():
-                self.plot_profile(self.output.get_NodeIndex,
-                                  self.output.get_NodeValue,
-                                  ENR_NodeAttributes[self.cboParameter.currentIndex()],
-                                  self.cboParameter.currentText(),
-                                  self.cboTime.currentIndex())
+            self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index)
 
-            if self.rbnLinks.isChecked():
-                self.plot_profile(self.output.get_LinkIndex,
-                                  self.output.get_LinkValue,
-                                  ENR_LinkAttributes[self.cboParameter.currentIndex()],
-                                  self.cboParameter.currentText(),
-                                  self.cboTime.currentIndex())
+        if self.rbnFrequency.isChecked():
+            self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
 
-                    # for node_item in [self.lstToGraph.item(i) for i in range(self.lstToGraph.count())]:
-                # parameter_label = self.cboParameter.currentText()
-                # parameter_code = self.cboParameter.currentIndex()
-                # for list_item in self.lstToGraph.selectedItems():
-                #     id = str(list_item.text())
-                #     output_index = self.output.get_NodeIndex(id)
-                #     x_values = []
-                #     y_values = []
-                #     for period in range(0, self.output.numPeriods - 1):
-                #         x_values.append(period * self.output.reportStep / 3600)  # translate period into number of hours
-                #         y_values.append(self.output.get_NodeValue(output_index, period, parameter_code))
-                #
-                #     plt.plot(x_values, y_values, label="Node " + id)
-                # plt.title("Time Series Plot")
-                # plt.ylabel(parameter_label)
-                # plt.grid(True)
-                # plt.show()
-
-
-
-        # days = ['2012-01-23','2012-01-24','2012-01-25','2012-01-29','2012-01-30']
-        # y_values = [3.0,4.1,5.0,2.3,3.1]
-        # mdates.strpdate2num('%Y-%m-%d')
-        # days_num = [mdates.strpdate2num.__call__(mdates.strpdate2num('%Y-%m-%d'), days[0]),
-        #             mdates.strpdate2num.__call__(mdates.strpdate2num('%Y-%m-%d'), days[1]),
-        #             mdates.strpdate2num.__call__(mdates.strpdate2num('%Y-%m-%d'), days[2]),
-        #             mdates.strpdate2num.__call__(mdates.strpdate2num('%Y-%m-%d'), days[3]),
-        #             mdates.strpdate2num.__call__(mdates.strpdate2num('%Y-%m-%d'), days[4])]
-        #
-        # plt.plot_date(x=days_num, y=y_values, fmt="r-")
-        # plt.title("Example time series plot")
-        # plt.ylabel("Flow")
-        # plt.grid(True)
-        # plt.show()
-
-        self.close()
+        # self.close()
 
     def plot_time(self, get_index, get_value, parameter_code, parameter_label):
         fig = plt.figure()
@@ -188,9 +133,35 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
         plt.fill_between(x_values, y_values, min_y)
 
-        # fig.suptitle("Time Series Plot")
         plt.ylabel(parameter_label)
         plt.xlabel("Index")
+        plt.grid(True)
+        plt.show()
+
+    def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index):
+        fig = plt.figure()
+        title = "Distribution of " + parameter_label + " at " + self.time_string(time_index)
+        fig.canvas.set_window_title(title)
+        plt.title(title)
+        items = self.lstToGraph.selectedItems()
+        count = len(items)
+        percent = []
+        values = []
+        index = 0
+        for list_item in items:
+            percent.append(index * 100 / count)
+            index += 1
+            id = str(list_item.text())
+            output_index = get_index(id)
+            values.append(get_value(output_index, time_index, parameter_code))
+
+        values.sort()
+        # Cumulative distributions:
+        plt.plot(values, percent)  # From 0 to the number of data points-1
+        # plt.step(values[::-1], np.arange(len(values)))  # From the number of data points-1 to 0
+
+        plt.ylabel("Percent Less Than")
+        plt.xlabel(parameter_label)
         plt.grid(True)
         plt.show()
 

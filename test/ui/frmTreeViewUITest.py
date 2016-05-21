@@ -10,7 +10,7 @@ class frmTreeViewUITest(QtGui.QDialog):
 
         self._parent = parent
         self.resize(400, 800)
-        self.setWindowTitle('Test SWMM UI, check if passed')
+        self.setWindowTitle('UI Tests, check if passed')
 
         # Create Tree widget
         self.tree = QtGui.QTreeWidget()

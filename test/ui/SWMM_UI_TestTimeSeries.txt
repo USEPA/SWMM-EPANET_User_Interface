@@ -14,7 +14,7 @@ Click 'OK'.
 
 # Edit Existing Time Series Table
 
-From the Project Tree, click 'Time Series'
+From the Project Tree, double-click 'Time Series'
 
 Double-click 'TS1' in the lower left panel
 
@@ -41,12 +41,12 @@ Compare Exampel1z1.inp and Example1z2.inp, only differences should be Edits 1-6
 
 # Add new time series
 
-Click the '+' button to add new time series (Button is not working)
+Click the '+' button to add new time series (Add Button is not working)
 
 
 # Delete existing time series
 
-Click the '-' button to delete time series (Button is not working)
+Click the '-' button to delete time series (Delete Button is not working)
 
 
 # Load file with multiple Time Series (I added a new time series TS2-new to Example1z2 and save it to Example1z3

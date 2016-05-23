@@ -27,16 +27,21 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         QtCore.QObject.connect(self.rbnFrequency, QtCore.SIGNAL("clicked()"), self.rbnFrequency_Clicked)
         QtCore.QObject.connect(self.rbnSystem, QtCore.SIGNAL("clicked()"), self.rbnSystem_Clicked)
 
+        self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
+
         self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self._parent = parent
+        self.time_linked_graphs = []
 
     def set_from(self, project, output):
         self.project = project
         self.output = output
         self.cboTime.clear()
-        if self.output:
+        if project and self.output:
             for time_index in range(0, self.output.numPeriods - 1):
                 self.cboTime.addItem(self.time_string(time_index))
+            self.rbnNodes.setChecked(True)
+            self.rbnNodes_Clicked()
 
     def rbnNodes_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -46,10 +51,8 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.lstToGraph.clear()
             # for index in range(0, self.output.nodeCount - 1):
             #     self.lstToGraph.addItem(str(self.output.get_NodeID(index)))
-            for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-                for node in nodes.value:
-                    if self.output.get_NodeIndex(node.id) > -1:
-                        self.lstToGraph.addItem(str(node.id))
+            for node_id in self.all_node_ids():
+                self.lstToGraph.addItem(node_id)
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
@@ -81,8 +84,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.cboTime.setEnabled(True)
         self.gbxTime.setEnabled(True)
         self.gbxObject.setEnabled(False)
-        self.rbnNodes.setEnabled(False)
-        self.rbnLinks.setEnabled(False)
+        # self.rbnNodes.setChecked(True)
+        # self.rbnNodes.setEnabled(False)
+        # self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(True)
         self.lstToGraph.setEnabled(True)
 
@@ -118,6 +122,12 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+
+    def cboTime_currentIndexChanged(self):
+        time_index = self.cboTime.currentIndex()
+        for graph in self.time_linked_graphs:
+            graph[-1] = time_index
+            graph[0](*graph[1:])
 
     def cmdOK_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -172,26 +182,40 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def plot_profile(self, get_index, get_value, parameter_code, parameter_label, time_index):
         fig = plt.figure()
+        graph_ids = []
+        for list_item in self.lstToGraph.selectedItems():
+            graph_ids.append(str(list_item.text()))
+        if not graph_ids:
+            graph_ids = self.all_node_ids()
+
+        if self.rbnNodes.isChecked():
+            x_values = self.node_distances(graph_ids)
+        else:
+            x_values = range(0, len(graph_ids))
+
+        self.time_linked_graphs.append(
+            [self.update_profile, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index])
+        self.update_profile(graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index)
+
+    def update_profile(self, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
+        fig = plt.figure(fig_number)
+        fig.clear()
         title = "Profile Plot of " + parameter_label + " at " + self.time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
-        x_values = []
         y_values = []
         min_y = 999.9
 
-        x = 0
-        for list_item in self.lstToGraph.selectedItems():
-            x += 1
-            x_values.append(x)
-            id = str(list_item.text())
-            output_index = get_index(id)
+
+        for (graph_id, x_value) in zip(graph_ids, x_values):
+            output_index = get_index(graph_id)
             y = get_value(output_index, time_index, parameter_code)
             if min_y == 999.9 or y < min_y:
                 min_y = y
             y_values.append(y)
             plt.annotate(
-                id,
-                xy=(x, y), xytext=(0, 20),
+                graph_id,
+                xy=(x_value, y), xytext=(0, 20),
                 textcoords='offset points', ha='center', va='bottom',
                 bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
             #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
@@ -333,7 +357,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     #   finally
     #     FreeMem(Z, Nnodes*SizeOf(Single));
 
-    def all_node_indexes(output):
+    def all_node_indexes(self):
         indexes = []
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
             for node in nodes.value:
@@ -341,6 +365,29 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                 if node_index > -1:
                     indexes.append(node_index)
         return indexes
+
+    def all_node_ids(self):
+        ids = []
+        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+            for node in nodes.value:
+                node_index = self.output.get_NodeIndex(node.id)
+                if node_index > -1:
+                    ids.append(node.id)
+        return ids
+
+    def node_distances(self, node_ids):
+        return range(0, len(node_ids))
+        # TODO: compute distance from node coordinates
+        distances = [0]
+        x = None
+        y = None
+        for node_id in node_ids:
+            for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+                for node in nodes.value:
+                    if node.id == node_id:
+                        if x and y:
+                            distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
+        return distances
 
     def elapsed_hours_at_index(self, report_time_index):
         return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600

@@ -10,7 +10,7 @@ Compare files 'Example1z3.inp' with 'Example1z4.inp'. Should be no difference
 
 Click 'OK'. 
 
-From the Project Tree, double-click 'Climatology', 'Climatology' dialog activated
+From the Project Tree, double-click 'Climatology', 'Climatology' expanded
 
 # Test 'Climatology'> 'Temperature'
 
@@ -122,7 +122,3 @@ Click 'Save' button (this will save changes to Example1z4.inp)
 
 Compare Exampel1z3.inp and Example1z4.inp, Examine differences due to Edits 1,4-10. (Edit 1, TS2-new instead of TS1-new, Edit 5, 6, 7, 8 9 not in file)
 (Then I re-clicked the temperature tab,  then choose time series to TS1-new, now everything seems to be fine, something is wrong with the Temperature Tab) 
-
-
-
-

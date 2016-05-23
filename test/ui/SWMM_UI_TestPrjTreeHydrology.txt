@@ -1,0 +1,67 @@
+# Load Example1 and save to a new file
+
+Start SWMM.
+
+Open the file named 'Example1.inp' using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Example1z5.inp'.
+
+Save the project using 'File:Save As..' with the name 'Example1z6.inp'.
+
+Compare files 'Example1z5.inp' with 'Example1z6.inp'. Should be no difference
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Hydrology', 'Hydrology' expanded
+
+# Test 'Hydrology'> 'Rain Gages'
+
+Double-click 'Rain gages' to activate 'Rain Gages' editor (not working)
+
+Edit 1: ..., Click 'OK' to close the Dialog
+
+E1X1: Double-click 'Rain Gages' to examine Edit 1, Click 'OK' to close the Dialog.
+
+# Test 'Hydrology'> 'Subcatchments'
+
+Double-click 'Subcatchments' to activate 'Subcatchments' Editor
+
+Edit 2: Set first column name='Sub101', Rain Gage = 'RG101', Outlet = 'OT101', Click 'OK' to close the Dialog. (Cannot click OK)
+
+E2X1: Double-click 'Subcatchment' to examine Edit 1, Click 'OK' to close the Dialog. (----)
+
+Edit 3: In 'Subcatchments' Tab, set area='5', width = '1000', %Slope = '0.1', Click 'OK' to close the Dialog. (Cannot click OK)
+
+E3X1: Double-click 'Subcatchment' to examine Edit 2, Click 'OK' to close the Dialog. (----)
+
+# Test 'Hydrology'> 'Aquifers'
+
+Double-click 'Aquifers' to activate 'Aquifers' Editor
+
+Edit 4: Set name='Aqf101', Porosity = '0.4', Wilting Point = '0.101',Click 'OK' to close the Dialog
+
+E4X1: Double-click 'Aquifers' to examine Edit 4, Click 'OK' to close the Dialog. (change not-saved).
+
+# Test 'Hydrology'> 'Snow Packs'
+
+Double-click 'Snow packs' to activate 'Snow packs' editor (not working,'add' not working)
+
+Edit 5: ..., Click 'OK' to close the Dialog
+
+E5X1: Double-click 'Snow Packs' to examine Edit 5, Click 'OK' to close the Dialog.
+
+# Test 'Hydrology'> 'Unit Hydrographs'
+
+Double-click 'Unit Hydrographs' to activate 'Unit Hydrographs' editor (not working, 'add' not working)
+
+Edit 6: ..., Click 'OK' to close the Dialog
+
+E6X1: Double-click 'Unit Hydrographs' to examine Edit 5, Click 'OK' to close the Dialog.
+
+# Test 'Hydrology'> 'LID Controls'
+
+Double-click 'LID Controls' to activate 'LID Controls' editor (not working, 'add' not working)
+
+Edit 7: ..., Click 'OK' to close the Dialog
+
+E7X1: Double-click 'LID Controls' to examine Edit 5, Click 'OK' to close the Dialog.

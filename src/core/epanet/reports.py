@@ -298,12 +298,63 @@ class Reports:
                 print "Finished writing report " + report_file_name
                 #   MainForm.HideProgressBar
 
-    def get_time_string(self, period):
-        # TODO: determine whether to use a value from self.TimeStat instead of a date
-        seconds = period * self.output.simDuration / self.output.numPeriods
-        hours = int(seconds / 3600)
-        minutes = int((seconds - (hours * 3600)) / 60)
+
+    def all_link_ids(self):
+        ids = []
+        for links in (self.project.pipes, self.project.pumps, self.project.valves):
+            for link in links.value:
+                if self.output.get_LinkIndex(link.id) > -1:
+                    ids.append(link.id)
+        return ids
+
+    def all_node_indexes(self):
+        indexes = []
+        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+            for node in nodes.value:
+                node_index = self.output.get_NodeIndex(node.id)
+                if node_index > -1:
+                    indexes.append(node_index)
+        return indexes
+
+    def all_node_ids(self):
+        ids = []
+        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+            for node in nodes.value:
+                node_index = self.output.get_NodeIndex(node.id)
+                if node_index > -1:
+                    ids.append(node.id)
+        return ids
+
+    def node_distances(self, node_ids):
+        return range(0, len(node_ids))
+        # TODO: compute distance from node coordinates
+        distances = [0]
+        x = None
+        y = None
+        for node_id in node_ids:
+            for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+                for node in nodes.value:
+                    if node.id == node_id:
+                        if x and y:
+                            distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
+        return distances
+
+    def elapsed_hours_at_index(self, report_time_index):
+        return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600
+
+    def get_time_string(self, report_time_index):
+        total_hours = self.elapsed_hours_at_index(report_time_index)
+        hours = int(total_hours)
+        minutes = int((total_hours - hours) * 60)
         return '{:02d}:{:02d}'.format(hours, minutes)
+
+    # def get_time_string(self, period):
+    #     # TODO: determine whether to use a value from self.TimeStat instead of a date
+    #     seconds = period * self.output.simDuration / self.output.numPeriods
+    #     hours = int(seconds / 3600)
+    #     minutes = int((seconds - (hours * 3600)) / 60)
+    #     return '{:02d}:{:02d}'.format(hours, minutes)
+
 
 
 #    def CreateFullReport(self, Filename):

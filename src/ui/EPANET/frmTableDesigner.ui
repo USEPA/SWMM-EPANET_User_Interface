@@ -32,7 +32,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabType">
           <attribute name="title">
@@ -126,7 +126,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QListView" name="lstColumns"/>
+            <widget class="QListWidget" name="lstColumns">
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ExtendedSelection</enum>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QCheckBox" name="cbxSort">

@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import matplotlib.pyplot as plt
 import core.epanet.project
+from core.epanet.reports import Reports
 from ui.model_utility import transl8
 from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import *
@@ -36,10 +37,11 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     def set_from(self, project, output):
         self.project = project
         self.output = output
+        self.report = Reports(project, output)
         self.cboTime.clear()
         if project and self.output:
             for time_index in range(0, self.output.numPeriods - 1):
-                self.cboTime.addItem(self.time_string(time_index))
+                self.cboTime.addItem(self.report.get_time_string(time_index))
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
 
@@ -51,7 +53,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.lstToGraph.clear()
             # for index in range(0, self.output.nodeCount - 1):
             #     self.lstToGraph.addItem(str(self.output.get_NodeID(index)))
-            for node_id in self.all_node_ids():
+            for node_id in self.report.all_node_ids():
                 self.lstToGraph.addItem(node_id)
 
     def rbnLinks_Clicked(self):
@@ -60,12 +62,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.cboParameter.clear()
             self.cboParameter.addItems(ENR_LinkAttributeNames)
             self.lstToGraph.clear()
-            # for index in range(0, self.output.linkCount - 1):
-            #     self.lstToGraph.addItem(str(self.output.get_LinkID(index)))
-            for links in (self.project.pipes, self.project.pumps, self.project.valves):
-                for link in links.value:
-                    if self.output.get_LinkIndex(link.id) > -1:
-                        self.lstToGraph.addItem(link.id)
+            self.lstToGraph.addItems(self.report.all_link_ids())
 
     def rbnTime_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -163,7 +160,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.title(title)
         x_values = []
         for time_index in range(0, self.output.numPeriods - 1):
-            x_values.append(self.elapsed_hours_at_index(time_index))
+            x_values.append(self.report.elapsed_hours_at_index(time_index))
 
         for list_item in self.lstToGraph.selectedItems():
             id = str(list_item.text())
@@ -186,10 +183,10 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         for list_item in self.lstToGraph.selectedItems():
             graph_ids.append(str(list_item.text()))
         if not graph_ids:
-            graph_ids = self.all_node_ids()
+            graph_ids = self.report.all_node_ids()
 
         if self.rbnNodes.isChecked():
-            x_values = self.node_distances(graph_ids)
+            x_values = self.report.node_distances(graph_ids)
         else:
             x_values = range(0, len(graph_ids))
 
@@ -200,7 +197,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     def update_profile(self, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
         fig = plt.figure(fig_number)
         fig.clear()
-        title = "Profile Plot of " + parameter_label + " at " + self.time_string(time_index)
+        title = "Profile Plot of " + parameter_label + " at " + self.report.get_time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
         y_values = []
@@ -229,7 +226,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index):
         fig = plt.figure()
-        title = "Distribution of " + parameter_label + " at " + self.time_string(time_index)
+        title = "Distribution of " + parameter_label + " at " + self.report.get_time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
         items = self.lstToGraph.selectedItems()
@@ -263,7 +260,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         produced = []
         consumed = []
         for time_index in range(0, self.output.numPeriods - 1):
-            x_values.append(self.elapsed_hours_at_index(time_index))
+            x_values.append(self.report.elapsed_hours_at_index(time_index))
             produced.append(0)
             consumed.append(0)
 
@@ -356,47 +353,6 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     #     end;
     #   finally
     #     FreeMem(Z, Nnodes*SizeOf(Single));
-
-    def all_node_indexes(self):
-        indexes = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    indexes.append(node_index)
-        return indexes
-
-    def all_node_ids(self):
-        ids = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    ids.append(node.id)
-        return ids
-
-    def node_distances(self, node_ids):
-        return range(0, len(node_ids))
-        # TODO: compute distance from node coordinates
-        distances = [0]
-        x = None
-        y = None
-        for node_id in node_ids:
-            for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-                for node in nodes.value:
-                    if node.id == node_id:
-                        if x and y:
-                            distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
-        return distances
-
-    def elapsed_hours_at_index(self, report_time_index):
-        return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600
-
-    def time_string(self, report_time_index):
-        total_hours = self.elapsed_hours_at_index(report_time_index)
-        hours = int(total_hours)
-        minutes = int((total_hours - hours) * 60)
-        return '{:02d}:{:02d}'.format(hours, minutes)
 
     def cmdCancel_Clicked(self):
         self.close()

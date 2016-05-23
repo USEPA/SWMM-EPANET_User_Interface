@@ -32,7 +32,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tabType">
           <attribute name="title">
@@ -92,14 +92,14 @@
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <item row="2" column="0">
-               <widget class="QRadioButton" name="rbnTimenode_2">
+               <widget class="QRadioButton" name="rbnTimeseriesLink">
                 <property name="text">
                  <string>Time series for link</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QRadioButton" name="rbnTimenode">
+               <widget class="QRadioButton" name="rbnTimeseriesNode">
                 <property name="text">
                  <string>Time series for node</string>
                 </property>
@@ -126,70 +126,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="fraColumn">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <item>
-               <widget class="QCheckBox" name="cbxElevation">
-                <property name="text">
-                 <string>Elevation</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxBaseDemand">
-                <property name="text">
-                 <string>Base Demand</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxInitial">
-                <property name="text">
-                 <string>Initial Quality</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxDemand">
-                <property name="text">
-                 <string>Demand</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxHead">
-                <property name="text">
-                 <string>Head</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxPressure">
-                <property name="text">
-                 <string>Pressure</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="cbxQuality">
-                <property name="text">
-                 <string>Quality</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
+            <widget class="QListView" name="lstColumns"/>
            </item>
            <item>
-            <widget class="QCheckBox" name="cbxSorted">
+            <widget class="QCheckBox" name="cbxSort">
              <property name="text">
-              <string>Sorted by</string>
+              <string>Sort by</string>
              </property>
             </widget>
            </item>

@@ -5,7 +5,7 @@ import core.epanet.project
 from ui.model_utility import transl8
 from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import *
-
+from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
 
 class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
@@ -65,59 +65,59 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                         self.lstToGraph.addItem(link.id)
 
     def rbnTime_Clicked(self):
-        self.cboParameter.setVisible(True)
+        self.cboParameter.setEnabled(True)
         self.gbxParameter.setEnabled(True)
-        self.cboTime.setVisible(False)
-        self.gbxTime.setVisible(False)
+        self.cboTime.setEnabled(False)
+        self.gbxTime.setEnabled(False)
         self.gbxObject.setEnabled(True)
         self.rbnNodes.setEnabled(True)
-        self.rbnLinks.setVisible(True)
+        self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(True)
-        self.lstToGraph.setVisible(True)
+        self.lstToGraph.setEnabled(True)
 
     def rbnProfile_Clicked(self):
-        self.cboParameter.setVisible(True)
+        self.cboParameter.setEnabled(True)
         self.gbxParameter.setEnabled(True)
-        self.cboTime.setVisible(True)
-        self.gbxTime.setVisible(True)
+        self.cboTime.setEnabled(True)
+        self.gbxTime.setEnabled(True)
         self.gbxObject.setEnabled(False)
         self.rbnNodes.setEnabled(False)
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(True)
-        self.lstToGraph.setVisible(True)
+        self.lstToGraph.setEnabled(True)
 
     def rbnContour_Clicked(self):
-        self.cboParameter.setVisible(True)
+        self.cboParameter.setEnabled(True)
         self.gbxParameter.setEnabled(True)
-        self.cboTime.setVisible(True)
-        self.gbxTime.setVisible(True)
+        self.cboTime.setEnabled(True)
+        self.gbxTime.setEnabled(True)
         self.gbxObject.setEnabled(False)
         self.rbnNodes.setEnabled(False)
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
-        self.lstToGraph.setVisible(False)
+        self.lstToGraph.setEnabled(False)
 
-    def Frequency_Clicked(self):
-        self.cboParameter.setVisible(True)
+    def rbnFrequency_Clicked(self):
+        self.cboParameter.setEnabled(True)
         self.gbxParameter.setEnabled(True)
-        self.cboTime.setVisible(True)
-        self.gbxTime.setVisible(True)
+        self.cboTime.setEnabled(True)
+        self.gbxTime.setEnabled(True)
         self.gbxObject.setEnabled(True)
         self.rbnNodes.setEnabled(True)
         self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(False)
-        self.lstToGraph.setVisible(False)
+        self.lstToGraph.setEnabled(False)
 
     def rbnSystem_Clicked(self):
-        self.cboParameter.setVisible(False)
+        self.cboParameter.setEnabled(False)
         self.gbxParameter.setEnabled(False)
-        self.cboTime.setVisible(False)
-        self.gbxTime.setVisible(False)
+        self.cboTime.setEnabled(False)
+        self.gbxTime.setEnabled(False)
         self.gbxObject.setEnabled(False)
         self.rbnNodes.setEnabled(False)
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
-        self.lstToGraph.setVisible(False)
+        self.lstToGraph.setEnabled(False)
 
     def cmdOK_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -142,7 +142,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
 
         if self.rbnSystem.isChecked():
-            self.plot_system_flow(get_index, get_value, parameter_code, parameter_label)
+            self.plot_system_flow()
 
         # self.close()
 
@@ -230,26 +230,33 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.grid(True)
         plt.show()
 
-    def plot_system_flow(self, get_index, get_value, parameter_code, parameter_label):
+    def plot_system_flow(self):
         fig = plt.figure()
         title = "System Flow Balance"
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
+        produced = []
+        consumed = []
         for time_index in range(0, self.output.numPeriods - 1):
             x_values.append(self.elapsed_hours_at_index(time_index))
+            produced.append(0)
+            consumed.append(0)
 
-        for list_item in self.lstToGraph.selectedItems():
-            id = str(list_item.text())
-            output_index = get_index(id)
-            self.output.get_NodeSeries
-            y_values = []
+        for node_index in range(0, self.output.nodeCount - 1):
+            node_flows = self.output.get_NodeSeries(node_index, ENR_demand)
             for time_index in range(0, self.output.numPeriods - 1):
-                y_values.append(get_value(output_index, time_index, parameter_code))
-            plt.plot(x_values, y_values, label=id)
+                flow = node_flows[time_index]
+                if flow > 0:
+                    consumed[time_index] += flow
+                else:
+                    produced[time_index] -= flow
+
+        plt.plot(x_values, consumed, label="Consumed")
+        plt.plot(x_values, produced, label="Produced")
 
         # fig.suptitle("Time Series Plot")
-        plt.ylabel(parameter_label)
+        plt.ylabel("Flow")
         plt.xlabel("Time (hours)")
         plt.grid(True)
         plt.legend()
@@ -257,6 +264,8 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     #  Rstart        : Longint;              //Start of reporting period (sec) = output.reportStart
     #  Rstep         : Longint;              //Interval between reporting (sec) = output.reportStep
+    #  PRODUCED = 0;
+    #  CONSUMED = 1;
     # // Refreshes the display of a system flow plot.
     # //---------------------------------------------
     # var
@@ -323,6 +332,15 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     #     end;
     #   finally
     #     FreeMem(Z, Nnodes*SizeOf(Single));
+
+    def all_node_indexes(output):
+        indexes = []
+        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
+            for node in nodes.value:
+                node_index = self.output.get_NodeIndex(node.id)
+                if node_index > -1:
+                    indexes.append(node_index)
+        return indexes
 
     def elapsed_hours_at_index(self, report_time_index):
         return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600

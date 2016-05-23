@@ -52,6 +52,9 @@ class UserInterfaceTest(unittest.TestCase):
         # Create a tree widget
         frm = frmTreeViewUITest.frmTreeViewUITest()
 
+        # Set title
+        frm.setWindowTitle('UI Tests, check if passed: '+str(self.file))
+
         # Populate the tree list with list_tests (as parent), list_actions(as children)
         frm.set_tree(list_tests, list_actions, num_actions)
 
@@ -68,7 +71,7 @@ class UserInterfaceTest(unittest.TestCase):
 
             for i in range(num_tests):
                 test_ = frm.tree.topLevelItem(i)
-                test_state = test_.checkState(0) #0-not checked, 1-checked in child, 2-all
+                test_state = test_.checkState(0) # 0-not checked, 1-checked in child, 2-all
                 n_actions = test_.childCount()
 
                 if test_state == 0:

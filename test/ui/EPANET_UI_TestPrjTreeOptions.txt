@@ -1,0 +1,87 @@
+# Test 'Options'
+
+Start EPANET.
+
+Open the file named 'Net1.inp' using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Net1z3.inp'.
+
+Save the project using 'File:Save As..' with the name 'Net1z4.inp'.
+
+Compare files 'Net1z3.inp' with 'Net1z4.inp'. Should be no difference
+
+Click 'OK'.
+
+From the Project Tree, double-click 'Options', 'Options' expanded
+
+# Test 'Options'> 'Hydraulics'
+
+Double-click 'Hydraulics' to activate 'Hydraulics' Editor
+
+Edit 1: Set Flow Units = 'CFS', Maximum Trials = '50', Damp Limit = '0.101', Click 'OK' to close the Dialog
+
+E1X1: Double-click 'Hydraulics' to examine Edit 1, Click 'OK' to close the Dialog.
+
+# Test 'Options'> 'Quality'
+
+Edit 2a: Double-click 'Quality' to activate 'Quality' Editor, Set Chemical name = 'TCE', Mass Units = 'ug/L', Click 'OK' to close the Dialog
+
+E2aX1: Double-click 'Quality' to examine Edit 2, Click 'OK' to close the Dialog.
+
+E2aX2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1 and 2a
+
+Edit 2b: Double-click 'Quality' to activate 'Quality' Editor, Select Analysis Type 'None', Click 'OK' to close the Dialog
+
+E2bX1: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1 and 2b
+
+# Test 'Options'> 'Reactions' (Reactions not in the Options, rather an individual tab.
+
+Double-click 'Quality' to activate 'Quality' Editor, Select Analysis Type 'Chemical', Click 'OK' to close the Dialog, Click 'File: save..'
+
+Edit 3: Double-click 'Reactions' to activate 'Reactions' Editor, Set 'Bulk Reaction Order' = 2, 'Wall Reaction Order' = 0, Click 'OK' to close the Dialog
+
+E3X1: Double-click 'Reactions' to examine Edit 3, Click 'OK' to close the Dialog.
+
+E3X2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a and 3.
+
+# Test 'Options'> 'Times'
+
+Edit 4: Double-click 'Times' to activate 'Times' Editor, Set 'Total Duration' = 48:00,  Statistic = 'MAXIMUM', Click 'OK' to close the Dialog
+
+E4X1: Double-click 'Times' to examine Edit 4, Click 'OK' to close the Dialog.
+
+E4X2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a,3 and 4
+
+# Test 'Options'> 'Energy'
+
+Edit 5: Double-click 'Energy' to activate 'Energy' Editor, Set 'Energy Price' = '0.101', 'Demand Charge' = '0.0101', Click 'OK' to close the Dialog
+
+E5X1: Double-click 'Energy' to examine Edit 5, Click 'OK' to close the Dialog.
+
+E5X2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a,3, 4 and 5
+
+# Test 'Options'> 'Report'
+
+Edit 6a: Double-click 'Report' to activate 'Report' Editor, Set Report File Name = 'RptNet1x2', Click 'OK' to close the Dialog
+
+E6aX1: Double-click 'Report' to examine Edit 6a, Click 'OK' to close the Dialog.
+
+Edit 6b: Double-click 'Report' to activate 'Report' Editor, Check 'Head' in 'Node Parameters', Select 'Below', First column = 101, Precision = 0.1, Report File Name = 'RptNet1x2', Click 'OK' to close the Dialog
+
+E6bX1: Double-click 'Report' to examine Edit 6b, Click 'OK' to close the Dialog. (not saved)
+
+E6bX2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a,3, 4, 5, 6a and 6b (6b not working)
+
+# Test 'Options'> 'Map/Backdrop'
+
+Edit 7a: Double-click 'Map/Backdrop' to activate 'Map/Backdrop' Editor, Set Map File Name = 'test_map' , Click 'OK' to close the Dialog
+
+E7aX1: Double-click 'Map/Backdrop' to examine Edit 7a, Click 'OK' to close the Dialog.
+
+E7aX2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a,3, 4, 5, 6a, 6b and 7
+
+Edit 7b: Double-click 'Map/Backdrop' to activate 'Map/Backdrop' Editor, Select Map Units 'FEET' , Set Backdrop file name = 'test_backdrop_file', Click 'OK' to close the Dialog
+
+E7bX1: Double-click 'Map/Backdrop' to examine Edit 7b, Click 'OK' to close the Dialog.
+
+E7bX2: Click 'File: save..', Compare files 'Net1z3.inp' with 'Net1z4.inp'. Differences includes Edits 1,2a,3, 4, 5, 6a, 6b, 7a and 7b

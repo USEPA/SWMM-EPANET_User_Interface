@@ -1,0 +1,15 @@
+# Test 'Curve' in Project Curve (not working not tested)
+
+Test 'Curves'> 'Control Curves'
+
+Test 'Curves'> 'Diversion Curves'
+
+Test 'Curves'> 'Pump Curves'
+
+Test 'Curves'> 'Rating Curves'
+
+Test 'Curves'> 'Shape Curves'
+
+Test 'Curves'> 'Storage Curves'
+
+Test 'Curves'> 'Tidal Curves'

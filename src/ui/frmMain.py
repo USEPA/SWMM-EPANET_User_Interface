@@ -421,11 +421,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if filename.endswith('.inp'):
                 gui_settings = QtCore.QSettings(self.model, "GUI")
                 self.open_project_quiet(os.path.join(directory, filename), gui_settings, directory)
+            #TODO - check to see if QGIS can handle file type
             elif filename.endswith('.shp'):
                 self.map_widget.addVectorLayer(os.path.join(directory, filename))
             else:
-                QMessageBox.information(self, self.model,
-                            "Dropped file '" + filename + "' is not an input file",
+                try:
+                    self.map_widget.addRasterLayer(os.path.join(directory, filename))
+                except:
+                    QMessageBox.information(self, self.model,
+                            "Dropped file '" + filename + "' is not a know type of file",
                             QMessageBox.Ok)
 
     def action_exit(self):

@@ -82,13 +82,14 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def cmdOK_Clicked(self):
         lid_control = self.cboLIDControl.currentText()
-        percent_impervious_area_treated =  self.txtTreated.text()
+        percent_impervious_area_treated = self.txtTreated.text()
         detailed_report_file = self.txtFile.text()
         number_replicate_units = self.spxUnits.value()
         area_each_unit = self.txtArea.text()
         top_width_overland_flow_surface = self.txtWidth.text()
         percent_initially_saturated = self.txtSat.text()
         subcatchment_drains_to = self.txtDrain.text()
+        tblControls = self.parent_form.tblControls
         if self.cbkReturn.isChecked():
             send_outflow_pervious_area = 1
         else:
@@ -96,32 +97,23 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
         if self.row_id < 0:
             # this is a new lid usage, put after all others
-            self.row_id = self.parent_form.tblControls.rowCount()
-            self.parent_form.tblControls.setRowCount(self.parent_form.tblControls.rowCount()+1)
+            self.row_id = tblControls.rowCount()
+            tblControls.setRowCount(tblControls.rowCount()+1)
 
         if self.row_id >= 0:
             # editing an existing lid usage, put back
-            led = QtGui.QLineEdit(lid_control)
-            self.parent_form.tblControls.setItem(self.row_id,0,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(percent_impervious_area_treated)
-            self.parent_form.tblControls.setItem(self.row_id,3,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(detailed_report_file)
-            self.parent_form.tblControls.setItem(self.row_id,4,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(str(number_replicate_units))
-            self.parent_form.tblControls.setItem(self.row_id,5,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(area_each_unit)
-            self.parent_form.tblControls.setItem(self.row_id,6,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(top_width_overland_flow_surface)
-            self.parent_form.tblControls.setItem(self.row_id,7,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(percent_initially_saturated)
-            self.parent_form.tblControls.setItem(self.row_id,8,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(str(send_outflow_pervious_area))
-            self.parent_form.tblControls.setItem(self.row_id,9,QtGui.QTableWidgetItem(str(led.text())))
-            led = QtGui.QLineEdit(subcatchment_drains_to)
-            self.parent_form.tblControls.setItem(self.row_id,10,QtGui.QTableWidgetItem(str(led.text())))
+            tblControls.setItem(self.row_id, 0, QtGui.QTableWidgetItem(lid_control))
+            tblControls.setItem(self.row_id, 3, QtGui.QTableWidgetItem(percent_impervious_area_treated))
+            tblControls.setItem(self.row_id, 4, QtGui.QTableWidgetItem(detailed_report_file))
+            tblControls.setItem(self.row_id, 5, QtGui.QTableWidgetItem(number_replicate_units))
+            tblControls.setItem(self.row_id, 6, QtGui.QTableWidgetItem(area_each_unit))
+            tblControls.setItem(self.row_id, 7, QtGui.QTableWidgetItem(top_width_overland_flow_surface))
+            tblControls.setItem(self.row_id, 8, QtGui.QTableWidgetItem(percent_initially_saturated))
+            tblControls.setItem(self.row_id, 9, QtGui.QTableWidgetItem(str(send_outflow_pervious_area)))
+            tblControls.setItem(self.row_id, 10, QtGui.QTableWidgetItem(subcatchment_drains_to))
 
             # recalculate area and lid name
-            self.parent_form.SetLongLIDName(lid_control,self.row_id)
+            self.parent_form.SetLongLIDName(lid_control, self.row_id)
             self.parent_form.SetAreaTerm(self.subcatchment_id, self.row_id, number_replicate_units, area_each_unit)
 
         self.close()
@@ -162,9 +154,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
         # TODO: get area from subcatchment: core.swmm.project.find_subcatchment(self.subcatchment_id).area
         subcatchment_area = 1
-        if len(subcatchment_area) < 1:
-            subcatchment_area = 10.0
-        elif subcatchment_area <= 0:
+        if subcatchment_area <= 0:
             subcatchment_area = 10.0
 
         subcatchment_area = float(subcatchment_area) * conversion_factor

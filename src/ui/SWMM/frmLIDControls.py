@@ -35,31 +35,22 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                 # this is the subcatchment we want to edit
                 lid_count += 1
                 self.tblControls.setRowCount(lid_count+1)
-                led = QtGui.QLineEdit(value.control_name)
-                self.tblControls.setItem(lid_count,0,QtGui.QTableWidgetItem(str(led.text())))
+                self.tblControls.setItem(lid_count,0,QtGui.QTableWidgetItem(str(value.control_name)))
 
                 self.SetLongLIDName(value.control_name,lid_count)
                 self.SetAreaTerm(subcatchment_id, lid_count, value.number_replicate_units, value.area_each_unit)
 
-                led = QtGui.QLineEdit(str(value.percent_impervious_area_treated))
-                self.tblControls.setItem(lid_count,3,QtGui.QTableWidgetItem(str(led.text())))
+                self.tblControls.setItem(lid_count,3,QtGui.QTableWidgetItem(str(value.percent_impervious_area_treated)))
 
-                led = QtGui.QLineEdit(str(value.detailed_report_file))
-                self.tblControls.setItem(lid_count,4,QtGui.QTableWidgetItem(str(led.text())))
+                self.tblControls.setItem(lid_count,4,QtGui.QTableWidgetItem(str(value.detailed_report_file)))
 
                 # store the other param values in hidden columns
-                led = QtGui.QLineEdit(str(value.number_replicate_units))
-                self.tblControls.setItem(lid_count,5,QtGui.QTableWidgetItem(str(led.text())))
-                led = QtGui.QLineEdit(str(value.area_each_unit))
-                self.tblControls.setItem(lid_count,6,QtGui.QTableWidgetItem(str(led.text())))
-                led = QtGui.QLineEdit(str(value.top_width_overland_flow_surface))
-                self.tblControls.setItem(lid_count,7,QtGui.QTableWidgetItem(str(led.text())))
-                led = QtGui.QLineEdit(str(value.percent_initially_saturated))
-                self.tblControls.setItem(lid_count,8,QtGui.QTableWidgetItem(str(led.text())))
-                led = QtGui.QLineEdit(str(value.send_outflow_pervious_area))
-                self.tblControls.setItem(lid_count,9,QtGui.QTableWidgetItem(str(led.text())))
-                led = QtGui.QLineEdit(str(value.subcatchment_drains_to))
-                self.tblControls.setItem(lid_count,10,QtGui.QTableWidgetItem(str(led.text())))
+                self.tblControls.setItem(lid_count,5,QtGui.QTableWidgetItem(str(value.number_replicate_units)))
+                self.tblControls.setItem(lid_count,6,QtGui.QTableWidgetItem(str(value.area_each_unit)))
+                self.tblControls.setItem(lid_count,7,QtGui.QTableWidgetItem(str(value.top_width_overland_flow_surface)))
+                self.tblControls.setItem(lid_count,8,QtGui.QTableWidgetItem(str(value.percent_initially_saturated)))
+                self.tblControls.setItem(lid_count,9,QtGui.QTableWidgetItem(str(value.send_outflow_pervious_area)))
+                self.tblControls.setItem(lid_count,10,QtGui.QTableWidgetItem(str(value.subcatchment_drains_to)))
 
         self.tblControls.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tblControls.setColumnHidden(5,True)
@@ -153,8 +144,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                     lid_name = 'Rooftop Disconnection'
                 elif lid.lid_type == LIDType.VS:
                     lid_name = 'Vegetative Swale'
-        led = QtGui.QLineEdit(lid_name)
-        self.tblControls.setItem(row,1,QtGui.QTableWidgetItem(str(led.text())))
+        self.tblControls.setItem(row,1,QtGui.QTableWidgetItem(str(lid_name)))
 
     def SetAreaTerm(self, subcatchment_id, row, number_replicate_units, area_each_unit):
         area = float(number_replicate_units) * float(area_each_unit)
@@ -173,5 +163,5 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
 
         subcatchment_area = float(subcatchment_area) * conversion_factor
 
-        led = QtGui.QLineEdit('{:5.3f}'.format(100.0 * area/subcatchment_area))
-        self.tblControls.setItem(row,2,QtGui.QTableWidgetItem(str(led.text())))
+        term = '{:5.3f}'.format(100.0 * area/subcatchment_area)
+        self.tblControls.setItem(row, 2, QtGui.QTableWidgetItem(term))

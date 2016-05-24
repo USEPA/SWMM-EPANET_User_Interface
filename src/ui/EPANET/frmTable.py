@@ -82,6 +82,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         if self.rbnNodes.isChecked() or self.rbnTimeseriesNode.isChecked():
             get_index = self.output.get_NodeIndex
             get_value = self.output.get_NodeValue
+            get_series = self.output.get_NodeSeries
             ids = self.report.all_node_ids()
             for node_type, node_id in zip(self.report.all_node_types(), ids):
                 row_headers.append(node_type + ' ' + node_id)
@@ -114,6 +115,8 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.make_table(frm, get_index, get_value, self.cboTime.currentIndex(),
                             ids, row_headers, parameter_codes, column_headers)
         else:
+            id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box?
+            self.make_timeseries_table(frm, get_index, get_series, id, parameter_codes, column_headers)
             return
         frm.tblGeneric.resizeColumnsToContents()
         frm.show()

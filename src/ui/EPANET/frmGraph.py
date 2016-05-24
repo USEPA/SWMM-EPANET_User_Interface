@@ -1,5 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from PyQt4.QtGui import QMessageBox
 import matplotlib.pyplot as plt
 import core.epanet.project
 from core.epanet.reports import Reports
@@ -122,9 +123,10 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def cboTime_currentIndexChanged(self):
         time_index = self.cboTime.currentIndex()
-        for graph in self.time_linked_graphs:
-            graph[-1] = time_index
-            graph[0](*graph[1:])
+        if time_index >= 0:
+            for graph in self.time_linked_graphs:
+                graph[-1] = time_index
+                graph[0](*graph[1:])
 
     def cmdOK_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -134,7 +136,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         else:
             get_index = self.output.get_LinkIndex
             get_value = self.output.get_LinkValue
-            parameter_code = ENR_NodeAttributes[self.cboParameter.currentIndex()]
+            parameter_code = ENR_LinkAttributes[self.cboParameter.currentIndex()]
 
         parameter_label = self.cboParameter.currentText()
         time_index = self.cboTime.currentIndex()
@@ -142,16 +144,20 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnTime.isChecked():
             self.plot_time(get_index, get_value, parameter_code, parameter_label)
 
-        if self.rbnProfile.isChecked():
-            self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index)
-
-        if self.rbnFrequency.isChecked():
-            self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
-
         if self.rbnSystem.isChecked():
             self.plot_system_flow()
 
-        # self.close()
+        if time_index < 0 and (self.rbnProfile.isChecked() or self.rbnFrequency.isChecked()):
+            QMessageBox.information(None, self._parent.model,
+                                    "There is no time step currently selected.",
+                                    QMessageBox.Ok)
+        else:
+            if self.rbnProfile.isChecked():
+                self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index)
+            if self.rbnFrequency.isChecked():
+                self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
+
+        # self.close()  # Keep open to allow opening more graphs and controlling time index
 
     def plot_time(self, get_index, get_value, parameter_code, parameter_label):
         fig = plt.figure()
@@ -195,61 +201,63 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.update_profile(graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index)
 
     def update_profile(self, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
-        fig = plt.figure(fig_number)
-        fig.clear()
-        title = "Profile Plot of " + parameter_label + " at " + self.report.get_time_string(time_index)
-        fig.canvas.set_window_title(title)
-        plt.title(title)
-        y_values = []
-        min_y = 999.9
+        if time_index >= 0:
+            fig = plt.figure(fig_number)
+            fig.clear()
+            title = "Profile Plot of " + parameter_label + " at " + self.report.get_time_string(time_index)
+            fig.canvas.set_window_title(title)
+            plt.title(title)
+            y_values = []
+            min_y = 999.9
 
+            for (graph_id, x_value) in zip(graph_ids, x_values):
+                output_index = get_index(graph_id)
+                y = get_value(output_index, time_index, parameter_code)
+                if min_y == 999.9 or y < min_y:
+                    min_y = y
+                y_values.append(y)
+                plt.annotate(
+                    graph_id,
+                    xy=(x_value, y), xytext=(0, 20),
+                    textcoords='offset points', ha='center', va='bottom',
+                    bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
+                #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
-        for (graph_id, x_value) in zip(graph_ids, x_values):
-            output_index = get_index(graph_id)
-            y = get_value(output_index, time_index, parameter_code)
-            if min_y == 999.9 or y < min_y:
-                min_y = y
-            y_values.append(y)
-            plt.annotate(
-                graph_id,
-                xy=(x_value, y), xytext=(0, 20),
-                textcoords='offset points', ha='center', va='bottom',
-                bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
-            #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+            plt.fill_between(x_values, y_values, min_y)
 
-        plt.fill_between(x_values, y_values, min_y)
-
-        plt.ylabel(parameter_label)
-        plt.xlabel("Index")
-        plt.grid(True)
-        plt.show()
+            plt.ylabel(parameter_label)
+            plt.xlabel("Index")
+            plt.grid(True)
+            fig.canvas.draw()
+            plt.show()
 
     def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index):
-        fig = plt.figure()
-        title = "Distribution of " + parameter_label + " at " + self.report.get_time_string(time_index)
-        fig.canvas.set_window_title(title)
-        plt.title(title)
-        items = self.lstToGraph.selectedItems()
-        count = len(items)
-        percent = []
-        values = []
-        index = 0
-        for list_item in items:
-            percent.append(index * 100 / count)
-            index += 1
-            id = str(list_item.text())
-            output_index = get_index(id)
-            values.append(get_value(output_index, time_index, parameter_code))
+        if time_index >= 0:
+            fig = plt.figure()
+            title = "Distribution of " + parameter_label + " at " + self.report.get_time_string(time_index)
+            fig.canvas.set_window_title(title)
+            plt.title(title)
+            items = self.lstToGraph.selectedItems()
+            count = len(items)
+            percent = []
+            values = []
+            index = 0
+            for list_item in items:
+                percent.append(index * 100 / count)
+                index += 1
+                id = str(list_item.text())
+                output_index = get_index(id)
+                values.append(get_value(output_index, time_index, parameter_code))
 
-        values.sort()
-        # Cumulative distributions:
-        plt.plot(values, percent)  # From 0 to the number of data points-1
-        # plt.step(values[::-1], np.arange(len(values)))  # From the number of data points-1 to 0
+            values.sort()
+            # Cumulative distributions:
+            plt.plot(values, percent)  # From 0 to the number of data points-1
+            # plt.step(values[::-1], np.arange(len(values)))  # From the number of data points-1 to 0
 
-        plt.ylabel("Percent Less Than")
-        plt.xlabel(parameter_label)
-        plt.grid(True)
-        plt.show()
+            plt.ylabel("Percent Less Than")
+            plt.xlabel(parameter_label)
+            plt.grid(True)
+            plt.show()
 
     def plot_system_flow(self):
         fig = plt.figure()

@@ -55,14 +55,15 @@ class Reports:
             self.project = Project()
             self.project.read_file(epanet_project)
         else:
-            raise Exception("Report Initialization: could not read EPANET project")
+            raise Exception("Report Initialization: could not read EPANET project.")
 
         if isinstance(model_output, OutputObject):
             self.output = model_output
         elif isinstance(model_output, str):
             self.output = OutputObject(model_output)
         else:
-            raise Exception("Report Initialization: could not read EPANET project")
+            raise Exception("Report Initialization: could not read output of model.\n"
+                            "Run the model to generate new output.")
 
         if self.project.metric:
             self.unit_system = ENR_UnitsSI
@@ -305,6 +306,8 @@ class Reports:
             for link in links.value:
                 if self.output.get_LinkIndex(link.id) > -1:
                     ids.append(link.id)
+                else:
+                    print("Skipping link " + link.id + " because it was not found in output")
         return ids
 
     def all_node_indexes(self):
@@ -323,7 +326,22 @@ class Reports:
                 node_index = self.output.get_NodeIndex(node.id)
                 if node_index > -1:
                     ids.append(node.id)
+                else:
+                    print("Skipping node " + node.id + " because it was not found in output")
         return ids
+
+    def all_node_types(self):
+        types = []
+        for node in self.project.junctions.value:
+            if self.output.get_NodeIndex(node.id) > -1:
+                types.append("Junction")
+        for node in self.project.reservoirs.value:
+            if self.output.get_NodeIndex(node.id) > -1:
+                types.append("Reservoir")
+        for node in self.project.tanks.value:
+            if self.output.get_NodeIndex(node.id) > -1:
+                types.append("Tank")
+        return types
 
     def node_distances(self, node_ids):
         return range(0, len(node_ids))

@@ -213,6 +213,7 @@ class frmMainEPANET(frmMain):
 
     def report_table(self):
         self._frmTable = frmTable(self)
+        self._frmTable.set_from(self.project, self.output)
         self._frmTable.show()
         pass
 

@@ -105,7 +105,8 @@ class Ui_frmTable(object):
         self.lblSelectColumn = QtGui.QLabel(self.tabColumns)
         self.lblSelectColumn.setObjectName(_fromUtf8("lblSelectColumn"))
         self.verticalLayout_3.addWidget(self.lblSelectColumn)
-        self.lstColumns = QtGui.QListView(self.tabColumns)
+        self.lstColumns = QtGui.QListWidget(self.tabColumns)
+        self.lstColumns.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.lstColumns.setObjectName(_fromUtf8("lstColumns"))
         self.verticalLayout_3.addWidget(self.lstColumns)
         self.cbxSort = QtGui.QCheckBox(self.tabColumns)
@@ -180,7 +181,7 @@ class Ui_frmTable(object):
         frmTable.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(frmTable)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(frmTable)
 
     def retranslateUi(self, frmTable):

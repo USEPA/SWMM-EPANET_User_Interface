@@ -310,6 +310,19 @@ class Reports:
                     print("Skipping link " + link.id + " because it was not found in output")
         return ids
 
+    def all_link_types(self):
+        types = []
+        for link in self.project.pipes.value:
+            if self.output.get_LinkIndex(link.id) > -1:
+                types.append("Pipe")
+        for link in self.project.pumps.value:
+            if self.output.get_LinkIndex(link.id) > -1:
+                types.append("Pump")
+        for link in self.project.valves.value:
+            if self.output.get_LinkIndex(link.id) > -1:
+                types.append("Valve")
+        return types
+
     def all_node_indexes(self):
         indexes = []
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):

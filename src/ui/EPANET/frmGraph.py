@@ -129,16 +129,22 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                 graph[0](*graph[1:])
 
     def cmdOK_Clicked(self):
+        attribute_index = self.cboParameter.currentIndex()
         if self.rbnNodes.isChecked():
             get_index = self.output.get_NodeIndex
             get_value = self.output.get_NodeValue
-            parameter_code = ENR_NodeAttributes[self.cboParameter.currentIndex()]
+            parameter_code = ENR_NodeAttributes[attribute_index]
+            units = ENR_NodeAttributeUnits[attribute_index][self.report.unit_system]
+
         else:
             get_index = self.output.get_LinkIndex
             get_value = self.output.get_LinkValue
-            parameter_code = ENR_LinkAttributes[self.cboParameter.currentIndex()]
+            parameter_code = ENR_LinkAttributes[attribute_index]
+            units = ENR_LinkAttributeUnits[attribute_index][self.report.unit_system]
 
         parameter_label = self.cboParameter.currentText()
+        if units:
+            parameter_label += ' (' + units + ')'
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():
@@ -290,77 +296,6 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         plt.grid(True)
         plt.legend()
         plt.show()
-
-    #  Rstart        : Longint;              //Start of reporting period (sec) = output.reportStart
-    #  Rstep         : Longint;              //Interval between reporting (sec) = output.reportStep
-    #  PRODUCED = 0;
-    #  CONSUMED = 1;
-    # // Refreshes the display of a system flow plot.
-    # //---------------------------------------------
-    # var
-    #   j, k       : Integer;
-    #   n, n1, n2  : Integer;
-    #   dt         : Single;
-    #   x          : Single;
-    #   sysflow    : Array[PRODUCED..CONSUMED] of Double;
-    # begin
-    # //Determine number of points to plot
-    #   n1 := 0;
-    #   n2 := Nperiods - 1;
-    #   n  := n2 - n1 + 1;
-    #   dt := Rstep/3600.;
-    #
-    # //Fill in system flow time series
-    #   for k := PRODUCED to CONSUMED do
-    #   begin
-    #     Chart1.Series[k].Clear;
-    #     Chart1.Series[k].Active := False;
-    #   end;
-    #   x := (Rstart + n1*Rstep)/3600;
-    #   for j := 0 to n-1 do
-    #   begin
-    #     GetSysFlow(j,sysflow);
-    #     for k := PRODUCED to CONSUMED do
-    #       Chart1.Series[k].AddXY(x, sysflow[k], '', clTeeColor);
-    #     x := x + dt;
-    #   end;
-    #   for k := PRODUCED to CONSUMED do Chart1.Series[k].Active := True;
-
-    # procedure TGraphForm.GetSysFlow(const Period: Integer;
-    #   var SysFlow: array of Double);
-    # //--------------------------------------------------------------
-    # // Sums up flow produced and consumed in network in time Period.
-    # //--------------------------------------------------------------
-    # var
-    #   i,j,k: Integer;
-    #   aNode: TNode;
-    #   Z  : PSingleArray;
-    # begin
-    # // Allocate scratch array to hold nodal demands
-    #   for i := PRODUCED to CONSUMED do SysFlow[i] := 0;
-    #   GetMem(Z, Nnodes*SizeOf(Single));
-    #   try
-    #
-    #   // Retrieve nodal demands from output file for time Period
-    #     k := NodeVariable[DEMAND].SourceIndex[JUNCS];
-    #     GetNodeValues(k,Period,Z);
-    #
-    #   // Update total consumption/production depending on sign of demand
-    #     for i := JUNCS to RESERVS do
-    #     begin
-    #       for j := 0 to Network.Lists[i].Count-1 do
-    #       begin
-    #         aNode := Node(i,j);
-    #         k := aNode.Zindex;
-    #         if k >= 0 then
-    #         begin
-    #           if Z[k] > 0 then SysFlow[CONSUMED] := SysFlow[CONSUMED] + Z[k]
-    #           else SysFlow[PRODUCED] := SysFlow[PRODUCED] - Z[k];
-    #         end;
-    #       end;
-    #     end;
-    #   finally
-    #     FreeMem(Z, Nnodes*SizeOf(Single));
 
     def cmdCancel_Clicked(self):
         self.close()

@@ -15,6 +15,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         QtGui.QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.tabWidget.setCurrentIndex(0)
+        self.cboFilter.addItems(('Below', 'Equal To', 'Above'))
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
@@ -75,32 +76,46 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.cboFilter.addItems(ENR_LinkAttributeNames)
 
     def cmdOK_Clicked(self):
+        row_headers = []
+        column_headers = []
+        parameter_codes = []
         if self.rbnNodes.isChecked() or self.rbnTimeseriesNode.isChecked():
             get_index = self.output.get_NodeIndex
             get_value = self.output.get_NodeValue
             ids = self.report.all_node_ids()
-            row_headers = []
             for node_type, node_id in zip(self.report.all_node_types(), ids):
                 row_headers.append(node_type + ' ' + node_id)
-            column_headers = []
-            parameter_codes = []
             for column_item in self.lstColumns.selectedItems():
                 attribute_name = str(column_item.text())
+                attribute_index = ENR_NodeAttributeNames.index(attribute_name)
+                parameter_codes.append(ENR_NodeAttributes[attribute_index])
+                units = ENR_NodeAttributeUnits[attribute_index][self.report.unit_system]
+                if units:
+                    attribute_name += '\n(' + units + ')'
                 column_headers.append(attribute_name)
-                parameter_codes.append(ENR_NodeAttributes[ENR_NodeAttributeNames.index(attribute_name)])
 
         else:  # if self.rbnLinks.isChecked() or self.rbnTimeseriesLink.isChecked():
             get_index = self.output.get_LinkIndex
             get_value = self.output.get_LinkValue
-            parameter_codes = ENR_LinkAttributes
+            ids = self.report.all_link_ids()
+            for link_type, link_id in zip(self.report.all_link_types(), ids):
+                row_headers.append(link_type + ' ' + link_id)
+            for column_item in self.lstColumns.selectedItems():
+                attribute_name = str(column_item.text())
+                attribute_index = ENR_LinkAttributeNames.index(attribute_name)
+                parameter_codes.append(ENR_LinkAttributes[attribute_index])
+                units = ENR_LinkAttributeUnits[attribute_index][self.report.unit_system]
+                if units:
+                    attribute_name += '\n(' + units + ')'
+                column_headers.append(attribute_name)
 
         frm = frmGenericListOutput(self.parent(),"EPANET Table Output")
-        if self.rbnNodes.isChecked():
+        if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
             self.make_table(frm, get_index, get_value, self.cboTime.currentIndex(),
                             ids, row_headers, parameter_codes, column_headers)
-        #elif self.rbnLinks.isChecked():
         else:
             return
+        frm.tblGeneric.resizeColumnsToContents()
         frm.show()
         self.forms.append(frm)
         # self.close()
@@ -121,8 +136,13 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 output_index = get_index(this_id)
                 if output_index >= 0:
                     val = get_value(output_index, time_index, parameter_code)
-                    # led = QtGui.QLineEdit(val)  #str(parameter_code) + ' (' + ENR_NodeAttributeNames[parameter_code] + '), ' + str(this_id))
-                    item = QtGui.QTableWidgetItem('{:7.2f}'.format(val))
+                    if parameter_code == ENR_status and val in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
+                        val_str = ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
+                    else:
+                        val_str = '{:7.2f}'.format(val)
+
+                    # str(parameter_code) + ' (' + ENR_NodeAttributeNames[parameter_code] + '), ' + str(this_id))
+                    item = QtGui.QTableWidgetItem(val_str)
                     item.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                     item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                     tbl.setItem(row, col, item)

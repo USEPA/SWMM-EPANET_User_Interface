@@ -587,7 +587,10 @@ add_library_search_dirs([])
 
 # Begin libraries
 
-_libs["outputapi"] = load_library("outputapi")
+if sys.platform == "linux2":
+    _libs["outputapi"] = ctypes.cdll.LoadLibrary(os.path.join(os.path.dirname(os.path.realpath(__file__)), "SMOutputAPI-64.so"))
+else:
+    _libs["outputapi"] = load_library(os.path.join(os.path.dirname(os.path.realpath(__file__)), "SMOutputAPI-64"))
 
 # 1 libraries
 # End libraries

@@ -223,21 +223,29 @@ class frmMainEPANET(frmMain):
         # TXT_AVG_RATES = 'Average Reaction Rates (kg/day)'
         # ' Reaction Report'
 
-        # // Find conversion factor to kilograms/day
-        # ucf := 1.0e6/24;
-        # if Pos('ug', NodeUnits[NODEQUAL].Units) > 0 then ucf := 1.0e9/24;
-        #
-        # if Chart1.SeriesCount > 0 then with Chart1.Series[0] do
-        # begin
-        #
-        # // Initialize the chart
-        # Clear;
-        # Active := False;
-        # Chart1.Title.Text.Clear;
-        # Chart1.Foot.Text.Clear;
+        # Find conversion factor to kilograms/day
+        ucf = 1.0e6/24
+        quality_options = self.project.options.quality
+        if 'ug' in str(quality_options.mass_units):
+            ucf = 1.0e9/24
+
         #
         # // Get average reaction rates from output file
         # Uoutput.GetReactRates(r);
+
+#         procedure GetReactRates(var R: array of Single);
+# //-----------------------------------------------
+# // Retrieves overall average reaction rates
+# // NOTE: The 3 avg. reaction rates + avg. source
+# //       input rate are stored at end of the
+# //       binary output file just before the last
+# //       3 records.
+# //-----------------------------------------------
+# begin
+#   Seek(Fout, FileSize(Fout)-7*RECORDSIZE);
+#   BlockRead(Fout, R, 4*Sizeof(Single));
+# end;
+
         # for i := 0 to 3 do rate[i] := r[i] / ucf;
         #
         # // Check max. rate to see if any reactions occurred

@@ -19,10 +19,16 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         # self.set_from(parent.project)
         self._parent = parent
 
-    # def set_from(self, project):
-        # section = core.epanet.project.Control()
-        # section = project.find_section("CONTROLS")
-        # self.txtControls.setPlainText(str(section.get_text()))
+
+    def set_from(self, project, output):
+        self.project = project
+        self.output = output
+        self.cboStart.clear()
+        if project and self.output:
+            for time_index in range(0, self.output.numPeriods - 1):
+                self.cboStart.addItem(str(time_index))  # self.report.get_time_string(time_index))
+            # self.rbnNodes.setChecked(True)
+            # self.rbnNodes_Clicked()
 
     def btnAdd_Clicked(self):
         self._frmTimeSeriesSelection = frmTimeSeriesSelection(self.parent())

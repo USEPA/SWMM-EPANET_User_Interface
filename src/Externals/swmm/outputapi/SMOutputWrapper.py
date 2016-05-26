@@ -33,11 +33,11 @@ class OutputObject(object):
         2) Opens the output file.
         """
         self.ptrapi = c_void_p()
-        ret = _lib.SMR_open(byref(self.ptrapi), str(output_file_name))
+        ret = _lib.SMR_open(str(output_file_name), byref(self.ptrapi))
         if ret != 0:
             self.RaiseError(ret)
         self._get_Units()
-        self._get_NetSize()
+        self._get_Sizes()
         self._get_Times()
         self._cache_node_ids()
         self._cache_link_ids()
@@ -52,80 +52,92 @@ class OutputObject(object):
         """
         Purpose: Returns pressure and flow units
         """
-        _lib.SMO_getUnits(self.ptrapi, _lib.SMO_flowUnits, byref(cint))
+        _lib.SMO_getUnits(self.ptrapi, _lib.flow_rate, byref(cint))
         self.flowUnits = cint.value
 
-        _lib.SMO_getUnits(self.ptrapi, _lib.SMO_pressUnits, byref(cint))
-        self.pressUnits = cint.value
+        # _lib.SMO_getUnits(self.ptrapi, _lib.concentration, byref(cint))
+        # self.concentrationUnits = cint.value
 
-    def _get_NetSize(self):
+    def _get_Sizes(self):
         """
         Populates object attributes with the water object counts
         """
-        _lib.SMO_getNetSize(self.ptrapi, _lib.SMO_nodeCount, byref(cint))
+        ierr = _lib.SMO_getProjectSize(self.ptrapi, _lib.nodeCount, byref(cint))
+        if ierr != 0:
+            print "Error in SMO_getProjectSize(nodeCount)"
+            self.RaiseError(ierr)
         self.nodeCount = cint.value
 
-        _lib.SMO_getNetSize(self.ptrapi, _lib.SMO_tankCount, byref(cint))
-        self.tankCount = cint.value
+        ierr = _lib.SMO_getProjectSize(self.ptrapi, _lib.subcatchCount, byref(cint))
+        if ierr != 0:
+            print "Error in SMO_getProjectSize(subcatchCount)"
+            self.RaiseError(ierr)
+        self.subcatchCount = cint.value
 
-        _lib.SMO_getNetSize(self.ptrapi, _lib.SMO_linkCount, byref(cint))
+        ierr = _lib.SMO_getProjectSize(self.ptrapi, _lib.linkCount, byref(cint))
+        if ierr != 0:
+            print "Error in SMO_getProjectSize(linkCount)"
+            self.RaiseError(ierr)
         self.linkCount = cint.value
 
-        _lib.SMO_getNetSize(self.ptrapi, _lib.SMO_pumpCount, byref(cint))
-        self.pumpCount = cint.value
-
-        _lib.SMO_getNetSize(self.ptrapi, _lib.SMO_valveCount, byref(cint))
-        self.valveCount = cint.value
+        ierr = _lib.SMO_getProjectSize(self.ptrapi, _lib.pollutantCount, byref(cint))
+        if ierr != 0:
+            print "Error in SMO_getProjectSize(pollutantCount)"
+            self.RaiseError(ierr)
+        self.pollutantCount = cint.value
 
     def _get_Times(self):
         """
         Purpose: Returns report and simulation time related parameters.
         """
 
-        _lib.SMO_getTimes(self.ptrapi, _lib.SMO_reportStart, byref(cint))
-        self.reportStart = cint.value
+        # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_reportStart, byref(cint))
+        # self.reportStart = cint.value
 
-        _lib.SMO_getTimes(self.ptrapi, _lib.SMO_reportStep, byref(cint))
+        _lib.SMO_getTimes(self.ptrapi, _lib.reportStep, byref(cint))
         self.reportStep = cint.value
 
-        _lib.SMO_getTimes(self.ptrapi, _lib.SMO_simDuration, byref(cint))
-        self.simDuration = cint.value
+        # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_simDuration, byref(cint))
+        # self.simDuration = cint.value
 
-        _lib.SMO_getTimes(self.ptrapi, _lib.SMO_numPeriods, byref(cint))
+        _lib.SMO_getTimes(self.ptrapi, _lib.numPeriods, byref(cint))
         self.numPeriods = cint.value
 
     def _cache_node_ids(self):
         self.nodeIds = []
-        c_array = _lib.SMO_getNodeIDs(self.ptrapi)
-        self.nodeIds.append(str(label))
+        c_return = _lib.SMO_getNodeIDs(self.ptrapi, byref(cint))
+        if cint.value != 0:
+            print "Error in SMO_getNodeIDs()"
+            self.RaiseError(cint.value)
+        while c_return:
+            self.nodeIds.append(str(c_return.contents.IDname.data))
+            print "Node " + self.nodeIds[-1]
+            c_return = c_return.contents.nextID
 
     def _cache_link_ids(self):
         self.linkIds = []
-        for index in range(0, self.linkCount - 1):
-            _lib.SMO_getLinkID(self.ptrapi, index, label)
-            self.linkIds.append(str(label))
+        c_return = _lib.SMO_getLinkIDs(self.ptrapi, byref(cint))
+        if cint.value != 0:
+            print "Error in SMO_getLinkIDs()"
+            self.RaiseError(cint.value)
+        while c_return:
+            self.linkIds.append(str(c_return.contents.IDname.data))
+            print "Link " + self.linkIds[-1]
+            c_return = c_return.contents.nextID
 
     def get_NodeID(self, index):
         """Retrieves the ID label of a node with a specified index.
         Arguments:
         index: node index"""
-        if self.nodeIds:
-            return self.nodeIds[index]
-        _lib.SMO_getNodeID(self.ptrapi, index, label)
-        return str(label)
+        return self.nodeIds[index]
 
     def get_NodeIndex(self, NodeID):
         """Retrieves the index of a node with a specified ID.
 
         Arguments:
         NodeID: node ID label"""
-        if not self.nodeIds:
-            self._cache_node_ids()
         try:
             return self.nodeIds.index(NodeID)
-            # for index in range(0, self.nodeCount - 1):
-            #     if self.get_NodeID(index) == NodeID:
-            #         return index
         except:
             return -1
 
@@ -134,23 +146,15 @@ class OutputObject(object):
 
         Arguments:
         index: link index"""
-        if self.linkIds:
-            return self.linkIds[index]
-        _lib.SMO_getLinkID(self.ptrapi, index, label)
-        return str(label)
+        return self.linkIds[index]
 
     def get_LinkIndex(self, LinkID):
         """Retrieves the index of a link with a specified ID.
 
         Arguments:
         LinkID: link ID label"""
-        if not self.linkIds:
-            self._cache_link_ids()
         try:
             return self.linkIds.index(LinkID)
-            # for index in range(0, self.linkCount - 1):
-            #     if self.get_LinkID(index) == LinkID:
-            #         return index
         except:
             return -1
 

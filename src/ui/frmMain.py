@@ -169,6 +169,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # self.obj_tree.itemClicked.connect(self.list_objects)
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
         self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
+
+        # self.btnObjAdd.clicked.connect(self.add_object)
+        # self.btnObjDelete.clicked.connect(self.delete_object)
+        self.btnObjProperty.clicked.connect(self.edit_object)
+        # self.btnObjMoveUp.clicked.connect(self.moveup_object)
+        # self.btnObjMoveDown.clicked.connect(self.movedown_object)
+        # self.btnObjSort.clicked.connect(self.sort_object)
+
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -341,13 +349,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     print "Editor Closing: " + str(event)
             #     # self._forms.remove(event.)
 
-    def list_item_clicked(self, item):
+    def list_item_clicked(self):
         # on double click of an item in the 'bottom left' list
         if not self.project or not self.get_editor:
             return
         for item in self.listViewObjects.selectedIndexes():
             selected_text = str(item.data())
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
+
+    # def add_object(self):
+
+    # def delete_object(self):
+
+    def edit_object(self):
+        self.list_item_clicked()
+
+    # def moveup_object(self):
+
+    # def movedown_object(self):
+
+    # def sort_object(self):
 
     def new_project(self):
         self.project = self.project_type()
@@ -448,7 +469,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def clear_object_listing(self):
         self.tree_section = ''
-        self.obj_view_model.clear()
+        self.listViewObjects.clear()
 
     def list_objects(self):
         selected_text = ''
@@ -465,10 +486,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.tree_section = selected_text
             self.dockw_more.setWindowTitle(selected_text)
             for id in ids:
-                newItem = QStandardItem(str(id))
-                newItem.setEditable(False)
-                self.obj_view_model.appendRow(newItem)
-            self.listViewObjects.setModel(self.obj_view_model)
+                self.listViewObjects.addItem(id)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

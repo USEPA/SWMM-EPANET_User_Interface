@@ -347,7 +347,16 @@
        </widget>
       </widget>
      </item>
-     <item row="1" column="0">
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockw_more">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
       <layout class="QHBoxLayout" name="hlayout_obj">
        <property name="spacing">
         <number>0</number>
@@ -510,17 +519,8 @@
        </item>
       </layout>
      </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockw_more">
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QListView" name="listViewObjects"/>
+     <item row="1" column="0">
+      <widget class="QListWidget" name="listViewObjects"/>
      </item>
     </layout>
    </widget>

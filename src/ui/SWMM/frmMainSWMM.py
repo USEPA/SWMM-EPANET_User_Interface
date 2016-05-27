@@ -50,6 +50,8 @@ from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
 from core.swmm.curves import CurveType
 
+from Externals.swmm.outputapi import SMOutputWrapper
+
 
 class frmMainSWMM(frmMain):
     """Main form for SWMM user interface, based on frmMain which is shared with EPANET."""
@@ -198,6 +200,8 @@ class frmMainSWMM(frmMain):
         frmMain.__init__(self, q_application)
         self.model = "SWMM"
         self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
+        self.output_filename = ''  # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
@@ -260,6 +264,12 @@ class frmMainSWMM(frmMain):
         self.menuReport.addAction(self.actionStatistics_ReportMenu)
         QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
 
+    def get_output(self):
+        if not self.output:
+            if os.path.isfile(self.output_filename):
+                self.output = SMOutputWrapper.OutputObject(self.output_filename)
+        return self.output
+
     def report_status(self):
         print "report_status"
         if not os.path.isfile(self.status_file_name):
@@ -281,8 +291,8 @@ class frmMainSWMM(frmMain):
 
     def report_timeseries(self):
         self._frmTimeSeriesPlot = frmTimeSeriesPlot(self.parent())
+        self._frmTimeSeriesPlot.set_from(self.project, self.get_output())
         self._frmTimeSeriesPlot.show()
-        pass
 
     def report_scatter(self):
         self._frmScatterPlot = frmScatterPlot(self.parent())
@@ -466,6 +476,7 @@ class frmMainSWMM(frmMain):
         return ids
 
     def run_simulation(self):
+        self.output = None
         # First find input file to run
         file_name = ''
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
@@ -542,6 +553,7 @@ class frmMainSWMM(frmMain):
             args = []
             exe_name = "swmm5.exe"
             exe_path = os.path.join(self.assembly_path, exe_name)
+            self.output_filename = prefix + '.out'
             if not os.path.isfile(exe_path):
                 pp = os.path.dirname(os.path.dirname(self.assembly_path))
                 exe_path = os.path.join(pp, "Externals", exe_name)
@@ -553,7 +565,7 @@ class frmMainSWMM(frmMain):
             if os.path.isfile(exe_path):
                 args.append(file_name)
                 args.append(prefix + '.rpt')
-                args.append(prefix + '.out')
+                args.append(self.output_filename)
                 # running the Exe
                 status = StatusMonitor0(exe_path, args, self, model='SWMM')
                 status.show()

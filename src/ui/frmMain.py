@@ -173,9 +173,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # self.btnObjAdd.clicked.connect(self.add_object)
         # self.btnObjDelete.clicked.connect(self.delete_object)
         self.btnObjProperty.clicked.connect(self.edit_object)
-        # self.btnObjMoveUp.clicked.connect(self.moveup_object)
-        # self.btnObjMoveDown.clicked.connect(self.movedown_object)
-        # self.btnObjSort.clicked.connect(self.sort_object)
+        self.btnObjMoveUp.clicked.connect(self.moveup_object)
+        self.btnObjMoveDown.clicked.connect(self.movedown_object)
+        self.btnObjSort.clicked.connect(self.sort_object)
 
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
@@ -364,11 +364,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def edit_object(self):
         self.list_item_clicked()
 
-    # def moveup_object(self):
+    def moveup_object(self):
+        currentRow = self.listViewObjects.currentRow()
+        currentItem = self.listViewObjects.takeItem(currentRow)
+        self.listViewObjects.insertItem(currentRow - 1, currentItem)
 
-    # def movedown_object(self):
+    def movedown_object(self):
+        currentRow = self.listViewObjects.currentRow()
+        currentItem = self.listViewObjects.takeItem(currentRow)
+        self.listViewObjects.insertItem(currentRow + 1, currentItem)
 
-    # def sort_object(self):
+    def sort_object(self):
+        self.listViewObjects.sortItems()
 
     def new_project(self):
         self.project = self.project_type()

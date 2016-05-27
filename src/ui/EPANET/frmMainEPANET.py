@@ -336,13 +336,13 @@ class frmMainEPANET(frmMain):
         ids = []
         if category.lower() == 'junctions':
             for i in range(0, len(self.project.junctions.value)):
-                ids.append(self.project.junctions.value[i].node_id)
+                ids.append(self.project.junctions.value[i].id)
         elif category.lower() == 'reservoirs':
             for i in range(0, len(self.project.reservoirs.value)):
-                ids.append(self.project.reservoirs.value[i].node_id)
+                ids.append(self.project.reservoirs.value[i].id)
         elif category.lower() == 'tanks':
             for i in range(0, len(self.project.tanks.value)):
-                ids.append(self.project.tanks.value[i].node_id)
+                ids.append(self.project.tanks.value[i].id)
         elif category.lower() == 'pipes':
             for i in range(0, len(self.project.pipes.value)):
                 ids.append(self.project.pipes.value[i].id)

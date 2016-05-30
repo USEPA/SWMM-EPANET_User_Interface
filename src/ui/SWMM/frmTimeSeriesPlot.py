@@ -27,8 +27,12 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         if project and self.output:
             for time_index in range(0, self.output.numPeriods - 1):
                 self.cboStart.addItem(str(time_index))  # self.report.get_time_string(time_index))
+
             # self.rbnNodes.setChecked(True)
             # self.rbnNodes_Clicked()
+            values = self.output.get_NodeSeries(0, 0)
+            for val in values:
+                print '{:7.2f}'.format(val)
 
     def btnAdd_Clicked(self):
         self._frmTimeSeriesSelection = frmTimeSeriesSelection(self.parent())

@@ -98,7 +98,7 @@ class OutputObject(object):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
         #     raise Exception(errmsg.value)
         # else:
-        raise Exception("Unknown error #{0}".format(ErrNo) )
+        raise Exception("EPANET output error #{0}".format(ErrNo) )
 
     def _get_Units(self):
         """

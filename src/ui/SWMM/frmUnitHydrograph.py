@@ -10,16 +10,16 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
              'July', 'August', 'September', 'October', 'November', 'December']
     month3 = ['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboHydrograph.currentIndexChanged.connect(self.cboHydrograph_currentIndexChanged)
-        self._parent = parent
+        self._main_form = main_form
         self.hydrograph_id = ''
         # set for first unit hydrograph group for now
-        self.set_from(parent.project, 'uh')
+        self.set_from(main_form.project, 'uh')
 
     def set_from(self, project, hydrograph_id):
         # section = core.swmm.project.UnitHydrograph
@@ -67,7 +67,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
                     #     self.cboRain.setCurrentIndex(selected_index)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("HYDROGRAPHS")
+        section = self._main_form.project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
         for hydrograph in hydrograph_list:
             if hydrograph.group_name == self.hydrograph_id:
@@ -148,7 +148,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         self.tblAbstraction.setItem(2, 0, QtGui.QTableWidgetItem(led.text()))
         self.tblAbstraction.setItem(2, 1, QtGui.QTableWidgetItem(led.text()))
         self.tblAbstraction.setItem(2, 2, QtGui.QTableWidgetItem(led.text()))
-        section = self._parent.project.find_section("HYDROGRAPHS")
+        section = self._main_form.project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
         for hydrograph in hydrograph_list:
             if hydrograph.group_name == self.hydrograph_id:

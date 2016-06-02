@@ -4,8 +4,8 @@ from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 
 
 class frmGenericListOutput(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
-    def __init__(self, parent, title):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form, title):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)

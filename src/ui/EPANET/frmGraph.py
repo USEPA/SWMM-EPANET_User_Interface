@@ -11,8 +11,8 @@ from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_press
 
 class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
-    def __init__(self, parent):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cmdAdd.setVisible(False)
         self.cmdDelete.setVisible(False)
@@ -32,7 +32,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
 
         self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self._parent = parent
+        self._main_form = main_form
         self.time_linked_graphs = []
 
     def set_from(self, project, output):
@@ -154,7 +154,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.plot_system_flow()
 
         if time_index < 0 and (self.rbnProfile.isChecked() or self.rbnFrequency.isChecked()):
-            QMessageBox.information(None, self._parent.model,
+            QMessageBox.information(None, self._main_form.model,
                                     "There is no time step currently selected.",
                                     QMessageBox.Ok)
         else:

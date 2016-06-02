@@ -5,16 +5,16 @@ import ui.convenience
 
 
 class PropertyEditorBackend:
-    def __init__(self, table, hint_label, parent, edit_these):
+    def __init__(self, table, hint_label, main_form, edit_these):
         self.table = table
         self.hint_label = hint_label
-        self.parent = parent
+        self._main_form = main_form
         if self.hint_label:
             table.currentCellChanged.connect(self.table_currentCellChanged)
         if edit_these:
             self.edit_these = edit_these
             self.meta = edit_these[0].metadata
-        self.set_from(parent.project, edit_these)
+        self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, edit_these):
         self.edit_these = edit_these

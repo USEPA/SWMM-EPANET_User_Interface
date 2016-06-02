@@ -5,13 +5,13 @@ from ui.SWMM.frmReportOptionsDesigner import Ui_frmReportOptions
 
 
 class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.report.Report()
@@ -25,7 +25,7 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         # add subcatchments to list 3
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("REPORT")
+        section = self._main_form.project.find_section("REPORT")
         section.continuity = self.cbxContinuity.isChecked()
         section.controls = self.cbxControls.isChecked()
         section.flow_stats = self.cbxFlow.isChecked()

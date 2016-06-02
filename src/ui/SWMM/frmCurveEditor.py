@@ -9,8 +9,8 @@ from core.swmm.curves import CurveType
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, parent, title, curve_type):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form, title, curve_type):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         if title:
             self.setWindowTitle(title)
@@ -20,12 +20,12 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
-        # self.set_from(parent.project)   # do after init to set curve type
-        self._parent = parent
+        # self.set_from(main_form.project)   # do after init to set curve type
+        self._main_form = main_form
         self.curve_type = curve_type
         self.curve_id = ''
-        if parent and parent.project and curve_type:
-            self.set_from(parent.project, self.curve_id)
+        if main_form and main_form.project and curve_type:
+            self.set_from(main_form.project, self.curve_id)
 
     def set_from(self, project, curve_id):
         # section = core.swmm.project.Curves()
@@ -87,7 +87,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
     def cmdOK_Clicked(self):
         # TODO: Check for blank/duplicate curve ID
         # TODO: Check if X-values are in ascending order
-        section = self._parent.project.find_section("CURVES")
+        section = self._main_form.project.curves
         curve_list = section.value[0:]
         # assume we are editing the first one
         for curve in curve_list:

@@ -5,13 +5,13 @@ from ui.SWMM.frmGeneralOptionsDesigner import Ui_frmGeneralOptions
 
 
 class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.general.General()
@@ -48,7 +48,7 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         self.cbxReportInput.setChecked(project.report.input)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.options
+        section = self._main_form.project.options
         section.ignore_rainfall = not self.cbxRainfallRunoff.isChecked()
         section.ignore_rdii = not self.cbxRainfallII.isChecked()
         section.ignore_snowmelt = not self.cbxSnowmelt.isChecked()
@@ -77,7 +77,7 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         section.allow_ponding = self.cbxAllowPonding.isChecked()
         section.min_slope = float(self.txtMinimum.text())
 
-        section = self._parent.project.report
+        section = self._main_form.project.report
         section.controls = self.cbxReportControl.isChecked()
         section.input = self.cbxReportInput.isChecked()
         self.close()

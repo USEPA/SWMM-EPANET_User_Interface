@@ -11,8 +11,8 @@ from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_press
 
 class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
-    def __init__(self, parent):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.tabWidget.setCurrentIndex(0)
         self.cboFilter.addItems(('Below', 'Equal To', 'Above'))
@@ -21,7 +21,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
         self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
         self.rbnTimeseriesNode.clicked.connect(self.rbnTimeseriesNode_Clicked)
-        self._parent = parent
+        self._main_form = main_form
         self.forms = []
 
     def set_from(self, project, output):
@@ -110,7 +110,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                     attribute_name += '\n(' + units + ')'
                 column_headers.append(attribute_name)
 
-        frm = frmGenericListOutput(self.parent(),"EPANET Table Output")
+        frm = frmGenericListOutput(self._main_form, "EPANET Table Output")
         if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
             self.make_table(frm, get_index, get_value, self.cboTime.currentIndex(),
                             ids, row_headers, parameter_codes, column_headers)

@@ -9,8 +9,8 @@ from ui.EPANET.frmQualityOptionsDesigner import Ui_frmQualityOptions
 
 class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
@@ -22,8 +22,8 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
             QualityAnalysisType.TRACE: self.rbnTrace}
         """Mapping from Quality enum type to radio button"""
 
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         quality_options = project.options.quality
@@ -35,7 +35,7 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         self.txtTraceNode.setText(str(quality_options.trace_node))
 
     def cmdOK_Clicked(self):
-        quality_options = self._parent.project.options.quality
+        quality_options = self._main_form.project.options.quality
         if self.rbnNone.isChecked():
             quality_options.quality = QualityAnalysisType.NONE
         if self.rbnChemical.isChecked():

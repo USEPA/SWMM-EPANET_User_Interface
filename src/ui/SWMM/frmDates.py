@@ -5,13 +5,13 @@ from ui.SWMM.frmDatesDesigner import Ui_frmDates
 
 
 class frmDates(QtGui.QMainWindow, Ui_frmDates):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.dates.Dates
@@ -27,7 +27,7 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         self.txtAntecedent.setText(str(section.dry_days))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.options.dates
+        section = self._main_form.project.options.dates
         section.start_date = self.dedStart.date().toString(section.DATE_FORMAT)
         section.start_time = self.tmeStart.time().toString(section.TIME_FORMAT)
         section.report_start_date = self.dedStartReport.date().toString(section.DATE_FORMAT)

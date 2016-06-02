@@ -5,13 +5,13 @@ from ui.SWMM.frmInterfaceFilesDesigner import Ui_frmInterfaceFiles
 
 
 class frmInterfaceFiles(QtGui.QMainWindow, Ui_frmInterfaceFiles):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.files.Files()
@@ -28,7 +28,7 @@ class frmInterfaceFiles(QtGui.QMainWindow, Ui_frmInterfaceFiles):
         self.txtSaveOutflows.setText(frmInterfaceFiles.blank_if_none(section.save_outflows))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.files
+        section = self._main_form.project.files
         section.use_rainfall = frmInterfaceFiles.none_if_blank(self.txtUseRainfall.text())
         section.save_rainfall = frmInterfaceFiles.none_if_blank(self.txtSaveRainfall.text())
         section.use_runoff = frmInterfaceFiles.none_if_blank(self.txtUseRunoff.text())

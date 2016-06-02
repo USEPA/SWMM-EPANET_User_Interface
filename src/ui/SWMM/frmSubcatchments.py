@@ -19,9 +19,9 @@ class frmSubcatchments(frmGenericPropertyEditor):
     SECTION_NAME = "[SUBCATCHMENTS]"
     SECTION_TYPE = Subcatchment
 
-    def __init__(self, parent):
-        self.parent = parent
-        self.project = parent.project
+    def __init__(self, main_form):
+        self._main_form = main_form
+        self.project = main_form.project
         self.refresh_column = -1
         edit_these = []
         project_section = self.project.find_section(self.SECTION_NAME)
@@ -35,7 +35,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             # self.new_item.name = "1"
             edit_these.append(self.new_item)
 
-        frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for snowpacks, show available snowpacks
@@ -84,7 +84,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         # text plus button for groundwater editor
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.find_section('GROUNDWATER')
+        groundwater_section = self.project.groundwater
         groundwater_list = groundwater_section.value[0:]
         for value in groundwater_list:
             if value.subcatchment == str(self.tblGeneric.item(0,column).text()):
@@ -141,7 +141,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
     def make_show_groundwater(self, column):
         def local_show():
             edit_these = []
-            groundwater_section = self.project.find_section('GROUNDWATER')
+            groundwater_section = self.project.groundwater
             if isinstance(groundwater_section.value, list):
                 if len(groundwater_section.value) == 0:
                     new_item = Groundwater()
@@ -184,7 +184,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_lid_controls(self, column):
         def local_show():
-            editor = frmLIDControls(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor = frmLIDControls(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -192,7 +192,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_coverage_controls(self, column):
         def local_show():
-            editor = frmLandUseAssignment(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor = frmLandUseAssignment(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -200,7 +200,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_loadings_controls(self, column):
         def local_show():
-            editor = frmInitialBuildup(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor = frmInitialBuildup(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column

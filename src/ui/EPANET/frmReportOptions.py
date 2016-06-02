@@ -8,8 +8,8 @@ from ui.EPANET.frmReportOptionsDesigner import Ui_frmReportOptions
 
 
 class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         # TODO: function that populates combo box from Enum
         self.cboStatus.addItems(("YES", "NO", "FULL"))
@@ -31,8 +31,8 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         self.cboNode5.addItems(("<none>", "BELOW", "ABOVE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     @staticmethod
     def set_combo(combo_box, value):
@@ -144,7 +144,7 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         # self.txtLink18
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.report
+        section = self._main_form.project.report
         section.pagesize = self.txtPageSize.text()
         section.file = self.txtReportFileName.text()
         section.status = core.epanet.options.report.StatusWrite[self.cboStatus.currentText()]

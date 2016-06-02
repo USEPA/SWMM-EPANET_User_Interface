@@ -5,15 +5,15 @@ from ui.SWMM.frmTransectDesigner import Ui_frmTransect
 
 
 class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self._parent = parent
+        self._main_form = main_form
         self.transect_id = ''
         # set for first transect for now
-        self.set_from(parent.project,'xx')
+        self.set_from(main_form.project, 'xx')
 
     def set_from(self, project, transect_id):
         # section = core.swmm.project.Transects
@@ -43,7 +43,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
                     self.tblTransect.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("TRANSECTS")
+        section = self._main_form.project.find_section("TRANSECTS")
         transect_list = section.value[0:]
         for transect in transect_list:
             if transect.name == self.transect_id:

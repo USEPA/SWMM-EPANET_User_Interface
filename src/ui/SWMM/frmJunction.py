@@ -10,9 +10,9 @@ from ui.SWMM.frmTreatment import frmTreatment
 
 
 class frmJunction(frmGenericPropertyEditor):
-    def __init__(self, parent):
-        self.parent = parent
-        self.project = parent.project
+    def __init__(self, main_form):
+        self._main_form = main_form
+        self.project = main_form.project
         self.refresh_column = -1
         edit_these = []
         if self.project.junctions and isinstance(self.project.junctions.value, list):
@@ -22,7 +22,7 @@ class frmJunction(frmGenericPropertyEditor):
             self.new_item.name = "1"
             edit_these.append(self.new_item)
 
-        frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM Junction Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Junction Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # also set special text plus button cells
@@ -78,7 +78,7 @@ class frmJunction(frmGenericPropertyEditor):
 
     def make_show_inflows(self, column):
         def local_show():
-            editor = frmInflows(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor = frmInflows(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -86,7 +86,7 @@ class frmJunction(frmGenericPropertyEditor):
 
     def make_show_treatments(self, column):
         def local_show():
-            editor = frmTreatment(self.parent, str(self.tblGeneric.item(0,column).text()))
+            editor = frmTreatment(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column

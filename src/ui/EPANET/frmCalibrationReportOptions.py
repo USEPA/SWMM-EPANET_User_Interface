@@ -7,19 +7,19 @@ from ui.EPANET.frmCalibrationReport import frmCalibrationReport
 
 class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOptions):
 
-    def __init__(self, parent):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
-        self._parent = parent
+        self._main_form = main_form
 
     # def set_from(self, project, control_type):
         # section = core.epanet.project.Control()
 
     def cmdOK_Clicked(self):
-        self._frmCalibrationReport = frmCalibrationReport(self.parent())
+        self._frmCalibrationReport = frmCalibrationReport(self._main_form)
         self._frmCalibrationReport.show()
         self.close()
 

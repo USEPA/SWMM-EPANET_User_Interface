@@ -5,15 +5,15 @@ from ui.SWMM.frmSnowPackDesigner import Ui_frmSnowPack
 
 
 class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self._parent = parent
+        self._main_form = main_form
         self.pack_id = ''
         # set for first snow pack for now
-        self.set_from(parent.project,'2')
+        self.set_from(main_form.project, '2')
 
     def set_from(self, project, pack_id):
         # section = core.swmm.project.SnowPack
@@ -80,7 +80,7 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
                 self.txtRemoval7.setText(pack.subcatchment_transfer)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("SNOWPACKS")
+        section = self._main_form.project.find_section("SNOWPACKS")
 
         snow_list = section.value[0:]
         for pack in snow_list:

@@ -9,8 +9,8 @@ from core.epanet.curves import CurveType
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.epanet.curves.CurveType, self.cboCurveType)
@@ -18,9 +18,9 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
-        self.set_from(parent.project, '1')
+        self.set_from(main_form.project, '1')
         self.selected_curve_id = '1'
-        self._parent = parent
+        self._main_form = main_form
 
     def set_from(self, project, selected_curve_id):
         # section = core.epanet.project.Curves()
@@ -46,7 +46,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for duplicate curve ID
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
-        section = self._parent.project.find_section("CURVES")
+        section = self._main_form.project.find_section("CURVES")
         curve_list = section.value[0:]
         for curve in curve_list:
             if curve.curve_id == self.selected_curve_id:

@@ -10,20 +10,18 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
 
 
-
 class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
 
-
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.btnDialog, QtCore.SIGNAL("clicked()"), self.btnDialog_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
         self.link_id = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
         self.ellipse_major_axis_in = (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180)
@@ -94,7 +92,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                               '188','190','197','199','159','162','168','170','173','179','184','187','190','195',
                               '198','204','206','209','215','217','223','225','231','234','236','239','245','247')
         # set for first link for now
-        self.set_link(parent.project, '1')
+        self.set_link(main_form.project, '1')
 
     def set_link(self, project, link_id):
         # section = core.swmm.project.CrossSection()
@@ -208,7 +206,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         if cur:
             current_selection = str(cur.text())
 
-        section = self._parent.project.find_section("XSECTIONS")
+        section = self._main_form.project.find_section("XSECTIONS")
         link_list = section.value[0:]
         for value in link_list:
             if value.link == self.link_id:
@@ -289,11 +287,11 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             current_selection = str(cur.text())
 
         if current_selection == "Irregular":
-            self._frmTransect = frmTransect(self._parent)
+            self._frmTransect = frmTransect(self._main_form)
             self._frmTransect.show()
         elif current_selection == 'Custom':
-            self._frmCurveEditor = frmCurveEditor(self._parent, 'SWMM Shape Curves', "SHAPE")
-            self._frmCurveEditor.set_from(self._parent.project, '')
+            self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE")
+            self._frmCurveEditor.set_from(self._main_form.project, '')
             self._frmCurveEditor.show()
 
 
@@ -385,7 +383,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.lblCombo.setText('Transect Name')
             self.cboCombo.clear()
             # self.cboCombo.addItems() # need to set from available transects
-            transect_section = self._parent.project.find_section("TRANSECTS")
+            transect_section = self._main_form.project.find_section("TRANSECTS")
             transect_list = transect_section.value[0:]
             self.cboCombo.addItem("")
             for value in transect_list:
@@ -411,7 +409,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblBottom.setText('Circular pipe with a special friction loss equation for pressurized flow.')
-            dw_section = self._parent.project.find_section("OPTIONS")
+            dw_section = self._main_form.project.find_section("OPTIONS")
             if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
                 self.lblFootnote.setText('*Hazen-Williams C-factor')
             if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
@@ -590,7 +588,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setText('Shape Curve Name')
             self.cboCombo.clear()
-            curves_section = self._parent.project.find_section("CURVES")
+            curves_section = self._main_form.project.find_section("CURVES")
             curves_list = curves_section.value[0:]
             self.cboCombo.addItem("")
             for value in curves_list:

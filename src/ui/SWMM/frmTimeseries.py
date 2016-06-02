@@ -5,17 +5,17 @@ from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
 
 
 class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.btnFile, QtCore.SIGNAL("clicked()"), self.btnFile_Clicked)
         # QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
-        self._parent = parent
+        self._main_form = main_form
         self.timeseries_id = ''
         # set for first timeseries for now
-        self.set_from(parent.project,'TS1')
+        self.set_from(main_form.project, 'TS1')
 
     def set_from(self, project, timeseries_id):
         # section = core.swmm.project.SnowPack
@@ -48,7 +48,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                         self.tblTime.setItem(point_count,2,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("TIMESERIES")
+        section = self._main_form.project.find_section("TIMESERIES")
         timeseries_list = section.value[0:]
         for timeseries in timeseries_list:
             if timeseries.name == self.timeseries_id:

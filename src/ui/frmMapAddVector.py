@@ -3,8 +3,8 @@ from PyQt4.QtGui import QMessageBox
 from frmMapAddVectorDesigner import Ui_frmAddVectorLayer
 
 class frmMapAddVector(QtGui.QDialog):
-    def __init__(self, parent=None, *args):
-        self.parent = parent
+    def __init__(self, main_form=None, *args):
+        self._main_form = main_form
         QtGui.QDialog.__init__(self)
         self.ui = Ui_frmAddVectorLayer()
         self.ui.setupUi(self)

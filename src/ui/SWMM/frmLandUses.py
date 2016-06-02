@@ -11,15 +11,15 @@ from core.swmm.quality import WashoffFunction
 
 
 class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.tblGeneral.currentCellChanged.connect(self.tblGeneral_currentCellChanged)
         self.tblBuildup.currentCellChanged.connect(self.tblBuildup_currentCellChanged)
         self.tblWashoff.currentCellChanged.connect(self.tblWashoff_currentCellChanged)
-        self._parent = parent
+        self._main_form = main_form
         self.land_use_id = ''
         self.tblGeneral.setColumnCount(1)
         self.tblGeneral.setRowCount(6)
@@ -27,7 +27,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         self.tblGeneral.setHorizontalHeaderLabels(header_labels)
         self.tblGeneral.setVerticalHeaderLabels(("Land Use Name","Description","STREET SWEEPING","    Interval","    Availability","    Last Swept"))
         self.local_pollutant_list = []
-        pollutants_section = parent.project.find_section("POLLUTANTS")
+        pollutants_section = main_form.project.pollutants
         for value in pollutants_section.value:
             self.local_pollutant_list.append(value.name)
         self.tblBuildup.setColumnCount(self.local_pollutant_list.__len__())
@@ -39,7 +39,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         self.tblWashoff.setHorizontalHeaderLabels(self.local_pollutant_list)
         self.tblWashoff.setVerticalHeaderLabels(("Function","Coefficient","Exponent","Cleaning Effic.","BMP Effic."))
         # set for first land use for now
-        self.set_from(parent.project,'Residential')
+        self.set_from(main_form.project, 'Residential')
         self.resize(400,450)
 
     def set_from(self, project, land_use_id):
@@ -119,7 +119,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         self.tblWashoff.setCurrentCell(0,0)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("LANDUSES")
+        section = self._main_form.project.landuses
         land_uses_list = section.value[0:]
         for land_use in land_uses_list:
             if land_use.land_use_name == self.land_use_id:
@@ -129,7 +129,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 land_use.last_swept = self.tblGeneral.item(3,0).text()
                 land_use.street_sweeping_availability = self.tblGeneral.item(4,0).text()
                 land_use.street_sweeping_interval = self.tblGeneral.item(5,0).text()
-        section = self._parent.project.find_section("BUILDUP")
+        section = self._main_form.project.buildup
         buildup_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:
@@ -167,7 +167,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if section.value == '':
                     section.value = []
                 section.value.append(new_buildup)
-        section = self._parent.project.find_section("WASHOFF")
+        section = self._main_form.project.find_section("WASHOFF")
         washoff_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:

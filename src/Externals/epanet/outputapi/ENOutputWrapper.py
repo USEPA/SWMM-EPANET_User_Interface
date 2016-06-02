@@ -106,6 +106,12 @@ class OutputObject(object):
         """
         _lib.ENR_getUnits(self.enrapi, _lib.ENR_flowUnits, byref(cint))
         self.flowUnits = cint.value
+        if self.flowUnits < len(ENR_USFlowUnits):
+            self.unit_system = ENR_UnitsUS
+            self.flowUnitsLabel = ENR_USFlowUnits[self.flowUnits]
+        else:
+            self.unit_system = ENR_UnitsSI
+            self.flowUnitsLabel = ENR_SIFlowUnits[self.flowUnits - len(ENR_USFlowUnits)]
 
         _lib.ENR_getUnits(self.enrapi, _lib.ENR_pressUnits, byref(cint))
         self.pressUnits = cint.value
@@ -285,6 +291,28 @@ class OutputObject(object):
 
         return BldArray
 
+    # TODO: use common function for get_NodeAttribute and get_LinkAttribute.
+    # The three methods below are copied from SWMM and modified for EPANET but not yet tested.
+    # def get_attribute(self, function, item_type, attribute, time_index):
+    #     """
+    #     Purpose: For all nodes at given time, get a particular attribute
+    #     """
+    #     alength = c_int()
+    #     ErrNo1 = c_int()
+    #     ValArrayPtr = _lib.ENR_newOutValueArray(self.enrapi, _lib.ENR_getAttribute,
+    #                                             item_type, byref(alength), byref(ErrNo1))
+    #     ErrNo2 = function(self.enrapi, time_index, attribute, ValArrayPtr)
+    #     BldArray = [ValArrayPtr[i] for i in range(alength.value)]
+    #     _lib.ENR_free(ValArrayPtr)
+    #     return BldArray
+    #
+    # def get_NodeAttribute(self, attribute, time_index):
+    #     """ Purpose: For all nodes at given time, get a particular attribute """
+    #     return self.get_attribute(_lib.ENR_getNodeAttribute, _lib.ENR_node, attribute, time_index)
+    #
+    # def get_LinkAttribute(self, attribute, time_index):
+    #     """ Purpose: For all links at given time, get a particular attribute """
+    #     return self.get_attribute(_lib.ENR_getLinkAttribute, _lib.ENR_link, attribute, time_index)
 
     def get_NodeAttribute(self, NodeAttr, TimeInd):
         """
@@ -352,12 +380,12 @@ class OutputObject(object):
         ret = _lib.ENR_close(byref(self.enrapi) )
         if ret != 0:
             raise Exception('Failed to Close *.out file')
-        
 
+    def elapsed_hours_at_index(self, report_time_index):
+        return (self.reportStart + report_time_index * self.reportStep) / 3600
 
-
-
-
-    
-    
-    
+    def get_time_string(self, report_time_index):
+        total_hours = self.elapsed_hours_at_index(report_time_index)
+        hours = int(total_hours)
+        minutes = int((total_hours - hours) * 60)
+        return '{:02d}:{:02d}'.format(hours, minutes)

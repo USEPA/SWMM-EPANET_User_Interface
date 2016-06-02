@@ -8,9 +8,9 @@ class frmTreatment(frmGenericPropertyEditor):
 
     SECTION_NAME = "[TREATMENT]"
 
-    def __init__(self, parent, node_name):
+    def __init__(self, main_form, node_name):
         # purposely not calling frmGenericPropertyEditor.__init__
-        QtGui.QMainWindow.__init__(self, parent)
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.node_name = node_name
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -22,7 +22,7 @@ class frmTreatment(frmGenericPropertyEditor):
         self.tblGeneric.setHorizontalHeaderLabels(local_column_list)
         self.tblGeneric.setColumnWidth(0,400)
         self.local_pollutant_list = []
-        pollutants_section = parent.project.find_section("POLLUTANTS")
+        pollutants_section = main_form.project.find_section("POLLUTANTS")
         row_count = 0
         for value in pollutants_section.value:
             row_count += 1
@@ -33,7 +33,7 @@ class frmTreatment(frmGenericPropertyEditor):
         # self.fraTop.resize(400,200)
         # self.fraTop.setMaximumHeight(200)
         self.fraNotes.height = 400
-        section = parent.project.find_section("TREATMENT")
+        section = main_form.project.find_section("TREATMENT")
         treatment_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:
@@ -42,10 +42,10 @@ class frmTreatment(frmGenericPropertyEditor):
                 if treatment.node == node_name and treatment.pollutant == pollutant:
                     led = QtGui.QLineEdit(str(treatment.function))
                     self.tblGeneric.setItem(pollutant_count,0,QtGui.QTableWidgetItem(led.text()))
-        self._parent = parent
+        self._main_form = main_form
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("TREATMENT")
+        section = self._main_form.project.find_section("TREATMENT")
         treatment_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:

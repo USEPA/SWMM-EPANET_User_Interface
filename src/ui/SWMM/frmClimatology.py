@@ -13,8 +13,8 @@ import ui.convenience
 
 
 class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
-    def __init__(self, parent, climate_type):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form, climate_type):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cboEvap.clear()
         self.cboEvap.addItems(("Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"))
@@ -37,11 +37,11 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         # QtCore.QObject.connect(self.cboEvap, QtCore.SIGNAL("clicked()"), self.cboEvap_currentIndexChanged)
         self.cboEvap.currentIndexChanged.connect(self.cboEvap_currentIndexChanged)
         self.climate_type = climate_type
-        if parent and parent.project:
-            self.set_all(parent.project)
-            self._parent = parent
+        if main_form and main_form.project:
+            self.set_all(main_form.project)
+            self._main_form = main_form
             if climate_type:
-                self.set_from(parent.project, climate_type)
+                self.set_from(main_form.project, climate_type)
 
     def set_from(self, project, climate_type):
         if climate_type == "Temperature":
@@ -210,7 +210,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
     def cmdOK_Clicked(self):
 
         # save evap tab
-        evap_section = self._parent.project.find_section("EVAPORATION")
+        evap_section = self._main_form.project.find_section("EVAPORATION")
         # "Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"
         if self.cboEvap.currentIndex() == 0:
             evap_section.format = EvaporationFormat.CONSTANT
@@ -245,7 +245,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         evap_section.recovery_pattern = str(self.cboMonthly.currentText())
 
         # save temperature tab
-        temp_section = self._parent.project.find_section("TEMPERATURE")
+        temp_section = self._main_form.project.find_section("TEMPERATURE")
         if self.rbnTimeseries.isChecked():
             temp_section.source = TemperatureSource.TIMESERIES
         elif self.rbnExternal.isChecked():
@@ -292,7 +292,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
                     temp_section.areal_depletion.adc_pervious.append(x)
 
         # save adjustments for temp, evap, rain, cond
-        adjustments_section = self._parent.project.find_section("ADJUSTMENTS")
+        adjustments_section = self._main_form.project.find_section("ADJUSTMENTS")
         adjustments_section.temperature = []
         for row in range(0,12):
             if self.tblAdjustments.item(row,0):
@@ -405,7 +405,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
 
     def btnTimeSeries_Clicked(self):
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self.parent())
+        self._frmTimeseries = frmTimeseries(self._main_form)
         self._frmTimeseries.show()
 
     def btnClimate_Clicked(self):
@@ -451,15 +451,15 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
     def btnEvapTS_Clicked(self):
         # edit timeseries
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self.parent())
+        self._frmTimeseries = frmTimeseries(self._main_form)
         self._frmTimeseries.show()
 
     def btnPattern_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
-        pattern_section = self._parent.project.find_section("PATTERNS")
+        pattern_section = self._main_form.project.find_section("PATTERNS")
         pattern_list = pattern_section.value[0:]
         self.cboMonthly.clear()
         self.cboMonthly.addItem("")

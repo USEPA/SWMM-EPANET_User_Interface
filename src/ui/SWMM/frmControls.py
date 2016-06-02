@@ -7,15 +7,15 @@ from ui.help import HelpHandler
 
 class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
-    def __init__(self, parent):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/controlrules.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
 
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.epanet.project.Control()
@@ -23,7 +23,7 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
         self.txtControls.setPlainText(str(section.get_text()))
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("CONTROLS")
+        section = self._main_form.project.find_section("CONTROLS")
         section.set_text(str(self.txtControls.toPlainText()))
         self.close()
 

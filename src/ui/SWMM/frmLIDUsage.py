@@ -7,10 +7,10 @@ from ui.SWMM.frmLIDUsageDesigner import Ui_frmLIDUsage
 
 class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
-        self._parent = parent
+        self._main_form = main_form
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboLIDControl.currentIndexChanged.connect(self.cboLIDControl_currentIndexChanged)
@@ -23,9 +23,9 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.subcatchment_id = ''
         self.row_id = -1
 
-    def set_add(self, project, parent_form, subcatchment_id):
-        self.parent_form = parent_form
-        section = project.find_section("LID_CONTROLS")
+    def set_add(self, project, main_form, subcatchment_id):
+        self._main_form = main_form
+        section = project.lid_controls
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
         for lid in lid_list:
@@ -42,8 +42,8 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def set_edit(self, project, parent_form, row_id, lid_selected, subcatchment_id):
         self.row_id = row_id
-        self.parent_form = parent_form
-        section = project.find_section("LID_CONTROLS")
+        self._main_form = parent_form
+        section = project.lid_controls
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
         selected_index = 0
@@ -89,7 +89,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         top_width_overland_flow_surface = self.txtWidth.text()
         percent_initially_saturated = self.txtSat.text()
         subcatchment_drains_to = self.txtDrain.text()
-        tblControls = self.parent_form.tblControls
+        tblControls = self._main_form.tblControls
         if self.cbkReturn.isChecked():
             send_outflow_pervious_area = 1
         else:
@@ -113,8 +113,8 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
             tblControls.setItem(self.row_id, 10, QtGui.QTableWidgetItem(subcatchment_drains_to))
 
             # recalculate area and lid name
-            self.parent_form.SetLongLIDName(lid_control, self.row_id)
-            self.parent_form.SetAreaTerm(self.subcatchment_id, self.row_id, number_replicate_units, area_each_unit)
+            self._main_form.SetLongLIDName(lid_control, self.row_id)
+            self._main_form.SetAreaTerm(self.subcatchment_id, self.row_id, number_replicate_units, area_each_unit)
 
         self.close()
 
@@ -123,7 +123,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def cboLIDControl_currentIndexChanged(self, newIndex):
         selected_text = self.cboLIDControl.currentText()
-        section = self._parent.project.find_section("LID_CONTROLS")
+        section = self._main_form.project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         for lid in lid_list:
             if lid.control_name == selected_text:

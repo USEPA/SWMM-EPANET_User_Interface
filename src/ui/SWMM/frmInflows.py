@@ -11,8 +11,8 @@ from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
-    def __init__(self, parent, node_name):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form, node_name):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
@@ -36,15 +36,15 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         QtCore.QObject.connect(self.btnUnitHydro1, QtCore.SIGNAL("clicked()"), self.btnUnitHydro1_Clicked)
         QtCore.QObject.connect(self.btnUniHydro2, QtCore.SIGNAL("clicked()"), self.btnUniHydro2_Clicked)
         self.node_id = node_name
-        self._parent = parent
+        self._main_form = main_form
         # local data structure to hold the inflow data as pollutant combos change
         self.done_loading = False
         self.previous_constituent_index = -1
         self.local_pollutant_list = []
         self.local_pollutant_list.append('FLOW')
         self.local_pollutant_units = []
-        self.local_pollutant_units.append(parent.project.options.flow_units.name)
-        pollutants_section = parent.project.find_section("POLLUTANTS")
+        self.local_pollutant_units.append(main_form.project.options.flow_units.name)
+        pollutants_section = main_form.project.find_section("POLLUTANTS")
         for value in pollutants_section.value:
             self.local_pollutant_list.append(value.name)
             self.local_pollutant_units.append(ConcentrationUnitLabels[value.units.value])
@@ -62,7 +62,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.local_dry_pattern_3_list = []
         self.local_dry_pattern_4_list = []
         # now set form
-        self.set_from(parent.project)
+        self.set_from(main_form.project)
         self.cboConstituent_currentIndexChanged(0)
         self.cboDryConstituent_currentIndexChanged(0)
         self.setWindowTitle('SWMM Inflows for Node ' + self.node_id)
@@ -122,7 +122,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.cboInflowType.addItem('MASS')
         self.cboConstituent.setCurrentIndex(0)
 
-        direct_section = self._parent.project.find_section("INFLOWS")
+        direct_section = self._main_form.project.find_section("INFLOWS")
         direct_list = direct_section.value[0:]
         for value in direct_list:
             if value.node == self.node_id:
@@ -141,7 +141,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                     self.local_baseline_pattern[local_column] = value.baseline_pattern
 
         # dry_section = core.swmm.project.DryWeatherInflow()
-        dry_section = self._parent.project.find_section("DWF")
+        dry_section = self._main_form.project.find_section("DWF")
         dry_list = dry_section.value[0:]
         for value in dry_list:
             if value.node == self.node_id:
@@ -199,7 +199,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 elif self.cboInflowType.currentIndex == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
 
-        direct_section = self._parent.project.find_section("INFLOWS")
+        direct_section = self._main_form.project.find_section("INFLOWS")
         direct_list = direct_section.value[0:]
         index = -1
         for pollutant in self.local_pollutant_list:
@@ -246,7 +246,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 self.local_dry_pattern_3_list[local_column] = self.cboDryPattern3.currentText()
                 self.local_dry_pattern_4_list[local_column] = self.cboDryPattern4.currentText()
 
-        dry_section = self._parent.project.find_section("DWF")
+        dry_section = self._main_form.project.find_section("DWF")
         dry_list = dry_section.value[0:]
         index = -1
         for pollutant in self.local_pollutant_list:
@@ -288,7 +288,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 dry_section.value.append(new_inflow)
 
         # rainfall dependent infiltration/inflow
-        rdii_section = self._parent.project.find_section("RDII")
+        rdii_section = self._main_form.project.find_section("RDII")
         rdii_list = rdii_section.value[0:]
         found = False
         for value in rdii_list:
@@ -448,12 +448,12 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def btnTimeseries_Clicked(self):
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self.parent())
+        self._frmTimeseries = frmTimeseries(self._main_form)
         self._frmTimeseries.show()
 
     def btnPattern_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
     def btnAverage_Clicked(self):
@@ -461,22 +461,22 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def btnDryPattern1_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
     def btnDryPattern2_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
     def btnDryPattern3_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
     def btnDryPattern4_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self.parent())
+        self._frmPatternEditor = frmPatternEditor(self._main_form)
         self._frmPatternEditor.show()
 
     def btnDryPattern5_Clicked(self):
@@ -493,7 +493,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def btnUnitHydro1_Clicked(self):
         # edit unit hydrograph
-        self._frmUnitHydrograph = frmUnitHydrograph(self.parent())
+        self._frmUnitHydrograph = frmUnitHydrograph(self._main_form)
         self._frmUnitHydrograph.show()
 
     def btnUniHydro2_Clicked(self):

@@ -8,12 +8,12 @@ from matplotlib.figure import Figure
 
 class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
 
-    def __init__(self, parent):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
-        self._parent = parent
+        self._main_form = main_form
 
     def set_data(self):
         # , nrows, ncols, headers, data):
@@ -31,7 +31,7 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
         #         self.tblGeneric.setItem(row,col,item)
 
         sc = MyMplCanvas(self.widgetChart, width=3, height=2, dpi=100)
-        self.setParent(self._parent)
+        self.setParent(self._main_form)
         self.widgetChart = sc
 
     def cmdCancel_Clicked(self):
@@ -39,7 +39,7 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
 
 class MyMplCanvas(FigureCanvas):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.axes.hold(False)
@@ -49,7 +49,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.plot(x, y)
 
         FigureCanvas.__init__(self, fig)
-        self.setParent(parent)
+        self.setParent(main_form)
 
         FigureCanvas.setSizePolicy(self,
                                    QtGui.QSizePolicy.Expanding,

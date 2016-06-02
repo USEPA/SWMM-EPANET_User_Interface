@@ -9,14 +9,14 @@ import ui.convenience
 
 class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         ui.convenience.set_combo_items(core.epanet.options.backdrop.BackdropUnits, self.cboMapUnits)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.epanet.options.backdrop.BackdropOptions()
@@ -32,12 +32,12 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
         self.txtMapFile.setText(str(project.options.map))
 
     def cmdOK_Clicked(self):
-        backdrop_options = self._parent.project.backdrop
+        backdrop_options = self._main_form.project.backdrop
         backdrop_options.file = self.txtBackdropFile.text()
         backdrop_options.offset = (self.txtBackdropX.text(), self.txtBackdropY.text())
         backdrop_options.dimensions = (self.txtLLX.text(), self.txtLLY.text(), self.txtURX.text(), self.txtURY.text())
         backdrop_options.units = core.epanet.options.backdrop.BackdropUnits[self.cboMapUnits.currentText()]
-        self._parent.project.options.map = self.txtMapFile.text()
+        self._main_form.project.options.map = self.txtMapFile.text()
         self.close()
 
     def cmdCancel_Clicked(self):

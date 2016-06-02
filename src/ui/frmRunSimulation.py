@@ -69,8 +69,8 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
         RunStatus.rsCompiling:    TXT_STATUS_COMPILING
     }
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.progressBar.setValue(0)
         # It looks redundant to have both lines below, but the first is needed to establish the run_status attribute
@@ -79,7 +79,7 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
         QtCore.QObject.connect(self.cmdStop, QtCore.SIGNAL("clicked()"), self.stop_clicked)
         QtCore.QObject.connect(self.cmdMinimize, QtCore.SIGNAL("clicked()"), self.minimize_clicked)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.ok_clicked)
-        self._parent = parent
+        self._main_form = main_form
         self._last_displayed_days = -1
 
     def ok_clicked(self):
@@ -91,9 +91,9 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
     def minimize_clicked(self):
         #  OnClick procedure for the Minimize button.
         self.showMinimized()
-        if self._parent:
+        if self._main_form:
             try:
-                self._parent.showMinimized()
+                self._main_form.showMinimized()
             except:
                 pass
 

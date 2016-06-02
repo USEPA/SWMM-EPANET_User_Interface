@@ -6,13 +6,13 @@ from ui.EPANET.frmDemandsDesigner import Ui_frmDemands
 
 class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)
-        self._parent = parent
+        self._main_form = main_form
         self.node_id = ''
 
     def set_from(self, project, node_id):
@@ -50,7 +50,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                     self.junction_only = True
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section('JUNCTIONS')
+        section = self._main_form.project.find_section('JUNCTIONS')
         junctions_list = section.value[0:]
         # assume we want to edit the first one
         # count how many demands are associated with this junction
@@ -72,7 +72,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                                 junction.demand_pattern = self.tblDemands.item(row,1).text()
         else:
             # write these as demands
-            section = self._parent.project.find_section('DEMANDS')
+            section = self._main_form.project.find_section('DEMANDS')
             demands_list = section.value[0:]
             # first clear out any demands associated with this node
             for demand in section.value[0:]:

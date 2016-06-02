@@ -144,10 +144,10 @@ class frmRunSWMM(frmRunSimulation):
     def compute_total_days(self):
         #  Compute the simulation duration in days from the Project's simulation options.
         try:
-            end_date = datetime.strptime(self._parent.project.options.dates.end_date + ' ' +
-                                         self._parent.project.options.dates.end_time, "%m/%d/%Y %H:%M")
-            start_date = datetime.strptime(self._parent.project.options.dates.start_date + ' ' +
-                                         self._parent.project.options.dates.start_time, "%m/%d/%Y %H:%M")
+            end_date = datetime.strptime(self._main_form.project.options.dates.end_date + ' ' +
+                                         self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M")
+            start_date = datetime.strptime(self._main_form.project.options.dates.start_date + ' ' +
+                                           self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M")
             return (end_date - start_date).days
         except:
             return 0.0
@@ -192,9 +192,9 @@ class frmRunSWMM(frmRunSimulation):
         # else:
         #     self.lblIconError.setVisible(True)
 
-        if self._parent:
+        if self._main_form:
             try:
-                self._parent.showNormal()
+                self._main_form.showNormal()
             except:
                 pass
         self.showNormal()

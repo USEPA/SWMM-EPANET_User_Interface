@@ -7,21 +7,21 @@ from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
 
 
 class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cboType.clear()
         ui.convenience.set_combo_items(core.swmm.patterns.PatternType, self.cboType)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
-        self.set_from(parent.project, '1')
+        self.set_from(main_form.project, '1')
         self.selected_pattern_id = '1'
-        self._parent = parent
+        self._main_form = main_form
 
     def set_from(self, project, selected_pattern_id):
         # section = core.swmm.project.Pattern()
-        section = project.find_section("PATTERNS")
+        section = project.patterns
         self.selected_pattern_id = selected_pattern_id
         pattern_list = section.value[0:]
         for value in pattern_list:
@@ -37,7 +37,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
 
     def cmdOK_Clicked(self):
         # TODO: IF pattern id changed, ask about replacing all occurrences
-        section = self._parent.project.find_section("PATTERNS")
+        section = self._main_form.project.patterns
         pattern_list = section.value[0:]
         # assume we are editing the first one
         for value in pattern_list:

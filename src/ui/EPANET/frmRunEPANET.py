@@ -17,8 +17,8 @@ class frmRunEPANET(frmRunSimulation):
     Based on Fsimul.pas from EPANET2W Version 2.0 by L. Rossman
     """
 
-    def __init__(self, model_api, project, parent_window):
-        frmRunSimulation.__init__(self, parent_window)
+    def __init__(self, model_api, project, main_form):
+        frmRunSimulation.__init__(self, main_form)
         self.model_api = model_api
         self.project = project
 

@@ -285,37 +285,37 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def report_profile(self):
-        self._frmProfilePlot = frmProfilePlot(self.parent())
+        self._frmProfilePlot = frmProfilePlot(self)
         self._frmProfilePlot.show()
         pass
 
     def report_timeseries(self):
-        self._frmTimeSeriesPlot = frmTimeSeriesPlot(self.parent())
+        self._frmTimeSeriesPlot = frmTimeSeriesPlot(self)
         self._frmTimeSeriesPlot.set_from(self.project, self.get_output())
         self._frmTimeSeriesPlot.show()
 
     def report_scatter(self):
-        self._frmScatterPlot = frmScatterPlot(self.parent())
+        self._frmScatterPlot = frmScatterPlot(self)
         self._frmScatterPlot.show()
         pass
 
     def report_variable(self):
-        self._frmTableSelection = frmTableSelection(self.parent())
+        self._frmTableSelection = frmTableSelection(self)
         self._frmTableSelection.show()
         pass
 
     def report_statistics(self):
-        self._frmStatisticsReportSelection = frmStatisticsReportSelection(self.parent())
+        self._frmStatisticsReportSelection = frmStatisticsReportSelection(self)
         self._frmStatisticsReportSelection.show()
         pass
 
     def report_summary(self):
-        self._frmSummaryReport = frmSummaryReport(self.parent())
+        self._frmSummaryReport = frmSummaryReport(self)
         self._frmSummaryReport.show()
         pass
 
     def calibration_data(self):
-        self._frmCalibrationData = frmCalibrationData(self.parent())
+        self._frmCalibrationData = frmCalibrationData(self)
         self._frmCalibrationData.show()
         pass
 

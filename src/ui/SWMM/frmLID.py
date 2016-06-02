@@ -6,23 +6,23 @@ from ui.SWMM.frmLIDDesigner import Ui_frmLID
 
 
 class frmLID(QtGui.QMainWindow, Ui_frmLID):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cboLIDType.clear()
         self.cboLIDType.addItems(("Bio-Retention Cell","Rain Garden","Green Roof","Infiltration Trench","Permeable Pavement", "Rain Barrel", "Rooftop Disconnection", "Vegetative Swale"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboLIDType.currentIndexChanged.connect(self.cboLIDType_currentIndexChanged)
-        self._parent = parent
         self.lid_id = ''
         # set for first lid control for now
-        self.set_from(parent.project,'rg')
+        self.set_from(main_form.project, 'rg')
 
     def set_from(self, project, lid_id):
+        self.project = project
         self.cboLIDType_currentIndexChanged(0)
         # section = core.swmm.project.LIDControl
-        section = project.find_section("LID_CONTROLS")
+        section = project.lid_controls
         lid_list = section.value[0:]
         # assume we want to edit the first one
         self.lid_id = lid_id
@@ -83,7 +83,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
                 self.txtDrain3.setText(lid.drainmat_roughness)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("LID_CONTROLS")
+        section = self.project.lid_controls
         lid_list = section.value[0:]
         for lid in lid_list:
             if lid.control_name == self.lid_id:

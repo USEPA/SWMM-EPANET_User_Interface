@@ -65,10 +65,6 @@ class Reports:
             raise Exception("Report Initialization: could not read output of model.\n"
                             "Run the model to generate new output.")
 
-        if self.project.metric:
-            self.unit_system = ENR_UnitsSI
-        else:
-            self.unit_system = ENR_UnitsUS
         self.RptTitle = self.project.title.title
         self.PageNum = 0
         self.LineNum = 0
@@ -100,7 +96,7 @@ class Reports:
     def write_energy_header(self, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
-        units = (self.TXT_perMGAL, self.TXT_perM3)[self.unit_system]
+        units = (self.TXT_perMGAL, self.TXT_perM3)[self.output.unit_system]
         line = self.FMT71
         if ContinueFlag:
             line += self.TXT_CONTINUED
@@ -151,10 +147,10 @@ class Reports:
                                                        ENR_NodeAttributeNames[ENR_quality])
         self.write_line(line)
         line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_ID,
-                                                       ENR_NodeAttributeUnits[ENR_demand][self.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_head][self.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_pressure][self.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_quality][self.unit_system])
+                                                       ENR_NodeAttributeUnits[ENR_demand][self.output.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_head][self.output.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_pressure][self.output.unit_system],
+                                                       ENR_NodeAttributeUnits[ENR_quality][self.output.unit_system])
         self.write_line(line)
         self.write_line(self.ULINE)
 
@@ -176,9 +172,9 @@ class Reports:
                                                 ENR_LinkAttributeNames[ENR_status])
         self.write_line(S)
         S = '{:15} {:10}{:10}{:10}'.format(self.TXT_ID,
-                                           ENR_LinkAttributeUnits[ENR_flow][self.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_velocity][self.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_headloss][self.unit_system])
+                                           ENR_LinkAttributeUnits[ENR_flow][self.output.unit_system],
+                                           ENR_LinkAttributeUnits[ENR_velocity][self.output.unit_system],
+                                           ENR_LinkAttributeUnits[ENR_headloss][self.output.unit_system])
         self.write_line(S)
         self.write_line(self.ULINE)
 
@@ -191,8 +187,8 @@ class Reports:
         S = '{:15}{:15}{:15}{:10}{:10}'.format(self.TXT_LINK, self.TXT_START, self.TXT_END, "Length", "Diameter")
         self.write_line(S)
 
-        len_units = ('ft','m')[self.unit_system]
-        dia_units = ('in','mm')[self.unit_system]
+        len_units = ('ft','m')[self.output.unit_system]
+        dia_units = ('in','mm')[self.output.unit_system]
         S = '{:15}{:15}{:15}{:>10}{:>10}'.format(self.TXT_ID, self.TXT_NODE, self.TXT_NODE, len_units, dia_units)
         self.write_line(S)
         self.write_line(self.ULINE)
@@ -369,15 +365,6 @@ class Reports:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
         return distances
-
-    def elapsed_hours_at_index(self, report_time_index):
-        return (self.output.reportStart + report_time_index * self.output.reportStep) / 3600
-
-    def get_time_string(self, report_time_index):
-        total_hours = self.elapsed_hours_at_index(report_time_index)
-        hours = int(total_hours)
-        minutes = int((total_hours - hours) * 60)
-        return '{:02d}:{:02d}'.format(hours, minutes)
 
     # def get_time_string(self, period):
     #     # TODO: determine whether to use a value from self.TimeStat instead of a date

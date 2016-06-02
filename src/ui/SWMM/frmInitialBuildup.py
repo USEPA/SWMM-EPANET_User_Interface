@@ -8,9 +8,9 @@ class frmInitialBuildup(frmGenericPropertyEditor):
 
     SECTION_NAME = "[LOADINGS]"
 
-    def __init__(self, parent, subcatchment_name):
+    def __init__(self, main_form, subcatchment_name):
         # purposely not calling frmGenericPropertyEditor.__init__
-        QtGui.QMainWindow.__init__(self, parent)
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -27,7 +27,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
         self.tblGeneric.setHorizontalHeaderLabels(local_column_list)
         self.tblGeneric.setColumnWidth(0,200)
         self.local_pollutant_list = []
-        pollutants_section = parent.project.find_section("POLLUTANTS")
+        pollutants_section = main_form.project.find_section("POLLUTANTS")
         row_count = 0
         for value in pollutants_section.value:
             row_count += 1
@@ -35,7 +35,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
         self.tblGeneric.setRowCount(row_count)
         self.tblGeneric.setVerticalHeaderLabels(self.local_pollutant_list)
         self.resize(300,300)
-        section = parent.project.find_section("LOADINGS")
+        section = main_form.project.find_section("LOADINGS")
         loadings_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:
@@ -44,10 +44,10 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                 if loading.subcatchment_name == subcatchment_name and loading.pollutant_name == pollutant:
                     led = QtGui.QLineEdit(str(loading.initial_buildup))
                     self.tblGeneric.setItem(pollutant_count,0,QtGui.QTableWidgetItem(led.text()))
-        self._parent = parent
+        self._main_form = main_form
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section("LOADINGS")
+        section = self._main_form.project.find_section("LOADINGS")
         loadings_list = section.value[0:]
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:

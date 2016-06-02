@@ -11,9 +11,9 @@ class frmAquifers(frmGenericPropertyEditor):
     SECTION_NAME = "[AQUIFERS]"
     SECTION_TYPE = Aquifer
 
-    def __init__(self, parent):
-        self.parent = parent
-        self.project = parent.project
+    def __init__(self, main_form):
+        self._main_form = main_form
+        self.project = main_form.project
         self.new_item = None
         edit_these = []
         project_section = self.project.find_section(self.SECTION_NAME)
@@ -27,7 +27,7 @@ class frmAquifers(frmGenericPropertyEditor):
             # self.new_item.name = "1"
             edit_these.append(self.new_item)
 
-        frmGenericPropertyEditor.__init__(self, parent, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for patterns, show available patterns

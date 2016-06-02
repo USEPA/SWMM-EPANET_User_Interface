@@ -6,8 +6,8 @@ try:
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
-        def __init__(self, mapCanvas, session, parent=None, **kwargs):
-            super(EmbedMap, self).__init__(parent)
+        def __init__(self, mapCanvas, session, main_form=None, **kwargs):
+            super(EmbedMap, self).__init__(main_form)
             #define QMapControl here
             #qmap = QMapControl()
             #layout.addWidget(qmap)

@@ -7,13 +7,13 @@ from ui.EPANET.frmSourcesQualityDesigner import Ui_frmSourcesQuality
 
 class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)
-        self._parent = parent
+        self._main_form = main_form
         self.node_id = ''
 
     def set_from(self, project, node_id):
@@ -36,7 +36,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
                     self.rbnSetPoint.setChecked(True)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.find_section('SOURCES')
+        section = self._main_form.project.find_section('SOURCES')
         sources_list = section.value[0:]
         # section.set_text(str(self.txtControls.toPlainText()))
         for source in sources_list:

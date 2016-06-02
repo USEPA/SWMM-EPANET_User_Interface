@@ -6,13 +6,13 @@ from ui.SWMM.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
 
 
 class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.backdrop.BackdropOptions()
@@ -37,12 +37,12 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
             self.rbnMeters.setChecked(True)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.backdrop
+        section = self._main_form.project.backdrop
         section.file = self.txtBackdropFile.text()
         section.dimensions = (float(self.txtLLXBack.text()), float(self.txtLLYBack.text()),
                               float(self.txtURXBack.text()), float(self.txtURYBack.text()))
 
-        section = self._parent.project.map
+        section = self._main_form.project.map
         if self.rbnNone.isChecked():
             section.units = MapUnits.NONE
         if self.rbnDegrees.isChecked():

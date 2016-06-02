@@ -475,6 +475,22 @@ class frmMainSWMM(frmMain):
             #     ids.append(self.project.labels.value[i].label_text)
         return ids
 
+    def add_object_clicked(self, section_name):
+        if section_name == "Pollutants":
+            new_item = Pollutant()
+            new_item.name = "NewPollutant"
+            self.project.pollutants.value.append(new_item)
+            edit_these = []
+            edit_these.append(new_item)
+            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
+            self.show_edit_window(frm)
+
+    def delete_object_clicked(self, section_name, item_name):
+        if section_name == "Pollutants":
+            for value in self.project.pollutants.value:
+                if value.name == item_name:
+                    self.project.pollutants.value.remove(value)
+
     def run_simulation(self):
         self.output = None
         # First find input file to run

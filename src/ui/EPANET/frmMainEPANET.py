@@ -32,6 +32,8 @@ from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 
 from core.epanet.project import Project
+from core.epanet.patterns import Pattern
+from core.epanet.curves import Curve
 import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
@@ -362,6 +364,19 @@ class frmMainEPANET(frmMain):
             for i in range(0, len(self.project.curves.value)):
                 ids.append(self.project.curves.value[i].curve_id)
         return ids
+
+    def add_object_clicked(self, section_name):
+        if section_name == "Patterns":
+            new_item = Pattern()
+            new_item.pattern_id = "NewPattern"
+            self.project.patterns.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.pattern_id))
+
+    def delete_object_clicked(self, section_name, item_name):
+        if section_name == "Patterns":
+            for value in self.project.patterns.value:
+                if value.pattern_id == item_name:
+                    self.project.patterns.value.remove(value)
 
     def run_simulation(self):
         # Find input file to run

@@ -45,6 +45,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                         x = self.tblMult.item(0,column).text()
                         if len(x) > 0:
                             value.multipliers.append(x)
+        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

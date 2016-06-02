@@ -170,8 +170,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
         self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
 
-        # self.btnObjAdd.clicked.connect(self.add_object)
-        # self.btnObjDelete.clicked.connect(self.delete_object)
+        self.btnObjAdd.clicked.connect(self.add_object)
+        self.btnObjDelete.clicked.connect(self.delete_object)
         self.btnObjProperty.clicked.connect(self.edit_object)
         self.btnObjMoveUp.clicked.connect(self.moveup_object)
         self.btnObjMoveDown.clicked.connect(self.movedown_object)
@@ -357,12 +357,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             selected_text = str(item.data())
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
 
-    # def add_object(self):
-
-    # def delete_object(self):
-
     def edit_object(self):
         self.list_item_clicked()
+
+    def add_object(self):
+        if not self.project or not self.get_editor:
+            return
+        self.add_object_clicked(self.tree_section)
+        self.list_objects()
+
+    def delete_object(self):
+        if not self.project or not self.get_editor:
+            return
+        for item in self.listViewObjects.selectedIndexes():
+            selected_text = str(item.data())
+            self.delete_object_clicked(self.tree_section, selected_text)
+            self.list_objects()
 
     def moveup_object(self):
         currentRow = self.listViewObjects.currentRow()

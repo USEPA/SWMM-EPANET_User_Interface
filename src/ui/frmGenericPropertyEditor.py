@@ -12,9 +12,11 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, main_form, edit_these)
+        self._main_form = main_form
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

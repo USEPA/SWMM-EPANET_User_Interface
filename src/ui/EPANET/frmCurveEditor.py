@@ -60,6 +60,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                         y = self.tblMult.item(row, 1).text()
                         if len(x) > 0 and len(y) > 0:
                             curve.curve_xy.append((x, y))
+        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

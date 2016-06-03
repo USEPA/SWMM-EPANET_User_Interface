@@ -34,6 +34,14 @@ from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 from core.epanet.project import Project
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
+from core.epanet.project import Junction
+from core.epanet.project import Reservoir
+from core.epanet.project import Tank
+from core.epanet.project import Pipe
+from core.epanet.project import Pump
+from core.epanet.project import Valve
+from core.epanet.project import Label
+
 import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
@@ -371,12 +379,84 @@ class frmMainEPANET(frmMain):
             new_item.pattern_id = "NewPattern"
             self.project.patterns.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.pattern_id))
+        elif section_name == "Curves":
+            new_item = Curve()
+            new_item.curve_id = "NewCurve"
+            self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == "Junctions":
+            new_item = Junction()
+            new_item.id = "New"
+            self.project.junctions.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Reservoirs':
+            new_item = Reservoir()
+            new_item.id = "New"
+            self.project.reservoirs.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Tanks':
+            new_item = Tank()
+            new_item.id = "New"
+            self.project.tanks.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Pipes':
+            new_item = Pipe()
+            new_item.id = "New"
+            self.project.pipes.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Pumps':
+            new_item = Pump()
+            new_item.id = "New"
+            self.project.pumps.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Valves':
+            new_item = Valve()
+            new_item.id = "New"
+            self.project.valves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+        elif section_name == 'Labels':
+            new_item = Label()
+            new_item.id = "New"
+            self.project.labels.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
 
     def delete_object_clicked(self, section_name, item_name):
         if section_name == "Patterns":
             for value in self.project.patterns.value:
                 if value.pattern_id == item_name:
                     self.project.patterns.value.remove(value)
+        elif section_name == "Curves":
+            for value in self.project.curves.value:
+                if value.curve_id == item_name:
+                    self.project.curves.value.remove(value)
+        elif section_name == "Junctions":
+            for value in self.project.junctions.value:
+                if value.id == item_name:
+                    self.project.junctions.value.remove(value)
+        elif section_name == 'Reservoirs':
+            for value in self.project.reservoirs.value:
+                if value.id == item_name:
+                    self.project.reservoirs.value.remove(value)
+        elif section_name == 'Tanks':
+            for value in self.project.tanks.value:
+                if value.id == item_name:
+                    self.project.tanks.value.remove(value)
+        elif section_name == 'Pipes':
+            for value in self.project.pipes.value:
+                if value.id == item_name:
+                    self.project.pipes.value.remove(value)
+        elif section_name == 'Pumps':
+            for value in self.project.pumps.value:
+                if value.id == item_name:
+                    self.project.pumps.value.remove(value)
+        elif section_name == 'Valves':
+            for value in self.project.valves.value:
+                if value.id == item_name:
+                    self.project.valves.value.remove(value)
+        elif section_name == 'Labels':
+            for value in self.project.labels.value:
+                if value.id == item_name:
+                    self.project.labels.value.remove(value)
 
     def run_simulation(self):
         # Find input file to run

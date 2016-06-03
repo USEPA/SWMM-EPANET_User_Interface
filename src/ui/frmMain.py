@@ -499,8 +499,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if selected_text == '':
             return
         ids = self.get_object_list(selected_text)
+        self.tree_section = selected_text
         if len(ids)> 0:
-            self.tree_section = selected_text
             self.dockw_more.setWindowTitle(selected_text)
             for id in ids:
                 self.listViewObjects.addItem(id)

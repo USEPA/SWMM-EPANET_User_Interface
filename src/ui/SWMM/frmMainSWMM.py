@@ -46,9 +46,20 @@ from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
 
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
+from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
+from core.swmm.hydrology.snowpack import SnowPack
+from core.swmm.hydrology.lidcontrol import LIDControl
+from core.swmm.hydrology.unithydrograph import UnitHydrograph
+from core.swmm.hydraulics.link import Conduit
+from core.swmm.hydraulics.link import Pump
+from core.swmm.hydraulics.link import Transect
+from core.swmm.quality import Landuse
+from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
+from core.swmm.timeseries import TimeSeries
+from core.swmm.patterns import Pattern
 
 from Externals.swmm.outputapi import SMOutputWrapper
 
@@ -383,7 +394,7 @@ class frmMainSWMM(frmMain):
         if category == self.tree_hydrology_Subcatchments[0]:
             for i in range(0, len(self.project.subcatchments.value)):
                 ids.append(self.project.subcatchments.value[i].name)
-        # elif category.lower() == 'rain gages':
+        # elif category.lower() == self.tree_hydrology_RainGages[0]:
             # for i in range(0, len(self.project.raingages.value)):
             #     ids.append(self.project.raingages.value[i].name)
         elif category == self.tree_hydrology_Aquifers[0]:
@@ -476,20 +487,313 @@ class frmMainSWMM(frmMain):
         return ids
 
     def add_object_clicked(self, section_name):
-        if section_name == "Pollutants":
+        if section_name == self.tree_hydrology_Subcatchments[0]:
+            new_item = Subcatchment()
+            new_item.name = "New"
+            if len(self.project.subcatchments.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.subcatchments.value = edit_these
+            else:
+                self.project.subcatchments.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        # elif section_name == self.tree_hydrology_RainGages[0]:
+        elif section_name == self.tree_hydrology_Aquifers[0]:
+            new_item = Aquifer()
+            new_item.name = "New"
+            if len(self.project.aquifers.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.aquifers.value = edit_these
+            else:
+                self.project.aquifers.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_hydrology_SnowPacks[0]:
+            new_item = SnowPack()
+            new_item.name = "New"
+            if len(self.project.snowpacks.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.snowpacks.value = edit_these
+            else:
+                self.project.snowpacks.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_hydrology_UnitHydrographs[0]:
+            new_item = UnitHydrograph()
+            new_item.group_name = "New"
+            if len(self.project.hydrographs.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.hydrographs.value = edit_these
+            else:
+                self.project.hydrographs.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.group_name))
+        elif section_name == self.tree_hydrology_LIDControls[0]:
+            new_item = LIDControl()
+            new_item.control_name = "New"
+            if len(self.project.lid_controls.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.lid_controls.value = edit_these
+            else:
+                self.project.lid_controls.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.control_name))
+        elif section_name == self.tree_nodes_Junctions[0]:
+            new_item = Junction()
+            new_item.name = "New"
+            if len(self.project.junctions.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.junctions.value = edit_these
+            else:
+                self.project.junctions.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        # elif section_name == self.tree_nodes_Outfalls[0]:
+        # elif section_name == self.tree_nodes_Dividers[0]:
+        # elif section_name == self.tree_nodes_StorageUnits[0]:
+        elif section_name == self.tree_links_Conduits[0]:
+            new_item = Conduit()
+            new_item.name = "New"
+            if len(self.project.conduits.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.conduits.value = edit_these
+            else:
+                self.project.conduits.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_links_Pumps:
+            new_item = Pump()
+            new_item.name = "New"
+            if len(self.project.pumps.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.pumps.value = edit_these
+            else:
+                self.project.pumps.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        # elif section_name == self.tree_links_Orifices[0]:
+        # elif section_name == self.tree_links_Weirs[0]:
+        # elif section_name == self.tree_links_Outlets[0]:
+        elif section_name == self.tree_hydraulics_Transects[0]:
+            new_item = Transect()
+            new_item.name = "New"
+            if len(self.project.transects.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.transects.value = edit_these
+            else:
+                self.project.transects.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_quality_Pollutants[0]:
             new_item = Pollutant()
             new_item.name = "NewPollutant"
-            self.project.pollutants.value.append(new_item)
-            edit_these = []
-            edit_these.append(new_item)
-            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-            self.show_edit_window(frm)
+            if len(self.project.pollutants.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.pollutants.value = edit_these
+            else:
+                self.project.pollutants.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_quality_LandUses[0]:
+            new_item = Landuse()
+            new_item.land_use_name = "New"
+            if len(self.project.landuses.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.landuses.value = edit_these
+            else:
+                self.project.landuses.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.land_use_name))
+        elif section_name == self.tree_curves_ControlCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.CONTROL
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_DiversionCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.DIVERSION
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_PumpCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.PUMP1
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_RatingCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.RATING
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_ShapeCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.SHAPE
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_StorageCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.STORAGE
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_curves_TidalCurves[0]:
+            new_item = Curve()
+            new_item.curve_id = "New"
+            new_item.curve_type = CurveType.TIDAL
+            if len(self.project.curves.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.curves.value = edit_these
+            else:
+                self.project.curves.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+        elif section_name == self.tree_TimeSeries[0]:
+            new_item = TimeSeries()
+            new_item.name = "New"
+            if len(self.project.timeseries.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.timeseries.value = edit_these
+            else:
+                self.project.timeseries.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_TimePatterns[0]:
+            new_item = Pattern()
+            new_item.name = "New"
+            if len(self.project.patterns.value) == 0:
+                edit_these = []
+                edit_these.append(new_item)
+                self.project.patterns.value = edit_these
+            else:
+                self.project.patterns.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        # elif section_name == self.tree_MapLabels[0]:
 
     def delete_object_clicked(self, section_name, item_name):
-        if section_name == "Pollutants":
-            for value in self.project.pollutants.value:
+        if section_name == self.tree_hydrology_Subcatchments[0]:
+            for value in self.project.subcatchments.value:
+                if value.name == item_name:
+                    self.project.subcatchments.value.remove(value)
+        # elif section_name == self.tree_hydrology_RainGages[0]:
+        elif section_name == self.tree_hydrology_Aquifers[0]:
+            for value in self.project.aquifers.value:
+                if value.name == item_name:
+                    self.project.aquifers.value.remove(value)
+        elif section_name == self.tree_hydrology_SnowPacks[0]:
+            for value in self.project.snowpacks.value:
+                if value.name == item_name:
+                    self.project.snowpacks.value.remove(value)
+        elif section_name == self.tree_hydrology_UnitHydrographs[0]:
+            for value in self.project.hydrographs.value:
+                if value.group_name == item_name:
+                    self.project.hydrographs.value.remove(value)
+        elif section_name == self.tree_hydrology_LIDControls[0]:
+            for value in self.project.lid_controls.value:
+                if value.control_name == item_name:
+                    self.project.lid_controls.value.remove(value)
+        elif section_name == self.tree_nodes_Junctions[0]:
+            for value in self.project.junctions.value:
+                if value.name == item_name:
+                    self.project.junctions.value.remove(value)
+        # elif section_name == self.tree_nodes_Outfalls[0]:
+        # elif section_name == self.tree_nodes_Dividers[0]:
+        # elif section_name == self.tree_nodes_StorageUnits[0]:
+        elif section_name == self.tree_links_Conduits[0]:
+            for value in self.project.conduits.value:
+                if value.name == item_name:
+                    self.project.conduits.value.remove(value)
+        elif section_name == self.tree_links_Pumps:
+            for value in self.project.pumps.value:
+                if value.name == item_name:
+                    self.project.pumps.value.remove(value)
+        # elif section_name == self.tree_links_Orifices[0]:
+        # elif section_name == self.tree_links_Weirs[0]:
+        # elif section_name == self.tree_links_Outlets[0]:
+        elif section_name == self.tree_hydraulics_Transects[0]:
+            for value in self.project.transects.value:
+                if value.name == item_name:
+                    self.project.transects.value.remove(value)
+        elif section_name == self.tree_quality_Pollutants[0]:
+           for value in self.project.pollutants.value:
                 if value.name == item_name:
                     self.project.pollutants.value.remove(value)
+        elif section_name == self.tree_quality_LandUses[0]:
+            for value in self.project.landuses.value:
+                if value.land_use_name == item_name:
+                    self.project.landuses.value.remove(value)
+        elif section_name == self.tree_curves_ControlCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.CONTROL:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_DiversionCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.DIVERSION:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_PumpCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and \
+                        (value.curve_type == CurveType.PUMP1 or value.curve_type == CurveType.PUMP2
+                         or value.curve_type == CurveType.PUMP3 or value.curve_type == CurveType.PUMP4):
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_RatingCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.RATING:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_ShapeCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.SHAPE:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_StorageCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.STORAGE:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_curves_TidalCurves[0]:
+            for value in self.project.curves.value:
+                if value.curve_id == item_name and value.curve_type == CurveType.TIDAL:
+                    self.project.curves.value.remove(value)
+        elif section_name == self.tree_TimeSeries[0]:
+            for value in self.project.timeseries.value:
+                if value.name == item_name:
+                    self.project.timeseries.value.remove(value)
+        elif section_name == self.tree_TimePatterns[0]:
+            for value in self.project.patterns.value:
+                if value.name == item_name:
+                    self.project.patterns.value.remove(value)
+        # elif section_name == self.tree_MapLabels[0]:
 
     def run_simulation(self):
         self.output = None

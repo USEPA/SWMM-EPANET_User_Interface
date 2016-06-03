@@ -12,6 +12,7 @@ class frmAquifers(frmGenericPropertyEditor):
     SECTION_TYPE = Aquifer
 
     def __init__(self, main_form):
+        self.help_topic = "swmm/src/src/aquifereditordialog.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.new_item = None

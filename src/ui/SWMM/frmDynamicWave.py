@@ -7,6 +7,7 @@ from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
 class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/simulationoptions_dynamicwave.htm"
         self.setupUi(self)
         self.cboInertial.addItems(("Keep", "Dampen", "Ignore"))
         # dampen=partial, ignore=full, keep=none

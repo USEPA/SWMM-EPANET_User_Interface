@@ -9,6 +9,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/lidusageeditor.htm"
         self.setupUi(self)
         self._main_form = main_form
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

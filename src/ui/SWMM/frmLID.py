@@ -8,6 +8,7 @@ from ui.SWMM.frmLIDDesigner import Ui_frmLID
 class frmLID(QtGui.QMainWindow, Ui_frmLID):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/lidcontroleditor.htm"
         self.setupUi(self)
         self.cboLIDType.clear()
         self.cboLIDType.addItems(("Bio-Retention Cell","Rain Garden","Green Roof","Infiltration Trench","Permeable Pavement", "Rain Barrel", "Rooftop Disconnection", "Vegetative Swale"))

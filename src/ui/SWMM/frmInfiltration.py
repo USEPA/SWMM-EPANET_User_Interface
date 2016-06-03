@@ -8,6 +8,7 @@ from ui.property_editor_backend import PropertyEditorBackend
 class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
     def __init__(self, parent, edit_these, title):
         QtGui.QMainWindow.__init__(self, parent)
+        self.help_topic = "swmm/src/src/controlrules.htm"
         self.setupUi(self)
         self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

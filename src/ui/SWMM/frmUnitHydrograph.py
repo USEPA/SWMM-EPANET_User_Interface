@@ -12,6 +12,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
 
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/unithydrographeditordialog.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)

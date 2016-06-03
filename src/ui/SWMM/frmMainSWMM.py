@@ -352,6 +352,8 @@ class frmMainSWMM(frmMain):
                     edit_these.append(new_item)
                     self.project.pollutants.value = edit_these
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
+            frm.helper = HelpHandler(frm)
+            frm.help_topic = "swmm/src/src/pollutanteditordialog.htm"
         elif edit_name in [item[0] for item in self.tree_items_using_id]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None

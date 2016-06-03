@@ -11,6 +11,7 @@ from core.swmm.curves import CurveType
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form, title, curve_type):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/curveeditordialog.htm"
         self.setupUi(self)
         if title:
             self.setWindowTitle(title)

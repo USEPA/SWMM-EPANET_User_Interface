@@ -1,5 +1,6 @@
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
+from ui.help import HelpHandler
 from core.swmm.hydraulics.node import Treatment
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
@@ -11,6 +12,8 @@ class frmTreatment(frmGenericPropertyEditor):
     def __init__(self, main_form, node_name):
         # purposely not calling frmGenericPropertyEditor.__init__
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/treatmenteditor.htm"
         self.setupUi(self)
         self.node_name = node_name
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

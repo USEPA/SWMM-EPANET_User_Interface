@@ -43,19 +43,26 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             if climate_type:
                 self.set_from(main_form.project, climate_type)
 
+        # TODO: Update help_topic when current tab is changed
     def set_from(self, project, climate_type):
         if climate_type == "Temperature":
             self.tabClimate.setCurrentIndex(0)
+            self.help_topic = "swmm/src/src/climateeditor_temperature.htm"
         elif climate_type == "Evaporation":
             self.tabClimate.setCurrentIndex(1)
+            self.help_topic = "swmm/src/src/climateeditor_evaporation.htm"
         elif climate_type == "Wind Speed":
             self.tabClimate.setCurrentIndex(2)
+            self.help_topic = "swmm/src/src/climateeditor_windspeed.htm"
         elif climate_type == "Snow Melt":
             self.tabClimate.setCurrentIndex(3)
+            self.help_topic = "swmm/src/src/climateeditor_snowmelt.htm"
         elif climate_type == "Areal Depletion":
             self.tabClimate.setCurrentIndex(4)
+            self.help_topic = "swmm/src/src/climateeditor_arealdepletion.htm"
         elif climate_type == "Adjustment":
             self.tabClimate.setCurrentIndex(5)
+            self.help_topic = "swmm/src/src/climate_adjustments.htm"
 
     def set_all(self, project):
         # evap_section = core.swmm.climatology

@@ -9,6 +9,7 @@ from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
 class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.setupUi(self)
         self.cboType.clear()
         ui.convenience.set_combo_items(core.swmm.patterns.PatternType, self.cboType)

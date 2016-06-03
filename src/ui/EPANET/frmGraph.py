@@ -42,7 +42,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.cboTime.clear()
         if project and self.output:
             for time_index in range(0, self.output.numPeriods - 1):
-                self.cboTime.addItem(self.report.get_time_string(time_index))
+                self.cboTime.addItem(self.output.get_time_string(time_index))
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
 

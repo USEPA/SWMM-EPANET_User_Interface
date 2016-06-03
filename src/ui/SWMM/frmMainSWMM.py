@@ -397,97 +397,126 @@ class frmMainSWMM(frmMain):
 
     def get_object_list(self, category):
         ids = []
+        self.dockw_more.setEnabled(False)
         if category == self.tree_hydrology_Subcatchments[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.subcatchments.value)):
                 ids.append(self.project.subcatchments.value[i].name)
         # elif category.lower() == self.tree_hydrology_RainGages[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.raingages.value)):
             #     ids.append(self.project.raingages.value[i].name)
         elif category == self.tree_hydrology_Aquifers[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.aquifers.value)):
                 ids.append(self.project.aquifers.value[i].name)
         elif category == self.tree_hydrology_SnowPacks[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.snowpacks.value)):
                 ids.append(self.project.snowpacks.value[i].name)
         elif category == self.tree_hydrology_UnitHydrographs[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.hydrographs.value)):
                 ids.append(self.project.hydrographs.value[i].group_name)
         elif category == self.tree_hydrology_LIDControls[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.lid_controls.value)):
                 ids.append(self.project.lid_controls.value[i].control_name)
         elif category == self.tree_nodes_Junctions[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.junctions.value)):
                 ids.append(self.project.junctions.value[i].name)
         # elif category == self.tree_nodes_Outfalls[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.outfalls.value)):
             #     ids.append(self.project.outfalls.value[i].name)
         # elif category == self.tree_nodes_Dividers[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.dividers.value)):
             #     ids.append(self.project.dividers.value[i].name)
         # elif category == self.tree_nodes_StorageUnits[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.storage.value)):
             #     ids.append(self.project.storage.value[i].name)
         elif category == self.tree_links_Conduits[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.conduits.value)):
                 ids.append(self.project.conduits.value[i].name)
         elif category == self.tree_links_Pumps:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.pumps.value)):
                 ids.append(self.project.pumps.value[i].name)
         # elif category == self.tree_links_Orifices[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.orifices.value)):
             #     ids.append(self.project.orifices.value[i].name)
         # elif category == self.tree_links_Weirs[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.weirs.value)):
             #     ids.append(self.project.weirs.value[i].name)
         # elif category == self.tree_links_Outlets[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.outlets.value)):
             #     ids.append(self.project.outlets.value[i].name)
         elif category == self.tree_hydraulics_Transects[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.transects.value)):
                 ids.append(self.project.transects.value[i].name)
         elif category == self.tree_quality_Pollutants[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.pollutants.value)):
                 ids.append(self.project.pollutants.value[i].name)
         elif category == self.tree_quality_LandUses[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.landuses.value)):
                 ids.append(self.project.landuses.value[i].land_use_name)
         elif category == self.tree_curves_ControlCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.CONTROL:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_DiversionCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.DIVERSION:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_PumpCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 curve_type = self.project.curves.value[i].curve_type
                 if curve_type == CurveType.PUMP1 or curve_type == CurveType.PUMP2 or \
                     curve_type == CurveType.PUMP3 or curve_type == CurveType.PUMP4:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_RatingCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.RATING:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_ShapeCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.SHAPE:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_StorageCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.STORAGE:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_curves_TidalCurves[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.TIDAL:
                     ids.append(self.project.curves.value[i].curve_id)
         elif category == self.tree_TimeSeries[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.timeseries.value)):
                 ids.append(self.project.timeseries.value[i].name)
         elif category == self.tree_TimePatterns[0]:
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.patterns.value)):
                 ids.append(self.project.patterns.value[i].name)
         # elif category == self.tree_MapLabels[0]:
+            # self.dockw_more.setEnabled(True)
             # for i in range(0, len(self.project.labels.value)):
             #     ids.append(self.project.labels.value[i].label_text)
         return ids

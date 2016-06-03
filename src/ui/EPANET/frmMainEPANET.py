@@ -344,31 +344,41 @@ class frmMainEPANET(frmMain):
 
     def get_object_list(self, category):
         ids = []
+        self.dockw_more.setEnabled(False)
         if category.lower() == 'junctions':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.junctions.value)):
                 ids.append(self.project.junctions.value[i].id)
         elif category.lower() == 'reservoirs':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.reservoirs.value)):
                 ids.append(self.project.reservoirs.value[i].id)
         elif category.lower() == 'tanks':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.tanks.value)):
                 ids.append(self.project.tanks.value[i].id)
         elif category.lower() == 'pipes':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.pipes.value)):
                 ids.append(self.project.pipes.value[i].id)
         elif category.lower() == 'pumps':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.pumps.value)):
                 ids.append(self.project.pumps.value[i].id)
         elif category.lower() == 'valves':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.valves.value)):
                 ids.append(self.project.valves.value[i].id)
         elif category.lower() == 'labels':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.labels.value)):
                 ids.append(self.project.labels.value[i].label)
         elif category.lower() == 'patterns':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.patterns.value)):
                 ids.append(self.project.patterns.value[i].pattern_id)
         elif category.lower() == 'curves':
+            self.dockw_more.setEnabled(True)
             for i in range(0, len(self.project.curves.value)):
                 ids.append(self.project.curves.value[i].curve_id)
         return ids

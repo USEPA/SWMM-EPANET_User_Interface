@@ -3,6 +3,7 @@ import PyQt4.QtCore as QtCore
 import core.swmm.project
 from ui.SWMM.frmTimeSeriesSelectionDesigner import Ui_frmTimeSeriesSelection
 from ui.help import HelpHandler
+import Externals.swmm.outputapi.SMOutputWrapper as SMO
 
 
 class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
@@ -21,7 +22,6 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         self.project = project
         self.output = output
         self.listener = listener
-        self.cboStart.clear()
         self.cboObjectType.clear()
         if project and self.output:
             if len(self.output.node_ids):
@@ -34,26 +34,23 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
                 self.cboObjectType.addItem("System")
             if self.cboObjectType.count() > 0:
                 self.cboObjectType.setCurrentIndex(0)
-            # self.rbnNodes.setChecked(True)
-            # self.rbnNodes_Clicked()
-            values = self.output.get_NodeSeries(0, 0)
-            for val in values:
-                print '{:7.2f}'.format(val)
 
     def cboObjectType_currentIndexChanged(self):
-        self.cboVariable.clear()
         has_objects = True
         if self.cboObjectType.currentText() == "Subcatchment":
-            items = self.output.subcatchment_ids
+            items = SMO.SMO_subcatchAttributeNames  #subcatchment_ids
         elif self.cboObjectType.currentText() == "Node":
-            items = self.output.node_ids
+            items = SMO.SMO_nodeAttributeNames  # node_ids
         elif self.cboObjectType.currentText() == "Link":
-            items = self.output.link_ids
+            items = SMO.SMO_linkAttributeNames  # link_ids
         elif self.cboObjectType.currentText() == "System":
-            items = self.output.SysViewNames
+            items = SMO.SMO_systemAttributeNames
             has_objects = False
         else:
             items = ["None"]
+            has_objects = False
+
+        self.cboVariable.clear()
         for item in items:
             self.cboVariable.addItem(item)
 
@@ -62,11 +59,16 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         if has_objects:
             self.lblSpecify.setText(self.cboObjectType.currentText() + " Name")
         else:
-            self.lblSpecify.setText(self.cboObjectType.currentText() + " does not need an item name")
+            self.lblSpecify.setText(self.cboObjectType.currentText() + " does not need a name")
 
     def cmdOK_Clicked(self):
+        if self.rbnRight.isChecked():
+            axis = "Right"
+        else:
+            axis = "Left"
+
         self.listener(self.cboObjectType.currentText(), self.txtObject.text(),
-                      self.cboVariable.currentText(), self.txtLegend.text(), self.rbnRight.isChecked())
+                      self.cboVariable.currentText(), axis, self.txtLegend.text())
         self.close()
 
     def cmdCancel_Clicked(self):

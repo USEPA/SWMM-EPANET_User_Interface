@@ -301,9 +301,15 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_timeseries(self):
-        self._frmTimeSeriesPlot = frmTimeSeriesPlot(self)
-        self._frmTimeSeriesPlot.set_from(self.project, self.get_output())
-        self._frmTimeSeriesPlot.show()
+        if self.get_output():
+            self._frmTimeSeriesPlot = frmTimeSeriesPlot(self)
+            self._frmTimeSeriesPlot.set_from(self.project, self.get_output())
+            self._frmTimeSeriesPlot.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_scatter(self):
         self._frmScatterPlot = frmScatterPlot(self)

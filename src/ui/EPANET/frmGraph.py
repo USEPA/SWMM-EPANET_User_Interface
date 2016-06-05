@@ -41,7 +41,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.report = Reports(project, output)
         self.cboTime.clear()
         if project and self.output:
-            for time_index in range(0, self.output.numPeriods - 1):
+            for time_index in range(0, self.output.numPeriods):
                 self.cboTime.addItem(self.output.get_time_string(time_index))
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
@@ -133,14 +133,16 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnNodes.isChecked():
             get_index = self.output.get_NodeIndex
             get_value = self.output.get_NodeValue
+            get_series = self.output.get_NodeSeries
             parameter_code = ENR_NodeAttributes[attribute_index]
-            units = ENR_NodeAttributeUnits[attribute_index][self.report.unit_system]
+            units = ENR_NodeAttributeUnits[attribute_index][self.output.unit_system]
 
         else:
             get_index = self.output.get_LinkIndex
             get_value = self.output.get_LinkValue
+            get_series = self.output.get_LinkSeries
             parameter_code = ENR_LinkAttributes[attribute_index]
-            units = ENR_LinkAttributeUnits[attribute_index][self.report.unit_system]
+            units = ENR_LinkAttributeUnits[attribute_index][self.output.unit_system]
 
         parameter_label = self.cboParameter.currentText()
         if units:
@@ -148,7 +150,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():
-            self.plot_time(get_index, get_value, parameter_code, parameter_label)
+            self.plot_time(get_index, get_series, parameter_code, parameter_label)
 
         if self.rbnSystem.isChecked():
             self.plot_system_flow()
@@ -165,20 +167,20 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
         # self.close()  # Keep open to allow opening more graphs and controlling time index
 
-    def plot_time(self, get_index, get_value, parameter_code, parameter_label):
+    def plot_time(self, get_index, get_series, parameter_code, parameter_label):
         fig = plt.figure()
         title = "Time Series Plot of " + parameter_label
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
-        for time_index in range(0, self.output.numPeriods - 1):
+        for time_index in range(0, self.output.numPeriods):
             x_values.append(self.report.elapsed_hours_at_index(time_index))
 
         for list_item in self.lstToGraph.selectedItems():
             id = str(list_item.text())
             output_index = get_index(id)
             y_values = []
-            for time_index in range(0, self.output.numPeriods - 1):
+            for time_index in range(0, self.output.numPeriods):
                 y_values.append(get_value(output_index, time_index, parameter_code))
             plt.plot(x_values, y_values, label=id)
 
@@ -210,7 +212,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if time_index >= 0:
             fig = plt.figure(fig_number)
             fig.clear()
-            title = "Profile Plot of " + parameter_label + " at " + self.report.get_time_string(time_index)
+            title = "Profile Plot of " + parameter_label + " at " + self.output.get_time_string(time_index)
             fig.canvas.set_window_title(title)
             plt.title(title)
             y_values = []
@@ -240,7 +242,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
     def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index):
         if time_index >= 0:
             fig = plt.figure()
-            title = "Distribution of " + parameter_label + " at " + self.report.get_time_string(time_index)
+            title = "Distribution of " + parameter_label + " at " + self.output.get_time_string(time_index)
             fig.canvas.set_window_title(title)
             plt.title(title)
             items = self.lstToGraph.selectedItems()
@@ -273,14 +275,14 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         x_values = []
         produced = []
         consumed = []
-        for time_index in range(0, self.output.numPeriods - 1):
+        for time_index in range(0, self.output.numPeriods):
             x_values.append(self.report.elapsed_hours_at_index(time_index))
             produced.append(0)
             consumed.append(0)
 
         for node_index in range(0, self.output.nodeCount - 1):
             node_flows = self.output.get_NodeSeries(node_index, ENR_demand)
-            for time_index in range(0, self.output.numPeriods - 1):
+            for time_index in range(0, self.output.numPeriods):
                 flow = node_flows[time_index]
                 if flow > 0:
                     consumed[time_index] += flow

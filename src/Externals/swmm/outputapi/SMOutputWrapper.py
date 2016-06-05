@@ -292,6 +292,16 @@ class OutputObject(object):
         except:
             return -1
 
+    def get_SubcatchmentIndex(self, subcatchment_id):
+        """Retrieves the index of the subcatchment with the specified ID.
+
+        Arguments:
+        subcatchment_id: subcatchment ID label"""
+        try:
+            return self.subcatchment_ids.index(subcatchment_id)
+        except:
+            return -1
+
     # def get_NodeValue(self, NodeInd, TimeInd, NodeAttr):
     #     """
     #     Purpose: Get results for particular node, time, attribute.
@@ -319,7 +329,7 @@ class OutputObject(object):
         """
         Purpose: Get time series results for particular attribute. Specify series
         start and length using start_index and num_values respectively.
-
+        item_index = -1 for item type that does not have index (System)
         num_values = -1 Default input: Gets data from start_index to end
 
         """
@@ -336,15 +346,23 @@ class OutputObject(object):
         SeriesPtr = _lib.SMO_newOutValueSeries(self.ptrapi, start_index,
                                                num_values, byref(sLength), byref(ErrNo1))
         if ErrNo1.value != 0:
-            print "Error allocating series " + str(function) + ', ' + str(item_index) + ', ' + str(attribute)
+            print "Error " + str(ErrNo1.value) + " allocating series start=" + str(start_index) + ", len=" + str(num_values)
             self.RaiseError(ErrNo1.value)
 
-        ErrNo2 = function(self.ptrapi,
-                          item_index,
-                          attribute,
-                          start_index,
-                          sLength.value,
-                          SeriesPtr)
+        if item_index >= 0:
+            ErrNo2 = function(self.ptrapi,
+                              item_index,
+                              attribute,
+                              start_index,
+                              sLength.value,
+                              SeriesPtr)
+        else:
+            ErrNo2 = function(self.ptrapi,
+                              attribute,
+                              start_index,
+                              sLength.value,
+                              SeriesPtr)
+
         if ErrNo2 != 0:
             print "Error reading series " + str(function) + ', ' + str(item_index) + ', ' + str(attribute)
             self.RaiseError(ErrNo2)
@@ -373,7 +391,25 @@ class OutputObject(object):
         """
         return self._get_series(_lib.SMO_getLinkSeries, link_index, attribute, start_index, num_values)
 
-    # TODO: SMO_getSubcatchSeries, SMO_getSystemSeries
+    def get_SubcatchmentSeries(self, subcatchment_index, attribute, start_index=0, num_values=-1):
+        """
+        Purpose: Get time series results from the given Subcatchment.
+        subcatchment_index is from zero-indexed subcatchments in output file, same indexes as self.subcatchment_ids.
+        attribute must be an integer from SMO_linkAttributes.
+        start_index is the first time index to retrieve, default = 0.
+        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+        """
+        return self._get_series(_lib.SMO_getSubcatchSeries, subcatchment_index, attribute, start_index, num_values)
+
+
+    def get_SystemSeries(self, attribute, start_index=0, num_values=-1):
+        """
+        Purpose: Get time series results from the given Subcatchment.
+        attribute must be an integer from SMO_linkAttributes.
+        start_index is the first time index to retrieve, default = 0.
+        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+        """
+        return self._get_series(_lib.SMO_getSystemSeries, -1, attribute, start_index, num_values)
 
     def _get_attribute(self, function, item_type, attribute, time_index):
         """

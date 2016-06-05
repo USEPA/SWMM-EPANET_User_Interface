@@ -134,7 +134,7 @@ class Reports:
             self.LineNum = self.PAGESIZE
         line = self.TXT_NODE_RESULTS
         if self.output.numPeriods > 1:
-            line += self.TXT_AT + self.get_time_string(period)
+            line += self.TXT_AT + self.output.get_time_string(period)
         line += ':'
         if ContinueFlag:
             line += self.TXT_CONTINUED
@@ -159,7 +159,7 @@ class Reports:
             self.LineNum = self.PAGESIZE
         S = self.TXT_LINK_RESULTS
         if self.output.numPeriods > 1:
-            S += self.TXT_AT + self.get_time_string(period)
+            S += self.TXT_AT + self.output.get_time_string(period)
         S += ':'
         if ContinueFlag:
             S += self.TXT_CONTINUED
@@ -267,7 +267,7 @@ class Reports:
         self.write_line('')
 
     def write_results(self):
-        for period in range(0, self.output.numPeriods - 1):
+        for period in range(0, self.output.numPeriods):
             # Application.ProcessMessages
             self.write_node_table(period)
             # Application.ProcessMessages
@@ -294,7 +294,6 @@ class Reports:
             finally:
                 print "Finished writing report " + report_file_name
                 #   MainForm.HideProgressBar
-
 
     def all_link_ids(self):
         ids = []
@@ -365,46 +364,3 @@ class Reports:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
         return distances
-
-    # def get_time_string(self, period):
-    #     # TODO: determine whether to use a value from self.TimeStat instead of a date
-    #     seconds = period * self.output.simDuration / self.output.numPeriods
-    #     hours = int(seconds / 3600)
-    #     minutes = int((seconds - (hours * 3600)) / 60)
-    #     return '{:02d}:{:02d}'.format(hours, minutes)
-
-
-
-#    def CreateFullReport(self, Filename):
-# var
-#   R: Boolean
-#   Size: Single
-#   Fname: String
-# // Check for huge file size
-#   Size = (Nlinks + (Nnodes + Nlinks)*self.output.numPeriods)*60*1e-6
-#   if Size > 10:
-#     if MessageDlg('This full report will use over ' + IntToStr(Trunc(Size)) +
-#       ' Mbytes of disk space. Do you wish to proceed?', mtConfirmation, [mbYes,mbNo], 0) == mrNo
-#        : Exit
-# 
-# // Get a report file name
-#   Fname = ''
-#   with MainForm.SaveDialog do
-#   begin
-# 
-#   // Set options for Save File dialog
-#     Filter = 'Report files (*.RPT)|*.RPT|All files|*.*'
-#     if Length(InputFileName) > 0: Filename :=
-#       ChangeFileExt(ExtractFileName(InputFileName),'.rpt')
-#     else Filename = '*.rpt'
-# 
-#   // Execute Save File dialog & write report to file
-#     if Execute: Fname = Filename
-#     if Length(Fname) > 0:
-#     begin
-#       Screen.Cursor = crHourGlass
-#       R = self.WriteReport(Filename)
-#       Screen.Cursor = crDefault
-#       if not R:
-#         MessageDlg('Could not write full report to file ' + ExtractFileName(Filename),
-#           mtError, [mbOK], 0)

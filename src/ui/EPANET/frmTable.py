@@ -30,8 +30,8 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.report = Reports(project, output)
         self.cboTime.clear()
         if self.project and self.output:
-            for time_index in range(0, self.output.numPeriods - 1):
-                self.cboTime.addItem(self.report.get_time_string(time_index))
+            for time_index in range(0, self.output.numPeriods):
+                self.cboTime.addItem(self.output.get_time_string(time_index))
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
 
@@ -90,7 +90,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 attribute_name = str(column_item.text())
                 attribute_index = ENR_NodeAttributeNames.index(attribute_name)
                 parameter_codes.append(ENR_NodeAttributes[attribute_index])
-                units = ENR_NodeAttributeUnits[attribute_index][self.report.unit_system]
+                units = ENR_NodeAttributeUnits[attribute_index][self.output.unit_system]
                 if units:
                     attribute_name += '\n(' + units + ')'
                 column_headers.append(attribute_name)
@@ -105,7 +105,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 attribute_name = str(column_item.text())
                 attribute_index = ENR_LinkAttributeNames.index(attribute_name)
                 parameter_codes.append(ENR_LinkAttributes[attribute_index])
-                units = ENR_LinkAttributeUnits[attribute_index][self.report.unit_system]
+                units = ENR_LinkAttributeUnits[attribute_index][self.output.unit_system]
                 if units:
                     attribute_name += '\n(' + units + ')'
                 column_headers.append(attribute_name)
@@ -124,7 +124,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         # self.close()
 
     def make_table(self, frm, get_index, get_value, time_index, ids, row_headers, parameter_codes, column_headers):
-        frm.setWindowTitle("Network Table at " + self.report.get_time_string(time_index))
+        frm.setWindowTitle("Network Table at " + self.output.get_time_string(time_index))
         tbl = frm.tblGeneric
 
         tbl.setRowCount(len(row_headers))

@@ -194,9 +194,9 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 self.local_scale_factor[local_column] = self.txtScaleFactor.text()
                 self.local_timeseries_list[local_column] = self.cboTimeSeries.currentText()
                 self.local_baseline_pattern[local_column] = self.cboPattern.currentText()
-                if self.cboInflowType.currentIndex == 0:
+                if self.cboInflowType.currentIndex() == 0:
                     self.local_format[local_column] = DirectInflowType.CONCENTRATION
-                elif self.cboInflowType.currentIndex == 1:
+                elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
 
         direct_section = self._main_form.project.find_section("INFLOWS")
@@ -342,9 +342,9 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 self.local_scale_factor[local_column] = self.txtScaleFactor.text()
                 self.local_timeseries_list[local_column] = self.cboTimeSeries.currentText()
                 self.local_baseline_pattern[local_column] = self.cboPattern.currentText()
-                if self.cboInflowType.currentIndex == 0:
+                if self.cboInflowType.currentIndex() == 0:
                     self.local_format[local_column] = DirectInflowType.CONCENTRATION
-                elif self.cboInflowType.currentIndex == 1:
+                elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
 
         # set the form

@@ -494,22 +494,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             selected_text = str(item.data())
         self.clear_object_listing()
         self.dockw_more.setWindowTitle('')
-        if self.project == None:
-            return
-        if selected_text == '':
+        if self.project is None or not selected_text:
             return
         ids = self.get_object_list(selected_text)
         self.tree_section = selected_text
-        if len(ids)> 0:
+        if ids is None:
+            self.dockw_more.setEnabled(False)
+        else:
+            self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            for id in ids:
-                self.listViewObjects.addItem(id)
+            self.listViewObjects.addItems(ids)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
         self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

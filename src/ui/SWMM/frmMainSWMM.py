@@ -400,8 +400,8 @@ class frmMainSWMM(frmMain):
             # do all of these for now, will want to restrict to only selected one
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         # the following items will respond to a click on a conduit form, not the tree diagram
-        # elif edit_name == "Conduits":
-        #     frm = frmCrossSection(self)
+        elif edit_name == "Conduits":
+            frm = frmCrossSection(self)
 
         # the following items will respond to a click on a node form, not the tree diagram
         # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":

@@ -150,7 +150,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():
-            self.plot_time(get_index, get_series, parameter_code, parameter_label)
+            self.plot_time(get_index, get_value, parameter_code, parameter_label)
 
         if self.rbnSystem.isChecked():
             self.plot_system_flow()
@@ -167,14 +167,14 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
         # self.close()  # Keep open to allow opening more graphs and controlling time index
 
-    def plot_time(self, get_index, get_series, parameter_code, parameter_label):
+    def plot_time(self, get_index, get_value, parameter_code, parameter_label):
         fig = plt.figure()
         title = "Time Series Plot of " + parameter_label
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
         for time_index in range(0, self.output.numPeriods):
-            x_values.append(self.report.elapsed_hours_at_index(time_index))
+            x_values.append(self.output.elapsed_hours_at_index(time_index))
 
         for list_item in self.lstToGraph.selectedItems():
             id = str(list_item.text())

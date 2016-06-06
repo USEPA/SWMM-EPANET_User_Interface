@@ -24,34 +24,32 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         self.listener = listener
         self.cboObjectType.clear()
         if project and self.output:
-            if len(self.output.node_ids):
+            if self.output.subcatchment_ids:
                 self.cboObjectType.addItem("Subcatchment")
-            if len(self.output.node_ids):
+            if self.output.node_ids:
                 self.cboObjectType.addItem("Node")
-            if len(self.output.link_ids):
+            if self.output.link_ids:
                 self.cboObjectType.addItem("Link")
-            if len(self.output.node_ids):
-                self.cboObjectType.addItem("System")
-            if self.cboObjectType.count() > 0:
-                self.cboObjectType.setCurrentIndex(0)
+            self.cboObjectType.addItem("System")
+            self.cboObjectType.setCurrentIndex(0)
 
     def cboObjectType_currentIndexChanged(self):
         has_objects = True
         if self.cboObjectType.currentText() == "Subcatchment":
-            items = SMO.SMO_subcatchAttributeNames  #subcatchment_ids
+            variables = SMO.SMO_subcatchAttributeNames  #subcatchment_ids
         elif self.cboObjectType.currentText() == "Node":
-            items = SMO.SMO_nodeAttributeNames  # node_ids
+            variables = SMO.SMO_nodeAttributeNames  # node_ids
         elif self.cboObjectType.currentText() == "Link":
-            items = SMO.SMO_linkAttributeNames  # link_ids
+            variables = SMO.SMO_linkAttributeNames  # link_ids
         elif self.cboObjectType.currentText() == "System":
-            items = SMO.SMO_systemAttributeNames
+            variables = SMO.SMO_systemAttributeNames
             has_objects = False
         else:
-            items = ["None"]
+            variables = ["None"]
             has_objects = False
 
         self.cboVariable.clear()
-        for item in items:
+        for item in variables:
             self.cboVariable.addItem(item)
 
         self.lblSpecify.setEnabled(has_objects)

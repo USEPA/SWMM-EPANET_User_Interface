@@ -212,6 +212,8 @@ class frmMainSWMM(frmMain):
         self.model = "SWMM"
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
+        self.status_suffix = "_status.txt"
+        self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''  # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
         self.project = Project()
@@ -296,9 +298,15 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def report_profile(self):
-        self._frmProfilePlot = frmProfilePlot(self)
-        self._frmProfilePlot.show()
-        pass
+        if self.get_output():
+            self._frmProfilePlot = frmProfilePlot(self)
+            self._frmProfilePlot.set_from(self.project, self.get_output())
+            self._frmProfilePlot.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_timeseries(self):
         if self.get_output():
@@ -312,9 +320,15 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def report_scatter(self):
-        self._frmScatterPlot = frmScatterPlot(self)
-        self._frmScatterPlot.show()
-        pass
+        if self.get_output():
+            self._frmScatterPlot = frmScatterPlot(self)
+            self._frmScatterPlot.set_from(self.project, self.get_output())
+            self._frmScatterPlot.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_variable(self):
         self._frmTableSelection = frmTableSelection(self)
@@ -820,6 +834,8 @@ class frmMainSWMM(frmMain):
         if os.path.exists(file_name):
 
             prefix, extension = os.path.splitext(file_name)
+            self.status_file_name = prefix + self.status_suffix
+            self.output_filename = prefix + '.out'
             # if not os.path.exists(self.model_path):
             #     if 'darwin' in sys.platform:
             #         lib_name = 'libswmm.dylib'
@@ -841,12 +857,12 @@ class frmMainSWMM(frmMain):
             # if os.path.exists(self.model_path):
             #     try:
             #         from Externals.swmm5 import pyswmm
-            #         swmm_object = pyswmm(file_name, prefix + '.rpt', prefix + '.out', self.model_path)
+            #         swmm_object = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
             #         swmm_object.swmmExec()
             #         print(swmm_object.swmm_getVersion())
             #         print(swmm_object.swmm_getMassBalErr())
             #
-            #         # model_api = pyepanet.ENepanet(file_name, prefix + '.rpt', prefix + '.bin', self.model_path)
+            #         # model_api = pyepanet.ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
             #         # frmRun = frmRunEPANET(model_api, self.project, self)
             #         # self._forms.append(frmRun)
             #         # if not use_existing:
@@ -879,11 +895,9 @@ class frmMainSWMM(frmMain):
             #     #     return
 
             # Could not run with library, try running with executable
-            prefix, extension = os.path.splitext(file_name)
             args = []
             exe_name = "swmm5.exe"
             exe_path = os.path.join(self.assembly_path, exe_name)
-            self.output_filename = prefix + '.out'
             if not os.path.isfile(exe_path):
                 pp = os.path.dirname(os.path.dirname(self.assembly_path))
                 exe_path = os.path.join(pp, "Externals", exe_name)
@@ -894,7 +908,7 @@ class frmMainSWMM(frmMain):
                 exe_path = QFileDialog.getOpenFileName(self, 'Locate SWMM Executable', '/', 'exe files (*.exe)')
             if os.path.isfile(exe_path):
                 args.append(file_name)
-                args.append(prefix + '.rpt')
+                args.append(self.status_file_name)
                 args.append(self.output_filename)
                 # running the Exe
                 status = StatusMonitor0(exe_path, args, self, model='SWMM')

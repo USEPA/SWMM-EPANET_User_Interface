@@ -1,0 +1,37 @@
+# Test 'File' Menu
+
+Start EPANET.
+
+Test 'Open': Open the file named 'Net1.inp' using 'File:Open'.
+
+Test 'Save as': Save the project using 'File:Save As..' with the name 'Net1x1.inp'.
+
+Compare files 'Net1.inp' with 'Net1x1.inp' (many differences, new files missing Sections [Energy] and [Backdrop])
+
+Save the project using 'File:Save As..' with the name 'Net1x2.inp'.
+
+Change 'Title' to 'EPANET Example Network 1 - Test File Menu'
+
+Test 'Save': Save the project using 'File:Save..'.
+
+Compare files 'Net1x1.inp' with 'Net1x2.inp'. Only difference should be title
+
+Test 'New': click 'New', double-lick 'Title', shows empty editor, type 'New Project'
+
+Test 'Save': Save the project using 'File:Save..' (cannot find the file saved)
+
+Test 'Save as': Save the project using 'File:Save as..' with the name 'testNewProject.inp'
+
+Test 'Recent' (not working)
+
+Test 'Import' (not working)
+
+Test 'Export' (not working)
+
+Test 'Page setup' (not working)
+
+Test 'Print Preview' (not working)
+
+Test 'Print' (not working)
+
+Test 'Exit', exited.

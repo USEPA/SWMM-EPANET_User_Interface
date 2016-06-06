@@ -41,15 +41,15 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         if section.normal_flow_limited == core.swmm.options.dynamic_wave.NormalFlowLimited.BOTH:
             self.cboNormal.setCurrentIndex(2)
 
-        self.cboThreads.setCurrentIndex(section.threads - 1)
+        self.cboThreads.setCurrentIndex(int(section.threads) - 1)
         if section.variable_step > 0:
             self.cbxUseVariable.setChecked(True)
-        self.sbxAdjusted.setValue(section.variable_step * 100)
+        self.sbxAdjusted.setValue(float(section.variable_step) * 100)
         self.txtMinimum.setText(str(section.minimum_step))
         self.txtLengthening.setText(str(section.lengthening_step))
         self.txtSurfaceArea.setText(str(section.min_surface_area))
         self.txtTolerance.setText(str(section.head_tolerance))
-        self.sbxTrials.setValue(section.max_trials)
+        self.sbxTrials.setValue(int(section.max_trials))
 
     def cmdOK_Clicked(self):
         # section = core.swmm.options.dynamic_wave.DynamicWave()

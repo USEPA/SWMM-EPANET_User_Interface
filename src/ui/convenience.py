@@ -17,3 +17,12 @@ def set_combo(combo_box, value):
             combo_box.setCurrentIndex(index)
     except Exception as e:
         print(str(e))
+
+
+def all_list_items(list_widget):
+    """Get all the items in a QListWidget as a list of strings"""
+    return [str(list_widget.item(i).text()) for i in range(list_widget.count())]
+
+
+def selected_list_items(list_widget):
+    return [str(list_item.text()) for list_item in list_widget.selectedItems()]

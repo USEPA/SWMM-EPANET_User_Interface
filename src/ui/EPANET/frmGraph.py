@@ -4,6 +4,7 @@ from PyQt4.QtGui import QMessageBox
 import matplotlib.pyplot as plt
 import core.epanet.project
 from core.epanet.reports import Reports
+from ui.convenience import all_list_items, selected_list_items
 from ui.model_utility import transl8
 from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import *
@@ -150,7 +151,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():
-            self.plot_time(get_index, get_value, parameter_code, parameter_label)
+            self.plot_time(get_index, get_value, parameter_code, parameter_label, selected_list_items(self.lstToGraph))
 
         if self.rbnSystem.isChecked():
             self.plot_system_flow()
@@ -161,13 +162,17 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                                     QMessageBox.Ok)
         else:
             if self.rbnProfile.isChecked():
-                self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index)
+                graph_ids = selected_list_items(self.lstToGraph)
+                if not graph_ids:
+                    graph_ids = self.report.all_node_ids()
+                self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index, graph_ids)
             if self.rbnFrequency.isChecked():
-                self.plot_freq(get_index, get_value, parameter_code, parameter_label, time_index)
+                self.plot_freq(get_index, get_value, parameter_code, parameter_label,
+                               time_index, all_list_items(self.lstToGraph))
 
         # self.close()  # Keep open to allow opening more graphs and controlling time index
 
-    def plot_time(self, get_index, get_value, parameter_code, parameter_label):
+    def plot_time(self, get_index, get_value, parameter_code, parameter_label, ids):
         fig = plt.figure()
         title = "Time Series Plot of " + parameter_label
         fig.canvas.set_window_title(title)
@@ -176,37 +181,35 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         for time_index in range(0, self.output.numPeriods):
             x_values.append(self.output.elapsed_hours_at_index(time_index))
 
-        for list_item in self.lstToGraph.selectedItems():
-            id = str(list_item.text())
-            output_index = get_index(id)
+        line_count = 0
+        for each_id in ids:
+            output_index = get_index(each_id)
             y_values = []
             for time_index in range(0, self.output.numPeriods):
                 y_values.append(get_value(output_index, time_index, parameter_code))
-            plt.plot(x_values, y_values, label=id)
+            plt.plot(x_values, y_values, label=each_id)
+            line_count += 1
 
-        # fig.suptitle("Time Series Plot")
-        plt.ylabel(parameter_label)
-        plt.xlabel("Time (hours)")
-        plt.grid(True)
-        plt.legend()
-        plt.show()
-
-    def plot_profile(self, get_index, get_value, parameter_code, parameter_label, time_index):
-        fig = plt.figure()
-        graph_ids = []
-        for list_item in self.lstToGraph.selectedItems():
-            graph_ids.append(str(list_item.text()))
-        if not graph_ids:
-            graph_ids = self.report.all_node_ids()
-
-        if self.rbnNodes.isChecked():
-            x_values = self.report.node_distances(graph_ids)
+        if line_count > 0:
+            # fig.suptitle("Time Series Plot")
+            plt.ylabel(parameter_label)
+            plt.xlabel("Time (hours)")
+            plt.grid(True)
+            plt.legend()
+            plt.show()
         else:
-            x_values = range(0, len(graph_ids))
+            plt.close()
+            raise Exception("No lines were selected to graph")
 
+    def plot_profile(self, get_index, get_value, parameter_code, parameter_label, time_index, ids):
+        fig = plt.figure()
+        if self.rbnNodes.isChecked():
+            x_values = self.report.node_distances(ids)
+        else:
+            x_values = range(0, len(ids))
         self.time_linked_graphs.append(
-            [self.update_profile, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index])
-        self.update_profile(graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index)
+            [self.update_profile, ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index])
+        self.update_profile(ids, x_values, get_index, get_value, parameter_code, parameter_label, fig.number, time_index)
 
     def update_profile(self, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
         if time_index >= 0:
@@ -239,35 +242,38 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             fig.canvas.draw()
             plt.show()
 
-    def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index):
-        if time_index >= 0:
-            fig = plt.figure()
-            title = "Distribution of " + parameter_label + " at " + self.output.get_time_string(time_index)
-            fig.canvas.set_window_title(title)
-            plt.title(title)
-            items = self.lstToGraph.selectedItems()
-            count = len(items)
-            percent = []
-            values = []
-            index = 0
-            for list_item in items:
-                percent.append(index * 100 / count)
-                index += 1
-                id = str(list_item.text())
-                output_index = get_index(id)
-                values.append(get_value(output_index, time_index, parameter_code))
+    def plot_freq(self, get_index, get_value, parameter_code, parameter_label, time_index, ids):
+        if time_index < 0:
+            raise Exception("Time index not selected, cannot plot frequency")
+        count = len(ids)
+        if count < 1:
+            raise Exception("No items in list, cannot plot frequency")
+        fig = plt.figure()
+        title = "Distribution of " + parameter_label + " at " + self.output.get_time_string(time_index)
+        fig.canvas.set_window_title(title)
+        plt.title(title)
+        percent = []
+        values = []
+        index = 0
+        for each_id in ids:
+            percent.append(index * 100 / count)
+            index += 1
+            output_index = get_index(each_id)
+            values.append(get_value(output_index, time_index, parameter_code))
 
-            values.sort()
-            # Cumulative distributions:
-            plt.plot(values, percent)  # From 0 to the number of data points-1
-            # plt.step(values[::-1], np.arange(len(values)))  # From the number of data points-1 to 0
+        values.sort()
+        # Cumulative distributions:
+        plt.plot(values, percent)  # From 0 to the number of data points-1
+        # plt.step(values[::-1], np.arange(len(values)))  # From the number of data points-1 to 0
 
-            plt.ylabel("Percent Less Than")
-            plt.xlabel(parameter_label)
-            plt.grid(True)
-            plt.show()
+        plt.ylabel("Percent Less Than")
+        plt.xlabel(parameter_label)
+        plt.grid(True)
+        plt.show()
 
     def plot_system_flow(self):
+        if self.output.nodeCount < 1:
+            raise Exception("No node results present in output, cannot plot system flow")
         fig = plt.figure()
         title = "System Flow Balance"
         fig.canvas.set_window_title(title)
@@ -276,7 +282,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         produced = []
         consumed = []
         for time_index in range(0, self.output.numPeriods):
-            x_values.append(self.report.elapsed_hours_at_index(time_index))
+            x_values.append(self.output.elapsed_hours_at_index(time_index))
             produced.append(0)
             consumed.append(0)
 

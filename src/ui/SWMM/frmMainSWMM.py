@@ -20,6 +20,7 @@ from ui.SWMM.frmReportOptions import frmReportOptions
 from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
+from ui.SWMM.frmAbout import frmAbout
 from ui.SWMM.frmAquifers import frmAquifers
 from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmControls import frmControls
@@ -276,6 +277,20 @@ class frmMainSWMM(frmMain):
         self.actionStatistics_ReportMenu.setToolTip(transl8("frmMain", "Display Results Statistics", None))
         self.menuReport.addAction(self.actionStatistics_ReportMenu)
         QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
+
+        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
+        self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
+        self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
+        self.menuHelp.addAction(self.Help_Topics_Menu)
+        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+
+        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
+        self.Help_About_Menu.setText(transl8("frmMain", "About", None))
+        self.Help_About_Menu.setToolTip(transl8("frmMain", "About SWMM", None))
+        self.menuHelp.addAction(self.Help_About_Menu)
+        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
 
     def get_output(self):
         if not self.output:
@@ -915,6 +930,14 @@ class frmMainSWMM(frmMain):
                 status.show()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
+
+    def help_topics(self):
+        self.helper.show_help()
+
+    def help_about(self):
+        self._frmAbout = frmAbout(self)
+        self._frmAbout.show()
+        pass
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

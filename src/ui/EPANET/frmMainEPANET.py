@@ -9,7 +9,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
-
+from ui.help import HelpHandler
 from ui.frmMain import frmMain
 from ui.EPANET.frmEnergyOptions import frmEnergyOptions
 from ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
@@ -20,6 +20,7 @@ from ui.EPANET.frmReportOptions import frmReportOptions
 from ui.EPANET.frmTimesOptions import frmTimesOptions
 from ui.EPANET.frmTitle import frmTitle
 
+from ui.EPANET.frmAbout import frmAbout
 from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
@@ -112,6 +113,9 @@ class frmMainEPANET(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+        HelpHandler.init_class(os.path.join(self.assembly_path, "epanet.qhc"))
+        self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
+        self.helper = HelpHandler(self)
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
@@ -161,6 +165,20 @@ class frmMainEPANET(frmMain):
         self.actionTable_ReportMenu.setToolTip(transl8("frmMain", "Display table selection options", None))
         self.menuReport.addAction(self.actionTable_ReportMenu)
         QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
+
+        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
+        self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
+        self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
+        self.menuHelp.addAction(self.Help_Topics_Menu)
+        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+
+        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
+        self.Help_About_Menu.setText(transl8("frmMain", "About", None))
+        self.Help_About_Menu.setToolTip(transl8("frmMain", "About EPANET", None))
+        self.menuHelp.addAction(self.Help_About_Menu)
+        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
 
     def report_status(self):
         print "report_status"
@@ -564,6 +582,14 @@ class frmMainEPANET(frmMain):
                                                           'Locate ' + self.model + ' Library',
                                                           '/', '(*{0})'.format(os.path.splitext(lib_name)[1]))
         return filename
+
+    def help_topics(self):
+        self.helper.show_help()
+
+    def help_about(self):
+        self._frmAbout = frmAbout(self)
+        self._frmAbout.show()
+        pass
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

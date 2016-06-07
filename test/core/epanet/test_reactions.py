@@ -1,14 +1,14 @@
 import unittest
-from core.epanet.options.options import Options
+from core.inputfile import Section
+from core.epanet.project import Project
 from core.epanet.options import reactions
 
 
 class SimpleReactionsTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = Options()
+    """Test Reaction section"""
 
-    def setUp(self):
+    def test_get(self):
+        """Test get_text through matches()"""
         self.my_reactions = reactions.Reactions()
         self.my_reactions.order_bulk = 1.1
         self.my_reactions.order_wall = 1.2
@@ -17,8 +17,6 @@ class SimpleReactionsTest(unittest.TestCase):
         self.my_reactions.global_wall = 2.2
         self.my_reactions.limiting_potential = 0.1
         self.my_reactions.roughness_correlation = 0.2
-
-    def runTest(self):
 
         name = self.my_reactions.SECTION_NAME
         assert name == "[REACTIONS]"
@@ -32,3 +30,19 @@ class SimpleReactionsTest(unittest.TestCase):
             " Order Wall         	1.2"
 
         assert self.my_reactions.matches(expected_text)
+
+    def test_setget(self):
+        """Test set_text and get_text"""
+        self.my_reactions = reactions.Reactions()
+        test_text = "[REACTIONS]\n" \
+            " Order Tank         	1.3\n" \
+            " Global Wall        	2.2\n" \
+            " Roughness Correlation	0.2\n" \
+            " Limiting Potential 	0.1\n" \
+            " Global Bulk        	2.1\n" \
+            " Order Bulk         	1.1\n" \
+            " Order Wall         	1.2"
+        self.my_reactions.set_text(test_text)
+        assert self.my_reactions.matches(test_text)
+
+

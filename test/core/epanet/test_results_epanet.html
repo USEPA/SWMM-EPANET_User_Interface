@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-06-07 07:52:41</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.011000</p>
-<p class='attribute'><strong>Status:</strong> Pass 24</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-06-07 10:05:30</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.008000</p>
+<p class='attribute'><strong>Status:</strong> Pass 25</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -428,21 +428,26 @@ pt3.3: Section.text skipped:  [TIMES]
 </tr>
 
 <tr class='passClass'>
-    <td>test_reactions.SimpleReactionsTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_reactions.SimpleReactionsTest: Test Reaction section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c10',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c10',2)">Detail</a></td>
 </tr>
 
 <tr id='pt10.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_get: Test get_text through matches()</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt10.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_sources.SimpleSourcesTest</td>
+    <td>test_sources.SimpleSourcesTest: Test Sources section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -451,7 +456,7 @@ pt3.3: Section.text skipped:  [TIMES]
 </tr>
 
 <tr id='pt11.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test set_text and get_text</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
@@ -471,8 +476,8 @@ pt3.3: Section.text skipped:  [TIMES]
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>24</td>
-    <td>24</td>
+    <td>25</td>
+    <td>25</td>
     <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>

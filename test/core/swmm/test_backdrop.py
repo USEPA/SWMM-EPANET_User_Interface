@@ -1,43 +1,34 @@
-from core.swmm.options.backdrop import BackdropOptions
 import unittest
+from core.swmm.options.backdrop import BackdropOptions
 
 
 class SimpleBackdropTest(unittest.TestCase):
+    """Test BACKDROP section"""
 
-    def setUp(self):
+    def test_bare(self):
+        """Test bare section"""
         self.my_options = BackdropOptions()
-
-    def runTest(self):
-
-        # Get defaults
         default_text = self.my_options.get_text()
-
-        # Bare section read/write
-        # Write defaults rather than bare section, passed
-        test_text = r"""[BACKDROP]"""
-        # --Test set_text
-        self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        assert actual_text == default_text
-
-        # Test one set of parameters
-        test_text = """
-        [BACKDROP]
-        DIMENSIONS       	             0.0	             0.0	             0.0	             0.0
-         """
+        test_text = "[BACKDROP]"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
-        # --Test get_text through matches
+        assert actual_text == default_text
+
+    def test_backdrop(self):
+        """Test backdrop parameters"""
+        self.my_options = BackdropOptions()
+        test_text = """[BACKDROP]
+        DIMENSIONS    0.0	  0.0	0.0	 0.0
+         """
+        self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_text)
 
-        # Test on missing value
-        # Failed test
-        test_text = """
-        [BACKDROP]
-        DIMENSIONS       	             0.0	             0.0	             0.0
+    def test_missing_value(self): # TODO test missing value causes a crash
+        """Test on missing value"""
+        self.my_options = BackdropOptions()
+        test_text = """[BACKDROP]
+        DIMENSIONS     0.0     0.0     0.0
          """
-        #self.my_options.set_text(test_text)
-
-        pass
+        self.my_options.set_text(test_text)
+        # self.assertFalse(self.my_options.matches(test_text))

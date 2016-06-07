@@ -1,3 +1,14 @@
+##  This section is needed to run coverage from the command line ------TODO: change
+## >> Run coverage from command line, navigate to test_all.py
+## >> coverage run test_all.py
+## >> coverage report >> Report_coverage_EPANET.txt
+# import sys
+# sp = sorted(sys.path)
+# dnames = ', '.join(sp)
+# print(dnames)
+# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface")
+# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface\\src")
+# ---------------------------------------------------------------------------------
 import webbrowser
 import unittest
 import test.HTMLTestRunner
@@ -9,7 +20,7 @@ from test_times import SimpleTimesTest
 from test_energy import SimpleEnergyTest
 from test_report import SimpleReportTest
 from test_backdrop import SimpleBackdropTest
-from test_project import ProjectTest
+# from test_project import ProjectTest  # Changes to a individual regression test
 from test_patterns import SimplePatternTest
 from test_curves import SimpleCurveTest
 from test_demands import SimpleDemandsTest
@@ -57,7 +68,8 @@ my_suite.addTest(SimpleDemandsTest())
 # Water quality - MTP 2:
 my_suite.addTest(SimpleQualityTest('test_get'))
 my_suite.addTest(SimpleQualityTest('test_setget'))
-my_suite.addTest(SimpleReactionsTest())
+my_suite.addTest(SimpleReactionsTest('test_get'))
+my_suite.addTest(SimpleReactionsTest('test_setget'))
 my_suite.addTest(SimpleSourcesTest())
 # Mixing - MTP 3?
 

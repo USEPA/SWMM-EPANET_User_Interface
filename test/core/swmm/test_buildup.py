@@ -1,44 +1,32 @@
-from core.swmm.quality import Buildup
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.quality import Buildup
 
 
 class SingleBuildupTest(unittest.TestCase):
+    """Test BUILDUP section"""
 
-    def setUp(self):
-
+    def test_buildup(self):
+        """Test all options of one Buildup type in SWMM5.1"""
         self.my_options = Buildup()
-
-    def runTest(self):
-
-        # Test all options
-        test_text = r""" Residential      TSS              SAT        50       0        2        AREA """
-
-        # --Test set_text
+        test_text = "Residential    TSS   SAT   50   0    2   AREA "
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
+    def test_buildup_section(self):
+        """Test BUILDUP section using Project class"""
+        from_text = Project()
+        # source_text = '\n'.join(self.TEST_TEXT)
+        source_text = "[BUILDUP]\n" \
+                      ";;LandUse          Pollutant        Function   Coeff1   Coeff2   Coeff3   Normalizer\n" \
+                      ";;-----------------------------------------------------------------------------------\n" \
+                      "  Residential      TSS              SAT        50       0        2        AREA\n" \
+                      "  Residential      Lead             NONE       0        0        0        AREA\n" \
+                      "  Undeveloped      TSS              SAT        100      0        3        AREA\n" \
+                      "  Undeveloped      Lead             NONE       0        0        0        AREA"
 
-class MultiBuildupTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = Buildup()
-
-    def runTest(self):
-
-        test_text = r"""
-[BUILDUP]
-;;LandUse          Pollutant        Function   Coeff1   Coeff2   Coeff3   Normalizer
-;;-----------------------------------------------------------------------------------
-  Residential      TSS              SAT        50       0        2        AREA
-  Residential      Lead             NONE       0        0        0        AREA
-  Undeveloped      TSS              SAT        100      0        3        AREA
-  Undeveloped      Lead             NONE       0        0        0        AREA
-        """
-        # --Test set_text
-
-
-        pass
+        from_text.set_text(source_text)
+        project_section = from_text.buildup
+        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")

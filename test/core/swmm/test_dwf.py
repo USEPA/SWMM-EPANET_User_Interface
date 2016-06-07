@@ -1,23 +1,15 @@
-from core.swmm.hydraulics.node import DryWeatherInflow
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.node import DryWeatherInflow
 
 
-class SingleDWITest(unittest.TestCase):
+class SimpleDWITest(unittest.TestCase):
+    """Test DryWeatherInflow(DWF) Section"""
 
-    def setUp(self):
-
+    def test_example3(self):
+        """Test one set of DWI from example 3"""
         self.my_options = DryWeatherInflow()
-
-    def runTest(self):
-
-        # Test example 8
-        test_text = r"""J1               FLOW             0.008 """
-        # --Test set_text
-        self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
-
         # Test example 3
         test_text = r"""KRO3001          FLOW             1          "" "" "DWF" "" "" "" """""
         # --Test set_text
@@ -26,19 +18,22 @@ class SingleDWITest(unittest.TestCase):
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-
-        pass
-
-class MultiDWIsTest(unittest.TestCase):
-
-    def setUp(self):
-
+    def test_example8(self):
+        """Test one set of DWI from example 8"""
         self.my_options = DryWeatherInflow()
+        # Test example 8
+        test_text = r"""J1               FLOW             0.008 """
+        # --Test set_text
+        self.my_options.set_text(test_text)
+        # --Test get_text through matches
+        actual_text = self.my_options.get_text()  # display purpose
+        assert self.my_options.matches(test_text)
 
-    def runTest(self):
+    def test_dwf_section_example3(self):
+        """Test DWF section from example 3"""
 
-        #Example 3
-        test_text = r"""
+        from_text = Project()
+        source_text = r"""
 [DWF]
 ;;                                  Average    Time
 ;;Node             Parameter        Value      Patterns
@@ -74,8 +69,14 @@ class MultiDWIsTest(unittest.TestCase):
   KRO4019          FLOW             1          "" "" "DWF" "" "" "" ""
   SU1              FLOW             1          "" "" "DWF" "" "" "" ""
         """
-        # Example 8
-        test_text = """[DWF]
+        from_text.set_text(source_text)
+        project_section = from_text.dwf
+        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+
+    def test_dwf_section_example8(self):
+        """Test DWF section from example 8"""
+        from_text = Project()
+        source_text = r"""[DWF]
 ;;                                Average    Time
 ;;Node           Parameter        Value      Patterns
 ;;-------------- ---------------- ---------- ----------
@@ -85,6 +86,6 @@ J12              FLOW             0.0125
 J13              FLOW             0.0123
 Aux3             FLOW             0.004     """
         # --Test set_text
-
-
-        pass
+        from_text.set_text(source_text)
+        project_section = from_text.dwf
+        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")

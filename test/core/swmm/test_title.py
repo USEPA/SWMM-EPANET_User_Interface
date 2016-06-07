@@ -1,8 +1,8 @@
-from core.swmm.title import Title
 import unittest
+from core.swmm.title import Title
 
 
-class SimpleTitleTest(unittest.TestCase):
+class SimpleTitleTest(unittest.TestCase):  #TODO seperate them
     def __init__(self):
         unittest.TestCase.__init__(self)
 
@@ -72,6 +72,5 @@ class SimpleTitleTest(unittest.TestCase):
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
         assert self.my_title.matches(test_text)
-        pass
 
 

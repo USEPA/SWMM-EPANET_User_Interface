@@ -1,19 +1,18 @@
-from core.swmm.options.dynamic_wave import DynamicWave
-from core.swmm.options import dynamic_wave
 import unittest
+from core.swmm.options import dynamic_wave
 
 
 class  OptionsDynamicWaveTest(unittest.TestCase):
+    """Test OPTIONS section: Dynamic Wave"""
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_options = DynamicWave()
 
     def setUp(self):
 
         self.my_options = dynamic_wave.DynamicWave()
 
     def runTest(self):
-
+        """Test OPTIONS: Dynamic Wave """
         name = self.my_options.SECTION_NAME
         assert name == "[OPTIONS]"
 
@@ -29,12 +28,9 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
                         " THREADS            	1\n" + \
                         " MINIMUM_STEP       	0.5"
 
-        # assert self.my_options.matches(expected_text)
 
         # Test example from expected_text
         test_text = expected_text
-        # --Test set_text
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)

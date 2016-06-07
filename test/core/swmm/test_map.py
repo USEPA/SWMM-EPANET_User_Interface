@@ -1,8 +1,9 @@
-from core.swmm.options.map import MapOptions
 import unittest
+from core.swmm.options.map import MapOptions
 
 
 class SimpleMapTest(unittest.TestCase):
+    """Test MAP section"""
 
     TEST_TEXT = [("[MAP]\n"
                   "DIMENSIONS 0.000 0.000 10000.000 10000.000\n"
@@ -31,6 +32,3 @@ class SimpleMapTest(unittest.TestCase):
                     mapxy.append(float(s))
             for i in range(len(mapxy)):
                 assert self.my_options.dimensions[i] == mapxy[i]
-        pass
-
-

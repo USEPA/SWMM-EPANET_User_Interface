@@ -19,7 +19,7 @@ from test_options_dates import OptionsDatesTest
 from test_options_dynamicwave import OptionsDynamicWaveTest
 from test_files import SimpleFilesTest
 from test_options_general import OptionsGeneralTest
-from test_options_interfacefiles import OptionsInterfaceFilesTest
+# from test_options_interfacefiles import OptionsInterfaceFilesTest
 from test_map import SimpleMapTest
 from test_report import SimpleReportTest
 from test_options_timesteps import OptionsTimestepTest
@@ -27,23 +27,20 @@ from test_options_timesteps import OptionsTimestepTest
 # Climatology
 from test_evaporation import SimpleEvaporationTest
 from test_evaporation import EvaporationTest
-from test_temperature import ClimatologyTemperatureTest
+from test_temperature import TemperatureTest
 from test_adjustments import AdjustmentsTest
 
 # Hydrology
 from test_aquifers import SimpleAquifersTest
-from test_lid_controls import SingleLIDControlTest
-from test_raingages import SingleRainGageTest
-from test_snowpack import SingleSnowPackTest
-from test_subcatchments import SingleSubcatchmentTest
-from test_infiltrations import SingleHortonInfiltrationTest
-from test_infiltrations import SingleGreenAmptInfiltrationTest
-from test_infiltrations import SingleCurveNumberInfiltrationTest
-from test_groundwater import SingleGroundwaterTest
-from test_lid_usage import SingleLIDUsageTest
+from test_lid_controls import SimpleLIDControlTest
+from test_raingages import SimpleRainGageTest
+from test_snowpack import SimpleSnowPackTest
+from test_subcatchments import SimpleSubcatchmentTest
+from test_infiltrations import InfiltrationTest
+from test_groundwater import SimpleGroundwaterTest
+from test_lid_usage import SimpleLIDUsageTest
 from test_coverages import SimpleCoverageTest
-from test_loadings import SingleLoadingTest
-from test_hydrographs import SingleHydrographTest
+from test_loadings import SimpleLoadingTest
 from test_hydrographs import SimpleHydrographsTest
 
 # Hydraulics
@@ -55,26 +52,25 @@ from test_conduits import SimpleConduitTest
 # Weir
 # Outlet
 # CrossSection
-from test_xsections import SingleCrossSectionTest
-from test_transects import SingleTransectTest
-from test_transects import MultipleTransectsTest
+from test_xsections import SimpleCrossSectionTest
+from test_transects import SimpleTransectTest
 from test_xsection import XsectionTest
 
 # Node:
-from test_junctions import SingleJunctionTest
-from test_outfalls import SingleOutfallTest
+from test_junctions import SimpleJunctionTest
+from test_outfalls import SimpleOutfallTest
 from test_dividers import SimpleDividerTest
 # Storage
-from test_inflows import SingleInflowTest
+from test_inflows import SimpleInflowTest
 from test_dwf import SimpleDWITest
-from test_RDII import SingleRDIITest
-from test_treatment import SingleTreatmentTest
+from test_RDII import SimpleRDIITest
+from test_treatment import SimpleTreatmentTest
 
 # Quality:
-from test_pollutants import SinglePollutantTest
+from test_pollutants import SimplePollutantTest
 from test_buildup import SingleBuildupTest
-from test_washoff import SingleWashoffTest
-from test_landuses import SingleLanduseTest
+from test_washoff import SimpleWashoffTest
+from test_landuses import SimpleLanduseTest
 
 # Map related:
 # -- Map is in options group
@@ -89,8 +85,8 @@ from test_landuses import SingleLanduseTest
 # Mislaneous relations:
 from test_curves import SimpleCurveTest
 # Hydrographs is moved to Hydrology section
-from test_patterns import SinglePatternTest
-from test_timeseries import SingleTimeSeriesTest
+from test_patterns import SimplePatternTest
+from test_timeseries import SimpleTimeSeriesTest
 
 # Mislaneous
 # from test_energy import SimpleEnergyTest
@@ -110,8 +106,10 @@ my_suite.addTest(SimpleFilesTest('test_more_space'))
 my_suite.addTest(SimpleFilesTest('test_space_in_filename'))
 my_suite.addTest(SimpleFilesTest('test_filename_with_path'))
 my_suite.addTest(SimpleFilesTest('test_all_options'))
-my_suite.addTest(OptionsGeneralTest())
-my_suite.addTest(OptionsInterfaceFilesTest())
+my_suite.addTest(SimpleFilesTest('test_interface_files'))
+my_suite.addTest(OptionsGeneralTest('test_all_opts'))
+my_suite.addTest(OptionsGeneralTest('test_current_text'))
+# my_suite.addTest(OptionsInterfaceFilesTest())
 my_suite.addTest(SimpleMapTest())
 my_suite.addTest(SimpleReportTest())
 my_suite.addTest(OptionsTimestepTest())
@@ -129,7 +127,8 @@ my_suite.addTest(EvaporationTest("test_temperature"))
 my_suite.addTest(EvaporationTest("test_file"))
 my_suite.addTest(EvaporationTest("test_recovery"))
 
-my_suite.addTest(ClimatologyTemperatureTest())
+my_suite.addTest(TemperatureTest('test_default'))
+my_suite.addTest(TemperatureTest('test_ts'))
 my_suite.addTest(AdjustmentsTest('test_default'))
 my_suite.addTest(AdjustmentsTest('test_all_opts'))
 my_suite.addTest(AdjustmentsTest('test_miss_col'))
@@ -138,21 +137,34 @@ my_suite.addTest(AdjustmentsTest('test_miss_row'))
 # Hydrology
 my_suite.addTest(SimpleAquifersTest('test_aquifer'))
 my_suite.addTest(SimpleAquifersTest('test_aquifers'))
-my_suite.addTest(SingleLIDControlTest())
-my_suite.addTest(SingleRainGageTest())
-my_suite.addTest(SingleSnowPackTest())
-my_suite.addTest(SingleSubcatchmentTest())
-my_suite.addTest(SingleHortonInfiltrationTest())
-my_suite.addTest(SingleGreenAmptInfiltrationTest())
-my_suite.addTest(SingleCurveNumberInfiltrationTest())
-my_suite.addTest(SingleGroundwaterTest())
-my_suite.addTest(SingleLIDUsageTest())
+my_suite.addTest(SimpleLIDControlTest('test_lid_surface'))
+my_suite.addTest(SimpleLIDControlTest('test_lid_control'))
+my_suite.addTest(SimpleLIDControlTest('test_example4a'))
+my_suite.addTest(SimpleRainGageTest('test_one_raingage'))
+my_suite.addTest(SimpleRainGageTest('test_raingage_section'))
+my_suite.addTest(SimpleSnowPackTest('test_one_pack'))
+my_suite.addTest(SimpleSnowPackTest('test_one_type'))
+my_suite.addTest(SimpleSnowPackTest('test_snowpacks_section'))
+my_suite.addTest(SimpleSubcatchmentTest('test_pk'))
+my_suite.addTest(SimpleSubcatchmentTest('test_nopk'))
+my_suite.addTest(SimpleSubcatchmentTest('test_missing'))
+my_suite.addTest(InfiltrationTest('test_horton'))
+my_suite.addTest(InfiltrationTest('test_greenampt'))
+my_suite.addTest(InfiltrationTest('test_curvenumber'))
+my_suite.addTest(InfiltrationTest('test_horton_infiltration_section'))
+my_suite.addTest(InfiltrationTest('test_greenampt_infiltration_section'))
+my_suite.addTest(InfiltrationTest('test_curvenumber_infiltration_section'))
+my_suite.addTest(SimpleGroundwaterTest('test_groundwater'))
+my_suite.addTest(SimpleGroundwaterTest('test_groundwater_section'))
+my_suite.addTest(SimpleLIDUsageTest('test_lid_usage'))
+my_suite.addTest(SimpleLIDUsageTest('test_lid_usage_section'))
 my_suite.addTest(SimpleCoverageTest('test_coverage'))
 my_suite.addTest(SimpleCoverageTest('test_default_coverages'))
 my_suite.addTest(SimpleCoverageTest('test_coverages'))
-my_suite.addTest(SingleLoadingTest())
-my_suite.addTest(SingleHydrographTest())
-my_suite.addTest(SimpleHydrographsTest())
+my_suite.addTest(SimpleLoadingTest('test_one_loading'))
+my_suite.addTest(SimpleLoadingTest('test_loading_section'))
+my_suite.addTest(SimpleHydrographsTest('test_hydrograph'))
+my_suite.addTest(SimpleHydrographsTest('test_hydrographs'))
 
 # Hydraulics
 # Link:
@@ -162,14 +174,18 @@ my_suite.addTest(SimpleHydrographsTest())
 # Orifice
 # Weir
 # Outlet
-my_suite.addTest(SingleCrossSectionTest())
-my_suite.addTest(SingleTransectTest())
-my_suite.addTest(MultipleTransectsTest())
+my_suite.addTest(SimpleCrossSectionTest('test_one_xsection'))
+my_suite.addTest(SimpleCrossSectionTest('test_xsections_section'))
+my_suite.addTest(SimpleTransectTest('test_one_transect'))
+my_suite.addTest(SimpleTransectTest('test_transects'))
+my_suite.addTest(SimpleTransectTest('test_transect_section'))
 my_suite.addTest(XsectionTest())
 
 # Node:
-my_suite.addTest(SingleJunctionTest())
-my_suite.addTest(SingleOutfallTest())
+my_suite.addTest(SimpleJunctionTest('test_all_opts'))
+my_suite.addTest(SimpleJunctionTest('test_selected_parameters'))
+my_suite.addTest(SimpleJunctionTest('test_junctions'))
+my_suite.addTest(SimpleOutfallTest('test_one_outfall'))
 # my_suite.addTest(SimpleDividerTest('test_overflow_divider'))
 # my_suite.addTest(SimpleDividerTest('test_cutoff_divider'))
 # my_suite.addTest(SimpleDividerTest('test_tabular_divider'))
@@ -177,26 +193,45 @@ my_suite.addTest(SingleOutfallTest())
 # my_suite.addTest(SimpleDividerTest('test_dividers'))
 
 # Storage
-my_suite.addTest(SingleInflowTest())
+my_suite.addTest(SimpleInflowTest('test_flow_type'))
+my_suite.addTest(SimpleInflowTest('test_mass_type'))
+my_suite.addTest(SimpleInflowTest('test_flow_ts_type'))
+my_suite.addTest(SimpleInflowTest('test_inflows_flow'))
+my_suite.addTest(SimpleInflowTest('test_inflows_flowts'))
 my_suite.addTest(SimpleDWITest('test_example3'))
 my_suite.addTest(SimpleDWITest('test_example8'))
 my_suite.addTest(SimpleDWITest('test_dwf_section_example3'))
 my_suite.addTest(SimpleDWITest('test_dwf_section_example8'))
-my_suite.addTest(SingleRDIITest())
-my_suite.addTest(SingleTreatmentTest())
+my_suite.addTest(SimpleRDIITest('test_one_rdii'))
+my_suite.addTest(SimpleRDIITest('test_rdii_section'))
+my_suite.addTest(SimpleTreatmentTest('test_bod'))
+my_suite.addTest(SimpleTreatmentTest('test_lead'))
+my_suite.addTest(SimpleTreatmentTest('test_treatment_section'))
 
 # Quality:
-my_suite.addTest(SinglePollutantTest())
+my_suite.addTest(SimplePollutantTest('test_one_pollutant'))
+my_suite.addTest(SimplePollutantTest('test_pollutant_section'))
 my_suite.addTest(SingleBuildupTest('test_buildup'))
 my_suite.addTest(SingleBuildupTest('test_buildup_section'))
-my_suite.addTest(SingleWashoffTest())
-my_suite.addTest(SingleLanduseTest())
+my_suite.addTest(SimpleWashoffTest('test_one_washoff'))
+my_suite.addTest(SimpleWashoffTest('test_washoff_section'))
+my_suite.addTest(SimpleLanduseTest('test_default'))
+my_suite.addTest(SimpleLanduseTest('test_all_opts'))
+my_suite.addTest(SimpleLanduseTest('test_landuses'))
 
 # Mislaneous
 my_suite.addTest(SimpleTitleTest())
-my_suite.addTest(SingleTimeSeriesTest())
+my_suite.addTest(SimpleTimeSeriesTest('test_file'))
+my_suite.addTest(SimpleTimeSeriesTest('test_data'))
+my_suite.addTest(SimpleTimeSeriesTest('test_multiple_lines'))
+my_suite.addTest(SimpleTimeSeriesTest('test_timeseries_section'))
 # will need for later MTPs:
-my_suite.addTest(SinglePatternTest())
+my_suite.addTest(SimplePatternTest('test_hourly'))
+my_suite.addTest(SimplePatternTest('test_daily'))
+my_suite.addTest(SimplePatternTest('test_monthly'))
+my_suite.addTest(SimplePatternTest('test_weekly'))
+my_suite.addTest(SimplePatternTest('test_design'))
+my_suite.addTest(SimplePatternTest('test_pattern_section'))
 my_suite.addTest(SimpleCurveTest('test_storage_curve'))
 my_suite.addTest(SimpleCurveTest('test_pump_curve'))
 my_suite.addTest(SimpleCurveTest('test_curves_section'))

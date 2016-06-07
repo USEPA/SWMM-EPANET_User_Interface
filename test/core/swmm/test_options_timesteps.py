@@ -1,20 +1,13 @@
-from core.swmm.options.time_steps import TimeSteps
-from core.swmm.options import time_steps
 import unittest
+from core.swmm.options import time_steps
 
 
 class OptionsTimestepTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = TimeSteps()
-
-    def setUp(self):
-
-        self.my_options = time_steps.TimeSteps()
-
+    """Test OPTIONS: Time steps"""
 
     def runTest(self):
-
+        """Test OPTIONS: Time steps"""
+        self.my_options = time_steps.TimeSteps()
         name = self.my_options.SECTION_NAME
         assert name == "[OPTIONS]"
 

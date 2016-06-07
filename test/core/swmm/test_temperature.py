@@ -1,36 +1,30 @@
-from core.swmm.climatology.climatology import Temperature
 import unittest
+from core.swmm.climatology.climatology import Temperature
 
 
-class ClimatologyTemperatureTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+class TemperatureTest(unittest.TestCase):  # TODO complete conversion
+    """Test TEMPERATURE section"""
 
-    def setUp(self):
-
+    def test_default(self):
+        """Test default, default is empty string, no adjustments"""
         self.my_options = Temperature()
-
-
-    def runTest(self):
-
-        # Test default, default is empty string, no adjustments
         name = self.my_options.SECTION_NAME
         assert name == "[TEMPERATURE]"
         actual_text = self.my_options.get_text()
         assert actual_text == ''
 
-        # Test daily temperature in time series
+    def test_ts(self):
+        self.my_options = Temperature()
+        """Test daily temperature in time series"""
         test_time_series = r"""
         [TEMPERATURE]
         ;;Parameter  TSeries
         TIMESERIES TS1
         """
-        # --Test set_text
         self.my_options.set_text(test_time_series)
         # --Test get_text through matches
-        # --Failed base SNOW_MELT default values are written
         actual_text = self.my_options.get_text() # display purpose
-        #assert self.my_options.matches(test_time_series)
+        assert self.my_options.matches(test_time_series)
 
         # Test daily temperature in file daily_temperature.txt
         test_file = r"""
@@ -182,4 +176,3 @@ class ClimatologyTemperatureTest(unittest.TestCase):
         actual_text = self.my_options.get_text() # display purpose
         #assert self.my_options.matches(test_snowmelt)
 
-        pass

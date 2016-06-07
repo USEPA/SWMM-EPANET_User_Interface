@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-06-07 11:38:53</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.026000</p>
-<p class='attribute'><strong>Status:</strong> Pass 59 Failure 10 Error 1</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-06-07 14:41:58</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.040000</p>
+<p class='attribute'><strong>Status:</strong> Pass 83 Failure 22 Error 3</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -241,7 +241,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_options_dates.OptionsDatesTest</td>
+    <td>test_options_dates.OptionsDatesTest: Test OPTIONS: Dates</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -250,12 +250,12 @@ function showOutput(id, name) {
 </tr>
 
 <tr id='pt2.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test Dates portion in OPTIONS</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_options_dynamicwave.OptionsDynamicWaveTest</td>
+    <td>test_options_dynamicwave.OptionsDynamicWaveTest: Test OPTIONS section: Dynamic Wave</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -264,17 +264,17 @@ function showOutput(id, name) {
 </tr>
 
 <tr id='pt3.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test OPTIONS: Dynamic Wave</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
     <td>test_files.SimpleFilesTest: Test FILES section</td>
-    <td>5</td>
-    <td>5</td>
+    <td>6</td>
+    <td>6</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c4',5)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c4',6)">Detail</a></td>
 </tr>
 
 <tr id='pt4.1' class='hiddenRow'>
@@ -302,32 +302,42 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
-    <td>test_options_general.OptionsGeneralTest: In core.swmm.options, test field values after setting from text.</td>
-    <td>1</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c5',1)">Detail</a></td>
+<tr id='pt4.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_interface_files: Test FILES options using the Section class</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft5.1' class='none'>
-    <td class='failCase'><div class='testcase'>runTest: Test complete set_text for SWMM 5.1,</div></td>
+<tr class='failClass'>
+    <td>test_options_general.OptionsGeneralTest: Test OPTIONS section</td>
+    <td>2</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c5',2)">Detail</a></td>
+</tr>
+
+<tr id='pt5.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all_opts: Test all default values specified in 5.1</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft5.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_current_text: Test using the current text array</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft5.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft5.2')" >
         fail</a>
 
-    <div id='div_ft5.1' class="popup_window">
+    <div id='div_ft5.2' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft5.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft5.2').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft5.1: Traceback (most recent call last):
-  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_options_general.py", line 243, in runTest
+ft5.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_options_general.py", line 244, in test_current_text
     assert self.options.matches(expected_text)
 AssertionError
 
@@ -340,7 +350,7 @@ AssertionError
 </tr>
 
 <tr class='passClass'>
-    <td>test_options_interfacefiles.OptionsInterfaceFilesTest</td>
+    <td>test_map.SimpleMapTest: Test MAP section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -354,7 +364,7 @@ AssertionError
 </tr>
 
 <tr class='passClass'>
-    <td>test_map.SimpleMapTest</td>
+    <td>test_report.SimpleReportTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -368,7 +378,7 @@ AssertionError
 </tr>
 
 <tr class='passClass'>
-    <td>test_report.SimpleReportTest</td>
+    <td>test_options_timesteps.OptionsTimestepTest: Test OPTIONS: Time steps</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -377,12 +387,12 @@ AssertionError
 </tr>
 
 <tr id='pt8.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test OPTIONS: Time steps</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_options_timesteps.OptionsTimestepTest</td>
+    <td>test_evaporation.SimpleEvaporationTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -395,70 +405,56 @@ AssertionError
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_evaporation.SimpleEvaporationTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c10',1)">Detail</a></td>
-</tr>
-
-<tr id='pt10.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
 <tr class='failClass'>
     <td>test_evaporation.EvaporationTest: Test all options provided in EVAPORATION section</td>
     <td>9</td>
     <td>5</td>
     <td>4</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c11',9)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c10',9)">Detail</a></td>
 </tr>
 
-<tr id='pt11.1' class='hiddenRow'>
+<tr id='pt10.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_bare: testing bare section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt11.2' class='hiddenRow'>
+<tr id='pt10.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_constant_only: testing constant only without DRY_ONLY</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt11.3' class='hiddenRow'>
+<tr id='pt10.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_constant_wt_dry_only: Test constant with DRY_ONLY, consistent with most examples</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt11.4' class='hiddenRow'>
+<tr id='pt10.4' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_monthly: Test monthly Example User2 and a few others</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt11.5' class='hiddenRow'>
+<tr id='pt10.5' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_monthly_fail: MONTHLY - edge case missing a month</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft11.6' class='none'>
+<tr id='ft10.6' class='none'>
     <td class='failCase'><div class='testcase'>test_timeseries: TIMESERIES Tseries</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.6')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.6')" >
         fail</a>
 
-    <div id='div_ft11.6' class="popup_window">
+    <div id='div_ft10.6' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.6').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.6').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft11.6: Traceback (most recent call last):
+ft10.6: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 120, in test_timeseries
     assert self.my_options.matches(test_text)
 AssertionError
@@ -471,22 +467,22 @@ AssertionError
     </td>
 </tr>
 
-<tr id='ft11.7' class='none'>
+<tr id='ft10.7' class='none'>
     <td class='failCase'><div class='testcase'>test_temperature: TEMPERATURE</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.7')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.7')" >
         fail</a>
 
-    <div id='div_ft11.7' class="popup_window">
+    <div id='div_ft10.7' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.7').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.7').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft11.7: Traceback (most recent call last):
+ft10.7: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 132, in test_temperature
     assert self.my_options.matches(test_text)
 AssertionError
@@ -499,22 +495,22 @@ AssertionError
     </td>
 </tr>
 
-<tr id='ft11.8' class='none'>
+<tr id='ft10.8' class='none'>
     <td class='failCase'><div class='testcase'>test_file: FILE</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.8')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.8')" >
         fail</a>
 
-    <div id='div_ft11.8' class="popup_window">
+    <div id='div_ft10.8' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.8').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.8').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft11.8: Traceback (most recent call last):
+ft10.8: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 144, in test_file
     assert self.my_options.matches(test_text)
 AssertionError
@@ -527,22 +523,22 @@ AssertionError
     </td>
 </tr>
 
-<tr id='ft11.9' class='none'>
+<tr id='ft10.9' class='none'>
     <td class='failCase'><div class='testcase'>test_recovery: RECOVERY PatternID</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.9')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.9')" >
         fail</a>
 
-    <div id='div_ft11.9' class="popup_window">
+    <div id='div_ft10.9' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.9').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.9').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft11.9: Traceback (most recent call last):
+ft10.9: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 156, in test_recovery
     assert self.my_options.matches(test_text)
 AssertionError
@@ -555,18 +551,46 @@ AssertionError
     </td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_temperature.ClimatologyTemperatureTest</td>
+<tr class='failClass'>
+    <td>test_temperature.TemperatureTest: Test TEMPERATURE section</td>
+    <td>2</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c12',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c11',2)">Detail</a></td>
 </tr>
 
-<tr id='pt12.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt11.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_default: Test default, default is empty string, no adjustments</div></td>
     <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft11.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_ts</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft11.2')" >
+        fail</a>
+
+    <div id='div_ft11.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft11.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft11.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 27, in test_ts
+    assert self.my_options.matches(test_time_series)
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -575,25 +599,25 @@ AssertionError
     <td>4</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c13',4)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c12',4)">Detail</a></td>
 </tr>
 
-<tr id='pt13.1' class='hiddenRow'>
+<tr id='pt12.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_default: Test default, default is empty string, no adjustments</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt13.2' class='hiddenRow'>
+<tr id='pt12.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_all_opts: Test all options with Example 1g in SWMM 5.1.</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt13.3' class='hiddenRow'>
+<tr id='pt12.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_miss_col: Edge Case 1: Missing a column - did not pass, expected to fail.</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt13.4' class='hiddenRow'>
+<tr id='pt12.4' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_miss_row: Edge Case 2: Missing a row - did not pass, expected to fail</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
@@ -604,142 +628,324 @@ AssertionError
     <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c14',2)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c13',2)">Detail</a></td>
 </tr>
 
-<tr id='pt14.1' class='hiddenRow'>
+<tr id='pt13.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_aquifer: Test one set of aquifer parameters in Example 5</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt14.2' class='hiddenRow'>
+<tr id='pt13.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_aquifers: Test AQUIFERS section using the Project class</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_lid_controls.SingleLIDControlTest</td>
-    <td>1</td>
+<tr class='failClass'>
+    <td>test_lid_controls.SimpleLIDControlTest: Test LID_CONTROLS section</td>
+    <td>3</td>
+    <td>2</td>
     <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c15',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c14',3)">Detail</a></td>
 </tr>
 
-<tr id='pt15.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt14.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_lid_surface: Test LID parameters from Example 4a, examined according to SWMM 5.1 manual</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
+<tr id='pt14.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_lid_control</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft14.3' class='none'>
+    <td class='failCase'><div class='testcase'>test_example4a: Test LID parameters from Example 4a, examined according to SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft14.3')" >
+        fail</a>
+
+    <div id='div_ft14.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft14.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft14.3: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_lid_controls.py", line 93, in test_example4a
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='errorClass'>
+    <td>test_raingages.SimpleRainGageTest: Test RAINGAGES section</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2</td>
+    <td><a href="javascript:showClassDetail('c15',2)">Detail</a></td>
+</tr>
+
+<tr id='ft15.1' class='none'>
+    <td class='errorCase'><div class='testcase'>test_one_raingage: Test one rain gage</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.1')" >
+        error</a>
+
+    <div id='div_ft15.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft15.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft15.1: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_raingages.py", line 14, in test_one_raingage
+    self.my_options.set_text(test_raingage)
+AttributeError: RainGage instance has no attribute 'set_text'
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft15.2' class='none'>
+    <td class='errorCase'><div class='testcase'>test_raingage_section: Test RAINGAGES section</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.2')" >
+        error</a>
+
+    <div id='div_ft15.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft15.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft15.2: Default Section for [RAINGAGES]
+Section.text skipped: RainGage         INTENSITY 0:05   1.0    TIMESERIES 2-yr
+Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_raingages.py", line 26, in test_raingage_section
+    project_section = from_text.raingages
+AttributeError: 'Project' object has no attribute 'raingages'
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
 <tr class='passClass'>
-    <td>test_raingages.SingleRainGageTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_snowpack.SimpleSnowPackTest</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c16',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c16',3)">Detail</a></td>
 </tr>
 
 <tr id='pt16.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_one_pack: Test one snow pack</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt16.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_type: test only one type</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt16.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_snowpacks_section: Test SNOWPACKS section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_snowpack.SingleSnowPackTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_subcatchments.SimpleSubcatchmentTest: Test SUBCATCHMENTS section</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c17',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c17',3)">Detail</a></td>
 </tr>
 
 <tr id='pt17.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_pk: Test one set of subcatchment parameters with spack</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_subcatchments.SingleSubcatchmentTest</td>
-    <td>1</td>
-    <td>1</td>
+<tr id='pt17.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_nopk: Test one set of subcatchment parameters without spack</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt17.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_missing: Test one set of subcatchment parameters missing last two parameters Slope and Clength</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>test_infiltrations.InfiltrationTest: Test INFILTRATION section</td>
+    <td>6</td>
+    <td>4</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c18',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c18',6)">Detail</a></td>
 </tr>
 
 <tr id='pt18.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_horton: Test Horton infiltration created based on SWMM 5.1 manual</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_infiltrations.SingleHortonInfiltrationTest</td>
+<tr id='pt18.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_greenampt: Test GreenAmpt infiltration created based on SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt18.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_curvenumber: Test Curver number infiltration created based on SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft18.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_horton_infiltration_section: Test INFILTRATION section Horton type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.4')" >
+        fail</a>
+
+    <div id='div_ft18.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft18.4: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 58, in test_horton_infiltration_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt18.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_greenampt_infiltration_section: Test INFILTRATION section Example 4a Green Ampt type</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft18.6' class='none'>
+    <td class='failCase'><div class='testcase'>test_curvenumber_infiltration_section: Test INFILTRATION section curve_number type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.6')" >
+        fail</a>
+
+    <div id='div_ft18.6' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.6').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft18.6: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 96, in test_curvenumber_infiltration_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='failClass'>
+    <td>test_groundwater.SimpleGroundwaterTest: Test GROUNDWATER section</td>
+    <td>2</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c19',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c19',2)">Detail</a></td>
 </tr>
 
 <tr id='pt19.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_groundwater: Test one set of groundwater parameters</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
+<tr id='ft19.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_groundwater_section: Test GROUNDWATER section through Project Class</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft19.2')" >
+        fail</a>
+
+    <div id='div_ft19.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft19.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft19.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_groundwater.py", line 29, in test_groundwater_section
+    assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
 <tr class='passClass'>
-    <td>test_infiltrations.SingleGreenAmptInfiltrationTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_lid_usage.SimpleLIDUsageTest: Test LIDUSAGE section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c20',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c20',2)">Detail</a></td>
 </tr>
 
 <tr id='pt20.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_lid_usage: Test aquifer parameters from SWMM 5.1 manual</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_infiltrations.SingleCurveNumberInfiltrationTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c21',1)">Detail</a></td>
-</tr>
-
-<tr id='pt21.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr class='passClass'>
-    <td>test_groundwater.SingleGroundwaterTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c22',1)">Detail</a></td>
-</tr>
-
-<tr id='pt22.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr class='passClass'>
-    <td>test_lid_usage.SingleLIDUsageTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c23',1)">Detail</a></td>
-</tr>
-
-<tr id='pt23.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt20.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_lid_usage_section: Test LIDUSAGE section through Project class</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
@@ -749,25 +955,25 @@ AssertionError
     <td>2</td>
     <td>1</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c24',3)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c21',3)">Detail</a></td>
 </tr>
 
-<tr id='ft24.1' class='none'>
+<tr id='ft21.1' class='none'>
     <td class='failCase'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.1')" >
         fail</a>
 
-    <div id='div_ft24.1' class="popup_window">
+    <div id='div_ft21.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft24.1: Section.text skipped: S2      Residential_1    27
+ft21.1: Section.text skipped: S2      Residential_1    27
 Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 14, in test_coverage
     assert self.my_options.subcatchment_name == 'S2'
@@ -781,42 +987,42 @@ AssertionError
     </td>
 </tr>
 
-<tr id='pt24.2' class='hiddenRow'>
+<tr id='pt21.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_default_coverages: Test default, empty string wo section name</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt24.3' class='hiddenRow'>
+<tr id='pt21.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_coverages: Test aquifer parameters in Example 5</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
-    <td>test_loadings.SingleLoadingTest</td>
-    <td>1</td>
+    <td>test_loadings.SimpleLoadingTest: Test LOADINGS section</td>
+    <td>2</td>
     <td>0</td>
-    <td>1</td>
+    <td>2</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c25',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c22',2)">Detail</a></td>
 </tr>
 
-<tr id='ft25.1' class='none'>
-    <td class='failCase'><div class='testcase'>runTest</div></td>
+<tr id='ft22.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft25.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.1')" >
         fail</a>
 
-    <div id='div_ft25.1' class="popup_window">
+    <div id='div_ft22.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft25.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft25.1: Traceback (most recent call last):
-  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 19, in runTest
+ft22.1: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 16, in test_one_loading
     assert self.my_options.matches(test_text)
 AssertionError
 
@@ -828,60 +1034,79 @@ AssertionError
     </td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_hydrographs.SingleHydrographTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c26',1)">Detail</a></td>
-</tr>
+<tr id='ft22.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_loading_section: Test LOADINGS section</div></td>
+    <td colspan='5' align='center'>
 
-<tr id='pt26.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.2')" >
+        fail</a>
+
+    <div id='div_ft22.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft22.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 29, in test_loading_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
     <td>test_hydrographs.SimpleHydrographsTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c27',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c23',2)">Detail</a></td>
 </tr>
 
-<tr id='pt27.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt23.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_hydrograph: Test one hydrograph based on SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt23.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_hydrographs: Test HYDROGRAPHS section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
-    <td>test_xsections.SingleCrossSectionTest</td>
-    <td>1</td>
+    <td>test_xsections.SimpleCrossSectionTest: Test XSECTIONS section</td>
+    <td>2</td>
     <td>0</td>
-    <td>1</td>
+    <td>2</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c28',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c24',2)">Detail</a></td>
 </tr>
 
-<tr id='ft28.1' class='none'>
-    <td class='failCase'><div class='testcase'>runTest</div></td>
+<tr id='ft24.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_one_xsection</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft28.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.1')" >
         fail</a>
 
-    <div id='div_ft28.1' class="popup_window">
+    <div id='div_ft24.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft28.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft28.1: Traceback (most recent call last):
-  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 53, in runTest
+ft24.1: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 53, in test_one_xsection
     assert self.my_options.matches(test_text)
 AssertionError
 
@@ -893,47 +1118,94 @@ AssertionError
     </td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_transects.SingleTransectTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c29',1)">Detail</a></td>
-</tr>
-
-<tr id='pt29.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr class='failClass'>
-    <td>test_transects.MultipleTransectsTest</td>
-    <td>1</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c30',1)">Detail</a></td>
-</tr>
-
-<tr id='ft30.1' class='none'>
-    <td class='failCase'><div class='testcase'>runTest</div></td>
+<tr id='ft24.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_xsections_section: Test XSECTIONS: example 3</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.2')" >
         fail</a>
 
-    <div id='div_ft30.1' class="popup_window">
+    <div id='div_ft24.2' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.2').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft30.1: Traceback (most recent call last):
-  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 54, in runTest
-    assert self.my_options.matches(test_text) #
+ft24.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 91, in test_xsections_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='failClass'>
+    <td>test_transects.SimpleTransectTest: Test TRANSECTS section</td>
+    <td>3</td>
+    <td>1</td>
+    <td>2</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c25',3)">Detail</a></td>
+</tr>
+
+<tr id='pt25.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_transect: Test one transect from Example-7-final</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft25.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_transects: Test transects:Example-7-final inp</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft25.2')" >
+        fail</a>
+
+    <div id='div_ft25.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft25.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft25.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 39, in test_transects
+    assert self.my_options.matches(test_text)
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft25.3' class='none'>
+    <td class='failCase'><div class='testcase'>test_transect_section: Test transects: using Project</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft25.3')" >
+        fail</a>
+
+    <div id='div_ft25.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft25.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft25.3: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 56, in test_transect_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
 AssertionError
 
 
@@ -950,25 +1222,25 @@ AssertionError
     <td>0</td>
     <td>0</td>
     <td>1</td>
-    <td><a href="javascript:showClassDetail('c31',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c26',1)">Detail</a></td>
 </tr>
 
-<tr id='ft31.1' class='none'>
+<tr id='ft26.1' class='none'>
     <td class='errorCase'><div class='testcase'>runTest</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft31.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft26.1')" >
         error</a>
 
-    <div id='div_ft31.1' class="popup_window">
+    <div id='div_ft26.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft31.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft26.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft31.1: Traceback (most recent call last):
+ft26.1: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_xsection.py", line 182, in runTest
     assert cur_section.transect == "Tran1"
 AttributeError: 'CrossSection' object has no attribute 'transect'
@@ -982,44 +1254,134 @@ AttributeError: 'CrossSection' object has no attribute 'transect'
 </tr>
 
 <tr class='passClass'>
-    <td>test_junctions.SingleJunctionTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_junctions.SimpleJunctionTest: Test JUNCTIONS section</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c32',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c27',3)">Detail</a></td>
 </tr>
 
-<tr id='pt32.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt27.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all_opts: Test junction with all options</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt27.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_selected_parameters: Test junction omit some parameters</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt27.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_junctions: Test JUNCTIONS section through Project class</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_outfalls.SingleOutfallTest</td>
+    <td>test_outfalls.SimpleOutfallTest: Test OUTFALLS section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c33',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c28',1)">Detail</a></td>
 </tr>
 
-<tr id='pt33.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt28.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_outfall: Test one outfall will all parameters</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt33.1')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt28.1')" >
         pass</a>
 
-    <div id='div_pt33.1' class="popup_window">
+    <div id='div_pt28.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt33.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt28.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-pt33.1: Section.text skipped:  18      975    FREE      NO       xxx
+pt28.1: Section.text skipped:  18      975    FREE      NO       xxx
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='failClass'>
+    <td>test_inflows.SimpleInflowTest: Test INFLOWS section</td>
+    <td>5</td>
+    <td>3</td>
+    <td>2</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c29',5)">Detail</a></td>
+</tr>
+
+<tr id='pt29.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_flow_type: Test inflow: FLOW type</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt29.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_mass_type: Test inflow: mass type</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt29.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_flow_ts_type: Test inflow: flow time series type</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft29.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.4')" >
+        fail</a>
+
+    <div id='div_ft29.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft29.4: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 73, in test_inflows_flow
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft29.5' class='none'>
+    <td class='failCase'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.5')" >
+        fail</a>
+
+    <div id='div_ft29.5' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.5').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft29.5: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 86, in test_inflows_flowts
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
 
 
         </pre>
@@ -1030,64 +1392,183 @@ pt33.1: Section.text skipped:  18      975    FREE      NO       xxx
 </tr>
 
 <tr class='passClass'>
-    <td>test_inflows.SingleInflowTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c34',1)">Detail</a></td>
-</tr>
-
-<tr id='pt34.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr class='passClass'>
     <td>test_dwf.SimpleDWITest: Test DryWeatherInflow(DWF) Section</td>
     <td>4</td>
     <td>4</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c35',4)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c30',4)">Detail</a></td>
 </tr>
 
-<tr id='pt35.1' class='hiddenRow'>
+<tr id='pt30.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_example3: Test one set of DWI from example 3</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt35.2' class='hiddenRow'>
+<tr id='pt30.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_example8: Test one set of DWI from example 8</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt35.3' class='hiddenRow'>
+<tr id='pt30.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_dwf_section_example3: Test DWF section from example 3</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt35.4' class='hiddenRow'>
+<tr id='pt30.4' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_dwf_section_example8: Test DWF section from example 8</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_RDII.SingleRDIITest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_RDII.SimpleRDIITest: Test RDII section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c36',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c31',2)">Detail</a></td>
 </tr>
 
-<tr id='pt36.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt31.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_rdii: Test one set of rdii</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt31.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_rdii_section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_treatment.SingleTreatmentTest</td>
+    <td>test_treatment.SimpleTreatmentTest</td>
+    <td>3</td>
+    <td>3</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c32',3)">Detail</a></td>
+</tr>
+
+<tr id='pt32.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bod: BOD first order decay, from SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt32.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_lead: Lead removal 20% of TSS removal</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt32.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_treatment_section: Test TREATMENT section</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='failClass'>
+    <td>test_pollutants.SimplePollutantTest: Test POLLUTANTS section</td>
+    <td>2</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c33',2)">Detail</a></td>
+</tr>
+
+<tr id='pt33.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_pollutant: Test one pollutant</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft33.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_pollutant_section: Test POLLUTANTS section through Project</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft33.2')" >
+        fail</a>
+
+    <div id='div_ft33.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft33.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft33.2: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 36, in test_pollutant_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_buildup.SingleBuildupTest: Test BUILDUP section</td>
+    <td>2</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c34',2)">Detail</a></td>
+</tr>
+
+<tr id='pt34.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_buildup: Test all options of one Buildup type in SWMM5.1</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt34.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_buildup_section: Test BUILDUP section using Project class</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_washoff.SimpleWashoffTest: Test WASHOFF section</td>
+    <td>2</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c35',2)">Detail</a></td>
+</tr>
+
+<tr id='pt35.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_washoff: Test all options</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt35.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_washoff_section: Test WASHOFF section</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_landuses.SimpleLanduseTest: Test LANDUSES section</td>
+    <td>3</td>
+    <td>3</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c36',3)">Detail</a></td>
+</tr>
+
+<tr id='pt36.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_default: Test default of one Landuse</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt36.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all_opts: Test all options of one Landuse</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt36.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_landuses: Test LANDUSES section</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_title.SimpleTitleTest</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -1100,106 +1581,94 @@ pt33.1: Section.text skipped:  18      975    FREE      NO       xxx
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_pollutants.SinglePollutantTest</td>
-    <td>1</td>
+<tr class='failClass'>
+    <td>test_timeseries.SimpleTimeSeriesTest: Test TIMESERIES section</td>
+    <td>4</td>
+    <td>3</td>
     <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c38',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c38',4)">Detail</a></td>
 </tr>
 
 <tr id='pt38.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_file: Use external file, Created based on SWMM 5.1 manual Page335</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
+<tr id='pt38.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_data: Time series data test, modified from SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt38.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_multiple_lines: Test the multi-line input format</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft38.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft38.4')" >
+        fail</a>
+
+    <div id='div_ft38.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft38.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft38.4: Traceback (most recent call last):
+  File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 65, in test_timeseries_section
+    assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+AssertionError
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
 <tr class='passClass'>
-    <td>test_buildup.SingleBuildupTest: Test BUILDUP section</td>
-    <td>2</td>
-    <td>2</td>
+    <td>test_patterns.SimplePatternTest: Test PATTERNS section</td>
+    <td>6</td>
+    <td>6</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c39',2)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c39',6)">Detail</a></td>
 </tr>
 
 <tr id='pt39.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_buildup: Test all options of one Buildup type in SWMM5.1</div></td>
+    <td class='none'><div class='testcase'>test_hourly: Test Pattern: Hourly total 24 per year</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt39.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_buildup_section: Test BUILDUP section using Project class</div></td>
+    <td class='none'><div class='testcase'>test_daily: Test Pattern: Daily total 7 per week</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_washoff.SingleWashoffTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c40',1)">Detail</a></td>
-</tr>
-
-<tr id='pt40.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt39.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_monthly: Test Pattern: Monthly total 12 per year</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_landuses.SingleLanduseTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c41',1)">Detail</a></td>
-</tr>
-
-<tr id='pt41.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt39.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_weekly: Test Pattern: Weekend total 24 per day</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_title.SimpleTitleTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c42',1)">Detail</a></td>
-</tr>
-
-<tr id='pt42.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt39.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_design: Test Pattern: Design pattern, no flag</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_timeseries.SingleTimeSeriesTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c43',1)">Detail</a></td>
-</tr>
-
-<tr id='pt43.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
-    <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr class='passClass'>
-    <td>test_patterns.SinglePatternTest</td>
-    <td>1</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c44',1)">Detail</a></td>
-</tr>
-
-<tr id='pt44.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+<tr id='pt39.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pattern_section: test PATTERNS section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
@@ -1209,35 +1678,35 @@ pt33.1: Section.text skipped:  18      975    FREE      NO       xxx
     <td>2</td>
     <td>1</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c45',3)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c40',3)">Detail</a></td>
 </tr>
 
-<tr id='pt45.1' class='hiddenRow'>
+<tr id='pt40.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_storage_curve: Test one set of Storage curve (SWMM 5.1 manual Page334)</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt45.2' class='hiddenRow'>
+<tr id='pt40.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_pump_curve: Test one set of Type 1 Pump curve (SWMM 5.1 manual Page334)</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft45.3' class='none'>
+<tr id='ft40.3' class='none'>
     <td class='failCase'><div class='testcase'>test_curves_section: Test CURVES section using Project class, Example6-Initial</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft45.3')" >
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft40.3')" >
         fail</a>
 
-    <div id='div_ft45.3' class="popup_window">
+    <div id='div_ft40.3' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft45.3').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft40.3').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft45.3: Traceback (most recent call last):
+ft40.3: Traceback (most recent call last):
   File "E:\Code\PyCharmProjects\SWMM-EPANET_User_Interface\test\core\swmm\test_curves.py", line 47, in test_curves_section
     assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
 AssertionError
@@ -1252,10 +1721,10 @@ AssertionError
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>70</td>
-    <td>59</td>
-    <td>10</td>
-    <td>1</td>
+    <td>108</td>
+    <td>83</td>
+    <td>22</td>
+    <td>3</td>
     <td>&nbsp;</td>
 </tr>
 </table>

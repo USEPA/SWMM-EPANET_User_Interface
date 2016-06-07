@@ -1,19 +1,14 @@
-from core.inputfile import Section
-from core.swmm.options.files import Files
-from core.swmm.options import files
 import unittest
+from core.inputfile import Section
+from core.swmm.options import files
 
 
 class OptionsInterfaceFilesTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = Files()
-
-    def setUp(self):
-        self.my_options = files.Files()
+    """Test FILES options using the Section class"""
 
     def runTest(self):
-
+        """Test files options"""
+        self.my_options = files.Files()
         name = self.my_options.SECTION_NAME
         assert name == "[FILES]"
 

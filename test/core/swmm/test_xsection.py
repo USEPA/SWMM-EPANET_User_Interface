@@ -1,9 +1,9 @@
 import os
-from core.inputfile import SectionAsListOf
-import core.swmm.project
-from core.swmm.hydraulics.link import CrossSection, CrossSectionShape
 import unittest
 import inspect
+import core.swmm.project
+from core.inputfile import SectionAsListOf
+from core.swmm.hydraulics.link import CrossSection, CrossSectionShape
 
 
 class XsectionTest(unittest.TestCase):

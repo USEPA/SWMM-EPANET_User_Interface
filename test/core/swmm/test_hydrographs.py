@@ -1,16 +1,14 @@
+import unittest
 from core.inputfile import Section
 from core.swmm.project import Project
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-import unittest
 
 
-class SingleHydrographTest(unittest.TestCase):
+class SimpleHydrographsTest(unittest.TestCase):
 
-    def setUp(self):
+    def test_hydrograph(self):
+        """Test one hydrograph based on SWMM 5.1 manual"""
         self.my_options = UnitHydrograph()
-
-    def runTest(self):
-        # Test Example in SWMM 5.1 manual
         test_text = "UH101\tRG1\n" \
                     "UH101\tALL\tSHORT\t0.033\t1.0\t2.0\t0.033\t1.0\t2.0\n" \
                     "UH101\tALL\tMEDIUM\t0.300\t3.0\t2.0\t0.033\t1.0\t2.0\n" \
@@ -23,23 +21,19 @@ class SingleHydrographTest(unittest.TestCase):
         nw_test_text = test_text.replace(" ","")
         assert nw_actual_text == nw_test_text
         assert self.my_options.matches(test_text)
-        pass
 
-
-class SimpleHydrographsTest(unittest.TestCase):
-
-    TEST_TEXT = ("[HYDROGRAPHS]",
-                 ";;Hydrograph\tMonth\tResponse\tR\tT\tK\tDmax\tDrecov\tDinit",
-                 "UH101 RG1",
-                 "UH101 ALL SHORT 0.033 1.0 2.0",
-                 "UH101 ALL MEDIUM 0.300 3.0 2.0\t1\t2\t3",
-                 "UH101 ALL LONG 0.033 10.0 2.0",
-                 "UH101 JUL SHORT 0.033 0.5 2.0",
-                 "UH101 JUL MEDIUM 0.011 2.0 2.0")
-
-    def runTest(self):
+    def test_hydrographs(self):
+        """Test HYDROGRAPHS section"""
+        TEST_TEXT = ("[HYDROGRAPHS]",
+                     ";;Hydrograph\tMonth\tResponse\tR\tT\tK\tDmax\tDrecov\tDinit",
+                     "UH101 RG1",
+                     "UH101 ALL SHORT 0.033 1.0 2.0",
+                     "UH101 ALL MEDIUM 0.300 3.0 2.0\t1\t2\t3",
+                     "UH101 ALL LONG 0.033 10.0 2.0",
+                     "UH101 JUL SHORT 0.033 0.5 2.0",
+                     "UH101 JUL MEDIUM 0.011 2.0 2.0")
         from_text = Project()
-        source_text = '\n'.join(self.TEST_TEXT)
+        source_text = '\n'.join(TEST_TEXT)
         from_text.set_text(source_text)
         project_hydrographs = from_text.hydrographs
 

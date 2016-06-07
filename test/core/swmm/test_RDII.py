@@ -1,34 +1,22 @@
-from core.swmm.hydraulics.node import RDIInflow
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.node import RDIInflow
 
 
-class SingleRDIITest(unittest.TestCase):
+class SimpleRDIITest(unittest.TestCase):
+    """Test RDII section"""
 
-    def setUp(self):
-
+    def test_one_rdii(self):
+        """Test one set of rdii"""
         self.my_options = RDIInflow()
-
-    def runTest(self):
-
-        # Test example created based on SWMM 5.1 manual
-        test_text = r"""NODE2  UHGROUP1 12.0 """
-        # --Test set_text
+        test_text = "NODE2  UHGROUP1 12.0 "
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-
-        pass
-
-class MultiRDIIsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = RDIInflow()
-
-    def runTest(self):
-
+    def test_rdii_section(self):
         test_text = r"""
 [RDII]
 ;;Node             UHgroup          SewerArea
@@ -37,7 +25,7 @@ class MultiRDIIsTest(unittest.TestCase):
   81009            FLOW             81009
   82309            FLOW             82309
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.rdii
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

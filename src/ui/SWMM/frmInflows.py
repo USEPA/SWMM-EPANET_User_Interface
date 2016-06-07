@@ -1,5 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from ui.help import HelpHandler
 import core.swmm.project
 from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.quality import ConcentrationUnitLabels
@@ -13,6 +14,8 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def __init__(self, main_form, node_name):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/directinfloweditor.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
@@ -315,10 +318,13 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         tab_index = self.tabInflows.currentIndex()
         if tab_index == 0:
             self.lblNotes.setText("If Baseline or Time Series is left blank its value is 0. If Baseline Pattern is left blank its value is 1.0.")
+            self.help_topic = "swmm/src/src/directinfloweditor.htm"
         elif tab_index == 1:
             self.lblNotes.setText("If Average Value is left blank its value is 0. Any Time Pattern left blank defaults to a constant value of 1.0.")
+            self.help_topic = "swmm/src/src/dryweatherinfloweditor.htm"
         elif tab_index == 2:
             self.lblNotes.setText("Leave the Unit Hydrograph Group field blank to remove any RDII inflow at this node.")
+            self.help_topic = "swmm/src/src/rdiiinfloweditor.htm"
 
         units = 1
 

@@ -4,6 +4,7 @@ from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 from ui.SWMM.frmGroundwaterFlowDesigner import Ui_frmGroundwaterFlow
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
+from ui.help import HelpHandler
 from ui.SWMM.frmGroundwaterEquation import frmGroundwaterEquation
 from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
 
@@ -11,6 +12,7 @@ from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
 class frmGroundwaterFlow(QtGui.QMainWindow, Ui_frmGroundwaterFlow):
     def __init__(self, main_form, edit_these, title):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/groundwaterfloweditordialog.htm"
         self._main_form = main_form
         self.project = main_form.project

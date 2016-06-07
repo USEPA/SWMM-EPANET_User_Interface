@@ -5,7 +5,7 @@ from core.epanet.hydraulics.node import SourceType
 
 
 class SimpleSourcesTest(unittest.TestCase):
-
+    """Test Sources section"""
     TEST_TEXT = ("[SOURCES]",
                  ";Node         \tType         \tQuality \tPattern",
                  " JUNCTION-9090\tCONCEN       \t8330    \tPattern-A",
@@ -15,6 +15,7 @@ class SimpleSourcesTest(unittest.TestCase):
                  " JUNCTION-9094\tCONCEN       \t8334")
 
     def runTest(self):
+        """Test set_text and get_text"""
         from_text = Project()
         source_text = '\n'.join(self.TEST_TEXT)
         from_text.set_text(source_text)

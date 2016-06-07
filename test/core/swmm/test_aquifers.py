@@ -1,10 +1,11 @@
+import unittest
 from core.inputfile import Section
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
-import unittest
 
 
 class SimpleAquifersTest(unittest.TestCase):
+    """Test AQUIFERS section"""
 
     TEST_TEXT = ("[AQUIFERS]",
                  ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat",
@@ -12,7 +13,8 @@ class SimpleAquifersTest(unittest.TestCase):
                  " 1              \t0.5   \t0.15  \t0.30  \t0.1   \t12    \t15.0  \t0.35  \t14.0  \t0.002 \t0.0   \t3.5   \t0.40  \t      ",
                  "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14")
 
-    def runTest(self):
+    def test_aquifers(self):
+        """Test AQUIFERS section using the Project class"""
         from_text = Project()
         source_text = '\n'.join(self.TEST_TEXT)
         from_text.set_text(source_text)
@@ -57,24 +59,14 @@ class SimpleAquifersTest(unittest.TestCase):
         assert Aquifer.metadata.label_of("name") == "Aquifer Name"
         assert Aquifer.metadata.hint_of("name") == "User-assigned aquifer name."
 
-
-class SingleAquiferTest(unittest.TestCase):
-
-    def setUp(self):
-
+    def test_aquifer(self):
+        """Test one set of aquifer parameters in Example 5"""
         self.my_options = Aquifer()
-
-    def runTest(self):
-        # Test aquifer parameters in Example 5
         test_aquifer = r"""
         ;;Aquifer       	Phi   	WP    	FC    	HydCon	Kslope	Tslope	UEF   	LED   	LGLR  	BEL   	WTEL  	UZM   	UEF Pat
         ;;--------------	------	------	------	------	------	------	------	------	------	------	------	------	------
                1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40
         """
-        # --Test set_text
         self.my_options.set_text(test_aquifer)
-        # --Test get_text through matches
-        # --Failed, this data structure appears to be messy
-        # --Error:Session name [AQUIFER] is after the parameters
         actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_aquifer)

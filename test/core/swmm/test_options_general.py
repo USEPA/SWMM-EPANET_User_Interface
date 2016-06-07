@@ -105,7 +105,9 @@ class OptionsGeneralTest(unittest.TestCase):
         self.options = General()
 
     def runTest(self):
-        #--Test complete set_text for SWMM 5.1, consistent with all default values specified in 5.1
+        """Test complete set_text for SWMM 5.1,
+        consistent with all default values specified in 5.1
+        """
         test_all_ops = r"""[OPTIONS]
 FLOW_UNITS CFS
 INFILTRATION HORTON

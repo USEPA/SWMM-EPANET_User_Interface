@@ -10,6 +10,7 @@ import ui.convenience
 class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Hydrauli.htm"
         self.setupUi(self)
         self.cboFlow.clear()
         ui.convenience.set_combo_items(core.epanet.options.hydraulics.FlowUnits, self.cboFlow)

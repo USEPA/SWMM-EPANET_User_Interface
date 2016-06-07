@@ -2,32 +2,37 @@ import webbrowser
 import unittest
 import test.HTMLTestRunner
 from test_title import SimpleTitleTest
-from test_options import SimpleOptionsTest, SimpleOptionsTest2
+from test_options import SimpleOptionsTest
 from test_quality import SimpleQualityTest
 from test_reactions import SimpleReactionsTest
-from test_times import SimpleTimesTest, SimpleTimesTest2
+from test_times import SimpleTimesTest
 from test_energy import SimpleEnergyTest
-from test_report import SimpleReportTest, SimpleReportTest2
+from test_report import SimpleReportTest
 from test_backdrop import SimpleBackdropTest
 from test_project import ProjectTest
-from test_patterns import SimplePatternTest, SimplePatternTest2
-from test_curves import SimpleCurveTest, SimpleCurveTest2
+from test_patterns import SimplePatternTest
+from test_curves import SimpleCurveTest
 from test_demands import SimpleDemandsTest
 from test_sources import SimpleSourcesTest
 
 my_suite = unittest.TestSuite()
 
 # Title - MTP 1:
-my_suite.addTest(SimpleTitleTest())
+my_suite.addTest(SimpleTitleTest('test_bare'))
+my_suite.addTest(SimpleTitleTest('test_empty'))
+my_suite.addTest(SimpleTitleTest('test_one_row'))
+my_suite.addTest(SimpleTitleTest('test_multi_row'))
+my_suite.addTest(SimpleTitleTest('test_rt_before_title'))
 
 # Options and reporting - MTP 1:
-my_suite.addTest(SimpleOptionsTest())
-my_suite.addTest(SimpleOptionsTest2())
-my_suite.addTest(SimpleTimesTest())
-my_suite.addTest(SimpleTimesTest2())
-my_suite.addTest(SimpleReportTest())
-my_suite.addTest(SimpleReportTest2())
-
+my_suite.addTest(SimpleOptionsTest('test_get'))
+my_suite.addTest(SimpleOptionsTest('test_setget'))
+my_suite.addTest(SimpleTimesTest('test_get'))
+my_suite.addTest(SimpleTimesTest('test_no_leading_space'))
+my_suite.addTest(SimpleTimesTest('test_leading_space'))
+my_suite.addTest(SimpleReportTest('test_simple'))
+my_suite.addTest(SimpleReportTest('test_page'))
+my_suite.addTest(SimpleReportTest('test_all'))
 
 # Network components - MTP 3:
 # junctions
@@ -39,10 +44,10 @@ my_suite.addTest(SimpleReportTest2())
 # Emitters
 
 # System operation - MTP 2
-my_suite.addTest(SimplePatternTest())
-my_suite.addTest(SimplePatternTest2())
-my_suite.addTest(SimpleCurveTest())
-my_suite.addTest(SimpleCurveTest2())
+my_suite.addTest(SimplePatternTest('test_pattern'))
+my_suite.addTest(SimplePatternTest('test_patterns'))
+my_suite.addTest(SimpleCurveTest('test_curve'))
+my_suite.addTest(SimpleCurveTest('test_curves'))
 my_suite.addTest(SimpleEnergyTest())
 # Status - MTP 3
 # Controls
@@ -50,7 +55,8 @@ my_suite.addTest(SimpleEnergyTest())
 my_suite.addTest(SimpleDemandsTest())
 
 # Water quality - MTP 2:
-my_suite.addTest(SimpleQualityTest())
+my_suite.addTest(SimpleQualityTest('test_get'))
+my_suite.addTest(SimpleQualityTest('test_setget'))
 my_suite.addTest(SimpleReactionsTest())
 my_suite.addTest(SimpleSourcesTest())
 # Mixing - MTP 3?

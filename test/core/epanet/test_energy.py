@@ -1,9 +1,9 @@
-from core.epanet.options import energy
 import unittest
+from core.epanet.options import energy
 
 
 class SimpleEnergyTest(unittest.TestCase):
-
+    """Test Energy section"""
     TEST_TEXT = (
         ("[ENERGY]\n"
          " Global Efficiency  \t82\n"
@@ -20,7 +20,7 @@ class SimpleEnergyTest(unittest.TestCase):
     )
 
     def runTest(self):
-
+        """Test set_text and get_text of energy options"""
         for test_text in self.TEST_TEXT:
             my_energy = energy.EnergyOptions()
             my_energy.set_text(test_text[0])

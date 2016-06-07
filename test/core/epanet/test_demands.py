@@ -1,10 +1,11 @@
+import unittest
 from core.inputfile import Section
 from core.epanet.project import Project
 from core.epanet.hydraulics.node import Demand
-import unittest
 
 
 class SimpleDemandsTest(unittest.TestCase):
+    """Test Demands section"""
 
     TEST_TEXT = ("[DEMANDS]",
                  ";ID  Demand Pattern Category",
@@ -14,6 +15,7 @@ class SimpleDemandsTest(unittest.TestCase):
                  "JUNCTION-12 \t0.2 \tPATTERN-12 \tCategory-12")
 
     def runTest(self):
+        """Test set_text and get_text of demand options"""
         from_text = Project()
         source_text = '\n'.join(self.TEST_TEXT)
         from_text.set_text(source_text)

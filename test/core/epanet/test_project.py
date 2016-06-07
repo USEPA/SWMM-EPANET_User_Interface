@@ -149,7 +149,7 @@ class ProjectTest(unittest.TestCase):
         examples = [] # example name
         status = []   # example test status 'Pass' or 'Fail'
         remarks = []  # error message goes here
-        html_file = os.path.join(directory, 'Test_Example_Summaries.html')
+        html_file = os.path.join(directory, 'Test_Example_Summaries_EPANET.html')
 
         # Open html file
         text_file = open(html_file, "w")

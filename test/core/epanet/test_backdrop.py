@@ -1,9 +1,11 @@
+import unittest
 from core.epanet.options.options import Options
 from core.epanet.options import backdrop
-import unittest
 
 
 class SimpleBackdropTest(unittest.TestCase):
+    """Test Backdrop section"""
+
     def runTest(self):
         my_backdrop = backdrop.BackdropOptions()
         assert my_backdrop.SECTION_NAME == "[BACKDROP]"

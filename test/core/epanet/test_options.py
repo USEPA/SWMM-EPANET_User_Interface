@@ -1,18 +1,23 @@
+import unittest
 from core.epanet.options.options import Options
 from core.epanet.options import hydraulics
 from core.epanet.options import map
 from core.epanet.options import quality
-import unittest
 
 
 class SimpleOptionsTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+    """Test Options section"""
+
+    def test_get(self):
+        """Test get_text using matches"""
+
+        # Create an instance of Options
         self.my_options = Options()
 
-    def setUp(self):
-
+        # Create hydraulic options instance
         self.my_HydraulicsOptions = hydraulics.HydraulicsOptions()
+
+        # Set data attributes
         self.my_HydraulicsOptions.flow_units = hydraulics.FlowUnits.CFS
         self.my_HydraulicsOptions.head_loss = hydraulics.HeadLoss.H_W
         self.my_HydraulicsOptions.specific_gravity = 1.0
@@ -28,10 +33,16 @@ class SimpleOptionsTest(unittest.TestCase):
         self.my_HydraulicsOptions.max_check = 10
         self.my_HydraulicsOptions.damp_limit = 0.0
 
+        # Create map options instance
         self.my_MapOptions = map.MapOptions()
+
+        # Set data attributes
         self.my_MapOptions.map = ""
 
+        # Create quality options instance
         self.my_quality = quality.QualityOptions()
+
+        # Set data attributes
         self.my_quality.quality = quality.QualityAnalysisType.CHEMICAL
         self.my_quality.chemical_name = "DummyChemical"
         self.my_quality.mass_units = "mg/L"
@@ -39,14 +50,17 @@ class SimpleOptionsTest(unittest.TestCase):
         self.my_quality.trace_node = ""
         self.my_quality.tolerance = 0.01
 
-    def runTest(self):
-
+        # Assert section name
         name = self.my_options.hydraulics.SECTION_NAME
         assert name == "[OPTIONS]"
-        assert self.my_HydraulicsOptions.flow_units == hydraulics.FlowUnits.CFS
-        assert self.my_HydraulicsOptions.demand_multiplier == 1.1
-        assert self.my_quality.chemical_name == "DummyChemical"
+
+        # These seem to be redundant with set up--- xw commented
+        # assert self.my_HydraulicsOptions.flow_units == hydraulics.FlowUnits.CFS
+        # assert self.my_HydraulicsOptions.demand_multiplier == 1.1
+        # assert self.my_quality.chemical_name == "DummyChemical"
         # assert self.my_HydraulicsOptions.get_text() == "[OPTIONS]", 'incorrect options block'
+
+        # Use matches method to test hydraulic and quality options
         expected_text = " Unbalanced         	STOP\n"\
                         " MAXCHECK           	10\n"\
                         " Emitter Exponent   	0.5\n"\
@@ -63,20 +77,15 @@ class SimpleOptionsTest(unittest.TestCase):
 
         assert self.my_HydraulicsOptions.matches(expected_text)
 
+        # Use matches method to test map options
         assert self.my_MapOptions.map == ""
         expected_text = ""
         assert self.my_MapOptions.matches(expected_text)
 
+    def test_setget(self):
+        """Test both set_text and get_text of Options, data from Net1.inp"""
 
-class SimpleOptionsTest2(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-
-    def setUp(self):
         self.my_options = Options()
-
-    def runTest(self):
-        # data from Net1.inp
         test_text = """
         [OPTIONS]
          Units              	GPM
@@ -99,4 +108,3 @@ class SimpleOptionsTest2(unittest.TestCase):
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
         assert self.my_options.matches(test_text)
-        pass

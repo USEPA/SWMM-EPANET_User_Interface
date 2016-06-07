@@ -1,6 +1,6 @@
+import unittest
 from core.epanet.options.options import Options
 from core.epanet.options import reactions
-import unittest
 
 
 class SimpleReactionsTest(unittest.TestCase):
@@ -9,7 +9,6 @@ class SimpleReactionsTest(unittest.TestCase):
         self.my_options = Options()
 
     def setUp(self):
-
         self.my_reactions = reactions.Reactions()
         self.my_reactions.order_bulk = 1.1
         self.my_reactions.order_wall = 1.2

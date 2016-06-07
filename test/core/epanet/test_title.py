@@ -3,15 +3,14 @@ import unittest
 
 
 class SimpleTitleTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+    """Test Title section"""
 
     def setUp(self):
+        """Set up test"""
+
+    def test_bare(self):
+        """Bare section"""
         self.my_title = Title()
-
-    def runTest(self):
-
-        # Bare section read/write
         default_text = self.my_title.get_text()
         test_text = ""
         self.my_title.set_text(test_text)
@@ -20,61 +19,45 @@ class SimpleTitleTest(unittest.TestCase):
         assert actual_text == default_text
         # assert self.my_title.matches(test_text)
 
-        # Empty section read/write
+    def test_empty(self):
+        """Empty section (has section name)"""
+        self.my_title = Title()
         test_text = "[TITLE]\n"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
         assert self.my_title.matches(test_text)
 
-        # Empty section read/write wo ending \n
-        test_text = "[TITLE]"
-        self.my_title.set_text(test_text)
-        actual_text = self.my_title.get_text()  # display purpose
-        assert self.my_title.matches(test_text)
-
-        # One-row title wt ending \n
+    def test_one_row(self):
+        """One-row title with carriage return"""
+        self.my_title = Title()
         test_text = "[TITLE]\n" \
                     "test_title\n"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
         assert self.my_title.matches(test_text)
 
-        # Multiple lines with empty lines
-        test_text = r"""[TITLE]
-                test_title
-                """
+    def test_multi_row(self):
+        """Multiple-row title include empty lines"""
+        self.my_title = Title()
+        test_text = "[TITLE]\n" \
+                    "       \n" \
+                    "test_title\n" \
+                    "    "
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
         assert self.my_title.matches(test_text)
 
-        # Multiple lines with empty lines
-        test_text = r"""[TITLE]
-                test_title
-
-                """
-        self.my_title.set_text(test_text)
-        actual_text = self.my_title.get_text()  # display purpose
-        assert self.my_title.matches(test_text)
-
-        # Multiple lines with empty lines
-        test_text = r"""[TITLE]
-
-                test_title
-
-                """
-        self.my_title.set_text(test_text)
-        actual_text = self.my_title.get_text()  # display purpose
-        assert self.my_title.matches(test_text)
-
-        # \n before Section title
+    def test_rt_before_title(self):
+        """Carriage return before section title"""
         # The first row can not be \n
+        self.my_title = Title()
         test_text = "\n"\
                     "[TITLE]\n"\
                     "test_title"
         self.my_title.set_text(test_text)
         actual_text = self.my_title.get_text()  # display purpose
         assert self.my_title.matches(test_text)
-        pass
+
 
 
 

@@ -1,7 +1,7 @@
+import unittest
 from core.inputfile import Section
 from core.epanet.project import Project
 from core.epanet.hydraulics.node import SourceType
-import unittest
 
 
 class SimpleSourcesTest(unittest.TestCase):

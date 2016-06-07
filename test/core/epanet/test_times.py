@@ -1,18 +1,18 @@
+import unittest
 from core.epanet.options.options import Options
 from core.epanet.options import times
-import unittest
 
 
-class SimpleTimesTest2(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+class SimpleTimesTest(unittest.TestCase):
+    """Test Times section"""
 
     def setUp(self):
-        self.my_options = times.TimesOptions()
+        """Set up test"""
 
-    def runTest(self):
-        # Case 1. data from Net1.inp
-        # No white spaces in input texts
+    def test_no_leading_space(self):
+        """Case 1. data from Net1.inp
+        No leading white spaces in input texts"""
+        self.my_options = times.TimesOptions()
         test_text = "[TIMES]\n" \
                     "Duration\t24:00\n" \
                     "Hydraulic Timestep\t1:00\n" \
@@ -28,9 +28,11 @@ class SimpleTimesTest2(unittest.TestCase):
         actual_text = self.my_options.get_text()
         # assert nw_actual_text == nw_test_text
         assert self.my_options.matches(test_text)
-        pass
 
-        # data from Net1.inp
+    def test_leading_space(self):
+        """Case 2. data from Net1.inp
+        With leading white spaces in input texts"""
+        self.my_options = times.TimesOptions()
         test_text = " [TIMES]\n" \
                     "     Duration           	24:00\n" \
                     "     Hydraulic Timestep 	1:00\n" \
@@ -45,16 +47,10 @@ class SimpleTimesTest2(unittest.TestCase):
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()
         assert self.my_options.matches(test_text)
-        pass
 
-
-class SimpleTimesTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+    def test_get(self):
+        """Test get_text"""
         self.my_options = Options()
-
-    def setUp(self):
-
         self.my_times = times.TimesOptions()
         self.my_times.duration = "24:00"
         self.my_times.hydraulic_timestep = "1:00"	    # hours:minutes
@@ -66,8 +62,6 @@ class SimpleTimesTest(unittest.TestCase):
         self.my_times.report_start = "0:00"	            # hours:minutes
         self.my_times.start_clocktime = "12 am"		    # hours:minutes AM/PM
         self.my_times.statistic = times.StatisticOptions.AVERAGED  # NONE/AVERAGED/MINIMUM/MAXIMUM/RANGE
-
-    def runTest(self):
 
         name = self.my_times.SECTION_NAME
         assert name == "[TIMES]"

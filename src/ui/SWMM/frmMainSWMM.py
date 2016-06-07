@@ -362,9 +362,15 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_summary(self):
-        self._frmSummaryReport = frmSummaryReport(self)
-        self._frmSummaryReport.show()
-        pass
+        if self.get_output():
+            self._frmSummaryReport = frmSummaryReport(self)
+            self._frmSummaryReport.set_from(self.project, self.get_output())
+            self._frmSummaryReport.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def calibration_data(self):
         self._frmCalibrationData = frmCalibrationData(self)

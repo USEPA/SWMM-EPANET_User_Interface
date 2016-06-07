@@ -40,13 +40,6 @@ class SimpleTimeSeriesTest(unittest.TestCase):
 
     def test_timeseries_section(self):
         """Test Example in SWMM 5.1 manual Page335"""
-        # Test default, default is empty string
-        # -- failed because SECTION_NAME missing
-        #name = self.my_options.SECTION_NAME
-        #assert name == "[TIMESERIES]"
-        #actual_text = self.my_options.get_text()
-        #assert actual_text == ''
-        # Test Example in SWMM 5.1 manual Page335
         # -- Failed because of SECTION name and
         # -- Data structure
         # self.my_options = TimeSeries()
@@ -62,4 +55,6 @@ class SimpleTimeSeriesTest(unittest.TestCase):
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.timeseries
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(project_section.matches(test_text), msg)

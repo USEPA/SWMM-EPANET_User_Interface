@@ -5,30 +5,6 @@ from core.swmm.climatology.climatology import Evaporation
 import unittest
 
 
-class SimpleEvaporationTest(unittest.TestCase):
-    TEST_TEXT_CONSTANT = ("[EVAPORATION]",
-                          ";;Type      \tParameters",
-                          ";;----------\t----------",
-                          "CONSTANT    \t0.2",
-                          "DRY_ONLY    \tNO")
-
-    def runTest(self):
-        from_text = Project()
-        source_text = '\n'.join(self.TEST_TEXT_CONSTANT)
-        from_text.set_text(source_text)
-        project_section = from_text.evaporation
-
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
-        assert project_section.format == EvaporationFormat.CONSTANT
-        assert project_section.constant == "0.2"
-        assert project_section.monthly == ()
-        assert project_section.timeseries == ''
-        assert project_section.monthly_pan_coefficients == ()
-        assert project_section.recovery_pattern == ''
-        assert project_section.dry_only is False
-
-
-# TODO: Add testing of each EvaporationFormat -- added xwei 5/19/2016
 class EvaporationTest(unittest.TestCase):
     """Test all options provided in EVAPORATION section"""
 
@@ -68,28 +44,29 @@ class EvaporationTest(unittest.TestCase):
     def test_constant_wt_dry_only(self):
         """Test constant with DRY_ONLY, consistent with most examples"""
         self.my_options = Evaporation()
-        test_constant = "[EVAPORATION]\n" \
+        test_text = "[EVAPORATION]\n" \
                         ";;Data Source    Parameters\n" \
                         ";;-------------- ----------------\n" \
                         " CONSTANT         0.0\n" \
                         " DRY_ONLY         NO"
-        self.my_options.set_text(test_constant)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_constant)
+        self.my_options.set_text(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     def test_monthly(self):
         """Test monthly Example User2 and a few others"""
         self.my_options = Evaporation()
-        test_monthly = "[EVAPORATION]\n" \
+        test_text = "[EVAPORATION]\n" \
                        ";;Type         Parameters\n" \
                        ";;-----------------------\n" \
                        "MONTHLY      0.01   0.04   0.05   0.05   0.1    0.24" \
                        "   0.25   0.24   0.16   0.11   0.03   0.01\n" \
                        "DRY_ONLY     Yes"
-        self.my_options.set_text(test_monthly)
-        # Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_monthly)
+        self.my_options.set_text(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     # Test monthly - edge case missing a month
     def test_monthly_fail(self):
@@ -97,15 +74,16 @@ class EvaporationTest(unittest.TestCase):
         # -- I think the case should fail because it is missing a month
         # -- Currently do not have the missing value detection ability
         self.my_options = Evaporation()
-        test_monthly = "[EVAPORATION]\n" \
+        test_text = "[EVAPORATION]\n" \
                        ";;Type         Parameters\n" \
                        ";;-----------------------\n" \
                        " MONTHLY      0.01   0.04   0.05   0.05   0.1    0.24" \
                        "   0.25   0.24   0.16   0.11   0.03\n" \
                        "DRY_ONLY No"
-        self.my_options.set_text(test_monthly)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_monthly)
+        self.my_options.set_text(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     # test timeseries option
     def test_timeseries(self):
@@ -116,8 +94,9 @@ class EvaporationTest(unittest.TestCase):
                     ";;-----------------------\n" \
                     "TIMESERIES TS1"
         self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     # test temperature option
     def test_temperature(self):
@@ -128,8 +107,9 @@ class EvaporationTest(unittest.TestCase):
                     ";;-----------------------\n" \
                     "TEMPERATURE"
         self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     # test file option
     def test_file(self):
@@ -140,8 +120,9 @@ class EvaporationTest(unittest.TestCase):
                     ";;-----------------------\n" \
                     "FILE"
         self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     # test recovery option
     def test_recovery(self):
@@ -152,8 +133,32 @@ class EvaporationTest(unittest.TestCase):
                     ";;-----------------------\n" \
                     "RECOVERY  pattern1"
         self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        actual_text = self.my_options.get_text()
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
+
+    def test_project_section(self):
+        """Test EVAPORATION use project section"""
+        test_text = ("[EVAPORATION]",
+                     ";;Type      \tParameters",
+                     ";;----------\t----------",
+                     "CONSTANT    \t0.2",
+                     "DRY_ONLY    \tNO")
+        from_text = Project()
+        test_text = '\n'.join(test_text)
+        from_text.set_text(test_text)
+        project_section = from_text.evaporation
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        assert project_section.format == EvaporationFormat.CONSTANT
+        assert project_section.constant == "0.2"
+        assert project_section.monthly == ()
+        assert project_section.timeseries == ''
+        assert project_section.monthly_pan_coefficients == ()
+        assert project_section.recovery_pattern == ''
+        assert project_section.dry_only is False
+        actual_text = project_section.get_text()
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(project_section.matches(test_text), msg)
 
 
 if __name__ == '__main__':

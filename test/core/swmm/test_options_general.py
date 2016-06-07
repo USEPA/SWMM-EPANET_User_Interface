@@ -171,7 +171,7 @@ TEMPDIR .\temp"""
         assert self.options.matches(test_all_ops), 'incorrect title block'
 
     def test_current_text(self):
-        """Test using the current text array"""
+        """Test setting from the current text array"""
         self.options = General()
         for current_text in self.TEST_TEXT:
             self.options.set_text(current_text[0])
@@ -241,4 +241,6 @@ TEMPDIR .\temp"""
                         " THREADS            	1\n"\
                         " MINIMUM_STEP       	0.5"
 
+        self.options.set_text(expected_text)
+        actual_text = self.options.get_text()
         assert self.options.matches(expected_text)

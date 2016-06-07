@@ -1,5 +1,6 @@
-from core.swmm.options.files import Files
 import unittest
+from core.inputfile import Section
+from core.swmm.options.files import Files
 
 
 class SimpleFilesTest(unittest.TestCase):
@@ -89,3 +90,23 @@ SAVE OUTFLOWS outflows_s.txt
         actual_text = self.my_options.get_text()
         self.my_options.set_text(actual_text)
         assert self.my_options.matches(test_all_opts)
+
+    def test_interface_files(self):
+        """Test FILES options using the Section class"""
+        self.my_options = Files()
+        name = self.my_options.SECTION_NAME
+        assert name == "[FILES]"
+
+        actual_text = self.my_options.get_text()
+
+        # Expect blank section when there are no contents for the section
+        assert actual_text == ''
+
+        self.my_options.save_outflows = "save_outflows.txt"
+
+        expected_text = self.my_options.SECTION_NAME + '\n' + self.my_options.comment
+        expected_text += "\nSAVE OUTFLOWS \tsave_outflows.txt"
+
+        actual_text = self.my_options.get_text()
+        assert Section.match_omit(actual_text, expected_text, " \t-")
+

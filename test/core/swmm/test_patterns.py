@@ -1,19 +1,16 @@
-from core.swmm.patterns import Pattern, PatternType
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.patterns import Pattern, PatternType
 
 
-class SinglePatternTest(unittest.TestCase):
+class SimplePatternTest(unittest.TestCase):
+    """Test PATTERNS section"""
 
-    def setUp(self):
-
+    def test_daily(self):
+        """Test Pattern: Daily total 7 per week"""
         self.my_options = Pattern()
-
-    def runTest(self):
-
-        # Test examples
         temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
-
-        # -- Daily total 7 per week
         test_text = "D1\tDAILY\t1.0\t1.0\t1.0\t1.0\t1.0\t0.5\t0.5"
         self.my_options.set_text(test_text)
         # --Test get_text through matches
@@ -23,7 +20,10 @@ class SinglePatternTest(unittest.TestCase):
             assert item.pattern_type == PatternType.DAILY
             assert ' '.join(item.multipliers) == '1.0 1.0 1.0 1.0 1.0 0.5 0.5'
 
-        # -- Monthly total 12 per year
+    def test_monthly(self):
+        """Test Pattern: Monthly total 12 per year"""
+        self.my_options = Pattern()
+        temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
         test_text = "M1\tMONTHLY\t1.0\t1.0\t1.0\t1.0\t1.0\t1.0\n" \
                     "M1\t\t1.0\t1.0\t1.0\t1.0\t1.0\t1.0"
         self.my_options.set_text(test_text)
@@ -36,7 +36,10 @@ class SinglePatternTest(unittest.TestCase):
             assert ' '.join(item.multipliers) == '1.0 1.0 1.0 1.0 1.0 1.0 '\
                                                  '1.0 1.0 1.0 1.0 1.0 1.0'
 
-        # -- Hourly total 24 per day
+    def test_hourly(self):
+        """Test Pattern: Hourly total 24 per year"""
+        self.my_options = Pattern()
+        temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
         test_text = r"""
         DWF              HOURLY     .0151 .01373 .01812 .01098 .01098 .01922
         DWF                         .02773 .03789 .03515 .03982 .02059 .02471
@@ -52,7 +55,10 @@ class SinglePatternTest(unittest.TestCase):
                                                  ".02773 .03789 .03515 .03982 .02059 .02471 "\
                                                  ".03021 .03789 .03350 .03158 .03954 .02114 "\
                                                  ".02801 .03680 .02911 .02334 .02499 .02718"
-        # -- Weekend total 24 per day
+    def test_weekly(self):
+        """Test Pattern: Weekend total 24 per day"""
+        self.my_options = Pattern()
+        temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
         test_text = r"""
         DWF              WEEKEND     .0151 .01373 .01812 .01098 .01098 .01922
         DWF                         .02773 .03789 .03515 .03982 .02059 .02471
@@ -69,7 +75,10 @@ class SinglePatternTest(unittest.TestCase):
                                                  ".03021 .03789 .03350 .03158 .03954 .02114 "\
                                                  ".02801 .03680 .02911 .02334 .02499 .02718"
 
-        # -- Design pattern, no flag
+    def test_design(self):
+        """Test Pattern: Design pattern, no flag"""
+        self.my_options = Pattern()
+        temp_pattern = Pattern()  # This is used to create a copy of each test using set_text and get_text to test both
         test_text = r"""
  1               	1.34        	1.94        	1.46        	1.44        	.76         	.92
  1               	.85         	1.07        	.96         	1.1         	1.08        	1.19
@@ -85,32 +94,29 @@ class SinglePatternTest(unittest.TestCase):
                                                  ".85 1.07 .96 1.1 1.08 1.19 "\
                                                  "1.16 1.08 .96 .83 .79 .74 "\
                                                  ".64 .64 .85 .96 1.24 1.67"
-        pass
 
-class MultiPatternsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = Pattern()
-
-    def runTest(self):
-
+    def test_pattern_section(self):
+        """test PATTERNS section"""
         test_text = r"""
 [PATTERNS]
 ;;Name           Type       Multipliers
 ;;-------------- ---------- -----------
 ;xx
 x                MONTHLY    1.0   1.0   1.0   1.0   1.0   1.0
-x                           1.0   1.0   1.0   1.0   1.0   1.0
+x                           1.0   1.0   1.0   1.0   1.0   1.0"""
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.patterns
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
 
-[PATTERNS]
+        test_text=r"""[PATTERNS]
 ;;Name             Type       Multipliers
 ;;----------------------------------------------------------------------
   DWF              HOURLY     .0151 .01373 .01812 .01098 .01098 .01922
   DWF                         .02773 .03789 .03515 .03982 .02059 .02471
   DWF                         .03021 .03789 .03350 .03158 .03954 .02114
-  DWF                         .02801 .03680 .02911 .02334 .02499 .02718
-
+  DWF                         .02801 .03680 .02911 .02334 .02499 .02718"""
+        test_text = """
 [PATTERNS]
 ;ID              	Multipliers
 ;Demand Pattern
@@ -118,7 +124,6 @@ x                           1.0   1.0   1.0   1.0   1.0   1.0
  1               	1.0         	0.8         	0.6         	0.4         	0.6         	0.8
         """
 
-        # Test Net 2
         test_text = """[PATTERNS]
 ;ID              	Multipliers
 ;Demand Pattern
@@ -184,6 +189,3 @@ x                           1.0   1.0   1.0   1.0   1.0   1.0
  5               	4531        	4521        	4449        	4439        	4449        	4460
  5               	4439        	4419        	4368        	4399        	4470        	4480
 """
-
-
-        pass

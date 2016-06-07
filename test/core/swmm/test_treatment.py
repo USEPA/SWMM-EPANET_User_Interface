@@ -1,43 +1,32 @@
-from core.swmm.hydraulics.node import Treatment
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.node import Treatment
 
 
-class SingleTreatmentTest(unittest.TestCase):
+class SimpleTreatmentTest(unittest.TestCase):
 
-    def setUp(self):
-
-        self.my_options = Treatment()
-
-    def runTest(self):
-
-        # Test examples from SWMM 5.1 manual
-
-        # BOD first order decay
-        test_text = r"""Node23 BOD C = BOD * exp(-0.05*HRT) """
+    def test_bod(self):
+        """BOD first order decay, from SWMM 5.1 manual"""
+        test_text = "Node23 BOD C = BOD * exp(-0.05*HRT) "
         # --Test set_text
+        self.my_options = Treatment()
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        # Lead removal 20% of TSS removal
-        test_text = r"""Node23 Lead R = 0.2 * R_TSS"""
-        # --Test set_text
+    def test_lead(self):
+        """Lead removal 20% of TSS removal"""
+        test_text = "Node23 Lead R = 0.2 * R_TSS"
+        self.my_options = Treatment()
         self.my_options.set_text(test_text)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
 
-class MultiTreatmentTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = Treatment()
-
-    def runTest(self):
-
+    def test_treatment_section(self):
+        """Test TREATMENT section"""
         test_text = r"""
 [TREATMENT]
 ;;                                  Results: R or C
@@ -48,7 +37,7 @@ class MultiTreatmentTest(unittest.TestCase):
   Node23            BOD              C = BOD * exp(-0.05*HRT)
   Node24            Lead             R = 0.2 * R_TSS
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.treatment
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

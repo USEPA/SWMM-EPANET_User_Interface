@@ -1,43 +1,31 @@
-from core.swmm.hydraulics.node import Junction
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.node import Junction
 
 
-class SingleJunctionTest(unittest.TestCase):
+class SimpleJunctionTest(unittest.TestCase):
+    """Test JUNCTIONS section"""
 
-    def setUp(self):
 
+    def test_all_opts(self):
+        """Test junction with all options"""
         self.my_options = Junction()
-
-    def runTest(self):
-
-        # Test junction will all parameters
-        test_junction = r""" J1 2.0 0.1 0.2 0.3 0.4"""
-
-        # --Test set_text
+        test_junction = " J1 2.0 0.1 0.2 0.3 0.4"
         self.my_options.set_text(test_junction)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_junction)
 
-        # Test junction will all parameters
-        test_junction = r""" J1 2.0 """
-
-        # --Test set_text
+    def test_selected_parameters(self):
+        """Test junction omit some parameters"""
+        self.my_options = Junction()
+        test_junction = " J1 2.0 "
         self.my_options.set_text(test_junction)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_junction)
 
-        pass
-
-class MultiJunctionsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = Junction()
-
-    def runTest(self):
-
+    def test_junctions(self):
+        """Test JUNCTIONS section through Project class"""
         test_text = r"""
 [JUNCTIONS]
 ;;               Invert     Max.       Init.      Surcharge  Ponded
@@ -61,7 +49,7 @@ J15              4974.5     0          0          0          0
 J16              4973.5     0          0          0          0
 J17              4973.5     0          0          0          0
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.junctions
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

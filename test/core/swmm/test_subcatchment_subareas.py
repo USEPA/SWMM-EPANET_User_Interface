@@ -1,5 +1,7 @@
 from core.swmm.hydrology.subcatchment import Subareas
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
 
 
 class SubAreasTest(unittest.TestCase):

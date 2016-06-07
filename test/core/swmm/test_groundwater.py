@@ -1,60 +1,29 @@
-from core.swmm.hydrology.subcatchment import Groundwater
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydrology.subcatchment import Groundwater
 
 
-class SingleGroundwaterTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+class SimpleGroundwaterTest(unittest.TestCase):
+    """Test GROUNDWATER section"""
 
-    def setUp(self):
-
+    def test_groundwater(self):
+        """Test one set of groundwater parameters"""
         self.my_options = Groundwater()
-
-    def runTest(self):
-        # Test aquifer parameters in Example 5
-        test_groundwater = r"""
-SUB1               	AQF1               	ND2               	6     	0.1   	1     	0     	0     	0     	0     	4
-        """
-        # --Test set_text
+        test_groundwater = \
+            "SUB1    AQF1 	ND2 	6     	0.1   	1     	0     	0     	0     	0     	4"
         self.my_options.set_text(test_groundwater)
-        # --Test get_text through matches
-        # --Failed, this data structure appears to be messy, similar to aquifer
-        # --Error:Session name [AQUIFER] is after the parameters
-        actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_groundwater)
 
-        pass
 
-class SubGroundwaterTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-
-    def setUp(self):
-
-        self.my_options = Groundwater()
-
-    def runTest(self):
-        # Test default, default is empty string, no adjustments, Failed because
-        # -- groundwater does not have SECTION_NAME
-        # -- get_text produced string with tabs instead of empty string
-        #name = self.my_options.SECTION_NAME
-        #assert name == "[GROUNDWATER]"
-        actual_text = self.my_options.get_text()
-        #assert actual_text == ''
-
-        # Test aquifer parameters in Example 5
-        test_groundwater = r"""
- [GROUNDWATER]
-;;Subcatchment  	Aquifer         	Node            	Elev  	A1    	B1    	A2    	B2    	A3    	Hsw   	Hcb   	BEL   	WTEL  	UZM
-;;--------------	----------------	----------------	------	------	------	------	------	------	------	------	------	------	------
-1               	1               	2               	6     	0.1   	1     	0     	0     	0     	0     	4
-        """
+    def test_groundwater_section(self):
+        """Test GROUNDWATER section through Project Class"""
+        from_text = Project()
+        source_text =" [GROUNDWATER]\n" \
+                     ";;Subcatchment  	Aquifer         	Node            	Elev  	A1    	B1    	A2    	B2    	A3    	Hsw   	Hcb   	BEL   	WTEL  	UZM\n" \
+                     ";;--------------	----------------	----------------	------	------	------	------	------	------	------	------	------	------	------\n" \
+                     "1               	1               	2               	6     	0.1   	1     	0     	0     	0     	0     	4"
         # --Test set_text
-        self.my_options.set_text(test_groundwater)
-        # --Test get_text through matches
-        # --Failed, this data structure appears to be messy, similar to aquifer
-        # --Error:Session name [AQUIFER] is after the parameters
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_groundwater)
-
-        pass
+        from_text.set_text(source_text)
+        project_section = from_text.groundwater
+        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")

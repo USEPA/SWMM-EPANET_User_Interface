@@ -1,15 +1,14 @@
-from core.swmm.hydraulics.node import DirectInflow
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.node import DirectInflow
 
+class SimpleInflowTest(unittest.TestCase):
+    """Test INFLOWS section"""
 
-class SingleInflowTest(unittest.TestCase):
-
-    def setUp(self):
-
+    def test_flow_type(self):
+        """Test inflow: FLOW type"""
         self.my_options = DirectInflow()
-
-    def runTest(self):
-
         # Test examples from SWMM 5.1 manual
         test_text = "NODE2  FLOW  N2FLOW "
         self.my_options.set_text(test_text)
@@ -25,6 +24,9 @@ class SingleInflowTest(unittest.TestCase):
         # assert self.my_options.matches(test_text)
         # -- Does not match as defaults are provided in output, but not in input, OK
 
+    def test_mass_type(self):
+        """Test inflow: mass type"""
+        self.my_options = DirectInflow()
         test_text = "NODE65 BOD N65BOD MASS 126"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()  # display purpose
@@ -39,6 +41,9 @@ class SingleInflowTest(unittest.TestCase):
         # assert self.my_options.matches(test_text)
         # -- Does not match as defaults are provided in output, but not in input, OK
 
+    def test_flow_ts_type(self):
+        """Test inflow: flow time series type"""
+        self.my_options = DirectInflow()
         test_text = "N176 FLOW FLOW176 FLOW 1.0 0.5 12.7 FlowPat"
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text()  # display purpose
@@ -52,16 +57,8 @@ class SingleInflowTest(unittest.TestCase):
         assert self.my_options.baseline_pattern == 'FlowPat'
         assert self.my_options.matches(test_text)
 
-        pass
-
-class MultiInflowsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = DirectInflow()
-
-    def runTest(self):
-
+    def test_inflows_flow(self):
+        """Test INFLOWS section with flow type"""
         test_text = r"""
 [INFLOWS]
 ;;                                                   Concen   Conversion
@@ -69,15 +66,21 @@ class MultiInflowsTest(unittest.TestCase):
 ;;----------------------------------------------------------------------
   80408            FLOW             80408
   81009            FLOW             81009
-  82309            FLOW             82309
+  82309            FLOW             82309"""
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.inflows
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+
+    def test_inflows_flowts(self):
+        """Test INFLOWS section with FLOW TS type"""
+        test_text=r"""
 [INFLOWS]
 ;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
 ;;--------------	----------------	----------------	--------	--------	--------	--------	--------
 Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
-
-
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.inflows
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

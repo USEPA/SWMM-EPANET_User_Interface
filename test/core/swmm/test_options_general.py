@@ -1,9 +1,9 @@
-from core.swmm.options.general import General, FlowRouting, FlowUnits
 import unittest
-
+from core.swmm.options.general import General, FlowRouting, FlowUnits
 
 class OptionsGeneralTest(unittest.TestCase):
-    """In core.swmm.options, test field values after setting from text.
+    """Test OPTIONS section
+     In core.swmm.options, test field values after setting from text.
      This primarily tests General, but also tests Dates, TimeSteps, and DynamicWave since those are set from General.
     """
 
@@ -98,16 +98,8 @@ class OptionsGeneralTest(unittest.TestCase):
          False)
     )
 
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-
-    def setUp(self):
-        self.options = General()
-
-    def runTest(self):
-        """Test complete set_text for SWMM 5.1,
-        consistent with all default values specified in 5.1
-        """
+    def test_all_opts(self):
+        """Test all default values specified in 5.1"""
         test_all_ops = r"""[OPTIONS]
 FLOW_UNITS CFS
 INFILTRATION HORTON
@@ -148,7 +140,12 @@ MAX_TRIALS 8
 HEAD_TOLERANCE 0.005
 THREADS 1
 TEMPDIR .\temp"""
+
+        self.options = General()
+        # Set_text
         self.options.set_text(test_all_ops)
+
+        # Assert attributes
         assert self.options.flow_units == FlowUnits.CFS
         assert self.options.flow_routing == FlowRouting.KINWAVE
         assert self.options.ignore_snowmelt == False
@@ -160,8 +157,10 @@ TEMPDIR .\temp"""
         assert float(self.options.time_steps.lateral_inflow_tolerance) == 5.0
         assert self.options.temp_dir == r'.\temp'
 
-        #--Test get_text
+        # Get_text
         actual_text = self.options.get_text()
+
+        # Set_text again
         self.options.set_text(actual_text)
         assert self.options.flow_units == FlowUnits.CFS
         assert self.options.flow_routing == FlowRouting.KINWAVE
@@ -171,7 +170,9 @@ TEMPDIR .\temp"""
         assert self.options.dates.start_time == '0:00:00'
         assert self.options.matches(test_all_ops), 'incorrect title block'
 
-        #--Test set_text--old
+    def test_current_text(self):
+        """Test using the current text array"""
+        self.options = General()
         for current_text in self.TEST_TEXT:
             self.options.set_text(current_text[0])
             assert self.options.flow_units == current_text[1]

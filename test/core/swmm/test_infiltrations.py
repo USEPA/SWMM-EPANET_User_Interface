@@ -1,72 +1,44 @@
-from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration,CurveNumberInfiltration
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration,CurveNumberInfiltration
 
 
-class SingleHortonInfiltrationTest(unittest.TestCase):
+class InfiltrationTest(unittest.TestCase):
+    """Test INFILTRATION section"""
 
-    def setUp(self):
-
+    def test_horton(self):
+        """Test Horton infiltration created based on SWMM 5.1 manual"""
         self.my_options = HortonInfiltration()
-
-    def runTest(self):
-
-        # Test examples created based on SWMM 5.1 manual
-        # CurveNo, Ksat, DryTime
-        test_text = r"""S1      0.35       0.25       4.14       0.50     0.0"""
+        test_text = "S1      0.35       0.25       4.14       0.50     0.0"
         # --Test set_text
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
-
-class SingleGreenAmptInfiltrationTest(unittest.TestCase):
-
-    def setUp(self):
-
+    def test_greenampt(self):
+        """Test GreenAmpt infiltration created based on SWMM 5.1 manual"""
         self.my_options = GreenAmptInfiltration()
-
-    def runTest(self):
-
-        # Test examples created based on SWMM 5.1 manual
-        # CurveNo, Ksat, DryTime
-        test_text = r"""S1               3.5        0.2        0.2"""
+        test_text = "S1     3.5        0.2        0.2"
         # --Test set_text
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
-
-class SingleCurveNumberInfiltrationTest(unittest.TestCase):
-
-    def setUp(self):
-
+    def test_curvenumber(self):
+        """Test Curver number infiltration created based on SWMM 5.1 manual"""
         self.my_options = CurveNumberInfiltration()
-
-    def runTest(self):
-
-        # Test examples created based on SWMM 5.1 manual
-        # CurveNo, Ksat, DryTime
-        test_text = r"""S1               3.5        0.2        2"""
+        test_text = "S1    3.5        0.2        2"
         # --Test set_text
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
-
-class MultiInfiltrationsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = HortonInfiltration()
-
-    def runTest(self):
-        # Example 1, Horton
+    def test_horton_infiltration_section(self):
+        """Test INFILTRATION section Horton type"""
         test_text = r"""
 [INFILTRATION]
 ;;Subcatchment     MaxRate    MinRate    Decay      DryTime    MaxInfil
@@ -80,7 +52,13 @@ class MultiInfiltrationsTest(unittest.TestCase):
   7                0.7        0.3        4.14       0.50
   8                0.7        0.3        4.14       0.50
         """
-        # Example 4a Green Ampt
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.infiltration
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+
+    def test_greenampt_infiltration_section(self):
+        """Test INFILTRATION section Example 4a Green Ampt type"""
         test_text ="""[INFILTRATION]
 ;;Subcatchment   Suction    Ksat       IMD
 ;;-------------- ---------- ---------- ----------
@@ -93,8 +71,13 @@ S6               3.5        0.2        0.2
 Swale3           3.5        0.2        0.2
 Swale4           3.5        0.2        0.2
 Swale6           3.5        0.2        0.2       """
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.infiltration
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
 
-        # Created for cuver_number
+    def test_curvenumber_infiltration_section(self):
+        """Test INFILTRATION section curve_number type"""
         test_text = """[INFILTRATION]
         ;;Subcatchment   CurveNo    Ksat       DryTime
         ;;-------------- ---------- ---------- ----------
@@ -107,7 +90,7 @@ Swale6           3.5        0.2        0.2       """
         Swale3           3.5        0.2        2
         Swale4           3.5        0.2        2
         Swale6           3.5        0.2        2       """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.infiltration
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

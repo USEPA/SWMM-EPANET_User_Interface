@@ -1,15 +1,15 @@
-from core.swmm.hydraulics.link import CrossSection
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydraulics.link import CrossSection
 
 
-class SingleCrossSectionTest(unittest.TestCase):
+class SimpleCrossSectionTest(unittest.TestCase):
+    """Test XSECTIONS section"""
 
-    def setUp(self):
 
+    def test_one_xsection(self):
         self.my_options = CrossSection()
-
-    def runTest(self):
-
         # Simple test examples
         # Predefined shapes with Geoms only
         test_text = r"""W1   RECT_OPEN    2.83             1.75       0          0"""
@@ -63,17 +63,8 @@ class SingleCrossSectionTest(unittest.TestCase):
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
-
-class MultiXsectionsTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = CrossSection()
-
-    def runTest(self):
-
-        # Example 3
+    def test_xsections_section(self):
+        """Test XSECTIONS: example 3"""
         test_text = """[XSECTIONS]
 ;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
 ;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
@@ -94,6 +85,10 @@ Or2              RECT_CLOSED  0.5              2          0          0
 Or3              RECT_CLOSED  0.25             0.35       0          0
 W1               RECT_OPEN    2.83             1.75       0          0
 """
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.xsections
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
 
 
         # Example 6
@@ -159,4 +154,3 @@ P6               CIRCULAR     2                0          0          0          
 P7               CIRCULAR     2                0          0          0          1
 P8               CIRCULAR     3.17             0          0          0          1
 """
-        pass

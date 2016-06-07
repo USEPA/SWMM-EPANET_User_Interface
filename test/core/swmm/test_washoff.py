@@ -1,34 +1,24 @@
-from core.swmm.quality import Washoff
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.quality import Washoff
 
 
-class SingleWashoffTest(unittest.TestCase):
+class SimpleWashoffTest(unittest.TestCase):
+    """Test WASHOFF section"""
 
-    def setUp(self):
 
+    def test_one_washoff(self):
+        """Test all options"""
+        test_text = "Residential      TSS              EXP        0.1      1        0        0  "
         self.my_options = Washoff()
-
-    def runTest(self):
-
-        # Test all options
-        test_text = r""" Residential      TSS              EXP        0.1      1        0        0  """
-
-        # --Test set_text
         self.my_options.set_text(test_text)
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
 
-        pass
-
-class MultiWashoffTest(unittest.TestCase):
-
-    def setUp(self):
-
-        self.my_options = Washoff()
-
-    def runTest(self):
-
+    def test_washoff_section(self):
+        """Test WASHOFF section"""
         test_text = r"""
 [WASHOFF]
 ;;                                                               Clean.   BMP
@@ -39,7 +29,7 @@ class MultiWashoffTest(unittest.TestCase):
   Undeveloped      TSS              EXP        0.1      0.7      0        0
   Undeveloped      Lead             EMC        0        0        0        0
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.washoff
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

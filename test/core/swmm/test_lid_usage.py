@@ -1,47 +1,25 @@
-from core.swmm.hydrology.subcatchment import LIDUsage
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.hydrology.subcatchment import LIDUsage
 
 
-class SingleLIDUsageTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+class SimpleLIDUsageTest(unittest.TestCase):
+    """Test LIDUSAGE section"""
 
-    def setUp(self):
-
+    def test_lid_usage(self):
+        """Test aquifer parameters from SWMM 5.1 manual"""
         self.my_options = LIDUsage()
-
-    def runTest(self):
-
-        # Test aquifer parameters from SWMM 5.1 manual
-        test_lid_usage = r""" S2 Swale 1 10000 50 0 0 0 'swale.rpt' """
-        # --Test set_text
-
+        test_lid_usage = " S2 Swale 1 10000 50 0 0 0 'swale.rpt' "
         self.my_options.set_text(test_lid_usage)
-        # --Test get_text through matches
         actual_text = self.my_options.get_text() # display purpose
-        #assert self.my_options.matches(test_lid_usage)
+        assert self.my_options.matches(test_lid_usage)
 
-        pass
-
-class MultiLIDUsageTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-
-    def setUp(self):
-
-        self.my_options = LIDUsage()
-
-    def runTest(self):
-        # Test failed as current LID usage only contains one line of LID usage
-        # Also code compained when I have special character in the comment lines
-        # Test default, default is empty string, no adjustments
-        # name = self.my_options.SECTION_NAME
-        # assert name == "[LID_USAGE]"
-        actual_text = self.my_options.get_text()
-        #assert actual_text == ''
-
-        # Test aquifer parameters from SWMM 5.1 manual
-        test_lid_usage = r"""
+    def test_lid_usage_section(self):
+        """Test LIDUSAGE section through Project class
+         Test failed as current LID usage only contains one line of LID usage
+         Also code compained when I have special character in the comment lines"""
+        test_text = r"""
 [LID_USAGE]
 ;34 rain barrels of 12 sq ft each are placed in
 ;subcatchment S1. They are initially empty and treat 17
@@ -50,11 +28,7 @@ class MultiLIDUsageTest(unittest.TestCase):
 S1 RB14 34 12 0 0 17 1
 S2 Swale 1 10000 50 0 0 0 swale.rpt
         """
-        # --Test set_text
-
-        self.my_options.set_text(test_lid_usage)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text() # display purpose
-        #assert self.my_options.matches(test_lid_usage)
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.lid_usage
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

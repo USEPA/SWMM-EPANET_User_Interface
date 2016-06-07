@@ -1,15 +1,15 @@
-from core.swmm.quality import Pollutant
 import unittest
+from core.inputfile import Section
+from core.swmm.project import Project
+from core.swmm.quality import Pollutant
 
 
-class SinglePollutantTest(unittest.TestCase):
+class SimplePollutantTest(unittest.TestCase):
+    """Test POLLUTANTS section"""
 
-    def setUp(self):
-
+    def test_one_pollutant(self):
+        """Test one pollutant"""
         self.my_options = Pollutant()
-
-    def runTest(self):
-
         # Test all options
         test_text = r""" Lead             UG/L   0.0        0.0        0          0.0        NO    TSS 0.2 0.0 0.0  """
 
@@ -18,17 +18,10 @@ class SinglePollutantTest(unittest.TestCase):
         # --Test get_text through matches
         actual_text = self.my_options.get_text()  # display purpose
         assert self.my_options.matches(test_text)
-
-        pass
-
-class MultiPollutantsTest(unittest.TestCase):
-
-    def setUp(self):
-
         self.my_options = Pollutant()
 
-    def runTest(self):
-
+    def test_pollutant_section(self):
+        """Test POLLUTANTS section through Project"""
         test_text = r"""
 [POLLUTANTS]
 ;;                 Mass   Rain       GW         I&I        Decay      Snow
@@ -37,7 +30,7 @@ class MultiPollutantsTest(unittest.TestCase):
   TSS              MG/L   0.0        0.0        0          0.0        NO
   Lead             UG/L   0.0        0.0        0          0.0        NO    TSS 0.2
         """
-        # --Test set_text
-
-
-        pass
+        from_text = Project()
+        from_text.set_text(test_text)
+        project_section = from_text.pollutants
+        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

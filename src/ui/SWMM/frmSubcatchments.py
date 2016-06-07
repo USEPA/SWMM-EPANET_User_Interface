@@ -20,6 +20,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
     SECTION_TYPE = Subcatchment
 
     def __init__(self, main_form):
+        self.help_topic = "swmm/src/src/subcatchmentproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1

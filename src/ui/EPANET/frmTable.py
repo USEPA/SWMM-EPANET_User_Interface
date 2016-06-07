@@ -44,6 +44,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.lstColumns.selectAll()
             self.cboFilter.clear()
             self.cboFilter.addItems(ENR_NodeAttributeNames)
+            self.rbnLinks.setChecked(False)
+            self.rbnTimeseriesNode.setChecked(False)
+            self.rbnTimeseriesLink.setChecked(False)
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
@@ -54,6 +57,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.lstColumns.selectAll()
             self.cboFilter.clear()
             self.cboFilter.addItems(ENR_LinkAttributeNames)
+            self.rbnNodes.setChecked(False)
+            self.rbnTimeseriesNode.setChecked(False)
+            self.rbnTimeseriesLink.setChecked(False)
 
     def rbnTimeseriesNode_Clicked(self):
         if self.rbnTimeseriesNode.isChecked():
@@ -64,9 +70,12 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.lstColumns.selectAll()
             self.cboFilter.clear()
             self.cboFilter.addItems(ENR_NodeAttributeNames)
+            self.rbnNodes.setChecked(False)
+            self.rbnLinks.setChecked(False)
+            self.rbnTimeseriesLink.setChecked(False)
 
     def rbnTimeseriesLink_Clicked(self):
-        if self.rbnLinks.isChecked():
+        if self.rbnTimeseriesLink.isChecked():
             self.cbxSort.setEnabled(False)
             self.cbxSort.setText(transl8("frmTable", "Sort by", None))
             self.lstColumns.clear()
@@ -74,6 +83,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.lstColumns.selectAll()
             self.cboFilter.clear()
             self.cboFilter.addItems(ENR_LinkAttributeNames)
+            self.rbnNodes.setChecked(False)
+            self.rbnLinks.setChecked(False)
+            self.rbnTimeseriesNode.setChecked(False)
 
     def cmdOK_Clicked(self):
         row_headers = []

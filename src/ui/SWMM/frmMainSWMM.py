@@ -362,14 +362,18 @@ class frmMainSWMM(frmMain):
         pass
 
     def report_summary(self):
-        if self.get_output():
+        if not os.path.isfile(self.status_file_name):
+            prefix, extension = os.path.splitext(self.project.file_name)
+            if os.path.isfile(prefix + self.status_suffix):
+                self.status_file_name = prefix + self.status_suffix
+        if os.path.isfile(self.status_file_name):
             self._frmSummaryReport = frmSummaryReport(self)
-            self._frmSummaryReport.set_from(self.project, self.get_output())
+            self._frmSummaryReport.set_from(self.project, self.status_file_name)
             self._frmSummaryReport.show()
         else:
             QMessageBox.information(None, self.model,
-                                    "Model output not found.\n"
-                                    "Run the model to generate output.",
+                                    "Model status not found.\n"
+                                    "Run the model to generate model status.",
                                     QMessageBox.Ok)
 
     def calibration_data(self):

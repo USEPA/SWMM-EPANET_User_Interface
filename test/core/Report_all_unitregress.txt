@@ -1,0 +1,120 @@
+Name                                                                                                                  Stmts   Miss  Cover
+-----------------------------------------------------------------------------------------------------------------------------------------
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\__init__.py                            0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\coordinates.py                         5      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\__init__.py                     0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\curves.py                      47      4    91%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\__init__.py          0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\control.py          44      7    84%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\link.py            171     30    82%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\node.py            205     27    87%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\labels.py                      28      3    89%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\__init__.py             0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\backdrop.py            46      3    93%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\energy.py              52     18    65%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\hydraulics.py          81      2    98%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\map.py                  7      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\options.py             35      2    94%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\quality.py             63      2    97%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\reactions.py           25      3    88%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\report.py              40      4    90%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\times.py               25      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\patterns.py                    35      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\project.py                     52      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\title.py                       17      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\vertex.py                       5      2    60%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\inputfile.py                         383     43    89%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\metadata.py                           57     23    60%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\__init__.py                       0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\climatology\__init__.py           0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\climatology\climatology.py      268     20    93%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\curves.py                        46      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\__init__.py            0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\link.py              328     47    86%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\node.py              220     39    82%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\__init__.py             0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\aquifer.py             62      1    98%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\lidcontrol.py          93      5    95%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\raingage.py            28     13    54%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\snowpack.py            73      2    97%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\subcatchment.py       330     17    95%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\unithydrograph.py      57      3    95%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\__init__.py               0      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\backdrop.py              40      2    95%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\dates.py                 20      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\dynamic_wave.py          30      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\files.py                 19      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\general.py               79      3    96%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\map.py                   36      3    92%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\report.py                37      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\time_steps.py            16      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\patterns.py                      51      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\project.py                       72      1    99%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\quality.py                      164      8    95%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\timeseries.py                    70      6    91%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\title.py                         14      0   100%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\HTMLTestRunner.py                        200     29    86%
+C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\__init__.py                                0      0   100%
+__init__.py                                                                                                               0      0   100%
+epanet\__init__.py                                                                                                        0      0   100%
+epanet\test_all.py                                                                                                       51      9    82%
+epanet\test_backdrop.py                                                                                                  15      0   100%
+epanet\test_curves.py                                                                                                    37      4    89%
+epanet\test_demands.py                                                                                                   24      0   100%
+epanet\test_energy.py                                                                                                    24      0   100%
+epanet\test_options.py                                                                                                   45      0   100%
+epanet\test_patterns.py                                                                                                  56      4    93%
+epanet\test_project.py                                                                                                  168     41    76%
+epanet\test_quality.py                                                                                                   33      0   100%
+epanet\test_reactions.py                                                                                                 23      0   100%
+epanet\test_report.py                                                                                                    25      0   100%
+epanet\test_sources.py                                                                                                   32      0   100%
+epanet\test_times.py                                                                                                     34      0   100%
+epanet\test_title.py                                                                                                     35      0   100%
+swmm\__init__.py                                                                                                          0      0   100%
+swmm\test_RDII.py                                                                                                        17      0   100%
+swmm\test_adjustments.py                                                                                                 27      0   100%
+swmm\test_all.py                                                                                                        181      9    95%
+swmm\test_aquifers.py                                                                                                    50      0   100%
+swmm\test_backdrop.py                                                                                                    20      3    85%
+swmm\test_buildup.py                                                                                                     19      0   100%
+swmm\test_conduits.py                                                                                                    17     10    41%
+swmm\test_coverages.py                                                                                                   24      0   100%
+swmm\test_curves.py                                                                                                      33      0   100%
+swmm\test_dividers.py                                                                                                    42     32    24%
+swmm\test_dwf.py                                                                                                         29      0   100%
+swmm\test_evaporation.py                                                                                                100     13    87%
+swmm\test_files.py                                                                                                       68      5    93%
+swmm\test_groundwater.py                                                                                                 20      0   100%
+swmm\test_hydrographs.py                                                                                                 62      0   100%
+swmm\test_infiltrations.py                                                                                               44      0   100%
+swmm\test_inflows.py                                                                                                     58      0   100%
+swmm\test_junctions.py                                                                                                   23      0   100%
+swmm\test_landuses.py                                                                                                    23      0   100%
+swmm\test_lid_controls.py                                                                                                24      0   100%
+swmm\test_lid_usage.py                                                                                                   17      0   100%
+swmm\test_loadings.py                                                                                                    20      0   100%
+swmm\test_map.py                                                                                                         19      2    89%
+swmm\test_options_dates.py                                                                                               12      0   100%
+swmm\test_options_dynamicwave.py                                                                                         15      0   100%
+swmm\test_options_general.py                                                                                             56      0   100%
+swmm\test_options_timesteps.py                                                                                            9      0   100%
+swmm\test_outfalls.py                                                                                                    17      5    71%
+swmm\test_patterns.py                                                                                                    66      0   100%
+swmm\test_pollutants.py                                                                                                  20      0   100%
+swmm\test_project.py                                                                                                    181     30    83%
+swmm\test_raingages.py                                                                                                   16      9    44%
+swmm\test_report.py                                                                                                      35      0   100%
+swmm\test_snowpack.py                                                                                                    23      0   100%
+swmm\test_subcatchments.py                                                                                               29      0   100%
+swmm\test_temperature.py                                                                                                 69      0   100%
+swmm\test_timeseries.py                                                                                                  32      0   100%
+swmm\test_title.py                                                                                                       40      0   100%
+swmm\test_transects.py                                                                                                   28      0   100%
+swmm\test_treatment.py                                                                                                   23      0   100%
+swmm\test_washoff.py                                                                                                     17      0   100%
+swmm\test_xsection.py                                                                                                   162    154     5%
+swmm\test_xsections.py                                                                                                   55      0   100%
+test_all_unit_regress_cmd.py                                                                                             34      2    94%
+-----------------------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                                                  6254    704    89%

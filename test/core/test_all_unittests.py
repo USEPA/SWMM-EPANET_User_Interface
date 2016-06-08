@@ -1,4 +1,19 @@
+##  This section is needed to run coverage from the command line ------TODO: change
+## >> Run coverage from command line, navigate to test_all.py
+## >> coverage run test_all.py
+## >> coverage report >> Report_coverage_SWMM.txt
+import sys
 import os
+current_path = os.getcwd()
+project_path = os.path.split(os.path.split(current_path)[0])[0]
+src_path = os.path.join(project_path, "src")
+sys.path.append(project_path)
+sys.path.append(src_path)
+sp = sorted(sys.path)
+dnames = ', '.join(sp)
+print(dnames)
+## ----------------------------------------------------------------------
+
 import webbrowser
 import unittest
 import test.HTMLTestRunner
@@ -18,32 +33,17 @@ if __name__ == "__main__":
         title='SWMM-EPANET Core Test Report',
         description='Unit test results')
 
-    # Create a coverage instance
-    cov = coverage.Coverage()
-    cov.start()
-
     runner.run(my_suite)
 
-    cov.stop()
-    cov.save()
-    cov.html_report()
-
     fp.close()
-
-    # Open coverage report
-    current_path = os.getcwd()
-    full_file_path = os.path.join(current_path, 'htmlcov')
-    full_file_name = os.path.join(full_file_path, 'index.html')
-    try:
-        webbrowser.open_new_tab(full_file_name)
-    except:
-        print("Error opening coverage results")
 
     # Open unit_test reports
     try:
         webbrowser.open_new_tab(report_filename)
     except:
         print("Test results written to " + report_filename)
+
+
 
 
 

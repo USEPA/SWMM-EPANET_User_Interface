@@ -1,6 +1,7 @@
 import os
 import webbrowser
 import unittest
+import coverage
 import test.HTMLTestRunner
 import test.core.epanet.test_all
 import test.core.swmm.test_all
@@ -44,7 +45,3 @@ if __name__ == "__main__":
         webbrowser.open_new_tab(report_filename)
     except:
         print("Test results written to " + report_filename)
-
-
-
-

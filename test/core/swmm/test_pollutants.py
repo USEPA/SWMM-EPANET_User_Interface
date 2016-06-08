@@ -33,4 +33,6 @@ class SimplePollutantTest(unittest.TestCase):
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.pollutants
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(project_section.matches(test_text), msg)

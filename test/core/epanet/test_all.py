@@ -1,14 +1,3 @@
-##  This section is needed to run coverage from the command line ------TODO: change
-## >> Run coverage from command line, navigate to test_all.py
-## >> coverage run test_all.py
-## >> coverage report >> Report_coverage_EPANET.txt
-# import sys
-# sp = sorted(sys.path)
-# dnames = ', '.join(sp)
-# print(dnames)
-# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface")
-# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface\\src")
-# ---------------------------------------------------------------------------------
 import webbrowser
 import unittest
 import test.HTMLTestRunner

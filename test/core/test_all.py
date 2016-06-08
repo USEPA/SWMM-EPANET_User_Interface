@@ -1,7 +1,6 @@
 import os
 import webbrowser
 import unittest
-import coverage
 import test.HTMLTestRunner
 import test.core.epanet.test_all
 import test.core.swmm.test_all

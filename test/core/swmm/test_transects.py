@@ -18,7 +18,8 @@ class SimpleTransectTest(unittest.TestCase):
         actual_text = self.my_options.get_text() #Check this
         new_text = actual_text.replace(" ","")
         #assert new_text == actual_text
-        assert self.my_options.matches(test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     def test_transects(self):
         """Test transects:Example-7-final inp
@@ -36,7 +37,8 @@ class SimpleTransectTest(unittest.TestCase):
         self.my_options = Transects()
         self.my_options.set_text(test_text)
         actual_text = self.my_options.get_text() #Check this
-        assert self.my_options.matches(test_text)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(self.my_options.matches(test_text), msg)
 
     def test_transect_section(self):
         """Test transects: using Project
@@ -53,5 +55,9 @@ class SimpleTransectTest(unittest.TestCase):
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.transects
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(project_section.matches(test_text), msg)
+
 

@@ -1,14 +1,3 @@
-##  This section is needed to run coverage from the command line ------TODO: change
-## >> Run coverage from command line, navigate to test_all.py
-## >> coverage run test_all.py
-## >> coverage report >> Report_coverage_SWMM.txt
-# import sys
-# sp = sorted(sys.path)
-# dnames = ', '.join(sp)
-# print(dnames)
-# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface")
-# sys.path.append("E:\\Code\\PyCharmProjects\\SWMM-EPANET_User_Interface\\src")
-# -------------------------------------------------------------------
 import webbrowser
 import unittest
 from test.HTMLTestRunner import HTMLTestRunner
@@ -25,7 +14,6 @@ from test_report import SimpleReportTest
 from test_options_timesteps import OptionsTimestepTest
 
 # Climatology
-from test_evaporation import SimpleEvaporationTest
 from test_evaporation import EvaporationTest
 from test_temperature import TemperatureTest
 from test_adjustments import AdjustmentsTest
@@ -115,8 +103,6 @@ my_suite.addTest(SimpleReportTest())
 my_suite.addTest(OptionsTimestepTest())
 
 # Climatology
-my_suite.addTest(SimpleEvaporationTest())
-# my_suite.addTest(ClimatologyEvaporationTest())
 my_suite.addTest(EvaporationTest("test_bare"))
 my_suite.addTest(EvaporationTest("test_constant_only"))
 my_suite.addTest(EvaporationTest("test_constant_wt_dry_only"))
@@ -126,9 +112,19 @@ my_suite.addTest(EvaporationTest("test_timeseries"))
 my_suite.addTest(EvaporationTest("test_temperature"))
 my_suite.addTest(EvaporationTest("test_file"))
 my_suite.addTest(EvaporationTest("test_recovery"))
+my_suite.addTest(EvaporationTest('test_project_section'))
 
 my_suite.addTest(TemperatureTest('test_default'))
-my_suite.addTest(TemperatureTest('test_ts'))
+my_suite.addTest(TemperatureTest('test_timeseries'))
+my_suite.addTest(TemperatureTest('test_file'))
+my_suite.addTest(TemperatureTest('test_file_wt_date'))
+my_suite.addTest(TemperatureTest('test_windspeed_monthly'))
+my_suite.addTest(TemperatureTest('test_windspeed_file_wt_temperature'))
+my_suite.addTest(TemperatureTest('test_windspeed_file_fail'))
+my_suite.addTest(TemperatureTest('test_snowmelt'))
+my_suite.addTest(TemperatureTest('test_snowmelt_fail'))
+my_suite.addTest(TemperatureTest('test_snowmelt_wo_adc'))
+my_suite.addTest(TemperatureTest('test_snowmelt_wo_temperature'))
 my_suite.addTest(AdjustmentsTest('test_default'))
 my_suite.addTest(AdjustmentsTest('test_all_opts'))
 my_suite.addTest(AdjustmentsTest('test_miss_col'))
@@ -140,14 +136,15 @@ my_suite.addTest(SimpleAquifersTest('test_aquifers'))
 my_suite.addTest(SimpleLIDControlTest('test_lid_surface'))
 my_suite.addTest(SimpleLIDControlTest('test_lid_control'))
 my_suite.addTest(SimpleLIDControlTest('test_example4a'))
-my_suite.addTest(SimpleRainGageTest('test_one_raingage'))
-my_suite.addTest(SimpleRainGageTest('test_raingage_section'))
+# MTP3 my_suite.addTest(SimpleRainGageTest('test_one_raingage'))
+# MTP3 my_suite.addTest(SimpleRainGageTest('test_raingage_section'))
 my_suite.addTest(SimpleSnowPackTest('test_one_pack'))
 my_suite.addTest(SimpleSnowPackTest('test_one_type'))
 my_suite.addTest(SimpleSnowPackTest('test_snowpacks_section'))
 my_suite.addTest(SimpleSubcatchmentTest('test_pk'))
 my_suite.addTest(SimpleSubcatchmentTest('test_nopk'))
 my_suite.addTest(SimpleSubcatchmentTest('test_missing'))
+my_suite.addTest(SimpleSubcatchmentTest('test_subcatchments'))
 my_suite.addTest(InfiltrationTest('test_horton'))
 my_suite.addTest(InfiltrationTest('test_greenampt'))
 my_suite.addTest(InfiltrationTest('test_curvenumber'))
@@ -168,29 +165,35 @@ my_suite.addTest(SimpleHydrographsTest('test_hydrographs'))
 
 # Hydraulics
 # Link:
-# my_suite.addTest(SimpleConduitTest('test_conduit'))
-# my_suite.addTest(SimpleConduitTest('test_conduit_section'))
-# Pump
-# Orifice
-# Weir
-# Outlet
-my_suite.addTest(SimpleCrossSectionTest('test_one_xsection'))
+# MTP3 my_suite.addTest(SimpleConduitTest('test_conduit'))
+# MTP3 my_suite.addTest(SimpleConduitTest('test_conduit_section'))
+# MTP3 Pump
+# MTP3 Orifice
+# MTP3 Weir
+my_suite.addTest(SimpleCrossSectionTest('test_geom'))
+my_suite.addTest(SimpleCrossSectionTest('test_geom_barrel'))
+my_suite.addTest(SimpleCrossSectionTest('test_geom_barrel_culvert'))
+my_suite.addTest(SimpleCrossSectionTest('test_custom_curve'))
+my_suite.addTest(SimpleCrossSectionTest('test_custom_curve_barrelnum'))
+my_suite.addTest(SimpleCrossSectionTest('test_irregular_tsectnum'))
 my_suite.addTest(SimpleCrossSectionTest('test_xsections_section'))
+# my_suite.addTest(XsectionTest())
+
 my_suite.addTest(SimpleTransectTest('test_one_transect'))
 my_suite.addTest(SimpleTransectTest('test_transects'))
 my_suite.addTest(SimpleTransectTest('test_transect_section'))
-my_suite.addTest(XsectionTest())
 
 # Node:
 my_suite.addTest(SimpleJunctionTest('test_all_opts'))
 my_suite.addTest(SimpleJunctionTest('test_selected_parameters'))
 my_suite.addTest(SimpleJunctionTest('test_junctions'))
 my_suite.addTest(SimpleOutfallTest('test_one_outfall'))
-# my_suite.addTest(SimpleDividerTest('test_overflow_divider'))
-# my_suite.addTest(SimpleDividerTest('test_cutoff_divider'))
-# my_suite.addTest(SimpleDividerTest('test_tabular_divider'))
-# my_suite.addTest(SimpleDividerTest('test_weir_divider'))
-# my_suite.addTest(SimpleDividerTest('test_dividers'))
+# MTP3 outfall does not exist my_suite.addTest(SimpleOutfallTest('test_outfall_section'))
+# MTP3 my_suite.addTest(SimpleDividerTest('test_overflow_divider'))
+# MTP3 my_suite.addTest(SimpleDividerTest('test_cutoff_divider'))
+# MTP3 my_suite.addTest(SimpleDividerTest('test_tabular_divider'))
+# MTP3 my_suite.addTest(SimpleDividerTest('test_weir_divider'))
+# MTP3 my_suite.addTest(SimpleDividerTest('test_dividers'))
 
 # Storage
 my_suite.addTest(SimpleInflowTest('test_flow_type'))
@@ -220,11 +223,18 @@ my_suite.addTest(SimpleLanduseTest('test_all_opts'))
 my_suite.addTest(SimpleLanduseTest('test_landuses'))
 
 # Mislaneous
-my_suite.addTest(SimpleTitleTest())
+my_suite.addTest(SimpleTitleTest('test_bare'))
+my_suite.addTest(SimpleTitleTest('test_empty'))
+my_suite.addTest(SimpleTitleTest('test_empty_wo_return'))
+my_suite.addTest(SimpleTitleTest('test_one_row_wt_return'))
+my_suite.addTest(SimpleTitleTest('test_multiple_lines'))
+my_suite.addTest(SimpleTitleTest('test_return_before_title'))
+
 my_suite.addTest(SimpleTimeSeriesTest('test_file'))
 my_suite.addTest(SimpleTimeSeriesTest('test_data'))
 my_suite.addTest(SimpleTimeSeriesTest('test_multiple_lines'))
 my_suite.addTest(SimpleTimeSeriesTest('test_timeseries_section'))
+
 # will need for later MTPs:
 my_suite.addTest(SimplePatternTest('test_hourly'))
 my_suite.addTest(SimplePatternTest('test_daily'))
@@ -236,6 +246,8 @@ my_suite.addTest(SimpleCurveTest('test_storage_curve'))
 my_suite.addTest(SimpleCurveTest('test_pump_curve'))
 my_suite.addTest(SimpleCurveTest('test_curves_section'))
 # my_suite.addTest(SimpleLabelTest())
+
+# Project moved as seperate regression test
 # my_suite.addTest(ProjectTest())
 
 if __name__ == "__main__":

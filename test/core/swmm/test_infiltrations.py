@@ -7,6 +7,7 @@ from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfilt
 class InfiltrationTest(unittest.TestCase):
     """Test INFILTRATION section"""
 
+
     def test_horton(self):
         """Test Horton infiltration created based on SWMM 5.1 manual"""
         self.my_options = HortonInfiltration()
@@ -54,8 +55,11 @@ class InfiltrationTest(unittest.TestCase):
         """
         from_text = Project()
         from_text.set_text(test_text)
+        # from_text.infiltration.set_text('HORTON')
         project_section = from_text.infiltration
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        assert project_section.matches(test_text)
+        # assert Section.match_omit(actual_text, test_text, " \t-;\n")
 
     def test_greenampt_infiltration_section(self):
         """Test INFILTRATION section Example 4a Green Ampt type"""
@@ -74,7 +78,9 @@ Swale6           3.5        0.2        0.2       """
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.infiltration
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        assert project_section.matches(test_text)
+        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
 
     def test_curvenumber_infiltration_section(self):
         """Test INFILTRATION section curve_number type"""
@@ -93,4 +99,6 @@ Swale6           3.5        0.2        0.2       """
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.infiltration
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        assert project_section.matches(test_text)
+        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

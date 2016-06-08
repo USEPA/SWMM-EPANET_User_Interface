@@ -90,4 +90,6 @@ Swale            SURFACE    36         0.0        0.24       1.0        5"""
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.lid_controls
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        assert project_section.matches(test_text)
+        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")

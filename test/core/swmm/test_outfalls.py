@@ -17,6 +17,7 @@ class SimpleOutfallTest(unittest.TestCase):
         assert self.my_options.matches(test_outfall)
 
     def test_outfall_section(self):
+        """Test OUTFALLS section"""
         test_text = r"""
 [OUTFALLS]
 ;;Name           Elevation  Type       Stage Data       Gated    Route To

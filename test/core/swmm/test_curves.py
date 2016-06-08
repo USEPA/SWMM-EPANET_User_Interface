@@ -34,14 +34,16 @@ class SimpleCurveTest(unittest.TestCase):
     def test_curves_section(self):  # TODO: check the match_omit method
         """Test CURVES section using Project class, Example6-Initial"""
         from_text = Project()
-        # source_text = '\n'.join(self.TEST_TEXT)
-        source_text = "[CURVES]\n" \
+        # test_text = '\n'.join(self.TEST_TEXT)
+        test_text = "[CURVES]\n" \
                       ";;Name           Type       X-Value    Y-Value\n" \
                       ";;-------------- ---------- ---------- ----------\n" \
                       "SU2              Storage    0          10368\n" \
                       "SU2                         2.2        14512\n" \
                       "SU2                         2.3        32000\n" \
                       "SU2                         6          50000"
-        from_text.set_text(source_text)
+        from_text.set_text(test_text)
         project_section = from_text.curves
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+        actual_text = project_section.get_text()
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(project_section.matches(test_text), msg)

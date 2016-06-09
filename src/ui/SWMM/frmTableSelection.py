@@ -1,10 +1,9 @@
-import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
-from ui.SWMM.frmTableSelectionDesigner import Ui_frmTableSelection
-from ui.SWMM.frmGenericListOutput import frmGenericListOutput
-from ui.help import HelpHandler
+import PyQt4.QtGui as QtGui
+
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+from ui.SWMM.frmTableSelectionDesigner import Ui_frmTableSelection
+from ui.frmGenericListOutput import frmGenericListOutput
 
 
 class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
@@ -18,6 +17,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
 
         # self.set_from(parent.project)
         self._main_form = main_form
+        self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
         self.cboObject.currentIndexChanged.connect(self.cboObject_currentIndexChanged)
         self.cboObject.setCurrentIndex(0)
         self.lstNodes.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
@@ -27,15 +27,11 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
         self.project = project
         self.output = output
         self.cboStart.clear()
+        self.cboEnd.clear()
         if project and self.output:
             self.cboTime.addItems(["Elapsed Time", "Date/Time"])
+            self.cboTime.setCurrentIndex(0)
             self.cboObject.addItems(["Subcatchments", "Nodes", "Links"])
-            for time_index in range(0, self.output.numPeriods):
-                time_string = self.output.get_time_string(time_index)
-                self.cboStart.addItem(time_string)
-                self.cboEnd.addItem(time_string)
-            self.cboStart.setCurrentIndex(0)
-            self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
             self.cboObject.setCurrentIndex(0)
 
     def cmdOK_Clicked(self):
@@ -44,71 +40,63 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
         num_steps = end_index - start_index + 1
 
         num_columns = 1
-        headers = []
-        local_data = []
-        headers.append('Date')
-        for time_index in range(start_index, end_index):
+        column_headers = []
+        row_headers = []
+        # column_headers.append('Date')
+        elapsed_flag = self.cboTime.currentIndex() == 0
+        for time_index in range(start_index, end_index + 1):
+            if elapsed_flag:
                 time_string = self.output.get_time_string(time_index)
-                local_data.append(time_string)
+            else:
+                time_string = self.output.get_date_string(time_index)
+            row_headers.append(time_string)
 
+        column_data = []
         for location in self.lstNodes.selectedIndexes():
             selected_location = str(location.data())
             for variable in self.lstVariables.selectedIndexes():
                 selected_variable = str(variable.data())
                 # for each selected location, for each selected variable
-                x_values, x_units = self._get_values(self.lblNodes.text(),
-                                                     selected_location,
-                                                     selected_variable,
-                                                     start_index, num_steps)
-                headers.append(selected_variable + ' at ' + self.lblNodes.text()[:-1] + ' ' + selected_location)
+                this_column_values, units = self.output.get_series_by_name(self.lblNodes.text(),
+                                                                           selected_location,
+                                                                           selected_variable,
+                                                                           start_index, num_steps)
+                if units:
+                    units = ' (' + units + ')'
+                column_headers.append(selected_variable + ' at ' + self.lblNodes.text()[:-1] + ' ' + selected_location + units)
                 num_columns += 1
-                local_data.extend(x_values)
+                column_data.append(this_column_values)
 
         self._frmOutputTable = frmGenericListOutput(self._main_form, "SWMM Table Output")
-        self._frmOutputTable.set_data(num_steps, num_columns, headers, local_data)
+        self._frmOutputTable.set_data_by_columns(row_headers, column_headers, column_data)
         self._frmOutputTable.show()
-
-        self.close()
-
-    def _get_values(self, object_type, object_id, variable, start_index, num_steps):
-        if object_type == "Nodes":
-            item_index = self.output.get_NodeIndex(object_id)
-            attribute_index = SMO.SMO_nodeAttributes[SMO.SMO_nodeAttributeNames.index(variable)]
-            units = SMO.SMO_nodeAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_NodeSeries(item_index, attribute_index, start_index, num_steps), units
-        elif object_type == "Links":
-            item_index = self.output.get_LinkIndex(object_id)
-            attribute_index = SMO.SMO_linkAttributes[SMO.SMO_linkAttributeNames.index(variable)]
-            units = SMO.SMO_linkAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_LinkSeries(item_index, attribute_index, start_index, num_steps), units
-        elif object_type == "Subcatchments":
-            item_index = self.output.get_SubcatchmentIndex(object_id)
-            attribute_index = SMO.SMO_subcatchAttributes[SMO.SMO_subcatchAttributeNames.index(variable)]
-            units = SMO.SMO_subcatchAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_SubcatchmentSeries(item_index, attribute_index, start_index, num_steps), units
+        # self.close()
 
     def cmdCancel_Clicked(self):
         self.close()
 
     def cboObject_currentIndexChanged(self, newIndex):
-        if newIndex == 0: # subcatchments
-            self.lblNodes.setText("Subcatchments")
-            items = self.output.subcatchment_ids
-            variables = SMO.SMO_subcatchAttributeNames
-        elif newIndex == 1: # nodes
-            self.lblNodes.setText("Nodes")
-            items = self.output.node_ids
-            variables = SMO.SMO_nodeAttributeNames
-        elif newIndex == 2: # links
-            self.lblNodes.setText("Links")
-            items = self.output.link_ids
-            variables = SMO.SMO_linkAttributeNames
+        object_type = SMO.SMO_objectTypes[newIndex]
+        self.lblNodes.setText(object_type.TypeLabel)
 
         self.lstNodes.clear()
-        for item in items:
-            self.lstNodes.addItem(item)
+        for item in self.output.all_items[newIndex]:
+            self.lstNodes.addItem(item.id)
 
         self.lstVariables.clear()
-        for variable in variables:
+        for variable in object_type.AttributeNames:
             self.lstVariables.addItem(variable)
+
+    def cboTime_currentIndexChanged(self, newIndex):
+        self.cboStart.clear()
+        self.cboEnd.clear()
+        for time_index in range(0, self.output.numPeriods):
+            if newIndex == 0:
+                time_string = self.output.get_time_string(time_index)
+            else:
+                time_string = self.output.get_date_string(time_index)
+            self.cboStart.addItem(time_string)
+            self.cboEnd.addItem(time_string)
+        self.cboStart.setCurrentIndex(0)
+        self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
 

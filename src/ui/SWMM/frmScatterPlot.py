@@ -35,11 +35,11 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
             for cboObjectType in (self.cboXCat, self.cboYCat):
                 cboObjectType.clear()
                 if self.project and self.output:
-                    if self.output.subcatchment_ids:
+                    if self.output.subcatchments:
                         cboObjectType.addItem("Subcatchment")
-                    if self.output.node_ids:
+                    if self.output.nodes:
                         cboObjectType.addItem("Node")
-                    if self.output.link_ids:
+                    if self.output.links:
                         cboObjectType.addItem("Link")
                     if cboObjectType.count() > 0:
                         cboObjectType.setCurrentIndex(0)
@@ -59,54 +59,64 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
         self.cboObjectType_currentIndexChanged(self.cboYCat, self.lstY, self.cboVarY)
 
     def cboObjectType_currentIndexChanged(self, cboObjectType, lst_ids, cboVariable):
-
-        if cboObjectType.currentText() == "Subcatchment":
-            items = self.output.subcatchment_ids
-            variables = SMO.SMO_subcatchAttributeNames
-        elif cboObjectType.currentText() == "Node":
-            items = self.output.node_ids
-            variables = SMO.SMO_nodeAttributeNames
-        elif cboObjectType.currentText() == "Link":
-            items = self.output.link_ids
-            variables = SMO.SMO_linkAttributeNames
-        else:
-            items = ["None"]
-            variables = ["None"]
+        items = self.output.get_items(cboObjectType.currentText())
 
         lst_ids.clear()
         for item in items:
-            lst_ids.addItem(item)
+            lst_ids.addItem(item.id)
 
         cboVariable.clear()
-        for variable in variables:
-            cboVariable.addItem(variable)
+        if items:
+            for variable in items[0].AttributeNames:
+                cboVariable.addItem(variable)
 
     def cmdOK_Clicked(self):
-        self.plot_scatter()
-        self.close()
+        if not self.lstX.currentItem():
+            QtGui.QMessageBox.information(None, "Scatter Plot",
+                                    "X variable not set.",
+                                          QtGui.QMessageBox.Ok)
+        elif not self.lstY.currentItem():
+            QtGui.QMessageBox.information(None, "Scatter Plot",
+                                    "Y variable not set.",
+                                          QtGui.QMessageBox.Ok)
+        else:
+            start_index = self.cboStart.currentIndex()
+            end_index = self.cboEnd.currentIndex()
+            num_steps = end_index - start_index + 1
+            title = "Scatter Plot " + self.cboStart.currentText() + ' - ' + self.cboEnd.currentText()
+            object_type_label_x = self.cboXCat.currentText()
+            object_id_x = self.lstX.currentItem().text()
+            attribute_name_x = self.cboVarX.currentText()
+            object_type_label_y = self.cboYCat.currentText(),
+            object_id_y = self.lstY.currentItem().text(),
+            attribute_name_y = self.cboVarY.currentText()
+            self.plot_scatter(self.output, title,
+                              object_type_label_x, object_id_x, attribute_name_x,
+                              object_type_label_y, object_id_y, attribute_name_y, start_index, num_steps)
 
     def cmdCancel_Clicked(self):
         self.close()
 
-    def plot_scatter(self):
+    # TODO: move out of ui to script-accessible module
+    @staticmethod
+    def plot_scatter(output, title,
+                     object_type_label_x, object_id_x, attribute_name_x,
+                     object_type_label_y, object_id_y, attribute_name_y,
+                     start_index=0, num_steps=-1):
         fig = plt.figure()
-        start_index = self.cboStart.currentIndex()
-        end_index = self.cboEnd.currentIndex()
-        num_steps = end_index - start_index + 1
         # if num_steps < self.output.numPeriods:
-        title = "Scatter Plot " + self.cboStart.currentText() + ' - ' + self.cboEnd.currentText()
         fig.canvas.set_window_title(title)
         plt.title(title)
 
-        x_values, x_units = self._get_values(self.cboXCat.currentText(),
-                                           self.lstX.currentItem().text(),
-                                           self.cboVarX.currentText(),
-                                           start_index, num_steps)
+        x_values, x_units = output.get_series_by_name(object_type_label_x,
+                                                      object_id_x,
+                                                      attribute_name_x,
+                                                      start_index, num_steps)
 
-        y_values, y_units = self._get_values(self.cboYCat.currentText(),
-                                           self.lstY.currentItem().text(),
-                                           self.cboVarY.currentText(),
-                                           start_index, num_steps)
+        y_values, y_units = output.get_series_by_name(object_type_label_y,
+                                                      object_id_y,
+                                                      attribute_name_y,
+                                                      start_index, num_steps)
 
         plt.scatter(x_values, y_values, s=15, alpha=0.5)
 
@@ -116,33 +126,8 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
         if y_units:
             y_units = ' (' + y_units + ')'
 
-        plt.xlabel(self.cboXCat.currentText() + ' ' +
-                   self.lstX.currentItem().text() + ' ' +
-                   self.cboVarX.currentText() + x_units)
-        plt.ylabel(self.cboYCat.currentText() + ' ' +
-                   self.lstY.currentItem().text() + ' ' +
-                   self.cboVarY.currentText() + y_units)
+        plt.xlabel(object_type_label_x + ' ' + object_id_x + ' ' + attribute_name_x + x_units)
+        plt.ylabel(object_type_label_y + ' ' + object_id_y + ' ' + attribute_name_y + y_units)
 
         plt.grid(True)
         plt.show()
-
-    def _get_values(self, object_type, object_id, variable, start_index, num_steps):
-        if object_type == "Node":
-            item_index = self.output.get_NodeIndex(object_id)
-            attribute_index = SMO.SMO_nodeAttributes[SMO.SMO_nodeAttributeNames.index(variable)]
-            units = SMO.SMO_nodeAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_NodeSeries(item_index, attribute_index, start_index, num_steps), units
-        elif object_type == "Link":
-            item_index = self.output.get_LinkIndex(object_id)
-            attribute_index = SMO.SMO_linkAttributes[SMO.SMO_linkAttributeNames.index(variable)]
-            units = SMO.SMO_linkAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_LinkSeries(item_index, attribute_index, start_index, num_steps), units
-        elif object_type == "Subcatchment":
-            item_index = self.output.get_SubcatchmentIndex(object_id)
-            attribute_index = SMO.SMO_subcatchAttributes[SMO.SMO_subcatchAttributeNames.index(variable)]
-            units = SMO.SMO_subcatchAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_SubcatchmentSeries(item_index, attribute_index, start_index, num_steps), units
-        elif object_type == "System":
-            attribute_index = SMO.SMO_systemAttributes[SMO.SMO_systemAttributeNames.index(variable)]
-            units = SMO.SMO_systemAttributeUnits[attribute_index][self.output.unit_system]
-            return self.output.get_SystemSeries(attribute_index, start_index, num_steps), units

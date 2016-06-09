@@ -10,13 +10,13 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self._main_form = main_form
         self.help_topic = "swmm/src/src/controlrules.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboObjectType.currentIndexChanged.connect(self.cboObjectType_currentIndexChanged)
-
-        self._main_form = main_form
+        self.rbnLeft.setChecked(True)
 
     def set_from(self, project, output, listener):
         self.project = project
@@ -24,32 +24,22 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         self.listener = listener
         self.cboObjectType.clear()
         if project and self.output:
-            if self.output.subcatchment_ids:
-                self.cboObjectType.addItem("Subcatchment")
-            if self.output.node_ids:
-                self.cboObjectType.addItem("Node")
-            if self.output.link_ids:
-                self.cboObjectType.addItem("Link")
-            self.cboObjectType.addItem("System")
+            # Add object type labels to cboObjectType if there are any of each type in output. Always add System.
+            for object_type_label in SMO.SMO_objectTypeLabels:
+                if object_type_label == SMO.SMO_system.TypeLabel or self.output.get_items(object_type_label):
+                    self.cboObjectType.addItem(object_type_label)
             self.cboObjectType.setCurrentIndex(0)
 
     def cboObjectType_currentIndexChanged(self):
-        has_objects = True
-        if self.cboObjectType.currentText() == "Subcatchment":
-            variables = SMO.SMO_subcatchAttributeNames  #subcatchment_ids
-        elif self.cboObjectType.currentText() == "Node":
-            variables = SMO.SMO_nodeAttributeNames  # node_ids
-        elif self.cboObjectType.currentText() == "Link":
-            variables = SMO.SMO_linkAttributeNames  # link_ids
-        elif self.cboObjectType.currentText() == "System":
-            variables = SMO.SMO_systemAttributeNames
-            has_objects = False
-        else:
-            variables = ["None"]
-            has_objects = False
+        has_objects = False
+        attribute_names = ["None"]
+        object_type = SMO.SMO_getObjectType(self.cboObjectType.currentText())
+        if object_type:
+            attribute_names = object_type.AttributeNames
+            has_objects = (object_type != SMO.SMO_system)
 
         self.cboVariable.clear()
-        for item in variables:
+        for item in attribute_names:
             self.cboVariable.addItem(item)
 
         self.lblSpecify.setEnabled(has_objects)
@@ -64,9 +54,15 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
             axis = "Right"
         else:
             axis = "Left"
-
-        self.listener(self.cboObjectType.currentText(), self.txtObject.text(),
-                      self.cboVariable.currentText(), axis, self.txtLegend.text())
+        if self.txtObject.isVisible():
+            object_id = self.txtObject.text()
+        else:
+            object_id = "-1"  # TODO: be able to skip this field for System since user seeing -1 is a bit ugly
+        self.listener(self.cboObjectType.currentText(),
+                      object_id,
+                      self.cboVariable.currentText(),
+                      axis,
+                      self.txtLegend.text())
         self.close()
 
     def cmdCancel_Clicked(self):

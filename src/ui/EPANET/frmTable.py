@@ -1,12 +1,11 @@
-import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
-from core.epanet.reports import Reports
-from ui.model_utility import transl8
-from ui.EPANET.frmTableDesigner import Ui_frmTable
-from ui.EPANET.frmGenericListOutput import frmGenericListOutput
+import PyQt4.QtGui as QtGui
+
 from Externals.epanet.outputapi.ENOutputWrapper import *
-from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
+from core.epanet.reports import Reports
+from ui.EPANET.frmTableDesigner import Ui_frmTable
+from ui.frmGenericListOutput import frmGenericListOutput
+from ui.model_utility import transl8
 
 
 class frmTable(QtGui.QMainWindow, Ui_frmTable):
@@ -31,7 +30,11 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.cboTime.clear()
         if self.project and self.output:
             for time_index in range(0, self.output.numPeriods):
-                self.cboTime.addItem(self.output.get_time_string(time_index))
+                #if self.???:
+                    self.cboTime.addItem(self.output.get_time_string(time_index))
+                #else:
+                #    self.cboTime.addItem(self.output.get_date_string(time_index))
+
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
 

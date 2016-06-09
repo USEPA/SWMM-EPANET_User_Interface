@@ -2,8 +2,10 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import matplotlib.pyplot as plt
 import colorsys
+import datetime
 import numpy as np
 import core.swmm.project
+import ui.convenience
 from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
 from ui.SWMM.frmTimeSeriesSelection import frmTimeSeriesSelection
 from ui.help import HelpHandler
@@ -17,8 +19,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self._main_form = main_form
         QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
-        self.rbnDate.setVisible(False)     # TODO: implement Date/Elapsed choice
-        self.rbnElapsed.setVisible(False)  # TODO: implement Date/Elapsed choice
+        QtCore.QObject.connect(self.rbnDate, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)
+        QtCore.QObject.connect(self.rbnElapsed, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.btnAdd, QtCore.SIGNAL("clicked()"), self.btnAdd_Clicked)
@@ -32,20 +34,31 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self.output = output
         self.cboStart.clear()
         if project and self.output:
-            for time_index in range(0, self.output.numPeriods):
-                time_string = self.output.get_time_string(time_index)
-                self.cboStart.addItem(time_string)
-                self.cboEnd.addItem(time_string)
-            self.cboStart.setCurrentIndex(0)
-            self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
+            self.rbnElapsed.setChecked(True)
+            self.rbnDate_Clicked()
             try:
                 self.set_from_text(QtGui.QApplication.clipboard().text())
             except Exception as ex:
                 print(str(ex))
                 self.lstData.clear()
 
+    def rbnDate_Clicked(self):
+        self.cboStart.clear()
+        self.cboEnd.clear()
+        elapsed = self.rbnElapsed.isChecked()
+        for time_index in range(0, self.output.numPeriods):
+            if elapsed:
+                time_string = self.output.get_time_string(time_index)
+            else:
+                time_string = self.output.get_date_string(time_index)
+            self.cboStart.addItem(time_string)
+            self.cboEnd.addItem(time_string)
+        # if self.cboStart.currentIndex < 0:
+        self.cboStart.setCurrentIndex(0)
+        self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
+
     def add(self, object_type, object_id, variable, axis, legend):
-        item = object_type + ' ' + object_id + ' ' + variable + ' ' + axis + ' "' + legend + '"'
+        item = object_type + ',' + object_id + ',' + variable + ',' + axis + ',"' + legend + '"'
         self.lstData.addItem(item)
 
     def cboStart_currentIndexChanged(self):
@@ -66,7 +79,12 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             self.lstData.takeItem(self.lstData.row(item))
 
     def cmdOK_Clicked(self):
-        self.plot_time()
+        elapsed_flag = self.rbnElapsed.isChecked()
+        start_index = self.cboStart.currentIndex()
+        end_index = self.cboEnd.currentIndex()
+        num_steps = end_index - start_index + 1
+        lines_list = ui.convenience.all_list_items(self.lstData)
+        self.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
         cb = QtGui.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(self.get_text(), mode=cb.Clipboard)
@@ -83,48 +101,29 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             for line in text[len(self.MAGIC):].split('\n'):
                 self.lstData.addItem(line)
 
-    def plot_time(self):
+    # TODO: move out of ui to script-accessible module
+    @staticmethod
+    def plot_time(output, lines_list, elapsed_flag, start_index, num_steps):
         fig = plt.figure()
         title = "Time Series Plot"
         fig.canvas.set_window_title(title)
         plt.title(title)
         left_y_plot = fig.add_subplot(111)
         right_y_plot = None
-        left_label = None
-        right_label = None
-        lines = []
+        lines_plotted = []
         line_legends = []
         x_values = []
-        start_index = self.cboStart.currentIndex()
-        end_index = self.cboEnd.currentIndex()
-        num_steps = end_index - start_index + 1
         for time_index in range(start_index, num_steps):
-            x_values.append(self.output.elapsed_hours_at_index(time_index))
+            elapsed_hours = output.elapsed_hours_at_index(time_index)
+            if elapsed_flag:
+                x_values.append(elapsed_hours)
+            else:
+                x_values.append(output.StartDate + datetime.timedelta(hours=elapsed_hours))
 
-        for line in [str(self.lstData.item(i).text()) for i in range(self.lstData.count())]:
-            object_type, object_id, variable, axis, legend_text = line.split(None, 4)
-            color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
+        for line in lines_list:
+            type_label, object_id, attribute, axis, legend_text = line.split(',', 4)
             legend_text = legend_text.strip('"')
-            if object_type == "Node":
-                item_index = self.output.get_NodeIndex(object_id)
-                attribute_index = SMO.SMO_nodeAttributes[SMO.SMO_nodeAttributeNames.index(variable)]
-                units = SMO.SMO_nodeAttributeUnits[attribute_index][self.output.unit_system]
-                y_values = self.output.get_NodeSeries(item_index, attribute_index, start_index, num_steps)
-            elif object_type == "Link":
-                item_index = self.output.get_LinkIndex(object_id)
-                attribute_index = SMO.SMO_linkAttributes[SMO.SMO_linkAttributeNames.index(variable)]
-                units = SMO.SMO_linkAttributeUnits[attribute_index][self.output.unit_system]
-                y_values = self.output.get_LinkSeries(item_index, attribute_index, start_index, num_steps)
-            elif object_type == "Subcatchment":
-                item_index = self.output.get_SubcatchmentIndex(object_id)
-                attribute_index = SMO.SMO_subcatchAttributes[SMO.SMO_subcatchAttributeNames.index(variable)]
-                units = SMO.SMO_subcatchAttributeUnits[attribute_index][self.output.unit_system]
-                y_values = self.output.get_SubcatchmentSeries(item_index, attribute_index, start_index, num_steps)
-            elif object_type == "System":
-                attribute_index = SMO.SMO_systemAttributes[SMO.SMO_systemAttributeNames.index(variable)]
-                units = SMO.SMO_systemAttributeUnits[attribute_index][self.output.unit_system]
-                y_values = self.output.get_SystemSeries(item_index, attribute_index, start_index, num_steps)
-
+            y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
             if y_values:
                 if axis == "Left":
                     plot_on = left_y_plot
@@ -136,8 +135,9 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                         left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
                     plot_on = right_y_plot
 
+                color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
                 new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
-                lines.append(new_line)
+                lines_plotted.append(new_line)
                 line_legends.append(legend_text)
                 old_label = plot_on.get_ylabel()
                 if not old_label:
@@ -147,10 +147,13 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
 
         # fig.suptitle("Time Series Plot")
         # plt.ylabel(parameter_label)
-        plt.xlabel("Time (hours)")
+        if elapsed_flag:
+            plt.xlabel("Time (hours)")
+        else:
+            plt.xlabel("Time")
         if not right_y_plot:
             plt.grid(True)  # Only show background grid if there is only a left Y axis
-        plt.legend(lines, line_legends, loc="best")
+        plt.legend(lines_plotted, line_legends, loc="best")
         plt.show()
 
     # def keyPressEvent(self, event):

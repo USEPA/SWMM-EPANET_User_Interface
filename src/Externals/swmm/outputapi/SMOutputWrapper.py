@@ -12,33 +12,14 @@ Inspired by ENOutputWrapper by Bryant E. McDonnell 12/7/2015
 """
 
 from ctypes import *
-
+import time, datetime
 import Externals.swmm.outputapi.outputapi as _lib
 
-
 # Subcatchment Attributes
-
 from outputapi import rainfall_subcatch, snow_depth_subcatch, evap_loss, infil_loss,\
                       runoff_rate, gwoutflow_rate, gwtable_elev, soil_moisture, pollutant_conc_subcatch
 
-SMO_subcatchAttributes = (rainfall_subcatch, snow_depth_subcatch, evap_loss, infil_loss,
-                          runoff_rate, gwoutflow_rate, gwtable_elev, soil_moisture, pollutant_conc_subcatch)
-
-SMO_subcatchAttributeNames = ("Precipitation", "Snow Depth", "Evaporation", "Infiltration",
-                              "Runoff", "Groundwater Flow", "Groundwater Elevation", "Soil Moisture", "Concentration")
-
-SMO_subcatchAttributeUnits = (('in/hr', 'mm/hr'),  # Precipitation
-                              ('in', 'mm'),  # Snow Depth
-                              ('in/day', 'mm/day'),  # Evaporation
-                              ('in/hr', 'mm/hr'),  # Infiltration
-                              ('CFS', 'CMS'),  # Runoff
-                              ('CFS', 'CMS'),  # GW Flow
-                              ('ft', 'm'),  # GW Elev
-                              ('', ''),  # Soil Moisture
-                              ('mg/L', 'mg/L'))  # Washoff
-
 # Node Attributes
-
 from outputapi import invert_depth,\
                       hydraulic_head,\
                       stored_ponded_volume,\
@@ -47,44 +28,10 @@ from outputapi import invert_depth,\
                       flooding_losses,\
                       pollutant_conc_node\
 
-SMO_nodeAttributes = (invert_depth,
-                      hydraulic_head,
-                      stored_ponded_volume,
-                      lateral_inflow,
-                      total_inflow,
-                      flooding_losses,
-                      pollutant_conc_node)
-
-SMO_nodeAttributeNames = ("Depth",
-                          "Head",
-                          "Volume",
-                          "Lateral Inflow",
-                          "Total Inflow",
-                          "Flooding",
-                          "TSS")
-
-SMO_nodeAttributeUnits = (('ft', 'm'),  # Depth
-                          ('ft', 'm'),  # Head
-                          ('ft3', 'm3'),  # Volume
-                          ('CFS', 'CMS'),  # Lateral Inflow
-                          ('CFS', 'CMS'),  # Total Inflow
-                          ('CFS', 'CMS'),  # Overflow
-                          ('mg/L', 'mg/L'))  # Quality
-
 # Link Attributes
-
 from outputapi import flow_rate_link, flow_depth, flow_velocity, flow_volume, capacity, pollutant_conc_link
-SMO_linkAttributes = (flow_rate_link, flow_depth, flow_velocity, flow_volume, capacity, pollutant_conc_link)
-SMO_linkAttributeNames = ("Flow", "Depth", "Velocity", "Volume", "Capacity", "Concentration")
-SMO_linkAttributeUnits = (('CFS', 'CMS'),    # Flow
-                          ('ft', 'm'),       # Depth
-                          ('fps', 'm/s'),    # Velocity
-                          ('ft3', 'm3'),     # Volume.
-                          ('', ''),          # Fraction Full
-                          ('mg/L', 'mg/L'))  # Quality
 
 # System Attributes
-
 from outputapi import air_temp,\
                       rainfall_system,\
                       snow_depth_system,\
@@ -100,50 +47,156 @@ from outputapi import air_temp,\
                       volume_stored,\
                       evap_rate
 
-SMO_systemAttributes = (air_temp,
-                        rainfall_system,
-                        snow_depth_system,
-                        evap_infil_loss,
-                        runoff_flow,
-                        dry_weather_inflow,
-                        groundwater_inflow,
-                        RDII_inflow,
-                        direct_inflow,
-                        total_lateral_inflow,
-                        flood_losses,
-                        outfall_flows,
-                        volume_stored,
-                        evap_rate)
 
-SMO_systemAttributeNames = ("Temperature",
-                            "Precipitation",
-                            "Snow Depth",
-                            "Infiltration",
-                            "Runoff",
-                            "Dry Weather Inflow",
-                            "Groundwater Inflow",
-                            "I&I Inflow",
-                            "Direct Inflow",
-                            "Total Inflow",
-                            "Flooding",
-                            "Outflow",
-                            "Storage",
-                            "Evaporation")
+class SMO_categoryBase:
+    """ This class is not used directly, it serves as a base class for
+        SMO_subcatchment, SMO_node, SMO_link, and SMO_system.
+        All but SMO_system use self.id to store an item id and self.index to store the index in the binary file"""
+    TypeLabel = "Base"
+    def __init__(self, id, index):
+        self.id = id
+        self.index = index
 
-SMO_systemAttributeUnits = (('deg F','deg C'),
-                            ('in/hr', 'mm/hr'),    # Precipitation
-                            ('in', 'mm'),          # Snow Depth
-                            ('in/hr', 'mm/hr'),    # Infiltration
-                            ('CFS', 'CMS'),  # Runoff
-                            ('CFS', 'CMS'),  # Dry Weather Inflow
-                            ('CFS', 'CMS'),  # Groundwater Inflow
-                            ('CFS', 'CMS'),  # RDII Inflow
-                            ('CFS', 'CMS'),  # Direct Inflow
-                            ('CFS', 'CMS'),  # Total Inflow
-                            ('CFS', 'CMS'),  # Flooding
-                            ('CFS', 'CMS'),  # Outflow
-                            ('ft3', 'm3'),   # Volume
-                            ('in/day', 'mm/day'))  # Evaporation
+    def __str__(self):
+        return self.id
+
+
+class SMO_subcatchment(SMO_categoryBase):
+    TypeLabel = "Subcatchment"
+    Attributes = (rainfall_subcatch, snow_depth_subcatch, evap_loss, infil_loss,
+                  runoff_rate, gwoutflow_rate, gwtable_elev, soil_moisture, pollutant_conc_subcatch)
+
+    AttributeNames = ("Precipitation", "Snow Depth", "Evaporation", "Infiltration",
+                      "Runoff", "Groundwater Flow", "Groundwater Elevation", "Soil Moisture", "Concentration")
+
+    AttributeUnits = (('in/hr', 'mm/hr'),  # Precipitation
+                      ('in', 'mm'),  # Snow Depth
+                      ('in/day', 'mm/day'),  # Evaporation
+                      ('in/hr', 'mm/hr'),  # Infiltration
+                      ('CFS', 'CMS'),  # Runoff
+                      ('CFS', 'CMS'),  # GW Flow
+                      ('ft', 'm'),  # GW Elev
+                      ('', ''),  # Soil Moisture
+                      ('mg/L', 'mg/L'))  # Washoff
+
+    get_ids = _lib.SMO_getSubcatchIDs
+    get_series = _lib.SMO_getSubcatchSeries
+    get_attribute = _lib.SMO_getSubcatchAttribute
+    get_result = _lib.SMO_getSubcatchResult
+    elementType = 0  # typedef enum {subcatch, node, link, sys} SMO_elementType
+
+
+class SMO_node(SMO_categoryBase):
+    TypeLabel = "Node"
+    Attributes = (invert_depth,
+                  hydraulic_head,
+                  stored_ponded_volume,
+                  lateral_inflow,
+                  total_inflow,
+                  flooding_losses,
+                  pollutant_conc_node)
+
+    AttributeNames = ("Depth",
+                      "Head",
+                      "Volume",
+                      "Lateral Inflow",
+                      "Total Inflow",
+                      "Flooding",
+                      "TSS")
+
+    AttributeUnits = (('ft', 'm'),  # Depth
+                          ('ft', 'm'),  # Head
+                          ('ft3', 'm3'),  # Volume
+                          ('CFS', 'CMS'),  # Lateral Inflow
+                          ('CFS', 'CMS'),  # Total Inflow
+                          ('CFS', 'CMS'),  # Overflow
+                          ('mg/L', 'mg/L'))  # Quality
+
+    get_ids = _lib.SMO_getNodeIDs
+    get_series = _lib.SMO_getNodeSeries
+    get_attribute = _lib.SMO_getNodeAttribute
+    get_result = _lib.SMO_getNodeResult
+    elementType = 1  # typedef enum {subcatch, node, link, sys} SMO_elementType
+
+
+class SMO_link(SMO_categoryBase):
+    TypeLabel = "Link"
+    Attributes = (flow_rate_link, flow_depth, flow_velocity, flow_volume, capacity, pollutant_conc_link)
+    AttributeNames = ("Flow", "Depth", "Velocity", "Volume", "Capacity", "Concentration")
+    AttributeUnits = (('CFS', 'CMS'),    # Flow
+                      ('ft', 'm'),       # Depth
+                      ('fps', 'm/s'),    # Velocity
+                      ('ft3', 'm3'),     # Volume.
+                      ('', ''),          # Fraction Full
+                      ('mg/L', 'mg/L'))  # Quality
+
+    get_ids = _lib.SMO_getLinkIDs
+    get_series = _lib.SMO_getLinkSeries
+    get_attribute = _lib.SMO_getLinkAttribute
+    get_result = _lib.SMO_getLinkResult
+    elementType = 2  # typedef enum {subcatch, node, link, sys} SMO_elementType
+
+
+class SMO_system(SMO_categoryBase):
+    TypeLabel = "System"
+    Attributes = (air_temp,
+                  rainfall_system,
+                  snow_depth_system,
+                  evap_infil_loss,
+                  runoff_flow,
+                  dry_weather_inflow,
+                  groundwater_inflow,
+                  RDII_inflow,
+                  direct_inflow,
+                  total_lateral_inflow,
+                  flood_losses,
+                  outfall_flows,
+                  volume_stored,
+                  evap_rate)
+
+    AttributeNames = ("Temperature",
+                      "Precipitation",
+                      "Snow Depth",
+                      "Infiltration",
+                      "Runoff",
+                      "Dry Weather Inflow",
+                      "Groundwater Inflow",
+                      "I&I Inflow",
+                      "Direct Inflow",
+                      "Total Inflow",
+                      "Flooding",
+                      "Outflow",
+                      "Storage",
+                      "Evaporation")
+
+    AttributeUnits = (('deg F','deg C'),
+                      ('in/hr', 'mm/hr'),    # Precipitation
+                      ('in', 'mm'),          # Snow Depth
+                      ('in/hr', 'mm/hr'),    # Infiltration
+                      ('CFS', 'CMS'),  # Runoff
+                      ('CFS', 'CMS'),  # Dry Weather Inflow
+                      ('CFS', 'CMS'),  # Groundwater Inflow
+                      ('CFS', 'CMS'),  # RDII Inflow
+                      ('CFS', 'CMS'),  # Direct Inflow
+                      ('CFS', 'CMS'),  # Total Inflow
+                      ('CFS', 'CMS'),  # Flooding
+                      ('CFS', 'CMS'),  # Outflow
+                      ('ft3', 'm3'),   # Volume
+                      ('in/day', 'mm/day'))  # Evaporation
+
+    get_series = _lib.SMO_getSystemSeries
+    get_attribute = _lib.SMO_getSystemAttribute
+    get_result = _lib.SMO_getSystemResult
+    elementType = 3  # typedef enum {subcatch, node, link, sys} SMO_elementType
+
+SMO_objectTypes = (SMO_subcatchment, SMO_node, SMO_link, SMO_system)
+SMO_objectTypeLabels = [ot.TypeLabel for ot in SMO_objectTypes]
+
+
+def SMO_getObjectType(object_type_name):
+    for object_type in SMO_objectTypes:
+        if object_type.TypeLabel == object_type_name:
+            return object_type
 
 SMO_USFlowUnits = ('CFS', 'GPM', 'MGD')
 SMO_SIFlowUnits = ('CMS', 'LPS', 'MLD')
@@ -172,17 +225,40 @@ class OutputObject(object):
         """
         self.ptrapi = c_void_p()
         self._call_int_return = c_int()  # Private variable used only inside call_int
+        self._call_double_return = c_double()  # Private variable used only inside call_double
         ret = _lib.SMR_open(str(output_file_name), byref(self.ptrapi))
         if ret != 0:
             self.RaiseError(ret)
         # TODO: recompile dll so we can use this new argument order:
         # self.call(_lib.SMR_open, str(output_file_name))
+        self.measure_newOutValueSeries()
         self._get_units()
         self._get_sizes()
         self._get_times()
-        self.subcatchment_ids = self._read_linked_ids(_lib.SMO_getSubcatchIDs)
-        self.node_ids = self._read_linked_ids(_lib.SMO_getNodeIDs)
-        self.link_ids = self._read_linked_ids(_lib.SMO_getLinkIDs)
+        self.subcatchments = self._read_linked_ids(SMO_subcatchment)
+        self.nodes = self._read_linked_ids(SMO_node)
+        self.links = self._read_linked_ids(SMO_link)
+        self.system = [SMO_system('-1', -1)]
+        self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
+        # self.subcatchment_ids = [item.id for item in self.subcatchments]
+        # self.node_ids = [item.id for item in self.nodes]
+        # self.link_ids = [item.id for item in self.links]
+        # self.all_ids = (self.subcatchment_ids, self.node_ids, self.link_ids, [-1])
+
+    def get_items(self, objectTypeLabel):
+        """ Get the list of items of the type whose TypeLabel attribute is objectTypeLabel.
+
+            Args:
+            objectTypeLabel: can be "Subcatchment", "Node" or "Link". (System has no items.)
+
+            Examples:
+                for node get_items("Node"):
+                    print node.id
+        """
+        for items in self.all_items:
+            if items and items[0].TypeLabel == objectTypeLabel:
+                return items
+        return []
 
     def call(self, function, *args):
         """ Call any API method whose return value is an integer which indicates an error if != 0
@@ -192,19 +268,39 @@ class OutputObject(object):
             if ret != 0:
                 self.RaiseError(ret)
         except Exception as ex:
-            print str(ex)
+            print(str(ex))
             raise Exception("SWMM output error calling " + str(function) + ": " + str(ex))
 
     def call_int(self, function, *args):
         """ Call an API method whose return value is an integer indicating an error if != 0
             and which also returns an integer in the last argument (using byref).
             call_int handles the return value error flag by calling RaiseError if needed.
-            Do not include the last argument used as a return in *args, it will be added internally
-            and the integer is the return value of call_int."""
+            Do not include the last argument (the return argument) in *args, it will be added internally.
+            The integer value returned is the return value of call_int."""
         args_to_pass = list(args)
         args_to_pass.append(byref(self._call_int_return))  # When moving to Python 3.5+, can skip appending and use:
         self.call(function, *args_to_pass)                 # self.call(function, *args, byref(self._call_int_return))
         return self._call_int_return.value
+
+    def call_double(self, function, *args):
+        """ Call an API method whose return value is an integer indicating an error if != 0
+            and which also returns a double in the last argument (using byref).
+            call_double handles the return value error flag by calling RaiseError if needed.
+            Do not include the last argument (the return argument) in *args, it will be added internally
+            The double value returned is the return value of call_double."""
+        args_to_pass = list(args)
+        args_to_pass.append(byref(self._call_double_return))  # When moving to Python 3.5+, can skip appending and use:
+        self.call(function, *args_to_pass)                   # self.call(function, *args, byref(self._call_int_return))
+        return self._call_double_return.value
+
+    def measure_newOutValueSeries(self):
+        """Test SMO_newOutValueSeries to see whether it treats the requested length as length or end.
+            Sets self.newOutValueSeriesLengthIsEnd flag so we can adjust how we call this method."""
+        sLength = c_int()
+        ErrNo1 = c_int()
+        SeriesPtr = _lib.SMO_newOutValueSeries(self.ptrapi, 1, 2, byref(sLength), byref(ErrNo1))
+        _lib.SMO_free(SeriesPtr)
+        self.newOutValueSeriesLengthIsEnd = (sLength.value == 1)
 
     def RaiseError(self, ErrNo):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
@@ -231,10 +327,6 @@ class OutputObject(object):
         """
         Populates object attributes with the water object counts
         """
-        err = _lib.SMO_getProjectSize(self.ptrapi, _lib.nodeCount, byref(cint))
-        if err != 0:
-            print "Error in SMO_getProjectSize(nodeCount)"
-            self.RaiseError(err)
         self.nodeCount = self.call_int(_lib.SMO_getProjectSize, _lib.nodeCount)
         self.subcatchCount = self.call_int(_lib.SMO_getProjectSize, _lib.subcatchCount)
         self.linkCount = self.call_int(_lib.SMO_getProjectSize, _lib.linkCount)
@@ -244,11 +336,8 @@ class OutputObject(object):
         """
         Purpose: Retrieve report and simulation time-related parameters and stores them in self.
         """
-
-        self.reportStart = 0  # TODO: read report start time from output
-        # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_reportStart, byref(cint))
-        # self.reportStart = cint.value
-
+        RawReportStart = self.call_double(_lib.SMO_getStartTime)  # decimal (Julian) days since 12 AM on 12/30/1899
+        self.StartDate = datetime.datetime(1899, 12, 30) + datetime.timedelta(RawReportStart)
         self.reportStep = self.call_int(_lib.SMO_getTimes, _lib.reportStep)
         self.numPeriods = self.call_int(_lib.SMO_getTimes, _lib.numPeriods)
         self.simDuration = self.reportStep * self.numPeriods
@@ -256,50 +345,43 @@ class OutputObject(object):
         # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_simDuration, byref(cint))
         # self.simDuration = cint.value
 
-
-    def _read_linked_ids(self, get_ids):
+    def _read_linked_ids(self, objectType):
         """ Read a linked list of struct IDentry (char* IDname, IDentry* nextID).
-            get_ids must be _lib.SMO_getNodeIDs or _lib.SMO_getLinkIDs or an entry point following the same pattern
-            Returns a Python list of all the IDs."""
-        ids = []
-        c_return = get_ids(self.ptrapi, byref(cint))
+            category._get_ids must be SMO_getNodeIDs SMO_getLinkIDs, or SMO_getSubcatchIDs.
+            Returns a Python list of objects of type category, one for each IDs."""
+        items = []
+        index = 0
+        id_head = objectType.get_ids(self.ptrapi, byref(cint))
+        next_id = id_head
         if cint.value != 0:
-            print "Error reading IDs"
+            print "Error reading IDs for " + objectType.TypeLabel
             self.RaiseError(cint.value)
-        while c_return:
-            ids.append(str(c_return.contents.IDname.data))
-            print "Read ID " + ids[-1]
-            c_return = c_return.contents.nextID
-        return ids
+        while next_id:
+            items.append(objectType(str(next_id.contents.IDname.data), index))
+            print "Read # " + str(index) + " ID = " + items[-1].id
+            next_id = next_id.contents.nextID
+            index += 1
+        _lib.SMO_freeIDList(id_head)
+        return items
 
-    def get_NodeIndex(self, node_id):
-        """Retrieves the index of the node with the specified ID.
-
+    def get_itemById(self, item_list, item_id):
+        """Retrieve the item from item_list with the specified ID.
         Arguments:
-        node_id: node ID label"""
-        try:
-            return self.node_ids.index(node_id)
-        except:
-            return -1
+        item_id: ID label of item to find"""
+        for item in item_list:
+            if item.id == item_id:
+                return item
+        else:
+            return None
 
-    def get_LinkIndex(self, link_id):
-        """Retrieves the index of the link with the specified ID.
-
+    def get_indexById(self, item_list, item_id):
+        """Retrieve the item from item_list with the specified ID.
         Arguments:
-        link_id: link ID label"""
-        try:
-            return self.link_ids.index(link_id)
-        except:
-            return -1
-
-    def get_SubcatchmentIndex(self, subcatchment_id):
-        """Retrieves the index of the subcatchment with the specified ID.
-
-        Arguments:
-        subcatchment_id: subcatchment ID label"""
-        try:
-            return self.subcatchment_ids.index(subcatchment_id)
-        except:
+        item_id: ID label of item to find"""
+        item = self.get_itemById(item_list, item_id)
+        if item:
+            return item.index
+        else:
             return -1
 
     # def get_NodeValue(self, NodeInd, TimeInd, NodeAttr):
@@ -325,11 +407,11 @@ class OutputObject(object):
     #     else:
     #         self.RaiseError(err)
 
-    def _get_series(self, function, item_index, attribute, start_index=0, num_values=-1):
+    def _get_series(self, function, item_index, attribute_index, start_index=0, num_values=-1):
         """
-        Purpose: Get time series results for particular attribute. Specify series
-        start and length using start_index and num_values respectively.
-        item_index = -1 for item type that does not have index (System)
+        Purpose: Get time series results for the requested attribute.
+        Specify series start index and num_values or accept defaults to get all values.
+        item_index = -1 for item type that does not have an index (System)
         num_values = -1 Default input: Gets data from start_index to end
 
         """
@@ -343,8 +425,11 @@ class OutputObject(object):
                             " Outside Number of TimeSteps " + str(self.numPeriods))
         sLength = c_int()
         ErrNo1 = c_int()
+        ask_for_length = num_values
+        if self.newOutValueSeriesLengthIsEnd:
+            ask_for_length += start_index + 1
         SeriesPtr = _lib.SMO_newOutValueSeries(self.ptrapi, start_index,
-                                               num_values, byref(sLength), byref(ErrNo1))
+                                               ask_for_length, byref(sLength), byref(ErrNo1))
         if ErrNo1.value != 0:
             print "Error " + str(ErrNo1.value) + " allocating series start=" + str(start_index) + ", len=" + str(num_values)
             self.RaiseError(ErrNo1.value)
@@ -352,113 +437,112 @@ class OutputObject(object):
         if item_index >= 0:
             ErrNo2 = function(self.ptrapi,
                               item_index,
-                              attribute,
+                              attribute_index,
                               start_index,
                               sLength.value,
                               SeriesPtr)
         else:
             ErrNo2 = function(self.ptrapi,
-                              attribute,
+                              attribute_index,
                               start_index,
                               sLength.value,
                               SeriesPtr)
 
         if ErrNo2 != 0:
-            print "Error reading series " + str(function) + ', ' + str(item_index) + ', ' + str(attribute)
+            print "Error reading series " + str(function) + ', ' + str(item_index) + ', ' + str(attribute_index)
             self.RaiseError(ErrNo2)
 
         BldArray = [SeriesPtr[i] for i in range(sLength.value)]
         _lib.SMO_free(SeriesPtr)
         return BldArray
 
-    def get_NodeSeries(self, node_index, attribute, start_index=0, num_values=-1):
+    def get_series_by_name(self, objectTypeLabel, object_id, attribute_name, start_index, num_steps):
+        """ Get a time-series of values and the units label.
+            Args:
+            objectTypeLabel: "Node", "Link", "Subcatchment", or "System"
+            object_id: identifier of the node, link, or subcatchment. (Not used for System.)
+            variable_name: name of attribute, from appropriate SMO_*Attributes array
+            Returns
         """
-        Purpose: Get time series results from the given node.
-        node_index is from zero-indexed nodes in output file, same indexes as self.node_ids.
-        attribute must be an integer from SMO_nodeAttributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(_lib.SMO_getNodeSeries, node_index, attribute, start_index, num_values)
-
-    def get_LinkSeries(self, link_index, attribute, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results from the given link.
-        link_index is from zero-indexed links in output file, same indexes as self.link_ids.
-        attribute must be an integer from SMO_linkAttributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(_lib.SMO_getLinkSeries, link_index, attribute, start_index, num_values)
+        items = self.get_items(objectTypeLabel)
+        if items:
+            item = self.get_itemById(items, object_id)
+            attribute_index = item.Attributes[item.AttributeNames.index(attribute_name)]
+            units = item.AttributeUnits[attribute_index][self.unit_system]
+            return self._get_series(item.get_series, item.index, attribute_index, start_index, num_steps), units
 
     def get_SubcatchmentSeries(self, subcatchment_index, attribute, start_index=0, num_values=-1):
         """
         Purpose: Get time series results from the given Subcatchment.
-        subcatchment_index is from zero-indexed subcatchments in output file, same indexes as self.subcatchment_ids.
-        attribute must be an integer from SMO_linkAttributes.
+        subcatchment_index is from zero-indexed subcatchments in output file, same indexes as self.subcatchments.
+        attribute must be an integer from SMO_subcatchment.Attributes.
         start_index is the first time index to retrieve, default = 0.
         num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
         """
-        return self._get_series(_lib.SMO_getSubcatchSeries, subcatchment_index, attribute, start_index, num_values)
+        return self._get_series(SMO_subcatchment.get_series, subcatchment_index, attribute, start_index, num_values)
 
+    def get_NodeSeries(self, node_index, attribute, start_index=0, num_values=-1):
+        """
+        Purpose: Get time series results from the given node.
+        node_index is from zero-indexed nodes in output file, same indexes as self.nodes.
+        attribute must be an integer from SMO_node.Attributes.
+        start_index is the first time index to retrieve, default = 0.
+        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+        """
+        return self._get_series(SMO_node.get_series, node_index, attribute, start_index, num_values)
+
+    def get_LinkSeries(self, link_index, attribute, start_index=0, num_values=-1):
+        """
+        Purpose: Get time series results from the given link.
+        link_index is from zero-indexed links in output file, same indexes as self.links.
+        attribute must be an integer from SMO_link.Attributes.
+        start_index is the first time index to retrieve, default = 0.
+        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+        """
+        return self._get_series(SMO_link.get_series, link_index, attribute, start_index, num_values)
 
     def get_SystemSeries(self, attribute, start_index=0, num_values=-1):
         """
-        Purpose: Get time series results from the given Subcatchment.
-        attribute must be an integer from SMO_linkAttributes.
+        Purpose: Get time series results for the given system attribute.
+        attribute must be an integer from SMO_system.Attributes.
         start_index is the first time index to retrieve, default = 0.
         num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
         """
-        return self._get_series(_lib.SMO_getSystemSeries, -1, attribute, start_index, num_values)
+        return self._get_series(SMO_system.get_series, -1, attribute, start_index, num_values)
 
-    def _get_attribute(self, function, item_type, attribute, time_index):
+    def get_AttributeOfAllObjects(self, item_list, attribute_index, time_index):
         """
-        Purpose: For all nodes at given time, get a particular attribute
+        Get the specified attribute for all objects of this type at the given time_index.
+
+        Args:
+            item_list: one of the lists in self.items (self.subcatchments, self.nodes, self.links, self.system)
+            attribute_index: index of attribute in Attributes and AttributeNames of the type of items in item_list
         """
         alength = c_int()
         ErrNo1 = c_int()
-        ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi, _lib.SMO_getAttribute,
-                                                item_type, byref(alength), byref(ErrNo1))
-        ErrNo2 = function(self.ptrapi, time_index, attribute, ValArrayPtr)
+        item = item_list[0]
+        ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi, _lib.SMO_getAttribute, item.elementType,
+                                                byref(alength), byref(ErrNo1))
+        ErrNo2 = item.get_attribute(self.ptrapi, time_index, attribute_index, ValArrayPtr)
         BldArray = [ValArrayPtr[i] for i in range(alength.value)]
         _lib.SMO_free(ValArrayPtr)
         return BldArray
 
-    def get_NodeAttribute(self, attribute, time_index):
-        """ Purpose: For all nodes at given time, get a particular attribute """
-        return self._get_attribute(_lib.SMO_getNodeAttribute, _lib.SMO_node, attribute, time_index)
-
-    def get_LinkAttribute(self, attribute, time_index):
-        """ Purpose: For all links at given time, get a particular attribute """
-        return self._get_attribute(_lib.SMO_getLinkAttribute, _lib.SMO_link, attribute, time_index)
-
-    def _get_result(self, function, item_type, ItemInd, TimeInd):
+    def get_AllAttributes(self, item, time_index):
         """
-        Purpose: For a node at given time, get all attributes
+        Purpose: For an item (SMO_subcatchment, SMO_node, SMO_link, or SMO_system) at given time, get all attributes
         """
         alength = c_int()
         ErrNo1 = c_int()
         ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi,
                                                 _lib.SMO_getResult,
-                                                item_type,
+                                                item.elementType,
                                                 byref(alength),
                                                 byref(ErrNo1))
-        ErrNo2 = function(self.ptrapi, TimeInd, ItemInd, ValArrayPtr)
+        ErrNo2 = item.get_result(self.ptrapi, time_index, item.index, ValArrayPtr)
         BldArray = [ValArrayPtr[i] for i in range(alength.value)]
         _lib.SMO_free(ValArrayPtr)
         return BldArray
-
-    def get_NodeResult(self, NodeInd, TimeInd):
-        """
-        Purpose: For a node at given time, get all attributes
-        """
-        return self._get_result(_lib.SMO_getNodeResult, _lib.SMO_node, NodeInd, TimeInd)
-
-    def get_LinkResult(self, LinkInd, TimeInd):
-        """
-        Purpose: For a link at given time, get all attributes
-        """
-        return self._get_result(_lib.SMO_getLinkResult, _lib.SMO_link, LinkInd, TimeInd)
 
     def CloseOutputFile(self):
         """
@@ -469,10 +553,16 @@ class OutputObject(object):
             raise Exception('Failed to Close *.out file')
 
     def elapsed_hours_at_index(self, report_time_index):
-        return (self.reportStart + report_time_index * self.reportStep) / 3600
+        return (report_time_index * self.reportStep) / 3600
 
     def get_time_string(self, report_time_index):
         total_hours = self.elapsed_hours_at_index(report_time_index)
         hours = int(total_hours)
         minutes = int((total_hours - hours) * 60)
         return '{:02d}:{:02d}'.format(hours, minutes)
+
+    def get_date_string(self, report_time_index):
+        # current date = self.StartDate plus elapsed hours
+        total_hours = self.elapsed_hours_at_index(report_time_index)
+        report_date = self.StartDate + datetime.timedelta(hours=total_hours)
+        return report_date.strftime("%Y-%m-%d %H:%M")

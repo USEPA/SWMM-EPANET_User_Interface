@@ -7,6 +7,7 @@ from ui.EPANET.frmTitleDesigner import Ui_frmTitle
 class frmTitle(QtGui.QMainWindow, Ui_frmTitle):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Pipes.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)

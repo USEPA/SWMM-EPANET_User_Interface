@@ -8,6 +8,10 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
 
     def __init__(self, main_form, title, control_type):
         QtGui.QMainWindow.__init__(self, main_form)
+        if title=="EPANET Simple Controls":
+            self.help_topic = "epanet/src/src/Simple_C.htm"
+        else:
+            self.help_topic = "epanet/src/src/Rule-Bas.htm"
         self.setupUi(self)
         if title:
             self.setWindowTitle(title)

@@ -12,6 +12,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Table_Op.htm"
         self.setupUi(self)
         self.tabWidget.setCurrentIndex(0)
         self.cboFilter.addItems(('Below', 'Equal To', 'Above'))

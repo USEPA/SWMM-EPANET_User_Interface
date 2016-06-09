@@ -11,6 +11,7 @@ from core.epanet.curves import CurveType
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.epanet.curves.CurveType, self.cboCurveType)

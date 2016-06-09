@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import matplotlib.pyplot as plt
+from matplotlib import dates
 import colorsys
 import datetime
 import numpy as np
@@ -104,7 +105,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
     # TODO: move out of ui to script-accessible module
     @staticmethod
     def plot_time(output, lines_list, elapsed_flag, start_index, num_steps):
-        fig = plt.figure()
+        # fig = plt.figure()
+        fig, ax = plt.subplots()
         title = "Time Series Plot"
         fig.canvas.set_window_title(title)
         plt.title(title)
@@ -119,6 +121,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                 x_values.append(elapsed_hours)
             else:
                 x_values.append(output.StartDate + datetime.timedelta(hours=elapsed_hours))
+                ax.xaxis.set_major_formatter(dates.DateFormatter('%y-%m-%d %H:%M'))
 
         for line in lines_list:
             type_label, object_id, attribute, axis, legend_text = line.split(',', 4)
@@ -151,6 +154,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             plt.xlabel("Time (hours)")
         else:
             plt.xlabel("Time")
+            fig.autofmt_xdate()
         if not right_y_plot:
             plt.grid(True)  # Only show background grid if there is only a left Y axis
         plt.legend(lines_plotted, line_legends, loc="best")

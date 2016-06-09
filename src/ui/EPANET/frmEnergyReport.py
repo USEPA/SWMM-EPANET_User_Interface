@@ -1,5 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from ui.help import HelpHandler
 import core.epanet.project
 from ui.EPANET.frmEnergyReportDesigner import Ui_frmEnergyReport
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -10,6 +11,8 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "epanet/src/src/Energy_R.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES

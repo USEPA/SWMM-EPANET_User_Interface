@@ -118,9 +118,9 @@ class frmMainSWMM(frmMain):
         tree_hydrology_LIDControls]
 
     tree_nodes_Junctions    = ["Junctions",     frmJunction]
-    tree_nodes_Outfalls     = ["Outfalls",      frmInflows, "1"]
-    tree_nodes_Dividers     = ["Dividers",      frmInflows, "1"]
-    tree_nodes_StorageUnits = ["Storage Units", frmInflows, "1"]
+    tree_nodes_Outfalls     = ["Outfalls",      None, "1"]
+    tree_nodes_Dividers     = ["Dividers",      None, "1"]
+    tree_nodes_StorageUnits = ["Storage Units", None, "1"]
     tree_nodes_items = [
         tree_nodes_Junctions,
         tree_nodes_Outfalls,

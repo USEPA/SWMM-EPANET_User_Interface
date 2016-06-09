@@ -11,7 +11,10 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
         self._main_form = main_form
+        self.label.setVisible(False)  # since sorting seems buggy, take this off for now
+        self.tblSummary.setSortingEnabled(False)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
+        self.tblSummary.setSortingEnabled(False)
 
     def set_from(self, project, status_file_name):
         self.project = project
@@ -48,12 +51,10 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                print("Error reading " + status_file_name)
 
     def cboType_currentIndexChanged(self, newIndex):
+        self.tblSummary.setSortingEnabled(False)
         if self.cboType.count() > 0:
             headers = []
             real_rows = []
-            row_labels = []
-            nrows = 0
-            ncols = 0
             try:
                 with open(self.status_file_name, 'r') as inp_reader:
                     found_start = False
@@ -70,7 +71,6 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                 else:
                                     line_list = line.split()
                                     real_rows.append(line_list)
-                                    row_labels.append(line_list[0])
                             elif reading_headers:
                                 if line.startswith('  -------'):
                                     reading_headers = False
@@ -80,17 +80,18 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                             elif reading_headers == False and line.startswith('  -------'):
                                 reading_headers = True
                     nrows = len(real_rows)
-                    ncols = len(real_rows[0]) - 1
+                    ncols = len(real_rows[0])
                     self.tblSummary.setRowCount(nrows)
                     self.tblSummary.setColumnCount(ncols)
-                    self.tblSummary.setVerticalHeaderLabels(row_labels)
+                    self.tblSummary.verticalHeader().setVisible(False)
 
                     column_headers = []
                     total_num_headers = len(headers)
                     header_list = headers[total_num_headers-1].split()
                     if self.cboType.currentText() == 'LID Performance':
                         Units1 = header_list[3]
-                        column_headers = ['LID Control',
+                        column_headers = ['Subcatchment',
+                                          'LID Control',
                                           'Total Inflow' + '\n' + Units1,
                                           'Evap Loss' + '\n' + Units1,
                                           'Infil Loss' + '\n' + Units1,
@@ -103,7 +104,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         Units1 = header_list[3]
                         Units2 = header_list[5] + ' ' + header_list[6]
                         Units3 = header_list[10]
-                        column_headers = ['Total' + '\n' + 'Infil' + '\n' + Units1,
+                        column_headers = ['Subcatchment',
+                                          'Total' + '\n' + 'Infil' + '\n' + Units1,
                                           'Total' + '\n' + 'Evap' + '\n' + Units1,
                                           'Total' + '\n' + 'Lower' + '\n' + 'Seepage' + '\n' + Units1,
                                           'Total' + '\n' + 'Lateral' + '\n' + 'Outflow' + '\n' + Units1,
@@ -114,7 +116,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Final' + '\n' + 'Water' + '\n' + 'Table' + '\n' + Units3]
                     elif self.cboType.currentText() == 'Node Depth':
                         Units1 = header_list[3]
-                        column_headers = ['Type',
+                        column_headers = ['Node',
+                                          'Type',
                                           'Average' + '\n' + 'Depth' + '\n' + Units1,
                                           'Maximum' + '\n' + 'Depth' + '\n' + Units1,
                                           'Maximum' + '\n' + 'HGL' + '\n' + Units1,
@@ -124,7 +127,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                     elif self.cboType.currentText() == 'Node Inflow':
                         Units1 = header_list[3]
                         Units2 = header_list[6] + ' ' + header_list[7]
-                        column_headers = ['Type',
+                        column_headers = ['Node',
+                                          'Type',
                                           'Maximum' + '\n' + 'Lateral' + '\n' + 'Inflow' + '\n' + Units1,
                                           'Maximum' + '\n' + 'Total' + '\n' + 'Inflow' + '\n' + Units1,
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Inflow',
@@ -134,7 +138,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Flow' + '\n' + 'Balance' + '\n' + 'Error' + '\n' + 'Percent']
                     elif self.cboType.currentText() == 'Node Surcharge':
                         Units1 = header_list[3]
-                        column_headers = ['Type',
+                        column_headers = ['Node',
+                                          'Type',
                                           'Hours' + '\n' + 'Surcharged',
                                           'Max Height' + '\n' + 'Above' + '\n' + 'Crown' + '\n' + Units1,
                                           'Min Depth' + '\n' + 'Below' + '\n' + 'Rim' + '\n' + Units1]
@@ -142,7 +147,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         Units1 = header_list[2]
                         Units2 = header_list[5] + ' ' + header_list[6]
                         Units3 = header_list[7] + ' ' + header_list[8]
-                        column_headers = ['Hours' + '\n' + 'Flooded',
+                        column_headers = ['Node',
+                                          'Hours' + '\n' + 'Flooded',
                                           'Maximum' + '\n' + 'Rate' + Units1,
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Hour of' + '\n' + 'Maximum' + '\n' + 'Flooding',
@@ -151,7 +157,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                     elif self.cboType.currentText() == 'Storage Volume':
                         Units1 = header_list[1]
                         Units2 = header_list[9] + ' ' + header_list[10]
-                        column_headers = ['Average' + '\n' + 'Volume' + '\n' + Units1,
+                        column_headers = ['Node',
+                                          'Average' + '\n' + 'Volume' + '\n' + Units1,
                                           'Average' + '\n' + 'Percent' + '\n' + 'Full',
                                           'Evap' + '\n' + 'Percent' + '\n' + 'Loss',
                                           'Exfil' + '\n' + 'Percent' + '\n' + 'Loss',
@@ -163,7 +170,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                     elif self.cboType.currentText() == 'Link Flow':
                         Units1 = header_list[2]
                         Units2 = header_list[5]
-                        column_headers = ['Type',
+                        column_headers = ['Link',
+                                          'Type',
                                           'Maximum' + '\n' + '|Flow|' + '\n' + Units1,
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Flow',
                                           'Hour of' + '\n' + 'Maximum' + '\n' + 'Flow',
@@ -171,7 +179,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Max /' + '\n' + 'Full' + '\n' + 'Flow',
                                           'Max /' + '\n' + 'Full' + '\n' + 'Depth']
                     elif self.cboType.currentText() == 'Flow Classification':
-                        column_headers = ['Adjusted/' + '\n' + 'Actual' + '\n' + 'Length',
+                        column_headers = ['Link',
+                                          'Adjusted/' + '\n' + 'Actual' + '\n' + 'Length',
                                           'Fully' + '\n' + 'Dry',
                                           'Upstrm' + '\n' + 'Dry',
                                           'Dnstrm' + '\n' + 'Dry',
@@ -182,7 +191,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Normal' + '\n' + 'Flow' + '\n' + 'Limited',
                                           'Inlet' + '\n' + 'Control']
                     elif self.cboType.currentText() == 'Conduit Surcharge':
-                        column_headers = ['Hours' + '\n' + 'Both Ends' + '\n' + 'Full',
+                        column_headers = ['Conduit',
+                                          'Hours' + '\n' + 'Both Ends' + '\n' + 'Full',
                                           'Hours' + '\n' + 'Upstream' + '\n' + 'Full',
                                           'Hours' + '\n' + 'Dnstream' + '\n' + 'Full',
                                           'Hours' + '\n' + 'Above' + '\n' + 'Normal' + '\n' + 'Flow',
@@ -191,7 +201,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         Units1 = header_list[3]
                         Units2 = header_list[6] + header_list[7]
                         Units3 = header_list[8]
-                        column_headers = ['Percent' + '\n' + 'Utilized',
+                        column_headers = ['Pump',
+                                          'Percent' + '\n' + 'Utilized',
                                           'Number of' + '\n' + 'Start-Ups',
                                           'Minimum' + '\n' + 'Flow' + '\n' + Units1,
                                           'Average' + '\n' + 'Flow' + '\n' + Units1,
@@ -221,20 +232,26 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                     header_list[i] += '\n' + temp_header_list[i+1]
                                 else:
                                     header_list[i] += '\n' + temp_header_list[i]
+                        header_list.insert(0,temp_header_list[0])
                         column_headers = header_list
 
                     # now populate grid
+                    self.tblSummary.setSortingEnabled(False)
                     self.tblSummary.setHorizontalHeaderLabels(column_headers)
                     row = -1
                     for line_list in real_rows:
                         col = -1
                         row += 1
-                        for value in line_list[1:]:
+                        for value in line_list[0:]:
                             col += 1
                             item = QtGui.QTableWidgetItem(value)
                             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-                            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+                            if col == 0:
+                                item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
+                            else:
+                                item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                             self.tblSummary.setItem(row,col,item)
+                # self.tblSummary.setSortingEnabled(True)
             except Exception as e:
                 print("Error reading " + self.status_file_name)
 

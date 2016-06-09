@@ -151,7 +151,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             parameter_label += ' (' + units + ')'
         time_index = self.cboTime.currentIndex()
 
-        if self.rbnTime.isChecked():
+        if self.rbnTime.isChecked():  # TODO: use get_series instead of get_value if it is more efficient
             self.plot_time(get_index, get_value, parameter_code, parameter_label, selected_list_items(self.lstToGraph))
 
         if self.rbnSystem.isChecked():

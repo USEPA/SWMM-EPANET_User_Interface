@@ -87,8 +87,8 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
             object_type_label_x = self.cboXCat.currentText()
             object_id_x = self.lstX.currentItem().text()
             attribute_name_x = self.cboVarX.currentText()
-            object_type_label_y = self.cboYCat.currentText(),
-            object_id_y = self.lstY.currentItem().text(),
+            object_type_label_y = self.cboYCat.currentText()
+            object_id_y = self.lstY.currentItem().text()
             attribute_name_y = self.cboVarY.currentText()
             self.plot_scatter(self.output, title,
                               object_type_label_x, object_id_x, attribute_name_x,

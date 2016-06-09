@@ -50,19 +50,22 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
             self.lblSpecify.setText(self.cboObjectType.currentText() + " does not need a name")
 
     def cmdOK_Clicked(self):
-        if self.rbnRight.isChecked():
-            axis = "Right"
-        else:
-            axis = "Left"
         if self.txtObject.isVisible():
             object_id = self.txtObject.text()
         else:
             object_id = "-1"  # TODO: be able to skip this field for System since user seeing -1 is a bit ugly
+        if self.rbnRight.isChecked():
+            axis = "Right"
+        else:
+            axis = "Left"
+        legend = self.txtLegend.text()
+        if not legend:  # Default to variable name as legend text if not specified
+            legend = self.cboVariable.currentText()
         self.listener(self.cboObjectType.currentText(),
                       object_id,
                       self.cboVariable.currentText(),
                       axis,
-                      self.txtLegend.text())
+                      legend)
         self.close()
 
     def cmdCancel_Clicked(self):

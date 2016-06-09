@@ -357,9 +357,15 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def report_statistics(self):
-        self._frmStatisticsReportSelection = frmStatisticsReportSelection(self)
-        self._frmStatisticsReportSelection.show()
-        pass
+        if self.get_output():
+            self._frmStatisticsReportSelection = frmStatisticsReportSelection(self)
+            self._frmStatisticsReportSelection.set_from(self.project, self.get_output())
+            self._frmStatisticsReportSelection.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_summary(self):
         if not os.path.isfile(self.status_file_name):

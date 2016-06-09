@@ -11,6 +11,7 @@ class frmMapBackdropOptions(QtGui.QMainWindow, Ui_frmMapBackdropOptions):
 
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Map_Dime.htm"
         self.setupUi(self)
         ui.convenience.set_combo_items(core.epanet.options.backdrop.BackdropUnits, self.cboMapUnits)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

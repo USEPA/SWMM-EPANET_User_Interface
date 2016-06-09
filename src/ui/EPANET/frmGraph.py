@@ -14,6 +14,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Graph_Se.htm"
         self.setupUi(self)
         self.cmdAdd.setVisible(False)
         self.cmdDelete.setVisible(False)

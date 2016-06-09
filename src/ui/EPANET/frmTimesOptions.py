@@ -10,6 +10,7 @@ import ui.convenience
 class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Anal0034.htm"
         self.setupUi(self)
         self.cboStatistic.clear()
         ui.convenience.set_combo_items(StatisticOptions, self.cboStatistic)

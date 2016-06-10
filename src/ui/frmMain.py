@@ -398,9 +398,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
-            self.open_project_quiet(file_name,gui_settings,directory)
+            self.open_project_quiet(file_name, gui_settings, directory)
 
-    def open_project_quiet(self,file_name,gui_settings,directory):
+    def open_project_quiet(self, file_name, gui_settings, directory):
         self.project = self.project_type()
         try:
             self.project.read_file(file_name)

@@ -138,7 +138,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.make_table(frm, title, get_index, get_value, time_index,
                             ids, row_headers, parameter_codes, column_headers)
         else:
-            id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box?
+            id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
             title = "Time Series Table - " + title + ' ' + id
             self.make_timeseries_table(frm, title, get_index, get_value, id, parameter_codes, column_headers)
         frm.tblGeneric.resizeColumnsToContents()

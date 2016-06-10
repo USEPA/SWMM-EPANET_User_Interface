@@ -226,6 +226,7 @@ class OutputObject(object):
         self.ptrapi = c_void_p()
         self._call_int_return = c_int()  # Private variable used only inside call_int
         self._call_double_return = c_double()  # Private variable used only inside call_double
+        self.output_file_name = output_file_name
         ret = _lib.SMR_open(str(output_file_name), byref(self.ptrapi))
         if ret != 0:
             self.RaiseError(ret)

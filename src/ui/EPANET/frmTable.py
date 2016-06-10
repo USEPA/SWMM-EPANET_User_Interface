@@ -96,12 +96,10 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         column_headers = []
         parameter_codes = []
         if self.rbnNodes.isChecked() or self.rbnTimeseriesNode.isChecked():
+            title = "Node"
             get_index = self.output.get_NodeIndex
             get_value = self.output.get_NodeValue
             get_series = self.output.get_NodeSeries
-            ids = self.report.all_node_ids()
-            for node_type, node_id in zip(self.report.all_node_types(), ids):
-                row_headers.append(node_type + ' ' + node_id)
             for column_item in self.lstColumns.selectedItems():
                 attribute_name = str(column_item.text())
                 attribute_index = ENR_NodeAttributeNames.index(attribute_name)
@@ -112,11 +110,10 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 column_headers.append(attribute_name)
 
         else:  # if self.rbnLinks.isChecked() or self.rbnTimeseriesLink.isChecked():
+            title = "Link"
             get_index = self.output.get_LinkIndex
             get_value = self.output.get_LinkValue
-            ids = self.report.all_link_ids()
-            for link_type, link_id in zip(self.report.all_link_types(), ids):
-                row_headers.append(link_type + ' ' + link_id)
+            get_series = self.output.get_LinkSeries
             for column_item in self.lstColumns.selectedItems():
                 attribute_name = str(column_item.text())
                 attribute_index = ENR_LinkAttributeNames.index(attribute_name)
@@ -128,19 +125,29 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
         frm = frmGenericListOutput(self._main_form, "EPANET Table Output")
         if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
-            self.make_table(frm, get_index, get_value, self.cboTime.currentIndex(),
+            if self.rbnNodes.isChecked():
+                ids = self.report.all_node_ids()
+                for node_type, node_id in zip(self.report.all_node_types(), ids):
+                    row_headers.append(node_type + ' ' + node_id)
+            else:
+                ids = self.report.all_link_ids()
+                for link_type, link_id in zip(self.report.all_link_types(), ids):
+                    row_headers.append(link_type + ' ' + link_id)
+            time_index = self.cboTime.currentIndex()
+            title = "Network Table - " + title + "s at "+ self.output.get_time_string(time_index)
+            self.make_table(frm, title, get_index, get_value, time_index,
                             ids, row_headers, parameter_codes, column_headers)
         else:
             id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box?
-            self.make_timeseries_table(frm, get_index, get_series, id, parameter_codes, column_headers)
-            return
+            title = "Time Series Table - " + title + ' ' + id
+            self.make_timeseries_table(frm, title, get_index, get_value, id, parameter_codes, column_headers)
         frm.tblGeneric.resizeColumnsToContents()
         frm.show()
         self.forms.append(frm)
         # self.close()
 
-    def make_table(self, frm, get_index, get_value, time_index, ids, row_headers, parameter_codes, column_headers):
-        frm.setWindowTitle("Network Table at " + self.output.get_time_string(time_index))
+    def make_table(self, frm, title, get_index, get_value, time_index, ids, row_headers, parameter_codes, column_headers):
+        frm.setWindowTitle(title)
         tbl = frm.tblGeneric
 
         tbl.setRowCount(len(row_headers))
@@ -159,14 +166,41 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                         val_str = ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
                     else:
                         val_str = '{:7.2f}'.format(val)
-
-                    # str(parameter_code) + ' (' + ENR_NodeAttributeNames[parameter_code] + '), ' + str(this_id))
                     item = QtGui.QTableWidgetItem(val_str)
                     item.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                     item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                     tbl.setItem(row, col, item)
                 col += 1
             row += 1
+
+    def make_timeseries_table(self, frm, title, get_index, get_value, this_id, parameter_codes, column_headers):
+        frm.setWindowTitle(title)
+        row_headers = []
+        for time_index in range(0, self.output.numPeriods):
+            row_headers.append(self.output.get_time_string(time_index))
+        tbl = frm.tblGeneric
+        tbl.setRowCount(len(row_headers))
+        tbl.setColumnCount(len(column_headers))
+        tbl.setHorizontalHeaderLabels(column_headers)
+        tbl.setVerticalHeaderLabels(row_headers)
+
+        output_index = get_index(this_id)
+        if output_index >= 0:
+            row = 0
+            for time_index in range(0, self.output.numPeriods):
+                col = 0
+                for parameter_code in parameter_codes:
+                    val = get_value(output_index, time_index, parameter_code)
+                    if parameter_code == ENR_status and val in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
+                        val_str = ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
+                    else:
+                        val_str = '{:7.2f}'.format(val)
+                    item = QtGui.QTableWidgetItem(val_str)
+                    item.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
+                    item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+                    tbl.setItem(row, col, item)
+                    col += 1
+                row += 1
 
     def cmdCancel_Clicked(self):
         self.close()

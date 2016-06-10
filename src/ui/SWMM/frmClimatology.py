@@ -19,6 +19,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         self.cboEvap.clear()
         self.cboEvap.addItems(("Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"))
         # ui.convenience.set_combo_items(core.swmm.curves.CurveType, self.cboCurveType)
+        self.tabClimate.currentChanged.connect(self.tabClimate_currentTabChanged)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.rbnNoData, QtCore.SIGNAL("clicked()"), self.rbnNoData_Clicked)
@@ -43,26 +44,19 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             if climate_type:
                 self.set_from(main_form.project, climate_type)
 
-        # TODO: Update help_topic when current tab is changed
     def set_from(self, project, climate_type):
         if climate_type == "Temperature":
             self.tabClimate.setCurrentIndex(0)
-            self.help_topic = "swmm/src/src/climateeditor_temperature.htm"
         elif climate_type == "Evaporation":
             self.tabClimate.setCurrentIndex(1)
-            self.help_topic = "swmm/src/src/climateeditor_evaporation.htm"
         elif climate_type == "Wind Speed":
             self.tabClimate.setCurrentIndex(2)
-            self.help_topic = "swmm/src/src/climateeditor_windspeed.htm"
         elif climate_type == "Snow Melt":
             self.tabClimate.setCurrentIndex(3)
-            self.help_topic = "swmm/src/src/climateeditor_snowmelt.htm"
         elif climate_type == "Areal Depletion":
             self.tabClimate.setCurrentIndex(4)
-            self.help_topic = "swmm/src/src/climateeditor_arealdepletion.htm"
         elif climate_type == "Adjustment":
             self.tabClimate.setCurrentIndex(5)
-            self.help_topic = "swmm/src/src/climate_adjustments.htm"
 
     def set_all(self, project):
         # evap_section = core.swmm.climatology
@@ -489,3 +483,19 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             self.tblAdjustments.setItem(row,1,QtGui.QTableWidgetItem(led.text()))
             self.tblAdjustments.setItem(row,2,QtGui.QTableWidgetItem(led.text()))
             self.tblAdjustments.setItem(row,3,QtGui.QTableWidgetItem(led.text()))
+
+    def tabClimate_currentTabChanged(self):
+
+        tab_index = self.tabClimate.currentIndex()
+        if tab_index == 0:
+            self.help_topic = "swmm/src/src/climateeditor_temperature.htm"
+        elif tab_index == 1:
+            self.help_topic = "swmm/src/src/climateeditor_evaporation.htm"
+        elif tab_index == 2:
+            self.help_topic = "swmm/src/src/climateeditor_windspeed.htm"
+        elif tab_index==3:
+            self.help_topic = "swmm/src/src/climateeditor_snowmelt.htm"
+        elif tab_index==4:
+            self.help_topic = "swmm/src/src/climateeditor_arealdepletion.htm"
+        elif tab_index==5:
+            self.help_topic = "swmm/src/src/climate_adjustments.htm"

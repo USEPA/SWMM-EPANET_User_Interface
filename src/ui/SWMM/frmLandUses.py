@@ -13,15 +13,14 @@ from core.swmm.quality import WashoffFunction
 class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/landuseeditorgeneralpage.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.tabLanduse.currentChanged.connect(self.tabLanduse_currentTabChanged)
         self.tblGeneral.currentCellChanged.connect(self.tblGeneral_currentCellChanged)
-        self.help_topic = "swmm/src/src/landuseeditorgeneralpage.htm"
         self.tblBuildup.currentCellChanged.connect(self.tblBuildup_currentCellChanged)
-        self.help_topic = "swmm/src/src/landuseeditorbuilduppage.htm"
         self.tblWashoff.currentCellChanged.connect(self.tblWashoff_currentCellChanged)
-        self.help_topic = "swmm/src/src/landuseeditorwashoffpage.htm"
         self._main_form = main_form
         self.land_use_id = ''
         self.tblGeneral.setColumnCount(1)
@@ -249,3 +248,13 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
             self.lblNotesWashoff.setText("Street cleaning removal efficiency (percent) for the pollutant")
         elif row == 4:
             self.lblNotesWashoff.setText("Removal efficiency (percent) associated with any Best Management Practice utilized")
+
+    def tabLanduse_currentTabChanged(self):
+
+        tab_index = self.tabLanduse.currentIndex()
+        if tab_index == 0:
+            self.help_topic = "swmm/src/src/landuseeditorgeneralpage.htm"
+        elif tab_index == 1:
+            self.help_topic = "swmm/src/src/landuseeditorbuilduppage.htm"
+        elif tab_index == 2:
+            self.help_topic = "swmm/src/src/landuseeditorwashoffpage.htm"

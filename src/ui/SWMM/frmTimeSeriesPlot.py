@@ -1,17 +1,10 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import matplotlib.pyplot as plt
-from matplotlib import dates
-import colorsys
-import datetime
-import numpy as np
 import core.swmm.project
 import ui.convenience
 from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
 from ui.SWMM.frmTimeSeriesSelection import frmTimeSeriesSelection
-from ui.help import HelpHandler
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
-
+from core.graph import SWMM as graphSWMM
 
 class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
     MAGIC = "TSGRAPHSPEC:\n"
@@ -85,7 +78,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         end_index = self.cboEnd.currentIndex()
         num_steps = end_index - start_index + 1
         lines_list = ui.convenience.all_list_items(self.lstData)
-        self.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
+        graphSWMM.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
         cb = QtGui.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(self.get_text(), mode=cb.Clipboard)
@@ -101,64 +94,6 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             self.lstData.clear()
             for line in text[len(self.MAGIC):].split('\n'):
                 self.lstData.addItem(line)
-
-    # TODO: move out of ui to script-accessible module
-    @staticmethod
-    def plot_time(output, lines_list, elapsed_flag, start_index, num_steps):
-        # fig = plt.figure()
-        fig, ax = plt.subplots()
-        title = "Time Series Plot"
-        fig.canvas.set_window_title(title)
-        plt.title(title)
-        left_y_plot = fig.add_subplot(111)
-        right_y_plot = None
-        lines_plotted = []
-        line_legends = []
-        x_values = []
-        for time_index in range(start_index, num_steps):
-            elapsed_hours = output.elapsed_hours_at_index(time_index)
-            if elapsed_flag:
-                x_values.append(elapsed_hours)
-            else:
-                x_values.append(output.StartDate + datetime.timedelta(hours=elapsed_hours))
-                ax.xaxis.set_major_formatter(dates.DateFormatter('%y-%m-%d %H:%M'))
-
-        for line in lines_list:
-            type_label, object_id, attribute, axis, legend_text = line.split(',', 4)
-            legend_text = legend_text.strip('"')
-            y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
-            if y_values:
-                if axis == "Left":
-                    plot_on = left_y_plot
-                else:
-                    if not right_y_plot:
-                        right_y_plot = fig.add_subplot(111, sharex=left_y_plot, frameon=False)
-                        right_y_plot.yaxis.set_label_position("right")
-                        right_y_plot.yaxis.tick_right()  # Only show right-axis tics on right axis
-                        left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
-                    plot_on = right_y_plot
-
-                color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
-                new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
-                lines_plotted.append(new_line)
-                line_legends.append(legend_text)
-                old_label = plot_on.get_ylabel()
-                if not old_label:
-                    plot_on.set_ylabel(units)
-                elif units not in old_label:
-                    plot_on.set_ylabel(old_label + ', ' + units)
-
-        # fig.suptitle("Time Series Plot")
-        # plt.ylabel(parameter_label)
-        if elapsed_flag:
-            plt.xlabel("Time (hours)")
-        else:
-            plt.xlabel("Time")
-            fig.autofmt_xdate()
-        if not right_y_plot:
-            plt.grid(True)  # Only show background grid if there is only a left Y axis
-        plt.legend(lines_plotted, line_legends, loc="best")
-        plt.show()
 
     # def keyPressEvent(self, event):
     #     if type(event) == QtGui.QKeyEvent:

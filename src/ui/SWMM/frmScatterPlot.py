@@ -1,11 +1,9 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import matplotlib.pyplot as plt
 import core.swmm.project
 from ui.SWMM.frmScatterPlotDesigner import Ui_frmScatterPlot
 from ui.help import HelpHandler
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
-
+from core.graph import SWMM as graphSWMM
 
 class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
 
@@ -90,44 +88,9 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
             object_type_label_y = self.cboYCat.currentText()
             object_id_y = self.lstY.currentItem().text()
             attribute_name_y = self.cboVarY.currentText()
-            self.plot_scatter(self.output, title,
-                              object_type_label_x, object_id_x, attribute_name_x,
-                              object_type_label_y, object_id_y, attribute_name_y, start_index, num_steps)
+            graphSWMM.plot_scatter(self.output, title,
+                                   object_type_label_x, object_id_x, attribute_name_x,
+                                   object_type_label_y, object_id_y, attribute_name_y, start_index, num_steps)
 
     def cmdCancel_Clicked(self):
         self.close()
-
-    # TODO: move out of ui to script-accessible module
-    @staticmethod
-    def plot_scatter(output, title,
-                     object_type_label_x, object_id_x, attribute_name_x,
-                     object_type_label_y, object_id_y, attribute_name_y,
-                     start_index=0, num_steps=-1):
-        fig = plt.figure()
-        # if num_steps < self.output.numPeriods:
-        fig.canvas.set_window_title(title)
-        plt.title(title)
-
-        x_values, x_units = output.get_series_by_name(object_type_label_x,
-                                                      object_id_x,
-                                                      attribute_name_x,
-                                                      start_index, num_steps)
-
-        y_values, y_units = output.get_series_by_name(object_type_label_y,
-                                                      object_id_y,
-                                                      attribute_name_y,
-                                                      start_index, num_steps)
-
-        plt.scatter(x_values, y_values, s=15, alpha=0.5)
-
-        if x_units:
-            x_units = ' (' + x_units + ')'
-
-        if y_units:
-            y_units = ' (' + y_units + ')'
-
-        plt.xlabel(object_type_label_x + ' ' + object_id_x + ' ' + attribute_name_x + x_units)
-        plt.ylabel(object_type_label_y + ' ' + object_id_y + ' ' + attribute_name_y + y_units)
-
-        plt.grid(True)
-        plt.show()

@@ -105,6 +105,27 @@
             </property>
            </spacer>
           </item>
+          <item>
+           <widget class="QToolButton" name="btnLoad">
+            <property name="text">
+             <string>Load</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnSave">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnScript">
+            <property name="text">
+             <string>To Script</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

@@ -13,6 +13,7 @@ Inspired by ENOutputWrapper by Bryant E. McDonnell 12/7/2015
 
 from ctypes import *
 import time, datetime
+# import pandas
 import Externals.swmm.outputapi.outputapi as _lib
 
 # Subcatchment Attributes
@@ -53,12 +54,100 @@ class SMO_categoryBase:
         SMO_subcatchment, SMO_node, SMO_link, and SMO_system.
         All but SMO_system use self.id to store an item id and self.index to store the index in the binary file"""
     TypeLabel = "Base"
-    def __init__(self, id, index):
-        self.id = id
+
+    def __init__(self, item_id, index):
+        self.id = item_id
         self.index = index
 
     def __str__(self):
         return self.id
+
+    @classmethod
+    def read_linked_ids(cls_obj, output):
+        """ Read the list of items of this class from the output file.
+            Args
+            output: OutputObject that already has the desired output file open.
+            Notes
+            Does not work for SMO_system because it does not have a list of IDs.
+            Returns
+            Python list of objects of this type, one for each ID read."""
+        items = []
+        index = 0
+        # Traverse a linked list of struct IDentry (char* IDname, IDentry* nextID).
+        id_head = cls_obj._get_ids(output.ptrapi, byref(cint))
+        next_id = id_head
+        if cint.value != 0:
+            print "Error reading IDs for " + cls_obj.TypeLabel
+            output.RaiseError(cint.value)
+        while next_id:
+            items.append(cls_obj(str(next_id.contents.IDname.data), index))
+            # print "Read # " + str(index) + " ID = " + items[-1].id
+            next_id = next_id.contents.nextID
+            index += 1
+        _lib.SMO_freeIDList(id_head)
+        return items
+
+    def get_series_by_index(self, output, attribute_index, start_index=0, num_values=-1):
+        """
+            Purpose: Get time series results for the requested attribute.
+            Args
+            output: OutputObject that already has the desired output file open.
+            attribute_index: value from self.Attributes array of the desired attribute.
+            start_index: first time index to retrieve, default = 0 for first time index.
+            num_values: number of values to retrieve, or -1 to get all values starting at start_index.
+        """
+        if num_values == -1:
+            num_values = output.numPeriods - start_index
+        if start_index < 0 or start_index >= output.numPeriods:
+            raise Exception("Start Time Index " + str(start_index) + \
+                            " Outside Number of TimeSteps " + str(output.numPeriods))
+        if num_values < 1 or start_index + num_values > output.numPeriods:
+            raise Exception("Series Length " + str(num_values) + \
+                            " Outside Number of TimeSteps " + str(output.numPeriods))
+        returned_length = c_int()
+        error_new = c_int()
+        ask_for_length = num_values
+        if output.newOutValueSeriesLengthIsEnd:
+            ask_for_length += start_index + 1
+        SeriesPtr = _lib.SMO_newOutValueSeries(output.ptrapi, start_index,
+                                               ask_for_length, byref(returned_length), byref(error_new))
+        if error_new.value != 0:
+            print "Error " + str(error_new.value)\
+                  + " allocating series start=" + str(start_index) + ", len=" + str(num_values)
+            output.RaiseError(error_new.value)
+
+        if self.index >= 0:
+            error_get = self._get_series(output.ptrapi,
+                                      self.index,
+                                      attribute_index,
+                                      start_index,
+                                      returned_length.value,
+                                      SeriesPtr)
+        else:
+            error_get = self._get_series(output.ptrapi,
+                                      attribute_index,
+                                      start_index,
+                                      returned_length.value,
+                                      SeriesPtr)
+
+        if error_get != 0:
+            print "Error reading series " + self.TypeLabel + " " + str(self.id) + ', att #' + str(attribute_index)
+            output.RaiseError(error_get)
+
+        build_array = [SeriesPtr[i] for i in range(returned_length.value)]
+        _lib.SMO_free(SeriesPtr)
+        return build_array
+
+    def get_series_by_name(self, output, attribute_name, start_index, num_steps):
+        """ Get a time-series of values and the units label.
+            Args:
+            variable_name: name of attribute, from appropriate SMO_*.Attributes array
+            Returns
+        """
+        attribute_name_index = self.AttributeNames.index(attribute_name)
+        attribute_index = self.Attributes[attribute_name_index]  # Should match attribute_name_index
+        units = self.AttributeUnits[attribute_name_index][output.unit_system]
+        return self.get_series_by_index(output, attribute_index, start_index, num_steps), units
 
 
 class SMO_subcatchment(SMO_categoryBase):
@@ -79,11 +168,11 @@ class SMO_subcatchment(SMO_categoryBase):
                       ('', ''),  # Soil Moisture
                       ('mg/L', 'mg/L'))  # Washoff
 
-    get_ids = _lib.SMO_getSubcatchIDs
-    get_series = _lib.SMO_getSubcatchSeries
-    get_attribute = _lib.SMO_getSubcatchAttribute
-    get_result = _lib.SMO_getSubcatchResult
-    elementType = 0  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _get_ids = _lib.SMO_getSubcatchIDs
+    _get_series = _lib.SMO_getSubcatchSeries
+    _get_attribute = _lib.SMO_getSubcatchAttribute
+    _get_result = _lib.SMO_getSubcatchResult
+    _elementType = 0  # typedef enum {subcatch, node, link, sys} SMO_elementType
 
 
 class SMO_node(SMO_categoryBase):
@@ -112,11 +201,11 @@ class SMO_node(SMO_categoryBase):
                           ('CFS', 'CMS'),  # Overflow
                           ('mg/L', 'mg/L'))  # Quality
 
-    get_ids = _lib.SMO_getNodeIDs
-    get_series = _lib.SMO_getNodeSeries
-    get_attribute = _lib.SMO_getNodeAttribute
-    get_result = _lib.SMO_getNodeResult
-    elementType = 1  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _get_ids = _lib.SMO_getNodeIDs
+    _get_series = _lib.SMO_getNodeSeries
+    _get_attribute = _lib.SMO_getNodeAttribute
+    _get_result = _lib.SMO_getNodeResult
+    _elementType = 1  # typedef enum {subcatch, node, link, sys} SMO_elementType
 
 
 class SMO_link(SMO_categoryBase):
@@ -130,11 +219,11 @@ class SMO_link(SMO_categoryBase):
                       ('', ''),          # Fraction Full
                       ('mg/L', 'mg/L'))  # Quality
 
-    get_ids = _lib.SMO_getLinkIDs
-    get_series = _lib.SMO_getLinkSeries
-    get_attribute = _lib.SMO_getLinkAttribute
-    get_result = _lib.SMO_getLinkResult
-    elementType = 2  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _get_ids = _lib.SMO_getLinkIDs
+    _get_series = _lib.SMO_getLinkSeries
+    _get_attribute = _lib.SMO_getLinkAttribute
+    _get_result = _lib.SMO_getLinkResult
+    _elementType = 2  # typedef enum {subcatch, node, link, sys} SMO_elementType
 
 
 class SMO_system(SMO_categoryBase):
@@ -184,10 +273,10 @@ class SMO_system(SMO_categoryBase):
                       ('ft3', 'm3'),   # Volume
                       ('in/day', 'mm/day'))  # Evaporation
 
-    get_series = _lib.SMO_getSystemSeries
-    get_attribute = _lib.SMO_getSystemAttribute
-    get_result = _lib.SMO_getSystemResult
-    elementType = 3  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _get_series = _lib.SMO_getSystemSeries
+    _get_attribute = _lib.SMO_getSystemAttribute
+    _get_result = _lib.SMO_getSystemResult
+    _elementType = 3  # typedef enum {subcatch, node, link, sys} SMO_elementType
 
 SMO_objectTypes = (SMO_subcatchment, SMO_node, SMO_link, SMO_system)
 SMO_objectTypeLabels = [ot.TypeLabel for ot in SMO_objectTypes]
@@ -206,16 +295,6 @@ SMO_UnitsUS = 0
 SMO_UnitsSI = 1
 
 cint = c_int()
-
-
-# class OutputNode:
-#
-#     def __init__(self, output, node_id):
-#         self.output = output
-#         self.id = node_id
-#
-#     def get_series(self, attribute, start_index=0, num_values=-1):
-
 
 class OutputObject(object):
     def __init__(self, output_file_name):
@@ -236,9 +315,9 @@ class OutputObject(object):
         self._get_units()
         self._get_sizes()
         self._get_times()
-        self.subcatchments = self._read_linked_ids(SMO_subcatchment)
-        self.nodes = self._read_linked_ids(SMO_node)
-        self.links = self._read_linked_ids(SMO_link)
+        self.subcatchments = SMO_subcatchment.read_linked_ids(self)
+        self.nodes = SMO_node.read_linked_ids(self)
+        self.links = SMO_link.read_linked_ids(self)
         self.system = [SMO_system('-1', -1)]
         self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
         # self.subcatchment_ids = [item.id for item in self.subcatchments]
@@ -342,28 +421,11 @@ class OutputObject(object):
         self.reportStep = self.call_int(_lib.SMO_getTimes, _lib.reportStep)
         self.numPeriods = self.call_int(_lib.SMO_getTimes, _lib.numPeriods)
         self.simDuration = self.reportStep * self.numPeriods
+        self.EndDate = self.StartDate + datetime.timedelta(seconds=self.simDuration)
+        # self.all_dates = pandas.date_range(start=self.StartDate, end=self.EndDate, periods=self.numPeriods)
 
         # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_simDuration, byref(cint))
         # self.simDuration = cint.value
-
-    def _read_linked_ids(self, objectType):
-        """ Read a linked list of struct IDentry (char* IDname, IDentry* nextID).
-            category._get_ids must be SMO_getNodeIDs SMO_getLinkIDs, or SMO_getSubcatchIDs.
-            Returns a Python list of objects of type category, one for each IDs."""
-        items = []
-        index = 0
-        id_head = objectType.get_ids(self.ptrapi, byref(cint))
-        next_id = id_head
-        if cint.value != 0:
-            print "Error reading IDs for " + objectType.TypeLabel
-            self.RaiseError(cint.value)
-        while next_id:
-            items.append(objectType(str(next_id.contents.IDname.data), index))
-            print "Read # " + str(index) + " ID = " + items[-1].id
-            next_id = next_id.contents.nextID
-            index += 1
-        _lib.SMO_freeIDList(id_head)
-        return items
 
     def get_itemById(self, item_list, item_id):
         """Retrieve the item from item_list with the specified ID.
@@ -408,55 +470,6 @@ class OutputObject(object):
     #     else:
     #         self.RaiseError(err)
 
-    def _get_series(self, function, item_index, attribute_index, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results for the requested attribute.
-        Specify series start index and num_values or accept defaults to get all values.
-        item_index = -1 for item type that does not have an index (System)
-        num_values = -1 Default input: Gets data from start_index to end
-
-        """
-        if num_values == -1:
-            num_values = self.numPeriods - start_index
-        if start_index < 0 or start_index >= self.numPeriods:
-            raise Exception("Start Time Index " + str(start_index) +\
-                            " Outside Number of TimeSteps " + str(self.numPeriods))
-        if num_values < 1 or start_index + num_values > self.numPeriods:
-            raise Exception("Series Length " + str(num_values) +\
-                            " Outside Number of TimeSteps " + str(self.numPeriods))
-        sLength = c_int()
-        ErrNo1 = c_int()
-        ask_for_length = num_values
-        if self.newOutValueSeriesLengthIsEnd:
-            ask_for_length += start_index + 1
-        SeriesPtr = _lib.SMO_newOutValueSeries(self.ptrapi, start_index,
-                                               ask_for_length, byref(sLength), byref(ErrNo1))
-        if ErrNo1.value != 0:
-            print "Error " + str(ErrNo1.value) + " allocating series start=" + str(start_index) + ", len=" + str(num_values)
-            self.RaiseError(ErrNo1.value)
-
-        if item_index >= 0:
-            ErrNo2 = function(self.ptrapi,
-                              item_index,
-                              attribute_index,
-                              start_index,
-                              sLength.value,
-                              SeriesPtr)
-        else:
-            ErrNo2 = function(self.ptrapi,
-                              attribute_index,
-                              start_index,
-                              sLength.value,
-                              SeriesPtr)
-
-        if ErrNo2 != 0:
-            print "Error reading series " + str(function) + ', ' + str(item_index) + ', ' + str(attribute_index)
-            self.RaiseError(ErrNo2)
-
-        BldArray = [SeriesPtr[i] for i in range(sLength.value)]
-        _lib.SMO_free(SeriesPtr)
-        return BldArray
-
     def get_series_by_name(self, objectTypeLabel, object_id, attribute_name, start_index, num_steps):
         """ Get a time-series of values and the units label.
             Args:
@@ -468,82 +481,81 @@ class OutputObject(object):
         items = self.get_items(objectTypeLabel)
         if items:
             item = self.get_itemById(items, object_id)
-            attribute_index = item.Attributes[item.AttributeNames.index(attribute_name)]
-            units = item.AttributeUnits[attribute_index][self.unit_system]
-            return self._get_series(item.get_series, item.index, attribute_index, start_index, num_steps), units
+            if item:
+                return item.get_series_by_name(self, attribute_name, start_index, num_steps)
 
-    def get_SubcatchmentSeries(self, subcatchment_index, attribute, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results from the given Subcatchment.
-        subcatchment_index is from zero-indexed subcatchments in output file, same indexes as self.subcatchments.
-        attribute must be an integer from SMO_subcatchment.Attributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(SMO_subcatchment.get_series, subcatchment_index, attribute, start_index, num_values)
-
-    def get_NodeSeries(self, node_index, attribute, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results from the given node.
-        node_index is from zero-indexed nodes in output file, same indexes as self.nodes.
-        attribute must be an integer from SMO_node.Attributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(SMO_node.get_series, node_index, attribute, start_index, num_values)
-
-    def get_LinkSeries(self, link_index, attribute, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results from the given link.
-        link_index is from zero-indexed links in output file, same indexes as self.links.
-        attribute must be an integer from SMO_link.Attributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(SMO_link.get_series, link_index, attribute, start_index, num_values)
-
-    def get_SystemSeries(self, attribute, start_index=0, num_values=-1):
-        """
-        Purpose: Get time series results for the given system attribute.
-        attribute must be an integer from SMO_system.Attributes.
-        start_index is the first time index to retrieve, default = 0.
-        num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
-        """
-        return self._get_series(SMO_system.get_series, -1, attribute, start_index, num_values)
-
-    def get_AttributeOfAllObjects(self, item_list, attribute_index, time_index):
-        """
-        Get the specified attribute for all objects of this type at the given time_index.
-
-        Args:
-            item_list: one of the lists in self.items (self.subcatchments, self.nodes, self.links, self.system)
-            attribute_index: index of attribute in Attributes and AttributeNames of the type of items in item_list
-        """
-        alength = c_int()
-        ErrNo1 = c_int()
-        item = item_list[0]
-        ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi, _lib.SMO_getAttribute, item.elementType,
-                                                byref(alength), byref(ErrNo1))
-        ErrNo2 = item.get_attribute(self.ptrapi, time_index, attribute_index, ValArrayPtr)
-        BldArray = [ValArrayPtr[i] for i in range(alength.value)]
-        _lib.SMO_free(ValArrayPtr)
-        return BldArray
-
-    def get_AllAttributes(self, item, time_index):
-        """
-        Purpose: For an item (SMO_subcatchment, SMO_node, SMO_link, or SMO_system) at given time, get all attributes
-        """
-        alength = c_int()
-        ErrNo1 = c_int()
-        ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi,
-                                                _lib.SMO_getResult,
-                                                item.elementType,
-                                                byref(alength),
-                                                byref(ErrNo1))
-        ErrNo2 = item.get_result(self.ptrapi, time_index, item.index, ValArrayPtr)
-        BldArray = [ValArrayPtr[i] for i in range(alength.value)]
-        _lib.SMO_free(ValArrayPtr)
-        return BldArray
+    # def get_SubcatchmentSeries(self, subcatchment_index, attribute, start_index=0, num_values=-1):
+    #     """
+    #     Purpose: Get time series results from the given Subcatchment.
+    #     subcatchment_index is from zero-indexed subcatchments in output file, same indexes as self.subcatchments.
+    #     attribute must be an integer from SMO_subcatchment.Attributes.
+    #     start_index is the first time index to retrieve, default = 0.
+    #     num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+    #     """
+    #     return self._get_series(SMO_subcatchment.get_series, subcatchment_index, attribute, start_index, num_values)
+    #
+    # def get_NodeSeries(self, node_index, attribute, start_index=0, num_values=-1):
+    #     """
+    #     Purpose: Get time series results from the given node.
+    #     node_index is from zero-indexed nodes in output file, same indexes as self.nodes.
+    #     attribute must be an integer from SMO_node.Attributes.
+    #     start_index is the first time index to retrieve, default = 0.
+    #     num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+    #     """
+    #     return self._get_series(SMO_node.get_series, node_index, attribute, start_index, num_values)
+    #
+    # def get_LinkSeries(self, link_index, attribute, start_index=0, num_values=-1):
+    #     """
+    #     Purpose: Get time series results from the given link.
+    #     link_index is from zero-indexed links in output file, same indexes as self.links.
+    #     attribute must be an integer from SMO_link.Attributes.
+    #     start_index is the first time index to retrieve, default = 0.
+    #     num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+    #     """
+    #     return self._get_series(SMO_link.get_series, link_index, attribute, start_index, num_values)
+    #
+    # def get_SystemSeries(self, attribute, start_index=0, num_values=-1):
+    #     """
+    #     Purpose: Get time series results for the given system attribute.
+    #     attribute must be an integer from SMO_system.Attributes.
+    #     start_index is the first time index to retrieve, default = 0.
+    #     num_values is the number of values to retrieve, default of -1 gets all values starting at start_index.
+    #     """
+    #     return self._get_series(SMO_system.get_series, -1, attribute, start_index, num_values)
+    #
+    # def get_AttributeOfAllObjects(self, item_list, attribute_index, time_index):
+    #     """
+    #     Get the specified attribute for all objects of this type at the given time_index.
+    #
+    #     Args:
+    #         item_list: one of the lists in self.items (self.subcatchments, self.nodes, self.links, self.system)
+    #         attribute_index: index of attribute in Attributes and AttributeNames of the type of items in item_list
+    #     """
+    #     alength = c_int()
+    #     ErrNo1 = c_int()
+    #     item = item_list[0]
+    #     ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi, _lib.SMO_getAttribute, item._elementType,
+    #                                             byref(alength), byref(ErrNo1))
+    #     ErrNo2 = item._get_attribute(self.ptrapi, time_index, attribute_index, ValArrayPtr)
+    #     BldArray = [ValArrayPtr[i] for i in range(alength.value)]
+    #     _lib.SMO_free(ValArrayPtr)
+    #     return BldArray
+    #
+    # def get_AllAttributes(self, item, time_index):
+    #     """
+    #     Purpose: For an item (SMO_subcatchment, SMO_node, SMO_link, or SMO_system) at given time, get all attributes
+    #     """
+    #     alength = c_int()
+    #     ErrNo1 = c_int()
+    #     ValArrayPtr = _lib.SMO_newOutValueArray(self.ptrapi,
+    #                                             _lib.SMO_getResult,
+    #                                             item._elementType,
+    #                                             byref(alength),
+    #                                             byref(ErrNo1))
+    #     ErrNo2 = item._get_result(self.ptrapi, time_index, item.index, ValArrayPtr)
+    #     BldArray = [ValArrayPtr[i] for i in range(alength.value)]
+    #     _lib.SMO_free(ValArrayPtr)
+    #     return BldArray
 
     def CloseOutputFile(self):
         """

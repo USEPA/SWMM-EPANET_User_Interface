@@ -9,7 +9,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
-        self.help_topic = "swmm/src/src/controlrules.htm"
+        self.help_topic = "swmm/src/src/viewingastatisticsreport.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
 

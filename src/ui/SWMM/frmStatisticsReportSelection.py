@@ -11,7 +11,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
-        self.help_topic = "swmm/src/src/controlrules.htm"
+        self.help_topic = "swmm/src/src/statisticsselectiondialog.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)

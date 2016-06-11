@@ -3,6 +3,9 @@ import PyQt4.QtCore as QtCore
 import core.swmm.project
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 from ui.help import HelpHandler
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 
 class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
@@ -10,6 +13,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/viewingastatisticsreport.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
 
@@ -108,5 +112,56 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             num_rows = len(EventList) + 1
         self.tableWidget.setRowCount(num_rows)
 
+        # Histogram Tab
+
+        histogram = MyHistogram(self.widgetHistogram, width=6, height=2, dpi=100)
+        self.setParent(self._main_form)
+        self.widgetHistogram = histogram
+
+        # Frequency Tab
+
+        frequency = MyFrequencyPlot(self.widgetFrequency, width=6, height=2, dpi=100)
+        self.setParent(self._main_form)
+        self.widgetFrequency = frequency
+
     def cmdCancel_Clicked(self):
         self.close()
+
+class MyHistogram(FigureCanvas):
+
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        self.axes.hold(False)
+
+
+        import matplotlib.pyplot as plt
+
+        plt.hist([1, 2, 1], bins=[0, 1, 2, 3])
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(main_form)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+class MyFrequencyPlot(FigureCanvas):
+
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        self.axes.hold(False)
+
+        y = (0.0, 3.0, 0.01)
+        x = (0,1,2)
+        self.axes.plot(x, y)
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(main_form)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)

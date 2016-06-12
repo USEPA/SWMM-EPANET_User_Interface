@@ -590,7 +590,15 @@ add_library_search_dirs([])
 if sys.platform == "linux2":
     _libs["outputapi"] = ctypes.cdll.LoadLibrary(os.path.join(os.path.dirname(os.path.realpath(__file__)), "SMOutputAPI-64.so"))
 else:
-    _libs["outputapi"] = load_library(os.path.join(os.path.dirname(os.path.realpath(__file__)), "SMOutputAPI-64"))
+    search_dir = os.path.dirname(os.path.realpath(__file__))
+    while search_dir and not os.path.isfile(os.path.join(search_dir, "SMOutputAPI-64.dll")):
+        print "SMOutputAPI-64.dll Not found in " + search_dir
+        next_search_dir = os.path.dirname(search_dir)
+        if next_search_dir == search_dir:
+            break
+        search_dir = next_search_dir
+    print "Try loading SMOutputAPI-64 from " + search_dir
+    _libs["outputapi"] = load_library(os.path.join(search_dir, "SMOutputAPI-64"))
 
 # 1 libraries
 # End libraries

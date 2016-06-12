@@ -90,7 +90,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
 
     def save_script(self):
         gui_settings = QtCore.QSettings(self._main_form.model, "GUI")
-        directory = gui_settings.value("PlotScriptDir", "")
+        directory = gui_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Script As...", directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
@@ -113,7 +113,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     writer.write("graphSWMM.plot_time(output, lines_list, elapsed_flag, start_index, num_steps)\n")
 
                 if path_only != directory:
-                    gui_settings.setValue("PlotScriptDir", path_only)
+                    gui_settings.setValue("ScriptDir", path_only)
                     gui_settings.sync()
                     del gui_settings
 

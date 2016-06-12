@@ -201,9 +201,14 @@ class frmMainEPANET(frmMain):
         pass
 
     def report_calibration(self):
-        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self, self.project)
-        self._frmCalibrationReportOptions.show()
-        pass
+        if self.output:
+            self._frmCalibrationReportOptions = frmCalibrationReportOptions(self, self.project)
+            self._frmCalibrationReportOptions.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_reaction(self):
         self.reaction_report()
@@ -231,19 +236,27 @@ class frmMainEPANET(frmMain):
                                     "Model output is automatically opened after model is run.",
                                     QMessageBox.Ok)
 
-
-
     def report_graph(self):
-        self._frmGraph = frmGraph(self)
-        self._frmGraph.set_from(self.project, self.output)
-        self._frmGraph.show()
-        pass
+        if self.output:
+            self._frmGraph = frmGraph(self)
+            self._frmGraph.set_from(self.project, self.output)
+            self._frmGraph.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_table(self):
-        self._frmTable = frmTable(self)
-        self._frmTable.set_from(self.project, self.output)
-        self._frmTable.show()
-        pass
+        if self.output:
+            self._frmTable = frmTable(self)
+            self._frmTable.set_from(self.project, self.output)
+            self._frmTable.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def reaction_report(self):
 

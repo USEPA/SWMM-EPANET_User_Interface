@@ -9,7 +9,8 @@ from matplotlib import dates
 import colorsys
 import datetime
 import numpy as np
-from Externals.epanet.outputapi.ENOutputWrapper import ENR_demand
+# from Externals.epanet.outputapi.ENOutputWrapper import ENR_demand
+ENR_demand = 0  # Avoid importing so SWMM does not depend on EPANET
 
 
 class SWMM:

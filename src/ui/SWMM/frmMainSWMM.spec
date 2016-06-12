@@ -36,7 +36,9 @@ exe = EXE(pyz,
           upx=True,
           console=False )
 coll = COLLECT(exe,
-               a.binaries + [('swmm5.exe', '../../Externals/swmm5.exe', 'BINARY')] + [('vcomp100.dll', '../../Externals/vcomp100.dll', 'BINARY')],
+               a.binaries + [('swmm5.exe', '../../Externals/swmm/model/swmm5.exe', 'BINARY')]
+                          + [('vcomp100.dll', '../../Externals/swmm/model/vcomp100.dll', 'BINARY')]
+                          + [('SMOutputapi-64.dll', '../../Externals/swmm/outputapi/SMOutputapi-64.dll', 'BINARY')],
                a.zipfiles,
                a.datas,
                strip=False,

@@ -8,23 +8,30 @@ from ui.EPANET.frmCalibrationReport import frmCalibrationReport
 
 class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOptions):
 
-    def __init__(self, main_form):
+    def __init__(self, main_form, project):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Crea0079.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
+        self.project = project
+        # limit what shows up in the combo box to only those with calibration data
+        self.comboBox.addItems(['Demand','Head','Pressure','Quality','Flow','Velocity'])
+        # this list needs to contain all nodes that have calibration data, just poplating with all junctions for now.
+        for i in range(0, len(self.project.junctions.value)):
+            self.listWidget.addItem(self.project.junctions.value[i].id)
         self._main_form = main_form
-
-    # def set_from(self, project, control_type):
-        # section = core.epanet.project.Control()
+        self.listWidget.setItemSelected(self.listWidget.item(0),True)
 
     def cmdOK_Clicked(self):
-        self._frmCalibrationReport = frmCalibrationReport(self._main_form)
-        self._frmCalibrationReport.show()
-        self.close()
+        selected_id = ''
+        for column_item in self.listWidget.selectedItems():
+                selected_id = str(column_item.text())
+        if selected_id:
+          self._frmCalibrationReport = frmCalibrationReport(self._main_form, self.comboBox.currentText(), selected_id)
+          self._frmCalibrationReport.show()
+          self.close()
 
     def cmdCancel_Clicked(self):
         self.close()

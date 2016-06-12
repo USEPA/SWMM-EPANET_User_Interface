@@ -201,7 +201,7 @@ class frmMainEPANET(frmMain):
         pass
 
     def report_calibration(self):
-        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self)
+        self._frmCalibrationReportOptions = frmCalibrationReportOptions(self, self.project)
         self._frmCalibrationReportOptions.show()
         pass
 

@@ -14,15 +14,18 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
+        QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked()"), self.toolButton_Clicked)
+        # need to load table with selected file names
         self._main_form = main_form
 
-    # def set_from(self, project, control_type):
-        # section = core.epanet.project.Control()
+    def toolButton_Clicked(self):
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Calibration File", '',
+                                                      "Data files (*.DAT);;All files (*.*)")
+        if file_name:
+            self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QtGui.QTableWidgetItem(QtGui.QLineEdit(file_name).text()))
 
     def cmdOK_Clicked(self):
-        section = self._main_form.project.find_section(self.control_type)
-        section.set_text(str(self.txtControls.toPlainText()))
+        # need to store selected file names
         self.close()
 
     def cmdCancel_Clicked(self):

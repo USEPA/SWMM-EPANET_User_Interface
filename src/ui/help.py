@@ -27,12 +27,14 @@ class HelpHandler(QtCore.QObject):
         HelpHandler.help_assistant_executable = assistant_executable_full_path
         HelpHandler.help_assistant_arguments[1] = help_filename
 
-    def __init__(self, listen_here_for_help_key):
+    def __init__(self, listen_here_for_help_key, help_topic=None):
         QtCore.QObject.__init__(self)
         """Create a HelpHandler that responds to Help key events on the Qt window listen_here_for_help_key"""
         self.listen_here_for_help_key = listen_here_for_help_key
         if listen_here_for_help_key:
             listen_here_for_help_key.installEventFilter(self)
+            if help_topic:
+                listen_here_for_help_key.help_topic = help_topic
 
     def show_help(self, help_topic=None):
         # open qt assistant for help

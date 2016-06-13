@@ -1,5 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from ui.help import HelpHandler
 from ui.SWMM.frmSummaryReportDesigner import Ui_frmSummaryReport
 
 
@@ -7,6 +8,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/viewing_a_summary_report.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES

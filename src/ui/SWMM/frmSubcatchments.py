@@ -159,6 +159,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             self.refresh_column = column
         return local_show
 
+    # TODO: Set infiltration parameters based on infilt type
     def make_show_infilt(self, column):
         def local_show():
             edit_these = []

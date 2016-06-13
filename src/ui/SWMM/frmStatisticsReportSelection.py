@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportSelectionDesigner import Ui_frmStatisticsReportSelection
 from ui.SWMM.frmStatisticsReport import frmStatisticsReport
 from ui.help import HelpHandler
@@ -11,6 +12,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/statisticsselectiondialog.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

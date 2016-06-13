@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from ui.help import HelpHandler
 from core.swmm.hydrology.lidcontrol import LIDType
 from ui.SWMM.frmLIDUsageDesigner import Ui_frmLIDUsage
 
@@ -9,6 +10,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/lidusageeditor.htm"
         self.setupUi(self)
         self._main_form = main_form

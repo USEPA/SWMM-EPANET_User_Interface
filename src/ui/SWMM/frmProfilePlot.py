@@ -10,6 +10,7 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/profileplotoptionsdialog.htm"
         self._main_form = main_form
         self.setupUi(self)

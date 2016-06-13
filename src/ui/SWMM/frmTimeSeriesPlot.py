@@ -3,6 +3,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import traceback
 import core.swmm.project
+from ui.help import HelpHandler
 import ui.convenience
 from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
 from ui.SWMM.frmTimeSeriesSelection import frmTimeSeriesSelection
@@ -14,6 +15,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
     def __init__(self, main_form):
         self._main_form = main_form
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/timeseriesplotdialog.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.rbnDate, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)
         QtCore.QObject.connect(self.rbnElapsed, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)

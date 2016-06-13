@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 from ui.help import HelpHandler
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -12,6 +13,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/viewingastatisticsreport.htm"
         self.helper = HelpHandler(self)
         self.setupUi(self)

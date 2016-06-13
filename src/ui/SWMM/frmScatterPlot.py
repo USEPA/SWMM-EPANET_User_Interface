@@ -1,6 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+from ui.help import HelpHandler
 from ui.SWMM.frmScatterPlotDesigner import Ui_frmScatterPlot
 from ui.help import HelpHandler
 from core.graph import SWMM as graphSWMM
@@ -10,6 +11,7 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
     def __init__(self, main_form):
         QtGui.QMainWindow.__init__(self, main_form)
         self._main_form = main_form
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/scatterplotdialog.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)

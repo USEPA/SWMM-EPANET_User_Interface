@@ -221,8 +221,8 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
-        self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))

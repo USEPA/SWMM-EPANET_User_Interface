@@ -1,5 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from ui.help import HelpHandler
 import core.swmm.project
 from ui.SWMM.frmGroundwaterEquationDesigner import Ui_frmGroundwaterEquation
 
@@ -8,6 +9,8 @@ class frmGroundwaterEquation(QtGui.QMainWindow, Ui_frmGroundwaterEquation):
 
     def __init__(self, main_form, subcatchment_name):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/groundwater_equation_editor.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.setupUi(self)

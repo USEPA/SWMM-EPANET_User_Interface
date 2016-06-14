@@ -247,7 +247,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         self.txtDrain4.setVisible(True)
 
         if newIndex == 0: # "Bio-Retention Cell"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1bio.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1bio.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,True)
@@ -262,7 +262,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.txtDrain4.setVisible(False)
 
         elif newIndex == 1: # "Rain Garden"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/2rain.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/2rain.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,True)
@@ -274,7 +274,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.txtSurface5.setVisible(False)
 
         elif newIndex == 2: # "Green Roof"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/3greenl.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/3greenl.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,True)
@@ -293,7 +293,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.txtDrain4.setVisible(False)
 
         elif newIndex == 3: # "Infiltration Trench"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/4infilt.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/4infilt.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,False)
@@ -312,7 +312,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.txtDrain4.setVisible(False)
 
         elif newIndex == 4: # "Permeable Pavement"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/5perm.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/5perm.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,True)
             self.tabLID.setTabEnabled(2,True)
@@ -331,7 +331,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.txtDrain4.setVisible(False)
 
         elif newIndex == 5: # "Rain Barrel"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/6barrel.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/6barrel.png"))
             self.tabLID.setTabEnabled(0,False)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,False)
@@ -354,7 +354,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.lblText.setText("*Units are for flow in either in/hr or mm/hr; use 0 if there is no drain.")
 
         elif newIndex == 6: # "Rooftop Disconnection"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/7rooftop.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/7rooftop.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,False)
@@ -380,7 +380,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
             self.lblText.setText("Enter the maximum flow rate that the roof's drain system (gutters, downspouts, and leaders) can handle before overflowing. Use 0 if not applicable.")
 
         elif newIndex == 7: # "Vegetative Swale"
-            self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/8veg.png"))
+            self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/8veg.png"))
             self.tabLID.setTabEnabled(0,True)
             self.tabLID.setTabEnabled(1,False)
             self.tabLID.setTabEnabled(2,False)

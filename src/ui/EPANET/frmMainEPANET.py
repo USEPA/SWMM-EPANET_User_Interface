@@ -113,6 +113,7 @@ class frmMainEPANET(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+
         HelpHandler.init_class(os.path.join(self.assembly_path, "epanet.qhc"))
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)

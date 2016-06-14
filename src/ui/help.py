@@ -15,16 +15,52 @@ class HelpHandler(QtCore.QObject):
     @staticmethod
     def init_class(help_filename, assistant_executable_full_path=''):
         if not os.path.isfile(assistant_executable_full_path):
-            assistant_executable_full_path = Qt.QLibraryInfo.location(Qt.QLibraryInfo.BinariesPath)
-            if 'darwin' in sys.platform:
-                assistant_executable_full_path += "/Assistant.app/Contents/MacOS/Assistant"
-                ext = '.dylib'
-            elif 'win' in sys.platform:
-                assistant_executable_full_path += "/assistant.exe"
-            else:  # Linux
-                assistant_executable_full_path += "/assistant"
+            if assistant_executable_full_path:  # also search above specified folder
+                search_dir = os.path.dirname(assistant_executable_full_path)
+                while search_dir and not os.path.isfile(os.path.join(search_dir, HelpHandler.help_assistant_executable)):
+                    print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                    next_search_dir = os.path.dirname(search_dir)
+                    if next_search_dir == search_dir:
+                        break
+                    search_dir = next_search_dir
+                if search_dir:
+                    assistant_executable_full_path = os.path.join(search_dir, HelpHandler.help_assistant_executable)
+            if not os.path.isfile(assistant_executable_full_path):
+                search_dir = os.path.dirname(os.path.abspath(__file__))
+                while search_dir and not os.path.isfile(os.path.join(search_dir, HelpHandler.help_assistant_executable)):
+                    print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                    next_search_dir = os.path.dirname(search_dir)
+                    if next_search_dir == search_dir:
+                        break
+                    search_dir = next_search_dir
+                if search_dir:
+                    assistant_executable_full_path = os.path.join(search_dir, HelpHandler.help_assistant_executable)
+            if not os.path.isfile(assistant_executable_full_path):
+                assistant_executable_full_path = Qt.QLibraryInfo.location(Qt.QLibraryInfo.BinariesPath)
+                if 'darwin' in sys.platform:
+                    assistant_executable_full_path += "/Assistant.app/Contents/MacOS/Assistant"
+                    ext = '.dylib'
+                elif 'win' in sys.platform:
+                    assistant_executable_full_path += "/assistant.exe"
+                else:  # Linux
+                    assistant_executable_full_path += "/assistant"
 
+        print "HelpHandler.help_assistant_executable = " + assistant_executable_full_path
         HelpHandler.help_assistant_executable = assistant_executable_full_path
+
+        if not os.path.isfile(help_filename):
+            search_dir = os.path.dirname(help_filename)
+            help_file_name_only = help_filename[len(search_dir):]
+            while search_dir and not os.path.isfile(os.path.join(search_dir, help_file_name_only)):
+                print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                next_search_dir = os.path.dirname(search_dir)
+                if next_search_dir == search_dir:
+                    break
+                search_dir = next_search_dir
+            if search_dir:
+                help_filename = os.path.join(search_dir, help_file_name_only)
+
+        print "HelpHandler.help_assistant_arguments[1] = " + help_filename
         HelpHandler.help_assistant_arguments[1] = help_filename
 
     def __init__(self, listen_here_for_help_key, help_topic=None):

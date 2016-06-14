@@ -35,9 +35,19 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=False )
+
+pytop = '/Users/Mark/Anaconda2/'
+pybin = '/Users/Mark/Anaconda2/Library/bin/'
+
 coll = COLLECT(exe,
                a.binaries + [('epanet2_amd64.dll', '../../Externals/epanet/model/epanet2_amd64.dll', 'BINARY')]
-                          + [('ENOutputAPI-64.dll', '../../Externals/epanet/outputapi/ENOutputAPI-64.dll', 'BINARY')],
+                          + [('ENOutputAPI-64.dll', '../../Externals/epanet/outputapi/ENOutputAPI-64.dll', 'BINARY')]
+                          + [('epanet.qch', 'epanet.qch', 'BINARY')]
+                          + [('epanet.qhc', 'epanet.qhc', 'BINARY')]
+                          + [('assistant.exe',  pybin + 'assistant.exe', 'BINARY')]
+                          + [('QtHelp4.dll',    pybin + 'QtHelp4.dll', 'BINARY')]
+                          + [('QtCLucene4.dll', pybin + 'QtCLucene4.dll', 'BINARY')]
+                          + [('phonon4.dll',    pybin + 'phonon4.dll', 'BINARY')],
                a.zipfiles,
                a.datas,
                strip=False,

@@ -45,6 +45,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
                 self.set_from(main_form.project, climate_type)
 
     def set_from(self, project, climate_type):
+        self.tabClimate_currentTabChanged()
         if climate_type == "Temperature":
             self.tabClimate.setCurrentIndex(0)
         elif climate_type == "Evaporation":

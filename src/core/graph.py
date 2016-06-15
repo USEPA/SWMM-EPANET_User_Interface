@@ -67,8 +67,7 @@ class SWMM:
 
     @staticmethod
     def plot_time(output, lines_list, elapsed_flag, start_index, num_steps):
-        # fig = plt.figure()
-        fig, ax = plt.subplots()
+        fig = plt.figure()
         title = "Time Series Plot"
         fig.canvas.set_window_title(title)
         plt.title(title)
@@ -83,7 +82,7 @@ class SWMM:
                 x_values.append(elapsed_hours)
             else:
                 x_values.append(output.StartDate + datetime.timedelta(hours=elapsed_hours))
-                ax.xaxis.set_major_formatter(dates.DateFormatter('%y-%m-%d %H:%M'))
+                left_y_plot.xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d %H:%M'))
 
         for line in lines_list:
             type_label, object_id, attribute, axis, legend_text = line.split(',', 4)

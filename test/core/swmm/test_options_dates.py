@@ -1,20 +1,19 @@
-from core.swmm.options.dates import Dates
-from core.swmm.options import dates
 import unittest
+from core.swmm.options import dates
 
 
-class  OptionsDatesTest(unittest.TestCase):
+class OptionsDatesTest(unittest.TestCase):
+    """Test OPTIONS: Dates"""
     def __init__(self):
+
         unittest.TestCase.__init__(self)
-        self.my_options = Dates()
 
     def setUp(self):
 
         self.my_options = dates.Dates()
 
-
     def runTest(self):
-
+        """Test Dates portion in OPTIONS"""
         name = self.my_options.SECTION_NAME
         assert name == "[OPTIONS]"
 
@@ -29,5 +28,4 @@ class  OptionsDatesTest(unittest.TestCase):
                         " SWEEP_START        	1/1\n" + \
                         " REPORT_START_DATE  	1/1/2002"
 
-        actual_text = self.my_options.get_text()
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

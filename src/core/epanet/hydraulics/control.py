@@ -6,27 +6,10 @@ class ControlType(Enum):
     ABOVE = 1
     BELOW = 2
     TIME = 3
-    CLOCK_TIME = 4
+    CLOCKTIME = 4
 
 
-class Control:
-    """A control modifies links"""
-    def __init__(self):
-        self.simple_controls = [SimpleControl]   # collection of simple controls in the project
-        """simple controls that modify links based on a single condition"""
-
-        self.rule_based_controls = [Rule]   # collection of rule based controls
-        """rule-based controls that modify links based on a combination of conditions"""
-
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        return self.row
-
-    def set_text(self, new_text):
-        self.row = new_text
-
-
-class SimpleControl:
+class Control():
     """Defines simple controls that modify links based on a single condition"""
     def __init__(self):
         self.link_id = ""		# string
@@ -44,48 +27,43 @@ class SimpleControl:
         self.time = ""			# string
         """a time since the start of the simulation in decimal hours or in hours:minutes format"""
 
-        self.clock_time = ""    # string
-        """a 24-hour clock time (hours:minutes)"""
+        self.clocktime = ""     # string
+        """time of day (hour or hour:minute) AM/PM)"""
 
         self.control_type = ControlType.ABOVE
         """Simple controls are used to change link status or settings based on tank water level, junction pressure,
             time into the simulation or time of day"""
 
+    def __str__(self):
+        """Override default method to return string representation"""
+        return self.get_text()
+
     def get_text(self):
         """format contents of this item for writing to file"""
-        inp = " "
         if self.link_id:
-            inp += "LINK " + self.link_id
-        inp += self.status + ' '
-        if self.node_id:
-            inp += "NODE " + self.node_id + ' '
-        if self.value:
-            inp += self.control_type.name + ' ' + str(self.value) + ' '
-        if self.time:
-            inp += self.time + ' '
-        if self.clock_time:
-            inp += self.clock_time + ' '
-        # TODO: research correct formatting of time, clock_time options
-        return inp
+            prefix = " LINK " + self.link_id + ' ' + self.status
+            if self.control_type == ControlType.ABOVE or self.control_type == ControlType.BELOW:
+                return prefix + " IF NODE " + self.node_id + ' ' + self.control_type.name + ' ' + str(self.value)
+            elif self.control_type == ControlType.TIME and len(self.time) > 0:
+                return prefix + " AT TIME " + self.time
+            elif self.control_type == ControlType.CLOCKTIME and len(self.clocktime) > 0:
+                return prefix + " AT CLOCKTIME " + self.clocktime
+        return ''
 
     def set_text(self, new_text):
+        self.__init__()
         fields = new_text.split()
-        self.link_id = fields[0]
-        # TODO: Populate additional fields
-
-
-class Rule:
-    """Defines rule-based controls that modify links based on a combination of conditions"""
-    def __init__(self):
-        self.rule_id = ""		    # string
-        """an ID label assigned to the rule"""
-
-        self.rule_text = ""		    # string
-        """the text of the rule"""
-
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        return self.rule_id + '\t' + self.rule_text
-
-    def set_text(self, new_text):
-        (self.rule_id, self.rule_text) = new_text.split(None, 1)
+        self.link_id, self.status = fields[1], fields[2]
+        type_str = fields[4].upper()
+        if type_str == "NODE":
+            self.node_id = fields[5]
+            self.control_type = ControlType[fields[6].upper()]
+            self.value = fields[7]
+        elif type_str == "TIME":
+            self.control_type = ControlType.TIME
+            self.time = fields[5]
+        elif type_str == "CLOCKTIME":
+            self.control_type = ControlType.CLOCKTIME
+            self.clocktime = ' '.join(fields[5:])
+        else:
+            raise NameError("Unable to parse Control: " + new_text)

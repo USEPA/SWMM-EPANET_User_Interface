@@ -5,8 +5,9 @@ from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
 
 
 class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/simulationoptions_dynamicwave.htm"
         self.setupUi(self)
         self.cboInertial.addItems(("Keep", "Dampen", "Ignore"))
         # dampen=partial, ignore=full, keep=none
@@ -15,8 +16,8 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         self.cboThreads.addItems(("1", "2", "3", "4"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
@@ -40,19 +41,19 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         if section.normal_flow_limited == core.swmm.options.dynamic_wave.NormalFlowLimited.BOTH:
             self.cboNormal.setCurrentIndex(2)
 
-        self.cboThreads.setCurrentIndex(section.threads - 1)
+        self.cboThreads.setCurrentIndex(int(section.threads) - 1)
         if section.variable_step > 0:
             self.cbxUseVariable.setChecked(True)
-        self.sbxAdjusted.setValue(section.variable_step * 100)
+        self.sbxAdjusted.setValue(float(section.variable_step) * 100)
         self.txtMinimum.setText(str(section.minimum_step))
         self.txtLengthening.setText(str(section.lengthening_step))
         self.txtSurfaceArea.setText(str(section.min_surface_area))
         self.txtTolerance.setText(str(section.head_tolerance))
-        self.sbxTrials.setValue(section.max_trials)
+        self.sbxTrials.setValue(int(section.max_trials))
 
     def cmdOK_Clicked(self):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
-        section = self._parent.project.options.dynamic_wave
+        section = self._main_form.project.options.dynamic_wave
 
         if self.cboInertial.currentIndex() == 1:
             section.inertial_damping = core.swmm.options.dynamic_wave.InertialDamping.PARTIAL

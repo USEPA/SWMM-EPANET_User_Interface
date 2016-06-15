@@ -5,19 +5,20 @@ from ui.SWMM.frmTimeStepsDesigner import Ui_frmTimeSteps
 import math
 
 class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/simulationoptions_timesteps.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         section = project.options.time_steps
         self.cbxSkip.setChecked(section.skip_steady_state)
-        self.sbxLateral.setValue(section.lat_flow_tol)
-        self.sbxSystem.setValue(section.sys_flow_tol)
+        self.sbxLateral.setValue(int(section.lateral_inflow_tolerance))
+        self.sbxSystem.setValue(int(section.system_flow_tolerance))
 
         (days, hours, minutes, seconds) = frmTimeSteps.split_days(section.dry_step)
         self.sbxDry.setValue(days)
@@ -57,10 +58,10 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
 
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.options.time_steps
+        section = self._main_form.project.options.time_steps
         section.skip_steady_state = self.cbxSkip.isChecked()
-        section.lat_flow_tol = self.sbxLateral.value()
-        section.sys_flow_tol = self.sbxSystem.value()
+        section.lateral_inflow_tolerance = str(self.sbxLateral.value())
+        section.system_flow_tolerance = str(self.sbxSystem.value())
 
         section.dry_step = frmTimeSteps.controls_to_hms(self.sbxDry, self.tmeDry)
         section.wet_step = frmTimeSteps.controls_to_hms(self.sbxWet, self.tmeWet)

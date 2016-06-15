@@ -8,15 +8,16 @@ from ui.EPANET.frmTimesOptionsDesigner import Ui_frmTimesOptions
 import ui.convenience
 
 class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Anal0034.htm"
         self.setupUi(self)
         self.cboStatistic.clear()
         ui.convenience.set_combo_items(StatisticOptions, self.cboStatistic)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         # section = core.epanet.options.times.TimesOptions()
@@ -33,7 +34,7 @@ class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
         ui.convenience.set_combo(self.cboStatistic, section.statistic)
 
     def cmdOK_Clicked(self):
-        section = self._parent.project.times
+        section = self._main_form.project.times
         section.duration = self.txtTotalDuration.text()
         section.hydraulic_timestep = self.txtHydraulic.text()
         section.quality_timestep = self.txtQuality.text()

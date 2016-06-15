@@ -2,10 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EPANET-UI"
-#define MyAppVersion "MTP 1"
+#define MyAppVersion "MTP 2"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/EPANET-EPANET_User_Interface/"
-#define MyAppExeName "EPANET-UI.exe"
+#define MyAppExeName "frmMainEPANET.exe"
+;Python folder to install Qt Help Assistant from
+#define pyLibrary "C:\Users\Mark\Anaconda2\Library" 
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -23,7 +25,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=EPANET-UI-MTP1
+OutputBaseFilename=EPANET-UI-MTP2
 Compression=lzma
 SolidCompression=yes
 
@@ -34,7 +36,17 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\*";              DestDir: "{app}";              Permissions: everyone-modify; Flags: ignoreversion recursesubdirs
+Source: "dist\frmMainEPANET\*";                             DestDir: "{app}";                      Flags: ignoreversion recursesubdirs
+Source: "epanet.qch";                                       DestDir: "{app}";                      Flags: ignoreversion
+Source: "epanet.qhc";                                       DestDir: "{app}";                      Flags: ignoreversion
+
+;Files needed for Qt Help Assistant to run as our help viewer
+Source: "{#pyLibrary}\bin\assistant.exe";               DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\QtHelp4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\QtCLucene4.dll";              DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\phonon4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\plugins\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+Source: "{#pyLibrary}\plugins\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

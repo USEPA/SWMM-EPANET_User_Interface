@@ -1,0 +1,31 @@
+# Test 'File' Menu
+
+Start SWMM.
+
+Test 'Open': Open the file named 'Example1.inp' using 'File:Open'.
+
+Test 'Save as': Save the project using 'File:Save As..' with the name 'Example1u1.inp'.
+
+Save the project using 'File:Save As..' with the name 'Example1u2.inp'.
+
+Make change to title 'test File Menu'
+
+Test 'Save' Save the project using 'File:Save..'.
+
+Compare files 'Example1u1.inp' with 'Example1u2.inp'. Only differences should be title
+
+Test 'New': click 'New', double-lick 'Title', shows empty editor
+
+Test 'Exit', exited.
+
+Test 'Recent' (not working)
+
+Test 'Import' (not working)
+
+Test 'Export' (not working)
+
+Test 'Page setup' (not working)
+
+Test 'Print Preview' (not working)
+
+Test 'Print' (not working)

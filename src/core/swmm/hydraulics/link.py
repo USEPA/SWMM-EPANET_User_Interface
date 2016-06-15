@@ -1,83 +1,164 @@
+import traceback
 from enum import Enum
+from core.inputfile import Section
+from core.metadata import Metadata
 
 
-class Link(object):
+class Link(Section):
     """A link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        self.name = name
-        """Link Name"""
 
-        self.description = None
+    def __init__(self):
+        Section.__init__(self)
+        self.name = "Unnamed"
+        """Link Identifier/Name"""
+
+        self.description = ''
         """Optional description of the Link"""
 
-        self.tag = None
+        self.tag = ''
         """Optional label used to categorize or classify the Link"""
 
-        self.inlet_node = inlet_node
+        self.inlet_node = ''
         """Node on the inlet end of the Link"""
 
-        self.outlet_node = outlet_node
+        self.outlet_node = ''
         """Node on the outlet end of the Link"""
 
-        self.vertices = {}
-        """Collection of intermediate vertices along the length of the link"""
+        self.vertices = []
+        """Intermediate vertices between inlet_node and outlet_node along the length of the link"""
 
 
 class Conduit(Link):
-    """A conduit in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
-        self.length = 0.0
-        """Conduit length (feet or meters)."""
+    """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
-        self.roughness = 0.0
-        """Manning's roughness coefficient."""
+    field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
-        self.inlet_offset = 0.0
-        """Depth or elevation of the conduit invert above the node invert
-            at the upstream end of the conduit (feet or meters)."""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.outlet_offset = 0.0
-        """Depth or elevation of the conduit invert above the node invert
-            at the downstream end of the conduit (feet or meters)."""
+            self.length = "0.0"
+            """Conduit length (feet or meters)."""
 
-        self.initial_flow = 0.0
-        """Initial flow in the conduit (flow units)."""
+            self.roughness = "0.0"
+            """Manning's N roughness coefficient."""
 
-        self.maximum_flow = 0.0
-        """Maximum flow allowed in the conduit (flow units)."""
+            self.inlet_offset = "0.0"
+            """ Depth or elevation of the conduit invert above the node invert
+                at the upstream end of the conduit (feet or meters)."""
 
-        self.cross_section = None
-        """See class CrossSection"""
+            self.outlet_offset = "0.0"
+            """ Depth or elevation of the conduit invert above the node invert
+                at the downstream end of the conduit (feet or meters)."""
 
-        self.entry_loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses at the entrance of the conduit"""
+            self.initial_flow = "0.0"
+            """Initial flow in the conduit (flow units)."""
 
-        self.exit_loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses at the exit of the conduit"""
+            self.maximum_flow = ''
+            """Maximum flow allowed in the conduit (flow units)."""
 
-        self.loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses along the length of the conduit"""
+            # TODO: provide access to the following:
 
-        self.flap_gate = False
-        """True if a flap gate exists that prevents backflow."""
+            # self.cross_section = ''
+            """See class CrossSection"""
+
+            # self.entry_loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses at the entrance of the conduit"""
+
+            # self.exit_loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses at the exit of the conduit"""
+
+            # self.loss_coefficient = 0.0
+            """Head loss coefficient associated with energy losses along the length of the conduit"""
+
+            # self.flap_gate = False
+            """True if a flap gate exists that prevents backflow."""
+
+            # self.seepage = 0.0
+            """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if len(self.name) > 0:
+            return self.field_format.format(self.name, self.inlet_node, self.outlet_node, self.length, self.roughness,
+                                            self.inlet_offset, self.outlet_offset, self.initial_flow, self.maximum_flow,
+                                            self.comment)
+        elif self.comment:
+            return self.comment
+
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 2:
+            self.name, self.inlet_node, self.outlet_node = fields[0:3]
+        if len(fields) > 3:
+            self.length = fields[3]
+        if len(fields) > 4:
+            self.roughness = fields[4]
+        if len(fields) > 5:
+            self.inlet_offset = fields[5]
+        if len(fields) > 6:
+            self.outlet_offset = fields[6]
+        if len(fields) > 7:
+            self.initial_flow = fields[7]
+        if len(fields) > 8:
+            self.maximum_flow = fields[8]
 
 
 class Pump(Link):
     """A pump link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
-        self.pump_curve = ""
-        """str: Associated pump curve"""
 
-        self.initial_status = 0.0
-        """float: Initial status of the pump"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{}"
 
-        self.startup_depth = 0.0
-        """float: Depth at inlet node when the pump turns on"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Link.__init__(self)
 
-        self.shutoff_depth = 0.0
-        """float: Depth at inlet node when the pump turns off"""
+            self.pump_curve = ""
+            """str: Associated pump curve"""
+
+            self.initial_status = 0.0
+            """float: Initial status of the pump"""
+
+            self.startup_depth = 0.0
+            """float: Depth at inlet node when the pump turns on"""
+
+            self.shutoff_depth = 0.0
+            """float: Depth at inlet node when the pump turns off"""
+
+    def get_text(self):
+        """format contents of this item for writing to file"""
+        if len(self.name) > 0:
+            return self.field_format.format(self.name, self.inlet_node, self.outlet_node, self.pump_curve,
+                                            self.initial_status, self.startup_depth, self.shutoff_depth, self.comment)
+        elif self.comment:
+            return self.comment
+
+    def set_text(self, new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 2:
+            self.name, self.inlet_node, self.outlet_node = fields[0:3]
+        if len(fields) > 3:
+            self.pump_curve = fields[3]
+        if len(fields) > 4:
+            self.initial_status = fields[4]
+        if len(fields) > 5:
+            self.startup_depth = fields[5]
+        if len(fields) > 6:
+            self.shutoff_depth = fields[6]
 
 
 class OrificeType(Enum):
@@ -92,8 +173,8 @@ class Orifice(Link):
         self.type = OrificeType.SIDE
         """OrificeType: Type of orifice"""
 
-        self.cross_section = None
-        """See class CrossSection"""
+        self.cross_section = ''
+        """Name of cross section in XSECTIONS Section"""
 
         self.inlet_offset = 0.0
         """float: Depth of bottom of orifice opening from inlet node invert"""
@@ -128,8 +209,8 @@ class Weir(Link):
         self.type = WeirType.TRANSVERSE
         """Type of weir"""
 
-        self.cross_section = None
-        """See class CrossSection"""
+        self.cross_section = ''
+        """Name of cross section in XSECTIONS Section"""
 
         self.inlet_offset = 0.0
         """float: Depth of bottom of weir opening from inlet node invert"""
@@ -188,79 +269,288 @@ class Outlet(Link):
 
 class CrossSectionShape(Enum):
     NotSet = 0
-    Circular = 1                  # Full Height
-    CircularForceMain = 2         # Full Height, Roughness
-    FilledCircular = 3            # Full Height, Filled Depth
-    RectangularClosed = 4         # Full Height, Width
-    RectangularOpen = 5           # Full Height, Width
-    Trapezoidal = 6               # Full Height, Base Width, Side Slopes
-    Triangular = 7                # Full Height, Top Width
-    HorizontalEllipse = 8         # Full Height, Max. Width
-    VerticalEllipse = 9           # Full Height, Max. Width
-    Arch = 10                     # Full Height, Max. Width
-    Parabolic = 11                # Full Height, Top Width
-    Power = 12                    # Full Height, Top Width, Exponent
-    RectangularTriangular = 13    # Full Height, Top Width, Triangle Height
-    RectangularRound = 14         # Full Height, Top Width, Bottom Radius
-    ModifiedBaskethandle = 15     # Full Height, Bottom Width, Top Radius
-    Egg = 16                      # Full Height
-    Horseshoe = 17                # Full Height Gothic Full Height
-    Catenary = 18                 # Full Height
-    SemiElliptical = 19           # Full Height
-    Baskethandle = 20             # Full Height
-    SemiCircular = 21             # Full Height
-    IrregularNaturalChannel = 22  # TransectCoordinates
-    CustomClosedShape = 23        # Full Height, ShapeCurveCoordinates
+    CIRCULAR = 1            # Full Height = Diameter
+    FORCE_MAIN = 2          # Full Height = Diameter, Roughness
+    FILLED_CIRCULAR = 3     # Full Height = Diameter, Filled Depth
+    RECT_CLOSED = 4         # Rectangular: Full Height, Top Width
+    RECT_OPEN = 5           # Rectangular: Full Height, Top Width
+    TRAPEZOIDAL = 6         # Full Height, Base Width, Side Slopes
+    TRIANGULAR = 7          # Full Height, Top Width
+    HORIZ_ELLIPSE = 8       # Full Height, Max. Width
+    VERT_ELLIPSE = 9        # Full Height, Max. Width
+    ARCH = 10               # Size Code or Full Height, Max. Width
+    PARABOLIC = 11          # Full Height, Top Width
+    POWER = 12              # Full Height, Top Width, Exponent
+    RECT_TRIANGULAR = 13    # Full Height, Top Width, Triangle Height
+    RECT_ROUND = 14         # Full Height, Top Width, Bottom Radius
+    MODBASKETHANDLE = 15    # Full Height, Bottom Width, Top Radius
+    EGG = 16                # Full Height
+    HORSESHOE = 17          # Full Height Gothic Full Height
+    GOTHIC = 18             # Full Height
+    CATENARY = 19           # Full Height
+    SEMIELLIPTICAL = 20     # Full Height
+    BASKETHANDLE = 21       # Full Height
+    SEMICIRCULAR = 22       # Full Height
+    IRREGULAR = 23          # TransectCoordinates (Natural Channel)
+    CUSTOM = 24             # Full Height, ShapeCurveCoordinates
 
 
-class CrossSection:
+class CrossSection(Section):
     """A cross section of a Conduit, Orifice, or Weir
 
     Attributes:
-        shape (CrossSectionShape): Description of `shape`.
+        link (str): name of the conduit, orifice, or weir this is a cross-section of.
+        shape (CrossSectionShape): name of cross-section shape.
+        geometry1 (str): full height of the cross-section (ft or m). For irregular, this is the cross-section name.
+        geometry2 (str): auxiliary parameters (width, side slopes, etc.)
+        geometry3 (str): auxiliary parameters (width, side slopes, etc.)
+        geometry4 (str): auxiliary parameters (width, side slopes, etc.)
+        barrels (str): number of barrels (i.e., number of parallel pipes of equal size, slope, and
+                       roughness) associated with a conduit (default is 1).
+        culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
+        curve (str): associated Shape Curve ID that defines how width varies with depth.
     """
-    def __init__(self, shape):
-        self.shape = shape  # class CrossSectionShape
-        """cross-section shape"""
 
-        self.geometry1 = 0.0
-        """float: full height of the cross-section (ft or m)"""
+    field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
+    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}"
+    # field_format_irregular = "{:16}\t{:12}\t{:16}"
 
-        self.geometry2 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
 
-        self.geometry3 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+            self.link = ''
+            """name of the conduit, orifice, or weir this is a cross-section of."""
 
-        self.geometry4 = 0.0
-        """float: auxiliary parameters (width, side slopes, etc.)"""
+            self.shape = CrossSectionShape.NotSet
+            """cross-section shape"""
 
-        self.barrels = 0.0
-        """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
-        roughness) associated with a conduit (default is 1)."""
+            self.geometry1 = ''
+            """float as str: full height of the cross-section (ft or m)"""
 
-        self.culvert_code = None
-        """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
+            self.geometry2 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.curve = ""
-        """str: associated Shape Curve ID that defines how width varies with depth."""
+            self.geometry3 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.transect = Transect(None)
-        """ cross-section geometry of an irregular channel"""
+            self.geometry4 = ''
+            """float as str: auxiliary parameters (width, side slopes, etc.)"""
+
+            self.barrels = ''
+            """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
+            roughness) associated with a conduit (default is 1)."""
+
+            self.culvert_code = ''
+            """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
+
+            self.curve = ''
+            """str: associated Shape Curve ID that defines how width varies with depth."""
+
+    # TODO: access geometry1 as a name such as transect or xsection_name or geometry
+    # """str: name of cross-section geometry of an irregular channel"""
+
+    def get_text(self):
+        inp = ''
+        if self.comment:
+            inp = self.comment + '\n'
+        if self.shape == CrossSectionShape.CUSTOM:
+            inp += self.field_format_custom.format(self.link, self.shape.name, self.geometry1, self.curve, self.barrels)
+        # elif self.shape == CrossSectionShape.IRREGULAR:
+        #     inp += self.field_format_irregular.format(self.link, self.shape.name, self.transect)
+        else:
+            inp += self.field_format_shape.format(self.link,
+                                                  self.shape.name,
+                                                  self.geometry1,
+                                                  self.geometry2,
+                                                  self.geometry3,
+                                                  self.geometry4,
+                                                  self.barrels,
+                                                  self.culvert_code)
+        return inp
+
+    def set_text(self, new_text):
+        self.__init__()
+        new_text = self.set_comment_check_section(new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            self.link = fields[0]
+        if len(fields) > 1:
+            self.setattr_keep_type("shape", fields[1])
+        if self.shape == CrossSectionShape.CUSTOM:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.curve = fields[3]
+            if len(fields) > 4:
+                self.barrels = fields[4]
+                if len(fields) > 6 and fields[6].isdigit():  # Old interface saves CUSTOM barrels in this field.
+                    self.barrels = fields[6]
+        # elif self.shape == CrossSectionShape.IRREGULAR:
+        #     if len(fields) > 2:
+        #         self.transect = fields[2]
+        else:
+            if len(fields) > 2:
+                self.geometry1 = fields[2]
+            if len(fields) > 3:
+                self.geometry2 = fields[3]
+            if len(fields) > 4:
+                self.geometry3 = fields[4]
+            if len(fields) > 5:
+                self.geometry4 = fields[5]
+            if len(fields) > 6:
+                self.barrels = fields[6]
+            if len(fields) > 7:
+                self.culvert_code = fields[7]
 
 
-class Transect:
-    """"""
-    def __init__(self, name):
-        self.name = name
-        """Transect Name"""
+class Transects(Section):
 
-        self.description = None
-        """Optional description of the Transect"""
+    SECTION_NAME = "[TRANSECTS]"
+    DEFAULT_COMMENT = ";;Transect Data in HEC-2 format"
 
-        self.station_elevation_data_grid = None
-        self.roughness = 0.0
-        self.bank_stations = None
-        self.stations_modifier = None
-        self.elevations_modifier = None
-        self.meander_modifier = None
+    def __init__(self):
+        Section.__init__(self)
+        self.list_type = Transect
+
+    def set_text(self, new_text):
+        self.value = []
+        item_lines = []
+        found_non_comment = False
+        for line in new_text.splitlines():
+            if line.startswith(";;") or line.startswith('['):
+                self.set_comment_check_section(line)
+            elif line.startswith(';'):
+                if found_non_comment:  # This comment must be the start of the next one, so build the previous one
+                    try:
+                        make_one = self.list_type()
+                        make_one.set_text('\n'.join(item_lines))
+                        self.value.append(make_one)
+                        item_lines = []
+                        found_non_comment = False
+                    except Exception as e:
+                        print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+                item_lines.append(line)
+            elif not line.strip():  # add blank row as a comment item in self.value list
+                comment = Section()
+                comment.name = "Comment"
+                comment.value = ''
+                self.value.append(comment)
+            else:
+                item_lines.append(line)
+                found_non_comment = True
+
+        if found_non_comment:  # Found a final one that has not been built yet, build it now
+            try:
+                make_one = self.list_type()
+                make_one.set_text('\n'.join(item_lines))
+                self.value.append(make_one)
+            except Exception as e:
+                print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+
+    def get_text(self):
+        """Contents of this section formatted for writing to file"""
+        if self.value or (self.comment and self.comment != self.DEFAULT_COMMENT):
+            text_list = [self.SECTION_NAME]
+            if self.comment:
+                text_list.append(self.comment)
+            else:
+                text_list.append(self.DEFAULT_COMMENT)
+            for item in self.value:
+                item_str = str(item)
+                text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
+            return '\n'.join(text_list)
+        else:
+            return ''
+
+
+class Transect(Section):
+    """the cross-section geometry of a natural channel or conduit with irregular shapes"""
+
+    field_format_nc = "NC\t{:8}\t{:8}\t{:8}"
+    field_format_x1 = "X1\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
+    field_format_gr = "\t{:8}\t{:8}"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
+        else:
+            Section.__init__(self)
+
+            self.name = ''
+            """Transect Name"""
+
+            self.n_left = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+            self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+            self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
+            self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
+            self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
+            self.stations_modifier = '0'  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
+            self.elevations_modifier = '0'  # amount added (or subtracted) from the elevation of each station (ft or m).
+            self.meander_modifier = '0'  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
+            self.stations = []          # list of (station, elevation) pairs
+
+    def get_text(self):
+        lines = []
+        if len(self.stations) > 0:
+            if self.comment:
+                if self.comment.startswith(';'):
+                    lines.append(self.comment)
+                else:
+                    lines.append(';' + self.comment.replace('\n', '\n;'))
+            if self.n_left or self.n_right or self.n_channel:
+                if len(self.n_left) == 0:
+                    self.n_left = '0'
+                if len(self.n_right) == 0:
+                    self.n_right = '0'
+                if len(self.n_channel) == 0:
+                    self.n_channel = '0'
+                if len((self.n_left + self.n_right + self.n_channel).replace('.', '').replace('0', '')) > 0:
+                    lines.append(self.field_format_nc.format(self.n_left, self.n_right, self.n_channel))
+            lines.append(self.field_format_x1.format(self.name,
+                                                     len(self.stations),
+                                                     self.overbank_left,
+                                                     self.overbank_right,
+                                                     "0.0", "0.0",
+                                                     self.meander_modifier,
+                                                     self.stations_modifier,
+                                                     self.elevations_modifier))
+            line = "GR"
+            stations_this_line = 0
+            for station in self.stations:
+                line += self.field_format_gr.format(station[0], station[1])
+                stations_this_line += 1
+                if stations_this_line > 4:
+                    lines.append(line)
+                    line = "GR"
+                    stations_this_line = 0
+            if stations_this_line > 0:
+                lines.append(line)
+
+        return '\n'.join(lines)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            line = self.set_comment_check_section(line)
+            fields = line.split()
+            if len(fields) > 2:
+                if fields[0].upper() == "GR":
+                    for elev_index in range(1, len(fields) - 1, 2):
+                        self.stations.append((fields[elev_index], fields[elev_index + 1]))
+                elif len(fields) > 3:
+                    if fields[0].upper() == "NC":
+                        (self.n_left, self.n_right, self.n_channel) = fields[1:4]
+                    elif fields[0].upper() == "X1":
+                        self.name = fields[1]
+                        self.overbank_left = fields[3]
+                        if len(fields) > 4:
+                            self.overbank_right = fields[4]
+                        if len(fields) > 7:
+                            self.meander_modifier = fields[7]
+                        if len(fields) > 8:
+                            self.stations_modifier = fields[8]
+                        if len(fields) > 9:
+                            self.elevations_modifier = fields[9]

@@ -35,8 +35,20 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=False )
+
+pytop = '/Users/Mark/Anaconda2/'
+pybin = '/Users/Mark/Anaconda2/Library/bin/'
+
 coll = COLLECT(exe,
-               a.binaries + [('swmm5.exe', '../../Externals/swmm5.exe', 'BINARY')] + [('vcomp100.dll', '../../Externals/vcomp100.dll', 'BINARY')],
+               a.binaries + [('swmm5.exe', '../../Externals/swmm/model/swmm5.exe', 'BINARY')]
+                          + [('vcomp100.dll', '../../Externals/swmm/model/vcomp100.dll', 'BINARY')]
+                          + [('SMOutputapi-64.dll', '../../Externals/swmm/outputapi/SMOutputapi-64.dll', 'BINARY')]
+                          + [('swmm.qch', 'swmm.qch', 'BINARY')]
+                          + [('swmm.qhc', 'swmm.qhc', 'BINARY')]
+                          + [('assistant.exe',  pybin + 'assistant.exe', 'BINARY')]
+                          + [('QtHelp4.dll',    pybin + 'QtHelp4.dll', 'BINARY')]
+                          + [('QtCLucene4.dll', pybin + 'QtCLucene4.dll', 'BINARY')]
+                          + [('phonon4.dll',    pybin + 'phonon4.dll', 'BINARY')],
                a.zipfiles,
                a.datas,
                strip=False,

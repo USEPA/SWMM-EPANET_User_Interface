@@ -1,6 +1,7 @@
 ﻿from enum import Enum
 
-import core.inputfile
+from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class InertialDamping(Enum):
@@ -23,28 +24,27 @@ class ForceMainEquation(Enum):
     D_W = 2
 
 
-class DynamicWave(core.inputfile.Section):
+class DynamicWave(Section):
     """SWMM Dynamic Wave Options"""
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "INERTIAL_DAMPING": "inertial_damping",
-     "NORMAL_FLOW_LIMITED": "normal_flow_limited",
-     "FORCE_MAIN_EQUATION": "force_main_equation",
-     "VARIABLE_STEP": "variable_step",
-     "LENGTHENING_STEP": "lengthening_step",
-     "MIN_SURFAREA": "min_surface_area",
-     "MAX_TRIALS": "max_trials",
-     "HEAD_TOLERANCE": "head_tolerance",
-     "SYS_FLOW_TOL": "sys_flow_tol",
-     "LAT_FLOW_TOL": "lat_flow_tol",
-     "MINIMUM_STEP": "minimum_step",
-     "THREADS": "threads"}
-    """Mapping from label used in file to field name"""
+    #     attribute,             input_name,            label,               default, english, metric, hint
+    metadata = Metadata((
+        ("inertial_damping",    "INERTIAL_DAMPING",    "Inertial Damping"),
+        ("normal_flow_limited", "NORMAL_FLOW_LIMITED", "Normal Flow Limited"),
+        ("force_main_equation", "FORCE_MAIN_EQUATION", "Force Main Equation"),
+        ("variable_step",       "VARIABLE_STEP",       "Variable Step",        "0.0", "sec", "sec"),
+        ("lengthening_step",    "LENGTHENING_STEP",    "Lengthening Step",     "0.0", "sec", "sec"),
+        ("min_surface_area",    "MIN_SURFAREA",        "Minimum Surface Area", "0.0"),
+        ("max_trials",          "MAX_TRIALS",          "Maximum Trials",       "8"),
+        ("head_tolerance",      "HEAD_TOLERANCE",      "Head Tolerance",     "0.005", "ft",  "m"),
+        ("minimum_step",        "MINIMUM_STEP",        "Minimum Step",         "0.5", "sec", "sec"),
+        ("threads",             "THREADS",             "Threads")))
+    """Mapping between attribute name and name used in input file"""
 
     def __init__(self):
-        core.inputfile.Section.__init__(self)
+        Section.__init__(self)
 
         self.inertial_damping = InertialDamping.NONE
         """
@@ -65,41 +65,46 @@ class DynamicWave(core.inputfile.Section):
         Main cross-section shape. The default is H-W.
         """
 
-        self.lengthening_step = 0.0
+        self.lengthening_step = ''
         """
         Time step, in seconds, used to lengthen conduits under 
         dynamic wave routing, so that they meet the 
         Courant stability criterion under full-flow conditions
         """
 
-        self.variable_step = 0.0
+        self.variable_step = ''
         """
         Safety factor applied to a variable time step computed for each
         time period under dynamic wave flow routing
         """
 
-        self.min_surface_area = 0.0
+        self.min_surface_area = ''
         """
         Minimum surface area used at nodes when computing 
         changes in water depth under dynamic wave routing
         """
 
-        self.max_trials = 8
+        self.max_trials = ''
         """
-        Undocumented but shows up in SWMM 5 UI as 'maximum trials per time step'
-        """
-
-        self.head_tolerance = 0.005
-        """
-        Undocumented but shows up in SWMM 5 UI as 'head convergence tolerance'
+        The maximum number of trials allowed during a time step to reach convergence
+        when updating hydraulic heads at the conveyance system’s nodes. The default value is 8.
         """
 
-        self.minimum_step = 0.5
+        self.head_tolerance = ''
         """
-        Undocumented but shows up in SWMM 5 UI as 'minimum variable timestep'
+        Difference in computed head at each node between successive trials below
+        which the flow solution for the current time step is assumed to have converged.
+        The default tolerance is 0.005 ft (0.0015 m).
         """
 
-        self.threads = 1
+        self.minimum_step = ''
         """
-        Undocumented but shows up in SWMM 5 UI as 'number of threads'
+        Smallest time step allowed when variable time steps are used for dynamic
+        wave flow routing. The default value is 0.5 seconds.
+        """
+
+        self.threads = ''
+        """
+        Number of parallel computing threads to use for dynamic wave flow routing
+        on machines equipped with multi-core processors.
         """

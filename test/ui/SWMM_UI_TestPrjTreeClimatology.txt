@@ -1,0 +1,124 @@
+# Load Example1z3 with two time series, and save to a new file
+
+Start SWMM.
+
+Open the file named 'Example1z3.inp' using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Example1z4.inp'.
+
+Compare files 'Example1z3.inp' with 'Example1z4.inp'. Should be no difference
+
+Click 'OK'. 
+
+From the Project Tree, double-click 'Climatology', 'Climatology' expanded
+
+# Test 'Climatology'> 'Temperature'
+
+Double-click 'Temperature' to activate 'Climatology' Dialog, Tab 'Temperature' bought to front
+
+Edit 1: In 'Temperature' Tab, Select 'Time Series', in drop-down menu choose 'TS1-new', Click 'OK' to close the Dialog
+
+E1X1: Double-click 'Temperature' to examine Edit 1, Click 'OK' to close the Dialog. (Inconsistent: not-saved, selected 'TS1-new' but showed 'TS2-new'). 
+
+E1X2: Double-click 'Evaporation' to examine Edit 1, Click 'OK' to close the Dialog. (Inconsistent: not-saved, selected 'TS1-new' but showed 'TS2-new')
+
+# Test 'Climatology'> 'Evaporation'
+
+Double-click 'Evaporation' to activate 'Climatology' Dialog, Tab 'Evaporation' bought to front
+
+Edit 2: In 'Evaporation' change 'Daily Evaporation' to 0.1, check 'Evaporate Only During Dry Periods', Click 'OK' to close the Dialog
+
+E2X1: Double-click 'Evaporation' to examine Edit 2, Click 'OK' to close the Dialog
+
+E2X2: Double-click 'Temperature' to examine Edit 2, Click 'OK' to close the Dialog
+
+E2X3: Double-click 'Wind Speed' to examine Edit 2, Click 'OK' to close the Dialog
+
+Double-click 'Evaporation' to activate 'Climatology' Dialog, Tab 'Evaporation' bought to front
+
+Edit 3: change Source to 'Time Series' and Choose Name 'TS1-new', click 'OK' to close the Dialog
+
+E3X1: Double-click 'Evaporation' to examine Edit 3, Click 'OK' to close the Dialog
+
+E3X2: Double-click 'Temperature' to examine Edit 3, Click 'OK' to close the Dialog
+
+E3X3: Double-click 'Wind Speed' to examine Edit 3, Click 'OK' to close the Dialog
+
+Double-click 'Evaporation' to activate 'Climatology' Dialog, Tab 'Evaporation' bought to front
+
+Edit 4: Change Name of Time Series to 'TS2-New'
+
+E4X1: Double-click 'Evaporation' to examine Edit 4, Click 'OK' to close the Dialog
+
+E4X2: Double-click 'Temperature' to examine Edit 4, Click 'OK' to close the Dialog
+
+E4X3: Double-click 'Wind Speed' to examine Edit 4, Click 'OK' to close the Dialog
+
+# Test 'Climatology'> 'Wind Speed'
+
+Double-click 'Wind Speed' to activate 'Climatology' Dialog, Tab 'Wind Speed' bought to front
+
+Edit 5: In 'Wind Speed' type all 'Monthly Wind Speed' to 0.1. Click 'OK' to close the Dialog
+
+E5X1: Double-click 'Wind Speed' to examine Edit 5, Click 'OK' to close the Dialog
+
+E5X2: Double-click 'Temperature' to examine Edit 5, Click 'OK' to close the Dialog
+
+E5X3: Double-click 'Adjustment' to examine Edit 5, Click 'OK' to close the Dialog
+
+# Test 'Climatology'> 'Snow Melt'
+
+Double-click 'Snow Melt' to activate 'Climatology' Dialog, Tab 'Snow Melt' bought to front
+
+Edit 6: Set 'Dividing Temperature' to 32.  Click 'OK' to close the Dialog
+
+E6X1: Double-click 'Snow Melt' to examine Edit 6, Click 'OK' to close the Dialog
+
+E6X2: Double-click 'Temperature' to examine Edit 6, Click 'OK' to close the Dialog
+
+E6X3: Double-click 'Adjustment' to examine Edit 6, Click 'OK' to close the Dialog
+
+Edit 7: Change 'Latitude' to 30. Click 'OK' to close the Dialog
+
+E7X1: Double-click 'Snow Melt' to examine Edit 7, Click 'OK' to close the Dialog
+
+E7X2: Double-click 'Temperature' to examine Edit 7, Click 'OK' to close the Dialog
+
+E7X3: Double-click 'Adjustment' to examine Edit 7, Click 'OK' to close the Dialog
+
+# Test 'Climatology'> 'Areal Depletion' (Areal Depletion should have been part of snow melt?)
+
+Double-click 'Areal Depletion' to activate 'Climatology' Dialog, Tab 'Areal Depletion' bought to front
+
+Edit 8: Click 'No Imp. Depletion' to fill all Imperivous to 1.0. Click 'OK' to close the Dialog
+
+E8X1: Double-click 'Areal Depletion' to examine Edit 8, Click 'OK' to close the Dialog
+
+E8X2: Double-click 'Temperature' to examine Edit 8, Click 'OK' to close the Dialog
+
+E8X3: Double-click 'Adjustment' to examine Edit 8, Click 'OK' to close the Dialog
+
+Edit 9: Click 'Natural Area' to fill all Perivous. Click 'OK' to close the Dialog
+
+E9X1: Double-click 'Areal Depletion' to examine Edit 9, Click 'OK' to close the Dialog
+
+E9X2: Double-click 'Temperature' to examine Edit 9, Click 'OK' to close the Dialog
+
+E9X3: Double-click 'Adjustment' to examine Edit 9, Click 'OK' to close the Dialog
+
+# Test 'Climatology'> 'Adjustment'
+
+Double-click 'Adjustment' to activate 'Climatology' Dialog, Tab 'Adjustment' bought to front
+
+Edit 10: Set cell(Jan,Temp) = 0.1, cell(Feb, Temp) = 0.1, cell(Mar, Evap) = 0.05, Click 'OK' to close the Dialog
+
+E10X1: Double-click 'Evaporation' to examine Edit 10, Click 'OK' to close the Dialog
+
+E10X2: Double-click 'Temperature' to examine Edit 10, Click 'OK' to close the Dialog
+
+E10X3: Double-click 'Adjustment' to examine Edit 10, Click 'OK' to close the Dialog
+
+Click 'Save' button (this will save changes to Example1z4.inp)
+
+Compare Exampel1z3.inp and Example1z4.inp, Examine differences due to Edits 1,4-10. (Edit 1, TS2-new instead of TS1-new, Edit 5, 6, 7, 8 9 not in file)
+(Then I re-clicked the temperature tab,  then choose time series to TS1-new, now everything seems to be fine, something is wrong with the Temperature Tab) 

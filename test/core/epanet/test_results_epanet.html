@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-03-02 12:06:01</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.009000</p>
-<p class='attribute'><strong>Status:</strong> Pass 9</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-06-07 16:38:37</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.013000</p>
+<p class='attribute'><strong>Status:</strong> Pass 25</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -222,91 +222,166 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_title.SimpleTitleTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_title.SimpleTitleTest: Test Title section</td>
+    <td>5</td>
+    <td>5</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c1',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c1',5)">Detail</a></td>
 </tr>
 
 <tr id='pt1.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_bare: Bare section</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt1.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_empty: Empty section (has section name)</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt1.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_row: One-row title with carriage return</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt1.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_multi_row: Multiple-row title include empty lines</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt1.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_rt_before_title: Carriage return before section title</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_options.SimpleOptionsTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_options.SimpleOptionsTest: Test Options section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c2',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c2',2)">Detail</a></td>
 </tr>
 
 <tr id='pt2.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_get: Test get_text using matches</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt2.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_setget: Test both set_text and get_text of Options, data from Net1.inp</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_quality.SimpleQualityTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_times.SimpleTimesTest: Test Times section</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c3',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c3',3)">Detail</a></td>
 </tr>
 
 <tr id='pt3.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_get: Test get_text</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
+<tr id='pt3.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_no_leading_space: Case 1. data from Net1.inp</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt3.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_leading_space: Case 2. data from Net1.inp</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt3.3')" >
+        pass</a>
+
+    <div id='div_pt3.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt3.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+pt3.3: Section.text skipped:  [TIMES]
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
 <tr class='passClass'>
-    <td>test_reactions.SimpleReactionsTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_report.SimpleReportTest: Test Report section</td>
+    <td>3</td>
+    <td>3</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c4',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c4',3)">Detail</a></td>
 </tr>
 
 <tr id='pt4.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_simple: Test simple report options</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt4.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_page: Test simple report options with small variation in page setup</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt4.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all: Test all report options based on manual P162</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_times.SimpleTimesTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_patterns.SimplePatternTest: Test one pattern</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c5',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c5',2)">Detail</a></td>
 </tr>
 
 <tr id='pt5.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_pattern: Test one pattern based on EPANET2 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt5.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_patterns: Test one Pattern section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_energy.SimpleEnergyTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_curves.SimpleCurveTest: Test Curves section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c6',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c6',2)">Detail</a></td>
 </tr>
 
 <tr id='pt6.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>test_curve: Test one curve line</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt6.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_curves: Test Curves section</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_report.SimpleReportTest</td>
+    <td>test_energy.SimpleEnergyTest: Test Energy section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -315,12 +390,12 @@ function showOutput(id, name) {
 </tr>
 
 <tr id='pt7.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test set_text and get_text of energy options</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_backdrop.SimpleBackdropTest</td>
+    <td>test_demands.SimpleDemandsTest: Test Demands section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -329,28 +404,80 @@ function showOutput(id, name) {
 </tr>
 
 <tr id='pt8.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>runTest</div></td>
+    <td class='none'><div class='testcase'>runTest: Test set_text and get_text of demand options</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
-    <td>test_project.ProjectTest</td>
-    <td>1</td>
-    <td>1</td>
+    <td>test_quality.SimpleQualityTest: Test Quality section</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c9',1)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c9',2)">Detail</a></td>
 </tr>
 
 <tr id='pt9.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_get: Test get_text of quality sections</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt9.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_setget</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_reactions.SimpleReactionsTest: Test Reaction section</td>
+    <td>2</td>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c10',2)">Detail</a></td>
+</tr>
+
+<tr id='pt10.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_get: Test get_text through matches()</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='pt10.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_sources.SimpleSourcesTest: Test Sources section</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c11',1)">Detail</a></td>
+</tr>
+
+<tr id='pt11.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>runTest: Test set_text and get_text</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr class='passClass'>
+    <td>test_backdrop.SimpleBackdropTest: Test Backdrop section</td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c12',1)">Detail</a></td>
+</tr>
+
+<tr id='pt12.1' class='hiddenRow'>
     <td class='none'><div class='testcase'>runTest</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>9</td>
-    <td>9</td>
+    <td>25</td>
+    <td>25</td>
     <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>

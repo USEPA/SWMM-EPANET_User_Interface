@@ -1,0 +1,68 @@
+# Load Example1, and save to two new files
+
+Start SWMM.
+
+Open the file named Example1.inp using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Example1z1.inp'.
+
+Save the project using 'File:Save As..' with the name 'Example1z2.inp'.
+
+Compare files 'Example1z1.inp' with 'Example1z2.inp'. Should be no difference
+
+Click 'OK'. 
+
+# Edit Existing Time Series Table
+
+From the Project Tree, double-click 'Time Series'
+
+Double-click 'TS1' in the lower left panel
+
+Edit 1: Change Time Series Name to 'TS1-new'
+
+Edit 2: Change Description to ';RAINFALL-new'
+
+Edit 3: Change Value at Time 1:00 from 0.25 to 0.4
+
+Edit 4: Add a row of Time 31, value 0.1
+
+Edit 5: Add a row of Time 32, value 0.05
+
+Edit 6: Add a row of Date 1/1/2016, Time 10, Value 0.01
+
+Click OK (TS1-new did not show up instantly, rather a TS1 showed up, then when I double click it, an empty table shows up. Then after I close it, the TS1-new shows up)
+
+Double-click 'TS1-new', review Edit 1-6 (Edits 4-6 i.e. all additions dissappeared)
+
+Save (this will save changes to Example1z2.inp)
+
+Compare Exampel1z1.inp and Example1z2.inp, only differences should be Edits 1-6
+
+
+# Add new time series
+
+Click the '+' button to add new time series (Add Button is not working)
+
+
+# Delete existing time series
+
+Click the '-' button to delete time series (Delete Button is not working)
+
+
+# Load file with multiple Time Series (I added a new time series TS2-new to Example1z2 and save it to Example1z3
+
+Close SWMM
+
+Open SWMM
+
+Open the file named Example1z3.inp using 'File:Open'.
+
+Click 'Time Series', two Time Series TS1-new and  TS2-new show in the lower left panel
+
+Double-click TS2-new, delete the last two records, click OK
+
+Double-click 'TS2-new' again, confirm the deletions
+
+Add one record back, click OK (OK does not work now, can only use CANCEL button)
+
+Double-click 'TS2-new' again, confirm the addition (addition not working)

@@ -4,14 +4,14 @@ from enum import Enum
 class Transect:
     """Describes the cross-section geometry of natural channels or conduits with irregular shapes
     following the HEC-2 data format"""
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = ''
         """Transect Name"""
 
-        self.description = None
+        self.description = ''
         """Optional description of the Transect"""
 
-        self.station_elevation_data_grid = None
+        self.station_elevation_data_grid = []
         """Values of distance from the left side of the channel along with the corresponding elevation of the
         channel bottom as one moves across the channel from left to right, looking in the downstream direction"""
 

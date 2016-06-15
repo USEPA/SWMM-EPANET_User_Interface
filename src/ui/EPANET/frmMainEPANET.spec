@@ -34,9 +34,11 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=False )
+          console=True )
+
 coll = COLLECT(exe,
-               a.binaries + [('epanet2d.exe', '../../Externals/epanet2d.exe', 'BINARY')],
+               a.binaries + [('epanet2_amd64.dll', '../../Externals/epanet/model/epanet2_amd64.dll', 'BINARY')]
+                          + [('ENOutputAPI-64.dll', '../../Externals/epanet/outputapi/ENOutputAPI-64.dll', 'BINARY')],
                a.zipfiles,
                a.datas,
                strip=False,

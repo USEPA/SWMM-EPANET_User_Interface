@@ -1,9 +1,9 @@
 ﻿from enum import Enum
 from core.inputfile import Section
+from core.metadata import Metadata
 from core.swmm.options.dates import Dates
 from core.swmm.options.dynamic_wave import DynamicWave
 from core.swmm.options.time_steps import TimeSteps
-import core.swmm.hydrology.subcatchment
 
 
 class FlowUnits(Enum):
@@ -34,26 +34,23 @@ class General(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "COMPATIBILITY": "compatibility",
-     "REPORT_CONTROLS": "",
-     "REPORT_INPUT": "",
-
-     "FLOW_UNITS": "flow_units",
-     "INFILTRATION": "infiltration",
-     "FLOW_ROUTING": "flow_routing",
-     "LINK_OFFSETS": "link_offsets",
-     "MIN_SLOPE": "min_slope",
-     "ALLOW_PONDING": "allow_ponding",
-     "SKIP_STEADY_STATE": "",
-
-     "IGNORE_RAINFALL": "ignore_rainfall",
-     "IGNORE_RDII": "ignore_rdii",
-     "IGNORE_SNOWMELT": "ignore_snowmelt",
-     "IGNORE_GROUNDWATER": "ignore_groundwater",
-     "IGNORE_ROUTING": "ignore_routing",
-     "IGNORE_QUALITY": "ignore_quality"}
-    """Mapping from label used in file to field name"""
+    #    attribute,            input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("temp_dir",           "TEMPDIR"),
+        ("compatibility",      "COMPATIBILITY"),
+        ("flow_units",         "FLOW_UNITS"),
+        ("infiltration",       "INFILTRATION"),
+        ("flow_routing",       "FLOW_ROUTING"),
+        ("link_offsets",       "LINK_OFFSETS"),
+        ("min_slope",          "MIN_SLOPE"),
+        ("allow_ponding",      "ALLOW_PONDING"),
+        ("ignore_rainfall",    "IGNORE_RAINFALL"),
+        ("ignore_rdii",        "IGNORE_RDII"),
+        ("ignore_snowmelt",    "IGNORE_SNOWMELT"),
+        ("ignore_groundwater", "IGNORE_GROUNDWATER"),
+        ("ignore_routing",     "IGNORE_ROUTING"),
+        ("ignore_quality",     "IGNORE_QUALITY")))
+    """Mapping between attribute name and name used in input file"""
 
     old_flow_routing = {
         "UF": FlowRouting.STEADY,
@@ -122,19 +119,20 @@ class General(Section):
         and be re-introduced into the system as conditions permit
         """
 
-        self.min_slope = 0.0
+        self.min_slope = "0.0"
         """Minimum value allowed for a conduit slope"""
 
         self.temp_dir = ""
         """Directory where model writes its temporary files"""
 
-        self.compatibility = 5
+        self.compatibility = "5"
         """SWMM Version compatibility"""
 
     def get_text(self):
         """Contents of this item formatted for writing to file"""
         # First, add the values in this section stored directly in this class
-        text_list = [Section.get_text(self)]
+        # Omit COMPATIBILITY option if it is 5, this is assumed now and is no longer listed as an option in 5.1
+        text_list = [Section.get_text(self).replace(self.field_format.format("COMPATIBILITY", "5"), '')]
         if self.dates is not None:  # Add the values stored in Dates class
             text_list.append(General.section_comments[0])
             text_list.append(self.dates.get_text().replace(self.SECTION_NAME + '\n', ''))
@@ -148,25 +146,19 @@ class General(Section):
 
     def set_text(self, new_text):
         """Read this section from the text representation"""
+        self.__init__()
 
         # Skip the comments we insert automatically
         for comment in General.section_comments:
             new_text = new_text.replace(comment + '\n', '')
 
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
-            if len(comment_split) == 2:
-                line = comment_split[0]
-                this_comment = ';' + comment_split[1]
-                if self.comment:
-                    self.comment += '\n'
-                self.comment += this_comment
-
-            if not line.startswith('[') and line.strip():
-                # Set fields from field_dict if this section has one
+            line = self.set_comment_check_section(line)
+            if line.strip():
+                # Set fields from metadata if this section has metadata
                 tried_set = False
                 for set_here in (self, self.dates, self.time_steps, self.dynamic_wave):
-                    (attr_name, attr_value) = set_here.get_field_dict_value(line)
+                    (attr_name, attr_value) = set_here.get_attr_name_value(line)
                     if attr_name:
                         try:
                             tried_set = True
@@ -174,6 +166,10 @@ class General(Section):
                             if attr_name == "flow_routing" and General.old_flow_routing.has_key(attr_value.upper()):
                                 # Translate from old flow routing name to new flow routing name
                                 attr_value = General.old_flow_routing[attr_value.upper()]
+
+                            if attr_name == "normal_flow_limited" and attr_value.upper() == "NO":
+                                # Translate from old value NO to new value SLOPE
+                                attr_value = "SLOPE"
 
                             set_here.setattr_keep_type(attr_name, attr_value)
                         except Exception as e:

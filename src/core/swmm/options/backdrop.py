@@ -41,20 +41,16 @@ class BackdropOptions(Section):
         BackdropOptions.__init__(self)
         for line in new_text.splitlines():
             try:
-                if line.startswith(';'):
-                    if self.comment:
-                        self.comment += '\n'
-                    self.comment += line
-                if not line.startswith('['):
-                    fields = line.split()
-                    if len(fields) > 1:
-                        if fields[0].lower() == "dimensions" and len(fields) > 4:
-                            self.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
-                        elif fields[0].lower() == "offset" and len(fields) > 2:
-                            self.offset = (float(fields[1]), float(fields[2]))
-                        elif fields[0].lower() == "scaling" and len(fields) > 2:
-                            self.scaling = (float(fields[1]), float(fields[2]))
-                        else:
-                            self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
+                line = self.set_comment_check_section(line)
+                fields = line.split()
+                if len(fields) > 1:
+                    if fields[0].lower() == "dimensions" and len(fields) > 4:
+                        self.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
+                    elif fields[0].lower() == "offset" and len(fields) > 2:
+                        self.offset = (float(fields[1]), float(fields[2]))
+                    elif fields[0].lower() == "scaling" and len(fields) > 2:
+                        self.scaling = (float(fields[1]), float(fields[2]))
+                    else:
+                        self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)

@@ -1,0 +1,986 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">66%</span>
+        </h1>
+
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+
+<div id="index">
+    <table class="index">
+        <thead>
+            
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>5917</td>
+                <td>2005</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3912 5917">66%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_coordinates_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\coordinates.py</a></td>
+                <td>5</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 5">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_curves_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\curves.py</a></td>
+                <td>47</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="29 47">62%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_control_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\control.py</a></td>
+                <td>44</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 44">59%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_link_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\link.py</a></td>
+                <td>171</td>
+                <td>73</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="98 171">57%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_node_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\node.py</a></td>
+                <td>205</td>
+                <td>82</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="123 205">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_labels_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\labels.py</a></td>
+                <td>28</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 28">68%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_backdrop_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\backdrop.py</a></td>
+                <td>46</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="31 46">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_energy_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\energy.py</a></td>
+                <td>52</td>
+                <td>36</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="16 52">31%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_hydraulics_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\hydraulics.py</a></td>
+                <td>81</td>
+                <td>32</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="49 81">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_map_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\map.py</a></td>
+                <td>7</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 7">43%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_options_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\options.py</a></td>
+                <td>35</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="23 35">66%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_quality_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\quality.py</a></td>
+                <td>63</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="48 63">76%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_reactions_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\reactions.py</a></td>
+                <td>25</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 25">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_report_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\report.py</a></td>
+                <td>40</td>
+                <td>20</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="20 40">50%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_options_times_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\options\times.py</a></td>
+                <td>25</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 25">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_patterns_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\patterns.py</a></td>
+                <td>35</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="30 35">86%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_project_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\project.py</a></td>
+                <td>52</td>
+                <td>27</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 52">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_epanet_title_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\epanet\title.py</a></td>
+                <td>17</td>
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 17">65%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_inputfile_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\inputfile.py</a></td>
+                <td>383</td>
+                <td>79</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="304 383">79%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_metadata_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\metadata.py</a></td>
+                <td>57</td>
+                <td>52</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 57">9%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_climatology_climatology_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\climatology\climatology.py</a></td>
+                <td>268</td>
+                <td>69</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="199 268">74%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_curves_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\curves.py</a></td>
+                <td>46</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="28 46">61%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydraulics_link_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\link.py</a></td>
+                <td>328</td>
+                <td>130</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="198 328">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydraulics_node_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\node.py</a></td>
+                <td>220</td>
+                <td>85</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="135 220">61%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_aquifer_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\aquifer.py</a></td>
+                <td>62</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="53 62">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_lidcontrol_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\lidcontrol.py</a></td>
+                <td>93</td>
+                <td>21</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="72 93">77%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_raingage_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\raingage.py</a></td>
+                <td>28</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 28">46%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_snowpack_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\snowpack.py</a></td>
+                <td>73</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="65 73">89%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_subcatchment_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\subcatchment.py</a></td>
+                <td>330</td>
+                <td>78</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="252 330">76%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_unithydrograph_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\unithydrograph.py</a></td>
+                <td>57</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="45 57">79%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_backdrop_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\backdrop.py</a></td>
+                <td>40</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="31 40">78%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_dates_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\dates.py</a></td>
+                <td>20</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 20">55%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_dynamic_wave_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\dynamic_wave.py</a></td>
+                <td>30</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 30">40%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_files_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\files.py</a></td>
+                <td>19</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 19">63%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_general_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\general.py</a></td>
+                <td>79</td>
+                <td>31</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="48 79">61%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_map_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\map.py</a></td>
+                <td>36</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 36">58%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_report_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\report.py</a></td>
+                <td>37</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 37">70%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_options_time_steps_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\options\time_steps.py</a></td>
+                <td>16</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 16">56%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_patterns_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\patterns.py</a></td>
+                <td>51</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="40 51">78%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_project_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\project.py</a></td>
+                <td>72</td>
+                <td>28</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="44 72">61%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_quality_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\quality.py</a></td>
+                <td>164</td>
+                <td>54</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="110 164">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_timeseries_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\timeseries.py</a></td>
+                <td>70</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="57 70">81%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_src_core_swmm_title_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\src\core\swmm\title.py</a></td>
+                <td>14</td>
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 14">57%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Users_Zhiqiang Li_Desktop_xwei_code_Pycharm_SWMM-EPANET_User_Interface_test_HTMLTestRunner_py.html">C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\HTMLTestRunner.py</a></td>
+                <td>200</td>
+                <td>82</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="118 200">59%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_backdrop_py.html">epanet\test_backdrop.py</a></td>
+                <td>15</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 15">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_curves_py.html">epanet\test_curves.py</a></td>
+                <td>46</td>
+                <td>23</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="23 46">50%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_demands_py.html">epanet\test_demands.py</a></td>
+                <td>24</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 24">71%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_energy_py.html">epanet\test_energy.py</a></td>
+                <td>24</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 24">79%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_options_py.html">epanet\test_options.py</a></td>
+                <td>56</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="40 56">71%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_patterns_py.html">epanet\test_patterns.py</a></td>
+                <td>66</td>
+                <td>22</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="44 66">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_project_py.html">epanet\test_project.py</a></td>
+                <td>168</td>
+                <td>58</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="110 168">65%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_quality_py.html">epanet\test_quality.py</a></td>
+                <td>30</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 30">70%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_reactions_py.html">epanet\test_reactions.py</a></td>
+                <td>21</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 21">57%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_report_py.html">epanet\test_report.py</a></td>
+                <td>31</td>
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 31">55%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_sources_py.html">epanet\test_sources.py</a></td>
+                <td>32</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 32">78%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_times_py.html">epanet\test_times.py</a></td>
+                <td>39</td>
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="25 39">64%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="epanet_test_title_py.html">epanet\test_title.py</a></td>
+                <td>42</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="35 42">83%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_RDII_py.html">swmm\test_RDII.py</a></td>
+                <td>17</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 17">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_adjustments_py.html">swmm\test_adjustments.py</a></td>
+                <td>22</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="15 22">68%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_aquifers_py.html">swmm\test_aquifers.py</a></td>
+                <td>52</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="42 52">81%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_backdrop_py.html">swmm\test_backdrop.py</a></td>
+                <td>18</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 18">72%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_buildup_py.html">swmm\test_buildup.py</a></td>
+                <td>17</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 17">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_coverages_py.html">swmm\test_coverages.py</a></td>
+                <td>30</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 30">47%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_curves_py.html">swmm\test_curves.py</a></td>
+                <td>23</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 23">83%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_dividers_py.html">swmm\test_dividers.py</a></td>
+                <td>36</td>
+                <td>29</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="7 36">19%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_dwf_py.html">swmm\test_dwf.py</a></td>
+                <td>22</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 22">45%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_evaporation_py.html">swmm\test_evaporation.py</a></td>
+                <td>91</td>
+                <td>32</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="59 91">65%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_files_py.html">swmm\test_files.py</a></td>
+                <td>67</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="62 67">93%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_groundwater_py.html">swmm\test_groundwater.py</a></td>
+                <td>25</td>
+                <td>19</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 25">24%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_hydrographs_py.html">swmm\test_hydrographs.py</a></td>
+                <td>65</td>
+                <td>10</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="55 65">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_infiltrations_py.html">swmm\test_infiltrations.py</a></td>
+                <td>37</td>
+                <td>19</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="18 37">49%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_inflows_py.html">swmm\test_inflows.py</a></td>
+                <td>44</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="33 44">75%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_junctions_py.html">swmm\test_junctions.py</a></td>
+                <td>21</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 21">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_landuses_py.html">swmm\test_landuses.py</a></td>
+                <td>21</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 21">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_lid_controls_py.html">swmm\test_lid_controls.py</a></td>
+                <td>18</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 18">56%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_lid_usage_py.html">swmm\test_lid_usage.py</a></td>
+                <td>23</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 23">22%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_loadings_py.html">swmm\test_loadings.py</a></td>
+                <td>21</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 21">24%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_map_py.html">swmm\test_map.py</a></td>
+                <td>20</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 20">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_options_dates_py.html">swmm\test_options_dates.py</a></td>
+                <td>14</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 14">36%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_options_dynamicwave_py.html">swmm\test_options_dynamicwave.py</a></td>
+                <td>17</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 17">47%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_options_general_py.html">swmm\test_options_general.py</a></td>
+                <td>55</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="47 55">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_options_interfacefiles_py.html">swmm\test_options_interfacefiles.py</a></td>
+                <td>24</td>
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 24">42%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_options_timesteps_py.html">swmm\test_options_timesteps.py</a></td>
+                <td>14</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="5 14">36%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_outfalls_py.html">swmm\test_outfalls.py</a></td>
+                <td>17</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 17">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_patterns_py.html">swmm\test_patterns.py</a></td>
+                <td>52</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="39 52">75%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_pollutants_py.html">swmm\test_pollutants.py</a></td>
+                <td>17</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 17">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_project_py.html">swmm\test_project.py</a></td>
+                <td>181</td>
+                <td>44</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="137 181">76%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_raingages_py.html">swmm\test_raingages.py</a></td>
+                <td>15</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="3 15">20%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_report_py.html">swmm\test_report.py</a></td>
+                <td>35</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 35">74%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_snowpack_py.html">swmm\test_snowpack.py</a></td>
+                <td>15</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 15">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_subcatchments_py.html">swmm\test_subcatchments.py</a></td>
+                <td>21</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="14 21">67%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_temperature_py.html">swmm\test_temperature.py</a></td>
+                <td>48</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="41 48">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_timeseries_py.html">swmm\test_timeseries.py</a></td>
+                <td>30</td>
+                <td>17</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 30">43%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_title_py.html">swmm\test_title.py</a></td>
+                <td>42</td>
+                <td>7</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="35 42">83%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_transects_py.html">swmm\test_transects.py</a></td>
+                <td>25</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="12 25">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_treatment_py.html">swmm\test_treatment.py</a></td>
+                <td>21</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="10 21">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_washoff_py.html">swmm\test_washoff.py</a></td>
+                <td>17</td>
+                <td>11</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 17">35%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_xsection_py.html">swmm\test_xsection.py</a></td>
+                <td>162</td>
+                <td>16</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="146 162">90%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="swmm_test_xsections_py.html">swmm\test_xsections.py</a></td>
+                <td>40</td>
+                <td>19</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="21 40">53%</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
+            created at 2016-06-03 14:32
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

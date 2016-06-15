@@ -1,0 +1,19 @@
+# Test 'Projects' Menu
+
+Start EPANET.
+
+Open the file named 'Net1.inp' using 'File:Open'.
+
+Save the project using 'File:Save As..' with the name 'Net1u1.inp'.
+
+Compare files 'Net1.inp' with 'Net1u1.inp'. Should be no difference
+
+Click 'OK'.
+
+Test 'Project: Run Simulation', Message box 'Run Successful' shows, click 'OK'
+
+Test 'Project: Summary', file 'Net1u1_status.txt' shows in a Text Editor, close the file
+
+Test 'Project: Calibration data', set head file = 'all_heads.txt', click 'OK'. (not working)
+
+Test 'Project: Details/Default/Simulation Options' (not working)

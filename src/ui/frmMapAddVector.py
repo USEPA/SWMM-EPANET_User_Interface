@@ -3,16 +3,17 @@ from PyQt4.QtGui import QMessageBox
 from frmMapAddVectorDesigner import Ui_frmAddVectorLayer
 
 class frmMapAddVector(QtGui.QDialog):
-    def __init__(self, parent=None, *args):
-        self.parent = parent
+    def __init__(self, main_form=None, *args):
+        self._main_form = main_form
         QtGui.QDialog.__init__(self)
         self.ui = Ui_frmAddVectorLayer()
         self.ui.setupUi(self)
         self.specs = {}
         self.ui.cboEncoding.addItem("System")
         self.ui.cboEncoding.addItem("UTF-8")
-        QtCore.QObject.connect(self.ui.cboEncoding, QtCore.SIGNAL("currentIndexChanged(QString)"), \
-                                                               self.cboEncoding_currentIndexChanged)
+        QtCore.QObject.connect(self.ui.cboEncoding,
+                               QtCore.SIGNAL("currentIndexChanged(QString)"),
+                               self.cboEncoding_currentIndexChanged)
         QtCore.QObject.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.btnBrowse_Clicked)
         #QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("clicked(QAbstractButton)"), self.btnBox_Clicked)
         QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("accepted()"), self.btnBox_Accepted)
@@ -23,7 +24,6 @@ class frmMapAddVector(QtGui.QDialog):
 
     def btnBrowse_Clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
-        # pymsgbox.alert('Data file:' + filename,'Add Vector Layer')
         self.ui.txtDataset.text = filename
         self.ui.txtDataset.setText(filename)
         self.specs['filename'] = filename

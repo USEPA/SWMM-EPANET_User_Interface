@@ -3,8 +3,8 @@ from frmOptionsDesigner import Ui_diagOptions
 
 
 class frmOptions(QtGui.QDialog):
-    def __init__(self, parent=None, *args):
-        self.parent = parent
+    def __init__(self, main_form=None, *args):
+        self._main_form = main_form
         QtGui.QDialog.__init__(self)
         self.ui = Ui_diagOptions()
         self.ui.setupUi(self)
@@ -65,16 +65,15 @@ class frmOptions(QtGui.QDialog):
 
 
 class ComboBoxOptionItem(QtGui.QComboBox):
-    def __init__(self, parent=None, *args):
-        self.parent = parent
-        QtGui.QComboBox.__init__(parent)
+    def __init__(self, parent_control=None, *args):
+        QtGui.QComboBox.__init__(parent_control)
         #self.item = QtGui.QTreeWidgetItem()
         #self.column = 1
         self.item = args[0] #assume passing in a QTreeWidgetItem
         self.column = args[1]
         QtCore.QObject.connect(self, QtCore.SIGNAL('currentIndexChanged(int)'), self.change_item)
 
-    def change_item(self, int):
+    def change_item(self, value):
         self.item.setText(self.column, self.currentText())
 
 

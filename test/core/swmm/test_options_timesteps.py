@@ -1,20 +1,13 @@
-from core.swmm.options.time_steps import TimeSteps
-from core.swmm.options import time_steps
 import unittest
+from core.swmm.options import time_steps
 
 
 class OptionsTimestepTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_options = TimeSteps()
-
-    def setUp(self):
-
-        self.my_options = time_steps.TimeSteps()
-
+    """Test OPTIONS: Time steps"""
 
     def runTest(self):
-
+        """Test OPTIONS: Time steps"""
+        self.my_options = time_steps.TimeSteps()
         name = self.my_options.SECTION_NAME
         assert name == "[OPTIONS]"
 
@@ -27,5 +20,4 @@ class OptionsTimestepTest(unittest.TestCase):
                         " SYS_FLOW_TOL       	5\n" + \
                         " ROUTING_STEP       	00:05:00"
 
-        actual_text = self.my_options.get_text()
-        assert actual_text == expected_text
+        assert self.my_options.matches(expected_text)

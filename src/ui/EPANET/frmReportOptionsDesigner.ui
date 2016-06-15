@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmReportOptions</class>
+ <widget class="QMainWindow" name="frmReportOptions">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>386</width>
+    <height>689</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>EPANET Report Options</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="fraTop">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lblPageSize">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Page Size</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txtPageSize"/>
+       </item>
+       <item row="0" column="2">
+        <spacer name="hspPage">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>110</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lblReportFileName">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Report File Name&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="txtReportFileName"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lblStatus">
+         <property name="text">
+          <string>Status</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cboStatus"/>
+       </item>
+       <item row="2" column="2">
+        <spacer name="hspStatus">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>110</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lblSummary">
+         <property name="text">
+          <string>Summary</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="cboSummary"/>
+       </item>
+       <item row="3" column="2">
+        <spacer name="hspSummary">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>110</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lblEnergy">
+         <property name="text">
+          <string>Energy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="cboEnergy"/>
+       </item>
+       <item row="4" column="2">
+        <spacer name="hspEnergy">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>110</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="gbxNode">
+      <property name="title">
+       <string>Node Parameters:</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="1">
+        <widget class="QLabel" name="lblLimit">
+         <property name="text">
+          <string>Limit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="lblPrecision">
+         <property name="text">
+          <string>Precision</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="cbxNode1">
+         <property name="text">
+          <string>Elevation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboNode1"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="txtNode1"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="txtNode6"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="cbxNode2">
+         <property name="text">
+          <string>Demand</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cboNode2"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="txtNode2"/>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="txtNode7"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="cbxNode3">
+         <property name="text">
+          <string>Head</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="cboNode3"/>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="txtNode3"/>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="txtNode8"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="cbxNode4">
+         <property name="text">
+          <string>Pressure</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="cboNode4"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="txtNode4"/>
+       </item>
+       <item row="4" column="3">
+        <widget class="QLineEdit" name="txtNode9"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="cbxNode5">
+         <property name="text">
+          <string>Quality</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="cboNode5"/>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLineEdit" name="txtNode5"/>
+       </item>
+       <item row="5" column="3">
+        <widget class="QLineEdit" name="txtNode10"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="gbxLink">
+      <property name="title">
+       <string>Link Parameters:</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1">
+        <widget class="QLabel" name="lblLimitLink">
+         <property name="text">
+          <string>Limit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="lblPrecisionLink">
+         <property name="text">
+          <string>Precision</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="cbxLink1">
+         <property name="text">
+          <string>Length</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboLink1"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="txtLink1"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="txtLink10"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="cbxLink2">
+         <property name="text">
+          <string>Diameter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cboLink2"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLineEdit" name="txtLink2"/>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="txtLink11"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="cbxLink3">
+         <property name="text">
+          <string>Flow</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="cboLink3"/>
+       </item>
+       <item row="3" column="2">
+        <widget class="QLineEdit" name="txtLink3"/>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="txtLink12"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="cbxLink4">
+         <property name="text">
+          <string>Velocity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="cboLink4"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLineEdit" name="txtLink4"/>
+       </item>
+       <item row="4" column="3">
+        <widget class="QLineEdit" name="txtLink13"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="cbxLink5">
+         <property name="text">
+          <string>Headloss</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="cboLink5"/>
+       </item>
+       <item row="5" column="2">
+        <widget class="QLineEdit" name="txtLink5"/>
+       </item>
+       <item row="5" column="3">
+        <widget class="QLineEdit" name="txtLink14"/>
+       </item>
+       <item row="6" column="0">
+        <widget class="QCheckBox" name="cbxLink6">
+         <property name="text">
+          <string>Position</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QComboBox" name="cboLink6"/>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLineEdit" name="txtLink6"/>
+       </item>
+       <item row="6" column="3">
+        <widget class="QLineEdit" name="txtLink15"/>
+       </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="cbxLink7">
+         <property name="text">
+          <string>Setting</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="cboLink7"/>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLineEdit" name="txtLink7"/>
+       </item>
+       <item row="7" column="3">
+        <widget class="QLineEdit" name="txtLink16"/>
+       </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="cbxLink8">
+         <property name="text">
+          <string>Reaction</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="cboLink8"/>
+       </item>
+       <item row="8" column="2">
+        <widget class="QLineEdit" name="txtLink8"/>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLineEdit" name="txtLink17"/>
+       </item>
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="cbxLink9">
+         <property name="text">
+          <string>F-Factor</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QComboBox" name="cboLink9"/>
+       </item>
+       <item row="9" column="2">
+        <widget class="QLineEdit" name="txtLink9"/>
+       </item>
+       <item row="9" column="3">
+        <widget class="QLineEdit" name="txtLink18"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="fraOKCancel">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="hspOKCancel">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>183</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdOK">
+         <property name="text">
+          <string>OK</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cmdCancel">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

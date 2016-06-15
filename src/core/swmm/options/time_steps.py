@@ -1,4 +1,5 @@
 ﻿import core.inputfile
+from core.metadata import Metadata
 
 
 class TimeSteps(core.inputfile.Section):
@@ -6,31 +7,16 @@ class TimeSteps(core.inputfile.Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    field_dict = {
-     "COMPATIBILITY": "",
-     "REPORT_CONTROLS": "",
-     "REPORT_INPUT": "",
-
-     "SKIP_STEADY_STATE": "skip_steady_state",
-
-     "REPORT_STEP": "report_step",
-     "WET_STEP": "wet_step",
-     "DRY_STEP": "dry_step",
-     "ROUTING_STEP": "routing_step",
-
-     "INERTIAL_DAMPING": "",
-     "NORMAL_FLOW_LIMITED": "",
-     "FORCE_MAIN_EQUATION": "",
-     "VARIABLE_STEP": "",
-     "LENGTHENING_STEP": "",
-     "MIN_SURFAREA": "",
-     "MAX_TRIALS": "",
-     "HEAD_TOLERANCE": "",
-     "SYS_FLOW_TOL": "sys_flow_tol",
-     "LAT_FLOW_TOL": "lat_flow_tol",
-     "MINIMUM_STEP": "",
-     "THREADS": ""}
-    """Mapping from label used in file to field name"""
+    #    attribute,                  input_name, label, default, english, metric, hint
+    metadata = Metadata((
+        ("skip_steady_state",        "SKIP_STEADY_STATE"),
+        ("report_step",              "REPORT_STEP"),
+        ("wet_step",                 "WET_STEP"),
+        ("dry_step",                 "DRY_STEP"),
+        ("routing_step",             "ROUTING_STEP"),
+        ("system_flow_tolerance",    "SYS_FLOW_TOL", '', '5', '%', '%'),
+        ("lateral_inflow_tolerance", "LAT_FLOW_TOL", '', '5', '%', '%')))
+    """Mapping between attribute name and name used in input file"""
 
     TIME_FORMAT = "hh:mm:ss"
 
@@ -61,12 +47,14 @@ class TimeSteps(core.inputfile.Section):
         water quality constituents through the conveyance system
         """
 
-        self.sys_flow_tol = 5
-        """
-        Undocumented but shows up in SWMM 5 UI as 'system flow tolerance'
+        self.system_flow_tolerance = "5"
+        """the maximum percent difference between total system inflow and
+        total system outflow which can occur in order for the SKIP_STEADY_STATE
+        option to take effect. The default is 5 percent.
         """
 
-        self.lat_flow_tol = 5
-        """
-        Undocumented but shows up in SWMM 5 UI as 'lateral flow tolerance'
+        self.lateral_inflow_tolerance = "5"
+        """the maximum percent difference between the current and previous
+        lateral inflow at all nodes in the conveyance system in order for the
+        SKIP_STEADY_STATE option to take effect. The default is 5 percent.
         """

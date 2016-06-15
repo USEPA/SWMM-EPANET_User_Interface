@@ -8,8 +8,9 @@ import ui.convenience
 
 
 class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+    def __init__(self, main_form=None):
+        QtGui.QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/Anal0040.htm"
         self.setupUi(self)
         self.cboFlow.clear()
         ui.convenience.set_combo_items(core.epanet.options.hydraulics.FlowUnits, self.cboFlow)
@@ -17,8 +18,8 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         # self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.set_from(parent.project)
-        self._parent = parent
+        self.set_from(main_form.project)
+        self._main_form = main_form
 
     def set_from(self, project):
         hydraulics_options = project.options.hydraulics
@@ -46,7 +47,7 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         self.txtContinueN.setText(str(hydraulics_options.unbalanced_continue))
 
     def cmdOK_Clicked(self):
-        hydraulics_options = self._parent.project.options.hydraulics
+        hydraulics_options = self._main_form.project.options.hydraulics
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
         head_loss_underscore = self.cboHeadloss.currentText().replace('-', '_')
         hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]

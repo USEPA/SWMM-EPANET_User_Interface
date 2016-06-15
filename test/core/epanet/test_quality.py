@@ -1,15 +1,14 @@
+import unittest
 from core.epanet.options.options import Options
 from core.epanet.options import quality
-import unittest
 
 
 class SimpleQualityTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
+    """Test Quality section"""
+
+    def test_get(self):
+        """Test get_text of quality sections"""
         self.my_options = Options()
-
-    def setUp(self):
-
         self.my_quality = quality.QualityOptions()
         self.my_quality.quality = quality.QualityAnalysisType.CHEMICAL
         self.my_quality.chemical_name = "DummyChemical"
@@ -17,9 +16,6 @@ class SimpleQualityTest(unittest.TestCase):
         self.my_quality.diffusivity = 1.0
         self.my_quality.trace_node = ""
         self.my_quality.tolerance = 0.01
-
-    def runTest(self):
-
         name = self.my_options.quality.SECTION_NAME
         assert name == "[OPTIONS]"
         assert self.my_quality.chemical_name == "DummyChemical"
@@ -43,3 +39,13 @@ class SimpleQualityTest(unittest.TestCase):
 
         actual_text = self.my_quality.get_text()
         assert actual_text == expected_text
+
+    def test_setget(self):
+         test_text = " Quality            	DummyChemical mg/L\n" \
+                     " Diffusivity         	1.0\n" \
+                     " Tolerance           	0.01\n"
+         # self.my_options = Options()
+         self.my_quality = quality.QualityOptions()
+         self.my_quality.set_text(test_text)
+         actual_text = self.my_quality.get_text()
+         assert self.my_quality.matches(test_text)

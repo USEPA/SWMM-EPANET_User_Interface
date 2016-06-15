@@ -2,9 +2,9 @@ from PyQt4 import QtCore, QtGui
 from frmProgramDesigner import Ui_program
 
 class frmProgram(QtGui.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, main_form=None):
         QtGui.QDialog.__init__(self)
-        self.parent = parent
+        self._main_form = main_form
         self.model = ''
         self.ui = Ui_program()
         self.ui.setupUi(self)

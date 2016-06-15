@@ -216,6 +216,7 @@ class EPANET:
         plt.grid(True)
         plt.show()
 
+    @staticmethod
     def plot_system_flow(output):
         if output.nodeCount < 1:
             raise Exception("No node results present in output, cannot plot system flow")

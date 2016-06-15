@@ -156,7 +156,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             graphEPANET.plot_time(self.output, get_index, get_value, parameter_code, parameter_label, selected_list_items(self.lstToGraph))
 
         if self.rbnSystem.isChecked():
-            graphEPANET.plot_system_flow()
+            graphEPANET.plot_system_flow(self.output)
 
         if time_index < 0 and (self.rbnProfile.isChecked() or self.rbnFrequency.isChecked()):
             QMessageBox.information(None, self._main_form.model,

@@ -592,13 +592,16 @@ if sys.platform == "linux2":
 else:
     search_dir = os.path.dirname(os.path.realpath(__file__))
     while search_dir and not os.path.isfile(os.path.join(search_dir, "ENOutputAPI-64.dll")):
-        print "ENOutputAPI-64.dll Not found in " + search_dir
+        print("ENOutputAPI-64.dll Not found in " + search_dir)
         next_search_dir = os.path.dirname(search_dir)
         if next_search_dir == search_dir:
             break
         search_dir = next_search_dir
-    print "Try loading ENOutputAPI-64.dll from " + search_dir
+    print("Try loading ENOutputAPI-64.dll from " + search_dir)
     _libs["outputapi"] = load_library(os.path.join(search_dir, "ENOutputAPI-64"))
+    if _libs["outputapi"]:
+        print("Loaded ENOutputAPI-64.dll: " + str(_libs["outputapi"]))
+
 
 # 1 libraries
 # End libraries

@@ -94,6 +94,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_vars_g.html#index_g"><span>g</span></a></li>
       <li class="current"><a href="functions_vars_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_vars_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_vars_j.html#index_j"><span>j</span></a></li>
       <li><a href="functions_vars_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_vars_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_vars_m.html#index_m"><span>m</span></a></li>
@@ -148,8 +149,23 @@ $(document).ready(function(){initNavTree('functions_vars_h.html','');});
 : <a class="el" href="classcore_1_1epanet_1_1options_1_1hydraulics_1_1_head_loss.html#a40fce989a05c3493cf75c615aea5cc57">core.epanet.options.hydraulics.HeadLoss</a>
 , <a class="el" href="classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_force_main_equation.html#adf8d752d095a058d81a95e008680ff23">core.swmm.options.dynamic_wave.ForceMainEquation</a>
 </li>
+<li>has_drainmat_system
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a928543ddb9a38a80b616ba80667aed2b">core.swmm.hydrology.lidcontrol.LIDControl</a>
+</li>
+<li>has_impervious
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#ab7e57d52c2bf6d56d9b1c465697d650e">core.swmm.hydrology.snowpack.SnowPack</a>
+</li>
 <li>has_pavement_layer
 : <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#ae06b92297a7ad6cfa6adab8050c17a79">core.swmm.hydrology.lidcontrol.LIDControl</a>
+</li>
+<li>has_pervious
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a3e52006c3a3cffab8fe7f3e6e8d8a07f">core.swmm.hydrology.snowpack.SnowPack</a>
+</li>
+<li>has_plowable
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a0a276ebce31a06787e67eff6da38d5e4">core.swmm.hydrology.snowpack.SnowPack</a>
+</li>
+<li>has_removal
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#ae5d910a412f56aa7c8e707e25ba25158">core.swmm.hydrology.snowpack.SnowPack</a>
 </li>
 <li>has_soil_layer
 : <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a94db871bc345e2125c13cc2a57afa9ab">core.swmm.hydrology.lidcontrol.LIDControl</a>
@@ -169,29 +185,37 @@ $(document).ready(function(){initNavTree('functions_vars_h.html','');});
 <li>head_curve_id
 : <a class="el" href="classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#aae08078799c5027af205d84bbdcca2b8">core.epanet.hydraulics.link.Pump</a>
 </li>
-<li>HEAD_LOSS
-: <a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve_type.html#ac0f24c379630b76ab1b4704ed50bacbe">core.epanet.curves.CurveType</a>
-</li>
 <li>head_loss
 : <a class="el" href="classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a5ba3a38e7316d4e7caf540118aac15df">core.epanet.options.hydraulics.HydraulicsOptions</a>
 </li>
-<li>head_pattern
-: <a class="el" href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html#a60c1dd2e44affb936c037afb9f74bf5d">core.epanet.hydraulics.node.Reservoir</a>
+<li>head_pattern_id
+: <a class="el" href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html#aa6c88dccb87ea774505fb25ab2e6239c">core.epanet.hydraulics.node.Reservoir</a>
 </li>
 <li>head_tolerance
 : <a class="el" href="classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html#a8b55c997506cf6de9617c1636b8b9a83">core.swmm.options.dynamic_wave.DynamicWave</a>
 </li>
-<li>HorizontalEllipse
-: <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section_shape.html#a36de4ebabf08c014f97bfde1ed5123e4">core.swmm.hydraulics.link.CrossSectionShape</a>
+<li>HEADLOSS
+: <a class="el" href="classcore_1_1epanet_1_1curves_1_1_curve_type.html#a2c144fd2373f75e37f280acc6f68986b">core.epanet.curves.CurveType</a>
 </li>
-<li>Horseshoe
-: <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section_shape.html#aa91c8f79347f26d89f4675479ea857e3">core.swmm.hydraulics.link.CrossSectionShape</a>
+<li>hint
+: <a class="el" href="classcore_1_1metadata_1_1_metadata_item.html#a77cfee1039ffe95f3748ca27878b5a75">core.metadata.MetadataItem</a>
+, <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_treatment.html#a6f210b16ce7436e17e7c1590c0781889">core.swmm.hydraulics.node.Treatment</a>
+</li>
+<li>HORIZ_ELLIPSE
+: <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section_shape.html#acddf0c6024c5a55b4329755e34716e83">core.swmm.hydraulics.link.CrossSectionShape</a>
+</li>
+<li>HORSESHOE
+: <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section_shape.html#a02019f8630da2caf863bbed494172697">core.swmm.hydraulics.link.CrossSectionShape</a>
 </li>
 <li>HOURLY
 : <a class="el" href="classcore_1_1swmm_1_1patterns_1_1_pattern_type.html#a836aa62e6274f0ac4c3cc480b36d078e">core.swmm.patterns.PatternType</a>
 </li>
+<li>HW
+: <a class="el" href="classcore_1_1swmm_1_1options_1_1dynamicwave_1_1_force_main_equation.html#a9b1abbcd4ae4923fa546a5a7d2b0ac07">core.swmm.options.dynamicwave.ForceMainEquation</a>
+</li>
 <li>hydraulic_conductivity
-: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_green_ampt_infiltration.html#a858066a85eea588529d3f8046f772906">core.swmm.hydrology.subcatchment.GreenAmptInfiltration</a>
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_curve_number_infiltration.html#a65075ac0045a8b1656f52d3dcb993725">core.swmm.hydrology.subcatchment.CurveNumberInfiltration</a>
+, <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_green_ampt_infiltration.html#a858066a85eea588529d3f8046f772906">core.swmm.hydrology.subcatchment.GreenAmptInfiltration</a>
 </li>
 <li>hydraulic_timestep
 : <a class="el" href="classcore_1_1epanet_1_1options_1_1times_1_1_times_options.html#a91dccaeea67770506a882ebd3a33ce23">core.epanet.options.times.TimesOptions</a>
@@ -206,8 +230,11 @@ $(document).ready(function(){initNavTree('functions_vars_h.html','');});
 <li>hydrograph_group
 : <a class="el" href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html#afd8d3c7e2aed643dfce44104e26b1dca">core.swmm.hydraulics.node.RDIInflow</a>
 </li>
-<li>hydrograph_months
-: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1unithydrograph_1_1_unit_hydrograph.html#af1d5c6d982aafb460c312b5d1f658dd0">core.swmm.hydrology.unithydrograph.UnitHydrograph</a>
+<li>hydrograph_month
+: <a class="el" href="classcore_1_1swmm_1_1hydrology_1_1unithydrograph_1_1_unit_hydrograph_entry.html#a9aeb3b3164407453917691c06ef56e03">core.swmm.hydrology.unithydrograph.UnitHydrographEntry</a>
+</li>
+<li>hydrographs
+: <a class="el" href="classcore_1_1swmm_1_1project_1_1_project.html#a5afa204d64a90251ae9a9c197c4fc57e">core.swmm.project.Project</a>
 </li>
 </ul>
 </div><!-- contents -->

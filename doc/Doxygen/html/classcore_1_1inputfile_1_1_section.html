@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('classcore_1_1inputfile_1_1_section.htm
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classcore_1_1inputfile_1_1_section-members.html">List of all members</a>  </div>
@@ -124,25 +125,78 @@ Inheritance diagram for core.inputfile.Section:</div>
  <div class="center">
   <img src="classcore_1_1inputfile_1_1_section.png" usemap="#core.inputfile.Section_map" alt=""/>
   <map id="core.inputfile.Section_map" name="core.inputfile.Section_map">
-<area href="classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html" title="A link in an EPANET model. " alt="core.epanet.hydraulics.link.Link" shape="rect" coords="305,112,600,136"/>
-<area href="classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html" title="EPANET Hydraulics Options. " alt="core.epanet.options.hydraulics.HydraulicsOptions" shape="rect" coords="305,168,600,192"/>
-<area href="classcore_1_1epanet_1_1options_1_1map_1_1_map_options.html" title="EPANET Map Options. " alt="core.epanet.options.map.MapOptions" shape="rect" coords="305,224,600,248"/>
-<area href="classcore_1_1epanet_1_1options_1_1options_1_1_options.html" title="EPANET Options. " alt="core.epanet.options.options.Options" shape="rect" coords="305,280,600,304"/>
-<area href="classcore_1_1epanet_1_1options_1_1quality_1_1_quality_options.html" title="EPANET Quality Options. " alt="core.epanet.options.quality.QualityOptions" shape="rect" coords="305,336,600,360"/>
-<area href="classcore_1_1epanet_1_1options_1_1report_1_1_report_options.html" title="Report Options. " alt="core.epanet.options.report.ReportOptions" shape="rect" coords="305,392,600,416"/>
-<area href="classcore_1_1epanet_1_1title_1_1_title.html" title="EPANET descriptive title. " alt="core.epanet.title.Title" shape="rect" coords="305,448,600,472"/>
-<area href="classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html" title="SWMM Dynamic Wave Options. " alt="core.swmm.options.dynamic_wave.DynamicWave" shape="rect" coords="305,504,600,528"/>
-<area href="classcore_1_1swmm_1_1options_1_1files_1_1_files.html" title="Optional SWMM interface file names to use or save during a run. " alt="core.swmm.options.files.Files" shape="rect" coords="305,560,600,584"/>
-<area href="classcore_1_1swmm_1_1options_1_1general_1_1_general.html" title="SWMM General Options. " alt="core.swmm.options.general.General" shape="rect" coords="305,616,600,640"/>
-<area href="classcore_1_1swmm_1_1options_1_1map_1_1_map_options.html" title="SWMM Map Options. " alt="core.swmm.options.map.MapOptions" shape="rect" coords="305,672,600,696"/>
-<area href="classcore_1_1swmm_1_1options_1_1time__steps_1_1_time_steps.html" title="SWMM Time Step Options. " alt="core.swmm.options.time_steps.TimeSteps" shape="rect" coords="305,728,600,752"/>
-<area href="classcore_1_1swmm_1_1title_1_1_title.html" title="SWMM descriptive title. " alt="core.swmm.title.Title" shape="rect" coords="305,784,600,808"/>
+<area href="classcore_1_1epanet_1_1curves_1_1_curve.html" title="Defines a data curve of X,Y points. " alt="core.epanet.curves.Curve" shape="rect" coords="365,112,720,136"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html" title="A link in an EPANET model. " alt="core.epanet.hydraulics.link.Link" shape="rect" coords="365,168,720,192"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1link_1_1_status.html" alt="core.epanet.hydraulics.link.Status" shape="rect" coords="365,224,720,248"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_coordinate.html" alt="core.epanet.hydraulics.node.Coordinate" shape="rect" coords="365,280,720,304"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html" title="Define multiple water demands at junction nodes. " alt="core.epanet.hydraulics.node.Demand" shape="rect" coords="365,336,720,360"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_junction.html" title="Junction properties. " alt="core.epanet.hydraulics.node.Junction" shape="rect" coords="365,392,720,416"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_mixing.html" title="Mixing model and volume fraction of a Tank. " alt="core.epanet.hydraulics.node.Mixing" shape="rect" coords="365,448,720,472"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_quality.html" title="Initial water quality at a node. " alt="core.epanet.hydraulics.node.Quality" shape="rect" coords="365,504,720,528"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html" title="A Reservoir node. " alt="core.epanet.hydraulics.node.Reservoir" shape="rect" coords="365,560,720,584"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_source.html" title="Defines locations of water quality sources. " alt="core.epanet.hydraulics.node.Source" shape="rect" coords="365,616,720,640"/>
+<area href="classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html" title="A Tank node. " alt="core.epanet.hydraulics.node.Tank" shape="rect" coords="365,672,720,696"/>
+<area href="classcore_1_1epanet_1_1labels_1_1_label.html" title="A label on the map with location, text, and optional anchor node ID. " alt="core.epanet.labels.Label" shape="rect" coords="365,728,720,752"/>
+<area href="classcore_1_1epanet_1_1options_1_1energy_1_1_energy_options.html" title="Defines global parameters used to compute pumping energy and cost. " alt="core.epanet.options.energy.EnergyOptions" shape="rect" coords="365,784,720,808"/>
+<area href="classcore_1_1epanet_1_1options_1_1energy_1_1_pump_energy.html" title="Parameters used to compute pumping energy and cost for a particular pump. " alt="core.epanet.options.energy.PumpEnergy" shape="rect" coords="365,840,720,864"/>
+<area href="classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html" title="EPANET Hydraulics Options. " alt="core.epanet.options.hydraulics.HydraulicsOptions" shape="rect" coords="365,896,720,920"/>
+<area href="classcore_1_1epanet_1_1options_1_1map_1_1_map_options.html" title="EPANET Map Options. " alt="core.epanet.options.map.MapOptions" shape="rect" coords="365,952,720,976"/>
+<area href="classcore_1_1epanet_1_1options_1_1options_1_1_options.html" title="EPANET Options. " alt="core.epanet.options.options.Options" shape="rect" coords="365,1008,720,1032"/>
+<area href="classcore_1_1epanet_1_1options_1_1quality_1_1_quality_options.html" title="EPANET Quality Options. " alt="core.epanet.options.quality.QualityOptions" shape="rect" coords="365,1064,720,1088"/>
+<area href="classcore_1_1epanet_1_1options_1_1report_1_1_report_options.html" title="Report Options. " alt="core.epanet.options.report.ReportOptions" shape="rect" coords="365,1120,720,1144"/>
+<area href="classcore_1_1epanet_1_1options_1_1times_1_1_times_options.html" title="Defines various time step parameters used in the simulation. " alt="core.epanet.options.times.TimesOptions" shape="rect" coords="365,1176,720,1200"/>
+<area href="classcore_1_1epanet_1_1title_1_1_title.html" title="EPANET descriptive title. " alt="core.epanet.title.Title" shape="rect" coords="365,1232,720,1256"/>
+<area href="classcore_1_1inputfile_1_1_section_as_list_of.html" alt="core.inputfile.SectionAsListOf" shape="rect" coords="365,1288,720,1312"/>
+<area href="classcore_1_1swmm_1_1climatology_1_1climatology_1_1_adjustments.html" title="Specifies optional monthly adjustments to be made to temperature, evaporation rate, rainfall intensity and hydraulic conductivity in each time period of a simulation. " alt="core.swmm.climatology.climatology.Adjustments" shape="rect" coords="365,1344,720,1368"/>
+<area href="classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html" title="How daily evaporation rates vary with time for the study area. " alt="core.swmm.climatology.climatology.Evaporation" shape="rect" coords="365,1400,720,1424"/>
+<area href="classcore_1_1swmm_1_1climatology_1_1climatology_1_1_temperature.html" title="temperature, wind speed, snow melt, and areal depletion parameters " alt="core.swmm.climatology.climatology.Temperature" shape="rect" coords="365,1456,720,1480"/>
+<area href="classcore_1_1swmm_1_1curves_1_1_curve.html" title="Defines data curves and their X,Y points. " alt="core.swmm.curves.Curve" shape="rect" coords="365,1512,720,1536"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html" title="A cross section of a Conduit, Orifice, or Weir. " alt="core.swmm.hydraulics.link.CrossSection" shape="rect" coords="365,1568,720,1592"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_link.html" title="A link in a SWMM model. " alt="core.swmm.hydraulics.link.Link" shape="rect" coords="365,1624,720,1648"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html" title="the cross-section geometry of a natural channel or conduit with irregular shapes " alt="core.swmm.hydraulics.link.Transect" shape="rect" coords="365,1680,720,1704"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transects.html" alt="core.swmm.hydraulics.link.Transects" shape="rect" coords="365,1736,720,1760"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html" title="Defines characteristics of inflows added directly into a node. " alt="core.swmm.hydraulics.node.DirectInflow" shape="rect" coords="365,1792,720,1816"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_dry_weather_inflow.html" title="Specifies dry weather flow and its quality entering the drainage system at a specific node..." alt="core.swmm.hydraulics.node.DryWeatherInflow" shape="rect" coords="365,1848,720,1872"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_junction.html" title="A Junction node. " alt="core.swmm.hydraulics.node.Junction" shape="rect" coords="365,1904,720,1928"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html" title="A terminal node of the drainage system Defines a final downstream boundary under Dynamic Wave flow ro..." alt="core.swmm.hydraulics.node.Outfall" shape="rect" coords="365,1960,720,1984"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html" title="Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node..." alt="core.swmm.hydraulics.node.RDIInflow" shape="rect" coords="365,2016,720,2040"/>
+<area href="classcore_1_1swmm_1_1hydraulics_1_1node_1_1_treatment.html" title="Define the treatment properties of a node using a treatment expression. " alt="core.swmm.hydraulics.node.Treatment" shape="rect" coords="365,2072,720,2096"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html" title="Sub-surface groundwater area that models water infiltrating. " alt="core.swmm.hydrology.aquifer.Aquifer" shape="rect" coords="365,2128,720,2152"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html" title="Defines scale-independent LID controls that can be deployed within subcatchments. ..." alt="core.swmm.hydrology.lidcontrol.LIDControl" shape="rect" coords="365,2184,720,2208"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html" title="Snow pack parameters. " alt="core.swmm.hydrology.snowpack.SnowPack" shape="rect" coords="365,2240,720,2264"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverage.html" title="Specifies the percentage of a subcatchments area that is covered by each category of land use..." alt="core.swmm.hydrology.subcatchment.Coverage" shape="rect" coords="365,2296,720,2320"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverages.html" title="Specifies the percentage of a subcatchments area that is covered by each category of land use..." alt="core.swmm.hydrology.subcatchment.Coverages" shape="rect" coords="365,2352,720,2376"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_curve_number_infiltration.html" title="Curve Number Infiltration parameters. " alt="core.swmm.hydrology.subcatchment.CurveNumberInfiltration" shape="rect" coords="365,2408,720,2432"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_green_ampt_infiltration.html" title="Green-Ampt Infiltration parameters. " alt="core.swmm.hydrology.subcatchment.GreenAmptInfiltration" shape="rect" coords="365,2464,720,2488"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html" title="Link a subcatchment to an aquifer and to a drainage system node. " alt="core.swmm.hydrology.subcatchment.Groundwater" shape="rect" coords="365,2520,720,2544"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html" title="Horton Infiltration parameters. " alt="core.swmm.hydrology.subcatchment.HortonInfiltration" shape="rect" coords="365,2576,720,2600"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_initial_loading.html" title="Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation..." alt="core.swmm.hydrology.subcatchment.InitialLoading" shape="rect" coords="365,2632,720,2656"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html" title="Specifies how an LID control will be deployed in a subcatchment. " alt="core.swmm.hydrology.subcatchment.LIDUsage" shape="rect" coords="365,2688,720,2712"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_subcatchment.html" title="Subcatchment geometry, location, parameters, and time-series data. " alt="core.swmm.hydrology.subcatchment.Subcatchment" shape="rect" coords="365,2744,720,2768"/>
+<area href="classcore_1_1swmm_1_1hydrology_1_1unithydrograph_1_1_unit_hydrograph.html" title="Specifies the shapes of the triangular unit hydrographs that determine the amount of rainfall-depende..." alt="core.swmm.hydrology.unithydrograph.UnitHydrograph" shape="rect" coords="365,2800,720,2824"/>
+<area href="classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html" title="SWMM Dynamic Wave Options. " alt="core.swmm.options.dynamic_wave.DynamicWave" shape="rect" coords="365,2856,720,2880"/>
+<area href="classcore_1_1swmm_1_1options_1_1dynamicwave_1_1_dynamic_wave.html" title="SWMM Dynamic Wave Options. " alt="core.swmm.options.dynamicwave.DynamicWave" shape="rect" coords="365,2912,720,2936"/>
+<area href="classcore_1_1swmm_1_1options_1_1files_1_1_files.html" title="Optional SWMM interface file names to use or save during a run. " alt="core.swmm.options.files.Files" shape="rect" coords="365,2968,720,2992"/>
+<area href="classcore_1_1swmm_1_1options_1_1general_1_1_general.html" title="SWMM General Options. " alt="core.swmm.options.general.General" shape="rect" coords="365,3024,720,3048"/>
+<area href="classcore_1_1swmm_1_1options_1_1interfacefiles_1_1_interface_files.html" title="Optional SWMM interface file names to use or save during a run. " alt="core.swmm.options.interfacefiles.InterfaceFiles" shape="rect" coords="365,3080,720,3104"/>
+<area href="classcore_1_1swmm_1_1options_1_1map_1_1_map_options.html" title="SWMM Map Options. " alt="core.swmm.options.map.MapOptions" shape="rect" coords="365,3136,720,3160"/>
+<area href="classcore_1_1swmm_1_1options_1_1reporting_1_1_reporting.html" title="Report Options. " alt="core.swmm.options.reporting.Reporting" shape="rect" coords="365,3192,720,3216"/>
+<area href="classcore_1_1swmm_1_1options_1_1time__steps_1_1_time_steps.html" title="SWMM Time Step Options. " alt="core.swmm.options.time_steps.TimeSteps" shape="rect" coords="365,3248,720,3272"/>
+<area href="classcore_1_1swmm_1_1options_1_1timesteps_1_1_time_steps.html" title="SWMM Time Step Options. " alt="core.swmm.options.timesteps.TimeSteps" shape="rect" coords="365,3304,720,3328"/>
+<area href="classcore_1_1swmm_1_1patterns_1_1_pattern.html" title="Pattern multipliers define how some base quantity is adjusted for each time period. " alt="core.swmm.patterns.Pattern" shape="rect" coords="365,3360,720,3384"/>
+<area href="classcore_1_1swmm_1_1quality_1_1_buildup.html" title="Specifies the rate at which pollutants build up over different land uses between rain events..." alt="core.swmm.quality.Buildup" shape="rect" coords="365,3416,720,3440"/>
+<area href="classcore_1_1swmm_1_1quality_1_1_landuse.html" title="Identifies the various categories of land uses within the drainage area. " alt="core.swmm.quality.Landuse" shape="rect" coords="365,3472,720,3496"/>
+<area href="classcore_1_1swmm_1_1quality_1_1_pollutant.html" title="Identifies the pollutants being analyzed. " alt="core.swmm.quality.Pollutant" shape="rect" coords="365,3528,720,3552"/>
+<area href="classcore_1_1swmm_1_1quality_1_1_washoff.html" title="Specifies the rate at which pollutants are washed off from different land uses during rain events..." alt="core.swmm.quality.Washoff" shape="rect" coords="365,3584,720,3608"/>
+<area href="classcore_1_1swmm_1_1timeseries_1_1_time_series.html" title="One time series from the TIMESERIES section. " alt="core.swmm.timeseries.TimeSeries" shape="rect" coords="365,3640,720,3664"/>
+<area href="classcore_1_1swmm_1_1title_1_1_title.html" title="SWMM descriptive title. " alt="core.swmm.title.Title" shape="rect" coords="365,3696,720,3720"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac4fecf08cb1e003ed938a2bf19495112"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#ac4fecf08cb1e003ed938a2bf19495112">__init__</a> (self)</td></tr>
+<tr class="memdesc:ac4fecf08cb1e003ed938a2bf19495112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize or reset section.  <a href="#ac4fecf08cb1e003ed938a2bf19495112">More...</a><br /></td></tr>
 <tr class="separator:ac4fecf08cb1e003ed938a2bf19495112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd6a4ddf550b621f1982abdecab3f0d8"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#acd6a4ddf550b621f1982abdecab3f0d8">__str__</a> (self)</td></tr>
 <tr class="memdesc:acd6a4ddf550b621f1982abdecab3f0d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override default method to return string representation.  <a href="#acd6a4ddf550b621f1982abdecab3f0d8">More...</a><br /></td></tr>
@@ -153,20 +207,36 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab7196d7907bc70ea7be61310aa0ed2ee"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#ab7196d7907bc70ea7be61310aa0ed2ee">set_text</a> (self, new_text)</td></tr>
 <tr class="memdesc:ab7196d7907bc70ea7be61310aa0ed2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read properties from text.  <a href="#ab7196d7907bc70ea7be61310aa0ed2ee">More...</a><br /></td></tr>
 <tr class="separator:ab7196d7907bc70ea7be61310aa0ed2ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c7ba50d782f534fe619bc316a5ce72e"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a8c7ba50d782f534fe619bc316a5ce72e">set_comment_check_section</a> (self, line)</td></tr>
+<tr class="memdesc:a8c7ba50d782f534fe619bc316a5ce72e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split any comment after a semicolon into self.comment and return the rest of the line.  <a href="#a8c7ba50d782f534fe619bc316a5ce72e">More...</a><br /></td></tr>
+<tr class="separator:a8c7ba50d782f534fe619bc316a5ce72e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47c0bbe30b147d986ac4f491ddf37ec1"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a47c0bbe30b147d986ac4f491ddf37ec1">matches</a> (self, other)</td></tr>
+<tr class="memdesc:a47c0bbe30b147d986ac4f491ddf37ec1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test whether this section and other have the same contents ignoring case, whitespace, order of lines.  <a href="#a47c0bbe30b147d986ac4f491ddf37ec1">More...</a><br /></td></tr>
+<tr class="separator:a47c0bbe30b147d986ac4f491ddf37ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6694de194328fa4e8ad5952f6bc5243"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#aa6694de194328fa4e8ad5952f6bc5243">set_text_line</a> (self, line)</td></tr>
 <tr class="memdesc:aa6694de194328fa4e8ad5952f6bc5243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set part of this section from one line of text.  <a href="#aa6694de194328fa4e8ad5952f6bc5243">More...</a><br /></td></tr>
 <tr class="separator:aa6694de194328fa4e8ad5952f6bc5243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66cce86ec57f07091fb5bd960395562c"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a66cce86ec57f07091fb5bd960395562c">get_field_dict_value</a> (self, line)</td></tr>
-<tr class="memdesc:a66cce86ec57f07091fb5bd960395562c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search self.field_dict for attribute matching start of line.  <a href="#a66cce86ec57f07091fb5bd960395562c">More...</a><br /></td></tr>
-<tr class="separator:a66cce86ec57f07091fb5bd960395562c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e0873686bbc99f41506ebd05e8404e8"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a3e0873686bbc99f41506ebd05e8404e8">get_attr_name_value</a> (self, line)</td></tr>
+<tr class="memdesc:a3e0873686bbc99f41506ebd05e8404e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search self.metadata for attribute with input_name matching start of line.  <a href="#a3e0873686bbc99f41506ebd05e8404e8">More...</a><br /></td></tr>
+<tr class="separator:a3e0873686bbc99f41506ebd05e8404e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7317f7811d5af09eb13269e80a2027c9"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a7317f7811d5af09eb13269e80a2027c9">setattr_keep_type</a> (self, attr_name, attr_value)</td></tr>
 <tr class="memdesc:a7317f7811d5af09eb13269e80a2027c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set attribute attr_name = attr_value.  <a href="#a7317f7811d5af09eb13269e80a2027c9">More...</a><br /></td></tr>
 <tr class="separator:a7317f7811d5af09eb13269e80a2027c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:af1df67f51ec9adb7ff5dc40a5f3af56e"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#af1df67f51ec9adb7ff5dc40a5f3af56e">omit_these</a> (original, omit_chars)</td></tr>
+<tr class="memdesc:af1df67f51ec9adb7ff5dc40a5f3af56e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return original with any characters in omit_chars removed.  <a href="#af1df67f51ec9adb7ff5dc40a5f3af56e">More...</a><br /></td></tr>
+<tr class="separator:af1df67f51ec9adb7ff5dc40a5f3af56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d5c2c675747eb39be983cd7414c7b7d"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a9d5c2c675747eb39be983cd7414c7b7d">match_omit</a> (string_one, string_two, omit_chars)</td></tr>
+<tr class="memdesc:a9d5c2c675747eb39be983cd7414c7b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare strings after removing omit_chars from both.  <a href="#a9d5c2c675747eb39be983cd7414c7b7d">More...</a><br /></td></tr>
+<tr class="separator:a9d5c2c675747eb39be983cd7414c7b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d0a575f4d0a6dd470e28f7308d09a93"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a4d0a575f4d0a6dd470e28f7308d09a93">match_omit_nocase</a> (string_one, string_two, omit_chars)</td></tr>
+<tr class="memdesc:a4d0a575f4d0a6dd470e28f7308d09a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare strings after converting to upper case and removing omit_chars.  <a href="#a4d0a575f4d0a6dd470e28f7308d09a93">More...</a><br /></td></tr>
+<tr class="separator:a4d0a575f4d0a6dd470e28f7308d09a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a67d40e3689c87c6d684519e5c4b37da4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a67d40e3689c87c6d684519e5c4b37da4">name</a></td></tr>
-<tr class="separator:a67d40e3689c87c6d684519e5c4b37da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8965736fecc09519fa4cb8968c1175d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#ab8965736fecc09519fa4cb8968c1175d">value</a></td></tr>
 <tr class="separator:ab8965736fecc09519fa4cb8968c1175d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46baffab8a5a26bfab9d10b738b388c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1inputfile_1_1_section.html#a46baffab8a5a26bfab9d10b738b388c8">value_original</a></td></tr>
@@ -198,6 +268,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Initialize or reset section. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -219,12 +291,12 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a66cce86ec57f07091fb5bd960395562c"></a>
+<a class="anchor" id="a3e0873686bbc99f41506ebd05e8404e8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def core.inputfile.Section.get_field_dict_value </td>
+          <td class="memname">def core.inputfile.Section.get_attr_name_value </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>self</em>, </td>
@@ -243,14 +315,14 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Search self.field_dict for attribute matching start of line. </p>
+<p>Search self.metadata for attribute with input_name matching start of line. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">line</td><td>One line of text formatted as input file, with field name followed by field value. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Attribute name from field_dict and new attribute value from line as a tuple: (attr_name, attr_value) or (None, None) if not found. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Attribute name from metadata and new attribute value from line as a tuple: (attr_name, attr_value) or (None, None) if not found. </dd></dl>
 
 </div>
 </div>
@@ -269,6 +341,220 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Contents of this section formatted for writing to file. </p>
+
+</div>
+</div>
+<a class="anchor" id="a9d5c2c675747eb39be983cd7414c7b7d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.inputfile.Section.match_omit </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>string_one</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>string_two</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>omit_chars</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compare strings after removing omit_chars from both. </p>
+<p>True if they match.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string_one</td><td>One string to compare </td></tr>
+    <tr><td class="paramname">string_two</td><td>Other string to compare </td></tr>
+    <tr><td class="paramname">omit_chars</td><td>Characters to remove from both strings before comparing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4d0a575f4d0a6dd470e28f7308d09a93"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.inputfile.Section.match_omit_nocase </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>string_one</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>string_two</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>omit_chars</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compare strings after converting to upper case and removing omit_chars. </p>
+<p>True if they match.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string_one</td><td>One string to compare </td></tr>
+    <tr><td class="paramname">string_two</td><td>Other string to compare </td></tr>
+    <tr><td class="paramname">omit_chars</td><td>Characters to remove from both strings before comparing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a47c0bbe30b147d986ac4f491ddf37ec1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.inputfile.Section.matches </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>other</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test whether this section and other have the same contents ignoring case, whitespace, order of lines. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>a <a class="el" href="classcore_1_1inputfile_1_1_section.html" title="Any section or sub-section or value in an input file. ">Section</a> or anything with a get_text method or will be converted to string with str() </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="af1df67f51ec9adb7ff5dc40a5f3af56e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.inputfile.Section.omit_these </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>original</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>omit_chars</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return original with any characters in omit_chars removed. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">original</td><td>Text to search </td></tr>
+    <tr><td class="paramname">omit_chars</td><td>Characters to remove from original </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a8c7ba50d782f534fe619bc316a5ce72e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def core.inputfile.Section.set_comment_check_section </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>line</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Split any comment after a semicolon into self.comment and return the rest of the line. </p>
+<p>If the line is a section header (starts with open square bracket) then check against self.SECTION_NAME. If it matches, return empty string. If it does not match, raise ValueError.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">line</td><td>Text to search for a comment or section name. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -421,18 +707,6 @@ Static Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">core.inputfile.Section.index</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a67d40e3689c87c6d684519e5c4b37da4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">core.inputfile.Section.name</td>
         </tr>
       </table>
 </div><div class="memdoc">

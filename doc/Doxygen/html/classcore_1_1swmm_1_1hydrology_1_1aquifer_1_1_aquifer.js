@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#ac8362d8118c67442f71b5c077b68d209", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a8d21f09485b114f2ff2b7668735df2c4", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#ac736c6decd702f4e76226f0caf561c30", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a959b094fccde629c10764ffd70b21f9e", null ],
     [ "bottom_elevation", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a5b79376c0854e7a92b0a6ef706058150", null ],
     [ "conductivity", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a79a06441ca7e1614530e0eeaa59623ce", null ],
     [ "conductivity_slope", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a925661109b94efc552ca2113dc93eb17", null ],

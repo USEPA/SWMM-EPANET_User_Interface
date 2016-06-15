@@ -8,6 +8,7 @@ var namespacecore_1_1swmm =
     [ "options", "namespacecore_1_1swmm_1_1options.html", "namespacecore_1_1swmm_1_1options" ],
     [ "patterns", "namespacecore_1_1swmm_1_1patterns.html", "namespacecore_1_1swmm_1_1patterns" ],
     [ "project", "namespacecore_1_1swmm_1_1project.html", "namespacecore_1_1swmm_1_1project" ],
+    [ "quality", "namespacecore_1_1swmm_1_1quality.html", "namespacecore_1_1swmm_1_1quality" ],
     [ "timeseries", "namespacecore_1_1swmm_1_1timeseries.html", "namespacecore_1_1swmm_1_1timeseries" ],
     [ "title", "namespacecore_1_1swmm_1_1title.html", "namespacecore_1_1swmm_1_1title" ]
 ];

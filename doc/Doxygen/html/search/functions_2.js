@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['find_5fsection',['find_section',['../classcore_1_1inputfile_1_1_input_file.html#ac05a1ea138ae419e551a02c2266a2528',1,'core::inputfile::InputFile']]]
+  ['default_5fof',['default_of',['../classcore_1_1metadata_1_1_metadata.html#a0b996d24451cd8ddf587471e39734109',1,'core::metadata::Metadata']]]
 ];

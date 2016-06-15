@@ -11,6 +11,7 @@ var namespacecore_1_1swmm_1_1hydraulics_1_1link =
     [ "Pump", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_pump.html", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_pump" ],
     [ "RoadSurfaceType", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_road_surface_type.html", null ],
     [ "Transect", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect" ],
+    [ "Transects", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transects.html", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transects" ],
     [ "Weir", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir" ],
     [ "WeirType", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir_type.html", null ]
 ];

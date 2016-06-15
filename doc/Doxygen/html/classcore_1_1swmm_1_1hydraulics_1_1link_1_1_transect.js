@@ -1,12 +1,16 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a50741a491e8b493127d70cc8bbcbc80a", null ],
-    [ "bank_stations", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a051212ec81bbbf8141312f1b242f1bc3", null ],
-    [ "description", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#abe55c2edf5c1f46a9aa699c9ba8786cc", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ae2b378fa4ec487c6b9a96a32e837556b", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a99151371c544261cb0008aea45ee5f13", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ae7c308108155b4d2da47d2283939bf7c", null ],
     [ "elevations_modifier", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a0476dbb00d88bee5d138a2e38bb58f18", null ],
     [ "meander_modifier", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#aff13129e53afe8cbc0b1eceb3ffdb110", null ],
+    [ "n_channel", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a405088f800492e67f95eb243e8be414a", null ],
+    [ "n_left", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ac01d17437fd3b09dede621f8d0433a32", null ],
+    [ "n_right", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#acc78877bdddbb1977ade25e2fee99f4d", null ],
     [ "name", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#aa33263f4701ba44bb3f9bf28d1a3c9e3", null ],
-    [ "roughness", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#aa2bf0680a56719489919f6130f039c93", null ],
-    [ "station_elevation_data_grid", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ab121d7491c70fa4e7b5eb0bb83ccd013", null ],
+    [ "overbank_left", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ac1a49c941ebc6eae2b5a093b710f8570", null ],
+    [ "overbank_right", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a50bcd41111e5a36c7c0fd19c76525aa0", null ],
+    [ "stations", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ae3fd409cb8316366521a49d4d6c94de8", null ],
     [ "stations_modifier", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#aec9c93c2120af568f32f1fb3e32b8826", null ]
 ];

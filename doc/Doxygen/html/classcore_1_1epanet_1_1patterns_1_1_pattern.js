@@ -1,6 +1,7 @@
 var classcore_1_1epanet_1_1patterns_1_1_pattern =
 [
-    [ "__init__", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#af5b41a43b575fef75c67c697e0dbc34e", null ],
+    [ "__init__", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#a6544700c6e9cead6a4d22dc6ee472f8e", null ],
+    [ "__str__", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#a699d30650c8e583b9e7a14575f1ab347", null ],
     [ "get_text", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#acba4f687a995c26d3fd3560ca3f41d84", null ],
     [ "set_text", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#a71c17e49adc1b7f9addf97083c0e0bf0", null ],
     [ "description", "classcore_1_1epanet_1_1patterns_1_1_pattern.html#a62d6a3193f9552eae26d15ff1336f7aa", null ],

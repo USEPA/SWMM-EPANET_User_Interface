@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation =
 [
     [ "__init__", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#a771de99ac7c270fbc55ab53cf98dbbfd", null ],
+    [ "get_text", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#a84f696948fa76f92157196dd13cd4cbf", null ],
+    [ "set_text", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#a5dd036f0260aae01dde4670153dee378", null ],
     [ "constant", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#ae6fa9361325cf8a20983cb0f131b0e9f", null ],
     [ "dry_only", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#aada9aab112a97eb4e032e593303f7a4e", null ],
     [ "format", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_evaporation.html#a41f4626791c07edaae8653a8bb9a4cec", null ],

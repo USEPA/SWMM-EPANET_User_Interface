@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['washoff',['Washoff',['../classquality_1_1_washoff.html',1,'quality']]],
-  ['washofffunction',['WashoffFunction',['../classquality_1_1_washoff_function.html',1,'quality']]],
+  ['washoff',['Washoff',['../classcore_1_1swmm_1_1quality_1_1_washoff.html',1,'core::swmm::quality']]],
+  ['washofffunction',['WashoffFunction',['../classcore_1_1swmm_1_1quality_1_1_washoff_function.html',1,'core::swmm::quality']]],
   ['weir',['Weir',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html',1,'core::swmm::hydraulics::link']]],
   ['weirdivider',['WeirDivider',['../classcore_1_1swmm_1_1hydraulics_1_1node_1_1_weir_divider.html',1,'core::swmm::hydraulics::node']]],
   ['weirtype',['WeirType',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir_type.html',1,'core::swmm::hydraulics::link']]],

@@ -156,8 +156,8 @@ Public Attributes</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a52c761a92635756be0198b831802252d"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a52c761a92635756be0198b831802252d">SECTION_NAME</a> = &quot;[REACTIONS]&quot;</td></tr>
 <tr class="separator:a52c761a92635756be0198b831802252d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13ff03622dcea523679743a8feb02695"><td class="memItemLeft" align="right" valign="top">dictionary&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#a13ff03622dcea523679743a8feb02695">field_dict</a></td></tr>
-<tr class="separator:a13ff03622dcea523679743a8feb02695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6756628c7577961790427d180972ba3"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1epanet_1_1options_1_1reactions_1_1_reactions.html#ad6756628c7577961790427d180972ba3">metadata</a></td></tr>
+<tr class="separator:ad6756628c7577961790427d180972ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines parameters related to chemical reactions occurring in the network. </p>
@@ -214,34 +214,6 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a13ff03622dcea523679743a8feb02695"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">dictionary core.epanet.options.reactions.Reactions.field_dict</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;= {</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        <span class="stringliteral">&quot;Order Bulk&quot;</span>: <span class="stringliteral">&quot;order_bulk&quot;</span>,</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        <span class="stringliteral">&quot;Order Tank&quot;</span>: <span class="stringliteral">&quot;order_wall&quot;</span>,</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        <span class="stringliteral">&quot;Order Wall&quot;</span>: <span class="stringliteral">&quot;order_tank&quot;</span>,</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        <span class="stringliteral">&quot;Global Bulk&quot;</span>: <span class="stringliteral">&quot;global_bulk&quot;</span>,</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        <span class="stringliteral">&quot;Global Wall&quot;</span>: <span class="stringliteral">&quot;global_wall&quot;</span>,</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="stringliteral">&quot;Limiting Potential&quot;</span>: <span class="stringliteral">&quot;limiting_potential&quot;</span>,</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="stringliteral">&quot;Roughness Correlation&quot;</span>: <span class="stringliteral">&quot;roughness_correlation&quot;</span>}</div>
-</div><!-- fragment -->
-</div>
-</div>
 <a class="anchor" id="ae89df3fc4a90b8edcb280a8f0aba426a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -276,6 +248,34 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+</div>
+</div>
+<a class="anchor" id="ad6756628c7577961790427d180972ba3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tuple core.epanet.options.reactions.Reactions.metadata</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;= Metadata((</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;        (<span class="stringliteral">&quot;order_bulk&quot;</span>,            <span class="stringliteral">&quot;Order Bulk&quot;</span>),</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;        (<span class="stringliteral">&quot;order_wall&quot;</span>,            <span class="stringliteral">&quot;Order Wall&quot;</span>),</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;        (<span class="stringliteral">&quot;order_tank&quot;</span>,            <span class="stringliteral">&quot;Order Tank&quot;</span>),</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;        (<span class="stringliteral">&quot;global_bulk&quot;</span>,           <span class="stringliteral">&quot;Global Bulk&quot;</span>),</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;        (<span class="stringliteral">&quot;global_wall&quot;</span>,           <span class="stringliteral">&quot;Global Wall&quot;</span>),</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        (<span class="stringliteral">&quot;limiting_potential&quot;</span>,    <span class="stringliteral">&quot;Limiting Potential&quot;</span>),</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        (<span class="stringliteral">&quot;roughness_correlation&quot;</span>, <span class="stringliteral">&quot;Roughness Correlation&quot;</span>)))</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a class="anchor" id="a2019683d378f92ab6a275fdae8a9eabe"></a>

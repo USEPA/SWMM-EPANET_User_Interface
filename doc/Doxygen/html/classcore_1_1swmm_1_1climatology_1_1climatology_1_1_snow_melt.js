@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt =
 [
     [ "__init__", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#aaf62aeb04d24940056142f8c6591746f", null ],
+    [ "get_text", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#a7b110d7961782f77d9812158c21676bc", null ],
+    [ "set_text", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#a90a5245e1ade9c139211273ea99579af", null ],
     [ "ati_weight", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#a2c76c0f81342b4f1c03b7959b66a5edf", null ],
     [ "elevation", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#a0bcfad00393310c7c190c6559d87ebba", null ],
     [ "latitude", "classcore_1_1swmm_1_1climatology_1_1climatology_1_1_snow_melt.html#a36ebfa7688c9c96740c67b355be540d3", null ],

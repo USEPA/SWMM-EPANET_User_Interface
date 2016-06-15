@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['kinwave',['KINWAVE',['../classcore_1_1swmm_1_1options_1_1general_1_1_flow_routing.html#a4359c937e97998c054bec5a09d759423',1,'core::swmm::options::general::FlowRouting']]]
+  ['junction_5fid',['junction_id',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_demand.html#aa1fdadd6ab2ba633620489c61eb3f6ab',1,'core::epanet::hydraulics::node::Demand']]],
+  ['junctions',['junctions',['../classcore_1_1epanet_1_1project_1_1_project.html#ab1b4762c62c6ac2f57adb82b5e64ea07',1,'core.epanet.project.Project.junctions()'],['../classcore_1_1swmm_1_1project_1_1_project.html#aa7af39a62b427184152c28b297588065',1,'core.swmm.project.Project.junctions()']]]
 ];

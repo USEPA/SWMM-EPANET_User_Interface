@@ -1,7 +1,10 @@
 var classcore_1_1epanet_1_1labels_1_1_label =
 [
-    [ "__init__", "classcore_1_1epanet_1_1labels_1_1_label.html#ac602bf1f07c9937e3860b938e47349f6", null ],
-    [ "anchor_id", "classcore_1_1epanet_1_1labels_1_1_label.html#a99b48792c1c544e921d1b65ccbc72575", null ],
-    [ "centroid", "classcore_1_1epanet_1_1labels_1_1_label.html#a5daf711d585a9bf5842a7e23669c69f8", null ],
-    [ "label_text", "classcore_1_1epanet_1_1labels_1_1_label.html#aa340113ff811c662e8bb271602392af9", null ]
+    [ "__init__", "classcore_1_1epanet_1_1labels_1_1_label.html#a17ff2bdccc294d78fb3f7ec327622042", null ],
+    [ "get_text", "classcore_1_1epanet_1_1labels_1_1_label.html#a1f5efa4a636dba4c792abe3afef40394", null ],
+    [ "set_text", "classcore_1_1epanet_1_1labels_1_1_label.html#a9f64f4ed2fb633f4db53f5df4624c919", null ],
+    [ "anchor_node_id", "classcore_1_1epanet_1_1labels_1_1_label.html#ab1bbd05e0b9d1da02ce751bddcd3d6a0", null ],
+    [ "label", "classcore_1_1epanet_1_1labels_1_1_label.html#a4f1f38542bb4a04a395d48f6c9c73b69", null ],
+    [ "x", "classcore_1_1epanet_1_1labels_1_1_label.html#aa4fccd4c17e9e7ef1947621821723dbb", null ],
+    [ "y", "classcore_1_1epanet_1_1labels_1_1_label.html#adbe63906656cc896707a54692bd4ef5d", null ]
 ];

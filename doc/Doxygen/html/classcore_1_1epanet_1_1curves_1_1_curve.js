@@ -1,6 +1,6 @@
 var classcore_1_1epanet_1_1curves_1_1_curve =
 [
-    [ "__init__", "classcore_1_1epanet_1_1curves_1_1_curve.html#a276b8401ff5a9198a477a70b39a877dd", null ],
+    [ "__init__", "classcore_1_1epanet_1_1curves_1_1_curve.html#a83362c218c0453ee2f06da7786894c26", null ],
     [ "get_text", "classcore_1_1epanet_1_1curves_1_1_curve.html#a8bab685bd7bf501a926532feb6979f75", null ],
     [ "set_text", "classcore_1_1epanet_1_1curves_1_1_curve.html#a9bcbf556e8a2c9817e125e6d22a88c35", null ],
     [ "curve_id", "classcore_1_1epanet_1_1curves_1_1_curve.html#a441a556b4d04d6658159924aae60c854", null ],

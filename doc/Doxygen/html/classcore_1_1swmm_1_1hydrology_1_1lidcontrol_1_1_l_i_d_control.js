@@ -1,11 +1,17 @@
 var classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#aacc0536228d320fea714268aabbf8c09", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#ac62921eb54d7eda97d25bad495b60fd7", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a4f0e23d6f0fe78a542bff53e74e23436", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a85a6797443f839301b4891996b7cf5ed", null ],
     [ "control_name", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a63c3a1843318a7c5be3a9feb2d7b3753", null ],
     [ "drain_coefficient", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#acdda2733b6e1bd9d264d296c64ad6fa4", null ],
     [ "drain_delay", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a85b5c12ad973e5eaba428f069aabf3b9", null ],
     [ "drain_exponent", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a469d02a2222281acb908244d00c00dd1", null ],
     [ "drain_offset_height", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a1b192f9cff538a08bb865d2480a95266", null ],
+    [ "drainmat_roughness", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a26a17cded5b6cef11e3bb1d16011c54d", null ],
+    [ "drainmat_thickness", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#af4fe1435846624ee3223839068b55086", null ],
+    [ "drainmat_void_fraction", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#ab1ee700bb03f3e3c1cc6b9c4d0584c0b", null ],
+    [ "has_drainmat_system", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a928543ddb9a38a80b616ba80667aed2b", null ],
     [ "has_pavement_layer", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#ae06b92297a7ad6cfa6adab8050c17a79", null ],
     [ "has_soil_layer", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a94db871bc345e2125c13cc2a57afa9ab", null ],
     [ "has_storage_layer", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a190d279de696788c3281a3338e23522d", null ],

@@ -610,7 +610,6 @@
         <files>
             <file>src/default.css</file>
             <file>src/*.htm</file>
-            <file>src/*.gif</file>
 	    <file>src/*.js</file>
             <file>src/*.png</file>
         </files>

@@ -2,7 +2,7 @@
 <QHelpCollectionProject version="1.0">
 <assistant>
     <title>EPA SWMM Help</title>
-    <applicationIcon>src/dwrd.gif</applicationIcon>
+    <applicationIcon>src/dwrd.png</applicationIcon>
     <cacheDirectory>mycompany/myapplication</cacheDirectory>
 <startPage>qthelp://SWMM/src/introduction.htm</startPage>
 <aboutMenuText>
@@ -10,7 +10,7 @@
     </aboutMenuText>
     <aboutDialog>
         <file>src/introduction.htm</file>
-        <icon>src/dwrd.gif</icon>
+        <icon>src/dwrd.png</icon>
     </aboutDialog>
     <enableDocumentationManager>false</enableDocumentationManager>
     <enableAddressBar>false</enableAddressBar>

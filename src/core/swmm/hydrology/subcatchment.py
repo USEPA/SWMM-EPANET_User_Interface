@@ -598,6 +598,7 @@ class Coverage(Section):
         fields = new_text.split()
         self.__init__(fields[0], fields[1], fields[2])
 
+
 class Coverages(Section):
     """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
 
@@ -638,7 +639,7 @@ class Coverages(Section):
 
 
 class InitialLoading(Section):
-    """Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation."""
+    """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
 
     field_format = "{:16}\t{:16}\t{:10}"
 
@@ -650,19 +651,17 @@ class InitialLoading(Section):
             self.subcatchment_name = ''
             """Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs"""
 
-            self.pollutant_name = ""
-            """name of a pollutant"""
+            self.pollutant_name = ''
+            """Name of a pollutant"""
 
-            self.initial_buildup = 0
-            """initial buildup of pollutant (lbs/acre or kg/hectare)"""
+            self.initial_buildup = ''
+            """Initial buildup of pollutant (lbs/acre or kg/hectare)"""
 
     def get_text(self):
         inp = ''
         if self.comment:
             inp = self.comment + '\n'
-        inp += self.field_format.format(self.subcatchment_name,
-                                        self.pollutant_name,
-                                        self.initial_buildup)
+        inp += self.field_format.format(self.subcatchment_name, self.pollutant_name, self.initial_buildup)
         return inp
 
     def set_text(self, new_text):
@@ -670,6 +669,45 @@ class InitialLoading(Section):
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 2:
-            self.subcatchment_name = fields[0]
-            self.pollutant_name = fields[1]
-            self.initial_buildup = fields[2]
+            self.subcatchment_name, self.pollutant_name, self.initial_buildup = fields[0:3]
+
+
+class InitialLoadings(Section):
+    """Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation."""
+
+    SECTION_NAME = "[LOADINGS]"
+    DEFAULT_COMMENT = ";;Subcatchment  \tPollutant       \tBuildup\n"\
+                      ";;--------------\t----------------\t----------"
+
+    def __init__(self, new_text=None):
+        if new_text:
+            self.set_text(new_text)
+        else:
+            Section.__init__(self)
+            self.value = []
+
+    def get_text(self):
+        lines = []
+        if len(self.value) > 0:
+            lines.append(self.SECTION_NAME)
+            lines.append(self.DEFAULT_COMMENT)
+            # if self.comment:
+            #     if self.comment.startswith(';'):
+            #         lines.append(self.comment)
+            #     else:
+            #         lines.append(';' + self.comment.replace('\n', '\n;'))
+            for loading in self.value:
+                lines.append(loading.get_text())
+        return '\n'.join(lines)
+
+    def set_text(self, new_text):
+        self.__init__()
+        for line in new_text.splitlines():
+            line = self.set_comment_check_section(line)
+            fields = line.split()
+            if len(fields) > 2:
+                subcatchment = fields[0]
+                for index in range(1, len(fields) - 1, 2):
+                    new_loading = InitialLoading()
+                    new_loading.set_text(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
+                    self.value.append(new_loading)

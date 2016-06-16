@@ -19,7 +19,7 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoading, Coverages
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoadings, Coverages
 from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration, CurveNumberInfiltration
 from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
@@ -216,9 +216,7 @@ class Project(InputFile):
                                     ";;--------------\t----------------\t----------")
         # rainfall-dependent I/I information at nodes
 
-        self.loadings = SectionAsListOf("[LOADINGS]", InitialLoading,
-                                        ";;Subcatchment  \tPollutant       \tBuildup\n"
-                                        ";;--------------\t----------------\t----------")
+        self.loadings = InitialLoadings()
         # initial pollutant loads on subcatchments
 
         self.curves = SectionAsListGroupByID("[CURVES]", Curve,

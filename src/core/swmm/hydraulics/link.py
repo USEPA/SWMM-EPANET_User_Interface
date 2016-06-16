@@ -312,7 +312,7 @@ class CrossSection(Section):
     """
 
     field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
-    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}"
+    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}"
     # field_format_irregular = "{:16}\t{:12}\t{:16}"
 
     def __init__(self, new_text=None):

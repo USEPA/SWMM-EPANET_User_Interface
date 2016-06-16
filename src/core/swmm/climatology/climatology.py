@@ -138,62 +138,66 @@ class Evaporation(Section):
         self.dry_only = False
         """determines if evaporation only occurs during periods with no precipitation."""
 
+        self.dry_only_specified = False
+        """ True if DRY_ONLY was included when read from text.
+            If dry_only_specified == False, then DRY_ONLY is skipped in get_text if self.dry_only_specified == False.
+            If dry_only_specified == True, DRY_ONLY will be included in get_text even if self.dry_only == False. """
+
     def get_text(self):
-        if self.format == EvaporationFormat.UNSET:
-            return ''
-
         text_list = [self.SECTION_NAME]
-
         if self.comment:
             text_list.append(self.comment)
-
-        format_line = self.format.name + '\t'
-        if self.format == EvaporationFormat.CONSTANT:
-            format_line += self.constant
-        elif self.format == EvaporationFormat.MONTHLY:
-            format_line += '\t'.join(self.monthly)
-        elif self.format == EvaporationFormat.TIMESERIES:
-            format_line += self.timeseries
-        elif self.format == EvaporationFormat.TEMPERATURE:
-            pass
-        elif self.format == EvaporationFormat.FILE:
-            format_line += '\t'.join(self.monthly_pan_coefficients)
-        text_list.append(format_line)
-
+        if self.format != EvaporationFormat.UNSET:
+            format_line = self.format.name + '\t'
+            if self.format == EvaporationFormat.CONSTANT:
+                format_line += self.constant
+            elif self.format == EvaporationFormat.MONTHLY:
+                format_line += '\t'.join(self.monthly)
+            elif self.format == EvaporationFormat.TIMESERIES:
+                format_line += self.timeseries
+            elif self.format == EvaporationFormat.TEMPERATURE:
+                pass
+            elif self.format == EvaporationFormat.FILE:
+                format_line += '\t'.join(self.monthly_pan_coefficients)
+            text_list.append(format_line)
         if self.recovery_pattern:
             text_list.append("RECOVERY\t" + self.recovery_pattern)
-
         if self.dry_only:
             text_list.append("DRY_ONLY\tYES")
-        else:
+        elif self.dry_only_specified:
             text_list.append("DRY_ONLY\tNO")
-        return '\n'.join(text_list)
+        if len(text_list) > 1:
+            return '\n'.join(text_list)
+        return ''
 
     def set_text(self, new_text):
         self.__init__()
         for line in new_text.splitlines():
             line = self.set_comment_check_section(line)
             fields = line.split()
-            if len(fields) > 1:
-                if fields[0].upper() == "DRY_ONLY":
-                    self.dry_only = fields[1].upper() == "YES"
-                elif fields[0].upper() == "RECOVERY":
-                    self.recovery_pattern = ' '.join(fields[1:])
-                else:
-                    try:
-                        self.format = EvaporationFormat[fields[0]]
-                        if self.format == EvaporationFormat.CONSTANT:
-                            self.constant = fields[1]
-                        elif self.format == EvaporationFormat.MONTHLY:
-                            self.monthly = fields[1:]
-                        elif self.format == EvaporationFormat.TIMESERIES:
-                            self.timeseries = fields[1]
-                        elif self.format == EvaporationFormat.TEMPERATURE:
-                            pass
-                        elif self.format == EvaporationFormat.FILE:
-                            self.monthly_pan_coefficients = fields[1:]
-                    except Exception as ex:
-                        raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
+            if len(fields) > 0:
+                first_token = fields[0].upper()
+                if len(fields) > 1 or first_token == "TEMPERATURE" or first_token == "FILE":
+                    if first_token == "DRY_ONLY":
+                        self.dry_only_specified = True
+                        self.dry_only = fields[1].upper() == "YES"
+                    elif first_token == "RECOVERY":
+                        self.recovery_pattern = ' '.join(fields[1:])
+                    else:
+                        try:
+                            self.format = EvaporationFormat[first_token]
+                            if self.format == EvaporationFormat.CONSTANT:
+                                self.constant = fields[1]
+                            elif self.format == EvaporationFormat.MONTHLY:
+                                self.monthly = fields[1:]
+                            elif self.format == EvaporationFormat.TIMESERIES:
+                                self.timeseries = fields[1]
+                            elif self.format == EvaporationFormat.TEMPERATURE:
+                                pass
+                            elif self.format == EvaporationFormat.FILE:
+                                self.monthly_pan_coefficients = fields[1:]
+                        except Exception as ex:
+                            raise ValueError("Could not set " + self.SECTION_NAME + " from: " + line + '\n' + str(ex))
 
 
 class WindSpeed:

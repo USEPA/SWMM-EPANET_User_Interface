@@ -24,7 +24,6 @@ class Coordinates:
 
     def set_text(self, new_text):
         self.__init__()
-        new_text = self.set_comment_check_section(new_text)
         fields = new_text.split()
         if len(fields) > 2:
             self.id, self.x, self.y = fields[0:3]

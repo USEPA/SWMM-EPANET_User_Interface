@@ -134,23 +134,88 @@ try:
             for coordinate_pair in coordinates:
                 # add a feature
                 feature = QgsFeature()
-                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(coordinate_pair.X, coordinate_pair.Y)))
+                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
                 feature.setAttributes([coordinate_pair.id])
                 features.append(feature)
 
             layer.startEditing()
-            layer.addFeatures(features)
+            provider.addFeatures(features)
             layer.commitChanges()
             layer.updateExtents()
-            layerCtr = len(self.layers)
+            # layerCtr = len(self.layers)
             QgsMapLayerRegistry.instance().addMapLayer(layer)
             self.layers.append(QgsMapCanvasLayer(layer))
             self.canvas.setLayerSet(self.layers)
-            if layerCtr == 0:
-                self.canvas.setExtent(layer.extent())
-            else:
-                self.canvas.setExtent(self.canvas.extent())
-            self.canvas.refresh()
+            # if layerCtr == 0:
+            iter = layer.getFeatures()
+            print(layer.extent().asWktCoordinates())
+            for feature in iter:
+                # retrieve every feature with its geometry and attributes
+                # fetch geometry
+                geom = feature.geometry()
+                print "Feature ID %d: " % feature.id()
+
+                # show some information about the feature
+                if geom.type() == QGis.Point:
+                    x = geom.asPoint()
+                    print "Point: " + str(x)
+            self.canvas.setExtent(layer.extent())
+            # else:
+            #     self.canvas.setExtent(self.canvas.extent())
+            # self.canvas.refresh()
+
+
+        def addLinks(self, coordinates, links, layer_name):
+            layer = QgsVectorLayer("LineString", layer_name, "memory")
+            provider = layer.dataProvider()
+
+            # changes are only possible when editing the layer
+            layer.startEditing()
+            # add fields
+            provider.addAttributes([QgsField("ID", QtCore.QVariant.String)])
+
+            features = []
+            # Receivers = as in the above example 'Receivers' is a list of results
+            for link in links:
+                inlet_coord = None
+                outlet_coord = None
+                for coordinate_pair in coordinates:
+                    if coordinate_pair.id == link.inlet_node:
+                        inlet_coord = coordinate_pair
+                    if coordinate_pair.id == link.outlet_node:
+                        outlet_coord = coordinate_pair
+                if inlet_coord and outlet_coord:
+                    # add a feature
+                    feature = QgsFeature()
+                    feature.setGeometry(QgsGeometry.fromPolyline([
+                        QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+                        QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+                    feature.setAttributes([link.name])
+                    features.append(feature)
+
+            layer.startEditing()
+            provider.addFeatures(features)
+            layer.commitChanges()
+            layer.updateExtents()
+            # layerCtr = len(self.layers)
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            self.layers.append(QgsMapCanvasLayer(layer))
+            self.canvas.setLayerSet(self.layers)
+            # if layerCtr == 0:
+            iter = layer.getFeatures()
+            print(layer.extent().asWktCoordinates())
+            for feature in iter:
+                # retrieve every feature with its geometry and attributes
+                # fetch geometry
+                geom = feature.geometry()
+                print "Feature ID %d: " % feature.id()
+
+                # show some information about the feature
+                if geom.type() == QGis.Point:
+                    x = geom.asPoint()
+                    print "Point: " + str(x)
+            self.canvas.setExtent(layer.extent())
+
 
         def addVectorLayer(self, filename):
             if filename.lower().endswith('.shp'):
@@ -159,7 +224,7 @@ try:
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
                 self.layers.append(QgsMapCanvasLayer(layer))
                 self.canvas.setLayerSet(self.layers)
-                if layerCtr ==0:
+                if layerCtr == 0:
                     self.canvas.setExtent(layer.extent())
                 else:
                     self.canvas.setExtent(self.canvas.extent())

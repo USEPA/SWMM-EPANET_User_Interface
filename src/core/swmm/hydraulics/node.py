@@ -321,7 +321,7 @@ class StorageUnit(Junction):
 
 
 class DirectInflowType(Enum):
-    CONCENTRATION = 1
+    CONCEN = 1
     MASS = 2
 
 
@@ -345,7 +345,7 @@ class DirectInflow(Section):
             self.constituent = ''
             """str: Name of constituent (pollutant) or FLOW"""
 
-            self.format = DirectInflowType.CONCENTRATION
+            self.format = DirectInflowType.CONCEN
             """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
 
             self.conversion_factor = '1.0'

@@ -66,13 +66,43 @@ class SimpleInflowTest(unittest.TestCase):
 ;;----------------------------------------------------------------------
   80408            FLOW             80408
   81009            FLOW             81009
-  82309            FLOW             82309"""
+  82309            FLOW             82310"""
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.inflows
-        actual_text = project_section.get_text()
-        msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(project_section.matches(test_text), msg)
+
+        msg = "Expected 3 items in INFLOWS, found " + str(len(project_section.value))
+        self.assertTrue(len(project_section.value) == 3, msg)
+
+        inflow = project_section.value[0]
+        msg = "Expected first INFLOW node 80408, found " + inflow.node
+        self.assertTrue(inflow.node == "80408", msg)
+
+        msg = "Expected first INFLOW Parameter FLOW, found " + inflow.constituent
+        self.assertTrue(inflow.constituent == "FLOW", msg)
+
+        msg = "Expected first INFLOW Time Series 80408, found " + inflow.timeseries
+        self.assertTrue(inflow.timeseries == "80408", msg)
+
+        inflow = project_section.value[1]
+        msg = "Expected second INFLOW node 81009, found " + inflow.node
+        self.assertTrue(inflow.node == "81009", msg)
+
+        msg = "Expected second INFLOW Parameter FLOW, found " + inflow.constituent
+        self.assertTrue(inflow.constituent == "FLOW", msg)
+
+        msg = "Expected second INFLOW Time Series 81009, found " + inflow.timeseries
+        self.assertTrue(inflow.timeseries == "81009", msg)
+
+        inflow = project_section.value[2]
+        msg = "Expected third INFLOW node 82309, found " + inflow.node
+        self.assertTrue(inflow.node == "82309", msg)
+
+        msg = "Expected third INFLOW Parameter FLOW, found " + inflow.constituent
+        self.assertTrue(inflow.constituent == "FLOW", msg)
+
+        msg = "Expected third INFLOW Time Series 82310, found " + inflow.timeseries
+        self.assertTrue(inflow.timeseries == "82310", msg)
 
     def test_inflows_flowts(self):
         """Test INFLOWS section with FLOW TS type"""
@@ -85,6 +115,21 @@ Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.inflows
-        actual_text = project_section.get_text()
-        msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(project_section.matches(test_text), msg)
+        msg = "Expected 1 item in INFLOWS, found " + str(len(project_section.value))
+        self.assertTrue(len(project_section.value) == 1, msg)
+
+        inflow = project_section.value[0]
+        msg = "Expected INFLOW node Inlet, found " + inflow.node
+        self.assertTrue(inflow.node == "Inlet", msg)
+
+        msg = "Expected INFLOW Parameter FLOW, found " + inflow.constituent
+        self.assertTrue(inflow.constituent == "FLOW", msg)
+
+        msg = "Expected INFLOW Time Series Inflow, found " + inflow.timeseries
+        self.assertTrue(inflow.timeseries == "Inflow", msg)
+
+        msg = "Expected INFLOW Conversion Factor 1.0, found " + inflow.conversion_factor
+        self.assertTrue(inflow.conversion_factor == "1.0", msg)
+
+        msg = "Expected INFLOW Scaling Factor 1.0, found " + inflow.scale_factor
+        self.assertTrue(inflow.scale_factor == "1.0", msg)

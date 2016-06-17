@@ -198,7 +198,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 self.local_timeseries_list[local_column] = self.cboTimeSeries.currentText()
                 self.local_baseline_pattern[local_column] = self.cboPattern.currentText()
                 if self.cboInflowType.currentIndex() == 0:
-                    self.local_format[local_column] = DirectInflowType.CONCENTRATION
+                    self.local_format[local_column] = DirectInflowType.CONCEN
                 elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
 
@@ -349,7 +349,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 self.local_timeseries_list[local_column] = self.cboTimeSeries.currentText()
                 self.local_baseline_pattern[local_column] = self.cboPattern.currentText()
                 if self.cboInflowType.currentIndex() == 0:
-                    self.local_format[local_column] = DirectInflowType.CONCENTRATION
+                    self.local_format[local_column] = DirectInflowType.CONCEN
                 elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
 
@@ -386,7 +386,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if self.cboPattern.itemText(index) == self.local_baseline_pattern[local_column]:
                     selected_index = index
             self.cboPattern.setCurrentIndex(selected_index)
-            if self.local_format[local_column] == DirectInflowType.CONCENTRATION:
+            if self.local_format[local_column] == DirectInflowType.CONCEN:
                 self.cboInflowType.setCurrentIndex(0)
             elif self.local_format[local_column] == DirectInflowType.MASS:
                 self.cboInflowType.setCurrentIndex(1)

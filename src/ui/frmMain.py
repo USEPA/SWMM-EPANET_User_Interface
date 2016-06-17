@@ -7,6 +7,7 @@ from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
+from ui.help import HelpHandler
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
@@ -50,6 +51,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.save_project_as)
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
+        QtCore.QObject.connect(self.actionStdProjCalibration_Data, QtCore.SIGNAL('triggered()'), self.calibration_data)
+
+        self.setAcceptDrops(True)
+        self.tree_section = ''
 
         try:
             from qgis.core import QgsApplication
@@ -161,7 +166,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # cleaner.add(self.tabProjMap.layout())
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        self.obj_tree.itemClicked.connect(self.list_objects)
+        # self.obj_tree.itemClicked.connect(self.list_objects)
+        self.obj_tree.itemSelectionChanged.connect(self.list_objects)
+        self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
+
+        self.btnObjAdd.clicked.connect(self.add_object)
+        self.btnObjDelete.clicked.connect(self.delete_object)
+        self.btnObjProperty.clicked.connect(self.edit_object)
+        self.btnObjMoveUp.clicked.connect(self.moveup_object)
+        self.btnObjMoveDown.clicked.connect(self.movedown_object)
+        self.btnObjSort.clicked.connect(self.sort_object)
+
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -305,7 +320,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             args.append(str(tree_item[2]))
                         else:  # tree_item[2] is a list that is not a string
                             args.extend(tree_item[2])
-                    return tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                    edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                    edit_form.helper = HelpHandler(edit_form)
+                    return edit_form
                 return None
             if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
                 edit_form = self.make_editor_from_tree(search_for, tree_item[1])
@@ -332,6 +349,44 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     print "Editor Closing: " + str(event)
             #     # self._forms.remove(event.)
 
+    def list_item_clicked(self):
+        # on double click of an item in the 'bottom left' list
+        if not self.project or not self.get_editor:
+            return
+        for item in self.listViewObjects.selectedIndexes():
+            selected_text = str(item.data())
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
+
+    def edit_object(self):
+        self.list_item_clicked()
+
+    def add_object(self):
+        if not self.project or not self.get_editor:
+            return
+        self.add_object_clicked(self.tree_section)
+        self.list_objects()
+
+    def delete_object(self):
+        if not self.project or not self.get_editor:
+            return
+        for item in self.listViewObjects.selectedIndexes():
+            selected_text = str(item.data())
+            self.delete_object_clicked(self.tree_section, selected_text)
+            self.list_objects()
+
+    def moveup_object(self):
+        currentRow = self.listViewObjects.currentRow()
+        currentItem = self.listViewObjects.takeItem(currentRow)
+        self.listViewObjects.insertItem(currentRow - 1, currentItem)
+
+    def movedown_object(self):
+        currentRow = self.listViewObjects.currentRow()
+        currentItem = self.listViewObjects.takeItem(currentRow)
+        self.listViewObjects.insertItem(currentRow + 1, currentItem)
+
+    def sort_object(self):
+        self.listViewObjects.sortItems()
+
     def new_project(self):
         self.project = self.project_type()
         self.setWindowTitle(self.model + " - New")
@@ -343,23 +398,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
-            self.project = self.project_type()
-            try:
-                self.project.read_file(file_name)
-                path_only, file_only = os.path.split(file_name)
-                self.setWindowTitle(self.model + " - " + file_only)
-                if path_only != directory:
-                    gui_settings.setValue("ProjectDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
-                try:
-                    from map_tools import addCoordinates
-                    addCoordinates(self.project.coordinates)
-                except:
-                    pass
-            except:
-                self.project = Project()
-                self.setWindowTitle(self.model)
+            self.open_project_quiet(file_name, gui_settings, directory)
+
+    def open_project_quiet(self, file_name, gui_settings, directory):
+        self.project = self.project_type()
+        try:
+            self.project.read_file(file_name)
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+            if path_only != directory:
+                gui_settings.setValue("ProjectDir", path_only)
+                gui_settings.sync()
+                del gui_settings
+        except:
+            self.project = Project()
+            self.setWindowTitle(self.model)
 
     def save_project(self):
         self.project.write_file(self.project.file_name)
@@ -385,6 +438,38 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                             str(ex), str(traceback.print_exc())),
                                         QMessageBox.Ok)
 
+    def dragEnterEvent(self, QDragEnterEvent):
+        if QDragEnterEvent.mimeData().hasUrls():
+            QDragEnterEvent.accept()
+        else:
+            QDragEnterEvent.ignore()
+
+    def dropEvent(self, QDropEvent):
+        #TODO: check project status and prompt if there are unsaved changes that would be overwritten
+        for url in QDropEvent.mimeData().urls():
+            directory, filename = os.path.split(str(url.encodedPath()))
+            directory = str.lstrip(str(directory), 'file:')
+            print(directory)
+            if os.path.isdir(directory):
+                print(' is directory')
+            elif os.path.isdir(directory[1:]):
+                directory = directory[1:]
+            filename = str.rstrip(str(filename), '\r\n')
+            print(filename)
+            if filename.endswith('.inp'):
+                gui_settings = QtCore.QSettings(self.model, "GUI")
+                self.open_project_quiet(os.path.join(directory, filename), gui_settings, directory)
+            #TODO - check to see if QGIS can handle file type
+            elif filename.endswith('.shp'):
+                self.map_widget.addVectorLayer(os.path.join(directory, filename))
+            else:
+                try:
+                    self.map_widget.addRasterLayer(os.path.join(directory, filename))
+                except:
+                    QMessageBox.information(self, self.model,
+                            "Dropped file '" + filename + "' is not a know type of file",
+                            QMessageBox.Ok)
+
     def action_exit(self):
         # TODO: check project status and prompt if there are unsaved changed
         if self.q_application:
@@ -400,37 +485,32 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return unicode(self)
 
     def clear_object_listing(self):
-        self.obj_view_model.clear()
+        self.tree_section = ''
+        self.listViewObjects.clear()
 
-    def list_objects(self, itm, column):
+    def list_objects(self):
+        selected_text = ''
+        for item in self.obj_tree.selectedIndexes():
+            selected_text = str(item.data())
         self.clear_object_listing()
         self.dockw_more.setWindowTitle('')
-        if self.project == None:
+        if self.project is None or not selected_text:
             return
-        ids = self.get_object_list(itm.data(0, 0))
-        if len(ids)> 0:
-            self.dockw_more.setWindowTitle(itm.data(0, 0))
-            for id in ids:
-                newItem = QStandardItem(str(id))
-                newItem.setEditable(False)
-                self.obj_view_model.appendRow(newItem)
-            self.listViewObjects.setModel(self.obj_view_model)
-
-    def get_object_list(self, category):
-        ids = []
-        if category.lower() == 'junctions':
-            for i in range(0, len(self.project.junctions.value) - 1):
-                ids.append(self.project.junctions.value[i].node_id)
-        elif category.lower() == 'pipes':
-            for i in range(0, len(self.project.pipes.value)-1):
-                ids.append(self.project.pipes.value[i].id)
-        return ids
+        ids = self.get_object_list(selected_text)
+        self.tree_section = selected_text
+        if ids is None:
+            self.dockw_more.setEnabled(False)
+        else:
+            self.dockw_more.setEnabled(True)
+            self.dockw_more.setWindowTitle(selected_text)
+            self.listViewObjects.addItems(ids)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
         self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

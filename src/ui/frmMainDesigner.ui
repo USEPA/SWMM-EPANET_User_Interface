@@ -14,7 +14,7 @@
    <string>SWMM 5.1</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="swmm.qrc">
+   <iconset>
     <normaloff>:/icons/icon_swmm.png</normaloff>:/icons/icon_swmm.png</iconset>
   </property>
   <property name="dockOptions">
@@ -299,6 +299,18 @@
    <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockw_tab">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>212</width>
+     <height>270</height>
+    </size>
+   </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::TopDockWidgetArea</set>
    </property>
@@ -335,7 +347,16 @@
        </widget>
       </widget>
      </item>
-     <item row="1" column="0">
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockw_more">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
       <layout class="QHBoxLayout" name="hlayout_obj">
        <property name="spacing">
         <number>0</number>
@@ -352,7 +373,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -378,7 +399,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -404,7 +425,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -430,7 +451,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -456,7 +477,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -482,7 +503,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">
@@ -498,17 +519,8 @@
        </item>
       </layout>
      </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockw_more">
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QListView" name="listViewObjects"/>
+     <item row="1" column="0">
+      <widget class="QListWidget" name="listViewObjects"/>
      </item>
     </layout>
    </widget>
@@ -914,8 +926,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="swmm.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

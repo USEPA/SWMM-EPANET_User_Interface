@@ -120,19 +120,51 @@ try:
             self.session.btnCoord.setText('x,y: {:.4f}, {:.4f}'.format(pm.x(), pm.y()))
             pass
 
+        def addCoordinates(self, coordinates):
+            layer = QgsVectorLayer("Point", "Nodes", "memory")
+            provider = layer.dataProvider()
+
+            # changes are only possible when editing the layer
+            layer.startEditing()
+            # add fields
+            provider.addAttributes([QgsField("ID", QtCore.QVariant.String)])
+
+            features = []
+            # Receivers = as in the above example 'Receivers' is a list of results
+            for coordinate_pair in coordinates:
+                # add a feature
+                feature = QgsFeature()
+                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(coordinate_pair.X, coordinate_pair.Y)))
+                feature.setAttributes([coordinate_pair.id])
+                features.append(feature)
+
+            layer.startEditing()
+            layer.addFeatures(features)
+            layer.commitChanges()
+            layer.updateExtents()
+            layerCtr = len(self.layers)
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            self.layers.append(QgsMapCanvasLayer(layer))
+            self.canvas.setLayerSet(self.layers)
+            if layerCtr == 0:
+                self.canvas.setExtent(layer.extent())
+            else:
+                self.canvas.setExtent(self.canvas.extent())
+            self.canvas.refresh()
+
         def addVectorLayer(self, filename):
             if filename.lower().endswith('.shp'):
-                    layerCtr = len(self.layers)
-                    layer=QgsVectorLayer(filename, "layer_v_" + str(layerCtr), "ogr")
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    self.layers.append(QgsMapCanvasLayer(layer))
-                    self.canvas.setLayerSet(self.layers)
-                    if layerCtr ==0:
-                        self.canvas.setExtent(layer.extent())
-                    else:
-                        self.canvas.setExtent(self.canvas.extent())
-                    self.canvas.refresh()
-                    #self.canvas.refreshAllLayers()
+                layerCtr = len(self.layers)
+                layer=QgsVectorLayer(filename, "layer_v_" + str(layerCtr), "ogr")
+                QgsMapLayerRegistry.instance().addMapLayer(layer)
+                self.layers.append(QgsMapCanvasLayer(layer))
+                self.canvas.setLayerSet(self.layers)
+                if layerCtr ==0:
+                    self.canvas.setExtent(layer.extent())
+                else:
+                    self.canvas.setExtent(self.canvas.extent())
+                self.canvas.refresh()
+                #self.canvas.refreshAllLayers()
 
         def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:

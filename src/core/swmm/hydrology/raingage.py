@@ -33,7 +33,7 @@ class RainGage:
         self.name = "Unnamed"
         """User-assigned rain gage name"""
 
-        self.coordinates = Coordinates(None, None)
+        self.coordinates = None  # Coordinates(None, None)
         """Location of gage; If not set, gage will not appear on the map."""
 
         self.description = None

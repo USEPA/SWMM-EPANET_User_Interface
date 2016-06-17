@@ -1,4 +1,5 @@
 ﻿from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
+from core.coordinates import Coordinates
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
@@ -230,7 +231,8 @@ class Project(InputFile):
         # time series data referenced in other sections
 
         # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
-        # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
+        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinates,
+                                           ";;Node             X-Coord          Y-Coord")  # X,Y coordinates for nodes
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.labels = [Section] # LABELS # X,Y coordinates and text of labels
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages

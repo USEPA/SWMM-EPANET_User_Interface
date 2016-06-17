@@ -4,7 +4,7 @@ import core.coordinates
 class Label:
     """Assigns coordinates to map labels"""
     def __init__(self):
-        self.centroid = core.coordinates
+        self.centroid = None  # core.coordinates
         """X and Y coordinates of label centroid"""
 
         self.label_text = ""			    # string

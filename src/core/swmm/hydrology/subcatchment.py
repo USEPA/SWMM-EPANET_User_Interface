@@ -58,7 +58,7 @@ class Subcatchment(Section):
             self.name = "NewSubcatchment"
             """str: Unique user-assigned Subcatchment name."""
 
-            self.centroid = Coordinates(None, None)
+            self.centroid = None  # Coordinates(None, None)
             """Coordinates: Subcatchment's centroid on the Study Area Map.
                 If not set, the subcatchment will not appear on the map."""
 

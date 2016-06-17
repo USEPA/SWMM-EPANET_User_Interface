@@ -352,6 +352,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     gui_settings.setValue("ProjectDir", path_only)
                     gui_settings.sync()
                     del gui_settings
+                try:
+                    from map_tools import addCoordinates
+                    addCoordinates(self.project.coordinates)
+                except:
+                    pass
             except:
                 self.project = Project()
                 self.setWindowTitle(self.model)

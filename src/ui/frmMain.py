@@ -411,7 +411,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.sync()
                 del gui_settings
             try:
+                from qgis.core import QgsMapLayerRegistry
                 from map_tools import EmbedMap
+                QgsMapLayerRegistry.instance().removeAllMapLayers()
+                EmbedMap.layers = self.canvas.layers()
                 self.map_widget.addCoordinates(self.project.coordinates.value)
                 self.map_widget.addLinks(self.project.coordinates.value, self.project.conduits.value, "Conduits")
             except Exception as ex:

@@ -961,6 +961,21 @@ class frmMainSWMM(frmMain):
         self._frmAbout.show()
         pass
 
+    def open_project_quiet(self, file_name, gui_settings, directory):
+        frmMain.open_project_quiet(self, file_name, gui_settings, directory)
+        try:
+            from qgis.core import QgsMapLayerRegistry
+            from ui.map_tools import EmbedMap
+            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            EmbedMap.layers = self.canvas.layers()
+            self.map_widget.addCoordinates(self.project.coordinates.value)
+            self.map_widget.addLinks(self.project.coordinates.value, self.project.conduits.value, "Conduits", "name")
+            self.map_widget.addPolygons(self.project.polygons.value, "Subcatchments")
+            self.map_widget.zoomfull()
+        except Exception as ex:
+            print(str(ex) + '\n' + str(traceback.print_exc()))
+
+
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)
     main_form = frmMainSWMM(application)

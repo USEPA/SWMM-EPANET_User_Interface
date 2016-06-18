@@ -230,7 +230,9 @@ class Project(InputFile):
                                                  ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
-        # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
+        self.polygons = SectionAsListOf("[POLYGONS]", Coordinates,
+                                        ";;Node             X-Coord          Y-Coord")
+        # X,Y coordinates for each vertex of subcatchment polygons
         self.coordinates = SectionAsListOf("[COORDINATES]", Coordinates,
                                            ";;Node             X-Coord          Y-Coord")  # X,Y coordinates for nodes
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links

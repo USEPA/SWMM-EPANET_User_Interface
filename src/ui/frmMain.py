@@ -88,6 +88,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
                             QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
                             QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionMapSelectObj, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
                             QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
                             QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
                             QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
@@ -110,6 +111,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.setZoomInMode()
         self.map_widget.setZoomOutMode()
         self.map_widget.setPanMode()
+        self.map_widget.setSelectMode()
 
     def map_pan(self):
         self.map_widget.setPanMode()

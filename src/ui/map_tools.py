@@ -36,6 +36,8 @@ try:
             self.zoomOutTool = QgsMapToolZoom(self.canvas, True)
             self.zoomOutTool.setAction(self.session.actionZoom_out)
 
+            self.selectTool = None
+
             self.qgisNewFeatureTool = None
 
             QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
@@ -85,6 +87,17 @@ try:
                 self.canvas.unsetMapTool(self.panTool)
                 #self.panTool.setCursor(QtCore.Qt.ArrowCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
+
+        def setSelectMode(self):
+            if self.session.actionMapSelectObj.isChecked():
+                if self.selectTool is None:
+                    if self.layers and len(self.layers) > 0:
+                        self.selectTool = SelectMapTool(self.canvas)
+                        self.selectTool.setAction(self.session.actionMapSelectObj)
+                if self.selectTool:
+                    self.canvas.setMapTool(self.selectTool)
+            else:
+                self.canvas.unsetMapTool(self.selectTool)
 
         def setAddFeatureMode(self):
             if self.session.actionAdd_Feature.isChecked():
@@ -448,6 +461,44 @@ try:
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.onGeometryAdded()
+
+    class SelectMapTool(QgsMapToolEmitPoint):
+        def __init__(self, canvas):
+            self.canvas = canvas
+            QgsMapToolEmitPoint.__init__(self, self.canvas)
+            self.rubberband = QgsRubberBand(self.canvas, QGis.Polygon)
+            self.rubberband.setColor(QColor(255,255,0,50))
+            self.rubberband.setWidth(1)
+            self.point = None
+            self.points = []
+
+        def canvasPressEvent(self, e):
+            self.point = self.toMapCoordinates(e.pos())
+            m = QgsVertexMarker(self.canvas)
+            m.setCenter(self.point)
+            m.setColor(QColor(0,255,0))
+            m.setIconSize(5)
+            m.setIconType(QgsVertexMarker.ICON_BOX)
+            m.setPenWidth(3)
+            self.points.append(self.point)
+            self.isEmittingPoint = True
+            self.selectPoly()
+
+        def selectPoly(self):
+            self.rubberband.reset(QGis.Polygon)
+            for point in self.points[:-1]:
+                self.rubberband.addPoint(point, False)
+            self.rubberband.addPoint(self.points[-1], True)
+            self.rubberband.show()
+
+            if len(self.points) > 2:
+                g = self.rubberband.asGeometry()
+                for lyr in self.canvas.layers():
+                    feats = lyr.getFeatures(QgsFeatureRequest().setFilterRect(g.boundingBox()))
+                    for featPnt in feats:
+                        if featPnt.geometry().within(g):
+                            lyr.select(featPnt.id())
+
 
 except:
     print "Skipping map_tools"

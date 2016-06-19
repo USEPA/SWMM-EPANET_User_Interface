@@ -6,7 +6,7 @@ sip.setapi("QVariant", 2)
 import webbrowser
 import traceback
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog
+from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
 from ui.help import HelpHandler
@@ -969,7 +969,8 @@ class frmMainSWMM(frmMain):
             QgsMapLayerRegistry.instance().removeAllMapLayers()
             EmbedMap.layers = self.canvas.layers()
             self.map_widget.addCoordinates(self.project.coordinates.value)
-            self.map_widget.addLinks(self.project.coordinates.value, self.project.conduits.value, "Conduits", "name")
+            self.map_widget.addLinks(self.project.coordinates.value,
+                                     self.project.conduits.value, "Conduits", "name", QColor('gray'))
             self.map_widget.addPolygons(self.project.polygons.value, "Subcatchments")
             self.map_widget.zoomfull()
         except Exception as ex:

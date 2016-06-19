@@ -6,7 +6,7 @@ sip.setapi("QVariant", 2)
 import traceback
 import webbrowser
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog
+from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
@@ -612,9 +612,12 @@ class frmMainEPANET(frmMain):
             QgsMapLayerRegistry.instance().removeAllMapLayers()
             EmbedMap.layers = self.canvas.layers()
             self.map_widget.addCoordinates(self.project.coordinates.value)
-            self.map_widget.addLinks(self.project.coordinates.value, self.project.pipes.value, "Pipes", "id")
-            self.map_widget.addLinks(self.project.coordinates.value, self.project.pumps.value, "Pumps", "id")
-            self.map_widget.addLinks(self.project.coordinates.value, self.project.valves.value, "Valves", "id")
+            self.map_widget.addLinks(self.project.coordinates.value,
+                                     self.project.pipes.value, "Pipes", "id", QColor('gray'))
+            self.map_widget.addLinks(self.project.coordinates.value,
+                                     self.project.pumps.value, "Pumps", "id", QColor('red'))
+            self.map_widget.addLinks(self.project.coordinates.value,
+                                     self.project.valves.value, "Valves", "id", QColor('green'))
             self.map_widget.zoomfull()
         except Exception as ex:
             print(str(ex) + '\n' + str(traceback.print_exc()))

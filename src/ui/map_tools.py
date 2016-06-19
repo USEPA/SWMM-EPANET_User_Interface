@@ -142,13 +142,49 @@ try:
             provider.addFeatures(features)
             layer.commitChanges()
             layer.updateExtents()
+
+            # create a new symbol layer with default properties
+            symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            symbol_layer.setColor(QColor(130, 180, 255, 220))
+
+            # Label the coordinates if there are not too many of them
+            if len(coordinates) > 100:
+                symbol_layer.setSize(2.0)
+            else:
+                symbol_layer.setSize(8.0)
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fieldName = 'ID'
+                pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
+                pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, '8', '')
+                pal_layer.writeToLayer(layer)
+
+            # replace the default symbol layer with the new symbol layer
+            layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
+
             QgsMapLayerRegistry.instance().addMapLayer(layer)
             self.layers.append(QgsMapCanvasLayer(layer))
             self.canvas.setLayerSet(self.layers)
+            return layer
 
-        def addLinks(self, coordinates, links, layer_name, link_attr):
+        def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black')):
             layer = QgsVectorLayer("LineString", layer_name, "memory")
             provider = layer.dataProvider()
+
+            symbol_layer = QgsSimpleLineSymbolLayerV2()
+            symbol_layer.setColor(link_color)
+            if len(coordinates) <= 100:
+                symbol_layer.setWidth(2.5)
+
+            # markerLayer = markerMeta.createSymbolLayer({'width': '0.26',
+            #                                             'color': '255,0,0',
+            #                                             'rotate': '1',
+            #                                             'placement': 'centralpoint',
+            #                                             'offset': '0'})
+            # subSymbol = markerLayer.subSymbol()
+
+            layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
 
             # changes are only possible when editing the layer
             layer.startEditing()

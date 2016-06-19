@@ -8,6 +8,7 @@ try:
         """ Main GUI Widget for map display inside vertical layout """
         def __init__(self, mapCanvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
+            self.main_form = main_form
             #define QMapControl here
             #qmap = QMapControl()
             #layout.addWidget(qmap)
@@ -54,7 +55,6 @@ try:
 
             #layout.addWidget(None)
             self.setMouseTracking(True)
-            pass
 
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
@@ -92,7 +92,7 @@ try:
             if self.session.actionMapSelectObj.isChecked():
                 if self.selectTool is None:
                     if self.layers and len(self.layers) > 0:
-                        self.selectTool = SelectMapTool(self.canvas)
+                        self.selectTool = SelectMapTool(self.canvas, self.main_form)
                         self.selectTool.setAction(self.session.actionMapSelectObj)
                 if self.selectTool:
                     self.canvas.setMapTool(self.selectTool)
@@ -463,42 +463,36 @@ try:
                 self.onGeometryAdded()
 
     class SelectMapTool(QgsMapToolEmitPoint):
-        def __init__(self, canvas):
+        def __init__(self, canvas, main_form):
             self.canvas = canvas
+            self.main_form = main_form
             QgsMapToolEmitPoint.__init__(self, self.canvas)
-            self.rubberband = QgsRubberBand(self.canvas, QGis.Polygon)
-            self.rubberband.setColor(QColor(255,255,0,50))
-            self.rubberband.setWidth(1)
-            self.point = None
-            self.points = []
+            self.spatial_index = QgsSpatialIndex()
+            self.layer = self.canvas.layers()[0]
+            # for lyr in self.canvas.layers():
+            try:
+                provider = self.layer.dataProvider()
+                # TODO: check whether provider is vector and has ID field
+                feat = QgsFeature()
+                feats = provider.getFeatures()  # get all features in layer
+                # insert features to index
+                while feats.nextFeature(feat):
+                    self.spatial_index.insertFeature(feat)
+            except Exception as e:
+                print str(e)
 
         def canvasPressEvent(self, e):
-            self.point = self.toMapCoordinates(e.pos())
-            m = QgsVertexMarker(self.canvas)
-            m.setCenter(self.point)
-            m.setColor(QColor(0,255,0))
-            m.setIconSize(5)
-            m.setIconType(QgsVertexMarker.ICON_BOX)
-            m.setPenWidth(3)
-            self.points.append(self.point)
-            self.isEmittingPoint = True
-            self.selectPoly()
-
-        def selectPoly(self):
-            self.rubberband.reset(QGis.Polygon)
-            for point in self.points[:-1]:
-                self.rubberband.addPoint(point, False)
-            self.rubberband.addPoint(self.points[-1], True)
-            self.rubberband.show()
-
-            if len(self.points) > 2:
-                g = self.rubberband.asGeometry()
-                for lyr in self.canvas.layers():
-                    feats = lyr.getFeatures(QgsFeatureRequest().setFilterRect(g.boundingBox()))
-                    for featPnt in feats:
-                        if featPnt.geometry().within(g):
-                            lyr.select(featPnt.id())
-
+            try:
+                clicked_point = self.toMapCoordinates(e.pos())
+                nearest_feature = self.spatial_index.nearestNeighbor(clicked_point, 1)[0]
+                self.layer.removeSelection()
+                # self.layer.setSelectedFeatures([nearest_feature])
+                self.layer.select(nearest_feature)
+                iterator = self.layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature))
+                feature = next(iterator)
+                self.main_form.select_id(feature.attributes()[0])
+            except Exception as e:
+                print str(e)
 
 except:
     print "Skipping map_tools"

@@ -79,7 +79,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
                         self.canvas.setMouseTracking(True)
-                        self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas)
+                        self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas, main_form=self)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
                         if self.map_win:
                             self.map_win.setGeometry(0, 0, 600, 400)
@@ -388,6 +388,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def sort_object(self):
         self.listViewObjects.sortItems()
+
+    def select_id(self, object_id):
+        for i in range(self.listViewObjects.count()):
+            item = self.listViewObjects.item(i)
+            self.listViewObjects.setItemSelected(item, item.text() == object_id)
 
     def new_project(self):
         self.project = self.project_type()

@@ -485,7 +485,9 @@ try:
             try:
                 clicked_point = self.toMapCoordinates(e.pos())
                 nearest_feature = self.spatial_index.nearestNeighbor(clicked_point, 1)[0]
-                self.layer.removeSelection()
+                if not (e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)):
+                    self.layer.removeSelection()
+                    self.main_form.select_id(None)
                 # self.layer.setSelectedFeatures([nearest_feature])
                 self.layer.select(nearest_feature)
                 iterator = self.layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature))

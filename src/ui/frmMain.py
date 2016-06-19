@@ -390,9 +390,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.listViewObjects.sortItems()
 
     def select_id(self, object_id):
-        for i in range(self.listViewObjects.count()):
-            item = self.listViewObjects.item(i)
-            self.listViewObjects.setItemSelected(item, item.text() == object_id)
+        if object_id is None:
+            self.listViewObjects.clearSelection()
+        else:
+            for i in range(self.listViewObjects.count()):
+                item = self.listViewObjects.item(i)
+                if item.text() == object_id:
+                    self.listViewObjects.setItemSelected(item, True)
 
     def new_project(self):
         self.project = self.project_type()

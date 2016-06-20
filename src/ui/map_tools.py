@@ -100,17 +100,25 @@ try:
                 self.canvas.unsetMapTool(self.selectTool)
 
         def setAddFeatureMode(self):
-            if self.session.actionAdd_Feature.isChecked():
-                if self.qgisNewFeatureTool is None:
-                    if self.layers and len(self.layers) > 0:
-                        self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
-                                                              self.session.onGeometryAdded,
-                                                              CaptureTool.CAPTURE_POLYGON)
-                        self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
-                if self.qgisNewFeatureTool:
-                    self.canvas.setMapTool(self.qgisNewFeatureTool)
-            else:
-                self.canvas.unsetMapTool(self.qgisNewFeatureTool)
+            # Temporarily hijacked to test properties editor
+            layer = self.canvas.layers()[0]
+            self.layer_properties_widget = QgsLayerPropertiesWidget(
+                    layer.rendererV2().symbol().symbolLayers()[0],
+                    layer.rendererV2().symbol(),
+                    layer)
+            self.layer_properties_widget.setMapCanvas(self.canvas)
+            self.layer_properties_widget.show()
+            # if self.session.actionAdd_Feature.isChecked():
+            #     if self.qgisNewFeatureTool is None:
+            #         if self.layers and len(self.layers) > 0:
+            #             self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
+            #                                                   self.session.onGeometryAdded,
+            #                                                   CaptureTool.CAPTURE_POLYGON)
+            #             self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
+            #     if self.qgisNewFeatureTool:
+            #         self.canvas.setMapTool(self.qgisNewFeatureTool)
+            # else:
+            #     self.canvas.unsetMapTool(self.qgisNewFeatureTool)
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()

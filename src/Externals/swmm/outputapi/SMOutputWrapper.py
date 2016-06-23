@@ -309,8 +309,6 @@ class OutputObject(object):
         ret = _lib.SMR_open(str(output_file_name), byref(self.ptrapi))
         if ret != 0:
             self.RaiseError(ret)
-        # TODO: recompile dll so we can use this new argument order:
-        # self.call(_lib.SMR_open, str(output_file_name))
         self.measure_newOutValueSeries()
         self._get_units()
         self._get_sizes()

@@ -8,7 +8,7 @@ from enum import Enum
 #                    Author:  L. Rossman                            }
 #                                                                   }
 #   This unit computes frequency statistics on the events that      }
-#   have occured during a simulation by calling the def       }
+#   have occurred during a simulation by calling the def       }
 #   GetStats(StatsSel, EventList, Results). StatsSel is a           }
 #   TStatsSelection record that defines the variable and type of    }
 #   event being analyzed. EventList is a TList that will contain    }

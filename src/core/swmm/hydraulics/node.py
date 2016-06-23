@@ -1,5 +1,4 @@
-﻿from traitlets import HasTraits, Int, Unicode
-from enum import Enum
+﻿from enum import Enum
 from core.coordinates import Coordinates
 from core.inputfile import Section
 from core.metadata import Metadata
@@ -36,7 +35,7 @@ from core.metadata import Metadata
 #         """Invert elevation of the Node (feet or meters)"""
 
 
-class Junction(Section, HasTraits):
+class Junction(Section):
     """A Junction node"""
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
@@ -68,7 +67,7 @@ class Junction(Section, HasTraits):
         else:
             Section.__init__(self)
 
-            self.name = Unicode(default_value='', label="Name", help="User-assigned name of junction")
+            self.name = ''
             """name assigned to junction node"""
 
             self.elevation = ''

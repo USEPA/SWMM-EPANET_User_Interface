@@ -141,16 +141,16 @@ class Reports:
         self.write_line(line)
         self.write_line(self.ULINE)
         line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_NODE,
-                                                       ENR_NodeAttributeNames[ENR_demand],
-                                                       ENR_NodeAttributeNames[ENR_head],
-                                                       ENR_NodeAttributeNames[ENR_pressure],
-                                                       ENR_NodeAttributeNames[ENR_quality])
+                                                       ENR_node_type.AttributeDemand.name,
+                                                       ENR_node_type.AttributeHead.name,
+                                                       ENR_node_type.AttributePressure.name,
+                                                       ENR_node_type.AttributeQuality.name)
         self.write_line(line)
         line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_ID,
-                                                       ENR_NodeAttributeUnits[ENR_demand][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_head][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_pressure][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_quality][self.output.unit_system])
+                                                       ENR_node_type.AttributeDemand.units(self.output.unit_system),
+                                                       ENR_node_type.AttributeHead.units(self.output.unit_system),
+                                                       ENR_node_type.AttributePressure.units(self.output.unit_system),
+                                                       ENR_node_type.AttributeQuality.units(self.output.unit_system))
         self.write_line(line)
         self.write_line(self.ULINE)
 
@@ -166,15 +166,15 @@ class Reports:
         self.write_line(S)
         self.write_line(self.ULINE)
         S = '{:15} {:10}{:10}{:10}{:10}'.format(self.TXT_LINK,
-                                                ENR_LinkAttributeNames[ENR_flow],
-                                                ENR_LinkAttributeNames[ENR_velocity],
-                                                ENR_LinkAttributeNames[ENR_headloss],
-                                                ENR_LinkAttributeNames[ENR_status])
+                                                ENR_link_type.AttributeFlow.name,
+                                                ENR_link_type.AttributeVelocity.name,
+                                                ENR_link_type.AttributeHeadloss.name,
+                                                ENR_link_type.AttributeStatus.name)
         self.write_line(S)
         S = '{:15} {:10}{:10}{:10}'.format(self.TXT_ID,
-                                           ENR_LinkAttributeUnits[ENR_flow][self.output.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_velocity][self.output.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_headloss][self.output.unit_system])
+                                           ENR_link_type.AttributeFlow.units(self.output.unit_system),
+                                           ENR_link_type.AttributeVelocity.units(self.output.unit_system),
+                                           ENR_link_type.AttributeHeadloss.units(self.output.unit_system))
         self.write_line(S)
         self.write_line(self.ULINE)
 
@@ -222,17 +222,17 @@ class Reports:
     def write_node_table(self, period):
         self.write_node_header(period, False)
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
+            for input_node in nodes.value:
                 #         MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index < 0:
-                    line = '{:15} {}'.format(node.id, 'not found in output.')
+                output_node = self.output.get_itemById(self.output.nodes, input_node.id)
+                if not output_node:
+                    line = '{:15} {}'.format(input_node.id, 'not found in output.')
                 else:
-                    demand     = self.output.get_NodeValue(node_index, period, ENR_demand)
-                    head       = self.output.get_NodeValue(node_index, period, ENR_head)
-                    pressure   = self.output.get_NodeValue(node_index, period, ENR_pressure)
-                    quality    = self.output.get_NodeValue(node_index, period, ENR_quality)
-                    line = '{:15} {:7.2f} {:7.2f} {:7.2f} {:7.2f}'.format(node.id, demand, head, pressure, quality)
+                    demand     = output_node.get_value(self.output, ENR_node_type.AttributeDemand, period)
+                    head       = output_node.get_value(self.output, ENR_node_type.AttributeHead, period)
+                    pressure   = output_node.get_value(self.output, ENR_node_type.AttributePressure, period)
+                    quality    = output_node.get_value(self.output, ENR_node_type.AttributeQuality, period)
+                    line = '{:15} {:7.2f} {:7.2f} {:7.2f} {:7.2f}'.format(output_node.id, demand, head, pressure, quality)
                 if nodes is self.project.reservoirs:
                     line += ' Reservoir'
                 elif nodes is self.project.tanks:
@@ -245,17 +245,17 @@ class Reports:
     def write_link_table(self, period):
         self.write_link_header(period, False)
         for links in (self.project.pipes, self.project.pumps, self.project.valves):
-            for link in links.value:
+            for input_link in links.value:
                 # MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                link_index = self.output.get_LinkIndex(link.id)
-                if link_index < 0:
-                    line = '{:15} {}'.format(link.id, 'not found in output.')
+                output_link = self.output.get_itemById(self.output.links, input_link.id)
+                if not output_link:
+                    line = '{:15} {}'.format(input_link.id, 'not found in output.')
                 else:
-                    flow     = self.output.get_LinkValue(link_index, period, ENR_flow)
-                    velocity = self.output.get_LinkValue(link_index, period, ENR_velocity)
-                    headloss = self.output.get_LinkValue(link_index, period, ENR_headloss)
-                    linkstat = "Unknown"  # TODO: self.output.get_LinkValue(link_index, T, ENR_
-                    line = '{:15} {:9.2f} {:9.2f} {:9.2f} {:>10}'.format(link.id, flow, velocity, headloss, linkstat)
+                    flow     = output_link.get_value(self.output, ENR_link_type.AttributeFlow, period)
+                    velocity = output_link.get_value(self.output, ENR_link_type.AttributeVelocity, period)
+                    headloss = output_link.get_value(self.output, ENR_link_type.AttributeHeadloss, period)
+                    linkstat = output_link.get_value_formatted(self.output, ENR_link_type.AttributeStatus, period)
+                    line = '{:15} {:9.2f} {:9.2f} {:9.2f} {:>10}'.format(input_link.id, flow, velocity, headloss, linkstat)
                 if links is self.project.pumps:
                     line += ' Pump'
                 elif links is self.project.valves:
@@ -295,61 +295,33 @@ class Reports:
                 print "Finished writing report " + report_file_name
                 #   MainForm.HideProgressBar
 
-    def all_link_ids(self):
-        ids = []
-        for links in (self.project.pipes, self.project.pumps, self.project.valves):
-            for link in links.value:
-                if self.output.get_LinkIndex(link.id) > -1:
-                    ids.append(link.id)
+    def all_links_set_category(self):
+        items = []
+        for input_links, category in [(self.project.pipes.value, "Pipe"),
+                                       (self.project.pumps.value, "Pump"),
+                                       (self.project.valves.value, "Valve")]:
+            for link in input_links:
+                item = self.output.get_itemById(self.output.links, link.id)
+                if item:
+                    item.category = category
+                    items.append(item)
                 else:
                     print("Skipping link " + link.id + " because it was not found in output")
-        return ids
+        return items
 
-    def all_link_types(self):
-        types = []
-        for link in self.project.pipes.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Pipe")
-        for link in self.project.pumps.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Pump")
-        for link in self.project.valves.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Valve")
-        return types
-
-    def all_node_indexes(self):
-        indexes = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    indexes.append(node_index)
-        return indexes
-
-    def all_node_ids(self):
-        ids = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    ids.append(node.id)
+    def all_nodes_set_category(self):
+        items = []
+        for input_nodes, category in [(self.project.junctions.value, "Junction"),
+                                       (self.project.reservoirs.value, "Reservoir"),
+                                       (self.project.tanks.value, "Tank")]:
+            for node in input_nodes:
+                item = self.output.get_itemById(self.output.nodes, node.id)
+                if item:
+                    item.category = category
+                    items.append(item)
                 else:
                     print("Skipping node " + node.id + " because it was not found in output")
-        return ids
-
-    def all_node_types(self):
-        types = []
-        for node in self.project.junctions.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Junction")
-        for node in self.project.reservoirs.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Reservoir")
-        for node in self.project.tanks.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Tank")
-        return types
+        return items
 
     def node_distances(self, node_ids):
         return range(0, len(node_ids))
@@ -363,4 +335,6 @@ class Reports:
                     if node.id == node_id:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
+                        else:  # default: return distances = 0, 1, 2, ...
+                            distances.append(len(distances))
         return distances

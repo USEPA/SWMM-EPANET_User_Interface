@@ -21,7 +21,7 @@ import inspect
 import shutil
 import unittest
 import webbrowser
-from Externals.epanet.outputapi.ENOutputWrapper import OutputObject, ENR_NodeAttributes, ENR_LinkAttributes
+from Externals.epanet.outputapi.ENOutputWrapper import OutputObject, ENR_node_type, ENR_link_type
 
 
 class RegressionTest(unittest.TestCase):    
@@ -191,31 +191,31 @@ class RegressionTest(unittest.TestCase):
 
         for time_index in range(output_file_benchmark.numPeriods):
             # Compare Node Attributes
-            for attribute_index in ENR_NodeAttributes:
-                # Get attribute for all links at time_index
-                attribute_benchmark = output_file_benchmark.get_NodeAttribute(attribute_index, time_index)
-                attribute_candidate = output_file_candidate.get_NodeAttribute(attribute_index, time_index)
-                for node_index, benchmark_value in enumerate(attribute_benchmark):
-                    candidate_value = attribute_candidate[node_index]
+            for attribute in ENR_node_type.Attributes:
+                # Get attribute for all nodes at time_index
+                va_benchmark = ENR_node_type.get_attribute_for_all_at_time(output_file_benchmark, attribute, time_index)
+                va_candidate = ENR_node_type.get_attribute_for_all_at_time(output_file_candidate, attribute, time_index)
+                for node_index, benchmark_value in enumerate(va_benchmark):
+                    candidate_value = va_candidate[node_index]
                     if RegressionTest.large_difference(benchmark_value, candidate_value, significant_digits):
                         diff = abs(benchmark_value - candidate_value)
                         report.append("At time index {} node {} attribute {} differs before {} significant digits:\n"\
                               "{} = {}\n{} = {}\ndelta = {}".format(
-                            time_index, node_index, attribute_index, significant_digits,
+                            time_index, node_index, attribute.name, significant_digits,
                             benchmark_file, benchmark_value, candidate_file, candidate_value, diff))
 
             # Compare Link Attributes
-            for attribute_index in ENR_LinkAttributes:
+            for attribute in ENR_link_type.Attributes:
                 # Get attribute for all links at time_index
-                attribute_benchmark = output_file_benchmark.get_LinkAttribute(attribute_index, time_index)
-                attribute_candidate = output_file_candidate.get_LinkAttribute(attribute_index, time_index)
-                for link_index, benchmark_value in enumerate(attribute_benchmark):
-                    candidate_value = attribute_candidate[link_index]
+                va_benchmark = ENR_link_type.get_attribute_for_all_at_time(output_file_benchmark, attribute, time_index)
+                va_candidate = ENR_link_type.get_attribute_for_all_at_time(output_file_candidate, attribute, time_index)
+                for link_index, benchmark_value in enumerate(va_benchmark):
+                    candidate_value = va_candidate[link_index]
                     if RegressionTest.large_difference(benchmark_value, candidate_value, significant_digits):
                         diff = abs(benchmark_value - candidate_value)
                         report.append("At time index {} link {} attribute {} differs before {} significant digits:\n"\
                                 "{} = {}\n{} = {} :: delta = {}".format(
-                            time_index, link_index, attribute_index, significant_digits,
+                            time_index, link_index, attribute.name, significant_digits,
                             benchmark_file, benchmark_value, candidate_file, candidate_value, diff))
         return '<br>\n'.join(report)
 

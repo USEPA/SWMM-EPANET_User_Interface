@@ -305,8 +305,8 @@ class OutputObject(object):
         self.ptrapi = c_void_p()
         self._call_int_return = c_int()  # Private variable used only inside call_int
         self._call_double_return = c_double()  # Private variable used only inside call_double
-        self.output_file_name = output_file_name
-        ret = _lib.SMR_open(str(output_file_name), byref(self.ptrapi))
+        self.output_file_name = str(output_file_name)
+        ret = _lib.SMR_open(self.output_file_name, byref(self.ptrapi))
         if ret != 0:
             self.RaiseError(ret)
         self.measure_newOutValueSeries()
@@ -371,6 +371,12 @@ class OutputObject(object):
         self.call(function, *args_to_pass)                   # self.call(function, *args, byref(self._call_int_return))
         return self._call_double_return.value
 
+    def RaiseError(self, ErrNo):
+        # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
+        #     raise Exception(errmsg.value)
+        # else:
+        raise Exception("SWMM output error #{0}".format(ErrNo))
+
     def measure_newOutValueSeries(self):
         """Test SMO_newOutValueSeries to see whether it treats the requested length as length or end.
             Sets self.newOutValueSeriesLengthIsEnd flag so we can adjust how we call this method."""
@@ -379,12 +385,6 @@ class OutputObject(object):
         SeriesPtr = _lib.SMO_newOutValueSeries(self.ptrapi, 1, 2, byref(sLength), byref(ErrNo1))
         _lib.SMO_free(SeriesPtr)
         self.newOutValueSeriesLengthIsEnd = (sLength.value == 1)
-
-    def RaiseError(self, ErrNo):
-        # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
-        #     raise Exception(errmsg.value)
-        # else:
-        raise Exception("SWMM output error #{0}".format(ErrNo))
 
     def _get_units(self):
         """
@@ -561,7 +561,7 @@ class OutputObject(object):
         """
         ret = _lib.SMO_close(byref(self.ptrapi))
         if ret != 0:
-            raise Exception('Failed to Close *.out file')
+            raise Exception('Failed to Close file ' + self.output_file_name)
 
     def elapsed_hours_at_index(self, report_time_index):
         return (report_time_index * self.reportStep) / 3600

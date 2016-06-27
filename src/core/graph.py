@@ -9,8 +9,6 @@ from matplotlib import dates
 import colorsys
 import datetime
 import numpy as np
-# from Externals.epanet.outputapi.ENOutputWrapper import ENR_demand
-ENR_demand = 0  # Avoid importing so SWMM does not depend on EPANET
 
 
 class SWMM:
@@ -125,9 +123,15 @@ class SWMM:
 class EPANET:
 
     @staticmethod
-    def plot_time(output, get_index, get_value, parameter_code, parameter_label, ids):
+    def plot_time(output, attribute, items):
         fig = plt.figure()
-        title = "Time Series Plot of " + parameter_label
+
+        title = "Time Series Plot of " + attribute.name
+        units = attribute.units(output.unit_system)
+        parameter_label = attribute.name
+        if units:
+            parameter_label += ' (' + units + ')'
+
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
@@ -135,12 +139,9 @@ class EPANET:
             x_values.append(output.elapsed_hours_at_index(time_index))
 
         line_count = 0
-        for each_id in ids:
-            output_index = get_index(each_id)
-            y_values = []
-            for time_index in range(0, output.numPeriods):
-                y_values.append(get_value(output_index, time_index, parameter_code))
-            plt.plot(x_values, y_values, label=each_id)
+        for item in items:
+            y_values = item.get_series(output, attribute)
+            plt.plot(x_values, y_values, label=item.id)
             line_count += 1
 
         if line_count > 0:
@@ -155,28 +156,32 @@ class EPANET:
             raise Exception("No lines were selected to graph")
 
     @staticmethod
-    def update_profile(output, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
+    def update_profile(output, items, x_values,
+                                        attribute, fig_number, time_index):
         if time_index >= 0:
             fig = plt.figure(fig_number)
             fig.clear()
-            title = "Profile Plot of " + parameter_label + " at " + output.get_time_string(time_index)
+            title = "Profile Plot of " + attribute.name + " at " + output.get_time_string(time_index)
             fig.canvas.set_window_title(title)
             plt.title(title)
+            units = attribute.units(output.unit_system)
+            parameter_label = attribute.name
+            if units:
+                parameter_label += ' (' + units + ')'
             y_values = []
             min_y = 999.9
 
-            for (graph_id, x_value) in zip(graph_ids, x_values):
-                output_index = get_index(graph_id)
-                y = get_value(output_index, time_index, parameter_code)
+            for (item, x_value) in zip(items, x_values):
+                y = item.get_value(output, attribute, time_index)
                 if min_y == 999.9 or y < min_y:
                     min_y = y
                 y_values.append(y)
                 plt.annotate(
-                    graph_id,
+                    item.id,
                     xy=(x_value, y), xytext=(0, 20),
                     textcoords='offset points', ha='center', va='bottom',
                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
-                #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+                # , arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
             plt.fill_between(x_values, y_values, min_y)
 
@@ -187,24 +192,27 @@ class EPANET:
             plt.show()
 
     @staticmethod
-    def plot_freq(output, get_index, get_value, parameter_code, parameter_label, time_index, ids):
+    def plot_freq(output, attribute, time_index, items):
         if time_index < 0:
             raise Exception("Time index not selected, cannot plot frequency")
-        count = len(ids)
+        count = len(items)
         if count < 1:
             raise Exception("No items in list, cannot plot frequency")
         fig = plt.figure()
-        title = "Distribution of " + parameter_label + " at " + output.get_time_string(time_index)
+        title = "Distribution of " + attribute.name + " at " + output.get_time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
+        units = attribute.units(output.unit_system)
+        parameter_label = attribute.name
+        if units:
+            parameter_label += ' (' + units + ')'
         percent = []
         values = []
         index = 0
-        for each_id in ids:
+        for item in items:
             percent.append(index * 100 / count)
             index += 1
-            output_index = get_index(each_id)
-            values.append(get_value(output_index, time_index, parameter_code))
+            values.append(item.get_value(output, attribute, time_index))
 
         values.sort()
         # Cumulative distributions:
@@ -218,8 +226,10 @@ class EPANET:
 
     @staticmethod
     def plot_system_flow(output):
-        if output.nodeCount < 1:
+        if not output.nodes:
             raise Exception("No node results present in output, cannot plot system flow")
+        # import here to avoid SWMM depending on EPANET
+        from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type
         fig = plt.figure()
         title = "System Flow Balance"
         fig.canvas.set_window_title(title)
@@ -232,8 +242,8 @@ class EPANET:
             produced.append(0)
             consumed.append(0)
 
-        for node_index in range(0, output.nodeCount - 1):
-            node_flows = output.get_NodeSeries(node_index, ENR_demand)
+        for node in output.nodes:
+            node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
             for time_index in range(0, output.numPeriods):
                 flow = node_flows[time_index]
                 if flow > 0:

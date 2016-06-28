@@ -102,7 +102,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         except Exception as eImport:
             self.canvas = None
-            print "QGIS libraries not found, Not creating map\n" + str(eImport)
+            print("QGIS libraries not found, Not creating map\n" + str(eImport))
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
         self.onLoad()
 
@@ -438,15 +438,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                             str(ex), str(traceback.print_exc())),
                                         QMessageBox.Ok)
 
-    def dragEnterEvent(self, QDragEnterEvent):
-        if QDragEnterEvent.mimeData().hasUrls():
-            QDragEnterEvent.accept()
+    def dragEnterEvent(self, drag_enter_event):
+        if drag_enter_event.mimeData().hasUrls():
+            drag_enter_event.accept()
         else:
-            QDragEnterEvent.ignore()
+            drag_enter_event.ignore()
 
-    def dropEvent(self, QDropEvent):
+    def dropEvent(self, drop_event):
         #TODO: check project status and prompt if there are unsaved changes that would be overwritten
-        for url in QDropEvent.mimeData().urls():
+        for url in drop_event.mimeData().urls():
             directory, filename = os.path.split(str(url.encodedPath()))
             directory = str.lstrip(str(directory), 'file:')
             print(directory)

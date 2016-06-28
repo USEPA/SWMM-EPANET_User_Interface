@@ -31,7 +31,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
         if project and self.output:
             self.cboTime.addItems(["Elapsed Time", "Date/Time"])
             self.cboTime.setCurrentIndex(0)
-            self.cboObject.addItems(SMO.SMO_objectTypeLabels)
+            self.cboObject.addItems(SMO.swmm_output_object_labels)
             self.cboObject.setCurrentIndex(0)
 
     def cmdOK_Clicked(self):
@@ -67,19 +67,20 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
             for variable in self.lstVariables.selectedIndexes():
                 selected_variable = str(variable.data())
                 # for each selected location, for each selected variable
-                this_column_values, units = self.output.get_series_by_name(object_label,
-                                                                           selected_location,
-                                                                           selected_variable,
-                                                                           start_index, num_steps)
-                if units:
-                    units = '\n(' + units + ')'
-                if len(selected_locations) == 1:
-                    column_headers.append(selected_variable + units)
-                else:
-                    column_headers.append(selected_variable + ' at ' + object_label + ' ' + selected_location + units)
-                num_columns += 1
-                this_column_formatted = ['{:7.2f}'.format(val) for val in this_column_values]
-                column_data.append(this_column_formatted)
+                item = self.output.get_item(self.output.get_items(object_label), selected_location)
+                if item:
+                    attribute = item.get_attribute_by_name(selected_variable)
+                    this_column_values = item.get_series(self.output, attribute, start_index, num_steps)
+                    units = attribute.units(self.output.unit_system)
+                    if units:
+                        units = '\n(' + units + ')'
+                    if len(selected_locations) == 1:
+                        column_headers.append(selected_variable + units)
+                    else:
+                        column_headers.append(selected_variable + ' at ' + object_label + ' ' + selected_location + units)
+                    num_columns += 1
+                    this_column_formatted = ['{:7.2f}'.format(val) for val in this_column_values]
+                    column_data.append(this_column_formatted)
 
         self._frmOutputTable = frmGenericListOutput(self._main_form, "SWMM Table Output")
         self._frmOutputTable.set_data_by_columns(row_headers, column_headers, column_data)
@@ -90,13 +91,13 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
         self.close()
 
     def cboObject_currentIndexChanged(self, newIndex):
-        object_type = SMO.SMO_objectTypes[newIndex]
-        self.lblNodes.setText(object_type.TypeLabel)
+        object_type = SMO.swmm_output_object_types[newIndex]
+        self.lblNodes.setText(object_type.type_label)
 
         self.lstNodes.clear()
         for item in self.output.all_items[newIndex]:
             self.lstNodes.addItem(item.id)
-        if object_type == SMO.SMO_system:
+        if object_type == SMO.SwmmOutputSystem:
             self.lstNodes.item(0).setSelected(True)
             self.lstNodes.setVisible(False)
             self.lblNodes.setVisible(False)
@@ -105,8 +106,8 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
             self.lblNodes.setVisible(True)
 
         self.lstVariables.clear()
-        for variable in object_type.AttributeNames:
-            self.lstVariables.addItem(variable)
+        for attribute in object_type.attributes:
+            self.lstVariables.addItem(attribute.name)
 
     def cboTime_currentIndexChanged(self, newIndex):
         self.cboStart.clear()

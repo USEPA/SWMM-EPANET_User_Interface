@@ -300,7 +300,7 @@ class ProjectTest(unittest.TestCase):
 
         # Write HTML table
         # Print opening HTML tags -------------------------
-        text_file.write("<htm><body><table border='1'>")
+        text_file.write("<html><body><table border='1'>")
         # Print the content of the table, line by line ----
         for i in range(0, len(examples)):
             cur_status = status[i]

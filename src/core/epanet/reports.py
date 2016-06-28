@@ -111,6 +111,7 @@ class Reports:
     def write_energy(self):
         self.write_energy_header(False)
         Csum = 0.0
+        Dcharge = 0
         for pump in self.project.pumps.value:
             x = [0,0,0,0,0,0]
             Dcharge = 0

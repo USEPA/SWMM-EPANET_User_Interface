@@ -25,6 +25,21 @@ from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 
+try:
+    unicode = unicode
+except NameError:
+    # 'unicode' is undefined, must be Python 3
+    str = str
+    unicode = str
+    bytes = bytes
+    basestring = (str,bytes)
+else:
+    # 'unicode' exists, must be Python 2
+    str = str
+    unicode = unicode
+    bytes = str
+    basestring = basestring
+
 
 class Project(InputFile):
     """Manage a complete SWMM input sequence"""

@@ -36,15 +36,15 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.cboEvent.setCurrentIndex(1)
 
     def cboCategory_currentIndexChanged(self, newIndex):
-        object_type = SMO.SMO_objectTypes[newIndex]
+        object_type = SMO.swmm_output_object_types[newIndex]
         self.lstName.clear()
-        if newIndex <> 3:
+        if newIndex != 3:
             for item in self.output.all_items[newIndex]:
                 self.lstName.addItem(item.id)
             self.lstName.setItemSelected(self.lstName.item(0),True)
             self.cboVariable.clear()
-            for variable in object_type.AttributeNames:
-                self.cboVariable.addItem(variable)
+            for attribute in object_type.attributes:
+                self.cboVariable.addItem(attribute.name)
         else:
             self.cboVariable.clear()
             self.cboVariable.addItems(['Temperature','Precipitation','Snow Depth','Infiltration','Runoff','DW Inflow',

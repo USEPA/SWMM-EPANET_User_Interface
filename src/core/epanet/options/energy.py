@@ -48,8 +48,7 @@ class EnergyOptions(Section):
            and len(self.pumps) == 0:
             return ''  # This section has nothing different from defaults, return blank
         else:
-            txt = []
-            txt.append(Section.get_text(self))  # Get text for the global variables using metadata
+            txt = [Section.get_text(self)]
             for pump_energy in self.pumps:      # Add text for each pump energy
                 txt.append(pump_energy.get_text())
             return '\n'.join(txt)

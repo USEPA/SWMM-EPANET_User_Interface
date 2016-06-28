@@ -25,18 +25,18 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         self.cboObjectType.clear()
         if project and self.output:
             # Add object type labels to cboObjectType if there are any of each type in output. Always add System.
-            for object_type_label in SMO.SMO_objectTypeLabels:
-                if object_type_label == SMO.SMO_system.TypeLabel or self.output.get_items(object_type_label):
-                    self.cboObjectType.addItem(object_type_label)
+            for label in SMO.swmm_output_object_labels:
+                if label == SMO.SwmmOutputSystem.type_label or self.output.get_items(label):
+                    self.cboObjectType.addItem(label)
             self.cboObjectType.setCurrentIndex(0)
 
     def cboObjectType_currentIndexChanged(self):
         has_objects = False
         attribute_names = ["None"]
-        object_type = SMO.SMO_getObjectType(self.cboObjectType.currentText())
+        object_type = SMO.swmm_output_get_object_type(self.cboObjectType.currentText())
         if object_type:
-            attribute_names = object_type.AttributeNames
-            has_objects = (object_type != SMO.SMO_system)
+            attribute_names = [attribute.name for attribute in object_type.attributes]
+            has_objects = (object_type != SMO.SwmmOutputSystem)
 
         self.cboVariable.clear()
         for item in attribute_names:

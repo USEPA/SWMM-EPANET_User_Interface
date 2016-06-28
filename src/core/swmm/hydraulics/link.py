@@ -168,8 +168,8 @@ class OrificeType(Enum):
 
 class Orifice(Link):
     """An orifice link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
         self.type = OrificeType.SIDE
         """OrificeType: Type of orifice"""
 
@@ -204,8 +204,8 @@ class RoadSurfaceType(Enum):
 
 class Weir(Link):
     """A weir link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
         self.type = WeirType.TRANSVERSE
         """Type of weir"""
 
@@ -246,8 +246,8 @@ class OutletCurveType(Enum):
 
 class Outlet(Link):
     """An outlet link in a SWMM model"""
-    def __init__(self, name, inlet_node, outlet_node):
-        Link.__init__(self, name, inlet_node, outlet_node)
+    def __init__(self):
+        Link.__init__(self)
         self.inlet_offset = 0.0
         """float: Depth of outlet above inlet node invert"""
 
@@ -418,6 +418,7 @@ class Transects(Section):
     def set_text(self, new_text):
         self.value = []
         item_lines = []
+        line = ''
         found_non_comment = False
         for line in new_text.splitlines():
             if line.startswith(";;") or line.startswith('['):

@@ -23,6 +23,7 @@ from ui.SWMM.frmTitle import frmTitle
 from ui.SWMM.frmAbout import frmAbout
 from ui.SWMM.frmAquifers import frmAquifers
 from ui.SWMM.frmClimatology import frmClimatology
+from ui.SWMM.frmConduits import frmConduits
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -127,7 +128,7 @@ class frmMainSWMM(frmMain):
         tree_nodes_Dividers,
         tree_nodes_StorageUnits]
 
-    tree_links_Conduits = ["Conduits", frmCrossSection]
+    tree_links_Conduits = ["Conduits", frmConduits]
     tree_links_Pumps    = ["Pumps",    None]
     tree_links_Orifices = ["Orifices", None]
     tree_links_Weirs    = ["Weirs",    None]
@@ -453,9 +454,9 @@ class frmMainSWMM(frmMain):
         if category == self.tree_hydrology_Subcatchments[0]:
             for i in range(0, len(self.project.subcatchments.value)):
                 ids.append(self.project.subcatchments.value[i].name)
-        # elif category.lower() == self.tree_hydrology_RainGages[0]:
-            # for i in range(0, len(self.project.raingages.value)):
-            #     ids.append(self.project.raingages.value[i].name)
+        elif category.lower() == self.tree_hydrology_RainGages[0]:
+            for i in range(0, len(self.project.raingages.value)):
+                ids.append(self.project.raingages.value[i].name)
         elif category == self.tree_hydrology_Aquifers[0]:
             for i in range(0, len(self.project.aquifers.value)):
                 ids.append(self.project.aquifers.value[i].name)

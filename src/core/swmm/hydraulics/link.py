@@ -33,6 +33,29 @@ class Conduit(Link):
 
     field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the conduit"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the conduit"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the conduit"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of the conduit"),
+        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the conduit"),
+        ("shape",                   '', "Shape",           "",       '', '', "Click to edit the conduit's cross section geometry"),
+        ("max_depth",               '', "Max. Depth",      "",       '', '', "Maximum depth of cross section"),
+        ("length",                  '', "Length",          "0.0",    '', '', "Conduit length"),
+        ("roughness",               '', "Roughness",       "0.0",    '', '', "Manning's N roughness coefficient"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of conduit invert above node invert at inlet end"),
+        ("outlet_offset",           '', "Outlet Offset",   "0.0",    '', '', "Depth of conduit invert above node invert at outlet end"),
+        ("initial_flow",            '', "Initial Flow",    "0.0",    '', '', "Initial flow in the conduit (flow units)"),
+        ("maximum_flow",            '', "Maximum Flow",    "",       '', '', "Maximum flow allowed in the conduit (flow units)"),
+        ("entry_loss_coefficient",  '', "Entry Loss Coeff.","0.0",   '', '', "Coefficient for energy losses at the entrance of the conduit"),
+        ("exit_loss_coefficient",   '', "Exit Loss Coeff.","0.0",    '', '', "Coefficient for energy losses at the exit of the conduit"),
+        ("loss_coefficient",        '', "Avg. Loss Coeff.","0.0",    '', '', "Coefficient for energy losses along the length of the conduit"),
+        ("seepage",                 '', "Seepage Loss Rate","0.0",   '', '', "Rate of seepage loss into surrounding soil"),
+        ("flap_gate",               '', "Flap Gate",        "False", '', '', "True if a flap gate prevents reverse flow through conduit"),
+        ("culvert_code",            '', "Culvert Code",     "",      '', '', "Culvert type code (leave blank for no culvert")
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)

@@ -87,7 +87,7 @@ class DynamicWave(Section):
         self.max_trials = ''
         """
         The maximum number of trials allowed during a time step to reach convergence
-        when updating hydraulic heads at the conveyance system’s nodes. The default value is 8.
+        when updating hydraulic heads at the conveyance system's nodes. The default value is 8.
         """
 
         self.head_tolerance = ''

@@ -76,13 +76,13 @@ SAVE OUTFLOWS outflows_s.txt
 """
         self.my_options.set_text(test_all_opts)
         assert self.my_options.use_rainfall == "rainfall_u.txt"
-        assert self.my_options.save_rainfall == None
+        assert self.my_options.save_rainfall is None
         assert self.my_options.use_runoff == "runoff_u.txt"
-        assert self.my_options.save_runoff == None
+        assert self.my_options.save_runoff is None
         assert self.my_options.use_hotstart == "hotstart_u.txt"
         assert self.my_options.save_hotstart == "hotstart_s.txt"
         assert self.my_options.use_rdii == "rdii_u.txt"
-        assert self.my_options.save_rdii == None
+        assert self.my_options.save_rdii is None
         assert self.my_options.use_inflows == "inflows_u.txt"
         assert self.my_options.save_outflows == "outflows_s.txt"
 

@@ -69,7 +69,7 @@ class InputFile(object):
 
     def add_sections_from_attributes(self):
         """Add the sections that are attributes of the class to the list of sections."""
-        for attr_value in vars(self).itervalues():
+        for attr_value in vars(self).values():
             if isinstance(attr_value, Section) and attr_value not in self.sections:
                 self.sections.append(attr_value)
 
@@ -83,7 +83,7 @@ class InputFile(object):
         new_section = self.find_section(section_name)
 
         if section_attr is None:  # if there is not a class associated with this name, read it as generic Section
-            print "Default Section for " + section_name
+            print("Default Section for " + section_name)
             if new_section is None:
                 new_section = Section()
                 new_section.SECTION_NAME = section_name

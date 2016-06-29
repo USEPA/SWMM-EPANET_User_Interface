@@ -102,7 +102,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                 with open(file_name, 'w') as writer:
                     writer.write("from Externals.swmm.outputapi import SMOutputWrapper\n")
                     writer.write("from core.graph import SWMM as graphSWMM\n")
-                    writer.write("output = SMOutputWrapper.OutputObject('" + self.output.output_file_name + "')\n")
+                    writer.write("output = SMOutputWrapper.SwmmOutputObject('" + self.output.output_file_name + "')\n")
                     writer.write("elapsed_flag = " + str(self.rbnElapsed.isChecked()) + "\n")
                     writer.write("start_index = " + str(self.cboStart.currentIndex()) + "\n")
                     if self.cboEnd.currentIndex() == self.output.numPeriods:

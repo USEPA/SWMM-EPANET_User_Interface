@@ -72,7 +72,8 @@ class PropertyEditorBackend:
                                         try:
                                             new_value = type(old_value)[combobox.currentText()]
                                         except Exception as ex:
-                                            print "Could not interpret " + str(combobox.currentText()) + " as Enum " + str(type(old_value))
+                                            print("Could not interpret " + str(combobox.currentText()) +
+                                                  " as Enum " + str(type(old_value)))
                                 else:
                                     if self.table.cellWidget(row, column):
                                         # this is something besides a basic cell, assume a non-enum combo
@@ -87,7 +88,7 @@ class PropertyEditorBackend:
                                     try:
                                         setattr(edit_this, meta_item.attribute, new_value)
                                     except Exception as ex:
-                                        print "Could not set " + str(meta_item.attribute) + " to " + str(new_value)
+                                        print("Could not set " + str(meta_item.attribute) + " to " + str(new_value))
             column += 1
 
     def table_currentCellChanged(self):

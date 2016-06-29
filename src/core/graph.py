@@ -14,7 +14,7 @@ import numpy as np
 class SWMM:
     """
         Graphing methods used by SWMM.
-        parameter output is defined in Externals.swmm.outputapi.SMOutputWrapper as OutputObject
+        parameter output is defined in Externals.swmm.outputapi.SMOutputWrapper as SwmmOutputObject
     """
     @staticmethod
     def plot_scatter(output, title,
@@ -23,7 +23,7 @@ class SWMM:
                      start_index=0, num_steps=-1):
         """ Read the specified data from SWMM output and create a scatter plot.
             Args
-            output: Externals.swmm.outputapi.SMOutputWrapper.OutputObject which has the output of interest open.
+            output: Externals.swmm.outputapi.SMOutputWrapper.SwmmOutputObject which has the output of interest open.
             title: Text to display as title of graph window
             object_type_label_x: type of object to use for x values: "Subcatchment", "Node", or "Link"
             object_id_x: identifier/name of the Subcatchment, Node, or Link to supply x values
@@ -35,19 +35,18 @@ class SWMM:
             num_steps: number of model time steps to use. Default = -1 (end at the last value)
             """
         fig = plt.figure()
-        # if num_steps < self.output.numPeriods:
         fig.canvas.set_window_title(title)
         plt.title(title)
 
-        x_values, x_units = output.get_series_by_name(object_type_label_x,
-                                                      object_id_x,
-                                                      attribute_name_x,
-                                                      start_index, num_steps)
+        x_item = output.get_item(output.get_items(object_type_label_x), object_id_x)
+        x_attribute = x_item.get_attribute_by_name(attribute_name_x)
+        x_units = x_attribute.units(output.unit_system)
+        x_values = x_item.get_series(output, x_attribute, start_index, num_steps)
 
-        y_values, y_units = output.get_series_by_name(object_type_label_y,
-                                                      object_id_y,
-                                                      attribute_name_y,
-                                                      start_index, num_steps)
+        y_item = output.get_item(output.get_items(object_type_label_y), object_id_y)
+        y_attribute = x_item.get_attribute_by_name(attribute_name_y)
+        y_units = y_attribute.units(output.unit_system)
+        y_values = y_item.get_series(output, y_attribute, start_index, num_steps)
 
         plt.scatter(x_values, y_values, s=15, alpha=0.5)
 
@@ -83,29 +82,33 @@ class SWMM:
                 left_y_plot.xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d %H:%M'))
 
         for line in lines_list:
-            type_label, object_id, attribute, axis, legend_text = line.split(',', 4)
-            legend_text = legend_text.strip('"')
-            y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
-            if y_values:
-                if axis == "Left":
-                    plot_on = left_y_plot
-                else:
-                    if not right_y_plot:
-                        right_y_plot = fig.add_subplot(111, sharex=left_y_plot, frameon=False)
-                        right_y_plot.yaxis.set_label_position("right")
-                        right_y_plot.yaxis.tick_right()  # Only show right-axis tics on right axis
-                        left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
-                    plot_on = right_y_plot
+            type_label, object_id, attribute_name, axis, legend_text = line.split(',', 4)
+            item = output.get_item(output.get_items(type_label), object_id)
+            if item:
+                attribute = item.get_attribute_by_name(attribute_name)
+                y_values = item.get_series(output, attribute, start_index, num_steps)
+                if y_values:
+                    if axis == "Left":
+                        plot_on = left_y_plot
+                    else:
+                        if not right_y_plot:
+                            right_y_plot = fig.add_subplot(111, sharex=left_y_plot, frameon=False)
+                            right_y_plot.yaxis.set_label_position("right")
+                            right_y_plot.yaxis.tick_right()  # Only show right-axis tics on right axis
+                            left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
+                        plot_on = right_y_plot
 
-                color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
-                new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
-                lines_plotted.append(new_line)
-                line_legends.append(legend_text)
-                old_label = plot_on.get_ylabel()
-                if not old_label:
-                    plot_on.set_ylabel(units)
-                elif units not in old_label:
-                    plot_on.set_ylabel(old_label + ', ' + units)
+                    color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
+                    legend_text = legend_text.strip('"')
+                    new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
+                    lines_plotted.append(new_line)
+                    line_legends.append(legend_text)
+                    old_label = plot_on.get_ylabel()
+                    units = attribute.units(output.unit_system)
+                    if not old_label:
+                        plot_on.set_ylabel(units)
+                    elif units not in old_label:
+                        plot_on.set_ylabel(old_label + ', ' + units)
 
         # fig.suptitle("Time Series Plot")
         # plt.ylabel(parameter_label)

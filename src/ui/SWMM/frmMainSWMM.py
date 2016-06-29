@@ -296,7 +296,7 @@ class frmMainSWMM(frmMain):
     def get_output(self):
         if not self.output:
             if os.path.isfile(self.output_filename):
-                self.output = SMOutputWrapper.OutputObject(self.output_filename)
+                self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
         return self.output
 
     def report_status(self):
@@ -553,8 +553,7 @@ class frmMainSWMM(frmMain):
             new_item = Subcatchment()
             new_item.name = "New"
             if len(self.project.subcatchments.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.subcatchments.value = edit_these
             else:
                 self.project.subcatchments.value.append(new_item)
@@ -564,8 +563,7 @@ class frmMainSWMM(frmMain):
             new_item = Aquifer()
             new_item.name = "New"
             if len(self.project.aquifers.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.aquifers.value = edit_these
             else:
                 self.project.aquifers.value.append(new_item)
@@ -574,8 +572,7 @@ class frmMainSWMM(frmMain):
             new_item = SnowPack()
             new_item.name = "New"
             if len(self.project.snowpacks.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.snowpacks.value = edit_these
             else:
                 self.project.snowpacks.value.append(new_item)
@@ -584,8 +581,7 @@ class frmMainSWMM(frmMain):
             new_item = UnitHydrograph()
             new_item.group_name = "New"
             if len(self.project.hydrographs.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.hydrographs.value = edit_these
             else:
                 self.project.hydrographs.value.append(new_item)
@@ -594,8 +590,7 @@ class frmMainSWMM(frmMain):
             new_item = LIDControl()
             new_item.control_name = "New"
             if len(self.project.lid_controls.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.lid_controls.value = edit_these
             else:
                 self.project.lid_controls.value.append(new_item)
@@ -604,8 +599,7 @@ class frmMainSWMM(frmMain):
             new_item = Junction()
             new_item.name = "New"
             if len(self.project.junctions.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.junctions.value = edit_these
             else:
                 self.project.junctions.value.append(new_item)
@@ -617,8 +611,7 @@ class frmMainSWMM(frmMain):
             new_item = Conduit()
             new_item.name = "New"
             if len(self.project.conduits.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.conduits.value = edit_these
             else:
                 self.project.conduits.value.append(new_item)
@@ -627,8 +620,7 @@ class frmMainSWMM(frmMain):
             new_item = Pump()
             new_item.name = "New"
             if len(self.project.pumps.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.pumps.value = edit_these
             else:
                 self.project.pumps.value.append(new_item)
@@ -640,8 +632,7 @@ class frmMainSWMM(frmMain):
             new_item = Transect()
             new_item.name = "New"
             if len(self.project.transects.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.transects.value = edit_these
             else:
                 self.project.transects.value.append(new_item)
@@ -650,8 +641,7 @@ class frmMainSWMM(frmMain):
             new_item = Pollutant()
             new_item.name = "NewPollutant"
             if len(self.project.pollutants.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.pollutants.value = edit_these
             else:
                 self.project.pollutants.value.append(new_item)
@@ -660,8 +650,7 @@ class frmMainSWMM(frmMain):
             new_item = Landuse()
             new_item.land_use_name = "New"
             if len(self.project.landuses.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.landuses.value = edit_these
             else:
                 self.project.landuses.value.append(new_item)
@@ -671,8 +660,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.CONTROL
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -682,8 +670,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.DIVERSION
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -693,8 +680,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.PUMP1
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -704,8 +690,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.RATING
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -715,8 +700,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.SHAPE
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -726,8 +710,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.STORAGE
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -737,8 +720,7 @@ class frmMainSWMM(frmMain):
             new_item.curve_id = "New"
             new_item.curve_type = CurveType.TIDAL
             if len(self.project.curves.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.curves.value = edit_these
             else:
                 self.project.curves.value.append(new_item)
@@ -747,8 +729,7 @@ class frmMainSWMM(frmMain):
             new_item = TimeSeries()
             new_item.name = "New"
             if len(self.project.timeseries.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.timeseries.value = edit_these
             else:
                 self.project.timeseries.value.append(new_item)
@@ -757,8 +738,7 @@ class frmMainSWMM(frmMain):
             new_item = Pattern()
             new_item.name = "New"
             if len(self.project.patterns.value) == 0:
-                edit_these = []
-                edit_these.append(new_item)
+                edit_these = [new_item]
                 self.project.patterns.value = edit_these
             else:
                 self.project.patterns.value.append(new_item)
@@ -874,6 +854,9 @@ class frmMainSWMM(frmMain):
             prefix, extension = os.path.splitext(file_name)
             self.status_file_name = prefix + self.status_suffix
             self.output_filename = prefix + '.out'
+            if self.output:
+                self.output.close()
+                self.output = None
             # if not os.path.exists(self.model_path):
             #     if 'darwin' in sys.platform:
             #         lib_name = 'libswmm.dylib'

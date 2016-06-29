@@ -85,9 +85,9 @@ class Conduit(Link):
             # TODO: provide access to the following:
 
             # self.cross_section = ''
-            """See class CrossSection"""
+            """See class CrossSection"""             # from [XSECTIONS] table
 
-            # self.entry_loss_coefficient = 0.0
+            # self.entry_loss_coefficient = 0.0      # from [LOSSES] table
             """Head loss coefficient associated with energy losses at the entrance of the conduit"""
 
             # self.exit_loss_coefficient = 0.0

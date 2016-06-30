@@ -26,7 +26,10 @@ from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmConduits import frmConduits
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
+from ui.SWMM.frmOrifices import frmOrifices
+from ui.SWMM.frmOutlets import frmOutlets
 from ui.SWMM.frmPatternEditor import frmPatternEditor
+from ui.SWMM.frmPumps import frmPumps
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmJunction import frmJunction
 from ui.SWMM.frmSubcatchments import frmSubcatchments
@@ -34,6 +37,7 @@ from ui.SWMM.frmLID import frmLID
 from ui.SWMM.frmSnowPack import frmSnowPack
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 from ui.SWMM.frmTransect import frmTransect
+from ui.SWMM.frmWeirs import frmWeirs
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmLandUses import frmLandUses
@@ -56,6 +60,9 @@ from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import Pump
+from core.swmm.hydraulics.link import Orifice
+from core.swmm.hydraulics.link import Outlet
+from core.swmm.hydraulics.link import Weir
 from core.swmm.hydraulics.link import Transect
 from core.swmm.quality import Landuse
 from core.swmm.curves import Curve
@@ -129,10 +136,10 @@ class frmMainSWMM(frmMain):
         tree_nodes_StorageUnits]
 
     tree_links_Conduits = ["Conduits", frmConduits]
-    tree_links_Pumps    = ["Pumps",    None]
-    tree_links_Orifices = ["Orifices", None]
-    tree_links_Weirs    = ["Weirs",    None]
-    tree_links_Outlets  = ["Outlets",  None]
+    tree_links_Pumps    = ["Pumps",    frmPumps]
+    tree_links_Orifices = ["Orifices", frmOrifices]
+    tree_links_Weirs    = ["Weirs",    frmWeirs]
+    tree_links_Outlets  = ["Outlets",  frmOutlets]
     tree_links_items = [
         tree_links_Conduits,
         tree_links_Pumps,
@@ -409,10 +416,14 @@ class frmMainSWMM(frmMain):
         elif edit_name in [item[0] for item in self.tree_items_using_id]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
-        # the following items will respond to a click on a conduit form, not the tree diagram
-        # elif edit_name == tree_links_Conduits[0]:
-        #     frm = frmCrossSection(self)
-
+        elif edit_name == self.tree_links_Orifices[0] and len(self.project.orifices.value) == 0:
+            return None
+        elif edit_name == self.tree_links_Outlets[0] and len(self.project.outlets.value) == 0:
+            return None
+        elif edit_name == self.tree_links_Weirs[0] and len(self.project.weirs.value) == 0:
+            return None
+        elif edit_name == self.tree_links_Pumps[0] and len(self.project.pumps.value) == 0:
+            return None
         # the following items will respond to a click on a node form, not the tree diagram
         # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
         #     frm = frmInflows(self)
@@ -437,10 +448,18 @@ class frmMainSWMM(frmMain):
         elif edit_name == "Aquifers":
             # do all of these for now, will want to restrict to only selected one
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        # the following items will respond to a click on a conduit form, not the tree diagram
         elif edit_name == "Conduits":
-            frm = frmCrossSection(self)
-
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Pumps":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Orifices":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Outlets":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Weirs":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Subcatchments":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         # the following items will respond to a click on a node form, not the tree diagram
         # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
         #     frm = frmInflows(self)
@@ -484,18 +503,18 @@ class frmMainSWMM(frmMain):
         elif category == self.tree_links_Conduits[0]:
             for i in range(0, len(self.project.conduits.value)):
                 ids.append(self.project.conduits.value[i].name)
-        elif category == self.tree_links_Pumps:
+        elif category == self.tree_links_Pumps[0]:
             for i in range(0, len(self.project.pumps.value)):
                 ids.append(self.project.pumps.value[i].name)
-        # elif category == self.tree_links_Orifices[0]:
-            # for i in range(0, len(self.project.orifices.value)):
-            #     ids.append(self.project.orifices.value[i].name)
-        # elif category == self.tree_links_Weirs[0]:
-            # for i in range(0, len(self.project.weirs.value)):
-            #     ids.append(self.project.weirs.value[i].name)
-        # elif category == self.tree_links_Outlets[0]:
-            # for i in range(0, len(self.project.outlets.value)):
-            #     ids.append(self.project.outlets.value[i].name)
+        elif category == self.tree_links_Orifices[0]:
+            for i in range(0, len(self.project.orifices.value)):
+                ids.append(self.project.orifices.value[i].name)
+        elif category == self.tree_links_Weirs[0]:
+            for i in range(0, len(self.project.weirs.value)):
+                ids.append(self.project.weirs.value[i].name)
+        elif category == self.tree_links_Outlets[0]:
+            for i in range(0, len(self.project.outlets.value)):
+                ids.append(self.project.outlets.value[i].name)
         elif category == self.tree_hydraulics_Transects[0]:
             for i in range(0, len(self.project.transects.value)):
                 ids.append(self.project.transects.value[i].name)
@@ -616,7 +635,7 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.conduits.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        elif section_name == self.tree_links_Pumps:
+        elif section_name == self.tree_links_Pumps[0]:
             new_item = Pump()
             new_item.name = "New"
             if len(self.project.pumps.value) == 0:
@@ -625,9 +644,33 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.pumps.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        # elif section_name == self.tree_links_Orifices[0]:
-        # elif section_name == self.tree_links_Weirs[0]:
-        # elif section_name == self.tree_links_Outlets[0]:
+        elif section_name == self.tree_links_Orifices[0]:
+            new_item = Orifice()
+            new_item.name = "New"
+            if len(self.project.orifices.value) == 0:
+                edit_these = [new_item]
+                self.project.orifices.value = edit_these
+            else:
+                self.project.orifices.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_links_Weirs[0]:
+            new_item = Weir()
+            new_item.name = "New"
+            if len(self.project.weirs.value) == 0:
+                edit_these = [new_item]
+                self.project.weirs.value = edit_these
+            else:
+                self.project.weirs.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_links_Outlets[0]:
+            new_item = Outlet()
+            new_item.name = "New"
+            if len(self.project.outlets.value) == 0:
+                edit_these = [new_item]
+                self.project.outlets.value = edit_these
+            else:
+                self.project.outlets.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_hydraulics_Transects[0]:
             new_item = Transect()
             new_item.name = "New"

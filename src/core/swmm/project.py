@@ -171,9 +171,20 @@ class Project(InputFile):
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 
-        # self.orifices = [Orifice] # ORIFICES # orifice link information
-        # self.weirs = [Weir] # WEIRS # weir link information
-        # self.outlets = [Outlet] # OUTLETS # outlet link information
+        self.orifices = SectionAsListOf("[ORIFICES]", Orifice,
+            ";;Name          \tFrom Node       \tTo Node         \tType            \tOffset  \tCd      \tGated   \tOrate   \n"
+            ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------\t--------")
+        # orifice link information
+
+        self.weirs = SectionAsListOf("[WEIRS]", Weir,
+            ";;Name          \tFrom Node       \tTo Node         \tType            \tCrestHt \tCd      \tGated   \tEC      \tCd2     \tSur     \tWidth   \tSurface \n"
+            ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------\t--------\t--------\t--------")
+        # weir link information
+
+        self.outlets = SectionAsListOf("[OUTLETS]", Outlet,
+            ";;Name          \tFrom Node       \tTo Node         \tOffset  \tType            \tQcurve  \tC1     \tC2       \tGated   \n"
+            ";;--------------\t----------------\t----------------\t--------\t----------------\t--------\t--------\t--------\t--------")
+        # outlet link information
 
         self.xsections = SectionAsListOf("[XSECTIONS]", CrossSection,
             ";;Link          \tShape       \tGeom1           \tGeom2     \tGeom3     \tGeom4     \tBarrels   \tCulvert   \n"

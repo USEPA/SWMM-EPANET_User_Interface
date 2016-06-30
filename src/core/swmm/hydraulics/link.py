@@ -139,6 +139,19 @@ class Pump(Link):
 
     field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{}"
 
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the pump"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the pump"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the pump"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of the pump"),
+        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the pump"),
+        ("pump_curve",              '', "Pump Curve",      "*",      '', '', "Name of pump curve (or * for ideal pump)"),
+        ("initial_status",          '', "Initial Status",  "ON",     '', '', "Initial Status of the pump (ON or OFF)"),
+        ("startup_depth",           '', "Startup Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns on"),
+        ("shutoff_depth",           '', "Shutoff Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns off")
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)
@@ -148,7 +161,7 @@ class Pump(Link):
             self.pump_curve = ""
             """str: Associated pump curve"""
 
-            self.initial_status = 0.0
+            self.initial_status = ""
             """float: Initial status of the pump"""
 
             self.startup_depth = 0.0
@@ -191,6 +204,25 @@ class OrificeType(Enum):
 
 class Orifice(Link):
     """An orifice link in a SWMM model"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of orifice"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of orifice"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of orifice"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of orifice"),
+        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify orifice"),
+        ("type ",                   '', "Type",            "",       '', '', "Type of orifice"),
+        ("cross_section",           '', "Shape",           "",       '', '', "Orifice shape"),
+        ("height",                  '', "Height",          "1.0",    '', '', "Height of orifice opening when fully opened"),
+        ("width",                   '', "Width",           "1.0",    '', '', "Width of orifice opening when fully opened"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of bottom of orifice opening from inlet node invert"),
+        ("discharge_coefficient",   '', "Discharge Coeff.",   "0.0",   '', '', "Discharge coefficient"),
+        ("flap_gate",               '', "Flap Gate",          "False", '', '', "True if orifice contains a flap gate to prevent backflow"),
+        ("o_rate",                  '', "Time to Open/Close", "0.0",   '', '', "Time to open/close a gated orifice")
+    ))
+
     def __init__(self):
         Link.__init__(self)
         self.type = OrificeType.SIDE
@@ -227,6 +259,29 @@ class RoadSurfaceType(Enum):
 
 class Weir(Link):
     """A weir link in a SWMM model"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of weir"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of weir"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of weir"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of the weir"),
+        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the weir"),
+        ("type ",                   '', "Type",            "",       '', '', "Type of weir"),
+        ("height",                  '', "Height",          "1.0",    '', '', "Vertical height of weir opening"),
+        ("length",                  '', "Length",          "1.0",    '', '', "Horizontal length of weir crest (or crown for V-Notch weir)"),
+        ("side_slope",              '', "Side Slope",      "0.0",    '', '', "Slope (width-to-height) of TRAPEZOIDAL weir side walls"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of bottom of weir opening from inlet node invert"),
+        ("discharge_coefficient",   '', "Discharge Coeff.","0.0",    '', '', "Discharge coefficient for central portion of weir"),
+        ("flap_gate",               '', "Flap Gate",       "False",  '', '', "True if weir contains a flap gate to prevent backflow"),
+        ("end_contractions",        '', "End Contractions","0",      '', '', "Number of end contractions"),
+        ("end_coefficient",         '', "End Coeff.",      "0",      '', '', "Discharge coefficient for flow through the triangular ends of a TRAPEZOIDAL weir"),
+        ("can_surcharge",           '', "Can Surcharge",   "False",  '', '', "True if weir can surcharge"),
+        ("road_width",              '', "Road Width",      "0.0",    '', '', "Width of road lanes and shoulders if roadway weir"),
+        ("road_surface",            '', "Road Surface",    "",       '', '', "Type of road surface if roadway weir")
+    ))
+
     def __init__(self):
         Link.__init__(self)
         self.type = WeirType.TRANSVERSE
@@ -269,6 +324,23 @@ class OutletCurveType(Enum):
 
 class Outlet(Link):
     """An outlet link in a SWMM model"""
+    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of outlet"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of outlet"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of outlet"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of the outlet"),
+        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the outlet"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of outlet above inlet node invert"),
+        ("flap_gate",               '', "Flap Gate",       "False",  '', '', "True if outlet contains a flap gate to prevent backflow"),
+        ("curve_type",              '', "Rating Curve",    "",       '', '', "Method of defining flow as a function of either freeboard depth or head across the outlet"),
+        ("coefficient",             '', "Functional Curve Coefficient", "0.0",    '', '', "A-value in expression Outflow = A*y^B for y(=depth or head)"),
+        ("exponent",                '', "Functional Curve Exponent",    "0.0",    '', '', "B-value in expression Outflow = A*y^B for y(=depth or head)"),
+        ("rating_curve",            '', "Tabular Curve Name",           "",       '', '', "Name of rating curve that relates outflow to either depth or head")
+    ))
+
     def __init__(self):
         Link.__init__(self)
         self.inlet_offset = 0.0

@@ -138,7 +138,7 @@ class EPANET:
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
-        for time_index in range(0, output.numPeriods):
+        for time_index in range(0, output.num_periods):
             x_values.append(output.elapsed_hours_at_index(time_index))
 
         line_count = 0
@@ -159,8 +159,7 @@ class EPANET:
             raise Exception("No lines were selected to graph")
 
     @staticmethod
-    def update_profile(output, items, x_values,
-                                        attribute, fig_number, time_index):
+    def update_profile(output, items, x_values, attribute, fig_number, time_index):
         if time_index >= 0:
             fig = plt.figure(fig_number)
             fig.clear()
@@ -171,11 +170,14 @@ class EPANET:
             parameter_label = attribute.name
             if units:
                 parameter_label += ' (' + units + ')'
+
+            all_y_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+
             y_values = []
             min_y = 999.9
 
             for (item, x_value) in zip(items, x_values):
-                y = item.get_value(output, attribute, time_index)
+                y = all_y_values[item.index]
                 if min_y == 999.9 or y < min_y:
                     min_y = y
                 y_values.append(y)
@@ -240,14 +242,14 @@ class EPANET:
         x_values = []
         produced = []
         consumed = []
-        for time_index in range(0, output.numPeriods):
+        for time_index in range(0, output.num_periods):
             x_values.append(output.elapsed_hours_at_index(time_index))
             produced.append(0)
             consumed.append(0)
 
         for node in output.nodes:
             node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
-            for time_index in range(0, output.numPeriods):
+            for time_index in range(0, output.num_periods):
                 flow = node_flows[time_index]
                 if flow > 0:
                     consumed[time_index] += flow

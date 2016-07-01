@@ -71,13 +71,13 @@ class SwmmOutputCategoryBase:
             num_values: number of values to retrieve, or -1 to get all values starting at start_index.
         """
         if num_values == -1:
-            num_values = output.numPeriods - start_index
-        if start_index < 0 or start_index >= output.numPeriods:
+            num_values = output.num_periods - start_index
+        if start_index < 0 or start_index >= output.num_periods:
             raise Exception("Start Time Index " + str(start_index) +
-                            " Outside Number of TimeSteps " + str(output.numPeriods))
-        if num_values < 1 or start_index + num_values > output.numPeriods:
+                            " Outside Number of TimeSteps " + str(output.num_periods))
+        if num_values < 1 or start_index + num_values > output.num_periods:
             raise Exception("Series Length " + str(num_values) +
-                            " Outside Number of TimeSteps " + str(output.numPeriods))
+                            " Outside Number of TimeSteps " + str(output.num_periods))
         returned_length = c_int()
         error_new = c_int()
         ask_for_length = num_values
@@ -153,10 +153,15 @@ class SwmmOutputCategoryBase:
 
 
 class SwmmOutputAttribute():
-    def __init__(self, index, name, units):
+    def __init__(self, index, name, units, str_format='{:7.2f}'):
         self.index = index
         self.name = name
         self._units = units
+        self.str_format = str_format
+
+    def str(self, value):
+        """Format a value using the string format of this attribute"""
+        return self.str_format.format(value)
 
     def units(self, unit_system):
         return self._units[unit_system]
@@ -407,10 +412,10 @@ class SwmmOutputObject(object):
         RawReportStart = self._call_double(_lib.SMO_getStartTime)  # decimal (Julian) days since 12 AM on 12/30/1899
         self.StartDate = datetime.datetime(1899, 12, 30) + datetime.timedelta(RawReportStart)
         self.reportStep = self._call_int(_lib.SMO_getTimes, _lib.reportStep)
-        self.numPeriods = self._call_int(_lib.SMO_getTimes, _lib.numPeriods)
-        self.simDuration = self.reportStep * self.numPeriods
+        self.num_periods = self._call_int(_lib.SMO_getTimes, _lib.numPeriods)
+        self.simDuration = self.reportStep * self.num_periods
         self.EndDate = self.StartDate + datetime.timedelta(seconds=self.simDuration)
-        # self.all_dates = pandas.date_range(start=self.StartDate, end=self.EndDate, periods=self.numPeriods)
+        # self.all_dates = pandas.date_range(start=self.StartDate, end=self.EndDate, periods=self.num_periods)
 
         # _lib.SMO_getTimes(self.ptrapi, _lib.SMO_simDuration, byref(cint))
         # self.simDuration = cint.value

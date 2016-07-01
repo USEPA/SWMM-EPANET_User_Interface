@@ -518,6 +518,9 @@ class frmMainEPANET(frmMain):
                     prefix, extension = os.path.splitext(file_name)
                     self.status_file_name = prefix + self.status_suffix
                     self.output_filename = prefix + '.out'
+                    if self.output:
+                        self.output.close()
+                        self.output = None
                     model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
@@ -536,8 +539,15 @@ class frmMainEPANET(frmMain):
 
                     frmRun.Execute()
                     self.report_status()
-                    self.output = ENOutputWrapper.OutputObject(self.output_filename)
-                    return
+                    try:
+                        self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                    self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
                     QMessageBox.information(None, self.model,

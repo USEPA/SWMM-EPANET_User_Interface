@@ -48,7 +48,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self.cboStart.clear()
         self.cboEnd.clear()
         elapsed = self.rbnElapsed.isChecked()
-        for time_index in range(0, self.output.numPeriods):
+        for time_index in range(0, self.output.num_periods):
             if elapsed:
                 time_string = self.output.get_time_string(time_index)
             else:
@@ -105,7 +105,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     writer.write("output = SMOutputWrapper.SwmmOutputObject('" + self.output.output_file_name + "')\n")
                     writer.write("elapsed_flag = " + str(self.rbnElapsed.isChecked()) + "\n")
                     writer.write("start_index = " + str(self.cboStart.currentIndex()) + "\n")
-                    if self.cboEnd.currentIndex() == self.output.numPeriods:
+                    if self.cboEnd.currentIndex() == self.output.num_periods:
                         writer.write("num_steps = -1\n")
                     else:
                         writer.write("end_index = " + str(self.cboEnd.currentIndex()) + "\n")

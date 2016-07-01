@@ -79,7 +79,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
                     else:
                         column_headers.append(selected_variable + ' at ' + object_label + ' ' + selected_location + units)
                     num_columns += 1
-                    this_column_formatted = ['{:7.2f}'.format(val) for val in this_column_values]
+                    this_column_formatted = [attribute.format.format(val) for val in this_column_values]
                     column_data.append(this_column_formatted)
 
         self._frmOutputTable = frmGenericListOutput(self._main_form, "SWMM Table Output")
@@ -112,7 +112,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
     def cboTime_currentIndexChanged(self, newIndex):
         self.cboStart.clear()
         self.cboEnd.clear()
-        for time_index in range(0, self.output.numPeriods):
+        for time_index in range(0, self.output.num_periods):
             if newIndex == 0:
                 time_string = self.output.get_time_string(time_index)
             else:

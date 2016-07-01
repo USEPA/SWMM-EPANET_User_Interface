@@ -6,8 +6,8 @@ Author: Bryant E. McDonnell
 Date: 12/7/2015
 Language: Anglais
 
-Edited for inclusion in SWMM-EPANET User Interface project
-April-May 2016
+Refactored for inclusion in SWMM-EPANET User Interface project
+2016
 Mark Gray, RESPEC
 for US EPA
 
@@ -16,23 +16,14 @@ for US EPA
 from ctypes import *
 
 import Externals.epanet.outputapi.outputapi as _lib
-
-# ENR_NodeAttribute
-from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
-# ENR_LinkAttribute
-from Externals.epanet.outputapi.outputapi import ENR_flow,ENR_velocity,ENR_headloss,ENR_avgQuality
-from Externals.epanet.outputapi.outputapi import ENR_status,ENR_setting,ENR_rxRate,ENR_frctnFctr
-
-# ctypes utility variables created once to avoid overhead of creating every time they are needed
-_label  = _lib.String((_lib.MAXID + 1) * '\0')
-_errmsg = _lib.String((_lib.MAXMSG + 1) * '\0')
+# ctypes utility variable created once to avoid overhead of creating every time needed
 _cint = c_int()
 
 
-class ENR_item:
+class ENR_categoryBase:
     """ This class is not used directly, it is as a base class with shared code for ENR_node_type and ENR_link_type.
-        self.id store the ID/name of the item which could be text or numeric.
-        self.index store the index of this item used when accessing the binary file.
+        self.id stores the ID/name of the item and can be text or numeric.
+        self.index stores the index of this item used when accessing the binary file.
         Code outside this module should not need to access self.index. """
     TypeLabel = "Base"
 
@@ -46,89 +37,89 @@ class ENR_item:
     @classmethod
     def get_list(cls, output):
         """ Read the list of all items of this class from the output file.
+            Intended to be called only in the constructor of the output file object.
             Args
             output (OutputObject): object that has already opened the desired output file.
             Returns (list): Python list of all objects of this type.
         """
         items = []
-        _lib.ENR_getNetSize(output.ptrapi, cls._count_flag, byref(_cint))
-        item_count = _cint.value
-        for index in range(0, item_count - 1):
-            cls._get_id(output.ptrapi, index, _label)
-            items.append(cls(str(_label), index))
+
+        item_count = output._call_int(_lib.ENR_getNetSize, cls._count_flag)
+        ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
+        for index in range(1, item_count + 1):
+            cls._get_name(output.ptrapi, cls._elementType, index, ctypes_name)
+            items.append(cls(str(ctypes_name), index))
         return items
 
-    def get_value(self, output, attribute, time_index):
-        """ Purpose: Get a single result for particular item, time, and attribute.
-            Args
-            output: OutputObject that already has the desired output file open.
-            attribute: attribute to get values of - must be an ENR_attribute from self.Attributes.
-            time_index: time index to retrieve, 0 is the first time index.
-        """
-        ctypes_return = c_float()
-        return_code = self._get_value(output.ptrapi, time_index, self.index, attribute.index, byref(ctypes_return))
-        if return_code == 0:
-            return ctypes_return.value
-        else:
-            print "Error in get_value({}, {}, {})".format(str(self.id), str(time_index), str(attribute.name))
-            output.RaiseError(return_code)
+    # def get_value(self, output, attribute, time_index):
+    #     """ Purpose: Get a single result for particular item, time, and attribute.
+    #         Args
+    #         output: OutputObject that already has the desired output file open.
+    #         attribute: attribute to get values of - must be an ENR_attribute from self.Attributes.
+    #         time_index: time index to retrieve, 0 is the first time index.
+    #     """
+    #     ctypes_return = c_float()
+    #     return_code = self._get_value(output.ptrapi, time_index, self.index, attribute.index, byref(ctypes_return))
+    #     if return_code == 0:
+    #         return ctypes_return.value
+    #     else:
+    #         print("Error in get_value({}, {}, {})".format(str(self.id), str(time_index), str(attribute.name)))
+    #         output._raise_error(return_code)
 
-    def get_value_formatted(self, output, attribute, time_index):
-        val = self.get_value(output, attribute, time_index)
-        if attribute == ENR_link_type.AttributeStatus and val in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
-            return ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
-        else:
-            return '{:7.2f}'.format(val)
-
-    def get_series(self, output, attribute, start_index=0, num_values=-1):
+    def get_series(self, output, attribute, start_index=0, end_index=-1):
         """
             Purpose: Get time series results for the requested attribute.
             Args
             output: OutputObject that already has the desired output file open.
             attribute: attribute to get values of - must be an ENR_attribute from self.Attributes.
             start_index: first time index to retrieve, default = 0 for first time index.
-            num_values: number of values to retrieve, or -1 to get all values starting at start_index.
+            end_index: last time index to retrieve, or -1 to get all values starting at start_index.
         """
-        if num_values == -1:
-            num_values = output.numPeriods - start_index
-        if start_index < 0 or start_index >= output.numPeriods:
-            raise Exception("Start Time Index " + str(start_index) + \
-                            " Outside Number of TimeSteps " + str(output.numPeriods))
-        if num_values < 1 or start_index + num_values > output.numPeriods:
-            raise Exception("Series Length " + str(num_values) + \
-                            " Outside Number of TimeSteps " + str(output.numPeriods))
+        if end_index == -1:
+            end_index = output.num_periods - 1
+        if start_index < 0:
+            raise Exception("get_series start_index " + str(start_index) + " cannot be less than zero.")
+        if start_index >= output.num_periods:
+            raise Exception("get_series start_index " + str(start_index) +
+                            " must be less than number of time steps " + str(output.num_periods))
+        if end_index < start_index:
+            raise Exception("get_series end_index " + str(end_index) +
+                            " less than start_index " + str(start_index))
+        if end_index >= output.num_periods:
+            raise Exception("get_series end_index " + str(end_index) +
+                            " must be less than number of time steps " + str(output.num_periods))
         returned_length = c_int()
         error_new = c_int()
-        ask_for_length = num_values
-        if output.newOutValueSeriesLengthIsEnd:
-            ask_for_length += start_index + 1
-        SeriesPtr = _lib.ENR_newOutValueSeries(output.ptrapi, start_index,
-                                               ask_for_length, byref(returned_length), byref(error_new))
+        ask_for_end = end_index
+        # if output.newOutValueSeriesLengthIsEnd:
+        #     ask_for_end += start_index + 1
+        series_pointer = _lib.ENR_newOutValueSeries(output.ptrapi, start_index,
+                                                    ask_for_end, byref(returned_length), byref(error_new))
         if error_new.value != 0:
-            print "Error " + str(error_new.value)\
-                  + " allocating series start=" + str(start_index) + ", len=" + str(num_values)
-            output.RaiseError(error_new.value)
+            print("Error " + str(error_new.value) +
+                  " allocating series start=" + str(start_index) + ", end=" + str(ask_for_end))
+            output._raise_error(error_new.value)
 
         if self.index >= 0:
             error_get = self._get_series(output.ptrapi,
-                                      self.index,
-                                      attribute.index,
-                                      start_index,
-                                      returned_length.value,
-                                      SeriesPtr)
+                                         self.index,
+                                         attribute.index,
+                                         start_index,
+                                         returned_length.value,
+                                         series_pointer)
         else:
             error_get = self._get_series(output.ptrapi,
-                                      attribute.index,
-                                      start_index,
-                                      returned_length.value,
-                                      SeriesPtr)
+                                         attribute.index,
+                                         start_index,
+                                         returned_length.value,
+                                         series_pointer)
 
         if error_get != 0:
-            print "Error reading series " + self.TypeLabel + " " + str(self.id) + ', att #' + str(attribute.index)
-            output.RaiseError(error_get)
+            print("Error reading series " + self.TypeLabel + " " + str(self.id) + ', att #' + str(attribute.index))
+            output._raise_error(error_get)
 
-        build_array = [SeriesPtr[i] for i in range(returned_length.value)]
-        _lib.ENR_free(SeriesPtr)
+        build_array = [series_pointer[i] for i in range(returned_length.value)]
+        _lib.ENR_free(series_pointer)
         return build_array
 
     @classmethod
@@ -138,24 +129,61 @@ class ENR_item:
             output: OutputObject that already has the desired output file open.
             attribute: attribute to get values of - must be an ENR_attribute from self.Attributes.
             time_index: time index to retrieve, 0 is the first time index.
+            Examples
+            for node in output.nodes:
+                values = node.get_all_attributes_at_time(output, time_index)
+                for attribute in (node.AttributeDemand, node.AttributeHead):
+                    print(attribute.name, attribute.str(values[attribute.index]))
+
         """
         returned_length = c_int()
         error_new = c_int()
-        ValArrayPtr = _lib.ENR_newOutValueArray(output.ptrapi, _lib.ENR_getAttribute,
-                                                cls._elementType, byref(returned_length), byref(error_new))
+        array_pointer = _lib.ENR_newOutValueArray(output.ptrapi, _lib.ENR_getAttribute,
+                                                  cls._elementType, byref(returned_length), byref(error_new))
         if error_new.value != 0:
-            print "Error " + str(error_new.value) + " calling ENR_newOutValueArray for " + cls.TypeLabel
-            output.RaiseError(error_new.value)
+            print("Error " + str(error_new.value) + " calling ENR_newOutValueArray for " + cls.TypeLabel)
+            output._raise_error(error_new.value)
 
-        # ENR_getLinkAttribute.argtypes = [POINTER(ENResultsAPI), c_int, ENR_LinkAttribute, POINTER(c_float)]
-
-        error_get = cls._get_attribute(output.ptrapi, time_index, attribute.index, ValArrayPtr)
+        error_get = cls._get_attribute(output.ptrapi, time_index, attribute.index, array_pointer)
         if error_get != 0:
-            print "Error reading all attributes for " + cls.TypeLabel + " at " + str(time_index) + ', att ' + str(attribute.name)
-            output.RaiseError(error_get)
+            print("Error reading " + str(attribute.name) + " for all " + cls.TypeLabel + "s at " + str(time_index))
+            output._raise_error(error_get)
 
-        BldArray = [ValArrayPtr[i] for i in range(returned_length.value)]
-        _lib.ENR_free(ValArrayPtr)
+        BldArray = [array_pointer[i] for i in range(returned_length.value)]
+        _lib.ENR_free(array_pointer)
+        return BldArray
+
+    def get_all_attributes_at_time(self, output, time_index):
+        """
+        For one location at one time, get all attributes.
+
+        Returns: List of attribute values in the same order as self.attributes.
+
+        Examples
+
+        output = ENOutputWrapper.OutputObject("Net1.out")
+        for time_index in range(0, output.num_periods):
+            for node in output.nodes:
+                attribute_values = node.get_all_attributes_at_time(output, time_index)
+                for value, definition in zip(attribute_values, node.attributes):
+                    print("At node " + node.id + ", attribute " + definition.name +
+                          " has value " + str(value) + " at time step " + time_index)
+        """
+
+        returned_length = c_int()
+        error_new = c_int()
+        array_pointer = _lib.ENR_newOutValueArray(output.ptrapi,
+                                                  _lib.ENR_getAttribute,
+                                                  self._elementType,
+                                                  byref(returned_length),
+                                                  byref(error_new))
+
+        error_get = self._get_result(output.ptrapi, time_index, self.index, array_pointer)
+        if error_get != 0:
+            print("Error reading all attributes for " + self.id + " at " + str(time_index))
+            output._raise_error(error_get)
+        BldArray = [array_pointer[i] for i in range(returned_length.value)]
+        _lib.ENR_free(array_pointer)
         return BldArray
 
     @classmethod
@@ -173,64 +201,100 @@ class ENR_item:
 
 
 class ENR_attribute():
-    def __init__(self, index, name, units):
+    """ Attribute type for accessing and displaying attribute name, units, and string-formatted value.
+        Attributes
+        index (int): index within the outputapi library of this attribute, used internally for requesting this attribute
+                     and used for finding this attribute in the array returned by get_all_attributes_at_time.
+        name (str): human-readable label for this attribute.
+        units: when creating, pass in a 2-element tuple with ('English', 'Metric') unit labels
+               used by units() function to return the appropriate units for the system in use.
+        str_format (str): preferred format for converting the values retrieved for this attribute into a string;
+                          used in str(value) function.
+     """
+    def __init__(self, index, name, units, str_format='{:7.2f}'):
         self.index = index
         self.name = name
         self._units = units
+        self.str_format = str_format
+
+    def str(self, value):
+        """Format a value using the string format of this attribute"""
+        return self.str_format.format(value)
 
     def units(self, unit_system):
+        """Retrieve the units label for this attribute for the specified unit system."""
         return self._units[unit_system]
 
 
-class ENR_node_type(ENR_item):
+class _ENR_attributeLinkStatus(ENR_attribute):
+    """ Specialized version of ENR_attribute that overrides str method for displaying link status """
+    def str(self, value):
+        if value in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
+            return ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(value)]
+        else:
+            return str(value)
+
+
+class ENR_node_type(ENR_categoryBase):
+    """
+    A node of this type can be used to access values from an EPANET output file using the methods in ENR_categoryBase.
+    Junctions, tanks, and reservoirs all use this same class.
+    Attributes are defined at the class level and are shared by all nodes.
+    API methods are private and are only used internally by methods in ENR_categoryBase.
+    """
     TypeLabel = "Node"
 
-    AttributeDemand   = ENR_attribute(ENR_demand,   "Demand",   ('CFS', 'LPS'))
-    AttributeHead     = ENR_attribute(ENR_head,     "Head",     ('ft', 'm'))
-    AttributePressure = ENR_attribute(ENR_pressure, "Pressure", ('psi', 'm'))
-    AttributeQuality  = ENR_attribute(ENR_quality,  "Quality",  ('mg/L', 'mg/L'))
+    AttributeDemand   = ENR_attribute(_lib.ENR_demand,   "Demand",   ('', ''))
+    AttributeHead     = ENR_attribute(_lib.ENR_head,     "Head",     ('ft', 'm'))
+    AttributePressure = ENR_attribute(_lib.ENR_pressure, "Pressure", ('psi', 'm'))
+    AttributeQuality  = ENR_attribute(_lib.ENR_quality,  "Quality",  ('mg/L', 'mg/L'))
 
     Attributes = (AttributeDemand, AttributeHead, AttributePressure, AttributeQuality)
 
     _count_flag = _lib.ENR_nodeCount
-    _get_id = _lib.ENR_getNodeID
-    _get_value = _lib.ENR_getNodeValue
+    _get_name = _lib.ENR_getElementName
+    # _get_value = _lib.ENR_getNodeValue
     _get_series = _lib.ENR_getNodeSeries
     _get_attribute = _lib.ENR_getNodeAttribute
     _get_result = _lib.ENR_getNodeResult
     _elementType = _lib.ENR_node
 
 
-class ENR_link_type(ENR_item):
+class ENR_link_type(ENR_categoryBase):
+    """
+    A link of this type can be used to access values from an EPANET output file using the methods in ENR_categoryBase.
+    Pipes, pumps, and valves all use this same class.
+    Attributes are defined at the class level and are shared by all links.
+    API methods are private and are only used internally by methods in ENR_categoryBase.
+    """
     TypeLabel = "Link"
 
-    AttributeFlow           = ENR_attribute(ENR_flow,       'Flow',            ('CFS', 'LPS'))
-    AttributeVelocity       = ENR_attribute(ENR_velocity,   'Velocity',        ('fps', 'm/s'))
-    AttributeHeadloss       = ENR_attribute(ENR_headloss,   'Unit Headloss',   ('ft/Kft', 'm/km'))
-    AttributeQuality        = ENR_attribute(ENR_avgQuality, 'Quality',         ('mg/L', 'mg/L'))
-    AttributeStatus         = ENR_attribute(ENR_status,     'Status',          ('', ''))
-    AttributeSetting        = ENR_attribute(ENR_setting,    'Setting',         ('', ''))
-    AttributeReactionRate   = ENR_attribute(ENR_rxRate,     'Reaction Rate',   ('mg/L/d', 'mg/L/d'))
-    AttributeFrictionFactor = ENR_attribute(ENR_frctnFctr,  'Friction Factor', ('', ''))
+    AttributeFlow           = ENR_attribute(_lib.ENR_flow,              'Flow',            ('', ''))
+    AttributeVelocity       = ENR_attribute(_lib.ENR_velocity,          'Velocity',        ('fps', 'm/s'))
+    AttributeHeadloss       = ENR_attribute(_lib.ENR_headloss,          'Unit Headloss',   ('ft/Kft', 'm/km'))
+    AttributeQuality        = ENR_attribute(_lib.ENR_avgQuality,        'Quality',         ('mg/L', 'mg/L'))
+    AttributeStatus         = _ENR_attributeLinkStatus(_lib.ENR_status, 'Status',          ('', ''))
+    AttributeSetting        = ENR_attribute(_lib.ENR_setting,           'Setting',         ('', ''))
+    AttributeReactionRate   = ENR_attribute(_lib.ENR_rxRate,            'Reaction Rate',   ('mg/L/d', 'mg/L/d'))
+    AttributeFrictionFactor = ENR_attribute(_lib.ENR_frctnFctr,         'Friction Factor', ('', ''), '{:7.3f}')
 
     Attributes = (AttributeFlow, AttributeVelocity, AttributeHeadloss, AttributeQuality,
                   AttributeStatus, AttributeSetting, AttributeReactionRate, AttributeFrictionFactor)
 
     _count_flag = _lib.ENR_linkCount
-    _get_id = _lib.ENR_getLinkID
-    _get_value = _lib.ENR_getLinkValue
+    _get_name = _lib.ENR_getElementName
+    # _get_value = _lib.ENR_getLinkValue
     _get_series = _lib.ENR_getLinkSeries
     _get_attribute = _lib.ENR_getLinkAttribute
     _get_result = _lib.ENR_getLinkResult
     _elementType = _lib.ENR_link
 
-
 ENR_USFlowUnits = ('CFS', 'GPM', 'MGD', 'IMGD', 'AFD')
 ENR_SIFlowUnits = ('LPS', 'LPM', 'MLD', 'CMH', 'CMD')
+ENR_PressureUnits = ('PSI', "meters", "kPa")
 
 ENR_UnitsUS = 0
 ENR_UnitsSI = 1
-#---------------------------------------------------------------------------------------------
 
 
 class OutputObject(object):
@@ -241,81 +305,136 @@ class OutputObject(object):
             Args
             output_file_name (str): full path and file name of EPANET binary output file to open
         """
-        self.ptrapi = c_void_p()
+        self._call_int_return = c_int()  # Private variable used only inside call_int
+        self._call_double_return = c_double()  # Private variable used only inside call_double
         self.output_file_name = str(output_file_name)
-        ret = _lib.ENR_open(byref(self.ptrapi), self.output_file_name)
+        self.ptrapi = _lib.ENR_init()
+        ret = _lib.ENR_open(self.ptrapi, self.output_file_name)
         if ret != 0:
-            self.RaiseError(ret)
-        self.measure_newOutValueSeries()
-        self._get_Units()
-        self._get_NetSize()
-        self._get_Times()
+            self._raise_error(ret)
+        file_version = self._call_int(_lib.ENR_getVersion)
+        print("ENR opened {} Version {}".format(output_file_name, str(file_version)))
+        self._measure_new_out_value_series()
+        self._get_units()
+        self._get_sizes()
+        self._get_times()
         self.nodes = ENR_node_type.get_list(self)
         self.links = ENR_link_type.get_list(self)
+        self.all_items = (self.nodes, self.links)
 
-    def RaiseError(self, ErrNo):
+    def get_items(self, objectTypeLabel):
+        """ Get the list of items of the type whose TypeLabel attribute is objectTypeLabel.
+
+            Args:
+            objectTypeLabel: can be "Subcatchment", "Node" or "Link". (System has no items.)
+
+            Examples:
+                for node get_items("Node"):
+                    print node.id
+        """
+        for items in self.all_items:
+            if items and items[0].TypeLabel == objectTypeLabel:
+                return items
+        return []
+
+    def call(self, function, *args):
+        """ Call any API method whose return value is an integer which indicates an error if != 0
+            Handle the nonzero value by calling RaiseError."""
+        try:
+            ret = function(self.ptrapi, *args)
+            if ret != 0:
+                self._raise_error(ret)
+        except Exception as ex:
+            print(str(ex))
+            raise Exception("SWMM output error calling " + str(function) + ": " + str(ex))
+
+    def _call_int(self, function, *args):
+        """ Call an API method whose return value is an integer indicating an error if != 0
+            and which also returns an integer in the last argument (using byref).
+            call_int handles the return value error flag by calling RaiseError if needed.
+            Do not include the last argument (the return argument) in *args, it will be added internally.
+            The integer value returned is the return value of call_int."""
+        args_to_pass = list(args)
+        args_to_pass.append(byref(self._call_int_return))  # When moving to Python 3.5+, can skip appending and use:
+        self.call(function, *args_to_pass)                 # self.call(function, *args, byref(self._call_int_return))
+        return self._call_int_return.value
+
+    def _call_double(self, function, *args):
+        """ Call an API method whose return value is an integer indicating an error if != 0
+            and which also returns a double in the last argument (using byref).
+            call_double handles the return value error flag by calling RaiseError if needed.
+            Do not include the last argument (the return argument) in *args, it will be added internally
+            The double value returned is the return value of call_double."""
+        args_to_pass = list(args)
+        args_to_pass.append(byref(self._call_double_return))  # When moving to Python 3.5+, can skip appending and use:
+        self.call(function, *args_to_pass)                   # self.call(function, *args, byref(self._call_int_return))
+        return self._call_double_return.value
+
+    def _raise_error(self, ErrNo):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
         #     raise Exception(errmsg.value)
         # else:
         raise Exception("EPANET output error #{0}".format(ErrNo) )
 
-    def measure_newOutValueSeries(self):
-        """Test SMO_newOutValueSeries to see whether it treats the requested length as length or end.
+    def _measure_new_out_value_series(self):
+        """Test ENR_newOutValueSeries to see whether it treats the requested length as length or end.
             Sets self.newOutValueSeriesLengthIsEnd flag so we can adjust how we call this method."""
-        sLength = c_int()
-        ErrNo1 = c_int()
-        SeriesPtr = _lib.ENR_newOutValueSeries(self.ptrapi, 1, 2, byref(sLength), byref(ErrNo1))
-        self.newOutValueSeriesLengthIsEnd = (sLength.value == 1)
-        _lib.ENR_free(SeriesPtr)
 
-    def _get_Units(self):
+        returned_length = c_int()
+        error_new = c_int()
+
+        try:
+            series_pointer = _lib.ENR_newOutValueSeries(self.ptrapi, 0, 1, byref(returned_length), byref(error_new))
+            if error_new.value != 0:
+                print("Error allocating series start to test ENR_newOutValueSeries: " + str(error_new.value))
+                self._raise_error(error_new.value)
+            self.newOutValueSeriesLengthIsEnd = (returned_length.value == 1)
+            _lib.ENR_free(series_pointer)
+        except Exception as ex:
+            print(str(ex))
+            raise Exception("SWMM output error calling ENR_newOutValueSeries: " + str(ex))
+
+    def _get_units(self):
         """
-        Purpose: Read pressure and flow units into self.unit_system, self.flowUnitsLabel, self.pressUnits
+        Purpose: Read pressure and flow units, populate:
+                 self.unit_system, self.flowUnitsLabel, ENR_link_type.AttributeFlow._units,
+                  self.pressUnitsLabel
         """
-        _lib.ENR_getUnits(self.ptrapi, _lib.ENR_flowUnits, byref(_cint))
-        self.flowUnits = _cint.value
-        if self.flowUnits < len(ENR_USFlowUnits):
+        flow_units_index = self._call_int(_lib.ENR_getUnits, _lib.ENR_flowUnits)
+        if flow_units_index < len(ENR_USFlowUnits):
             self.unit_system = ENR_UnitsUS
-            self.flowUnitsLabel = ENR_USFlowUnits[self.flowUnits]
+            self.flowUnitsLabel = ENR_USFlowUnits[flow_units_index]
         else:
             self.unit_system = ENR_UnitsSI
-            self.flowUnitsLabel = ENR_SIFlowUnits[self.flowUnits - len(ENR_USFlowUnits)]
+            self.flowUnitsLabel = ENR_SIFlowUnits[flow_units_index - len(ENR_USFlowUnits)]
 
-        _lib.ENR_getUnits(self.ptrapi, _lib.ENR_pressUnits, byref(_cint))
-        self.pressUnits = _cint.value
-        
-    def _get_NetSize(self):
+        self.pressUnits = self._call_int(_lib.ENR_getUnits, _lib.ENR_pressUnits)
+        self.pressUnitsLabel = ENR_PressureUnits[self.pressUnits]
+
+        # Set private units attributes to match project units
+        ENR_node_type.AttributePressure._units = (self.pressUnitsLabel, self.pressUnitsLabel)
+        ENR_node_type.AttributeDemand._units = (self.flowUnitsLabel, self.flowUnitsLabel)
+        ENR_link_type.AttributeFlow._units = (self.flowUnitsLabel, self.flowUnitsLabel)
+
+    def _get_sizes(self):
         """
         Populates object attributes with the water object counts
         """
-        _lib.ENR_getNetSize(self.ptrapi, _lib.ENR_tankCount, byref(_cint))
-        self.tankCount = _cint.value
+        self.tankCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_tankCount)
+        self.pumpCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_pumpCount)
+        self.valveCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_valveCount)
 
-        _lib.ENR_getNetSize(self.ptrapi, _lib.ENR_pumpCount, byref(_cint))
-        self.pumpCount = _cint.value
-
-        _lib.ENR_getNetSize(self.ptrapi, _lib.ENR_valveCount, byref(_cint))
-        self.valveCount = _cint.value
-
-    def _get_Times(self):
+    def _get_times(self):
         """
         Purpose: Read report and simulation time related parameters.
-        Populate self attributes: reportStart, reportStep, simDuration, numPeriods
+        Populate self attributes: reportStart, reportStep, simDuration, num_periods
         """
-        
-        _lib.ENR_getTimes(self.ptrapi, _lib.ENR_reportStart, byref(_cint))
-        self.reportStart = _cint.value
+        self.reportStart = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStart)
+        self.reportStep  = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStep)
+        self.simDuration = self._call_int(_lib.ENR_getTimes, _lib.ENR_simDuration)
+        self.num_periods  = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
 
-        _lib.ENR_getTimes(self.ptrapi, _lib.ENR_reportStep, byref(_cint))
-        self.reportStep = _cint.value
-        
-        _lib.ENR_getTimes(self.ptrapi, _lib.ENR_simDuration, byref(_cint))
-        self.simDuration = _cint.value
-
-        _lib.ENR_getTimes(self.ptrapi, _lib.ENR_numPeriods, byref(_cint))
-        self.numPeriods = _cint.value
-
-    def get_itemById(self, item_list, item_id):
+    def get_item_from_id(self, item_list, item_id):
         """Retrieve the item from item_list with the specified ID.
         Arguments:
         item_id: ID label of item to find"""
@@ -325,55 +444,16 @@ class OutputObject(object):
         else:
             return None
 
-    # def get_indexById(self, item_list, item_id):
-    #     """Retrieve the item from item_list with the specified ID.
-    #     Arguments:
-    #     item_id: ID label of item to find"""
-    #     item = self.get_itemById(item_list, item_id)
-    #     if item:
-    #         return item.index
-    #     else:
-    #         return -1
-
-    # def get_NodeResult(self, NodeInd, TimeInd):
-    #     """
-    #     Purpose: For a node at given time, get all attributes
-    #     """
-    #     alength = c_int()
-    #     ErrNo1 = c_int()
-    #     ValArrayPtr = _lib.ENR_newOutValueArray(self.ptrapi,
-    #                                             _lib.ENR_getResult,
-    #                                             _lib.ENR_node,
-    #                                             byref(alength),
-    #                                             byref(ErrNo1))
-    #     ErrNo2 = _lib.ENR_getNodeResult(self.ptrapi, TimeInd, NodeInd, ValArrayPtr)
-    #     BldArray = [ValArrayPtr[i] for i in range(alength.value)]
-    #     _lib.ENR_free(ValArrayPtr)
-    #     return BldArray
-    #
-    # def get_LinkResult(self, LinkInd, TimeInd):
-    #     """
-    #     Purpose: For a link at given time, get all attributes
-    #     """
-    #     alength = c_int()
-    #     ErrNo1 = c_int()
-    #     ValArrayPtr = _lib.ENR_newOutValueArray(self.ptrapi,
-    #                                             _lib.ENR_getResult,
-    #                                             _lib.ENR_link,
-    #                                             byref(alength),
-    #                                             byref(ErrNo1))
-    #     ErrNo2 = _lib.ENR_getLinkResult(self.ptrapi, TimeInd, LinkInd, ValArrayPtr)
-    #     BldArray = [ValArrayPtr[i] for i in range(alength.value)]
-    #     _lib.ENR_free(ValArrayPtr)
-    #     return BldArray
-
-    def CloseOutputFile(self):
+    def close(self):
         """
-        Call to close binary file.
+        Close binary file.
         """
-        ret = _lib.ENR_close(byref(self.ptrapi) )
-        if ret != 0:
-            raise Exception('Failed to Close file ' + self.output_file_name)
+        try:
+            ret = _lib.ENR_close(self.ptrapi)
+            if ret != 0:
+                raise Exception('Failed to Close file ' + self.output_file_name)
+        finally:
+            self.ptrapi = None
 
     def elapsed_hours_at_index(self, report_time_index):
         return (report_time_index * self.reportStep) / 3600
@@ -384,8 +464,8 @@ class OutputObject(object):
         minutes = int((total_hours - hours) * 60)
         return '{:02d}:{:02d}'.format(hours, minutes)
 
-    def get_date_string(self, report_time_index):
-        # current date = self.StartDate plus elapsed hours
-        total_hours = self.elapsed_hours_at_index(report_time_index)
-        report_date = self.StartDate + datetime.timedelta(hours=total_hours)
-        return report_date.strftime("%Y-%m-%d %H:%M")
+    # def get_date_string(self, report_time_index):
+    #     # current date = self.StartDate plus elapsed hours
+    #     total_hours = self.elapsed_hours_at_index(report_time_index)
+    #     report_date = self.StartDate + datetime.timedelta(hours=total_hours)
+    #     return report_date.strftime("%Y-%m-%d %H:%M")

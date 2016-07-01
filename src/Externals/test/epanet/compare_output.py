@@ -158,7 +158,7 @@ class RegressionTest(unittest.TestCase):
                 html_file_writer.write('<header><h1>'+'TEST REPORT:'+'</h1></header>')
                 # Write HTML table
                 # Print opening HTML tags -------------------------
-                html_file_writer.write("<htm><body><table border='1'>")
+                html_file_writer.write("<html><body><table border='1'>")
                 # Print the content of the table, line by line ----
                 for i in range(0, len(status)):
                     cur_status = status[i]
@@ -187,9 +187,9 @@ class RegressionTest(unittest.TestCase):
         report = list()
         output_file_benchmark = OutputObject(benchmark_file)
         output_file_candidate = OutputObject(candidate_file)
-        assert output_file_candidate.numPeriods == output_file_benchmark.numPeriods
+        assert output_file_candidate.num_periods == output_file_benchmark.num_periods
 
-        for time_index in range(output_file_benchmark.numPeriods):
+        for time_index in range(output_file_benchmark.num_periods):
             # Compare Node Attributes
             for attribute in ENR_node_type.Attributes:
                 # Get attribute for all nodes at time_index

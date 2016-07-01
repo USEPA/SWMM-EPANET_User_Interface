@@ -26,7 +26,7 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
         self.output = output
         self.cboStart.clear()
         if project and self.output:
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 time_string = self.output.get_time_string(time_index)
                 self.cboStart.addItem(time_string)
                 self.cboEnd.addItem(time_string)

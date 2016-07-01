@@ -21,6 +21,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
         self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
         self.rbnTimeseriesNode.clicked.connect(self.rbnTimeseriesNode_Clicked)
+        self.rbnTimeseriesLink.clicked.connect(self.rbnTimeseriesLink_Clicked)
         self._main_form = main_form
         self.item_type = ENR_node_type
         self.forms = []
@@ -31,7 +32,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.report = Reports(project, output)
         self.cboTime.clear()
         if self.project and self.output:
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 #if self.???:  TODO: give choice between elapsed hours and date
                 self.cboTime.addItem(self.output.get_time_string(time_index))
                 #else:
@@ -103,7 +104,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                     column_header += '\n(' + units + ')'
                 column_headers.append(column_header)
             else:
-                print ("Did not find link attribute " + attribute_index)
+                print ("Did not find attribute " + attribute_index)
 
         frm = frmGenericListOutput(self._main_form, "EPANET Table Output")
         if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
@@ -121,12 +122,12 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             self.make_table(frm, title, time_index, items_in_order,
                             row_headers, attributes, column_headers)
         else:
-            id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
-            if self.rbnNodes.isChecked():
-                item = self.output.get_itemById(self.output.nodes, id)
+            name = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
+            if self.rbnTimeseriesNode.isChecked():
+                item = self.output.get_item_from_id(self.output.nodes, name)
             else:
-                item = self.output.get_itemById(self.output.links, id)
-            title = "Time Series Table - " + self.item_type.TypeLabel + ' ' + id
+                item = self.output.get_item_from_id(self.output.links, name)
+            title = "Time Series Table - " + self.item_type.TypeLabel + ' ' + name
             self.make_timeseries_table(frm, title, item, attributes, column_headers)
         frm.tblGeneric.resizeColumnsToContents()
         frm.show()
@@ -145,8 +146,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         row = 0
         for this_item in items:
             col = 0
+            values = this_item.get_all_attributes_at_time(self.output, time_index)
             for attribute in attributes:
-                val_str = this_item.get_value_formatted(self.output, attribute, time_index)
+                val_str = attribute.str(values[attribute.index])
                 table_cell_widget = QtGui.QTableWidgetItem(val_str)
                 table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                 table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
@@ -157,7 +159,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
     def make_timeseries_table(self, frm, title, item, attributes, column_headers):
         frm.setWindowTitle(title)
         row_headers = []
-        for time_index in range(0, self.output.numPeriods):
+        for time_index in range(0, self.output.num_periods):
             row_headers.append(self.output.get_time_string(time_index))
         tbl = frm.tblGeneric
         tbl.setRowCount(len(row_headers))
@@ -167,10 +169,11 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
         if item:
             row = 0
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 col = 0
+                values = item.get_all_attributes_at_time(self.output, time_index)
                 for attribute in attributes:
-                    val_str = item.get_value_formatted(self.output, attribute, time_index)
+                    val_str = attribute.str(values[attribute.index])
                     table_cell_widget = QtGui.QTableWidgetItem(val_str)
                     table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                     table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)

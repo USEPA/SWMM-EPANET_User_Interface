@@ -75,6 +75,7 @@ from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
 from core.swmm.timeseries import TimeSeries
 from core.swmm.patterns import Pattern
+from core.swmm.project import Label
 
 from Externals.swmm.outputapi import SMOutputWrapper
 
@@ -477,6 +478,8 @@ class frmMainSWMM(frmMain):
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == "Storage Units":
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Map Labels':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
             frm.set_from(self.project, selected_item)
@@ -574,9 +577,9 @@ class frmMainSWMM(frmMain):
         elif category == self.tree_TimePatterns[0]:
             for i in range(0, len(self.project.patterns.value)):
                 ids.append(self.project.patterns.value[i].name)
-        # elif category == self.tree_MapLabels[0]:
-            # for i in range(0, len(self.project.labels.value)):
-            #     ids.append(self.project.labels.value[i].label_text)
+        elif category == self.tree_MapLabels[0]:
+            for i in range(0, len(self.project.labels.value)):
+                ids.append(self.project.labels.value[i].label_text)
         else:
             ids = None
         return ids
@@ -824,7 +827,15 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.patterns.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        # elif section_name == self.tree_MapLabels[0]:
+        elif section_name == self.tree_MapLabels[0]:
+            new_item = Label()
+            new_item.name = "New"
+            if len(self.project.labels.value) == 0:
+                edit_these = [new_item]
+                self.project.labels.value = edit_these
+            else:
+                self.project.labels.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
 
     def delete_object_clicked(self, section_name, item_name):
         if section_name == self.tree_hydrology_Subcatchments[0]:
@@ -852,20 +863,38 @@ class frmMainSWMM(frmMain):
             for value in self.project.junctions.value:
                 if value.name == item_name:
                     self.project.junctions.value.remove(value)
-        # elif section_name == self.tree_nodes_Outfalls[0]:
-        # elif section_name == self.tree_nodes_Dividers[0]:
-        # elif section_name == self.tree_nodes_StorageUnits[0]:
+        elif section_name == self.tree_nodes_Outfalls[0]:
+            for value in self.project.outfalls.value:
+                if value.name == item_name:
+                    self.project.outfalls.value.remove(value)
+        elif section_name == self.tree_nodes_Dividers[0]:
+            for value in self.project.dividers.value:
+                if value.name == item_name:
+                    self.project.dividers.value.remove(value)
+        elif section_name == self.tree_nodes_StorageUnits[0]:
+            for value in self.project.storage.value:
+                if value.name == item_name:
+                    self.project.storage.value.remove(value)
         elif section_name == self.tree_links_Conduits[0]:
             for value in self.project.conduits.value:
                 if value.name == item_name:
                     self.project.conduits.value.remove(value)
-        elif section_name == self.tree_links_Pumps:
+        elif section_name == self.tree_links_Pumps[0]:
             for value in self.project.pumps.value:
                 if value.name == item_name:
                     self.project.pumps.value.remove(value)
-        # elif section_name == self.tree_links_Orifices[0]:
-        # elif section_name == self.tree_links_Weirs[0]:
-        # elif section_name == self.tree_links_Outlets[0]:
+        elif section_name == self.tree_links_Orifices[0]:
+            for value in self.project.orifices.value:
+                if value.name == item_name:
+                    self.project.orifices.value.remove(value)
+        elif section_name == self.tree_links_Weirs[0]:
+            for value in self.project.weirs.value:
+                if value.name == item_name:
+                    self.project.weirs.value.remove(value)
+        elif section_name == self.tree_links_Outlets[0]:
+            for value in self.project.outlets.value:
+                if value.name == item_name:
+                    self.project.outlets.value.remove(value)
         elif section_name == self.tree_hydraulics_Transects[0]:
             for value in self.project.transects.value:
                 if value.name == item_name:
@@ -916,7 +945,10 @@ class frmMainSWMM(frmMain):
             for value in self.project.patterns.value:
                 if value.name == item_name:
                     self.project.patterns.value.remove(value)
-        # elif section_name == self.tree_MapLabels[0]:
+        elif section_name == self.tree_MapLabels[0]:
+            for value in self.project.labels.value:
+                if value.name == item_name:
+                    self.project.labels.value.remove(value)
 
     def run_simulation(self):
         self.output = None

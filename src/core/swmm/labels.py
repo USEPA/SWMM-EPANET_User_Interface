@@ -1,8 +1,12 @@
 import core.coordinates
+from core.inputfile import Section
 
 
-class Label:
+class Label(Section):
     """Assigns coordinates to map labels"""
+
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}"
+
     def __init__(self):
         self.centroid = core.coordinates
         """X and Y coordinates of label centroid"""

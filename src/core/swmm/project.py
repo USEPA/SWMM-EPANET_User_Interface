@@ -23,6 +23,7 @@ from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater
 from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration, CurveNumberInfiltration
 from core.swmm.patterns import Pattern
 from core.swmm.timeseries import TimeSeries
+from core.swmm.labels import Label
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 
 try:
@@ -266,10 +267,13 @@ class Project(InputFile):
                                                  ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
+        self.labels = SectionAsListGroupByID("[LABELS]", Label,
+                                                 ";;X-Coord         \tY-Coord           \tLabel\n")
+        # X,Y coordinates and text of labels
+
         # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        # self.labels = [Section] # LABELS # X,Y coordinates and text of labels
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]

@@ -204,7 +204,7 @@ class OrificeType(Enum):
 
 class Orifice(Link):
     """An orifice link in a SWMM model"""
-    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -259,7 +259,7 @@ class RoadSurfaceType(Enum):
 
 class Weir(Link):
     """A weir link in a SWMM model"""
-    field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:8}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -324,7 +324,7 @@ class OutletCurveType(Enum):
 
 class Outlet(Link):
     """An outlet link in a SWMM model"""
-    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{}"
+    field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:16}\t{:16}\t{:10}\t{:8}\t{}"
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((

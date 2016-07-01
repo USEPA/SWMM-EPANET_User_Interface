@@ -157,33 +157,44 @@ class Project(InputFile):
                                          ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # junction node information
 
-        # self.outfalls = [Outfall] # OUTFALLS # outfall node information
-        # self.dividers = [Divider] # DIVIDERS # flow divider node information
-        # self.storage = [StorageUnit] # STORAGE # storage node information
+        self.outfalls = SectionAsListOf("[OUTFALLS]", Outfall,
+                                         ";;Name          \tElevation \tType      \tStage Data      \tGated   \tRoute To\n"
+                                         ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
+        #  outfall node information
+
+        self.dividers = SectionAsListOf("[DIVIDERS]", Divider,
+                                         ";;Name          \tElevation \tDiverted Link   \tType      \tParameters\n"
+                                         ";;--------------\t----------\t----------------\t----------\t----------")
+        #  flow divider node information
+
+        self.storage = SectionAsListOf("[STORAGE]", StorageUnit,
+                                         ";;Name          \tElev.   \tMaxDepth  \tInitDepth  \tShape     \tCurve Name/Params           \tN/A     \tFevap   \tPsi     \tKsat    \tIMD\n"
+                                         ";;--------------\t--------\t----------\t-----------\t----------\t----------------------------\t--------\t--------\t--------\t--------\t--------")
+        #  storage node information
 
         self.conduits = SectionAsListOf("[CONDUITS]", Conduit,
-            ";;Name          \tFrom Node       \tTo Node         \tLength    \tRoughness \tInOffset  \tOutOffset \tInitFlow  \tMaxFlow   \n"
+            ";;Name          \tFrom Node       \tTo Node         \tLength    \tRoughness \tInOffset  \tOutOffset \tInitFlow  \tMaxFlow\n"
             ";;--------------\t----------------\t----------------\t----------\t----------\t----------\t----------\t----------\t----------")
         # conduit link information
 
         self.pumps = SectionAsListOf("[PUMPS]", Pump,
-            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoff \n"
+            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoffn"
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 
         self.orifices = SectionAsListOf("[ORIFICES]", Orifice,
-            ";;Name          \tFrom Node       \tTo Node         \tType            \tOffset  \tCd      \tGated   \tOrate   \n"
-            ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------\t--------")
+            ";;Name          \tFrom Node       \tTo Node         \tType        \tOffset    \tQcoeff    \tGated   \tCloseTime\n"
+            ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t----------")
         # orifice link information
 
         self.weirs = SectionAsListOf("[WEIRS]", Weir,
-            ";;Name          \tFrom Node       \tTo Node         \tType            \tCrestHt \tCd      \tGated   \tEC      \tCd2     \tSur     \tWidth   \tSurface \n"
-            ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------\t--------\t--------\t--------")
+            ";;Name          \tFrom Node       \tTo Node         \tType        \tCrestHt   \tQcoeff    \tGated   \tEndCon  \tEndCoeff  \tSurcharge \tRoadWidth \tRoadSurf\n"
+            ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------")
         # weir link information
 
         self.outlets = SectionAsListOf("[OUTLETS]", Outlet,
-            ";;Name          \tFrom Node       \tTo Node         \tOffset  \tType            \tQcurve  \tC1     \tC2       \tGated   \n"
-            ";;--------------\t----------------\t----------------\t--------\t----------------\t--------\t--------\t--------\t--------")
+            ";;Name          \tFrom Node       \tTo Node         \tOffset    \tType           \tQTable/Qcoeff   \tQexpon    \tGated\n"
+            ";;--------------\t----------------\t----------------\t----------\t---------------\t----------------\t----------\t--------")
         # outlet link information
 
         self.xsections = SectionAsListOf("[XSECTIONS]", CrossSection,

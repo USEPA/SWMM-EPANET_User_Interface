@@ -32,6 +32,9 @@ from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmPumps import frmPumps
 from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmJunction import frmJunction
+from ui.SWMM.frmOutfalls import frmOutfalls
+from ui.SWMM.frmDividers import frmDividers
+from ui.SWMM.frmStorageUnits import frmStorageUnits
 from ui.SWMM.frmSubcatchments import frmSubcatchments
 from ui.SWMM.frmLID import frmLID
 from ui.SWMM.frmSnowPack import frmSnowPack
@@ -55,6 +58,9 @@ from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
+from core.swmm.hydraulics.node import Outfall
+from core.swmm.hydraulics.node import Divider
+from core.swmm.hydraulics.node import StorageUnit
 from core.swmm.hydrology.snowpack import SnowPack
 from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
@@ -126,9 +132,9 @@ class frmMainSWMM(frmMain):
         tree_hydrology_LIDControls]
 
     tree_nodes_Junctions    = ["Junctions",     frmJunction]
-    tree_nodes_Outfalls     = ["Outfalls",      None, "1"]
-    tree_nodes_Dividers     = ["Dividers",      None, "1"]
-    tree_nodes_StorageUnits = ["Storage Units", None, "1"]
+    tree_nodes_Outfalls     = ["Outfalls",      frmOutfalls]
+    tree_nodes_Dividers     = ["Dividers",      frmDividers]
+    tree_nodes_StorageUnits = ["Storage Units", frmStorageUnits]
     tree_nodes_items = [
         tree_nodes_Junctions,
         tree_nodes_Outfalls,
@@ -424,9 +430,12 @@ class frmMainSWMM(frmMain):
             return None
         elif edit_name == self.tree_links_Pumps[0] and len(self.project.pumps.value) == 0:
             return None
-        # the following items will respond to a click on a node form, not the tree diagram
-        # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
-        #     frm = frmInflows(self)
+        elif edit_name == self.tree_nodes_Outfalls[0] and len(self.project.outfalls.value) == 0:
+            return None
+        elif edit_name == self.tree_nodes_Dividers[0] and len(self.project.dividers.value) == 0:
+            return None
+        elif edit_name == self.tree_nodes_StorageUnits[0] and len(self.project.storage.value) == 0:
+            return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
 
@@ -460,9 +469,14 @@ class frmMainSWMM(frmMain):
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == "Subcatchments":
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        # the following items will respond to a click on a node form, not the tree diagram
-        # elif edit_name == "Outfalls" or edit_name == "Dividers" or edit_name == "Storage Units":
-        #     frm = frmInflows(self)
+        elif edit_name == "Junctions":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Outfalls":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Dividers":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Storage Units":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
             frm.set_from(self.project, selected_item)
@@ -491,15 +505,15 @@ class frmMainSWMM(frmMain):
         elif category == self.tree_nodes_Junctions[0]:
             for i in range(0, len(self.project.junctions.value)):
                 ids.append(self.project.junctions.value[i].name)
-        # elif category == self.tree_nodes_Outfalls[0]:
-            # for i in range(0, len(self.project.outfalls.value)):
-            #     ids.append(self.project.outfalls.value[i].name)
-        # elif category == self.tree_nodes_Dividers[0]:
-            # for i in range(0, len(self.project.dividers.value)):
-            #     ids.append(self.project.dividers.value[i].name)
-        # elif category == self.tree_nodes_StorageUnits[0]:
-            # for i in range(0, len(self.project.storage.value)):
-            #     ids.append(self.project.storage.value[i].name)
+        elif category == self.tree_nodes_Outfalls[0]:
+            for i in range(0, len(self.project.outfalls.value)):
+                ids.append(self.project.outfalls.value[i].name)
+        elif category == self.tree_nodes_Dividers[0]:
+            for i in range(0, len(self.project.dividers.value)):
+                ids.append(self.project.dividers.value[i].name)
+        elif category == self.tree_nodes_StorageUnits[0]:
+            for i in range(0, len(self.project.storage.value)):
+                ids.append(self.project.storage.value[i].name)
         elif category == self.tree_links_Conduits[0]:
             for i in range(0, len(self.project.conduits.value)):
                 ids.append(self.project.conduits.value[i].name)
@@ -623,9 +637,33 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.junctions.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        # elif section_name == self.tree_nodes_Outfalls[0]:
-        # elif section_name == self.tree_nodes_Dividers[0]:
-        # elif section_name == self.tree_nodes_StorageUnits[0]:
+        elif section_name == self.tree_nodes_Outfalls[0]:
+            new_item = Outfall()
+            new_item.name = "New"
+            if len(self.project.outfalls.value) == 0:
+                edit_these = [new_item]
+                self.project.outfalls.value = edit_these
+            else:
+                self.project.outfalls.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_nodes_Dividers[0]:
+            new_item = Divider()
+            new_item.name = "New"
+            if len(self.project.dividers.value) == 0:
+                edit_these = [new_item]
+                self.project.dividers.value = edit_these
+            else:
+                self.project.dividers.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_nodes_StorageUnits[0]:
+            new_item = StorageUnit()
+            new_item.name = "New"
+            if len(self.project.storage.value) == 0:
+                edit_these = [new_item]
+                self.project.storage.value = edit_these
+            else:
+                self.project.storage.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_links_Conduits[0]:
             new_item = Conduit()
             new_item.name = "New"

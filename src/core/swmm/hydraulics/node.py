@@ -174,6 +174,9 @@ class Outfall(Section):
     def __init__(self):
         Section.__init__(self)
 
+        self.name = ''
+        """name assigned to outfall node"""
+
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""
 

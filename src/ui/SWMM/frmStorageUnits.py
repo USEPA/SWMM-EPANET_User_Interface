@@ -7,6 +7,7 @@ from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmTreatment import frmTreatment
+from core.swmm.curves import CurveType
 
 
 class frmStorageUnits(frmGenericPropertyEditor):
@@ -26,6 +27,18 @@ class frmStorageUnits(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Storage Units Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
+            curves_section = self.project.find_section("CURVES")
+            curves_list = curves_section.value[0:]
+            combobox = QtGui.QComboBox()
+            combobox.addItem('')
+            selected_index = 0
+            for value in curves_list:
+                if value.curve_type == CurveType.STORAGE:
+                    combobox.addItem(value.curve_id)
+                    if edit_these[column].storage_curve == value.curve_id:
+                        selected_index = int(combobox.count())-1
+            combobox.setCurrentIndex(selected_index)
+            self.tblGeneric.setCellWidget(16, column, combobox)
             # also set special text plus button cells
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)

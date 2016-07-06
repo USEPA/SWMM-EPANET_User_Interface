@@ -70,6 +70,7 @@ from core.swmm.hydraulics.link import Orifice
 from core.swmm.hydraulics.link import Outlet
 from core.swmm.hydraulics.link import Weir
 from core.swmm.hydraulics.link import Transect
+from core.swmm.hydraulics.link import CrossSection
 from core.swmm.quality import Landuse
 from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
@@ -208,7 +209,8 @@ class frmMainSWMM(frmMain):
         tree_TimePatterns,
         tree_MapLabels]
 
-    tree_items_using_id = (tree_hydrology_LIDControls,
+    tree_items_using_id = (tree_hydrology_Aquifers,
+                           tree_hydrology_LIDControls,
                            tree_hydrology_UnitHydrographs,
                            tree_hydrology_SnowPacks,
                            tree_hydraulics_Transects,
@@ -693,6 +695,14 @@ class frmMainSWMM(frmMain):
                 self.project.orifices.value = edit_these
             else:
                 self.project.orifices.value.append(new_item)
+            # need to add corresponding cross section
+            new_item = CrossSection()
+            new_item.name = "New"
+            if len(self.project.xsections.value) == 0:
+                edit_these = [new_item]
+                self.project.xsections.value = edit_these
+            else:
+                self.project.xsections.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_links_Weirs[0]:
             new_item = Weir()

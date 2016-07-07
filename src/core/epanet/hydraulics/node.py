@@ -82,7 +82,7 @@ class Quality(Section):
             Section.__init__(self)
 
             self.id = ''
-            """elevation of junction"""
+            """node identifier/name this applies to"""
 
             self.initial_quality = '0.0'
             """concentration for chemicals, hours for water age, or percent for source tracing"""
@@ -142,7 +142,7 @@ class Junction(Section):
 
 
 class Reservoir(Section):
-    """A Reservoir node"""
+    """Reservoir properties"""
 
     field_format = "{:16}\t{:6}\t{:6}\t{}"
 
@@ -177,7 +177,7 @@ class Reservoir(Section):
 
 
 class Tank(Section):
-    """A Tank node"""
+    """Tank properties"""
 
     field_format = " {:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:16}\t{}"
 

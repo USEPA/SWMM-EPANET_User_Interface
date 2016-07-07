@@ -1,4 +1,5 @@
-﻿from enum import Enum
+﻿from traitlets import HasTraits, Int, Unicode
+from enum import Enum
 from core.coordinates import Coordinates
 from core.inputfile import Section
 from core.metadata import Metadata
@@ -67,7 +68,7 @@ class Junction(Section):
         else:
             Section.__init__(self)
 
-            self.name = ''
+            self.name = Unicode(default_value='', label="Name", help="User-assigned name of junction")
             """name assigned to junction node"""
 
             self.elevation = ''

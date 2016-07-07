@@ -18,7 +18,7 @@ head = test_outobject.get_NodeSeries(0,eow.ENR_head, 0, LENTest)
 pressure = test_outobject.get_NodeSeries(0,eow.ENR_pressure, 0, LENTest)
 quality = test_outobject.get_NodeSeries(0,eow.ENR_quality, 0, LENTest)
 print('\t'.join(["TimeIndx","demand","head","pressure","quality"]))
-for ind in range(test_outobject.numPeriods):
+for ind in range(test_outobject.num_periods):
     print ind, demands[ind], head[ind], pressure[ind], quality[ind]
 
 print("\n-->get_LinkSeries")
@@ -32,14 +32,14 @@ rxRate=test_outobject.get_LinkSeries(0,eow.ENR_rxRate)
 frctnFctr =test_outobject.get_LinkSeries(0,eow.ENR_frctnFctr)
 print('\t'.join(["TimeInd","flow","velocity","headloss","avgQuality",
                  "status","setting","rxRate","frctnFctr"]))
-for ind in range(test_outobject.numPeriods ):
+for ind in range(test_outobject.num_periods ):
     print ind, flow[ind], velocity[ind],headloss[ind],avgQuality[ind],status[ind],setting[ind],rxRate[ind],frctnFctr[ind]
 
 print("\n--> like get_LinkSeries but with get_LinkValue")
 LinkInd= 0
 print('\t'.join(["TimeInd","flow","velocity","headloss","avgQuality",
                  "status","setting","rxRate","frctnFctr"]))
-for TimeInd in range(test_outobject.numPeriods):
+for TimeInd in range(test_outobject.num_periods):
    print TimeInd,
    for LinkAttr in eow.ENR_LinkAttributes:
        print test_outobject.get_LinkValue(LinkInd, TimeInd,  LinkAttr),

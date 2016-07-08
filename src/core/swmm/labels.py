@@ -1,5 +1,6 @@
 import core.coordinates
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class Label(Section):
@@ -7,11 +8,23 @@ class Label(Section):
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("label_text",          '', "Text",            '',       '', '',  "Text of the label"),
+        ('',                    '', "X-Coordinate",    '',       '', '',  "X coordinate of upper left corner of the label on the map"),
+        ('',                    '', "Y-Coordinate",    '',       '', '',  "Y coordinate of upper left corner of the label on the map"),
+        ("anchor_id",           '', "Anchor Node",     "",       '', '',  "Name of a node or subcatchment to which the label is anchored when map is zoomed (optional)"),
+        ("font",                '', "Font",            "",       '', '',  "The label's font"),
+        ("size",                '', "Size",            "10.0",   '', '',  "The label's font size"),
+        ("bold",                '', "Bold",            "False",  '', '',  "Set to True if the label is to be bold"),
+        ("italics",             '', "Italics",         "False",  '', '',  "Set to True if the label is to be italicized"),
+    ))
+
     def __init__(self):
         self.centroid = core.coordinates
         """X and Y coordinates of label centroid"""
 
-        self.label_text = ""			    # string
+        self.label_text = "New Label"   # string
         """Text of label in double quotes"""
 
         self.anchor_id = ""			# string

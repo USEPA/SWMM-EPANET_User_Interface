@@ -35,6 +35,7 @@ from ui.SWMM.frmJunction import frmJunction
 from ui.SWMM.frmOutfalls import frmOutfalls
 from ui.SWMM.frmDividers import frmDividers
 from ui.SWMM.frmStorageUnits import frmStorageUnits
+from ui.SWMM.frmRainGages import frmRainGages
 from ui.SWMM.frmSubcatchments import frmSubcatchments
 from ui.SWMM.frmLID import frmLID
 from ui.SWMM.frmSnowPack import frmSnowPack
@@ -119,7 +120,7 @@ class frmMainSWMM(frmMain):
         tree_climatology_ArealDepletion,
         tree_climatology_Adjustment]
 
-    tree_hydrology_RainGages       = ["Rain Gages",       None]
+    tree_hydrology_RainGages       = ["Rain Gages",       frmRainGages]
     tree_hydrology_Subcatchments   = ["Subcatchments",    frmSubcatchments]
     tree_hydrology_Aquifers        = ["Aquifers",         frmAquifers]
     tree_hydrology_SnowPacks       = ["Snow Packs",       frmSnowPack]
@@ -422,6 +423,20 @@ class frmMainSWMM(frmMain):
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/pollutanteditordialog.htm"
+        elif edit_name == self.tree_MapLabels[0]:
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        edit_these.extend(self.project.labels.value)
+                if len(edit_these) == 0:
+                    new_item = Label()
+                    new_item.name = "NewLabel"
+                    edit_these.append(new_item)
+                    self.project.labels.value = edit_these
+            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
+            frm.helper = HelpHandler(frm)
+            frm.help_topic = "swmm/src/src/maplabeleditordialog.htm"
         elif edit_name in [item[0] for item in self.tree_items_using_id]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
@@ -470,6 +485,8 @@ class frmMainSWMM(frmMain):
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == "Weirs":
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == "Rain Gages":
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == "Subcatchments":
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == "Junctions":
@@ -481,7 +498,14 @@ class frmMainSWMM(frmMain):
         elif edit_name == "Storage Units":
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == 'Map Labels':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        for value in self.project.labels.value:
+                            if value.label_text == selected_item:
+                                edit_these.append(value)
+            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
             frm.set_from(self.project, selected_item)
@@ -596,7 +620,15 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.subcatchments.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        # elif section_name == self.tree_hydrology_RainGages[0]:
+        #elif section_name == self.tree_hydrology_RainGages[0]:
+            # new_item = RainGage()
+            # new_item.name = "New"
+            # if len(self.project.raingages.value) == 0:
+            #     edit_these = [new_item]
+            #     self.project.raingages.value = edit_these
+            # else:
+            #     self.project.raingages.value.append(new_item)
+            # self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_hydrology_Aquifers[0]:
             new_item = Aquifer()
             new_item.name = "New"
@@ -839,7 +871,7 @@ class frmMainSWMM(frmMain):
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_MapLabels[0]:
             new_item = Label()
-            new_item.name = "New"
+            new_item.name = "New Label"
             if len(self.project.labels.value) == 0:
                 edit_these = [new_item]
                 self.project.labels.value = edit_these
@@ -852,7 +884,10 @@ class frmMainSWMM(frmMain):
             for value in self.project.subcatchments.value:
                 if value.name == item_name:
                     self.project.subcatchments.value.remove(value)
-        # elif section_name == self.tree_hydrology_RainGages[0]:
+        elif section_name == self.tree_hydrology_RainGages[0]:
+            for value in self.project.subcatchments.value:
+                if value.name == item_name:
+                    self.project.raingages.value.remove(value)
         elif section_name == self.tree_hydrology_Aquifers[0]:
             for value in self.project.aquifers.value:
                 if value.name == item_name:

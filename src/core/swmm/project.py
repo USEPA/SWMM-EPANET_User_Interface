@@ -279,7 +279,7 @@ class Project(InputFile):
         # [TAGS]
         InputFile.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
-    def add_section(self, section_name, section_text, section_index):
+    def add_section(self, section_name, section_text):
         if section_name == self.infiltration.SECTION_NAME:
             if self.options.infiltration.upper() == "HORTON":
                 self.infiltration = SectionAsListOf(
@@ -296,4 +296,4 @@ class Project(InputFile):
                     self.infiltration.SECTION_NAME, CurveNumberInfiltration,
                     ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                     ";;--------------\t----------\t----------\t----------")
-        InputFile.add_section(self, section_name, section_text, section_index)
+        InputFile.add_section(self, section_name, section_text)

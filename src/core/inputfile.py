@@ -50,21 +50,18 @@ class InputFile(object):
         """
         self.__init__()
         self.sections = []
-        section_index = 1
         section_name = ""
         section_whole = []
         for line in lines_iterator:
             if line.lstrip().startswith('['):
                 if section_name:
-                    self.add_section(section_name, '\n'.join(section_whole), section_index)
-                    section_index += 1
+                    self.add_section(section_name, '\n'.join(section_whole))
                 section_name = line.strip()
                 section_whole = [section_name]
             elif line.strip():
                 section_whole.append(line.rstrip())
         if section_name:
-            self.add_section(section_name, '\n'.join(section_whole), section_index)
-            section_index += 1
+            self.add_section(section_name, '\n'.join(section_whole))
         self.add_sections_from_attributes()
 
     def add_sections_from_attributes(self):
@@ -73,7 +70,7 @@ class InputFile(object):
             if isinstance(attr_value, Section) and attr_value not in self.sections:
                 self.sections.append(attr_value)
 
-    def add_section(self, section_name, section_text, section_index):
+    def add_section(self, section_name, section_text):
         attr_name = InputFile.printable_to_attribute(section_name)
         try:
             section_attr = self.__getattribute__(attr_name)
@@ -87,9 +84,7 @@ class InputFile(object):
             if new_section is None:
                 new_section = Section()
                 new_section.SECTION_NAME = section_name
-                new_section.index = section_index
                 new_section.value = section_text
-                new_section.value_original = section_text
         else:
             section_class = type(section_attr)
             if new_section is None:                 # This section has not yet been added to self.sections
@@ -102,10 +97,6 @@ class InputFile(object):
                         print("Could not create item of type " + str(section_class) + '\n' + str(e) +
                               '\n' + str(traceback.print_exc()))
         if new_section is not None:
-            if hasattr(new_section, "index"):
-                new_section.index = section_index
-            if hasattr(new_section, "value_original"):
-                new_section.value_original = section_text
             try:
                 new_section.set_text(section_text)
             except Exception as e:
@@ -153,13 +144,6 @@ class Section(object):
         else:
             self.value = ""
             """Current value of the item as it appears in an InputFile"""
-
-        self.value_original = None
-        """Original value of the item as read from an InputFile during this session"""
-
-        self.index = -1
-        """Index indicating the order in which this item was read
-           (used for keeping items in the same order when written)"""
 
         self.comment = ""
         """A user-specified header and/or comment about the section"""

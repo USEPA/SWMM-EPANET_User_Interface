@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-06-07 19:18:42</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.074000</p>
-<p class='attribute'><strong>Status:</strong> Pass 110 Failure 15</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-07-08 13:51:37</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.049000</p>
+<p class='attribute'><strong>Status:</strong> Pass 120 Failure 5</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -368,11 +368,11 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_evaporation.EvaporationTest: Test all options provided in EVAPORATION section</td>
     <td>10</td>
-    <td>6</td>
-    <td>4</td>
+    <td>10</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c9',10)">Detail</a></td>
 </tr>
@@ -402,140 +402,24 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft9.6' class='none'>
-    <td class='failCase'><div class='testcase'>test_timeseries: TIMESERIES Tseries</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.6')" >
-        fail</a>
-
-    <div id='div_ft9.6' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.6').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft9.6: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 99, in test_timeseries
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:[EVAPORATION]
-;;Type         Parameters
-;;-----------------------
-TIMESERIES TS1
-Get:[EVAPORATION]
-;;Type         Parameters
-;;-----------------------
-TIMESERIES	TS1
-DRY_ONLY	NO
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt9.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_timeseries: TIMESERIES Tseries</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft9.7' class='none'>
-    <td class='failCase'><div class='testcase'>test_temperature: TEMPERATURE</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.7')" >
-        fail</a>
-
-    <div id='div_ft9.7' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.7').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft9.7: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 112, in test_temperature
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:[EVAPORATION]
-;;Type         Parameters
-;;-----------------------
-TEMPERATURE
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt9.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_temperature: TEMPERATURE</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft9.8' class='none'>
-    <td class='failCase'><div class='testcase'>test_file: FILE</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.8')" >
-        fail</a>
-
-    <div id='div_ft9.8' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.8').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft9.8: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 125, in test_file
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:[EVAPORATION]
-;;Type         Parameters
-;;-----------------------
-FILE
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt9.8' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_file: FILE</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft9.9' class='none'>
-    <td class='failCase'><div class='testcase'>test_recovery: RECOVERY PatternID</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.9')" >
-        fail</a>
-
-    <div id='div_ft9.9' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.9').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft9.9: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_evaporation.py", line 138, in test_recovery
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:[EVAPORATION]
-;;Type         Parameters
-;;-----------------------
-RECOVERY  pattern1
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt9.9' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_recovery: RECOVERY PatternID</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt9.10' class='hiddenRow'>
@@ -771,11 +655,11 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_groundwater.SimpleGroundwaterTest: Test GROUNDWATER section</td>
     <td>2</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c17',2)">Detail</a></td>
 </tr>
@@ -785,37 +669,9 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft17.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_groundwater_section: Test GROUNDWATER section through Project Class</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft17.2')" >
-        fail</a>
-
-    <div id='div_ft17.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft17.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft17.2: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_groundwater.py", line 32, in test_groundwater_section
-    self.assertTrue(project_section.matches(test_text), msg)
-AssertionError: 
-Set: [GROUNDWATER]
-;;Subcatchment  	Aquifer         	Node            	Elev  	A1    	B1    	A2    	B2    	A3    	Hsw   	Hcb   	BEL   	WTEL  	UZM
-;;--------------	----------------	----------------	------	------	------	------	------	------	------	------	------	------	------
-1               	1               	2               	6     	0.1   	1     	0     	0     	0     	0     	4
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt17.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_groundwater_section: Test GROUNDWATER section through Project Class</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -837,44 +693,18 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_coverages.SimpleCoverageTest: Test COVERAGES section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c19',3)">Detail</a></td>
 </tr>
 
-<tr id='ft19.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft19.1')" >
-        fail</a>
-
-    <div id='div_ft19.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft19.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft19.1: Section.text skipped: S2      Residential_1    27
-Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 20, in test_coverage
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:S2      Residential_1    27
-Get:                	                	          
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt19.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt19.2' class='hiddenRow'>
@@ -887,81 +717,23 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_loadings.SimpleLoadingTest: Test LOADINGS section</td>
     <td>2</td>
-    <td>0</td>
     <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c20',2)">Detail</a></td>
 </tr>
 
-<tr id='ft20.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft20.1')" >
-        fail</a>
-
-    <div id='div_ft20.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft20.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft20.1: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 17, in test_one_loading
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:SB1   TSS         0.1      Lead         0.01 
-Get:SB1             	TSS             	0.1       
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt20.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft20.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_loading_section: Test LOADINGS section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft20.2')" >
-        fail</a>
-
-    <div id='div_ft20.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft20.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft20.2: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 32, in test_loading_section
-    self.assertTrue(project_section.matches(test_text), msg)
-AssertionError: 
-Set:
-[LOADINGS]
-;;Subcatchment     Pollutant   Loading  Pollutant   Loading
-;;----------------------------------------------------------
-SB1                TSS         0.1      Lead         0.01
-        
-Get:[LOADINGS]
-;;Subcatchment     Pollutant   Loading  Pollutant   Loading
-;;----------------------------------------------------------
-SB1             	TSS             	0.1       
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt20.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_loading_section: Test LOADINGS section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -983,11 +755,11 @@ SB1             	TSS             	0.1
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_xsections.SimpleCrossSectionTest: Test XSECTIONS section</td>
     <td>7</td>
-    <td>6</td>
-    <td>1</td>
+    <td>7</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c22',7)">Detail</a></td>
 </tr>
@@ -1012,34 +784,9 @@ SB1             	TSS             	0.1
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.5' class='none'>
-    <td class='failCase'><div class='testcase'>test_custom_curve_barrelnum: CUSTOM with Curve and number of barrels</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.5')" >
-        fail</a>
-
-    <div id='div_ft22.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.5: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 54, in test_custom_curve_barrelnum
-    self.assertTrue(self.my_options.matches(test_text), msg)
-AssertionError: 
-Set:W1   CUSTOM    1.0  Curve1  1
-Get:W1              	CUSTOM      	1.0             	Curve1    
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_custom_curve_barrelnum: CUSTOM with Curve and number of barrels</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt22.6' class='hiddenRow'>
@@ -1082,7 +829,7 @@ Get:W1              	CUSTOM      	1.0             	Curve1
         <pre>
         
 ft23.2: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 41, in test_transects
+  File "C:\devNotMW\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_transects.py", line 41, in test_transects
     self.assertTrue(self.my_options.matches(test_text), msg)
 AssertionError: 
 Set:[TRANSECTS]
@@ -1129,7 +876,7 @@ GR	0.8     	0       	1.3     	0
         <pre>
         
 ft23.3: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 61, in test_transect_section
+  File "C:\devNotMW\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_transects.py", line 61, in test_transect_section
     self.assertTrue(project_section.matches(test_text), msg)
 AssertionError: 
 Set:[TRANSECTS]
@@ -1181,31 +928,35 @@ GR	0.8     	0       	1.3     	0
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test_outfalls.SimpleOutfallTest: Test OUTFALLS section</td>
     <td>1</td>
-    <td>1</td>
     <td>0</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c25',1)">Detail</a></td>
 </tr>
 
-<tr id='pt25.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_one_outfall: Test one outfall will all parameters</div></td>
+<tr id='ft25.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_one_outfall: Test one outfall will all parameters</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt25.1')" >
-        pass</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft25.1')" >
+        fail</a>
 
-    <div id='div_pt25.1' class="popup_window">
+    <div id='div_ft25.1' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt25.1').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft25.1').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-pt25.1: Section.text skipped:  18      975    FREE      NO       xxx
+ft25.1: Section.text skipped:  18      975    FREE      NO       xxx
+Traceback (most recent call last):
+  File "C:\devNotMW\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_outfalls.py", line 17, in test_one_outfall
+    assert self.my_options.matches(test_outfall)
+AssertionError
 
 
         </pre>
@@ -1215,11 +966,11 @@ pt25.1: Section.text skipped:  18      975    FREE      NO       xxx
     </td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_inflows.SimpleInflowTest: Test INFLOWS section</td>
     <td>5</td>
-    <td>3</td>
-    <td>2</td>
+    <td>5</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c26',5)">Detail</a></td>
 </tr>
@@ -1239,85 +990,14 @@ pt25.1: Section.text skipped:  18      975    FREE      NO       xxx
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft26.4' class='none'>
-    <td class='failCase'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft26.4')" >
-        fail</a>
-
-    <div id='div_ft26.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft26.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft26.4: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 75, in test_inflows_flow
-    self.assertTrue(project_section.matches(test_text), msg)
-AssertionError: 
-Set:
-[INFLOWS]
-;;                                                   Concen   Conversion
-;;Node             Parameter        Time Series      /Mass    Factor
-;;----------------------------------------------------------------------
-  80408            FLOW             80408
-  81009            FLOW             81009
-  82309            FLOW             82309
-Get:[INFLOWS]
-;;                                                   Concen   Conversion
-;;Node             Parameter        Time Series      /Mass    Factor
-;;----------------------------------------------------------------------
-80408           	FLOW            	80408           	FLOW    	1.0     	1.0     	0.0     	        
-81009           	FLOW            	81009           	FLOW    	1.0     	1.0     	0.0     	        
-82309           	FLOW            	82309           	FLOW    	1.0     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt26.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft26.5' class='none'>
-    <td class='failCase'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft26.5')" >
-        fail</a>
-
-    <div id='div_ft26.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft26.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft26.5: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 90, in test_inflows_flowts
-    self.assertTrue(project_section.matches(test_text), msg)
-AssertionError: 
-Set:
-[INFLOWS]
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
-        
-Get:[INFLOWS]
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt26.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1422,7 +1102,7 @@ Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.
         <pre>
         
 ft30.2: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 38, in test_pollutant_section
+  File "C:\devNotMW\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_pollutants.py", line 38, in test_pollutant_section
     self.assertTrue(project_section.matches(test_text), msg)
 AssertionError: 
 Set:
@@ -1589,7 +1269,7 @@ Get:[POLLUTANTS]
         <pre>
         
 ft35.4: Traceback (most recent call last):
-  File "C:\Users\Zhiqiang Li\Desktop\xwei\code\Pycharm\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 60, in test_timeseries_section
+  File "C:\devNotMW\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_timeseries.py", line 60, in test_timeseries_section
     self.assertTrue(project_section.matches(test_text), msg)
 AssertionError: 
 Set:
@@ -1601,7 +1281,29 @@ Set:
         HY1 0 0 1.25 100 2:30 150 3.0 120 4.5 0
         HY1 32:10 0 34.0 57 35.33 85 48.67 24 50 0
         
-Get:
+Get:[TIMESERIES]
+;;Name          	Date      	Time      	Value
+;;--------------	----------	----------	----------
+;Rainfall time series with dates specified
+TS1             	6-15-2001 	7:00      	0.1       
+TS1             	          	8:00      	0.2       
+TS1             	          	9:00      	0.05      
+TS1             	          	10:00     	0         
+TS1             	6-21-2001 	4:00      	0.2       
+TS1             	          	5:00      	0         
+TS1             	          	14:00     	0.1       
+TS1             	          	15:00     	0         
+;Inflow hydrograph - time relative to start of simulation
+HY1             	          	0         	0         
+HY1             	          	1.25      	100       
+HY1             	          	2:30      	150       
+HY1             	          	3.0       	120       
+HY1             	          	4.5       	0         
+HY1             	          	32:10     	0         
+HY1             	          	34.0      	57        
+HY1             	          	35.33     	85        
+HY1             	          	48.67     	24        
+HY1             	          	50        	0         
 
 
         </pre>
@@ -1677,8 +1379,8 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>125</td>
-    <td>110</td>
-    <td>15</td>
+    <td>120</td>
+    <td>5</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

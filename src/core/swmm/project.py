@@ -108,7 +108,10 @@ class Project(InputFile):
         self.files = Files()                    # FILES         interface file options
         self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
         self.map = MapOptions()                 # MAP           map's bounding rectangle and units
-        # self.raingages = [RainGage]             # RAINGAGES     rain gage information
+        self.raingages = SectionAsListOf("[RAINGAGES]", RainGage,
+            ";;Name          \tFormat   \tInterval\tSCF     \tSource    \n"
+            ";;--------------\t---------\t------  \t------  \t----------")
+
         self.hydrographs = SectionAsListGroupByID("[HYDROGRAPHS]", UnitHydrograph,
             ";;Hydrograph    \tRain Gage/Month \tResponse\tR       \tT       \tK       \tDmax    \tDrecov  \tDinit   \n"
             ";;--------------\t----------------\t--------\t--------\t--------\t--------\t--------\t--------\t--------")

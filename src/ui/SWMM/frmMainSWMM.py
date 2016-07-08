@@ -57,6 +57,7 @@ from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
 from core.swmm.project import Project
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.subcatchment import Subcatchment
+from core.swmm.hydrology.raingage import RainGage
 from core.swmm.quality import Pollutant
 from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import Outfall
@@ -516,7 +517,7 @@ class frmMainSWMM(frmMain):
         if category == self.tree_hydrology_Subcatchments[0]:
             for i in range(0, len(self.project.subcatchments.value)):
                 ids.append(self.project.subcatchments.value[i].name)
-        elif category.lower() == self.tree_hydrology_RainGages[0]:
+        elif category == self.tree_hydrology_RainGages[0]:
             for i in range(0, len(self.project.raingages.value)):
                 ids.append(self.project.raingages.value[i].name)
         elif category == self.tree_hydrology_Aquifers[0]:
@@ -620,15 +621,15 @@ class frmMainSWMM(frmMain):
             else:
                 self.project.subcatchments.value.append(new_item)
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
-        #elif section_name == self.tree_hydrology_RainGages[0]:
-            # new_item = RainGage()
-            # new_item.name = "New"
-            # if len(self.project.raingages.value) == 0:
-            #     edit_these = [new_item]
-            #     self.project.raingages.value = edit_these
-            # else:
-            #     self.project.raingages.value.append(new_item)
-            # self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
+        elif section_name == self.tree_hydrology_RainGages[0]:
+            new_item = RainGage()
+            new_item.name = "New"
+            if len(self.project.raingages.value) == 0:
+                edit_these = [new_item]
+                self.project.raingages.value = edit_these
+            else:
+                self.project.raingages.value.append(new_item)
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_hydrology_Aquifers[0]:
             new_item = Aquifer()
             new_item.name = "New"

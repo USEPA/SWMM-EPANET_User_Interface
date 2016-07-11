@@ -10,8 +10,8 @@ writer_class_prefix = "Write"
 top_dir = "C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\"
 start_dir = top_dir + "core\\swmm"
 
-reader_path = os.path.join(start_dir, "inp_file_reader.py")
-writer_path = os.path.join(start_dir, "inp_file_writer.py")
+original_subpath = "\\src\\"
+refactor_subpath = "\\src-refactor\\"
 
 imports = ["import traceback",
            "from enum import Enum",
@@ -23,12 +23,15 @@ def un_camel(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
+reader_path = os.path.join(start_dir, "inp_file_reader.py").replace(original_subpath, refactor_subpath)
+writer_path = os.path.join(start_dir, "inp_file_writer.py").replace(original_subpath, refactor_subpath)
 try:
     os.remove(reader_path)
     os.remove(writer_path)
 except:
     pass
 
+count_edits = 0
 reader_contents = []
 writer_contents = []
 for root, subdirs, files in os.walk(start_dir):
@@ -41,7 +44,7 @@ for root, subdirs, files in os.walk(start_dir):
             with open(file_path, 'rb') as f:
                 file_contents = f.read()
             if reader_method in file_contents or writer_method in file_contents:
-                rewrite_filename = os.path.join(root.replace("\\src\\", "\\src-new\\"), file_base) + ".py"
+                rewrite_filename = os.path.join(root.replace(original_subpath, refactor_subpath), file_base) + ".py"
                 rewrite_dir = os.path.dirname(rewrite_filename)
                 try:
                     os.makedirs(rewrite_dir)
@@ -102,6 +105,7 @@ for root, subdirs, files in os.walk(start_dir):
                                         writer_contents.extend(writer_class_header)
                                         writer_class_header = []
                                     line = "    @staticmethod\n" + line
+                                    count_edits += 1
                                 else:
                                     in_read_method = False
                                     in_write_method = False
@@ -114,10 +118,13 @@ for root, subdirs, files in os.walk(start_dir):
                                 else:
                                     writer_class_header.append(new_line)
                                 line = None  # discard this line before it is written to reader or rewrite
+                                count_edits += 1
 
                             if line is not None:
                                 # Replace references to "self" with references to argument class_var_name.
                                 new_line = line.replace("self", class_var_name)
+                                if new_line != line:
+                                    count_edits += 1
 
                                 if in_read_method:
                                     reader_contents.append(new_line)
@@ -140,6 +147,8 @@ for root, subdirs, files in os.walk(start_dir):
                                             "InputFile" in rewrite_line:
                                             print rewrite_line
                                         rewrite_file.write(rewrite_line)
+                                        if rewrite_line != line:
+                                            count_edits += 1
 
 if writer_contents:
     with open(writer_path, 'wb') as writer_file:
@@ -150,3 +159,5 @@ if reader_contents:
     with open(reader_path, 'wb') as reader_file:
         reader_file.write('\n'.join(imports) + '\n\n')
         reader_file.write('\n'.join(reader_contents) + '\n\n')
+
+print "Counted edits: " + str(count_edits) + " written to " + start_dir.replace(original_subpath, refactor_subpath)

@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.epanet.project
 from core.epanet.hydraulics.node import SourceType
+from core.epanet.hydraulics.node import Source
 from ui.EPANET.frmSourcesQualityDesigner import Ui_frmSourcesQuality
 
 
@@ -24,7 +25,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         sources_list = section.value[0:]
         # assume we want to edit the first one
         for source in sources_list:
-            if source.node_id == node_id:
+            if source.id == node_id:
                 self.txtQuality.setText(str(source.baseline_strength))
                 self.txtPattern.setText(str(source.pattern_id))
                 if source.source_type == SourceType.CONCEN:
@@ -40,8 +41,13 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         section = self._main_form.project.find_section('SOURCES')
         sources_list = section.value[0:]
         # section.set_text(str(self.txtControls.toPlainText()))
+        if len(sources_list) == 0:
+            new_item = Source()
+            new_item.id = self.node_id
+            section.value.append(new_item)
+            sources_list = section.value[0:]
         for source in sources_list:
-            if source.node_id == self.node_id:
+            if source.id == self.node_id:
                 source.baseline_strength = self.txtQuality.text()
                 source.pattern_id = self.txtPattern.text()
                 if self.rbnConcentration.isChecked():

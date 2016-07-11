@@ -38,7 +38,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                 self.tblDemands.setItem(row_count,0,QtGui.QTableWidgetItem(led.text()))
                 led = QtGui.QLineEdit(str(demand.demand_pattern))
                 self.tblDemands.setItem(row_count,1,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(str(demand.category[1:]))
+                led = QtGui.QLineEdit(str(demand.category))
                 self.tblDemands.setItem(row_count,2,QtGui.QTableWidgetItem(led.text()))
                 self.junction_only = False
         if row_count == -1:
@@ -48,8 +48,10 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                     row_count += 1
                     led = QtGui.QLineEdit(str(junction.base_demand_flow))
                     self.tblDemands.setItem(row_count,0,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(junction.demand_pattern))
+                    led = QtGui.QLineEdit(str(junction.demand_pattern_id))
                     self.tblDemands.setItem(row_count,1,QtGui.QTableWidgetItem(led.text()))
+                    led = QtGui.QLineEdit('')
+                    self.tblDemands.setItem(row_count,2,QtGui.QTableWidgetItem(led.text()))
                     self.junction_only = True
 
     def cmdOK_Clicked(self):
@@ -62,7 +64,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
             if self.tblDemands.item(row,0):
                 x = self.tblDemands.item(row,0).text()
                 if len(x) > 0:
-                 demand_count += 1
+                    demand_count += 1
         if demand_count == 1 and self.junction_only:
             # put this demand back into the junction table
             for junction in junctions_list:
@@ -89,8 +91,10 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                         new_demand = core.epanet.project.Demand()
                         new_demand.junction_id = self.node_id
                         new_demand.base_demand = self.tblDemands.item(row,0).text()
-                        new_demand.demand_pattern = self.tblDemands.item(row,1).text()
-                        new_demand.category = ';' + self.tblDemands.item(row,2).text()
+                        if self.tblDemands.item(row,1):
+                            new_demand.demand_pattern = self.tblDemands.item(row,1).text()
+                        if self.tblDemands.item(row,2):
+                            new_demand.category = ';' + self.tblDemands.item(row,2).text()
                         section.value.append(new_demand)
         self.close()
 

@@ -3,6 +3,7 @@ from core.coordinates import Coordinates
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 from core.inputfile import Section
+from core.metadata import Metadata
 
 
 class SourceType(Enum):
@@ -99,6 +100,21 @@ class Junction(Section):
     """Junction properties"""
 
     field_format = "{:16}\t{:6}\t{:6}\t{:7}"
+
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
+        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
+        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
+        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
+        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
+        ('elevation',       '', "Elevation",       '',   '',   '', "Elevation of junction"),
+        ('base_demand_flow',    '', 'Base Demand',       '',  '',   '', "Base demand flow, characteristic of all demands at this node"),
+        ('demand_pattern_id',   '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
+        ('demand_categories',   '', 'Demand Categories', '',  '',   '', "Number of demand categories, click to edit"),
+        ('emitter_coefficient', '', 'Emitter Coeff.',    '',  '',   '', "Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which defaults to 0.5 and can be set in OPTIONS section."),
+        ('initial_quality',     '', 'Initial Quality',   '',  '',   '', "Water quality level at the junction at the start of the simulation period"),
+        ('source_quality',      '', 'Source Quality',    '',  '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self, new_text=None):
         if new_text:

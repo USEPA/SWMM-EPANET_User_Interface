@@ -23,6 +23,8 @@ from ui.EPANET.frmTitle import frmTitle
 from ui.EPANET.frmAbout import frmAbout
 from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmJunction import frmJunction
+from ui.EPANET.frmReservoir import frmReservior
+from ui.EPANET.frmTank import frmTank
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
@@ -80,8 +82,8 @@ class frmMainEPANET(frmMain):
     tree_TitleNotes = ["Title/Notes", frmTitle]
     tree_Options = ["Options", tree_options_items]
     tree_Junctions = ["Junctions", frmJunction]
-    tree_Reservoirs = ["Reservoirs", None]
-    tree_Tanks = ["Tanks", None]
+    tree_Reservoirs = ["Reservoirs", frmReservior]
+    tree_Tanks = ["Tanks", frmTank]
     tree_Pipes = ["Pipes", None]
     tree_Pumps = ["Pumps", None]
     tree_Valves = ["Valves", None]
@@ -339,15 +341,9 @@ class frmMainEPANET(frmMain):
 
         # the following items will respond to a click on a node form, not the tree diagram
         if edit_name == 'Reservoirs' or edit_name == 'Tanks':
-            # assume we're editing the first node for now
-            frm = frmSourcesQuality(self)
-            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
-            frm.set_from(self.project, '1')
+            return None
         elif edit_name == 'Junctions':
-            # assume we're editing the first junction for now
-            frm = frmDemands(self)
-            frm.setWindowTitle('EPANET Demands for Junction ' + '1')
-            frm.set_from(self.project, '1')
+            return None
         elif edit_name == 'Patterns':
             return None
         elif edit_name == 'Curves':
@@ -360,16 +356,11 @@ class frmMainEPANET(frmMain):
         frm = None
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Reservoirs' or edit_name == 'Tanks':
-            # assume we're editing the first node for now
-            frm = frmSourcesQuality(self)
-            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
-            frm.set_from(self.project, '1')
+        if edit_name == 'Tanks':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Reservoirs':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == 'Junctions':
-            # assume we're editing the first junction for now
-            # frm = frmDemands(self)
-            # frm.setWindowTitle('EPANET Demands for Junction ' + '1')
-            # frm.set_from(self.project, '1')
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)

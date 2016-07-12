@@ -162,6 +162,18 @@ class Reservoir(Section):
 
     field_format = "{:16}\t{:6}\t{:6}\t{}"
 
+#    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
+        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
+        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
+        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
+        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
+        ('total_head',      '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
+        ('head_pattern_id', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
+        ('initial_quality', '', 'Initial Quality', '',    '',   '', "Water quality level at the reservior at the start of the simulation period"),
+        ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)
@@ -196,6 +208,26 @@ class Tank(Section):
     """Tank properties"""
 
     field_format = " {:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:16}\t{}"
+
+#    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",              '', "Name",            '',    '',   '', "User-assigned name of tank"),
+        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
+        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
+        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
+        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
+        ('elevation',       '', "Elevation",       '0.0', '',   '', "Elevation of tank"),
+        ('initial_level',   '', "Initial Level",   '0.0', '',   '', "Height of the water surface above the bottom elevation of the tank at the start of the simulation."),
+        ('minimum_level',   '', "Minimum Level",   '0.0', '',   '', "Minimum height in feet (meters) of the water surface above the bottom elevation that will be maintained."),
+        ('maximum_level',   '', "Maximum Level",   '0.0', '',   '', "Maximum height in feet (meters) of the water surface above the bottom elevation that will be maintained."),
+        ('diameter',        '', "Diameter",        '0.0', '',   '', "The diameter of the tank"),
+        ('minimum_volume',  '', "Minimum Volume",  '0.0', '',   '', "The volume of water in the tank when it is at its minimum level"),
+        ('volume_curve',    '', "Volume Curve",    '',    '',   '', "The ID label of a curve used to describe the relation between tank volume and water level"),
+        ('mixing_model',    '', "Mixing Model",    '',    '',   '', "The type of water quality mixing that occurs within the tank"),
+        ('mixing_fraction', '', "Mixing Fraction", '0.0', '',   '', "The fraction of the tank's total volume that comprises the inlet-outlet compartment of the two-compartment (2COMP) mixing model"),
+        ('reaction_coeff',  '', "Reaction Coeff.", '',    '',   '', "Tank-specific reaction coefficient"),
+        ('initial_quality', '', 'Initial Quality', '0.0', '',   '', "Water quality level in the tank at the start of the simulation period"),
+        ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self, new_text=None):
         if new_text:

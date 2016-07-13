@@ -4,6 +4,7 @@ from core.inputfile import Section
 from core.epanet.curves import Curve
 from core.epanet.vertex import Vertex
 from core.epanet.patterns import Pattern
+from core.metadata import Metadata
 
 
 class PumpType(Enum):
@@ -82,6 +83,22 @@ class Pipe(Link):
     """A Pipe link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:6}\t{}"
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",                        '', "Pipe ID",            "",    '', '', "User-assigned name of the pipe"),
+        ("inlet_node",                '', "Start Node",         "",    '', '', "Node on the inlet end of the pipe"),
+        ("outlet_node",               '', "End Node",           "",    '', '', "Node on the outlet end of the pipe"),
+        ("description",               '', "Description",        "",    '', '', "Optional description of the pipe"),
+        ("tag",                       '', "Tag",                "",    '', '', "Optional label used to categorize or classify the pipe"),
+        ("length",                    '', "Length",             "0.0", '', '', "Pipe length"),
+        ("diameter",                  '', "Diameter",           "0.0", '', '', "Pipe diameter"),
+        ("roughness",                 '', "Roughness",          "0.0", '', '', "Manning's roughness coefficient"),
+        ("loss_coefficient",          '', "Loss Coeff.",        "0.0", '', '', "Minor loss coefficient"),
+        ("initial_status",            '', "Initial Status",     "",    '', '', "Initial status of a pipe"),
+        ("bulk_reaction_coefficient", '', "Bulk Coeff.",        "0.0", '', '', "Bulk reaction coefficient for this pipe"),
+        ("wall_reaction_coefficient", '', "Wall Coeff.",        "0.0", '', '', "Wall reaction coefficient for this pipe"),
+    ))
 
     def __init__(self, new_text=None):
         if new_text:

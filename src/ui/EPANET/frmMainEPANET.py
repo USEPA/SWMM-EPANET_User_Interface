@@ -25,6 +25,7 @@ from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmJunction import frmJunction
 from ui.EPANET.frmReservoir import frmReservior
 from ui.EPANET.frmTank import frmTank
+from ui.EPANET.frmPipe import frmPipe
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
@@ -84,7 +85,7 @@ class frmMainEPANET(frmMain):
     tree_Junctions = ["Junctions", frmJunction]
     tree_Reservoirs = ["Reservoirs", frmReservior]
     tree_Tanks = ["Tanks", frmTank]
-    tree_Pipes = ["Pipes", None]
+    tree_Pipes = ["Pipes", frmPipe]
     tree_Pumps = ["Pumps", None]
     tree_Valves = ["Valves", None]
     tree_Labels = ["Labels", None]
@@ -361,6 +362,8 @@ class frmMainEPANET(frmMain):
         elif edit_name == 'Reservoirs':
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == 'Junctions':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Pipes':
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)

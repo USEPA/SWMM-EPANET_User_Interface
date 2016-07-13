@@ -35,20 +35,20 @@ class ENR_categoryBase:
         return self.id
 
     @classmethod
-    def get_list(cls, output):
-        """ Read the list of all items of this class from the output file.
+    def read_all(cls, output):
+        """ Read all items of this class from the output file into a dictionary.
             Intended to be called only in the constructor of the output file object.
             Args
             output (OutputObject): object that has already opened the desired output file.
-            Returns (list): Python list of all objects of this type.
+            Returns (dictionary): Python dictionary of all objects of this type, keyed by name.
         """
-        items = []
-
+        items = {}
         item_count = output._call_int(_lib.ENR_getNetSize, cls._count_flag)
         ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
         for index in range(1, item_count + 1):
             cls._get_name(output.ptrapi, cls._elementType, index, ctypes_name)
-            items.append(cls(str(ctypes_name), index))
+            name = str(ctypes_name)
+            items[name] = cls(name, index)
         return items
 
     # def get_value(self, output, attribute, time_index):
@@ -138,8 +138,11 @@ class ENR_categoryBase:
         """
         returned_length = c_int()
         error_new = c_int()
-        array_pointer = _lib.ENR_newOutValueArray(output.ptrapi, _lib.ENR_getAttribute,
-                                                  cls._elementType, byref(returned_length), byref(error_new))
+        array_pointer = _lib.ENR_newOutValueArray(output.ptrapi,
+                                                  _lib.ENR_getAttribute,
+                                                  cls._elementType,
+                                                  byref(returned_length),
+                                                  byref(error_new))
         if error_new.value != 0:
             print("Error " + str(error_new.value) + " calling ENR_newOutValueArray for " + cls.TypeLabel)
             output._raise_error(error_new.value)
@@ -173,7 +176,7 @@ class ENR_categoryBase:
         returned_length = c_int()
         error_new = c_int()
         array_pointer = _lib.ENR_newOutValueArray(output.ptrapi,
-                                                  _lib.ENR_getAttribute,
+                                                  _lib.ENR_getResult,
                                                   self._elementType,
                                                   byref(returned_length),
                                                   byref(error_new))
@@ -318,24 +321,29 @@ class OutputObject(object):
         self._get_units()
         self._get_sizes()
         self._get_times()
-        self.nodes = ENR_node_type.get_list(self)
-        self.links = ENR_link_type.get_list(self)
+        self.nodes = ENR_node_type.read_all(self)
+        self.links = ENR_link_type.read_all(self)
         self.all_items = (self.nodes, self.links)
 
-    def get_items(self, objectTypeLabel):
-        """ Get the list of items of the type whose TypeLabel attribute is objectTypeLabel.
+    def get_items(self, object_type_label):
+        """ Get the dictionary of items of the type whose TypeLabel attribute is object_type_label.
 
             Args:
-            objectTypeLabel: can be "Subcatchment", "Node" or "Link". (System has no items.)
+            object_type_label: can be "Node" or "Link".
 
             Examples:
-                for node get_items("Node"):
-                    print node.id
+                for name, node in get_items("Node"):
+                    print(name, str(node.get_series(output, ENR_node_type.AttributePressure, 0, 2)[1]))
         """
         for items in self.all_items:
-            if items and items[0].TypeLabel == objectTypeLabel:
-                return items
-        return []
+            if items:
+                # Check the first item to make sure its type label matches
+                for item in items.values():
+                    if item.type_label == object_type_label:
+                        return items
+                    else:  # these are not the items we want, skip to next items
+                        break
+        return {}
 
     def call(self, function, *args):
         """ Call any API method whose return value is an integer which indicates an error if != 0
@@ -433,16 +441,6 @@ class OutputObject(object):
         self.reportStep  = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStep)
         self.simDuration = self._call_int(_lib.ENR_getTimes, _lib.ENR_simDuration)
         self.num_periods  = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
-
-    def get_item_from_id(self, item_list, item_id):
-        """Retrieve the item from item_list with the specified ID.
-        Arguments:
-        item_id: ID label of item to find"""
-        for item in item_list:
-            if item.id == item_id:
-                return item
-        else:
-            return None
 
     def close(self):
         """

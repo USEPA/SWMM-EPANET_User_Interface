@@ -1,6 +1,7 @@
 import os
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from PyQt4.QtGui import QMessageBox
 import traceback
 import core.swmm.project
 from ui.help import HelpHandler
@@ -86,7 +87,15 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         end_index = self.cboEnd.currentIndex()
         num_steps = end_index - start_index + 1
         lines_list = ui.convenience.all_list_items(self.lstData)
-        graphSWMM.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
+        try:
+            graphSWMM.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
+        except Exception as e1:
+            msg = str(e1) + '\n' + str(traceback.print_exc())
+            print(msg)
+            QMessageBox.information(None, "Plot",
+                                    "Error plotting:\n" + msg,
+                                    QMessageBox.Ok)
+
         # cb = QtGui.QApplication.clipboard()
         # cb.clear(mode=cb.Clipboard)
         # cb.setText(self.get_text(), mode=cb.Clipboard)

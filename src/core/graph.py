@@ -38,12 +38,12 @@ class SWMM:
         fig.canvas.set_window_title(title)
         plt.title(title)
 
-        x_item = output.get_item(output.get_items(object_type_label_x), object_id_x)
+        x_item = output.get_items(object_type_label_x)[object_id_x]
         x_attribute = x_item.get_attribute_by_name(attribute_name_x)
         x_units = x_attribute.units(output.unit_system)
         x_values = x_item.get_series(output, x_attribute, start_index, num_steps)
 
-        y_item = output.get_item(output.get_items(object_type_label_y), object_id_y)
+        y_item = output.get_items(object_type_label_y)[object_id_y]
         y_attribute = x_item.get_attribute_by_name(attribute_name_y)
         y_units = y_attribute.units(output.unit_system)
         y_values = y_item.get_series(output, y_attribute, start_index, num_steps)
@@ -83,7 +83,7 @@ class SWMM:
 
         for line in lines_list:
             type_label, object_id, attribute_name, axis, legend_text = line.split(',', 4)
-            item = output.get_item(output.get_items(type_label), object_id)
+            item = output.get_items(type_label)[object_id]
             if item:
                 attribute = item.get_attribute_by_name(attribute_name)
                 y_values = item.get_series(output, attribute, start_index, num_steps)
@@ -211,13 +211,16 @@ class EPANET:
         parameter_label = attribute.name
         if units:
             parameter_label += ' (' + units + ')'
+
+        all_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+
         percent = []
         values = []
         index = 0
         for item in items:
             percent.append(index * 100 / count)
             index += 1
-            values.append(item.get_value(output, attribute, time_index))
+            values.append(all_values[item.index])
 
         values.sort()
         # Cumulative distributions:
@@ -247,7 +250,7 @@ class EPANET:
             produced.append(0)
             consumed.append(0)
 
-        for node in output.nodes:
+        for node in output.nodes.values():
             node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
             for time_index in range(0, output.num_periods):
                 flow = node_flows[time_index]
@@ -260,7 +263,10 @@ class EPANET:
         plt.plot(x_values, produced, label="Produced")
 
         # fig.suptitle("Time Series Plot")
-        plt.ylabel("Flow")
+        flow_units = ""
+        if output.flowUnitsLabel:
+            flow_units = " (" + output.flowUnitsLabel + ")"
+        plt.ylabel("Flow" + flow_units)
         plt.xlabel("Time (hours)")
         plt.grid(True)
         plt.legend()

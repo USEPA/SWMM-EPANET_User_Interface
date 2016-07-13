@@ -40,16 +40,16 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.lstName.clear()
         if newIndex != 3:
             for item in self.output.all_items[newIndex]:
-                self.lstName.addItem(item.id)
-            self.lstName.setItemSelected(self.lstName.item(0),True)
+                self.lstName.addItem(item)
+            self.lstName.setItemSelected(self.lstName.item(0), True)
             self.cboVariable.clear()
             for attribute in object_type.attributes:
                 self.cboVariable.addItem(attribute.name)
         else:
             self.cboVariable.clear()
-            self.cboVariable.addItems(['Temperature','Precipitation','Snow Depth','Infiltration','Runoff','DW Inflow',
-                                       'GW Inflow','I&I Inflow','Direct Inflow','Total Inflow','Floowding','Outflow',
-                                       'Storage','Evaporation','PET'])
+            self.cboVariable.addItems(['Temperature', 'Precipitation', 'Snow Depth', 'Infiltration', 'Runoff',
+                                       'DW Inflow', 'GW Inflow', 'I&I Inflow', 'Direct Inflow', 'Total Inflow',
+                                       'Flooding', 'Outflow', 'Storage', 'Evaporation', 'PET'])
 
     def cboVariable_currentIndexChanged(self, newIndex):
         self.cboStatistic.clear()

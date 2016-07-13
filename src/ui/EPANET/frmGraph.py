@@ -55,7 +55,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems([att.name for att in ENR_node_type.Attributes])
             self.lstToGraph.clear()
             self.list_items = self.output.nodes
-            self.lstToGraph.addItems([item.id for item in self.list_items])
+            self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
@@ -64,7 +64,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems([att.name for att in ENR_link_type.Attributes])
             self.lstToGraph.clear()
             self.list_items = self.output.links
-            self.lstToGraph.addItems([item.id for item in self.list_items])
+            self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnTime_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -152,14 +152,17 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             if self.rbnProfile.isChecked():
                 items = self.selected_items()
                 if len(items) < 2:  # if fewer than two items were selected, use all items
-                    items = self.list_items
+                    items = self.list_items.values()
                 self.plot_profile(attribute, time_index, items)
             if self.rbnFrequency.isChecked():
-                graphEPANET.plot_freq(self.output, attribute, time_index, self.list_items)
+                graphEPANET.plot_freq(self.output, attribute, time_index, self.list_items.values())
 
     def selected_items(self):
-        ids = selected_list_items(self.lstToGraph)
-        return [item for item in self.list_items if item.id in ids]
+        names = selected_list_items(self.lstToGraph)
+        items = []
+        for name in names:
+            items.append(self.list_items[name])
+        return items
 
     def plot_profile(self, attribute, time_index, items):
         fig = plt.figure()

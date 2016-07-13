@@ -153,7 +153,7 @@ class Reports:
     def write_link_header(self, period, table_attributes, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
-            line = self.TXT_LINK_RESULTS
+        line = self.TXT_LINK_RESULTS
         if self.output.num_periods > 1:
             line += self.TXT_AT + self.output.get_time_string(period)
         line += ':'
@@ -257,7 +257,7 @@ class Reports:
                         if attribute == ENR_link_type.AttributeStatus:  # use default formatting of link status
                             values_formatted.append(attribute.str(values[attribute.index]))
                         else:                                           # custom formatting of numeric attributes
-                            values_formatted.append('{:9.2f}'.format(attribute.str(values[attribute.index])))
+                            values_formatted.append('{:9.2f}'.format(values[attribute.index]))
                     line = '{:15} {}'.format(input_link.id, ' '.join(values_formatted))
                 if links is self.project.pumps:
                     line += ' Pump'

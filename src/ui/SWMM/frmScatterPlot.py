@@ -63,12 +63,14 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
 
         lst_ids.clear()
         for item in items:
-            lst_ids.addItem(item.id)
+            lst_ids.addItem(item)
 
         cboVariable.clear()
         if items:
-            for attribute in items[0].attributes:
-                cboVariable.addItem(attribute.name)
+            for item in items.values():
+                for attribute in item.attributes:
+                    cboVariable.addItem(attribute.name)
+                break  # Only need variables from first item
 
     def cmdOK_Clicked(self):
         if not self.lstX.currentItem():

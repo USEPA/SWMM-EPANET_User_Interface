@@ -63,11 +63,12 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
             title += " at " + selected_locations[0]
         self.setWindowTitle(title)
         column_data = []
+        items = self.output.get_items(object_label)
         for selected_location in selected_locations:
             for variable in self.lstVariables.selectedIndexes():
                 selected_variable = str(variable.data())
                 # for each selected location, for each selected variable
-                item = self.output.get_item(self.output.get_items(object_label), selected_location)
+                item = items[selected_location]
                 if item:
                     attribute = item.get_attribute_by_name(selected_variable)
                     this_column_values = item.get_series(self.output, attribute, start_index, num_steps)
@@ -79,7 +80,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
                     else:
                         column_headers.append(selected_variable + ' at ' + object_label + ' ' + selected_location + units)
                     num_columns += 1
-                    this_column_formatted = [attribute.format.format(val) for val in this_column_values]
+                    this_column_formatted = [attribute.str(val) for val in this_column_values]
                     column_data.append(this_column_formatted)
 
         self._frmOutputTable = frmGenericListOutput(self._main_form, "SWMM Table Output")
@@ -96,7 +97,7 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
 
         self.lstNodes.clear()
         for item in self.output.all_items[newIndex]:
-            self.lstNodes.addItem(item.id)
+            self.lstNodes.addItem(item)
         if object_type == SMO.SwmmOutputSystem:
             self.lstNodes.item(0).setSelected(True)
             self.lstNodes.setVisible(False)

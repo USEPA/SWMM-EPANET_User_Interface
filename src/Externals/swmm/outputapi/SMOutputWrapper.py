@@ -36,16 +36,16 @@ class SwmmOutputCategoryBase:
         return self.id
 
     @classmethod
-    def get_list(cls, output):
-        """ Read the list of all items of this class from the output file.
+    def read_all(cls, output):
+        """ Read all items of this class from the output file into a dictionary.
             Intended to be called only in the constructor of the output file object.
             Args
             output (SwmmOutputObject): object that has already opened the desired output file.
             Notes
-            Does not work for SwmmOutputSystem because it does not have a list of IDs.
-            Returns
-            Python list of objects of this type, one for each ID read."""
-        items = []
+            Not used for SwmmOutputSystem because it does not have a list of names/IDs.
+            Returns (dictionary): Python dictionary of all objects of this type, keyed by name.
+        """
+        items = {}
         index = 0
         # Traverse a linked list of struct IDentry (char* IDname, IDentry* nextID).
         id_head = cls._get_ids(output.ptrapi, byref(cint))
@@ -54,8 +54,8 @@ class SwmmOutputCategoryBase:
             print("Error reading IDs for " + cls.type_label)
             output._raise_error(cint.value)
         while next_id:
-            items.append(cls(str(next_id.contents.IDname.data), index))
-            # print "Read # " + str(index) + " ID = " + items[-1].id
+            name = str(next_id.contents.IDname.data)
+            items[name] = cls(name, index)
             next_id = next_id.contents.nextID
             index += 1
         _lib.SMO_freeIDList(id_head)
@@ -324,10 +324,10 @@ class SwmmOutputObject(object):
         self._get_units()
         self._get_sizes()
         self._get_times()
-        self.subcatchments = SwmmOutputSubcatchment.get_list(self)
-        self.nodes = SwmmOutputNode.get_list(self)
-        self.links = SwmmOutputLink.get_list(self)
-        self.system = [SwmmOutputSystem('-1', -1)]
+        self.subcatchments = SwmmOutputSubcatchment.read_all(self)
+        self.nodes = SwmmOutputNode.read_all(self)
+        self.links = SwmmOutputLink.read_all(self)
+        self.system = {'-1': SwmmOutputSystem('-1', -1)}
         self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
 
     def _call(self, function, *args):
@@ -421,29 +421,24 @@ class SwmmOutputObject(object):
         # self.simDuration = cint.value
 
     def get_items(self, object_type_label):
-        """ Get the list of items of the type whose type_label attribute is object_type_label.
+        """ Get the dictionary of items of the type whose type_label attribute is object_type_label.
 
             Args:
             object_type_label: can be "Subcatchment", "Node" or "Link". (System has no items.)
 
             Examples:
-                for node in get_items("Node"):
-                    print node.id
+                for name, node in get_items("Node"):
+                    print(name, str(node.get_series(output, SwmmOutputNode.attribute_depth, 0, 2)[1]))
         """
         for items in self.all_items:
-            if items and items[0].type_label == object_type_label:
-                return items
-        return []
-
-    def get_item(self, item_list, item_id):
-        """Retrieve the item from item_list with the specified ID.
-        Arguments:
-        item_id: ID label of item to find"""
-        for item in item_list:
-            if item.id == item_id:
-                return item
-        else:
-            return None
+            if items:
+                # Check the first item to make sure its type label matches
+                for item in items.values():
+                    if item.type_label == object_type_label:
+                        return items
+                    else:  # these are not the items we want, skip to next items
+                        break
+        return {}
 
     def close(self):
         """

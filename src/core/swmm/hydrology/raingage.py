@@ -2,6 +2,7 @@ from core.coordinates import Coordinates
 import core.swmm.timeseries
 from enum import Enum
 from core.metadata import Metadata
+from core.inputfile import Section
 
 
 class RainFormat(Enum):
@@ -27,7 +28,7 @@ class RainFileUnits(Enum):
     MM = 2
 
 
-class RainGage:
+class RainGage(Section):
     """A rain gage, including reference to location and time-series data"""
 
     field_format = "{:16}\t{:10}\t{:6}\t{:6}\t{:10}"

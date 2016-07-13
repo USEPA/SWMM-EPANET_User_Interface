@@ -42,13 +42,14 @@ class ENR_categoryBase:
             output (OutputObject): object that has already opened the desired output file.
             Returns (list): Python list of all objects of this type.
         """
-        items = []
+        items = {}
 
         item_count = output._call_int(_lib.ENR_getNetSize, cls._count_flag)
         ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
         for index in range(1, item_count + 1):
             cls._get_name(output.ptrapi, cls._elementType, index, ctypes_name)
-            items.append(cls(str(ctypes_name), index))
+            name = str(ctypes_name)
+            items[name] = cls(name, index)
         return items
 
     # def get_value(self, output, attribute, time_index):
@@ -173,7 +174,7 @@ class ENR_categoryBase:
         returned_length = c_int()
         error_new = c_int()
         array_pointer = _lib.ENR_newOutValueArray(output.ptrapi,
-                                                  _lib.ENR_getAttribute,
+                                                  _lib.ENR_getResult,
                                                   self._elementType,
                                                   byref(returned_length),
                                                   byref(error_new))
@@ -433,16 +434,6 @@ class OutputObject(object):
         self.reportStep  = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStep)
         self.simDuration = self._call_int(_lib.ENR_getTimes, _lib.ENR_simDuration)
         self.num_periods  = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
-
-    def get_item_from_id(self, item_list, item_id):
-        """Retrieve the item from item_list with the specified ID.
-        Arguments:
-        item_id: ID label of item to find"""
-        for item in item_list:
-            if item.id == item_id:
-                return item
-        else:
-            return None
 
     def close(self):
         """

@@ -220,7 +220,7 @@ class Reports:
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
             for input_node in nodes.value:
                 #         MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                output_node = self.output.get_item_from_id(self.output.nodes, input_node.id)
+                output_node = self.output.nodes[input_node.id]
                 if not output_node:
                     line = '{:15} {}'.format(input_node.id, 'not found in output.')
                 else:
@@ -247,7 +247,7 @@ class Reports:
         for links in (self.project.pipes, self.project.pumps, self.project.valves):
             for input_link in links.value:
                 # MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                output_link = self.output.get_item_from_id(self.output.links, input_link.id)
+                output_link = self.output.links[input_link.id]
                 if not output_link:
                     line = '{:15} {}'.format(input_link.id, 'not found in output.')
                 else:
@@ -304,7 +304,7 @@ class Reports:
                                        (self.project.pumps.value, "Pump"),
                                        (self.project.valves.value, "Valve")]:
             for link in input_links:
-                item = self.output.get_item_from_id(self.output.links, link.id)
+                item = self.output.links[link.id]
                 if item:
                     item.category = category
                     items.append(item)
@@ -318,7 +318,7 @@ class Reports:
                                        (self.project.reservoirs.value, "Reservoir"),
                                        (self.project.tanks.value, "Tank")]:
             for node in input_nodes:
-                item = self.output.get_item_from_id(self.output.nodes, node.id)
+                item = self.output.nodes[node.id]
                 if item:
                     item.category = category
                     items.append(item)

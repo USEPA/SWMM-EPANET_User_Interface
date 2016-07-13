@@ -5,7 +5,7 @@ from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type, ENR_link_t
 from core.epanet.reports import Reports
 from ui.EPANET.frmTableDesigner import Ui_frmTable
 from ui.frmGenericListOutput import frmGenericListOutput
-from ui.model_utility import transl8
+from ui.model_utility import transl8, process_events
 
 
 class frmTable(QtGui.QMainWindow, Ui_frmTable):
@@ -124,13 +124,14 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         else:
             name = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
             if self.rbnTimeseriesNode.isChecked():
-                item = self.output.get_item_from_id(self.output.nodes, name)
+                item = self.output.nodes[name]
             else:
-                item = self.output.get_item_from_id(self.output.links, name)
+                item = self.output.links[name]
             title = "Time Series Table - " + self.item_type.TypeLabel + ' ' + name
             self.make_timeseries_table(frm, title, item, attributes, column_headers)
         frm.tblGeneric.resizeColumnsToContents()
         frm.show()
+        frm.update()
         self.forms.append(frm)
         # self.close()
 
@@ -155,6 +156,11 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 tbl.setItem(row, col, table_cell_widget)
                 col += 1
             row += 1
+            if row == 20:
+                tbl.resizeColumnsToContents()
+                frm.show()
+                frm.update()
+                process_events()
 
     def make_timeseries_table(self, frm, title, item, attributes, column_headers):
         frm.setWindowTitle(title)

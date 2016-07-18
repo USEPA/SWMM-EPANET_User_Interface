@@ -71,7 +71,7 @@ class InputFile(object):
                 self.sections.append(attr_value)
 
     def add_section(self, section_name, section_text):
-        attr_name = InputFile.printable_to_attribute(section_name)
+        attr_name = InputFile.format_as_attribute_name(section_name)
         try:
             section_attr = self.__getattribute__(attr_name)
         except:
@@ -112,19 +112,19 @@ class InputFile(object):
             Args:
                  section_name (str): Name of section to find.
         """
-        compare_title = InputFile.printable_to_attribute(section_name)
+        compare_title = InputFile.format_as_attribute_name(section_name)
         for section in self.sections:
             this_section_name = ''
             if hasattr(section, "SECTION_NAME"):
                 this_section_name = section.SECTION_NAME
             elif hasattr(section, "name"):
                 this_section_name = section.name
-            if this_section_name and InputFile.printable_to_attribute(str(this_section_name)) == compare_title:
+            if this_section_name and InputFile.format_as_attribute_name(str(this_section_name)) == compare_title:
                 return section
         return None
 
     @staticmethod
-    def printable_to_attribute(name):
+    def format_as_attribute_name(name):
         """@param name is as it appears in text input file, return it formatted as a class attribute name"""
         return name.lower().replace(' ', '_').replace('[', '').replace(']', '')
 

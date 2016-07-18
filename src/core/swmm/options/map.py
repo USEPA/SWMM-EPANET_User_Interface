@@ -53,6 +53,6 @@ class MapOptions(Section):
                     if fields[0].lower() == "dimensions" and len(fields) > 4:
                         self.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
                     else:
-                        self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
+                        self.setattr_keep_type(InputFile.format_as_attribute_name(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)

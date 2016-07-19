@@ -1,18 +1,18 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project import Section, SectionAsListOf
+from core.project import Project, Section, SectionAsListOf
 
 
 class InputReaderFile(object):
-    """Input File Reader"""
+    """ Base class for reading input files """
 
     @staticmethod
-    def read_file(self, file_name):
+    def read_file(project, file_name):
         try:
             with open(file_name, 'r') as inp_reader:
-                self.set_from_text_lines(iter(inp_reader))
-                self.file_name = file_name
+                InputReaderFile.set_from_text_lines(project, iter(inp_reader))
+                project.file_name = file_name
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
@@ -62,7 +62,7 @@ class InputReaderFile(object):
                 new_section.value = section_text
         else:
             section_class = type(section_attr)
-            if new_section is None:  # This section has not yet been added to self.sections
+            if new_section is None:  # This section has not yet been added to project's sections
                 if section_class is SectionAsListOf or section_class is SectionAsListGroupByID:
                     new_section = section_attr  # Use the existing instance created during project init
                 else:
@@ -84,8 +84,9 @@ class InputReaderFile(object):
 
 
 class SectionReader(object):
-    """Any section or sub-section or value in an input file"""
+    """ Read a section or sub-section or value in an input file """
 
+    @staticmethod
     def set_text(section, new_text):
         """Read properties from text.
             Args:
@@ -98,8 +99,8 @@ class SectionReader(object):
 
     @staticmethod
     def set_comment_check_section(section, line):
-        """ Split any comment after a semicolon into self.comment and return the rest of the line.
-            If the line is a section header (starts with open square bracket) then check against self.SECTION_NAME.
+        """ Set comment to text after a semicolon and return the rest of the line.
+            If the line is a section header (starts with open square bracket) then check against SECTION_NAME.
             If it matches, return empty string. If it does not match, raise ValueError.
             Args:
                 line (str): Text to search for a comment or section name.
@@ -113,7 +114,7 @@ class SectionReader(object):
                 omit_chars = " ;\t-_"
                 this_stripped = SectionReader.omit_these(this_comment, omit_chars).upper()
                 if len(this_stripped) == 0 and ("---" in this_comment) and not ("---" in section.comment):
-                    section.comment += '\n'  # Add dashed line on a new line if self.comment does not already have one
+                    section.comment += '\n'  # Add dashed line on a new line if comment does not already have one
                 elif this_stripped in SectionReader.omit_these(section.comment, omit_chars).upper():
                     this_comment = ''  # Already have this comment, don't add it again
                 elif hasattr(section, "DEFAULT_COMMENT") and section.comment == section.DEFAULT_COMMENT:
@@ -157,10 +158,12 @@ class SectionReader(object):
         """
         return SectionReader.match_omit(string_one.upper(), string_two.upper(), omit_chars.upper())
 
+    @staticmethod
     def matches(section, other):
-        """Test whether this section and other have the same contents ignoring case, whitespace, order of lines.
+        """Test whether section and other have the same contents ignoring case, whitespace, order of lines.
         Args:
-            other: a Section or anything with a get_text method or will be converted to string with str()
+            section (Section): object to compare to other.
+            other (Section or string): compare this to section
         """
         if other is None:
             return False
@@ -245,7 +248,7 @@ class SectionReader(object):
 
     @staticmethod
     def get_attr_name_value(section, line):
-        """Search self.metadata for attribute with input_name matching start of line.
+        """Search metadata for attribute with input_name matching start of line.
             Args:
                 line (str): One line of text formatted as input file, with field name followed by field value.
             Returns:
@@ -274,7 +277,7 @@ class SectionReader(object):
                     comment.SECTION_NAME = "Comment"
                     comment.value = line
                     section.value.append(comment)
-                else:  # If we are still at the beginning of the section, set self.comment instead of adding a Section
+                else:  # If we are still at the beginning of the section, set comment instead of adding a Section
                     section.set_comment_check_section(line)
             else:
                 try:
@@ -287,18 +290,19 @@ class SectionReader(object):
                 except Exception as e:
                     print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
-
     @staticmethod
     def read_section_as_list_group_by_id(section, new_text):
         """
         Read a Section that contains items which may each span more than one line.
         Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
 
-        Parse new_text into a section comment (column headers) followed by items of type self.list_type.
-        section.value is created as a list of items of self.list_type.
+        Parse new_text into a section comment (column headers) followed by items of type section.list_type.
+        section.value is created as a list of items of section.list_type.
         section.list_type was set by the SectionAsListOf constructor.
-        Each item text is made into a self.list_type using a constructor that takes a string, then added to self.value.
+        Each item text is made into a section.list_type using a constructor that takes a string,
+         then it is added to section.value.
             Args:
+                section (Section): object to populate.
                 new_text (str): Text of whole section to parse into comments and a list of items.
         """
         section.value = []
@@ -306,7 +310,7 @@ class SectionReader(object):
         section.set_comment_check_section(lines[0])  # Check first line against section name
         next_index = 1
         expected_comment_lines = section.comment.splitlines()
-        for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into self.comment
+        for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into comment
             if str(lines[line_number]).startswith(';'):
                 # On multi-line initial comment, make sure last line is just dashes if the default comment was.
                 # Otherwise it is kept out of the section comment and will be assigned to go with an item.
@@ -338,7 +342,7 @@ class SectionReader(object):
                             try:  # then save the one we have been reading since we have read it all
                                 section.value.append(section.list_type(item_text))
                             except Exception as ex:
-                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(self.list_type.__name__,
+                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(section.list_type.__name__,
                                                                                             item_text,
                                                                                             str(ex),
                                                                                             str(traceback.print_exc())))

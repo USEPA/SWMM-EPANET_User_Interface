@@ -4,6 +4,7 @@ from enum import Enum
 from ui.frmRunSimulationDesigner import Ui_frmRunSimulation
 from ui.model_utility import process_events
 
+
 class RunStatus(Enum):
     rsSuccess = 0
     rsWarning = 1
@@ -11,7 +12,7 @@ class RunStatus(Enum):
     rsWrongVersion = 3
     rsFailed = 4
     rsShutdown = 5
-    rsStopped = 6      # Was in SWMM not EPANET
+    # rsStopped = 6      # Was in SWMM not EPANET
     rsImportError = 7  # Was in SWMM not EPANET
     rsCancelled = 8    # Was in EPANET not SWMM
     rsNone = 9
@@ -60,7 +61,7 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
         RunStatus.rsWrongVersion: TXT_STATUS_WRONGVERSION,
         RunStatus.rsFailed:       TXT_STATUS_FAILED,
         RunStatus.rsShutdown:     TXT_STATUS_SHUTDOWN,
-        RunStatus.rsStopped:      TXT_STATUS_STOPPED,
+        # RunStatus.rsStopped:      TXT_STATUS_STOPPED,
         RunStatus.rsImportError:  TXT_STATUS_IMPORT_ERROR,
         RunStatus.rsCancelled:    TXT_STATUS_CANCELLED,
         RunStatus.rsNone:         TXT_STATUS_NONE,
@@ -102,7 +103,7 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
 
     def stop_clicked(self):
         #  OnClick procedure for the Stop button.
-        self.set_status(RunStatus.rsStopped)
+        self.set_status(RunStatus.rsCancelled)
         self.cmdStop.setVisible(False)
         self.cmdOK.setVisible(True)
         self.cmdOK.setFocus()

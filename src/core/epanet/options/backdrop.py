@@ -61,6 +61,6 @@ class BackdropOptions(Section):
                     elif fields[0].lower() == "offset" and len(fields) > 2:
                         self.offset = (fields[1], fields[2])
                     else:
-                        self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
+                        self.setattr_keep_type(InputFile.format_as_attribute_name(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)

@@ -26,6 +26,8 @@ from ui.EPANET.frmJunction import frmJunction
 from ui.EPANET.frmReservoir import frmReservior
 from ui.EPANET.frmTank import frmTank
 from ui.EPANET.frmPipe import frmPipe
+from ui.EPANET.frmPump import frmPump
+from ui.EPANET.frmValve import frmValve
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
@@ -35,6 +37,7 @@ from ui.EPANET.frmTable import frmTable
 from ui.EPANET.frmEnergyReport import frmEnergyReport
 from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
+from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
 from core.epanet.project import Project
 from core.epanet.patterns import Pattern
@@ -86,8 +89,8 @@ class frmMainEPANET(frmMain):
     tree_Reservoirs = ["Reservoirs", frmReservior]
     tree_Tanks = ["Tanks", frmTank]
     tree_Pipes = ["Pipes", frmPipe]
-    tree_Pumps = ["Pumps", None]
-    tree_Valves = ["Valves", None]
+    tree_Pumps = ["Pumps", frmPump]
+    tree_Valves = ["Valves", frmValve]
     tree_Labels = ["Labels", None]
     tree_Patterns = ["Patterns", frmPatternEditor]
     tree_Curves = ["Curves", frmCurveEditor]
@@ -349,6 +352,20 @@ class frmMainEPANET(frmMain):
             return None
         elif edit_name == 'Curves':
             return None
+        elif edit_name == 'Labels':
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        edit_these.extend(self.project.labels.value)
+                if len(edit_these) == 0:
+                    new_item = Label()
+                    new_item.name = "NewLabel"
+                    edit_these.append(new_item)
+                    self.project.labels.value = edit_these
+            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
+            frm.helper = HelpHandler(frm)
+            frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm
@@ -365,6 +382,19 @@ class frmMainEPANET(frmMain):
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == 'Pipes':
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Pumps':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Valves':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Labels':
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        for value in self.project.labels.value:
+                            if value.label == selected_item:
+                                edit_these.append(value)
+            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
             frm.set_from(self.project, selected_item)

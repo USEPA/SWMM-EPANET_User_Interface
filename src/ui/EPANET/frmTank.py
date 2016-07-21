@@ -24,7 +24,7 @@ class frmTank(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Tank Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
-            # for pattern, show available patterns
+            # for curve, show available curves
             curve_section = self.project.find_section("CURVES")
             curve_list = curve_section.value[0:]
             combobox = QtGui.QComboBox()

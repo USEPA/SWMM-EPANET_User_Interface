@@ -157,6 +157,23 @@ class Pump(Link):
 
     field_format = "{:16}\t{:16}\t{:16}"
 
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",               '', "Pump ID",            "",    '', '', "User-assigned name of the pump"),
+        ("inlet_node",       '', "Start Node",         "",    '', '', "Node on the inlet end of the pump"),
+        ("outlet_node",      '', "End Node",           "",    '', '', "Node on the outlet end of the pump"),
+        ("description",      '', "Description",        "",    '', '', "Optional description of the pump"),
+        ("tag",              '', "Tag",                "",    '', '', "Optional label used to categorize or classify the pump"),
+        ("head_curve_id",    '', "Pump Curve",         "",    '', '', "Curve that describes head versus flow for the pump"),
+        ("power",            '', "Power",              "0.0", '', '', "Power value for constant energy pump, hp (kW)"),
+        ("speed",            '', "Speed",              "0.0", '', '', "Relative speed setting (normal speed is 1.0, 0 means pump is off)"),
+        ("pattern",          '', "Pattern",            "",    '', '', "Time pattern that describes how speed setting varies with time"),
+        ("initial_status",   '', "Initial Status",     "",    '', '', "Initial status of a pump"),
+        ("PumpEnergy.value", '', "Effic. Curve",       "",    '', '', "Efficiency curve ID"),
+        ("PumpEnergy.value", '', "Energy Price",       "0.0", '', '', "Energy price for this pump"),
+        ("PumpEnergy.value", '', "Price Pattern",      "",    '', '', "ID of price pattern for this pump"),
+    ))
+
     def __init__(self, new_text=None):
         if new_text:
             self.set_text(new_text)
@@ -223,6 +240,20 @@ class Valve(Link):
     """A valve link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:4}\t{:12}\t{:12}\t{}"
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("id",                     '', "Valve ID",           "",    '', '', "User-assigned name of the valve"),
+        ("inlet_node",             '', "Start Node",         "",    '', '', "Node on the inlet end of the valve"),
+        ("outlet_node",            '', "End Node",           "",    '', '', "Node on the outlet end of the valve"),
+        ("description",            '', "Description",        "",    '', '', "Optional description of the valve"),
+        ("tag",                    '', "Tag",                "",    '', '', "Optional label used to categorize or classify the valve"),
+        ("diameter",               '', "Diameter",           "0.0", '', '', "Valve diameter"),
+        ("type",                   '', "Type",               "",    '', '', "Valve type"),
+        ("setting",                '', "Setting",            "",    '', '', "Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve ID for GPV"),
+        ("minor_loss_coefficient", '', "Loss Coeff.",        "",    '', '', "TCV (throttle control valve) Loss Coefficient"),
+        ("status",                 '', "Fixed Status",       "",    '', '', "Initial status of a valve"),
+    ))
 
     def __init__(self, new_text=None):
         if new_text:

@@ -1,10 +1,34 @@
+from enum import Enum
+
 from core.inputfile import Section
+from core.metadata import Metadata
+
+
+class MeterType(Enum):
+    """Type of object being metered by the label"""
+    NONE = 1
+    NODE = 2
+    LINK = 3
 
 
 class Label(Section):
     """A label on the map with location, text, and optional anchor node ID"""
 
     field_format = '{:16}\t{:16}\t"{}"\t{:16}'
+
+#    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("label",           '', "Text",            '',    '',   '', "Text of label"),
+        ('x',               '', "X-Coordinate",    '',    '',   '', "X coordinate of label on study area map"),
+        ('y',               '', "Y-Coordinate",    '',    '',   '', "Y coordinate of label on study area map"),
+        ('anchor_node_id',  '', "Anchor Node",     '',    '',   '', "ID label of an anchor node (optional)"),
+        ('meter_type',      '', "Meter Type",      '',    '',   '', "Type of object being metered by the label"),
+        ('meter_id',        '', "Meter ID",        '',    '',   '', "ID of the object (Node or Link) being metered"),
+        ("font",            '', "Font",            "",       '', '',  "The label's font"),
+        ("size",            '', "Size",            "10.0",   '', '',  "The label's font size"),
+        ("bold",            '', "Bold",            "False",  '', '',  "Set to True if the label is to be bold"),
+        ("italics",         '', "Italics",         "False",  '', '',  "Set to True if the label is to be italicized"),
+    ))
 
     def __init__(self, new_text=None):
         if new_text:
@@ -23,6 +47,24 @@ class Label(Section):
 
             self.anchor_node_id = ''  # string
             """ID label of an anchor node (optional)"""
+
+            self.meter_type = MeterType.NONE
+            """type of object being metered by the label"""
+
+            self.meter_id = ''
+            """ID of the object (Node or Link) being metered"""
+
+            self.font = ""
+            """label font"""
+
+            self.size = 10.0
+            """label size"""
+
+            self.bold = False
+            """label bold"""
+
+            self.italic = False
+            """lable italics"""
 
     def get_text(self):
         """format contents of this item for writing to file"""

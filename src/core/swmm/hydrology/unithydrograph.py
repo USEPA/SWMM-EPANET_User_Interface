@@ -37,7 +37,7 @@ class UnitHydrograph(Section):
     def __init__(self, new_text=None):
         Section.__init__(self)
 
-        self.group_name = "Unnamed"
+        self.name = "Unnamed"
         """str: Name assigned to this Unit Hydrograph group"""
 
         self.rain_gage_id = ''
@@ -55,10 +55,10 @@ class UnitHydrograph(Section):
         if self.comment:
             text_list.append(self.comment)
 
-        text_list.append(self.first_row_format.format(self.group_name, self.rain_gage_id))
+        text_list.append(self.first_row_format.format(self.name, self.rain_gage_id))
 
         for entry in self.value:
-            text_list.append(self.field_format.format(self.group_name,
+            text_list.append(self.field_format.format(self.name,
                                                       entry.hydrograph_month,
                                                       entry.term,
                                                       entry.response_ratio,
@@ -76,11 +76,11 @@ class UnitHydrograph(Section):
             line = self.set_comment_check_section(line)
             if line:
                 fields = line.split()
-                if self.group_name and self.group_name != "Unnamed" and self.group_name != fields[0]:
-                    raise ValueError("UnitHydrograph.set_text: name: " + fields[0] + " != " + self.group_name + "\n"
+                if self.name and self.name != "Unnamed" and self.name != fields[0]:
+                    raise ValueError("UnitHydrograph.set_text: name: " + fields[0] + " != " + self.name + "\n"
                                      "in line: " + line)
                 if len(fields) == 2:
-                    (self.group_name, self.rain_gage_id) = fields
+                    (self.name, self.rain_gage_id) = fields
                 elif len(fields) > 5:
                     entry = UnitHydrographEntry()
                     entry.hydrograph_month = fields[1]

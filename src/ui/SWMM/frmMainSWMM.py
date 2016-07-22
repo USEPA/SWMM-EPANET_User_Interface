@@ -528,10 +528,10 @@ class frmMainSWMM(frmMain):
                 ids.append(self.project.snowpacks.value[i].name)
         elif category == self.tree_hydrology_UnitHydrographs[0]:
             for i in range(0, len(self.project.hydrographs.value)):
-                ids.append(self.project.hydrographs.value[i].group_name)
+                ids.append(self.project.hydrographs.value[i].name)
         elif category == self.tree_hydrology_LIDControls[0]:
             for i in range(0, len(self.project.lid_controls.value)):
-                ids.append(self.project.lid_controls.value[i].control_name)
+                ids.append(self.project.lid_controls.value[i].name)
         elif category == self.tree_nodes_Junctions[0]:
             for i in range(0, len(self.project.junctions.value)):
                 ids.append(self.project.junctions.value[i].name)
@@ -650,22 +650,22 @@ class frmMainSWMM(frmMain):
             self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_hydrology_UnitHydrographs[0]:
             new_item = UnitHydrograph()
-            new_item.group_name = "New"
+            new_item.name = "New"
             if len(self.project.hydrographs.value) == 0:
                 edit_these = [new_item]
                 self.project.hydrographs.value = edit_these
             else:
                 self.project.hydrographs.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.group_name))
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_hydrology_LIDControls[0]:
             new_item = LIDControl()
-            new_item.control_name = "New"
+            new_item.name = "New"
             if len(self.project.lid_controls.value) == 0:
                 edit_these = [new_item]
                 self.project.lid_controls.value = edit_these
             else:
                 self.project.lid_controls.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.control_name))
+            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.name))
         elif section_name == self.tree_nodes_Junctions[0]:
             new_item = Junction()
             new_item.name = "New"
@@ -899,11 +899,11 @@ class frmMainSWMM(frmMain):
                     self.project.snowpacks.value.remove(value)
         elif section_name == self.tree_hydrology_UnitHydrographs[0]:
             for value in self.project.hydrographs.value:
-                if value.group_name == item_name:
+                if value.name == item_name:
                     self.project.hydrographs.value.remove(value)
         elif section_name == self.tree_hydrology_LIDControls[0]:
             for value in self.project.lid_controls.value:
-                if value.control_name == item_name:
+                if value.name == item_name:
                     self.project.lid_controls.value.remove(value)
         elif section_name == self.tree_nodes_Junctions[0]:
             for value in self.project.junctions.value:

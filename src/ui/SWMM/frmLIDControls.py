@@ -129,7 +129,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         lid_control_section = self._main_form.project.lid_controls
         lid_control_list = lid_control_section.value[0:]
         for lid in lid_control_list:
-            if lid.control_name == short_name:
+            if lid.name == short_name:
                 # this is the lid
                 if lid.lid_type == LIDType.BC:
                     lid_name = 'Bio-Retention'
@@ -147,7 +147,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                     lid_name = 'Rooftop Disconnection'
                 elif lid.lid_type == LIDType.VS:
                     lid_name = 'Vegetative Swale'
-        self.tblControls.setItem(row,1,QtGui.QTableWidgetItem(str(lid_name)))
+        self.tblControls.setItem(row, 1, QtGui.QTableWidgetItem(str(lid_name)))
 
     def SetAreaTerm(self, subcatchment_id, row, number_replicate_units, area_each_unit):
         area = float(number_replicate_units) * float(area_each_unit)

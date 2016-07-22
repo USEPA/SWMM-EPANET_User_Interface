@@ -43,7 +43,7 @@ class SimpleHydrographsTest(unittest.TestCase):
 
         val = project_hydrographs.value[0]
 
-        assert val.group_name == "UH101"
+        assert val.name == "UH101"
         assert val.rain_gage_id == "RG1"
         assert len(val.value) == 5
 

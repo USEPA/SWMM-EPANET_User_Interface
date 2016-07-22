@@ -63,7 +63,7 @@ class LIDControl(Section):
     def __init__(self, new_text=None):
         Section.__init__(self)
 
-        self.control_name = ''
+        self.name = ''
         """Name used to identify the particular LID control"""
 
         self.lid_type = LIDType.BC
@@ -187,10 +187,10 @@ class LIDControl(Section):
         text_list = []
         if self.comment:
             text_list.append(self.comment)
-        text_list .append(self.control_name + '\t' + self.lid_type.name)
+        text_list .append(self.name + '\t' + self.lid_type.name)
         for field_names in LIDControl.LineTypes:
             if getattr(self, field_names[0]):
-                line = self.control_name + '\t' + field_names[1]
+                line = self.name + '\t' + field_names[1]
                 for field_name in field_names[2:]:
                     line += '\t' + str(getattr(self, field_name))
                 text_list.append(line)
@@ -203,17 +203,17 @@ class LIDControl(Section):
             if line:
                 fields = line.split()
                 if len(fields) == 2:
-                    if self.control_name:
+                    if self.name:
                         raise ValueError("LIDControl.set_text: LID name already set: " +
-                                         self.control_name + ", then found 2-element line: " + line)
-                    self.control_name = fields[0]
+                                         self.name + ", then found 2-element line: " + line)
+                    self.name = fields[0]
                     try:
                         self.lid_type = LIDType[fields[1].upper()]
                     except:
                         raise ValueError("LIDControl.set_text: Unknown LID type in second field: " + line)
                 elif len(fields) > 2:
-                    if fields[0] != self.control_name:
-                        raise ValueError("LIDControl.set_text: LID name: {} != {}".format(fields[0], self.control_name))
+                    if fields[0] != self.name:
+                        raise ValueError("LIDControl.set_text: LID name: {} != {}".format(fields[0], self.name))
                     check_type = fields[1].upper()
                     found_type = False
                     for field_names in LIDControl.LineTypes:

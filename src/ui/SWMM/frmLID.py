@@ -28,9 +28,9 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         # assume we want to edit the first one
         self.lid_id = lid_id
         for lid in lid_list:
-            if lid.control_name == lid_id:
+            if lid.name == lid_id:
                 # this is the lid control we want to edit
-                self.txtName.setText(lid.control_name)
+                self.txtName.setText(lid.name)
                 if lid.lid_type == LIDType.BC:
                     self.cboLIDType.setCurrentIndex(0)
                 elif lid.lid_type == LIDType.RG:
@@ -87,9 +87,9 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         section = self.project.lid_controls
         lid_list = section.value[0:]
         for lid in lid_list:
-            if lid.control_name == self.lid_id:
+            if lid.name == self.lid_id:
                 # this is the lid
-                lid.control_name = self.txtName.text()
+                lid.name = self.txtName.text()
                 if self.cboLIDType.currentIndex() == 0:
                     lid.lid_type = LIDType.BC
                     lid.has_surface_layer = True

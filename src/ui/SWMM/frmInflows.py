@@ -171,7 +171,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.cboUnitHydro.clear()
         self.cboUnitHydro.addItem('')
         for value in hydrograph_section.value:
-            self.cboUnitHydro.addItem(value.group_name)
+            self.cboUnitHydro.addItem(value.name)
         rdii_list = rdii_section.value[0:]
         for value in rdii_list:
             if value.node == self.node_id:

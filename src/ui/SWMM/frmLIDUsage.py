@@ -52,9 +52,9 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         selected_index = 0
         item_count = -1
         for lid in lid_list:
-            self.cboLIDControl.addItem(lid.control_name)
+            self.cboLIDControl.addItem(lid.name)
             item_count += 1
-            if lid_selected == lid.control_name:
+            if lid_selected == lid.name:
                 selected_index = item_count
         self.cboLIDControl.setCurrentIndex(selected_index)
         self.subcatchment_id = subcatchment_id
@@ -129,7 +129,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         section = self._main_form.project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         for lid in lid_list:
-            if lid.control_name == selected_text:
+            if lid.name == selected_text:
                 # this is the lid control, get its type
                 if lid.lid_type == LIDType.BC:
                     self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))

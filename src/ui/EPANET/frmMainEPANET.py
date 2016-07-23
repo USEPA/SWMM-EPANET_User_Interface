@@ -363,6 +363,8 @@ class frmMainEPANET(frmMain):
                     new_item.name = "NewLabel"
                     edit_these.append(new_item)
                     self.project.labels.value = edit_these
+                else:
+                    self.new_item = False
             frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"

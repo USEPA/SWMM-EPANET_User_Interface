@@ -23,6 +23,8 @@ class frmOutfalls(frmGenericPropertyEditor):
             self.new_item = Outfall()
             self.new_item.name = "1"
             edit_these.append(self.new_item)
+        else:
+            self.new_item = False
 
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Outfalls Editor")
 

@@ -11,11 +11,13 @@ and moving writer methods all into a new file "inp_file_writer.py"
 This version does not handle re-writing code that accesses the reader and writer methods.
 """
 
-reader_method = "set_text"
-writer_method = "get_text"
-reader_class_prefix = "Read"
-writer_class_prefix = "Write"
-top_dir = "C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_master\\src\\"
+reader_old_method = "set_text"
+reader_new_method = "read"
+writer_old_method = "get_text"
+writer_new_method = "as_text"
+reader_class_suffix = "Reader"
+writer_class_suffix = "Writer"
+top_dir = "C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\"
 start_dir = top_dir + "core\\swmm"
 # start_dir = top_dir + "core\\epanet"
 
@@ -51,6 +53,7 @@ edits_made = 0
 class_header_edits_made = 0
 reader_contents = []
 writer_contents = []
+
 for root, subdirs, files in os.walk(start_dir):
     print('reading folder ' + root)
     folders_read += 1
@@ -63,7 +66,7 @@ for root, subdirs, files in os.walk(start_dir):
             with open(file_path, 'rb') as f:
                 file_contents = f.read()
                 files_read += 1
-            if reader_method in file_contents or writer_method in file_contents:
+            if reader_old_method in file_contents or writer_old_method in file_contents:
                 files_edited += 1
                 rewrite_filename = os.path.join(root.replace(original_subpath, refactor_subpath), file_base) + ".py"
                 rewrite_dir = os.path.dirname(rewrite_filename)
@@ -82,6 +85,8 @@ for root, subdirs, files in os.walk(start_dir):
                     in_read_method = False
                     in_write_method = False
                     in_other_method = False
+                    in_if_new_text = False
+                    skip_indent = 0
                     class_var_name = "self"
                     orig_class_name = None
                     for line in file_contents.splitlines():
@@ -118,10 +123,15 @@ for root, subdirs, files in os.walk(start_dir):
                                     orig_class_name = None
                                 else:
                                     in_class = True
-                                    reader_class_name = reader_class_prefix + orig_class_name
-                                    writer_class_name = writer_class_prefix + orig_class_name
-                                    reader_class_header = ["\n", line.replace(orig_class_name, reader_class_name)]
-                                    writer_class_header = ["\n", line.replace(orig_class_name, writer_class_name)]
+                                    reader_class_name = orig_class_name + reader_class_suffix
+                                    reader_line = line.replace(orig_class_name, reader_class_name)
+                                    reader_line = reader_line.replace("(Section)", "(SectionReader)")
+                                    reader_class_header = ["\n", reader_line]
+
+                                    writer_class_name = orig_class_name + writer_class_suffix
+                                    writer_line = line.replace(orig_class_name, writer_class_name)
+                                    writer_line = writer_line.replace("(Section)", "(SectionWriter)")
+                                    writer_class_header = ["\n", writer_line]
                                     class_header_edits_made = 1
                                 line = None
                         except Exception as ex:
@@ -130,11 +140,14 @@ for root, subdirs, files in os.walk(start_dir):
                                 print(line)
 
                         if line is not None:
+                            rewrite_line = line
                             if " def " in line:
                                 if in_read_method:
                                     reader_contents.append("\n        return " + class_var_name + '\n\n')
-                                in_read_method = reader_method in line
-                                in_write_method = writer_method in line
+                                in_read_method = reader_old_method in line
+                                in_write_method = writer_old_method in line
+                                in_if_new_text = False
+                                skip_indent = 0
                                 if in_read_method or in_write_method:
                                     in_other_method = False
                                     # Now that we have found reader or writer method, write the class header.
@@ -149,10 +162,15 @@ for root, subdirs, files in os.walk(start_dir):
                                     class_header_edits_made = 0
                                     if in_read_method:
                                         line = line.replace("self, ", '')  # remove self argument
+                                        line = line.replace(reader_old_method, reader_new_method)
+                                    if in_write_method:
+                                        line = line.replace(writer_old_method, writer_new_method)
                                 else:
                                     in_read_method = False
                                     in_write_method = False
                                     in_other_method = True
+                                    rewrite_line = rewrite_line.replace(", new_text=None", '')
+
                             elif "field_format" in line:  # keep references to field_format only in writer
                                 new_line = line.replace("self.field_format", writer_class_name + ".field_format")
                                 new_line = new_line.replace("self", class_var_name)
@@ -165,12 +183,14 @@ for root, subdirs, files in os.walk(start_dir):
 
                             if line is not None:
                                 # Replace references to "self" with references to argument class_var_name.
-                                if orig_class_name:
-                                    new_line = line.replace("self.__init__()",
-                                                            class_var_name + " = " + orig_class_name + "()")
                                 new_line = line.replace("self", class_var_name)
 
                                 if in_read_method:
+                                    if orig_class_name:
+                                        new_line = new_line.replace(class_var_name + ".__init__()",
+                                                                    class_var_name + " = " + orig_class_name + "()")
+                                        new_line = new_line.replace("Section.__init__(" + class_var_name + ")",
+                                                                    class_var_name + " = " + orig_class_name + "()")
                                     reader_contents.append(new_line)
                                     if new_line != line:
                                         edits_made += 1
@@ -185,18 +205,44 @@ for root, subdirs, files in os.walk(start_dir):
                                     writer_class_header.append(new_line)
                                     if new_line != line:
                                         class_header_edits_made += 1
-                                if not in_read_method and not in_write_method:
+                                elif in_other_method and line:  # remove "if new_text" from __init__ and un-indent else
+                                    if in_if_new_text:
+                                        indent = len(rewrite_line) - len(rewrite_line.lstrip())
+                                        if indent < if_indent:
+                                            in_if_new_text = False
+                                            skip_indent = 0
+                                        elif indent == if_indent:
+                                            if rewrite_line[indent:].startswith("else:"):
+                                                rewrite_line = None
+                                            else:
+                                                skip_indent = 0
+                                            in_if_new_text = False
+                                        else:
+                                            rewrite_line = None
+                                    else:
+                                        in_if_new_text = "if new_text:" in rewrite_line
+                                        if in_if_new_text:
+                                            if_indent = rewrite_line.index("if new_text:")
+                                            rewrite_line = None
+                                            skip_indent = 4
+                                        elif skip_indent > 0:
+                                            indent = len(rewrite_line) - len(rewrite_line.lstrip())
+                                            if indent <= if_indent:
+                                                skip_indent = 0
+                                            else:
+                                                rewrite_line = rewrite_line[skip_indent:]
+
+                                if rewrite_line is not None and not in_read_method and not in_write_method:
                                     # write this line in new version of original file
                                     # unless it is in method to be moved.
                                     # remove Section as parent class
+
                                     if "Section.__init__(self)" not in line and\
                                        "SECTION_NAME =" not in line and\
                                        "from core.inputfile import " not in line:
-                                        rewrite_line = line.replace("(Section)", '')
-                                        if ("Section" in rewrite_line and not "CrossSection" in rewrite_line
-                                             and not "XSECTION" in rewrite_line) or\
-                                            "InputFile" in rewrite_line or \
-                                            "SECTION_NAME" in rewrite_line:
+                                        if ("Section" in rewrite_line and "CrossSection" not in rewrite_line and
+                                           "XSECTION" not in rewrite_line)\
+                                           or "InputFile" in rewrite_line or "SECTION_NAME" in rewrite_line:
                                             print("Questionable line rewritten from " + file_base + ':\n' + line\
                                                   + "\nto:" + rewrite_filename + ':\n' + rewrite_line)
                                         rewrite_file.write(rewrite_line + '\n')
@@ -208,12 +254,14 @@ for root, subdirs, files in os.walk(start_dir):
 
 if writer_contents:
     with open(writer_path, 'wb') as writer_file:
-        writer_file.write('\n'.join(imports) + '\n\n')
+        writer_file.write('\n'.join(imports) + '\n')
+        writer_file.write("from core.inp_writer_file import SectionWriter" + '\n\n')
         writer_file.write('\n'.join(writer_contents) + '\n\n')
 
 if reader_contents:
     with open(reader_path, 'wb') as reader_file:
-        reader_file.write('\n'.join(imports) + '\n\n')
+        reader_file.write('\n'.join(imports) + '\n')
+        reader_file.write("from core.inp_reader_file import SectionReader" + '\n\n')
         reader_file.write('\n'.join(reader_contents) + '\n\n')
 
 print("\nFolders read: " + str(folders_read))

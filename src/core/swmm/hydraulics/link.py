@@ -116,6 +116,7 @@ class Conduit(Link):
             Args:
                 new_text (str): Text to parse into properties.
         """
+        self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 8)
         if len(fields) > 2:
@@ -183,6 +184,7 @@ class Pump(Link):
             Args:
                 new_text (str): Text to parse into properties.
         """
+        self.__init__()
         new_text = self.set_comment_check_section(new_text)
         fields = new_text.split(None, 8)
         if len(fields) > 2:

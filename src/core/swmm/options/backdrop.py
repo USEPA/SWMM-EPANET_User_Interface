@@ -38,7 +38,7 @@ class BackdropOptions(Section):
         return '\n'.join(text_list)
 
     def set_text(self, new_text):
-        BackdropOptions.__init__(self)
+        self.__init__()
         for line in new_text.splitlines():
             try:
                 line = self.set_comment_check_section(line)

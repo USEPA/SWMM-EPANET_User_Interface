@@ -111,4 +111,4 @@ class SectionAsListOf(Section):
         Section.__init__(self)
         self.list_type = list_type
 
-class SectionAsListGroupByID(SectionAsListOf):
+# class SectionAsListGroupByID(SectionAsListOf):

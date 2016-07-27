@@ -513,6 +513,7 @@ class Transects(Section):
         self.list_type = Transect
 
     def set_text(self, new_text):
+        self.__init__()
         self.value = []
         item_lines = []
         line = ''

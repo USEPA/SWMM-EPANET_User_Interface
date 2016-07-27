@@ -7,18 +7,16 @@ from core.project import Project, Section, SectionAsListOf
 class InputReaderFile(object):
     """ Base class for reading input files """
 
-    @staticmethod
-    def read_file(project, file_name):
+    def read_file(self, project, file_name):
         try:
             with open(file_name, 'r') as inp_reader:
-                InputReaderFile.set_from_text_lines(project, iter(inp_reader))
+                self.set_from_text_lines(project, iter(inp_reader))
                 project.file_name = file_name
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
-    @staticmethod
-    def set_from_text_lines(project, lines_iterator):
-        """Read as a project file from lines of text.
+    def set_from_text_lines(self, project, lines_iterator):
+        """Read a project file from lines of text.
             Args:
                 project (Project): Project object to read data into
                 lines_iterator (iterator): Lines of text formatted as input file.
@@ -28,13 +26,13 @@ class InputReaderFile(object):
         for line in lines_iterator:
             if line.lstrip().startswith('['):
                 if section_name:
-                    project.add_section(section_name, '\n'.join(section_whole))
+                    self.add_section(project, section_name, '\n'.join(section_whole))
                 section_name = line.strip()
                 section_whole = [section_name]
             elif line.strip():
                 section_whole.append(line.rstrip())
         if section_name:
-            project.add_section(section_name, '\n'.join(section_whole))
+            self.add_section(project, section_name, '\n'.join(section_whole))
         InputReaderFile.add_sections_from_attributes(project)
 
     @staticmethod
@@ -44,58 +42,54 @@ class InputReaderFile(object):
             if isinstance(attr_value, Section) and attr_value not in project.sections:
                 project.sections.append(attr_value)
 
-    @staticmethod
-    def add_section(project, section_name, section_text):
-        attr_name = project.format_as_attribute_name(section_name)
+    def add_section(self, project, section_name, section_text):
         try:
-            section_attr = project.__getattribute__(attr_name)
-        except:
-            section_attr = None
+            # old_section = project.find_section(section_name)
+            # if old_section:
+            #     project.sections.remove(old_section)
+            new_section = None
+            attr_name = project.format_as_attribute_name(section_name)
+            reader = self.__getattribute__("read_" + attr_name)
+            if reader:
+                try:
+                    new_section = reader.read(section_text)
+                except Exception as e:
+                    print("Could not call read on " + attr_name + " (" + section_name + "):\n" + str(e) +
+                          '\n' + str(traceback.print_exc()))
+        except Exception as e_reader:
+            print("Could not find reader for " + section_name + ":\n" + str(e_reader) +
+                  '\n' + str(traceback.print_exc()))
 
-        new_section = project.find_section(section_name)
-
-        if section_attr is None:  # if there is not a class associated with this name, read it as generic Section
+        if new_section is None:
             print("Default Section for " + section_name)
-            if new_section is None:
-                new_section = Section()
-                new_section.SECTION_NAME = section_name
-                new_section.value = section_text
-        else:
-            section_class = type(section_attr)
-            if new_section is None:  # This section has not yet been added to project's sections
-                if section_class is SectionAsListOf or section_class is SectionAsListGroupByID:
-                    new_section = section_attr  # Use the existing instance created during project init
-                else:
-                    try:
-                        new_section = section_class()  # Create a new instance of this class
-                    except Exception as e:
-                        print("Could not create item of type " + str(section_class) + '\n' + str(e) +
-                              '\n' + str(traceback.print_exc()))
-        if new_section is not None:
-            try:
-                new_section.set_text(section_text)
-            except Exception as e:
-                print("Could not call set_text on " + attr_name + " (" + section_name + "):\n" + str(e) +
-                      '\n' + str(traceback.print_exc()))
-            if new_section not in project.sections:
-                project.sections.append(new_section)
-                if section_attr is not None:
-                    project.__setattr__(attr_name, new_section)
+            new_section = Section()
+            new_section.SECTION_NAME = section_name
+            new_section.value = section_text
+
+        if attr_name is not None and new_section is not None:
+            project.__setattr__(attr_name, new_section)
+        if new_section not in project.sections:
+            project.sections.append(new_section)
+
 
 
 class SectionReader(object):
     """ Read a section or sub-section or value in an input file """
 
-    @staticmethod
-    def set_text(section, new_text):
+    def __init__(self):
+        """Initialize section reader"""
+        self.section_type = Section
+
+    def read(self, new_text):
         """Read properties from text.
             Args:
                 new_text (str): Text to parse into properties.
         """
-        section.__init__()  # Reset all values to defaults
+        section = self.section_type()
         section.value = new_text
         for line in new_text.splitlines():
-            SectionReader.set_text_line(section, line)
+            self.set_text_line(section, line)
+        return section
 
     @staticmethod
     def set_comment_check_section(section, line):
@@ -103,6 +97,7 @@ class SectionReader(object):
             If the line is a section header (starts with open square bracket) then check against SECTION_NAME.
             If it matches, return empty string. If it does not match, raise ValueError.
             Args:
+                section (Section): Section of input file to populate
                 line (str): Text to search for a comment or section name.
         """
         comment_split = str.split(line, ';', 1)
@@ -211,6 +206,7 @@ class SectionReader(object):
     def set_text_line(section, line):
         """Set part of this section from one line of text.
             Args:
+                section (Section): Section of input file to populate
                 line (str): One line of text formatted as input file.
         """
         line = SectionReader.set_comment_check_section(section, line)
@@ -267,8 +263,24 @@ class SectionReader(object):
                             return (meta_item.attribute, line.strip()[len(key) + 1:].strip())
         return (None, None)
 
-    @staticmethod
-    def read_section_as_list_of(section, new_text):
+
+class SectionReaderAsListOf(SectionReader):
+    def __init__(self, section_name, list_type, list_type_reader, section_comment):
+        if not section_name.startswith("["):
+            section_name = '[' + section_name + ']'
+        self.SECTION_NAME = section_name.upper()
+        SectionReader.__init__(self)
+        self.list_type = list_type
+        if isinstance(list_type_reader, type):
+            self.list_type_reader = list_type_reader()
+        else:
+            self.list_type_reader = list_type_reader
+
+        if section_comment:
+            self.DEFAULT_COMMENT = section_comment
+
+    def read(self, new_text):
+        section = self.section_type()
         section.value = []
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
@@ -278,20 +290,26 @@ class SectionReader(object):
                     comment.value = line
                     section.value.append(comment)
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
-                    section.set_comment_check_section(line)
+                    self.set_comment_check_section(section, line)
             else:
                 try:
-                    if section.list_type is basestring:
-                        make_one = line
+                    if self.list_type_reader:
+                        make_one = self.list_type_reader.read(line)
                     else:
-                        make_one = section.list_type()
-                        make_one.set_text(line)
+                        make_one = line
                     section.value.append(make_one)
                 except Exception as e:
                     print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
-    @staticmethod
-    def read_section_as_list_group_by_id(section, new_text):
+
+
+class SectionReaderAsListGroupByID(SectionReaderAsListOf):
+    """
+    A Section that contains items which may each span more than one line.
+    Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
+    """
+
+    def read(self, new_text):
         """
         Read a Section that contains items which may each span more than one line.
         Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
@@ -305,9 +323,10 @@ class SectionReader(object):
                 section (Section): object to populate.
                 new_text (str): Text of whole section to parse into comments and a list of items.
         """
+        section = self.section_type()
         section.value = []
         lines = new_text.splitlines()
-        section.set_comment_check_section(lines[0])  # Check first line against section name
+        self.set_comment_check_section(section, lines[0])  # Check first line against section name
         next_index = 1
         expected_comment_lines = section.comment.splitlines()
         for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into comment
@@ -317,7 +336,7 @@ class SectionReader(object):
                 if next_index < expected_comment_lines \
                         or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0 \
                         or len(Section.omit_these(expected_comment_lines[line_number - 1], ";-_ \t")) > 0:
-                    section.set_comment_check_section(lines[line_number])
+                    self.set_comment_check_section(section, lines[line_number])
                     next_index += 1
             else:
                 break
@@ -352,5 +371,8 @@ class SectionReader(object):
                         item_text += '\n'
                     item_text += line
         if item_text:
-            section.value.append(section.list_type(item_text))
+            if self.list_type_reader:
+                section.value.append(section.list_type_reader.read(item_text))
+            else:
+                section.value.append(item_text)
 

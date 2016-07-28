@@ -267,13 +267,13 @@ if __name__ == '__main__':
     if writer_contents:
         with open(writer_path, 'wb') as writer_file:
             writer_file.write('\n'.join(imports) + '\n')
-            writer_file.write("from core.inp_writer_file import SectionWriter" + '\n\n')
+            writer_file.write("from core.inp_writer_base import SectionWriter" + '\n\n')
             writer_file.write('\n'.join(writer_contents) + '\n\n')
 
     if reader_contents:
         with open(reader_path, 'wb') as reader_file:
             reader_file.write('\n'.join(imports) + '\n')
-            reader_file.write("from core.inp_reader_file import SectionReader" + '\n\n')
+            reader_file.write("from core.inp_reader_base import SectionReader" + '\n\n')
             reader_file.write('\n'.join(reader_contents) + '\n\n')
 
     print("\nFolders read: " + str(folders_read))

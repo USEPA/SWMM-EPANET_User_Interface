@@ -43,22 +43,19 @@ class InputReaderFile(object):
                 project.sections.append(attr_value)
 
     def add_section(self, project, section_name, section_text):
-        try:
-            # old_section = project.find_section(section_name)
-            # if old_section:
-            #     project.sections.remove(old_section)
-            new_section = None
-            attr_name = project.format_as_attribute_name(section_name)
-            reader = self.__getattribute__("read_" + attr_name)
-            if reader:
-                try:
-                    new_section = reader.read(section_text)
-                except Exception as e:
-                    print("Could not call read on " + attr_name + " (" + section_name + "):\n" + str(e) +
-                          '\n' + str(traceback.print_exc()))
-        except Exception as e_reader:
-            print("Could not find reader for " + section_name + ":\n" + str(e_reader) +
-                  '\n' + str(traceback.print_exc()))
+        # old_section = project.find_section(section_name)
+        # if old_section:
+        #     project.sections.remove(old_section)
+        new_section = None
+        attr_name = project.format_as_attribute_name(section_name)
+        reader_name = "read_" + attr_name
+        if hasattr(self, reader_name):
+            reader = self.__getattribute__(reader_name)
+            try:
+                new_section = reader.read(section_text)
+            except Exception as e:
+                print("Exception calling " + reader_name + " for " + section_name + ":\n" + str(e) +
+                      '\n' + str(traceback.print_exc()))
 
         if new_section is None:
             print("Default Section for " + section_name)
@@ -66,11 +63,9 @@ class InputReaderFile(object):
             new_section.SECTION_NAME = section_name
             new_section.value = section_text
 
-        if attr_name is not None and new_section is not None:
-            project.__setattr__(attr_name, new_section)
+        project.__setattr__(attr_name, new_section)
         if new_section not in project.sections:
             project.sections.append(new_section)
-
 
 
 class SectionReader(object):
@@ -371,8 +366,8 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                         item_text += '\n'
                     item_text += line
         if item_text:
-            if self.list_type_reader:
-                section.value.append(section.list_type_reader.read(item_text))
+            if hasattr(self, "list_type_reader"):
+                section.value.append(self.list_type_reader.read(item_text))
             else:
                 section.value.append(item_text)
 

@@ -276,6 +276,9 @@ class SectionReaderAsListOf(SectionReader):
 
     def read(self, new_text):
         section = self.section_type()
+        # Set new section's SECTION_NAME if it has not already been set
+        if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
+            section.SECTION_NAME = self.SECTION_NAME
         section.value = []
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
@@ -295,7 +298,7 @@ class SectionReaderAsListOf(SectionReader):
                     section.value.append(make_one)
                 except Exception as e:
                     print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
-
+        return section
 
 
 class SectionReaderAsListGroupByID(SectionReaderAsListOf):
@@ -319,6 +322,9 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                 new_text (str): Text of whole section to parse into comments and a list of items.
         """
         section = self.section_type()
+        # Set new section's SECTION_NAME if it has not already been set
+        if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
+            section.SECTION_NAME = self.SECTION_NAME
         section.value = []
         lines = new_text.splitlines()
         self.set_comment_check_section(section, lines[0])  # Check first line against section name
@@ -370,4 +376,4 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                 section.value.append(self.list_type_reader.read(item_text))
             else:
                 section.value.append(item_text)
-
+        return section

@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     imports = ["import traceback",
                "from enum import Enum",
-               "from core.inputfile import Section",
+               "from core.project import Section",
                "from core.metadata import Metadata"]
 
 
@@ -109,10 +109,11 @@ if __name__ == '__main__':
                                     in_write_method = False
                                     in_other_method = False
 
-                                    rewrite_line = line.replace("(Section)", '') + '\n'
-                                    if ("Section" in rewrite_line and not "CrossSection" in rewrite_line
-                                         and not "XSECTION" in rewrite_line) or\
-                                        "InputFile" in rewrite_line:
+                                    rewrite_line = line + '\n'
+                                    # rewrite_line = line.replace("(Section)", '') + '\n'
+                                    # if ("Section" in rewrite_line and not "CrossSection" in rewrite_line
+                                    #     and not "XSECTION" in rewrite_line) or\
+                                    if "InputFile" in rewrite_line:
                                         print(rewrite_line)
                                     rewrite_file.write(rewrite_line)
                                     if rewrite_line != line:
@@ -247,14 +248,16 @@ if __name__ == '__main__':
                                     if rewrite_line is not None and not in_read_method and not in_write_method:
                                         # write this line in new version of original file
                                         # unless it is in method to be moved.
-                                        # remove Section as parent class
 
-                                        if "Section.__init__(self)" not in line and\
-                                           "SECTION_NAME =" not in line and\
-                                           "from core.inputfile import " not in line:
-                                            if ("Section" in rewrite_line and "CrossSection" not in rewrite_line and
-                                               "XSECTION" not in rewrite_line)\
-                                               or "InputFile" in rewrite_line or "SECTION_NAME" in rewrite_line:
+                                        rewrite_line = rewrite_line.replace("core.inputfile", "core.project")
+
+                                        # remove Section as parent class
+                                        # if "Section.__init__(self)" not in line and\
+                                        #     "SECTION_NAME =" not in line and\
+                                        if "from core.inputfile import " not in line:
+                                            # if ("Section" in rewrite_line and "CrossSection" not in rewrite_line and
+                                            #   "XSECTION" not in rewrite_line) or \
+                                            if "InputFile" in rewrite_line:  # or "SECTION_NAME" in rewrite_line:
                                                 print("Questionable line rewritten from " + file_base + ':\n' + line\
                                                       + "\nto:" + rewrite_filename + ':\n' + rewrite_line)
                                             rewrite_file.write(rewrite_line + '\n')

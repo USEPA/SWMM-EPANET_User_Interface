@@ -1,6 +1,7 @@
 import os, inspect
 import core.swmm.project
 import core.swmm.inp_reader_project
+import core.swmm.inp_writer_project
 
 # This is a stand-alone module for internal testing of refactored code during the refactoring effort.
 # This is not part of the unit and regression testing that is routinely run.
@@ -15,5 +16,5 @@ if __name__ == '__main__':
     my_project = core.swmm.project.Project()
     project_reader = core.swmm.inp_reader_project.ProjectReader()
     project_reader.read_file(my_project, os.path.join(example_root_path, "Example1.inp"))
-    number_of_sections = len(my_project.sections)
-    print(str(number_of_sections))
+    project_writer = core.swmm.inp_writer_project.ProjectWriter()
+    project_writer.write_file(my_project, my_project.file_name + ".written.txt")

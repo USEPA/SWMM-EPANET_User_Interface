@@ -1,5 +1,5 @@
 # from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
-from core.inp_reader_base import InputFileReader, SectionReaderAsListOf, SectionReaderAsListGroupByID
+from core.inp_writer_base import InputFileWriter, SectionWriterAsListOf
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
@@ -27,7 +27,7 @@ from core.swmm.timeseries import TimeSeries
 from core.swmm.labels import Label
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 
-from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
 
 try:
     unicode = unicode
@@ -45,188 +45,188 @@ else:
     basestring = basestring
 
 
-class ProjectReader(InputFileReader):
-    """Read a SWMM input file into in-memory data structures"""
+class ProjectWriter(InputFileWriter):
+    """Write a SWMM input file from in-memory data structures"""
 
     def __init__(self):
         """Define the fields of a SWMM Project by creating an empty placeholder for each section"""
 
-        self.read_title = TitleReader()               # TITLE         project title
-        self.read_options = GeneralReader()           # OPTIONS       analysis options
-        self.read_report = ReportReader()             # REPORT        output reporting instructions
-        # self.read_files = FilesReader()             # FILES         interface file options
-        self.read_backdrop = BackdropOptionsReader()  # BACKDROP      bounding rectangle and file name of backdrop image
-        self.read_map = MapOptionsReader()            # MAP           map's bounding rectangle and units
-        self.read_raingages = SectionReaderAsListOf("[RAINGAGES]", RainGage, SectionReader,
+        self.write_title = TitleWriter()               # TITLE         project title
+        self.write_options = GeneralWriter()           # OPTIONS       analysis options
+        self.write_report = ReportWriter()             # REPORT        output reporting instructions
+        # self.write_files = FilesWriter()             # FILES         interface file options
+        self.write_backdrop = BackdropOptionsWriter()  # BACKDROP      bounding rectangle and file name of backdrop image
+        self.write_map = MapOptionsWriter()            # MAP           map's bounding rectangle and units
+        self.write_raingages = SectionWriterAsListOf("[RAINGAGES]", RainGage, SectionWriter,
              ";;Name          \tFormat   \tInterval\tSCF     \tSource    \n"
              ";;--------------\t---------\t------  \t------  \t----------")
 
-        self.read_hydrographs = SectionReaderAsListGroupByID("[HYDROGRAPHS]", UnitHydrograph, UnitHydrographReader,
+        self.write_hydrographs = SectionWriterAsListOf("[HYDROGRAPHS]", UnitHydrograph, UnitHydrographWriter,
             ";;Hydrograph    \tRain Gage/Month \tResponse\tR       \tT       \tK       \tDmax    \tDrecov  \tDinit   \n"
             ";;--------------\t----------------\t--------\t--------\t--------\t--------\t--------\t--------\t--------")
         # unit hydrograph data used to construct RDII inflows
 
-        self.read_evaporation = EvaporationReader()        # EVAPORATION   evaporation data
-        self.read_temperature = TemperatureReader()        # TEMPERATURE   air temperature and snow melt data
-        self.read_adjustments = AdjustmentsReader()        # ADJUSTMENTS   monthly climate adjustments
-        self.read_subcatchments = SectionReaderAsListOf("[SUBCATCHMENTS]", Subcatchment, SubcatchmentReader,
+        self.write_evaporation = EvaporationWriter()        # EVAPORATION   evaporation data
+        self.write_temperature = TemperatureWriter()        # TEMPERATURE   air temperature and snow melt data
+        self.write_adjustments = AdjustmentsWriter()        # ADJUSTMENTS   monthly climate adjustments
+        self.write_subcatchments = SectionWriterAsListOf("[SUBCATCHMENTS]", Subcatchment, SubcatchmentWriter,
             ";;Name          \tRain Gage       \tOutlet          \tArea    \t%Imperv \tWidth   \t%Slope  \tCurbLen \tSnowPack        \n"
             ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------\t----------------")
         # basic subcatchment information
 
-        # self.read_subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
+        # self.write_subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
 
-        self.read_infiltration = SectionReaderAsListOf("[INFILTRATION]", basestring, None, None)
-        # This is set to SectionReaderAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration
+        self.write_infiltration = SectionWriterAsListOf("[INFILTRATION]", basestring, None, None)
+        # This is set to SectionWriterAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration
         # below in add_section based on subcatchment infiltration parameters
 
-        self.read_lid_controls = SectionReaderAsListGroupByID("[LID_CONTROLS]", LIDControl, LIDControlReader,
+        self.write_lid_controls = SectionWriterAsListOf("[LID_CONTROLS]", LIDControl, LIDControlWriter,
                                                    ";;Name          \tType/Layer\tParameters\n"
                                                    ";;--------------\t----------\t----------")
         # low impact development control information
 
-        self.read_lid_usage = SectionReaderAsListOf("[LID_USAGE]", LIDUsage, LIDUsageReader,
+        self.write_lid_usage = SectionWriterAsListOf("[LID_USAGE]", LIDUsage, LIDUsageWriter,
             ";;Subcatchment  \tLID Process     \tNumber \tArea      \tWidth     \tInitSat   \tFromImp   \tToPerv    \tRptFile                 \tDrainTo\n"
             ";;--------------\t----------------\t-------\t----------\t----------\t----------\t----------\t----------\t------------------------\t----------------")
         # assignment of LID controls to subcatchments
 
-        self.read_aquifers = SectionReaderAsListOf("[AQUIFERS]", Aquifer, AquiferReader,
+        self.write_aquifers = SectionWriterAsListOf("[AQUIFERS]", Aquifer, AquiferWriter,
             ";;Aquifer       \tPhi   \tWP    \tFC    \tHydCon\tKslope\tTslope\tUEF   \tLED   \tLGLR  \tBEL   \tWTEL  \tUZM   \tUEF Pat\n"
             ";;--------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t-------")
         # groundwater aquifer parameters
 
-        self.read_groundwater = SectionReaderAsListOf("[GROUNDWATER]", Groundwater, GroundwaterReader,
+        self.write_groundwater = SectionWriterAsListOf("[GROUNDWATER]", Groundwater, GroundwaterWriter,
             ";;Subcatchment  \tAquifer         \tNode            \tEsurf \tA1    \tB1    \tA2    \tB2    \tA3    \tDsw   \tEgwt  \tEbot  \tWgr   \tUmc   \n"
             ";;--------------\t----------------\t----------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------")
         # subcatchment groundwater parameters
 
-        self.read_snowpacks = SectionReaderAsListGroupByID("[SNOWPACKS]", SnowPack, SnowPackReader,
+        self.write_snowpacks = SectionWriterAsListOf("[SNOWPACKS]", SnowPack, SnowPackWriter,
                                                 ";;Name          \tSurface   \tParameters\n"
                                                 ";;--------------\t----------\t----------")
         # subcatchment snow pack parameters
 
-        self.read_junctions = SectionReaderAsListOf("[JUNCTIONS]", Junction, JunctionReader,
+        self.write_junctions = SectionWriterAsListOf("[JUNCTIONS]", Junction, JunctionWriter,
                                          ";;Name          \tElevation \tMaxDepth  \tInitDepth \tSurDepth  \tAponded\n"
                                          ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # junction node information
 
-        self.read_outfalls = SectionReaderAsListOf("[OUTFALLS]", Outfall, SectionReader,
+        self.write_outfalls = SectionWriterAsListOf("[OUTFALLS]", Outfall, SectionWriter,
                                          ";;Name          \tElevation \tType      \tStage Data      \tGated   \tRoute To\n"
                                          ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
         #  outfall node information
 
-        self.read_dividers = SectionReaderAsListOf("[DIVIDERS]", Divider, SectionReader,
+        self.write_dividers = SectionWriterAsListOf("[DIVIDERS]", Divider, SectionWriter,
                                          ";;Name          \tElevation \tDiverted Link   \tType      \tParameters\n"
                                          ";;--------------\t----------\t----------------\t----------\t----------")
         #  flow divider node information
 
-        self.read_storage = SectionReaderAsListOf("[STORAGE]", StorageUnit, SectionReader,
+        self.write_storage = SectionWriterAsListOf("[STORAGE]", StorageUnit, SectionWriter,
                                          ";;Name          \tElev.   \tMaxDepth  \tInitDepth  \tShape     \tCurve Name/Params           \tN/A     \tFevap   \tPsi     \tKsat    \tIMD\n"
                                          ";;--------------\t--------\t----------\t-----------\t----------\t----------------------------\t--------\t--------\t--------\t--------\t--------")
         #  storage node information
 
-        self.read_conduits = SectionReaderAsListOf("[CONDUITS]", Conduit, ConduitReader,
+        self.write_conduits = SectionWriterAsListOf("[CONDUITS]", Conduit, ConduitWriter,
             ";;Name          \tFrom Node       \tTo Node         \tLength    \tRoughness \tInOffset  \tOutOffset \tInitFlow  \tMaxFlow\n"
             ";;--------------\t----------------\t----------------\t----------\t----------\t----------\t----------\t----------\t----------")
         # conduit link information
 
-        self.read_pumps = SectionReaderAsListOf("[PUMPS]", Pump, PumpReader,
+        self.write_pumps = SectionWriterAsListOf("[PUMPS]", Pump, PumpWriter,
             ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoffn"
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 
-        self.read_orifices = SectionReaderAsListOf("[ORIFICES]", Orifice, SectionReader,
+        self.write_orifices = SectionWriterAsListOf("[ORIFICES]", Orifice, SectionWriter,
             ";;Name          \tFrom Node       \tTo Node         \tType        \tOffset    \tQcoeff    \tGated   \tCloseTime\n"
             ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t----------")
         # orifice link information
 
-        self.read_weirs = SectionReaderAsListOf("[WEIRS]", Weir, SectionReader,
+        self.write_weirs = SectionWriterAsListOf("[WEIRS]", Weir, SectionWriter,
             ";;Name          \tFrom Node       \tTo Node         \tType        \tCrestHt   \tQcoeff    \tGated   \tEndCon  \tEndCoeff  \tSurcharge \tRoadWidth \tRoadSurf\n"
             ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------")
         # weir link information
 
-        self.read_outlets = SectionReaderAsListOf("[OUTLETS]", Outlet, SectionReader,
+        self.write_outlets = SectionWriterAsListOf("[OUTLETS]", Outlet, SectionWriter,
             ";;Name          \tFrom Node       \tTo Node         \tOffset    \tType           \tQTable/Qcoeff   \tQexpon    \tGated\n"
             ";;--------------\t----------------\t----------------\t----------\t---------------\t----------------\t----------\t--------")
         # outlet link information
 
-        self.read_xsections = SectionReaderAsListOf("[XSECTIONS]", CrossSection, CrossSectionReader,
+        self.write_xsections = SectionWriterAsListOf("[XSECTIONS]", CrossSection, CrossSectionWriter,
             ";;Link          \tShape       \tGeom1           \tGeom2     \tGeom3     \tGeom4     \tBarrels   \tCulvert   \n"
             ";;--------------\t------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # conduit, orifice, and weir cross-section geometry
 
-        self.read_transects = TransectsReader() # TRANSECTS # transect geometry for conduits with irregular cross-sections
-        # self.read_losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
-        self.read_controls = SectionReaderAsListOf("[CONTROLS]", basestring, None, None)  # rules that control pump and regulator operation
-        self.read_landuses = SectionReaderAsListOf("[LANDUSES]", Landuse, LanduseReader,
+        self.write_transects = TransectsWriter() # TRANSECTS # transect geometry for conduits with irregular cross-sections
+        # self.write_losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
+        self.write_controls = SectionWriterAsListOf("[CONTROLS]", basestring, None, None)  # rules that control pump and regulator operation
+        self.write_landuses = SectionWriterAsListOf("[LANDUSES]", Landuse, LanduseWriter,
                                         ";;              \tSweeping  \tFraction  \tLast\n"
                                         ";;Name          \tInterval  \tAvailable \tSwept\n"
                                         ";;--------------\t----------\t----------\t----------")
         # land use categories
 
-        self.read_buildup = SectionReaderAsListOf("[BUILDUP]", Buildup, BuildupReader,
+        self.write_buildup = SectionWriterAsListOf("[BUILDUP]", Buildup, BuildupWriter,
             ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tCoeff3    \tPer Unit\n"
             ";;--------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # buildup functions for pollutants and land uses
 
-        self.read_washoff = SectionReaderAsListOf("[WASHOFF]", Washoff, WashoffReader,
+        self.write_washoff = SectionWriterAsListOf("[WASHOFF]", Washoff, WashoffWriter,
             ";;Land Use      \tPollutant       \tFunction  \tCoeff1    \tCoeff2    \tSweepRmvl \tBmpRmvl\n"
             ";;--------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # washoff functions for pollutants and land uses
 
-        self.read_pollutants = SectionReaderAsListOf("[POLLUTANTS]", Pollutant, PollutantReader,
+        self.write_pollutants = SectionWriterAsListOf("[POLLUTANTS]", Pollutant, PollutantWriter,
             ";;Name          \tUnits \tCrain     \tCgw       \tCrdii     \tKdecay    \tSnowOnly  \tCo-Pollutant    \tCo-Frac   \tCdwf      \tCinit\n"
             ";;--------------\t------\t----------\t----------\t----------\t----------\t----------\t----------------\t----------\t----------\t----------")
         # pollutant information
 
-        self.read_coverages = CoveragesReader() # COVERAGES # assignment of land uses to subcatchments
-        self.read_treatment = SectionReaderAsListOf("[TREATMENT]", Treatment, TreatmentReader,
+        self.write_coverages = CoveragesWriter() # COVERAGES # assignment of land uses to subcatchments
+        self.write_treatment = SectionWriterAsListOf("[TREATMENT]", Treatment, TreatmentWriter,
                                          ";;Node          \tPollutant       \tFunction\n"
                                          ";;--------------\t----------------\t--------")
 
         # pollutant removal functions at conveyance system nodes
 
-        self.read_inflows = SectionReaderAsListOf("[INFLOWS]", DirectInflow, DirectInflowReader,
+        self.write_inflows = SectionWriterAsListOf("[INFLOWS]", DirectInflow, DirectInflowWriter,
             ";;Node          \tConstituent     \tTime Series     \tType    \tMfactor \tSfactor \tBaseline\tPattern\n"
             ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------")
         # INFLOWS # external hydrograph/pollutograph inflow at nodes
 
-        self.read_dwf = SectionReaderAsListOf("[DWF]", DryWeatherInflow, DryWeatherInflowReader,
+        self.write_dwf = SectionWriterAsListOf("[DWF]", DryWeatherInflow, DryWeatherInflowWriter,
                                    ";;Node          \tConstituent     \tBaseline  \tPatterns  \n"
                                    ";;--------------\t----------------\t----------\t----------")
         # baseline dry weather sanitary inflow at nodes
 
-        self.read_patterns = SectionReaderAsListGroupByID("[PATTERNS]", Pattern, PatternReader,
+        self.write_patterns = SectionWriterAsListOf("[PATTERNS]", Pattern, PatternWriter,
                                                ";;Name          \tType      \tMultipliers\n"
                                                ";;--------------\t----------\t-----------")
         # PATTERNS      periodic variation in dry weather inflow
 
-        self.read_rdii = SectionReaderAsListOf("[RDII]", RDIInflow, RDIInflowReader,
+        self.write_rdii = SectionWriterAsListOf("[RDII]", RDIInflow, RDIInflowWriter,
                                     ";;Node          \tUnit Hydrograph \tSewer Area\n"
                                     ";;--------------\t----------------\t----------")
         # rainfall-dependent I/I information at nodes
 
-        self.read_loadings = InitialLoadingsReader()
+        self.write_loadings = InitialLoadingsWriter()
         # initial pollutant loads on subcatchments
 
-        self.read_curves = SectionReaderAsListGroupByID("[CURVES]", Curve, CurveReader,
+        self.write_curves = SectionWriterAsListOf("[CURVES]", Curve, CurveWriter,
                                              ";;Name          \tType      \tX-Value   \tY-Value   \n"
                                              ";;--------------\t----------\t----------\t----------")
         # CURVES        x-y tabular data referenced in other sections
 
-        self.read_timeseries = SectionReaderAsListGroupByID("[TIMESERIES]", TimeSeries, TimeSeriesReader,
+        self.write_timeseries = SectionWriterAsListOf("[TIMESERIES]", TimeSeries, TimeSeriesWriter,
                                                  ";;Name          \tDate      \tTime      \tValue\n"
                                                  ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
-        # self.read_labels = SectionReaderAsListGroupByID("[LABELS]", Label, LabelReader,
+        # self.write_labels = SectionWriterAsListGroupByID("[LABELS]", Label, LabelWriter,
         #                                          ";;X-Coord         \tY-Coord           \tLabel\n")
         # X,Y coordinates and text of labels
 
-        # self.read_polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
-        # self.read_coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
-        # self.read_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        # self.read_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
+        # self.write_polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
+        # self.write_coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
+        # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
+        # self.write_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
 
@@ -234,18 +234,18 @@ class ProjectReader(InputFileReader):
         if section_name == project.infiltration.SECTION_NAME:
             infiltration = project.options.infiltration.upper()
             if infiltration == "HORTON":
-                self.read_infiltration = SectionReaderAsListOf(
-                    section_name, HortonInfiltration, HortonInfiltrationReader,
+                self.write_infiltration = SectionWriterAsListOf(
+                    section_name, HortonInfiltration, HortonInfiltrationWriter,
                     ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
                     ";;--------------\t----------\t----------\t----------\t----------\t----------")
             elif infiltration.startswith("GREEN"):
-                self.read_infiltration = SectionReaderAsListOf(
-                    section_name, GreenAmptInfiltration, GreenAmptInfiltrationReader,
+                self.write_infiltration = SectionWriterAsListOf(
+                    section_name, GreenAmptInfiltration, GreenAmptInfiltrationWriter,
                     ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"
                     ";;--------------\t----------\t----------\t----------")
             elif infiltration.startswith("CURVE"):
-                self.read_infiltration = SectionReaderAsListOf(
-                    section_name, CurveNumberInfiltration, CurveNumberInfiltrationReader,
+                self.write_infiltration = SectionWriterAsListOf(
+                    section_name, CurveNumberInfiltration, CurveNumberInfiltrationWriter,
                     ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                     ";;--------------\t----------\t----------\t----------")
-        InputFileReader.add_section(self, project, section_name, section_text)
+        InputFileWriter.add_section(self, project, section_name, section_text)

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     writer_new_method = "as_text"
     reader_class_suffix = "Reader"
     writer_class_suffix = "Writer"
-    top_dir = "C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\"
+    top_dir = "C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_master\\src\\"
     start_dir = top_dir + "core\\swmm"
     # start_dir = top_dir + "core\\epanet"
 
@@ -91,6 +91,8 @@ if __name__ == '__main__':
                         class_var_name = "self"
                         orig_class_name = None
                         for line in file_contents.splitlines():
+                            if "staticmethod" in line:
+                                print(line)
                             lines_read += 1
                             fields = re.split(r'[\s,\(,\:]', line)
                             try:
@@ -150,7 +152,7 @@ if __name__ == '__main__':
                                     if in_read_method:
                                         reader_contents.append("\n        return " + class_var_name + '\n\n')
                                     in_read_method = reader_old_method in line
-                                    in_write_method = writer_old_method in line
+                                    in_write_method = writer_old_method in line or "format_values" in line
                                     in_if_new_text = False
                                     skip_indent = 0
                                     if in_read_method or in_write_method:
@@ -179,6 +181,8 @@ if __name__ == '__main__':
                                 elif "field_format" in line:  # keep references to field_format only in writer
                                     new_line = line.replace("self.field_format", writer_class_name + ".field_format")
                                     new_line = new_line.replace("self", class_var_name)
+                                    new_line = new_line.replace("Section.get_text(",
+                                                                "SectionWriter.as_text(")
                                     if in_write_method:
                                         writer_contents.append(new_line)
                                     else:
@@ -208,6 +212,7 @@ if __name__ == '__main__':
                                         if new_line != line:
                                             edits_made += 1
                                     elif in_write_method:
+                                        new_line = new_line.replace("Section.get_text(", "SectionWriter.as_text(")
                                         writer_contents.append(new_line)
                                         if new_line != line:
                                             edits_made += 1

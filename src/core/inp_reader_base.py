@@ -4,7 +4,7 @@ from enum import Enum
 from core.project import Project, Section, SectionAsListOf
 
 
-class InputReaderFile(object):
+class InputFileReader(object):
     """ Base class for reading input files """
 
     def read_file(self, project, file_name):
@@ -33,7 +33,7 @@ class InputReaderFile(object):
                 section_whole.append(line.rstrip())
         if section_name:
             self.add_section(project, section_name, '\n'.join(section_whole))
-        InputReaderFile.add_sections_from_attributes(project)
+        InputFileReader.add_sections_from_attributes(project)
 
     @staticmethod
     def add_sections_from_attributes(project):

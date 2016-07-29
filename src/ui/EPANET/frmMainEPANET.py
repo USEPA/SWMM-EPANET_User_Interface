@@ -372,7 +372,7 @@ class frmMainEPANET(frmMain):
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm
 
-    def get_editor_with_selected_item(self, edit_name, selected_item):
+    def get_editor_with_selected_items(self, edit_name, selected_items):
         frm = None
 
         # the following items will respond to a click on a node form, not the tree diagram
@@ -394,93 +394,67 @@ class frmMainEPANET(frmMain):
                 if not isinstance(self.project.labels.value, basestring):
                     if isinstance(self.project.labels.value, list):
                         for value in self.project.labels.value:
-                            if value.label == selected_item:
+                            if value.label in selected_items:
                                 edit_these.append(value)
             frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-            frm.set_from(self.project, selected_item)
+            frm.set_from(self.project, selected_items)
         return frm
 
     def get_object_list(self, category):
-        ids = []
-        if category.lower() == 'junctions':
-            for i in range(0, len(self.project.junctions.value)):
-                ids.append(self.project.junctions.value[i].id)
-        elif category.lower() == 'reservoirs':
-            for i in range(0, len(self.project.reservoirs.value)):
-                ids.append(self.project.reservoirs.value[i].id)
-        elif category.lower() == 'tanks':
-            for i in range(0, len(self.project.tanks.value)):
-                ids.append(self.project.tanks.value[i].id)
-        elif category.lower() == 'pipes':
-            for i in range(0, len(self.project.pipes.value)):
-                ids.append(self.project.pipes.value[i].id)
-        elif category.lower() == 'pumps':
-            for i in range(0, len(self.project.pumps.value)):
-                ids.append(self.project.pumps.value[i].id)
-        elif category.lower() == 'valves':
-            for i in range(0, len(self.project.valves.value)):
-                ids.append(self.project.valves.value[i].id)
-        elif category.lower() == 'labels':
-            for i in range(0, len(self.project.labels.value)):
-                ids.append(self.project.labels.value[i].label)
-        elif category.lower() == 'patterns':
-            for i in range(0, len(self.project.patterns.value)):
-                ids.append(self.project.patterns.value[i].pattern_id)
-        elif category.lower() == 'curves':
-            for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+        section = self.project.find_section(category)
+        if section:
+            return [item.id for item in section.value]
         else:
-            ids = None
-        return ids
+            return None
 
     def add_object_clicked(self, section_name):
         if section_name == "Patterns":
             new_item = Pattern()
             new_item.pattern_id = "NewPattern"
             self.project.patterns.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.pattern_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.pattern_id))
         elif section_name == "Curves":
             new_item = Curve()
             new_item.curve_id = "NewCurve"
             self.project.curves.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.curve_id))
         elif section_name == "Junctions":
             new_item = Junction()
             new_item.id = "New"
             self.project.junctions.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Reservoirs':
             new_item = Reservoir()
             new_item.id = "New"
             self.project.reservoirs.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Tanks':
             new_item = Tank()
             new_item.id = "New"
             self.project.tanks.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Pipes':
             new_item = Pipe()
             new_item.id = "New"
             self.project.pipes.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Pumps':
             new_item = Pump()
             new_item.id = "New"
             self.project.pumps.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Valves':
             new_item = Valve()
             new_item.id = "New"
             self.project.valves.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
         elif section_name == 'Labels':
             new_item = Label()
             new_item.id = "New"
             self.project.labels.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.id))
 
     def delete_object_clicked(self, section_name, item_name):
         if section_name == "Patterns":

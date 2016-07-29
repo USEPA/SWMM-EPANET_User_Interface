@@ -1,12 +1,13 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.project
+import core.swmm.stats as ostatistics
+#from core.swmm.stats import TStatsSelection
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportSelectionDesigner import Ui_frmStatisticsReportSelection
 from ui.SWMM.frmStatisticsReport import frmStatisticsReport
 from ui.help import HelpHandler
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
-
 
 class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSelection):
 
@@ -27,6 +28,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.txtPrecip.setText('0')
         self.txtVolume.setText('0')
         self.txtSeparation.setText('6')
+        self.stats = ostatistics.TStatsSelection()
 
     def set_from(self, project, output):
         self.project = project
@@ -92,10 +94,42 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         selected_id = ''
         for id_index in self.lstName.selectedIndexes():
             selected_id = str(id_index.data())
-        self._frmStatisticsReport.set_from(self.project, self.output, self.cboCategory.currentText(),
-                                           selected_id, self.cboVariable.currentText(),
-                                           self.cboEvent.currentText(), self.cboStatistic.currentText(),
-                                           self.txtPrecip.text(), self.txtVolume.text(), self.txtSeparation.text())
+        #self._frmStatisticsReport.set_from(self.project, self.output, self.cboCategory.currentText(),
+        #                                   selected_id, self.cboVariable.currentText(),
+        #                                   self.cboEvent.currentText(), self.cboStatistic.currentText(),
+        #                                   self.txtMinEventValue.text(), self.txtMinEventVolume.text(),
+        #                                   self.txtMinEventDelta.text())
+        self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
+
+        #ToDo: ensure type order is the same as in the type Enum
+        self.stats.ObjectType = self.cboCategory.currentIndex()
+        self.stats.ObjectTypeText = self.cboCategory.currentText()
+        self.stats.ObjectID = id_index.data()
+        self.stats.Variable = self.cboVariable.currentIndex()
+        self.stats.VariableText = self.cboVariable.currentText()
+        self.stats.TimePeriod = self.cboEvent.currentIndex()
+        self.stats.TimePeriodText = self.cboEvent.currentText()
+        self.stats.VarIndex = self.cboStatistic.currentIndex()
+        self.stats.StatsType = self.cboStatistic.currentIndex()
+        self.stats.StatsTypeText = self.cboStatistic.currentText()
+        self.stats.MinEventValue = float(self.txtMinEventValue.text())
+        self.stats.MinEventVolume = float(self.txtMinEventVolume.text())
+        self.stats.MinEventDelta = float(self.txtMinEventDelta.text())
+
+        # def set_from(self, project, output, type_label, object_id, attribute_name, event_name, stat_name,
+        #              event_threshold_value, event_volume, separation_time):
+        #     self.project = project
+        #     self.output = output
+        #
+        #     self.type_label = type_label  # Subcatchment
+        #     self.object_id = object_id  # 1
+        #     self.attribute_name = attribute_name  # Precipitation
+        #     self.event_name = event_name  # Daily
+        #     self.stat_name = stat_name  # Mean
+        #     self.event_threshold_value = event_threshold_value  # 0
+        #     self.event_volume = event_volume  # 0
+        #     self.separation_time = separation_time  # 6
+
         self._frmStatisticsReport.show()
         self.close()
 

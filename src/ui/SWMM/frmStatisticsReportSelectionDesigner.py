@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\SWMM\frmStatisticsReportSelectionDesigner.ui'
+# Form implementation generated from reading ui file 'frmStatisticsReportSelectionDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Fri Jul 29 15:37:04 2016
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,16 +33,12 @@ class Ui_frmStatisticsReportSelection(object):
         self.centralWidget = QtGui.QWidget(frmStatisticsReportSelection)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout.setMargin(11)
-        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.fraTop = QtGui.QFrame(self.centralWidget)
         self.fraTop.setFrameShape(QtGui.QFrame.StyledPanel)
         self.fraTop.setFrameShadow(QtGui.QFrame.Raised)
         self.fraTop.setObjectName(_fromUtf8("fraTop"))
         self.gridLayout_2 = QtGui.QGridLayout(self.fraTop)
-        self.gridLayout_2.setMargin(11)
-        self.gridLayout_2.setSpacing(6)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.cboCategory = QtGui.QComboBox(self.fraTop)
         self.cboCategory.setObjectName(_fromUtf8("cboCategory"))
@@ -77,8 +74,6 @@ class Ui_frmStatisticsReportSelection(object):
         self.gbxThresholds = QtGui.QGroupBox(self.centralWidget)
         self.gbxThresholds.setObjectName(_fromUtf8("gbxThresholds"))
         self.gridLayout = QtGui.QGridLayout(self.gbxThresholds)
-        self.gridLayout.setMargin(11)
-        self.gridLayout.setSpacing(6)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.lblPrecip = QtGui.QLabel(self.gbxThresholds)
         self.lblPrecip.setObjectName(_fromUtf8("lblPrecip"))
@@ -86,15 +81,15 @@ class Ui_frmStatisticsReportSelection(object):
         self.lblVolume = QtGui.QLabel(self.gbxThresholds)
         self.lblVolume.setObjectName(_fromUtf8("lblVolume"))
         self.gridLayout.addWidget(self.lblVolume, 3, 0, 1, 1)
-        self.txtPrecip = QtGui.QLineEdit(self.gbxThresholds)
-        self.txtPrecip.setObjectName(_fromUtf8("txtPrecip"))
-        self.gridLayout.addWidget(self.txtPrecip, 0, 1, 1, 1)
-        self.txtVolume = QtGui.QLineEdit(self.gbxThresholds)
-        self.txtVolume.setObjectName(_fromUtf8("txtVolume"))
-        self.gridLayout.addWidget(self.txtVolume, 3, 1, 1, 1)
-        self.txtSeparation = QtGui.QLineEdit(self.gbxThresholds)
-        self.txtSeparation.setObjectName(_fromUtf8("txtSeparation"))
-        self.gridLayout.addWidget(self.txtSeparation, 4, 1, 1, 1)
+        self.txtMinEventValue = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtMinEventValue.setObjectName(_fromUtf8("txtMinEventValue"))
+        self.gridLayout.addWidget(self.txtMinEventValue, 0, 1, 1, 1)
+        self.txtMinEventVolume = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtMinEventVolume.setObjectName(_fromUtf8("txtMinEventVolume"))
+        self.gridLayout.addWidget(self.txtMinEventVolume, 3, 1, 1, 1)
+        self.txtMinEventDelta = QtGui.QLineEdit(self.gbxThresholds)
+        self.txtMinEventDelta.setObjectName(_fromUtf8("txtMinEventDelta"))
+        self.gridLayout.addWidget(self.txtMinEventDelta, 4, 1, 1, 1)
         self.lblSeparation = QtGui.QLabel(self.gbxThresholds)
         self.lblSeparation.setObjectName(_fromUtf8("lblSeparation"))
         self.gridLayout.addWidget(self.lblSeparation, 4, 0, 1, 1)
@@ -104,16 +99,12 @@ class Ui_frmStatisticsReportSelection(object):
         self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
-        self.horizontalLayout.setMargin(11)
-        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.fraMid = QtGui.QFrame(self.fraOKCancel)
         self.fraMid.setFrameShape(QtGui.QFrame.StyledPanel)
         self.fraMid.setFrameShadow(QtGui.QFrame.Raised)
         self.fraMid.setObjectName(_fromUtf8("fraMid"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.fraMid)
-        self.horizontalLayout_3.setMargin(11)
-        self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.horizontalLayout.addWidget(self.fraMid)
         spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)

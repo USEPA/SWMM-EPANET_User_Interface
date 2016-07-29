@@ -24,7 +24,7 @@ class Curve(Section):
     def __init__(self, new_text=None):
         Section.__init__(self)
 
-        self.curve_id = ''      # string
+        self.name = ''      # string
         """Curve ID Label"""
 
         self.curve_type = CurveType.PUMP1
@@ -43,7 +43,7 @@ class Curve(Section):
             inp = self.comment + '\n'
         type_name = self.curve_type.name
         for xy in self.curve_xy:
-            inp += Curve.field_format.format(self.curve_id, type_name, xy[0], xy[1])
+            inp += Curve.field_format.format(self.name, type_name, xy[0], xy[1])
             type_name = "          "
         return inp
 
@@ -54,7 +54,7 @@ class Curve(Section):
             if line.strip():
                 fields = line.split()
                 if len(fields) > 2:
-                    self.curve_id = fields[0]
+                    self.name = fields[0]
                     try:
                         self.curve_type = CurveType[fields[1].upper()]
                         x_index = 2

@@ -20,16 +20,15 @@ class frmGroundwaterEquation(QtGui.QMainWindow, Ui_frmGroundwaterEquation):
         self.set_from(main_form.project)
 
     def set_from(self, project):
+        self.project = project
         groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
+        for value in groundwater_section.value:
             if value.subcatchment == self.subcatchment_name:
                 self.txtControls.setPlainText(value.custom_lateral_flow_equation)
 
     def cmdOK_Clicked(self):
         groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
+        for value in groundwater_section.value:
             if value.subcatchment == self.subcatchment_name:
                 value.custom_lateral_flow_equation = self.txtControls.toPlainText()
         self.close()

@@ -189,6 +189,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
                 lid.drainmat_thickness = self.txtDrain1.text()
                 lid.drainmat_void_fraction = self.txtDrain2.text()
                 lid.drainmat_roughness = self.txtDrain3.text()
+        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

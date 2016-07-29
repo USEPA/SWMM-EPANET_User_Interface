@@ -589,12 +589,11 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblCombo.setText('Shape Curve Name')
             self.cboCombo.clear()
-            curves_section = self._main_form.project.find_section("CURVES")
-            curves_list = curves_section.value[0:]
+            curves_section = self._main_form.project.curves
             self.cboCombo.addItem("")
-            for value in curves_list:
-                if value.curve_id and value.curve_type == CurveType.SHAPE:
-                    self.cboCombo.addItem(value.curve_id)
+            for curve in curves_section.value:
+                if curve.name and curve.curve_type == CurveType.SHAPE:
+                    self.cboCombo.addItem(curve.name)
             self.lblCombo.setVisible(True)
             self.cboCombo.setVisible(True)
             self.btnDialog.setVisible(True)

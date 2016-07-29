@@ -15,7 +15,7 @@ class SimpleCurveTest(unittest.TestCase):
         temp_curve = Curve()
         temp_curve.set_text(curve1.get_text())
         for curve in (curve1, temp_curve):
-            assert curve.curve_id == 'AC1'
+            assert curve.name == 'AC1'
             assert curve.curve_type == CurveType.STORAGE
             assert curve.curve_xy == [('0', '1000'), ('2', '2000'), ('4', '3500'), ('6', '4200'), ('8', '5000')]
 
@@ -27,7 +27,7 @@ class SimpleCurveTest(unittest.TestCase):
         temp_curve = Curve()
         temp_curve.set_text(curve.get_text())
         for curve in (curve, temp_curve):
-            assert curve.curve_id == 'PC1'
+            assert curve.name == 'PC1'
             assert curve.curve_type == CurveType.PUMP1
             assert curve.curve_xy == [('100', '5'), ('300', '10'), ('500', '20')]
 

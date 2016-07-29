@@ -11,20 +11,29 @@ class frmConduits(frmGenericPropertyEditor):
     SECTION_NAME = "[CONDUITS]"
     SECTION_TYPE = Conduit
 
-    def __init__(self, main_form):
+    def __init__(self, main_form, edit_these=[]):
         self.help_topic = "swmm/src/src/conduitproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
-        edit_these = []
-        project_section = self.project.find_section(self.SECTION_NAME)
-        if project_section and\
-                isinstance(project_section.value, list) and\
-                len(project_section.value) > 0 and\
-                isinstance(project_section.value[0], self.SECTION_TYPE):
-                    edit_these.extend(project_section.value)
+        self.project_section = self.project.conduits
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+                                          "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
@@ -50,10 +59,8 @@ class frmConduits(frmGenericPropertyEditor):
 
     def set_cross_section_cell(self, column):
         # text plus button for cross section
-        cross_section = self.project.find_section("XSECTIONS")
         tb = TextPlusButton(self)
-        cross_section_list = cross_section.value[0:]
-        for value in cross_section_list:
+        for value in self.project.xsections.value:
             if value.link == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText(value.shape.name)
                 self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
@@ -74,10 +81,8 @@ class frmConduits(frmGenericPropertyEditor):
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
         # also need to apply xsection parameters
-        cross_section = self.project.find_section("XSECTIONS")
-        cross_section_list = cross_section.value[0:]
         for column in range(0, self.tblGeneric.columnCount()):
-            for value in cross_section_list:
+            for value in self.project.xsections.value:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
         self.close()

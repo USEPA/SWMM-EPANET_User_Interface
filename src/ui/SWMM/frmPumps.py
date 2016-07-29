@@ -16,15 +16,29 @@ class frmPumps(frmGenericPropertyEditor):
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
-        edit_these = []
-        project_section = self.project.find_section(self.SECTION_NAME)
-        if project_section and\
-                isinstance(project_section.value, list) and\
-                len(project_section.value) > 0 and\
-                isinstance(project_section.value[0], self.SECTION_TYPE):
-                    edit_these.extend(project_section.value)
+        self.project_section = self.project.aquifers
+        self.set_from(self.project, [])
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+    def set_from(self, project, edit_these):
+        self.project = project
+        self.project_section = self.project.pumps
+
+        if self.project_section and isinstance(self.project_section.value, list) and \
+                        len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+                                          "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for curves, show available curves
@@ -33,10 +47,10 @@ class frmPumps(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('*')
             selected_index = 0
-            for value in curves_list:
-                if value.curve_type == CurveType.PUMP1 or value.curve_type == CurveType.PUMP2 or value.curve_type == CurveType.PUMP3 or value.curve_type == CurveType.PUMP4:
-                    combobox.addItem(value.curve_id)
-                    if edit_these[column].pump_curve == value.curve_id:
+            for curve in curves_list:
+                if curve.curve_type in [CurveType.PUMP1, CurveType.PUMP2, CurveType.PUMP3, CurveType.PUMP4]:
+                    combobox.addItem(curve.name)
+                    if edit_these[column].pump_curve == curve.name:
                         selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(5, column, combobox)

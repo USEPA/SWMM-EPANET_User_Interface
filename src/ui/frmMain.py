@@ -309,7 +309,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
 
-    def make_editor_from_tree(self, search_for, tree_list):
+    def make_editor_from_tree(self, search_for, tree_list, selected_items=[]):
         for tree_item in tree_list:
             if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
                 if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
@@ -320,12 +320,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             args.append(str(tree_item[2]))
                         else:  # tree_item[2] is a list that is not a string
                             args.extend(tree_item[2])
+                    if selected_items:
+                        args.append(selected_items)
                     edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
                     edit_form.helper = HelpHandler(edit_form)
                     return edit_form
                 return None
             if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
-                edit_form = self.make_editor_from_tree(search_for, tree_item[1])
+                edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items)
                 if edit_form:
                     return edit_form
 
@@ -353,9 +355,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # on double click of an item in the 'bottom left' list
         if not self.project or not self.get_editor:
             return
-        for item in self.listViewObjects.selectedIndexes():
-            selected_text = str(item.data())
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
+        selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+        self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, selected))
 
     def edit_object(self):
         self.list_item_clicked()

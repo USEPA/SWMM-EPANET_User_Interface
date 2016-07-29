@@ -43,8 +43,8 @@ class frmOutlets(frmGenericPropertyEditor):
             selected_index = 0
             for value in curves_list:
                 if value.curve_type == CurveType.RATING:
-                    combobox.addItem(value.curve_id)
-                    if edit_these[column].rating_curve == value.curve_id:
+                    combobox.addItem(value.name)
+                    if edit_these[column].rating_curve == value.name:
                         selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(10, column, combobox)

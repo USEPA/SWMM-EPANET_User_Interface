@@ -30,15 +30,13 @@ class frmStorageUnits(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Storage Units Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
-            curves_section = self.project.find_section("CURVES")
-            curves_list = curves_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in curves_list:
+            for value in self.project.curves.value:
                 if value.curve_type == CurveType.STORAGE:
-                    combobox.addItem(value.curve_id)
-                    if edit_these[column].storage_curve == value.curve_id:
+                    combobox.addItem(value.name)
+                    if edit_these[column].storage_curve == value.name:
                         selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(16, column, combobox)
@@ -113,6 +111,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self.project.junctions.value.append(self.new_item)
         self.backend.apply_edits()
+        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -334,7 +334,7 @@ class frmMainSWMM(frmMain):
     def report_profile(self):
         if self.get_output():
             self._frmProfilePlot = frmProfilePlot(self)
-            self._frmProfilePlot.set_from(self.project, self.get_output())
+            self._frmProfilePlot.set_from(self.project, self.output) #self.get_output())
             self._frmProfilePlot.show()
         else:
             QMessageBox.information(None, self.model,
@@ -345,7 +345,7 @@ class frmMainSWMM(frmMain):
     def report_timeseries(self):
         if self.get_output():
             self._frmTimeSeriesPlot = frmTimeSeriesPlot(self)
-            self._frmTimeSeriesPlot.set_from(self.project, self.get_output())
+            self._frmTimeSeriesPlot.set_from(self.project, self.output) #self.get_output())
             self._frmTimeSeriesPlot.show()
         else:
             QMessageBox.information(None, self.model,
@@ -378,7 +378,7 @@ class frmMainSWMM(frmMain):
     def report_statistics(self):
         if self.get_output():
             self._frmStatisticsReportSelection = frmStatisticsReportSelection(self)
-            self._frmStatisticsReportSelection.set_from(self.project, self.get_output())
+            self._frmStatisticsReportSelection.set_from(self.project, self.output)
             self._frmStatisticsReportSelection.show()
         else:
             QMessageBox.information(None, self.model,

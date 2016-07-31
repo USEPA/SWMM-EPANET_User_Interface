@@ -15,6 +15,12 @@ class Project(object):
         self.metric = False
         self.add_sections_from_attributes()
 
+    def add_sections_from_attributes(self):
+        """Add the sections that are attributes of the class to the list of sections."""
+        for attr_value in vars(self).values():
+            if isinstance(attr_value, Section) and attr_value not in self.sections:
+                self.sections.append(attr_value)
+
     def find_section(self, section_name):
         """ Find an element of self.sections by name, ignoring square brackets and capitalization.
             Args:

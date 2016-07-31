@@ -3,7 +3,6 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from PyQt4.QtGui import QMessageBox
 import traceback
-import core.swmm.project
 from ui.help import HelpHandler
 import ui.convenience
 from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot

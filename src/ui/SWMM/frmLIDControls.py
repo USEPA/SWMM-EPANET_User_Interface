@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.swmm.project
 from ui.SWMM.frmLIDControlsDesigner import Ui_frmLIDControls
 from ui.SWMM.frmLIDUsage import frmLIDUsage
 from core.swmm.hydrology.lidcontrol import LIDType

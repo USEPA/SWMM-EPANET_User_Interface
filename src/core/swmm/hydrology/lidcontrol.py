@@ -1,5 +1,5 @@
 from enum import Enum
-from core.inputfile import Section
+from core.project_base import Section
 
 
 class LIDType(Enum):
@@ -60,7 +60,7 @@ class LIDControl(Section):
          "drainmat_void_fraction",
          "drainmat_roughness"))
 
-    def __init__(self, new_text=None):
+    def __init__(self):
         Section.__init__(self)
 
         self.name = ''
@@ -178,52 +178,5 @@ class LIDControl(Section):
 
         self.drainmat_roughness = "0.1"
         """Manning's n constant used to compute the horizontal flow rate of drained water through the mat"""
-
-        if new_text:
-            self.set_text(new_text)
-
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        text_list = []
-        if self.comment:
-            text_list.append(self.comment)
-        text_list .append(self.name + '\t' + self.lid_type.name)
-        for field_names in LIDControl.LineTypes:
-            if getattr(self, field_names[0]):
-                line = self.name + '\t' + field_names[1]
-                for field_name in field_names[2:]:
-                    line += '\t' + str(getattr(self, field_name))
-                text_list.append(line)
-        return '\n'.join(text_list)
-
-    def set_text(self, new_text):
-        self.__init__()
-        for line in new_text.splitlines():
-            line = self.set_comment_check_section(line)
-            if line:
-                fields = line.split()
-                if len(fields) == 2:
-                    if self.name:
-                        raise ValueError("LIDControl.set_text: LID name already set: " +
-                                         self.name + ", then found 2-element line: " + line)
-                    self.name = fields[0]
-                    try:
-                        self.lid_type = LIDType[fields[1].upper()]
-                    except:
-                        raise ValueError("LIDControl.set_text: Unknown LID type in second field: " + line)
-                elif len(fields) > 2:
-                    if fields[0] != self.name:
-                        raise ValueError("LIDControl.set_text: LID name: {} != {}".format(fields[0], self.name))
-                    check_type = fields[1].upper()
-                    found_type = False
-                    for field_names in LIDControl.LineTypes:
-                        if field_names[1].upper() == check_type:
-                            found_type = True
-                            setattr(self, field_names[0], True)  # Set flag to show it has this
-                            for (field_name, field_value) in zip(field_names[2:], fields[2:]):
-                                self.setattr_keep_type(field_name, field_value)
-                            continue
-                    if not found_type:
-                        raise ValueError("LIDControl.set_text: Unknown line: " + line)
 
 

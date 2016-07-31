@@ -1,8 +1,8 @@
-﻿import core.inputfile
+﻿from core.project_base import Section
 from core.metadata import Metadata
 
 
-class TimeSteps(core.inputfile.Section):
+class TimeSteps(Section):
     """SWMM Time Step Options"""
 
     SECTION_NAME = "[OPTIONS]"
@@ -21,7 +21,7 @@ class TimeSteps(core.inputfile.Section):
     TIME_FORMAT = "hh:mm:ss"
 
     def __init__(self):
-        core.inputfile.Section.__init__(self)
+        Section.__init__(self)
 
         self.skip_steady_state = False
         """bool: True to skip flow routing computations during steady state periods

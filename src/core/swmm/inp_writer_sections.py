@@ -95,7 +95,7 @@ class CurveWriter(SectionWriter):
             inp = curve.comment + '\n'
         type_name = curve.curve_type.name
         for xy in curve.curve_xy:
-            inp += Curve.field_format.format(curve.name, type_name, xy[0], xy[1])
+            inp += CurveWriter.field_format.format(curve.name, type_name, xy[0], xy[1])
             type_name = "          "
         return inp
 
@@ -148,7 +148,7 @@ class LanduseWriter(SectionWriter):
         inp = ''
         if landuse.comment:
             inp = landuse.comment + '\n'
-        inp += Landuse.field_format.format(landuse.land_use_name,
+        inp += LanduseWriter.field_format.format(landuse.land_use_name,
                                            landuse.street_sweeping_interval,
                                            landuse.street_sweeping_availability,
                                            landuse.last_swept)
@@ -203,7 +203,7 @@ class BuildupWriter(SectionWriter):
         else:
             c2 = buildup.rate_constant
             c3 = buildup.power_sat_constant
-        return Buildup.field_format.format(buildup.land_use_name,
+        return BuildupWriter.field_format.format(buildup.land_use_name,
                                            buildup.pollutant,
                                            buildup.function.name,
                                            c1,
@@ -234,7 +234,7 @@ class WashoffWriter(SectionWriter):
 
     @staticmethod
     def as_text(washoff):
-        return Washoff.field_format.format(washoff.land_use_name,
+        return WashoffWriter.field_format.format(washoff.land_use_name,
                                            washoff.pollutant,
                                            washoff.function.name,
                                            washoff.coefficient,
@@ -280,7 +280,7 @@ class PollutantWriter(SectionWriter):
             snow_flag = "YES"
         else:
             snow_flag = "NO"
-        return Pollutant.field_format.format(pollutant.name,
+        return PollutantWriter.field_format.format(pollutant.name,
                                              ConcentrationUnitLabels[pollutant.units.value],
                                              pollutant.rain_concentration,
                                              pollutant.gw_concentration,
@@ -314,6 +314,7 @@ class TimeSeriesWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
+
 class TitleWriter(SectionWriter):
     """SWMM descriptive title"""
 
@@ -331,7 +332,7 @@ class TemperatureWriter(SectionWriter):
 
     SECTION_NAME = "[TEMPERATURE]"
 
-    first_field_format = "{:18}"
+    field_format = "{:18}"
 
     @staticmethod
     def as_text(temperature):
@@ -344,7 +345,7 @@ class TemperatureWriter(SectionWriter):
         if temperature.comment:
             text_list.append(temperature.comment)
 
-        field_start = Temperature.first_field_format.format(temperature.source.name) + '\t'
+        field_start = TemperatureWriter.field_format.format(temperature.source.name) + '\t'
         if temperature.source == TemperatureSource.TIMESERIES and temperature.timeseries:
             text_list.append(field_start + temperature.timeseries)
         elif temperature.source == TemperatureSource.FILE and temperature.filename:
@@ -399,7 +400,7 @@ class WindSpeedWriter:
 
     @staticmethod
     def as_text(wind_speed):
-        inp = Temperature.first_field_format.format(WindSpeed.SECTION_NAME) + '\t' + wind_speed.source.name
+        inp = TemperatureWriter.field_format.format(WindSpeed.SECTION_NAME) + '\t' + wind_speed.source.name
         if wind_speed.source == WindSource.MONTHLY:
             if len(wind_speed.wind_speed_monthly) > 0:
                 inp += '\t' + '\t'.join(wind_speed.wind_speed_monthly)
@@ -420,7 +421,7 @@ class SnowMeltWriter:
 
     @staticmethod
     def as_text(snow_melt):
-        return Temperature.first_field_format.format(SnowMelt.SECTION_NAME) + '\t' +\
+        return TemperatureWriter.field_format.format(SnowMelt.SECTION_NAME) + '\t' +\
                snow_melt.snow_temp + '\t' +\
                snow_melt.ati_weight + '\t' +\
                snow_melt.negative_melt_ratio + '\t' +\
@@ -855,7 +856,7 @@ class AquiferWriter(SectionWriter):
         inp = ''
         if aquifer.comment:
             inp = aquifer.comment + '\n'
-        inp += Aquifer.field_format.format(aquifer.name,
+        inp += AquiferWriter.field_format.format(aquifer.name,
                                            aquifer.porosity,
                                            aquifer.wilting_point,
                                            aquifer.field_capacity,
@@ -1181,7 +1182,7 @@ class LIDUsageWriter(SectionWriter):
         inp = ''
         if lid_usage.comment:
             inp = lid_usage.comment + '\n'
-        inp += LIDUsage.field_format.format(lid_usage.subcatchment_name,
+        inp += LIDUsageWriter.field_format.format(lid_usage.subcatchment_name,
                                             lid_usage.control_name,
                                             lid_usage.number_replicate_units,
                                             lid_usage.area_each_unit,

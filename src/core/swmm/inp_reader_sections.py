@@ -1564,7 +1564,7 @@ class GeneralReader(SectionReader):
                 # Set fields from metadata if this section has metadata
                 tried_set = False
                 for set_here in (general, general.dates, general.time_steps, general.dynamic_wave):
-                    (attr_name, attr_value) = set_here.get_attr_name_value(line)
+                    (attr_name, attr_value) = SectionReader.get_attr_name_value(set_here, line)
                     if attr_name:
                         try:
                             tried_set = True
@@ -1641,7 +1641,7 @@ class ReportReader(SectionReader):
 
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(report, line)
-            (attr_name, attr_value) = report.get_attr_name_value(line)
+            (attr_name, attr_value) = ReportReader.get_attr_name_value(report, line)
             if attr_name:
                 if attr_name in Report.LISTS:
                     attr_value = attr_value.split()

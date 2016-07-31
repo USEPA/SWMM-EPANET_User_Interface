@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 import core.swmm.hydraulics
 import core.swmm.hydraulics.link
 import core.swmm.options.dynamic_wave

@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.SWMM.frmTimeSeriesSelectionDesigner import Ui_frmTimeSeriesSelection
 from ui.help import HelpHandler
 import Externals.swmm.outputapi.SMOutputWrapper as SMO

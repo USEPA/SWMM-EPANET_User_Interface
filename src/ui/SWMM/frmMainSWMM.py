@@ -52,9 +52,11 @@ from ui.SWMM.frmTimeSeriesPlot import frmTimeSeriesPlot
 from ui.SWMM.frmProfilePlot import frmProfilePlot
 from ui.SWMM.frmScatterPlot import frmScatterPlot
 from ui.SWMM.frmTableSelection import frmTableSelection
-from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
+# from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
 
-from core.swmm.project import Project
+from core.swmm.swmm_project import SwmmProject as Project
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.raingage import RainGage
@@ -78,7 +80,7 @@ from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
 from core.swmm.timeseries import TimeSeries
 from core.swmm.patterns import Pattern
-from core.swmm.project import Label
+from core.swmm.swmm_project import Label
 
 from Externals.swmm.outputapi import SMOutputWrapper
 
@@ -236,6 +238,8 @@ class frmMainSWMM(frmMain):
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''  # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
+        self.project_reader_type = ProjectReader
+        self.project_writer_type = ProjectWriter
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)

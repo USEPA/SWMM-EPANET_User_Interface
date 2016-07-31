@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience

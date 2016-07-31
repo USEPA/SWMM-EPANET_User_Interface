@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.swmm.project
 from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.quality import ConcentrationUnitLabels
 from ui.SWMM.frmInflowsDesigner import Ui_frmInflows

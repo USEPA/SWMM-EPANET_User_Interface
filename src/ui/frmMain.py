@@ -17,7 +17,7 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
-from core.inputfile import InputFile as Project
+from core.project_base import Project
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -404,7 +404,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def open_project_quiet(self, file_name, gui_settings, directory):
         self.project = self.project_type()
         try:
-            self.project.read_file(file_name)
+            project_reader = self.project_reader_type()
+            project_reader.read_file(self.project, file_name)
             path_only, file_only = os.path.split(file_name)
             self.setWindowTitle(self.model + " - " + file_only)
             if path_only != directory:
@@ -416,7 +417,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.setWindowTitle(self.model)
 
     def save_project(self):
-        self.project.write_file(self.project.file_name)
+        project_writer = self.project_writer_type()
+        project_writer.write_file(self.project, self.project.file_name)
+
 
     def save_project_as(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
@@ -425,7 +428,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if file_name:
             path_only, file_only = os.path.split(file_name)
             try:
-                self.project.write_file(file_name)
+                project_writer = self.project_writer_type()
+                project_writer.write_file(self.project, file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)

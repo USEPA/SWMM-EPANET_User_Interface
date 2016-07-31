@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 import ui.convenience
 from core.swmm.patterns import PatternType
 from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
@@ -12,7 +11,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.setupUi(self)
         self.cboType.clear()
-        ui.convenience.set_combo_items(core.swmm.patterns.PatternType, self.cboType)
+        ui.convenience.set_combo_items(PatternType, self.cboType)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)

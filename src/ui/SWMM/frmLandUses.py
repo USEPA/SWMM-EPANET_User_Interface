@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.SWMM.frmLandUsesDesigner import Ui_frmLandUsesEditor
 import ui.convenience
 from core.swmm.quality import BuildupFunction

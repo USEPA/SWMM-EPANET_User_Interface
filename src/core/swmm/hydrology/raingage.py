@@ -2,7 +2,7 @@ from core.coordinates import Coordinates
 import core.swmm.timeseries
 from enum import Enum
 from core.metadata import Metadata
-from core.inputfile import Section
+from core.project_base import Section
 
 
 class RainFormat(Enum):

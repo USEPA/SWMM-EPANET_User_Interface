@@ -204,7 +204,7 @@ class SectionReader(object):
             attr_value = ""
             tried_set = False
             if hasattr(section, "metadata") and section.metadata:
-                (attr_name, attr_value) = SectionReader.get_attr_name_value(line)
+                (attr_name, attr_value) = self.get_attr_name_value(section, line)
             else:  # This section does not have metadata, try to set its fields anyway
                 line_list = line.split()
                 if len(line_list) > 1:
@@ -232,24 +232,31 @@ class SectionReader(object):
 
     @staticmethod
     def get_attr_name_value(section, line):
-        """Search metadata for attribute with input_name matching start of line.
+        """Search metadata of section for attribute with input_name matching start of line.
             Args:
+                section (Section): data class
                 line (str): One line of text formatted as input file, with field name followed by field value.
             Returns:
                 Attribute name from metadata and new attribute value from line as a tuple:
                 (attr_name, attr_value) or (None, None) if not found.
         """
+        search_metadata = []
         if hasattr(section, "metadata") and section.metadata:
+            search_metadata.append(section.metadata)
+        # if hasattr(self, "metadata") and self.metadata:
+        #     search_metadata.append(self.metadata)
+        if search_metadata:
             lower_line = line.lower().strip()
-            for meta_item in section.metadata:
-                key = meta_item.input_name.lower()
-                if len(lower_line) > len(key):
-                    # if this line starts with this key followed by a space or tab
-                    if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
-                        if hasattr(section, meta_item.attribute):
-                            # return attribute name and value specified on this line
-                            return (meta_item.attribute, line.strip()[len(key) + 1:].strip())
-        return (None, None)
+            for metadata in search_metadata:
+                for meta_item in metadata:
+                    key = meta_item.input_name.lower()
+                    if len(lower_line) > len(key):
+                        # if this line starts with this key followed by a space or tab
+                        if lower_line.startswith(key) and lower_line[len(key)] in (' ', '\t'):
+                            if hasattr(section, meta_item.attribute):
+                                # return attribute name and value specified on this line
+                                return meta_item.attribute, line.strip()[len(key) + 1:].strip()
+        return None, None
 
 
 class SectionReaderAsListOf(SectionReader):

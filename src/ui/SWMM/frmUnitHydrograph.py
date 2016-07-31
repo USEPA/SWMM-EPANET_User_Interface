@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from ui.SWMM.frmUnitHydrographDesigner import Ui_frmUnitHydrograph
 

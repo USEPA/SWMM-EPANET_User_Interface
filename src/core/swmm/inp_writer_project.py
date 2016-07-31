@@ -1,4 +1,3 @@
-# from core.inputfile import InputFile, SectionAsListOf, SectionAsListGroupByID
 from core.inp_writer_base import InputFileWriter, SectionWriterAsListOf
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit

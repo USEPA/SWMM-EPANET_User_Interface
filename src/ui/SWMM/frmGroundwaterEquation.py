@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.swmm.project
 from ui.SWMM.frmGroundwaterEquationDesigner import Ui_frmGroundwaterEquation
 
 

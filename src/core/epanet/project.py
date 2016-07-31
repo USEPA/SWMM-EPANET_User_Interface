@@ -1,4 +1,4 @@
-from core.inputfile import SectionAsListOf, SectionAsListGroupByID
+from core.project_base import Project, Section, SectionAsListOf
 from core.epanet.curves import Curve
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
@@ -22,7 +22,6 @@ from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
-from core.inputfile import InputFile
 
 try:
     unicode = unicode
@@ -40,7 +39,7 @@ else:
     basestring = basestring
 
 
-class Project(InputFile):
+class Project(Project):
     """Manage a complete EPANET input sequence"""
 
     def __init__(self):

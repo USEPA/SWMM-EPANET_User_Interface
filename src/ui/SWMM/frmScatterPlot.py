@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.help import HelpHandler
 from ui.SWMM.frmScatterPlotDesigner import Ui_frmScatterPlot
 from ui.help import HelpHandler

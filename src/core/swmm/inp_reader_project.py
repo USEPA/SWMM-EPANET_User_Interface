@@ -230,7 +230,7 @@ class ProjectReader(InputFileReader):
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
 
-    def add_section(self, project, section_name, section_text):
+    def read_section(self, project, section_name, section_text):
         if section_name == project.infiltration.SECTION_NAME:
             infiltration = project.options.infiltration.upper()
             if infiltration == "HORTON":
@@ -248,4 +248,4 @@ class ProjectReader(InputFileReader):
                     section_name, CurveNumberInfiltration, CurveNumberInfiltrationReader,
                     ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                     ";;--------------\t----------\t----------\t----------")
-        InputFileReader.add_section(self, project, section_name, section_text)
+        InputFileReader.read_section(self, project, section_name, section_text)

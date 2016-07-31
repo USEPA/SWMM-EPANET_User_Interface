@@ -1,7 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project import Project, Section, SectionAsListOf
+from core.project_base import Project, Section, SectionAsListOf
 
 
 class InputFileReader(object):
@@ -21,28 +21,21 @@ class InputFileReader(object):
                 project (Project): Project object to read data into
                 lines_iterator (iterator): Lines of text formatted as input file.
         """
+        project.sections = []
         section_name = ""
         section_whole = []
         for line in lines_iterator:
             if line.lstrip().startswith('['):
                 if section_name:
-                    self.add_section(project, section_name, '\n'.join(section_whole))
+                    self.read_section(project, section_name, '\n'.join(section_whole))
                 section_name = line.strip()
                 section_whole = [section_name]
             elif line.strip():
                 section_whole.append(line.rstrip())
         if section_name:
-            self.add_section(project, section_name, '\n'.join(section_whole))
-        InputFileReader.add_sections_from_attributes(project)
+            self.read_section(project, section_name, '\n'.join(section_whole))
 
-    @staticmethod
-    def add_sections_from_attributes(project):
-        """Add the sections that are attributes of the class to the list of sections."""
-        for attr_value in vars(project).values():
-            if isinstance(attr_value, Section) and attr_value not in project.sections:
-                project.sections.append(attr_value)
-
-    def add_section(self, project, section_name, section_text):
+    def read_section(self, project, section_name, section_text):
         # old_section = project.find_section(section_name)
         # if old_section:
         #     project.sections.remove(old_section)

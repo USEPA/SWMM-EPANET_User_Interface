@@ -76,9 +76,8 @@ class ProjectWriter(InputFileWriter):
 
         # self.write_subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
 
-        self.write_infiltration = SectionWriterAsListOf("[INFILTRATION]", basestring, None, None)
-        # This is set to SectionWriterAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration
-        # below in add_section based on subcatchment infiltration parameters
+        #self.write_infiltration = SectionWriterAsListOf("[INFILTRATION]", basestring, SectionWriter, None)
+        # write_infiltration is set in as_text based on the kind of infiltration being used in the project.
 
         self.write_lid_controls = SectionWriterAsListOf("[LID_CONTROLS]", LIDControl, LIDControlWriter,
                                                    ";;Name          \tType/Layer\tParameters\n"
@@ -157,7 +156,7 @@ class ProjectWriter(InputFileWriter):
 
         self.write_transects = TransectsWriter() # TRANSECTS # transect geometry for conduits with irregular cross-sections
         # self.write_losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
-        self.write_controls = SectionWriterAsListOf("[CONTROLS]", basestring, None, None)  # rules that control pump and regulator operation
+        self.write_controls = SectionWriterAsListOf("[CONTROLS]", basestring, SectionWriter, None)  # rules that control pump and regulator operation
         self.write_landuses = SectionWriterAsListOf("[LANDUSES]", Landuse, LanduseWriter,
                                         ";;              \tSweeping  \tFraction  \tLast\n"
                                         ";;Name          \tInterval  \tAvailable \tSwept\n"
@@ -230,22 +229,22 @@ class ProjectWriter(InputFileWriter):
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
 
-    def add_section(self, project, section_name, section_text):
-        if section_name == project.infiltration.SECTION_NAME:
-            infiltration = project.options.infiltration.upper()
-            if infiltration == "HORTON":
-                self.write_infiltration = SectionWriterAsListOf(
-                    section_name, HortonInfiltration, HortonInfiltrationWriter,
-                    ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
-                    ";;--------------\t----------\t----------\t----------\t----------\t----------")
-            elif infiltration.startswith("GREEN"):
-                self.write_infiltration = SectionWriterAsListOf(
-                    section_name, GreenAmptInfiltration, GreenAmptInfiltrationWriter,
-                    ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"
-                    ";;--------------\t----------\t----------\t----------")
-            elif infiltration.startswith("CURVE"):
-                self.write_infiltration = SectionWriterAsListOf(
-                    section_name, CurveNumberInfiltration, CurveNumberInfiltrationWriter,
-                    ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
-                    ";;--------------\t----------\t----------\t----------")
-        InputFileWriter.add_section(self, project, section_name, section_text)
+    def as_text(self, project):
+        # Figure out which kind of infiltration will be written for this project
+        infiltration = project.options.infiltration.upper()
+        if infiltration == "HORTON":
+            self.write_infiltration = SectionWriterAsListOf(
+                "[INFILTRATION]", HortonInfiltration, HortonInfiltrationWriter,
+                ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
+                ";;--------------\t----------\t----------\t----------\t----------\t----------")
+        elif infiltration.startswith("GREEN"):
+            self.write_infiltration = SectionWriterAsListOf(
+                "[INFILTRATION]", GreenAmptInfiltration, GreenAmptInfiltrationWriter,
+                ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"
+                ";;--------------\t----------\t----------\t----------")
+        elif infiltration.startswith("CURVE"):
+            self.write_infiltration = SectionWriterAsListOf(
+                "[INFILTRATION]", CurveNumberInfiltration, CurveNumberInfiltrationWriter,
+                ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
+                ";;--------------\t----------\t----------\t----------")
+        return InputFileWriter.as_text(self, project)

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     writer_new_method = "as_text"
     reader_class_suffix = "Reader"
     writer_class_suffix = "Writer"
-    top_dir = "C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_master\\src\\"
+    top_dir = "C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\"
     start_dir = top_dir + "core\\swmm"
     # start_dir = top_dir + "core\\epanet"
 
@@ -98,6 +98,14 @@ if __name__ == '__main__':
                             try:
                                 class_index = fields.index("class")
                                 if class_index == 0:
+                                    if in_read_method:  # Remove blank lines and add return value from read method
+                                        while reader_contents and not reader_contents[-1].strip():
+                                            reader_contents.pop()
+                                        reader_contents.append("        return " + class_var_name)
+                                    in_read_method = False
+                                    in_write_method = False
+                                    in_other_method = False
+
                                     orig_class_name = fields[class_index + 1]
                                     class_var_name = un_camel(orig_class_name)
                                     import_line = "from " + file_import_path + " import " + orig_class_name
@@ -105,11 +113,6 @@ if __name__ == '__main__':
                                     if orig_class_name == "ConcentrationUnits":
                                         import_line = "from " + file_import_path + " import ConcentrationUnitLabels"
                                         imports.append(import_line)
-                                    # reader_file.write(import_line + '\n')
-                                    # writer_file.write(import_line + '\n')
-                                    in_read_method = False
-                                    in_write_method = False
-                                    in_other_method = False
 
                                     rewrite_line = line + '\n'
                                     # rewrite_line = line.replace("(Section)", '') + '\n'
@@ -149,8 +152,10 @@ if __name__ == '__main__':
                             if line is not None:
                                 rewrite_line = line
                                 if " def " in line:
-                                    if in_read_method:
-                                        reader_contents.append("\n        return " + class_var_name + '\n\n')
+                                    if in_read_method:  # Remove blank lines and add return value from read method
+                                        while reader_contents and not reader_contents[-1].strip():
+                                            reader_contents.pop()
+                                        reader_contents.append("        return " + class_var_name)
                                     in_read_method = reader_old_method in line
                                     in_write_method = writer_old_method in line or "format_values" in line
                                     in_if_new_text = False
@@ -213,6 +218,7 @@ if __name__ == '__main__':
                                             edits_made += 1
                                     elif in_write_method:
                                         new_line = new_line.replace("Section.get_text(", "SectionWriter.as_text(")
+                                        new_line = new_line.replace(".get_text(", ".as_text(")
                                         writer_contents.append(new_line)
                                         if new_line != line:
                                             edits_made += 1
@@ -268,7 +274,9 @@ if __name__ == '__main__':
                                             rewrite_file.write(rewrite_line + '\n')
                                             if rewrite_line != line:
                                                 edits_made += 1
-                        if in_read_method:
+                        if in_read_method:  # Remove blank lines and add return value from read method
+                            while reader_contents and not reader_contents[-1].strip():
+                                reader_contents.pop()
                             reader_contents.append("        return " + class_var_name)
                             in_read_method = False
 

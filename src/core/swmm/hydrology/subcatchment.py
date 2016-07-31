@@ -593,8 +593,9 @@ class Coverage(Section):
         return self.field_format.format(self.subcatchment_name, self.land_use_name, self.percent_subcatchment_area)
 
     def set_text(self, new_text):
-        """ Coverage.set_text is not used when reading input files because there may be more than one on a line.
-            See Coverages.set_text below for the method used to parse these. """
+        """ This method is not used when reading input files because there may be more than one on a line.
+            See the method that reads the Coverages section below. """
+        self.__init__()
         fields = new_text.split()
         self.__init__(fields[0], fields[1], fields[2])
 

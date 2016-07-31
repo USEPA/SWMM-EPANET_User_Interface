@@ -1,7 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project import Project, Section, SectionAsListOf
+from core.project_base import Project, Section, SectionAsListOf
 
 try:
     basestring
@@ -19,7 +19,7 @@ class InputFileWriter(object):
                 attr_name = "write_" + project.format_as_attribute_name(section.SECTION_NAME)
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)
-                elif section.value is basestring:
+                elif isinstance(section.value, basestring):
                     writer = SectionWriter()
                 else:
                     writer = SectionWriterAsListOf(section.SECTION_NAME, type(section), SectionWriter(), None)
@@ -29,7 +29,7 @@ class InputFileWriter(object):
                         section_text_list.append(section_text)
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
-            return '\n\n'.join(section_text_list) + '\n'
+            return '\n'.join(section_text_list) + '\n'
         except Exception as e2:
             return str(e2) + '\n' + str(traceback.print_exc())
 
@@ -118,6 +118,8 @@ class SectionWriter(object):
 
 class SectionWriterAsListOf(SectionWriter):
     def __init__(self, section_name, list_type, list_type_writer, section_comment):
+        if list_type_writer is None:
+            print "No list_type_writer specified for " + section_name
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()

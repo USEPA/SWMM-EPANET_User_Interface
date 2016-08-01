@@ -121,7 +121,7 @@ class StatisticUtility(object):
     def __init__(self, output):
         self.TXT_FINDING_EVENTS = 'Finding events... '
         self.TXT_RANKING_EVENTS = 'Ranking events... '
-        self.output = SMO.SwmmOutputObject(output)
+        self.output = output #SMO.SwmmOutputObject(output)
 
         # The following arrays of flow conversion factors are for
         # CFS, GPM, MGD, CMS, LPS, and MLD, respectively.
@@ -154,11 +154,15 @@ class StatisticUtility(object):
         #  defined by the StatsSel argument. EventList contains a rank ordered
         #  listing of each event while Results contains summary event statistics.
         #-----------------------------------------------------------------------------
-        self.Stats = TStatsSelection(StatsSel)
+        self.Stats = StatsSel #TStatsSelection
         # Application.ProcessMessages
         # MainForm.ShowProgressBar(TXT_FINDING_EVENTS)
+        self.Tser = self.output.get_time_series(self.Stats.ObjectTypeText, \
+                                                self.Stats.ObjectID, \
+                                                self.Stats.VariableText)
+
         self.FindDuration(EventList, Results)
-        self.FindEvents(EventList)
+        self.FindEvents(EventList, self.output, self.aTser)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
         self.RankEvents(EventList)
         self.FindStats(EventList, Results)
@@ -230,8 +234,7 @@ class StatisticUtility(object):
             Date1 = aTser.index[T] #Timestamp
             Date2 = aTser.index[T + 1] #Timestamp
 
-            #ToDo: need to ensure this is the same thing as the Uglobals.DeltaDateTime
-            #ToDo: which looks like time step in days
+            #Confirmed: the Uglobals.DeltaDateTime is "Reporting time step (in days)"
             self.deltaDateTime = abs(relativedelta(Date2, Date1).days)
 
             # See if a new event period has begun

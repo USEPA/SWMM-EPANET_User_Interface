@@ -586,7 +586,7 @@ class OptionsWriter(SectionWriter):
     def as_text(options):
         """Contents of this item formatted for writing to file"""
         text_list = [options.SECTION_NAME]
-        if options.map:
+        if hasattr(options, "map") and options.map:
             text_list.append(" MAP                \t" + options.map)
         if options.hydraulics is not None:
             text_list.append(Options.section_comments[0])

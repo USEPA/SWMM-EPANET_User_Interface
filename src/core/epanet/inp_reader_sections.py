@@ -661,8 +661,8 @@ class OptionsReader(SectionReader):
         # Skip the comments we insert automatically
         for comment in Options.section_comments:
             new_text = new_text.replace(comment + '\n', '')
-        options.hydraulics.set_text(new_text)
-        options.quality.set_text(new_text)
+        options.hydraulics = HydraulicsOptionsReader.read(new_text)
+        options.quality = QualityOptionsReader.read(new_text)
         for line in new_text.splitlines():
             line_list = line.split()
             if line_list:

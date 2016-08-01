@@ -25,9 +25,9 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.cboVariable.currentIndexChanged.connect(self.cboVariable_currentIndexChanged)
         self.cboEvent.addItems(["Event-Dependent","Daily","Monthly","Annual"])
         self.cboEvent.currentIndexChanged.connect(self.cboEvent_currentIndexChanged)
-        self.txtPrecip.setText('0')
-        self.txtVolume.setText('0')
-        self.txtSeparation.setText('6')
+        self.txtMinEventValue.setText('0')
+        self.txtMinEventVolume.setText('0')
+        self.txtMinEventDelta.setText('6')
         self.stats = ostatistics.TStatsSelection()
 
     def set_from(self, project, output):
@@ -84,10 +84,10 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
     def cboEvent_currentIndexChanged(self, newIndex):
         if self.cboEvent.currentIndex() == 0:
             self.lblSeparation.setEnabled(True)
-            self.txtSeparation.setEnabled(True)
+            self.txtMinEventDelta.setEnabled(True)
         else:
             self.lblSeparation.setEnabled(False)
-            self.txtSeparation.setEnabled(False)
+            self.txtMinEventDelta.setEnabled(False)
 
     def cmdOK_Clicked(self):
         self._frmStatisticsReport = frmStatisticsReport(self._main_form)

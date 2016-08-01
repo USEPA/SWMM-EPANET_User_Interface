@@ -1,5 +1,5 @@
 from enum import Enum
-from core.inputfile import Section
+from core.project_base import Section
 from core.metadata import Metadata
 
 

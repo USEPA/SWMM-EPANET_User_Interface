@@ -1,4 +1,4 @@
-﻿from core.inputfile import Section
+﻿from core.project_base import Section
 from core.metadata import Metadata
 
 
@@ -55,6 +55,7 @@ class Reactions(Section):
             Args:
                 new_text (str): Text to parse into properties.
         """
+        self.__init__()
         # Replace "zero" (any capitalization) with numeral 0
         zero_pos = new_text.upper().find("ZERO")
         while zero_pos >= 0:

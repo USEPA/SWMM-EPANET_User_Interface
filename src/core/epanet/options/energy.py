@@ -1,5 +1,5 @@
 ﻿from enum import Enum
-from core.inputfile import Section
+from core.project_base import Section
 from core.metadata import Metadata
 
 
@@ -54,6 +54,7 @@ class EnergyOptions(Section):
             return '\n'.join(txt)
 
     def set_text(self, new_text):
+        self.__init__()
         Section.set_text(self, new_text)    # Initialize, and set the global values using metadata
         for line in new_text.splitlines():  # Set pump-specific values
             first_field = new_text.split(None, 1)[0]

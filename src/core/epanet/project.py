@@ -44,7 +44,7 @@ class Project(Project):
 
     def __init__(self):
         """Initialize the sections of an EPANET input file.
-           Any sections not initialized here will be handled by the generic core.inputfile.Section class."""
+           Any sections not initialized here will be handled by the generic core.project_base.Section class."""
         self.title = Title()
         self.junctions = SectionAsListOf("[JUNCTIONS]", Junction,
                                          ";ID             \tElev  \tDemand\tPattern\n"

@@ -1,4 +1,4 @@
-from core.inputfile import Section
+from core.project_base import Section
 
 
 class Title(Section):

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from core.inputfile import Section
+from core.project_base import Section
 
 
 class QualityAnalysisType(Enum):
@@ -68,6 +68,7 @@ class QualityOptions(Section):
             Args:
                 new_text (str): Text to parse into properties.
         """
+        self.__init__()
         self.quality = QualityAnalysisType.NONE  # default to NONE until found below
         self.chemical_name = ""
         self.mass_units = ""

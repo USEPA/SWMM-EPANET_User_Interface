@@ -204,7 +204,7 @@ class SectionReader(object):
             attr_value = ""
             tried_set = False
             if hasattr(section, "metadata") and section.metadata:
-                (attr_name, attr_value) = self.get_attr_name_value(section, line)
+                (attr_name, attr_value) = SectionReader.get_attr_name_value(section, line)
             else:  # This section does not have metadata, try to set its fields anyway
                 line_list = line.split()
                 if len(line_list) > 1:

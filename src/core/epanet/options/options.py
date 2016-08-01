@@ -1,6 +1,6 @@
 from enum import Enum
 
-from core.inputfile import Section
+from core.project_base import Section
 from core.epanet.options.quality import QualityOptions
 from core.epanet.options.hydraulics import HydraulicsOptions
 

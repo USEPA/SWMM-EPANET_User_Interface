@@ -20,11 +20,14 @@ if __name__ == '__main__':
     reader_class_suffix = "Reader"
     writer_class_suffix = "Writer"
     top_dir = "C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\"
-    start_dir = top_dir + "core\\swmm"
-    # start_dir = top_dir + "core\\epanet"
+    # start_dir = top_dir + "core\\swmm"
+    start_dir = top_dir + "core\\epanet"
 
-    original_subpath = "\\swmm\\"
-    refactor_subpath = "\\swmm-refactor\\"
+    # original_subpath = "\\swmm\\"
+    # refactor_subpath = "\\swmm-refactor\\"
+
+    original_subpath = "\\epanet\\"
+    refactor_subpath = "\\epanet-refactor\\"
 
     imports = ["import traceback",
                "from enum import Enum",

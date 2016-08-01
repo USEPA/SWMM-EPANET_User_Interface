@@ -2,7 +2,7 @@
 from core.coordinates import Coordinates
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
-from core.inputfile import Section
+from core.project_base import Section
 from core.metadata import Metadata
 
 
@@ -68,6 +68,7 @@ class Coordinate(Section):
         return self.field_format.format(self.id, self.x, self.y)
 
     def set_text(self, new_text):
+        self.__init__()
         (self.id, self.x, self.y) = new_text.split()
 
 
@@ -93,6 +94,7 @@ class Quality(Section):
         return self.field_format.format(self.id, self.initial_quality)
 
     def set_text(self, new_text):
+        self.__init__()
         (self.id, self.initial_quality) = new_text.split()
 
 

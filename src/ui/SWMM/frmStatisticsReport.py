@@ -39,7 +39,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         #self.event_volume = event_volume         # 0
         #self.separation_time = separation_time   # 6
         #self.setWindowTitle('SWMM Statistics ' + '- ' + self.type_label + ' ' + self.object_id + ' ' + self.attribute_name)
-        self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.self.VariableText)
+        self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.stats.VariableText)
         self.textEdit.setReadOnly(True)
 
         # y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
@@ -72,11 +72,10 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             frequency_note = '  *Fraction of all years containing an event.'
             self.event_units = '(years)'
 
-        Tser = self.output.get_time_series(self.stats.ObjectTypeText,
-                                           self.stats.ObjectID,
-                                           self.stats.StatsTypeText)
-
-        lStop = "STOP"
+        #Tser = self.output.get_time_series(self.stats.ObjectTypeText, \
+        #                                   self.stats.ObjectID, \
+        #                                   self.stats.VariableText)
+        #lStop = "STOP"
 
         lUtil = UStats.StatisticUtility(self.output)
         lUtil.GetStats(self.stats, self.EventList)

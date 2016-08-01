@@ -99,7 +99,6 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         #                                   self.cboEvent.currentText(), self.cboStatistic.currentText(),
         #                                   self.txtMinEventValue.text(), self.txtMinEventVolume.text(),
         #                                   self.txtMinEventDelta.text())
-        self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
 
         #ToDo: ensure type order is the same as in the type Enum
         self.stats.ObjectType = self.cboCategory.currentIndex()
@@ -116,6 +115,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.stats.MinEventVolume = float(self.txtMinEventVolume.text())
         self.stats.MinEventDelta = float(self.txtMinEventDelta.text())
 
+        self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
         # def set_from(self, project, output, type_label, object_id, attribute_name, event_name, stat_name,
         #              event_threshold_value, event_volume, separation_time):
         #     self.project = project

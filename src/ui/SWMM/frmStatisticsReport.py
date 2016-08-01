@@ -28,8 +28,8 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
     def set_from(self, project, output, stats):
         self.project = project
-        self.output =  SMO.SwmmOutputObject(output)
-        self.stats = UStats.TStatsSelection(stats)
+        self.output = output #SMO.SwmmOutputObject(output)
+        self.stats = stats #UStats.TStatsSelection(stats)
         #self.type_label = type_label      # Subcatchment
         #self.object_id = object_id          # 1
         #self.attribute_name = attribute_name  # Precipitation
@@ -49,7 +49,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         end_date = '01/02/1998'
 
         # Ustats.GetStats(Stats, EventList, Results)
-        EventList = []
+        self.EventList = []
         results_n = '2'
         results_frequency = '0.194'
         results_minimum = '0.300'
@@ -78,7 +78,8 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
         lStop = "STOP"
 
-
+        lUtil = UStats.StatisticUtility(self.output)
+        lUtil.GetStats(self.stats, self.EventList)
 
     def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
                  threshold_value, event_volume, separation_time):

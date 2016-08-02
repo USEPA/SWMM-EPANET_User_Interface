@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.epanet.project
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from ui.EPANET.frmCalibrationReportDesigner import Ui_frmCalibrationReport
@@ -16,7 +15,6 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
         self.setupUi(self)
         # QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
         self.setWindowTitle('EPANET Calibration Report - ' + calibrate_against)
         self._main_form = main_form
 

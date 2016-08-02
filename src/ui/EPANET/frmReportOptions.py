@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 import core.epanet.options.report
 from core.epanet.options.report import StatusWrite
 from enum import Enum

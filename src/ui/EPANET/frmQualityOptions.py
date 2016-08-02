@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 import core.epanet.options.quality
 from core.epanet.options.quality import QualityOptions
 from core.epanet.options.quality import QualityAnalysisType

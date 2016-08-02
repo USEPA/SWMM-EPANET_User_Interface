@@ -1,6 +1,10 @@
 import unittest
-from core.inputfile import Section
-from core.epanet.project import Project
+from core.epanet.epanet_project import EpanetProject
+from core.epanet.inp_reader_project import ProjectReader
+from core.epanet.inp_writer_project import ProjectWriter
+from core.epanet.inp_reader_sections import *
+from core.epanet.inp_writer_sections import *
+from test.core.section_match import match, match_omit
 from core.epanet.hydraulics.node import SourceType
 
 
@@ -16,12 +20,12 @@ class SimpleSourcesTest(unittest.TestCase):
 
     def runTest(self):
         """Test set_text and get_text"""
-        from_text = Project()
         source_text = '\n'.join(self.TEST_TEXT)
-        from_text.set_text(source_text)
-        project_sources = from_text.sources
+        project_sources = ProjectReader().read_sources(source_text)
 
-        assert Section.match_omit(project_sources.get_text(), source_text, " \t-;\n")
+        assert match_omit(SourceWriter.as_text(project_sources), source_text, " \t-;\n")
+
+        assert match_omit(project_sources.get_text(), source_text, " \t-;\n")
 
         assert project_sources.value[0].id == "JUNCTION-9090"
         assert project_sources.value[0].source_type == SourceType.CONCEN

@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.epanet.project
 from ui.EPANET.frmCalibrationReportOptionsDesigner import Ui_frmCalibrationReportOptions
 from ui.EPANET.frmCalibrationReport import frmCalibrationReport
 

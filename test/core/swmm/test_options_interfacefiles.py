@@ -23,7 +23,7 @@ class OptionsInterfaceFilesTest(unittest.TestCase):
         expected_text += "\nSAVE OUTFLOWS \tsave_outflows.txt"
 
         actual_text = self.my_options.get_text()
-        assert Section.match_omit(actual_text, expected_text, " \t-")
+        assert match_omit(actual_text, expected_text, " \t-")
 
 
 if __name__ == '__main__':

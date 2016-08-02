@@ -1,15 +1,14 @@
 import unittest
 from core.swmm.options import dates
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 
 
 class OptionsDatesTest(unittest.TestCase):
     """Test OPTIONS: Dates"""
-    def __init__(self):
-
-        unittest.TestCase.__init__(self)
 
     def setUp(self):
-
         self.my_options = dates.Dates()
 
     def runTest(self):
@@ -28,4 +27,4 @@ class OptionsDatesTest(unittest.TestCase):
                         " SWEEP_START        	1/1\n" + \
                         " REPORT_START_DATE  	1/1/2002"
 
-        assert self.my_options.matches(expected_text)
+        assert match(SectionWriter.as_text(self.my_options), expected_text)

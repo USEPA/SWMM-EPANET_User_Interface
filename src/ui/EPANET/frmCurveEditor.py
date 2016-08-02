@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 import core.epanet.curves
 from ui.EPANET.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
@@ -24,7 +23,6 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self._main_form = main_form
 
     def set_from(self, project, selected_curve_id):
-        # section = core.epanet.project.Curves()
         section = project.find_section("CURVES")
         self.selected_curve_id = selected_curve_id
         curve_list = section.value[0:]

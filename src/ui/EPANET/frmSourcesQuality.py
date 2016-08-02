@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 from core.epanet.hydraulics.node import SourceType
 from core.epanet.hydraulics.node import Source
 from ui.EPANET.frmSourcesQualityDesigner import Ui_frmSourcesQuality
@@ -21,7 +20,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
     def set_from(self, project, node_id):
         self.node_id = node_id
         # section = core.epanet.project.Source()
-        section = project.find_section('SOURCES')
+        section = project.sources
         sources_list = section.value[0:]
         # assume we want to edit the first one
         for source in sources_list:
@@ -38,7 +37,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
                     self.rbnSetPoint.setChecked(True)
 
     def cmdOK_Clicked(self):
-        section = self._main_form.project.find_section('SOURCES')
+        section = self._main_form.project.sources
         sources_list = section.value[0:]
         # section.set_text(str(self.txtControls.toPlainText()))
         if len(sources_list) == 0:

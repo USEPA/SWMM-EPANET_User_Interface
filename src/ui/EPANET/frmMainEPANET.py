@@ -39,16 +39,17 @@ from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
-from core.epanet.project import Project
+from core.epanet.epanet_project import EpanetProject as Project
+from core.epanet.hydraulics.node import Junction
+from core.epanet.hydraulics.node import Reservoir
+from core.epanet.hydraulics.node import Tank
+from core.epanet.hydraulics.link import Pipe
+from core.epanet.hydraulics.link import Pump
+from core.epanet.hydraulics.link import Valve
+from core.epanet.labels import Label
+
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
-from core.epanet.project import Junction
-from core.epanet.project import Reservoir
-from core.epanet.project import Tank
-from core.epanet.project import Pipe
-from core.epanet.project import Pump
-from core.epanet.project import Valve
-from core.epanet.project import Label
 
 import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet

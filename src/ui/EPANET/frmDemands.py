@@ -1,7 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.epanet.project
+from core.epanet.hydraulics.node import Demand
 from ui.EPANET.frmDemandsDesigner import Ui_frmDemands
 
 
@@ -77,7 +77,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                                 junction.demand_pattern = self.tblDemands.item(row,1).text()
         else:
             # write these as demands
-            section = self._main_form.project.find_section('DEMANDS')
+            section = self._main_form.project.demands
             demands_list = section.value[0:]
             # first clear out any demands associated with this node
             for demand in section.value[0:]:
@@ -88,7 +88,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                 if self.tblDemands.item(row,0):
                     x = self.tblDemands.item(row,0).text()
                     if len(x) > 0:
-                        new_demand = core.epanet.project.Demand()
+                        new_demand = Demand()
                         new_demand.junction_id = self.node_id
                         new_demand.base_demand = self.tblDemands.item(row,0).text()
                         if self.tblDemands.item(row,1):

@@ -1,8 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 import core.epanet.options.backdrop
-from enum import Enum
 from ui.EPANET.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
 import ui.convenience
 

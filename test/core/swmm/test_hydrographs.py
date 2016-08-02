@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 
 
@@ -37,7 +38,7 @@ class SimpleHydrographsTest(unittest.TestCase):
         from_text.set_text(source_text)
         project_hydrographs = from_text.hydrographs
 
-        assert Section.match_omit(project_hydrographs.get_text(), source_text, " \t-;\n")
+        assert match_omit(project_hydrographs.get_text(), source_text, " \t-;\n")
 
         assert len(project_hydrographs.value) == 1
 

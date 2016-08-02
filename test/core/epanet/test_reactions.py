@@ -1,6 +1,4 @@
 import unittest
-from core.inputfile import Section
-from core.epanet.project import Project
 from core.epanet.options import reactions
 
 

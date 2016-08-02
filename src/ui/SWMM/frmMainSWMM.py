@@ -80,7 +80,7 @@ from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
 from core.swmm.timeseries import TimeSeries
 from core.swmm.patterns import Pattern
-from core.swmm.swmm_project import Label
+from core.swmm.labels import Label
 
 from Externals.swmm.outputapi import SMOutputWrapper
 

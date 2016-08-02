@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.hydraulics.link import Conduit
 
 
@@ -48,7 +49,7 @@ class SimpleConduitTest(unittest.TestCase):
                       " P8               J10              J11              144.50     0.016      0          0          0          0"
         from_text.set_text(source_text)
         project_section = from_text.conduits
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), source_text, " \t-;\n")
 
 
 

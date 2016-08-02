@@ -7,7 +7,7 @@
 import sys
 import traceback
 from datetime import datetime
-from core.epanet.project import Project
+from core.epanet.epanet_project import EpanetProject
 from Externals.epanet.outputapi.ENOutputWrapper import *
 # See Also: from core.epanet.options.report import ReportOptions
 
@@ -48,10 +48,10 @@ class Reports:
             '*                           Version 2.0                              *',
             '**********************************************************************')
         self.F = None  # File being written to
-        if isinstance(epanet_project, Project):
+        if isinstance(epanet_project, EpanetProject):
             self.project = epanet_project
         elif isinstance(epanet_project, str):
-            self.project = Project()
+            self.project = EpanetProject()
             self.project.read_file(epanet_project)
         else:
             raise Exception("Report Initialization: could not read EPANET project.")

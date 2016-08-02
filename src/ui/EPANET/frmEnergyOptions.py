@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 import core.epanet.options.energy
 from ui.EPANET.frmEnergyOptionsDesigner import Ui_frmEnergyOptions
 

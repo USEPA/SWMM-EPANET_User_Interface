@@ -2,7 +2,6 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from PyQt4.QtGui import QMessageBox
 import matplotlib.pyplot as plt
-import core.epanet.project
 from core.epanet.reports import Reports
 from ui.convenience import all_list_items, selected_list_items
 from ui.model_utility import transl8

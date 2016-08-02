@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.patterns import Pattern, PatternType
 
 
@@ -107,7 +108,7 @@ x                           1.0   1.0   1.0   1.0   1.0   1.0"""
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.patterns
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), test_text, " \t-;\n")
 
         test_text=r"""[PATTERNS]
 ;;Name             Type       Multipliers

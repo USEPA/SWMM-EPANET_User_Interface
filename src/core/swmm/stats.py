@@ -103,25 +103,25 @@ class Uglobals:
     Npolluts = 0  # Integer;             # Number of pollutants
     NsysViews = 0  # Integer;             # Number of system view variables
     Qunits = 0  # Integer;             # Index of flow units
-    Zsubcatch  # PSingleArray;        # Values of subcatch view variable
-    Znode  # PSingleArray;        # Values of node view variable
-    Zlink  # PSingleArray;        # Values of link view variable
-    FlowDir  # PByteArray;          # Flow direction (+-) of each link
+    Zsubcatch = None  # PSingleArray;        # Values of subcatch view variable
+    Znode = None  # PSingleArray;        # Values of node view variable
+    Zlink = None  # PSingleArray;        # Values of link view variable
+    FlowDir = None  # PByteArray;          # Flow direction (+-) of each link
     RunFlag = True  # Boolean;             # Analysis ran OK (True/False)
-    RunStatus  # TRunStatus;          # Current run status flag
+    RunStatus = 0  # TRunStatus;          # Current run status flag
     DynWaveFlag = False  # Boolean;             # Dynamic Wave routing used
     Nperiods = 0  # LongInt;             # Total number of time periods
-    CurrentPeriod  # LongInt;             # Time period being viewed
-    StartDateTime  # TDateTime;           # Starting date/time
-    EndDateTime  # TDateTime;           # Ending date/time
-    DeltaDateTime  # TDateTime;           # Reporting time step (in days)
-    CurrentDateTime  # TDateTime;          # Current date/time being viewed
+    CurrentPeriod = 0  # LongInt;             # Time period being viewed
+    StartDateTime = pd.Timestamp('1900-01-01')  # TDateTime;           # Starting date/time
+    EndDateTime =  pd.Timestamp('1900-01-01') # TDateTime;           # Ending date/time
+    DeltaDateTime = 1  # TDateTime;           # Reporting time step (in days)
+    CurrentDateTime = pd.Timestamp('1900-01-01')  # TDateTime;          # Current date/time being viewed
 
 class StatisticUtility(object):
     def __init__(self, output):
         self.TXT_FINDING_EVENTS = 'Finding events... '
         self.TXT_RANKING_EVENTS = 'Ranking events... '
-        self.output = SMO.SwmmOutputObject(output)
+        self.output = output #SMO.SwmmOutputObject(output)
 
         # The following arrays of flow conversion factors are for
         # CFS, GPM, MGD, CMS, LPS, and MLD, respectively.
@@ -136,7 +136,7 @@ class StatisticUtility(object):
 
         #These are class wise temporary variables
         self.TotalPeriods = 0.0  # Total number of event periods
-        self.EventPeriods = 0.0  # Number of periods with events
+        self.EventPeriods = 0.0  # Number of time steps/periods within an event
         self.WetStart = None  # TDateTime  # Start date/time of wet period
         self.WetEnd = None  # TDateTime  # date/time of wet period
         self.DryEnd = None  # TDateTime  # date/time of following dry period
@@ -144,6 +144,7 @@ class StatisticUtility(object):
         self.Ysum = 0.0  # Cumulative sum of event variable
         self.Ymax = 0.0  # Maximum value of event variable
         self.Vsum = 0.0  # Cumulative flow volume in an event
+        self.deltaDateTime = 0.0 # trying to be the replacement of Uglobals.DeltaDateTime
         pass
 
     def GetStats(self, StatsSel, EventList):
@@ -153,11 +154,15 @@ class StatisticUtility(object):
         #  defined by the StatsSel argument. EventList contains a rank ordered
         #  listing of each event while Results contains summary event statistics.
         #-----------------------------------------------------------------------------
-        self.Stats = TStatsSelection(StatsSel)
+        self.Stats = StatsSel #TStatsSelection
         # Application.ProcessMessages
         # MainForm.ShowProgressBar(TXT_FINDING_EVENTS)
+        self.Tser = self.output.get_time_series(self.Stats.ObjectTypeText, \
+                                                self.Stats.ObjectID, \
+                                                self.Stats.VariableText)
+
         self.FindDuration(EventList, Results)
-        self.FindEvents(EventList)
+        self.FindEvents(EventList, self.output, self.aTser)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
         self.RankEvents(EventList)
         self.FindStats(EventList, Results)
@@ -226,8 +231,11 @@ class StatisticUtility(object):
         # Examine each reporting period
         for T in range(0, output.num_periods - 2):
             # Get the current and next reporting dates
-            Date1 = aTser.index[T]
-            Date2 = aTser.index[T + 1]
+            Date1 = aTser.index[T] #Timestamp
+            Date2 = aTser.index[T + 1] #Timestamp
+
+            #Confirmed: the Uglobals.DeltaDateTime is "Reporting time step (in days)"
+            self.deltaDateTime = abs(relativedelta(Date2, Date1).days)
 
             # See if a new event period has begun
             if self.IsNewEventPeriod(Date1, Date2):
@@ -313,7 +321,6 @@ class StatisticUtility(object):
             if Date2.year > Date1.year:
                 Result = True
         return Result
-
 
     # def FindEvents_ori(EventList): #TList
     #   #-----------------------------------------------------------------------------
@@ -462,7 +469,7 @@ class StatisticUtility(object):
             # For daily events, a new event occurs if the new date (in integer days)
             # exceeds the start of the current wet period (in integer days)
             #if Floor(NewDate) > Floor(WetStart):
-            if NewDate > self.WetStart:
+            if np.floor(NewDate) > np.floor(self.WetStart):
                 NewEvent = True
 
         elif StatsTimePeriodText == "Monthly":
@@ -486,38 +493,44 @@ class StatisticUtility(object):
             # Create a new event
             AnEvent = TStatsEvent()
             # Assign it a start date and duration
+            # Looks like Uglobals.DeltaDateTime is in days
             if self.stats.StatsTimePeriod == ETimePeriod.tpVariable:
                 AnEvent.StartDate = self.WetStart
                 AnEvent.Duration  = 24 * (self.WetEnd - self.WetStart)   # in hours
-                EventPeriods += (self.WetEnd - self.WetStart) / Uglobals.DeltaDateTime
+                #self.EventPeriods += (self.WetEnd - self.WetStart) / Uglobals.DeltaDateTime
+                self.EventPeriods += (self.WetEnd - self.WetStart) / self.deltaDateTime
             else:
                 AnEvent.StartDate = self.WetStart
-                AnEvent.Duration = self.Nwet * 24 * Uglobals.DeltaDateTime     # in hours
-                EventPeriods += 1
+                #AnEvent.Duration = self.Nwet * 24 * Uglobals.DeltaDateTime     # in hours
+                AnEvent.Duration = self.Nwet * 24 * self.deltaDateTime # in hours
+                self.EventPeriods += 1
 
             # Assign the event a value
-            if Stats.StatsType == stMean:
-                AnEvent.Value = Ysum/Nwet
-            elif Stats.StatsType == stPeak:
-                AnEvent.Value = Ymax
-            elif Stats.StatsType == stTotal:
-                AnEvent.Value = Vsum
-            elif Stats.StatsType == stDuration:
-                AnEvent.Value = anEvent.Duration
-            elif Stats.StatsType == stDelta:
-                AnEvent.Value = GetEventDelta(EventList)  # inter-event hours
-            elif Stats.StatsType == stMeanConcen or Stats.StatsType == stMeanLoad:
-                AnEvent.Value = Ysum/Nwet
-            elif Stats.StatsType == stPeakConcen or Stats.StatsType == stPeakLoad:
-                AnEvent.Value = Ymax
-            elif Stats.StatsType == stTotalLoad:
-                AnEvent.Value = Ysum*Uglobals.DeltaDateTime
+            if self.Stats.StatsType == EStatsType.stMean:
+                AnEvent.Value = self.Ysum/self.Nwet
+            elif self.Stats.StatsType == EStatsType.stPeak:
+                AnEvent.Value = self.Ymax
+            elif self.Stats.StatsType == EStatsType.stTotal:
+                AnEvent.Value = self.Vsum
+            elif self.Stats.StatsType == EStatsType.stDuration:
+                AnEvent.Value = AnEvent.Duration
+            elif self.Stats.StatsType == EStatsType.stDelta:
+                AnEvent.Value = self.GetEventDelta(EventList)  # inter-event hours
+            elif self.Stats.StatsType == EStatsType.stMeanConcen or \
+                 self.Stats.StatsType == EStatsType.stMeanLoad:
+                AnEvent.Value = self.Ysum/self.Nwet
+            elif self.Stats.StatsType == EStatsType.stPeakConcen or \
+                 self.Stats.StatsType == EStatsType.stPeakLoad:
+                AnEvent.Value = self.Ymax
+            elif self.Stats.StatsType == EStatsType.stTotalLoad:
+                #AnEvent.Value = self.Ysum * Uglobals.DeltaDateTime
+                AnEvent.Value = self.Ysum * self.deltaDateTime
             else:
                 AnEvent.Value = 0.0
 
         # Add the new event to the event list and initiialize the next event
         EventList.Add(AnEvent)
-        InitConditions(NewDate)
+        self.InitConditions(NewDate)
 
     def GetEventDelta(self, EventList): # Single
         #-----------------------------------------------------------------------------
@@ -531,38 +544,42 @@ class StatisticUtility(object):
 
         # Find the starting and ending dates of the previous event
         if EventList.Count == 0:
-            LastStartDate = StartDateTime
+            LastStartDate = self.output.StartDateTime
             LastDate = LastStartDate
         else:
             LastEvent = EventList.Items[EventList.Count-1]
             LastStartDate = LastEvent.StartDate
             LastDate = LastStartDate + LastEvent.Duration/24
 
-        if Stats.TimePeriod == tpVariable:
+        if self.Stats.TimePeriod == EStatsType.tpVariable:
             # For variable time period events, the inter-event time is the
             # difference between the midpoints of the current event and the
             # previous event
-            Result = 24 * ((WetStart - LastStartDate) + (Wet - LastDate)) / 2.0
-        elif Stats.TimePeriod == tpMonthly:
+            Result = 24 * ((self.WetStart - LastStartDate) + (self.WetEnd - LastDate)) / 2.0
+        elif self.Stats.TimePeriod == EStatsType.tpMonthly:
             # For monthly events, the inter-event time is the difference
             # between the start month of the current event and start month
             # of the previous event
-            DecodeDate(LastStartDate, Year1, Month1, Day)
-            DecodeDate(WetStart, Year2, Month2, Day)
-            if Month2 >= Month1:
-                Result = Month2 - Month1
+            #DecodeDate(LastStartDate, Year1, Month1, Day)
+            #DecodeDate(WetStart, Year2, Month2, Day)
+            lmonth1 = LastStartDate.month
+            lmonth2 = self.WetStart.month
+            if lmonth2 >= lmonth1:
+                Result = lmonth2 - lmonth1
             else:
-                Result = Month2 + (12 - Month1)
-        elif Stats.TimePeriod == tpAnnual:
+                Result = lmonth2 + (12 - lmonth1)
+        elif self.Stats.TimePeriod == EStatsType.tpAnnual:
             # For annual events, the time is the difference between the starting
             # year of the current and previous events
-            DecodeDate(LastStartDate, Year1, Month1, Day)
-            DecodeDate(WetStart, Year2, Month2, Day)
-            Result = Year2 - Year1
+            #DecodeDate(LastStartDate, Year1, Month1, Day)
+            #DecodeDate(WetStart, Year2, Month2, Day)
+            lYear1 = LastStartDate.year
+            lYear2 = self.WetStart.year
+            Result = lYear2 - lYear1
         else:
             # For daily events, the time is the difference between the starting
             # whole day of the current and previous events
-            Result = Floor(WetStart) - Floor(LastStartDate)
+            Result = np.floor(self.WetStart) - np.floor(LastStartDate)
 
     def Compare(self, Event1, Event2): # Integer
         #-----------------------------------------------------------------------------
@@ -685,5 +702,5 @@ class StatisticUtility(object):
         Results.Skew = G
         return Results
 
-    def close():
+    def close(self):
         pass

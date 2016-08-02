@@ -24,9 +24,9 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.cboVariable.currentIndexChanged.connect(self.cboVariable_currentIndexChanged)
         self.cboEvent.addItems(["Event-Dependent","Daily","Monthly","Annual"])
         self.cboEvent.currentIndexChanged.connect(self.cboEvent_currentIndexChanged)
-        self.txtPrecip.setText('0')
-        self.txtVolume.setText('0')
-        self.txtSeparation.setText('6')
+        self.txtMinEventValue.setText('0')
+        self.txtMinEventVolume.setText('0')
+        self.txtMinEventDelta.setText('6')
         self.stats = ostatistics.TStatsSelection()
 
     def set_from(self, project, output):
@@ -83,10 +83,10 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
     def cboEvent_currentIndexChanged(self, newIndex):
         if self.cboEvent.currentIndex() == 0:
             self.lblSeparation.setEnabled(True)
-            self.txtSeparation.setEnabled(True)
+            self.txtMinEventDelta.setEnabled(True)
         else:
             self.lblSeparation.setEnabled(False)
-            self.txtSeparation.setEnabled(False)
+            self.txtMinEventDelta.setEnabled(False)
 
     def cmdOK_Clicked(self):
         self._frmStatisticsReport = frmStatisticsReport(self._main_form)
@@ -98,7 +98,6 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         #                                   self.cboEvent.currentText(), self.cboStatistic.currentText(),
         #                                   self.txtMinEventValue.text(), self.txtMinEventVolume.text(),
         #                                   self.txtMinEventDelta.text())
-        self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
 
         #ToDo: ensure type order is the same as in the type Enum
         self.stats.ObjectType = self.cboCategory.currentIndex()
@@ -115,6 +114,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.stats.MinEventVolume = float(self.txtMinEventVolume.text())
         self.stats.MinEventDelta = float(self.txtMinEventDelta.text())
 
+        self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
         # def set_from(self, project, output, type_label, object_id, attribute_name, event_name, stat_name,
         #              event_threshold_value, event_volume, separation_time):
         #     self.project = project

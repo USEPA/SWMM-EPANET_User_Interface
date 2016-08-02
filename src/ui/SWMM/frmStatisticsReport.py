@@ -28,8 +28,8 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
     def set_from(self, project, output, stats):
         self.project = project
-        self.output =  SMO.SwmmOutputObject(output)
-        self.stats = UStats.TStatsSelection(stats)
+        self.output = output #SMO.SwmmOutputObject(output)
+        self.stats = stats #UStats.TStatsSelection(stats)
         #self.type_label = type_label      # Subcatchment
         #self.object_id = object_id          # 1
         #self.attribute_name = attribute_name  # Precipitation
@@ -39,7 +39,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         #self.event_volume = event_volume         # 0
         #self.separation_time = separation_time   # 6
         #self.setWindowTitle('SWMM Statistics ' + '- ' + self.type_label + ' ' + self.object_id + ' ' + self.attribute_name)
-        self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.self.VariableText)
+        self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.stats.VariableText)
         self.textEdit.setReadOnly(True)
 
         # y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
@@ -49,7 +49,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         end_date = '01/02/1998'
 
         # Ustats.GetStats(Stats, EventList, Results)
-        EventList = []
+        self.EventList = []
         results_n = '2'
         results_frequency = '0.194'
         results_minimum = '0.300'
@@ -72,13 +72,13 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             frequency_note = '  *Fraction of all years containing an event.'
             self.event_units = '(years)'
 
-        Tser = self.output.get_time_series(self.stats.ObjectTypeText,
-                                           self.stats.ObjectID,
-                                           self.stats.StatsTypeText)
+        #Tser = self.output.get_time_series(self.stats.ObjectTypeText, \
+        #                                   self.stats.ObjectID, \
+        #                                   self.stats.VariableText)
+        #lStop = "STOP"
 
-        lStop = "STOP"
-
-
+        lUtil = UStats.StatisticUtility(self.output)
+        lUtil.GetStats(self.stats, self.EventList)
 
     def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
                  threshold_value, event_volume, separation_time):

@@ -3,9 +3,9 @@ import traceback
 from enum import Enum
 
 
-class Project(object):
+class ProjectBase(object):
     """
-    Base class of SWMM and EPANET project class that holds the data in an input sequence.
+    Base class of SWMM and EPANET project classes that hold the data in an input sequence.
     Reading and writing the input sequence is handled in other classes.
     """
 

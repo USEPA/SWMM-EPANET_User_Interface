@@ -1,4 +1,4 @@
-from core.project_base import Project, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsListOf
 from core.epanet.curves import Curve
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
@@ -39,7 +39,7 @@ else:
     basestring = basestring
 
 
-class EpanetProject(Project):
+class EpanetProject(ProjectBase):
     """Manage a complete EPANET input sequence"""
 
     def __init__(self):
@@ -76,4 +76,4 @@ class EpanetProject(Project):
         self.labels = SectionAsListOf("[LABELS]", Label)
         self.backdrop = BackdropOptions()
 
-        Project.__init__(self)   # Do this after setting attributes so they will all get added to sections[]
+        ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

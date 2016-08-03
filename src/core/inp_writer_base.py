@@ -1,7 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project_base import Project, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsListOf
 
 try:
     basestring
@@ -9,10 +9,19 @@ except NameError:
     basestring = str
 
 
-class InputFileWriter(object):
-    """Input File Reader and Writer"""
-
+class InputFileWriterBase(object):
+    """ Base class common to SWMM and EPANET.
+        Creates and saves text version of model input file *.inp.
+    """
     def as_text(self, project):
+        """
+        Text version of project, suitable for saving to *.inp file.
+        Args:
+            project (ProjectBase): Project data to serialize as text.
+
+        Returns:
+            string containing data from the specified project in *.inp format.
+        """
         section_text_list = []
         try:
             for section in project.sections:
@@ -34,6 +43,14 @@ class InputFileWriter(object):
             return str(e2) + '\n' + str(traceback.print_exc())
 
     def write_file(self, project, file_name):
+        """
+        Save text file version of project in *.inp file format in file_name.
+        Args:
+            project (ProjectBase): Project data to serialize as text.
+            file_name (str): full path and file name to save in.
+        Returns:
+            string containing data from the specified project in *.inp format.
+        """
         if file_name:
             with open(file_name, 'w') as writer:
                 writer.writelines(self.as_text(project))
@@ -41,9 +58,9 @@ class InputFileWriter(object):
 
 
 class SectionWriter(object):
-    """Base class for writing a section or sub-section or value to an input file"""
+    """ Base class for writing a section or sub-section or value to an input file """
 
-    field_format = " {:19}\t{}"
+    field_format = " {:19}\t{}"  # Default field format
 
     @staticmethod
     def as_text(section):
@@ -99,6 +116,12 @@ class SectionWriter(object):
 
     @staticmethod
     def _get_attr_line(section, label, attr_name):
+        """ Generate one line of an input sequence which specifies the label and value of the attribute attr_name
+        Args:
+            section (Section): project section that may contain a value for the attribute named attr_name.
+            label (str): label that will appear in the returned line.
+            attr_name (str): name of attribute to get the value of. If attribute is not present, None is returned.
+         """
         if label and attr_name and hasattr(section, attr_name):
             attr_value = getattr(section, attr_name)
             if isinstance(attr_value, Enum):
@@ -117,7 +140,16 @@ class SectionWriter(object):
 
 
 class SectionWriterAsListOf(SectionWriter):
+    """ Section writer that can serialize a section that contains a list of items. """
     def __init__(self, section_name, list_type, list_type_writer, section_comment):
+        """
+        Create a section writer that can serialize a section that contains a list of items.
+        Args:
+            section_name (str): Name of section. Square brackets will be added if not already present.
+            list_type (type): Type of items in the section.
+            list_type_writer (type or instance): Writer that can serialize items in the section.
+            section_comment (str): Default comment lines that appear at the beginning of the section. Can be None.
+        """
         if list_type_writer is None:
             print "No list_type_writer specified for " + section_name
         if not section_name.startswith("["):

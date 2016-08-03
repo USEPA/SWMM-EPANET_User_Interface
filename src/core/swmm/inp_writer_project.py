@@ -1,4 +1,4 @@
-from core.inp_writer_base import InputFileWriter, SectionWriterAsListOf
+from core.inp_writer_base import InputFileWriterBase, SectionWriterAsListOf
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
@@ -44,7 +44,7 @@ else:
     basestring = basestring
 
 
-class ProjectWriter(InputFileWriter):
+class ProjectWriter(InputFileWriterBase):
     """Write a SWMM input file from in-memory data structures"""
 
     def __init__(self):
@@ -246,4 +246,4 @@ class ProjectWriter(InputFileWriter):
                 "[INFILTRATION]", CurveNumberInfiltration, CurveNumberInfiltrationWriter,
                 ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                 ";;--------------\t----------\t----------\t----------")
-        return InputFileWriter.as_text(self, project)
+        return InputFileWriterBase.as_text(self, project)

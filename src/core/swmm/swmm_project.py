@@ -1,4 +1,4 @@
-from core.project_base import Project, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsListOf
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
@@ -42,7 +42,7 @@ else:
     basestring = basestring
 
 
-class SwmmProject(Project):
+class SwmmProject(ProjectBase):
     """Manage a complete SWMM input sequence"""
 
     def __init__(self):
@@ -164,7 +164,7 @@ class SwmmProject(Project):
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
         # [TAGS]
-        Project.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
+        ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
     def add_section(self, section_name, section_text):
         if section_name == self.infiltration.SECTION_NAME:
@@ -174,4 +174,4 @@ class SwmmProject(Project):
                 self.infiltration = SectionAsListOf(self.infiltration.SECTION_NAME, GreenAmptInfiltration)
             elif self.options.infiltration.upper().startswith("CURVE"):
                 self.infiltration = SectionAsListOf(self.infiltration.SECTION_NAME, CurveNumberInfiltration)
-        Project.add_section(self, section_name, section_text)
+        ProjectBase.add_section(self, section_name, section_text)

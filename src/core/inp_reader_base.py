@@ -1,13 +1,14 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project_base import Project, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsListOf
 
 
 class InputFileReader(object):
     """ Base class for reading input files """
 
     def read_file(self, project, file_name):
+        """ Read the contents of file_name into project. """
         try:
             with open(file_name, 'r') as inp_reader:
                 self.set_from_text_lines(project, iter(inp_reader))
@@ -18,7 +19,7 @@ class InputFileReader(object):
     def set_from_text_lines(self, project, lines_iterator):
         """Read a project file from lines of text.
             Args:
-                project (Project): Project object to read data into
+                project (ProjectBase): Project object to read data into
                 lines_iterator (iterator): Lines of text formatted as input file.
         """
         project.sections = []
@@ -36,6 +37,8 @@ class InputFileReader(object):
             self.read_section(project, section_name, '\n'.join(section_whole))
 
     def read_section(self, project, section_name, section_text):
+        """ Read the section named section_name whose complete text is section_text into project. """
+
         # old_section = project.find_section(section_name)
         # if old_section:
         #     project.sections.remove(old_section)
@@ -191,6 +194,7 @@ class SectionReader(object):
 
 
 class SectionReaderAsListOf(SectionReader):
+    """ Section reader that reads a section that contain a list of items """
     def __init__(self, section_name, list_type, list_type_reader, section_comment):
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
@@ -234,7 +238,7 @@ class SectionReaderAsListOf(SectionReader):
 
 class SectionReaderAsListGroupByID(SectionReaderAsListOf):
     """
-    A Section that contains items which may each span more than one line.
+    Reader for a section that contains items which may each span more than one line.
     Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
     """
 

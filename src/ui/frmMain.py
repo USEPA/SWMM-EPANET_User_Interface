@@ -17,7 +17,7 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
-from core.project_base import Project
+from core.project_base import ProjectBase
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -32,7 +32,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self._forms = []
         """List of editor windows used during this session, kept here so they are not automatically closed."""
         self.model = "Not Set"
-        self.project_type = Project
+        self.project_type = ProjectBase
         self.project = None
         self.obj_tree = None
         self.obj_list = None
@@ -413,7 +413,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.sync()
                 del gui_settings
         except:
-            self.project = Project()
+            self.project = ProjectBase()
             self.setWindowTitle(self.model)
 
     def save_project(self):

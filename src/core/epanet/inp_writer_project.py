@@ -1,4 +1,4 @@
-from core.inp_writer_base import InputFileWriter, SectionWriterAsListOf
+from core.inp_writer_base import InputFileWriterBase, SectionWriterAsListOf
 from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
 from core.epanet.title import Title
@@ -22,7 +22,7 @@ else:
     basestring = basestring
 
 
-class ProjectWriter(InputFileWriter):
+class ProjectWriter(InputFileWriterBase):
     """Read an EPANET input file into in-memory data structures"""
 
     def __init__(self):

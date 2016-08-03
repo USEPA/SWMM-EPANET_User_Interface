@@ -1,4 +1,4 @@
-﻿from core.project_base import Project, Section
+﻿from core.project_base import Section
 from enum import Enum
 
 

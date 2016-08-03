@@ -52,12 +52,6 @@ class General(Section):
         ("ignore_quality",     "IGNORE_QUALITY")))
     """Mapping between attribute name and name used in input file"""
 
-    old_flow_routing = {
-        "UF": FlowRouting.STEADY,
-        "KW": FlowRouting.KINWAVE,
-        "DW": FlowRouting.DYNWAVE}
-    """Mapping from old flow routing names to FlowRouting enumeration"""
-
     section_comments = (";; Dates", ";; Time Steps", ";; Dynamic Wave")
 
     def __init__(self):

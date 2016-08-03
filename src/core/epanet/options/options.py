@@ -10,8 +10,6 @@ class Options(Section):
 
     SECTION_NAME = "[OPTIONS]"
 
-    section_comments = (";; Hydraulics", ";; Water Quality")
-
     def __init__(self):
         Section.__init__(self)
 

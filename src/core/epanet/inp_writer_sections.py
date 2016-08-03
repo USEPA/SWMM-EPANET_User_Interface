@@ -1,7 +1,6 @@
 import traceback
 from enum import Enum
 from core.project_base import Section
-from core.metadata import Metadata
 from core.epanet.curves import CurveType
 from core.epanet.curves import Curve
 from core.epanet.labels import MeterType
@@ -71,20 +70,6 @@ class LabelWriter(SectionWriter):
     """A label on the map with location, text, and optional anchor node ID"""
 
     field_format = '{:16}\t{:16}\t"{}"\t{:16}'
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("label",           '', "Text",            '',    '',   '', "Text of label"),
-        ('x',               '', "X-Coordinate",    '',    '',   '', "X coordinate of label on study area map"),
-        ('y',               '', "Y-Coordinate",    '',    '',   '', "Y coordinate of label on study area map"),
-        ('anchor_node_id',  '', "Anchor Node",     '',    '',   '', "ID label of an anchor node (optional)"),
-        ('meter_type',      '', "Meter Type",      '',    '',   '', "Type of object being metered by the label"),
-        ('meter_id',        '', "Meter ID",        '',    '',   '', "ID of the object (Node or Link) being metered"),
-        ("font",            '', "Font",            "",       '', '',  "The label's font"),
-        ("size",            '', "Size",            "10.0",   '', '',  "The label's font size"),
-        ("bold",            '', "Bold",            "False",  '', '',  "Set to True if the label is to be bold"),
-        ("italics",         '', "Italics",         "False",  '', '',  "Set to True if the label is to be italicized"),
-    ))
 
     @staticmethod
     def as_text(label):
@@ -166,22 +151,6 @@ class PipeWriter(Link):
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:6}\t{}"
 
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",                        '', "Pipe ID",            "",    '', '', "User-assigned name of the pipe"),
-        ("inlet_node",                '', "Start Node",         "",    '', '', "Node on the inlet end of the pipe"),
-        ("outlet_node",               '', "End Node",           "",    '', '', "Node on the outlet end of the pipe"),
-        ("description",               '', "Description",        "",    '', '', "Optional description of the pipe"),
-        ("tag",                       '', "Tag",                "",    '', '', "Optional label used to categorize or classify the pipe"),
-        ("length",                    '', "Length",             "0.0", '', '', "Pipe length"),
-        ("diameter",                  '', "Diameter",           "0.0", '', '', "Pipe diameter"),
-        ("roughness",                 '', "Roughness",          "0.0", '', '', "Manning's roughness coefficient"),
-        ("loss_coefficient",          '', "Loss Coeff.",        "0.0", '', '', "Minor loss coefficient"),
-        ("initial_status",            '', "Initial Status",     "",    '', '', "Initial status of a pipe"),
-        ("bulk_reaction_coefficient", '', "Bulk Coeff.",        "0.0", '', '', "Bulk reaction coefficient for this pipe"),
-        ("wall_reaction_coefficient", '', "Wall Coeff.",        "0.0", '', '', "Wall reaction coefficient for this pipe"),
-    ))
-
     @staticmethod
     def as_text(pipe):
         """format contents of this item for writing to file"""
@@ -197,23 +166,6 @@ class PumpWriter(Link):
     """A Pump link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}"
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",               '', "Pump ID",            "",    '', '', "User-assigned name of the pump"),
-        ("inlet_node",       '', "Start Node",         "",    '', '', "Node on the inlet end of the pump"),
-        ("outlet_node",      '', "End Node",           "",    '', '', "Node on the outlet end of the pump"),
-        ("description",      '', "Description",        "",    '', '', "Optional description of the pump"),
-        ("tag",              '', "Tag",                "",    '', '', "Optional label used to categorize or classify the pump"),
-        ("head_curve_id",    '', "Pump Curve",         "",    '', '', "Curve that describes head versus flow for the pump"),
-        ("power",            '', "Power",              "0.0", '', '', "Power value for constant energy pump, hp (kW)"),
-        ("speed",            '', "Speed",              "0.0", '', '', "Relative speed setting (normal speed is 1.0, 0 means pump is off)"),
-        ("pattern",          '', "Pattern",            "",    '', '', "Time pattern that describes how speed setting varies with time"),
-        ("initial_status",   '', "Initial Status",     "",    '', '', "Initial status of a pump"),
-        ("PumpEnergy.value", '', "Effic. Curve",       "",    '', '', "Efficiency curve ID"),
-        ("PumpEnergy.value", '', "Energy Price",       "0.0", '', '', "Energy price for this pump"),
-        ("PumpEnergy.value", '', "Price Pattern",      "",    '', '', "ID of price pattern for this pump"),
-    ))
 
     @staticmethod
     def as_text(pump):
@@ -242,20 +194,6 @@ class ValveWriter(Link):
     """A valve link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:4}\t{:12}\t{:12}\t{}"
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",                     '', "Valve ID",           "",    '', '', "User-assigned name of the valve"),
-        ("inlet_node",             '', "Start Node",         "",    '', '', "Node on the inlet end of the valve"),
-        ("outlet_node",            '', "End Node",           "",    '', '', "Node on the outlet end of the valve"),
-        ("description",            '', "Description",        "",    '', '', "Optional description of the valve"),
-        ("tag",                    '', "Tag",                "",    '', '', "Optional label used to categorize or classify the valve"),
-        ("diameter",               '', "Diameter",           "0.0", '', '', "Valve diameter"),
-        ("type",                   '', "Type",               "",    '', '', "Valve type"),
-        ("setting",                '', "Setting",            "",    '', '', "Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve ID for GPV"),
-        ("minor_loss_coefficient", '', "Loss Coeff.",        "",    '', '', "TCV (throttle control valve) Loss Coefficient"),
-        ("status",                 '', "Fixed Status",       "",    '', '', "Initial status of a valve"),
-    ))
 
     @staticmethod
     def as_text(valve):
@@ -322,21 +260,6 @@ class JunctionWriter(SectionWriter):
 
     field_format = "{:16}\t{:6}\t{:6}\t{:7}"
 
-    #    attribute, input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
-        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
-        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
-        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
-        ('elevation',       '', "Elevation",       '',   '',   '', "Elevation of junction"),
-        ('base_demand_flow',    '', 'Base Demand',       '',  '',   '', "Base demand flow, characteristic of all demands at this node"),
-        ('demand_pattern_id',   '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
-        ('demand_categories',   '', 'Demand Categories', '',  '',   '', "Number of demand categories, click to edit"),
-        ('emitter_coefficient', '', 'Emitter Coeff.',    '',  '',   '', "Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which defaults to 0.5 and can be set in OPTIONS section."),
-        ('initial_quality',     '', 'Initial Quality',   '',  '',   '', "Water quality level at the junction at the start of the simulation period"),
-        ('source_quality',      '', 'Source Quality',    '',  '',   '', "Quality of any water entering the network at this location, click to edit")))
-
     @staticmethod
     def as_text(junction):
         """format contents of this item for writing to file"""
@@ -349,18 +272,6 @@ class ReservoirWriter(SectionWriter):
 
     field_format = "{:16}\t{:6}\t{:6}\t{}"
 
-#    attribute, input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
-        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
-        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
-        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
-        ('total_head',      '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
-        ('head_pattern_id', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
-        ('initial_quality', '', 'Initial Quality', '',    '',   '', "Water quality level at the reservior at the start of the simulation period"),
-        ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
-
     @staticmethod
     def as_text(reservoir):
         """format contents of this item for writing to file"""
@@ -372,26 +283,6 @@ class TankWriter(SectionWriter):
     """Tank properties"""
 
     field_format = " {:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:12}\t{:16}\t{}"
-
-#    attribute, input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("id",              '', "Name",            '',    '',   '', "User-assigned name of tank"),
-        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
-        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
-        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
-        ('elevation',       '', "Elevation",       '0.0', '',   '', "Elevation of tank"),
-        ('initial_level',   '', "Initial Level",   '0.0', '',   '', "Height of the water surface above the bottom elevation of the tank at the start of the simulation."),
-        ('minimum_level',   '', "Minimum Level",   '0.0', '',   '', "Minimum height in feet (meters) of the water surface above the bottom elevation that will be maintained."),
-        ('maximum_level',   '', "Maximum Level",   '0.0', '',   '', "Maximum height in feet (meters) of the water surface above the bottom elevation that will be maintained."),
-        ('diameter',        '', "Diameter",        '0.0', '',   '', "The diameter of the tank"),
-        ('minimum_volume',  '', "Minimum Volume",  '0.0', '',   '', "The volume of water in the tank when it is at its minimum level"),
-        ('volume_curve',    '', "Volume Curve",    '',    '',   '', "The ID label of a curve used to describe the relation between tank volume and water level"),
-        ('mixing_model',    '', "Mixing Model",    '',    '',   '', "The type of water quality mixing that occurs within the tank"),
-        ('mixing_fraction', '', "Mixing Fraction", '0.0', '',   '', "The fraction of the tank's total volume that comprises the inlet-outlet compartment of the two-compartment (2COMP) mixing model"),
-        ('reaction_coeff',  '', "Reaction Coeff.", '',    '',   '', "Tank-specific reaction coefficient"),
-        ('initial_quality', '', 'Initial Quality', '0.0', '',   '', "Water quality level in the tank at the start of the simulation period"),
-        ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     @staticmethod
     def as_text(tank):
@@ -486,14 +377,6 @@ class EnergyOptionsWriter(SectionWriter):
 
     SECTION_NAME = "[ENERGY]"
 
-    #    attribute,            input_name, label, default, english, metric, hint
-    metadata = Metadata((
-        ("global_efficiency", "Global Efficiency"),
-        ("global_price", "Global Price"),
-        ("global_pattern", "Global Pattern"),
-        ("demand_charge", "Demand Charge")))
-    """Mapping between attribute name and name used in input file"""
-
     @staticmethod
     def as_text(energy_options):
         if energy_options.global_efficiency == "75" \
@@ -533,26 +416,6 @@ class HydraulicsOptionsWriter(SectionWriter):
 
     SECTION_NAME = "[OPTIONS]"
 
-    #    attribute,             input_name, label, default, english, metric, hint
-    metadata = Metadata((
-        ("flow_units",          "Units"),
-        ("head_loss",           "Headloss"),
-        ("specific_gravity",    "Specific Gravity"),
-        ("viscosity",           "Viscosity"),
-        ("maximum_trials",      "Trials"),
-        ("accuracy",            "Accuracy"),
-        ("check_frequency",     "CHECKFREQ"),
-        ("max_check",           "MAXCHECK"),
-        ("damp_limit",          "DAMPLIMIT"),
-        ("unbalanced_continue", "Unbalanced"),
-        ("default_pattern",     "Pattern"),
-        ("demand_multiplier",   "Demand Multiplier"),
-        ("emitter_exponent",    "Emitter Exponent"),
-        ("",                    "Quality"),
-        ("",                    "Diffusivity"),
-        ("",                    "Tolerance")))
-    """Mapping between attribute name and name used in input file"""
-
     @staticmethod
     def as_text(hydraulics_options):
         text_list = []
@@ -589,10 +452,10 @@ class OptionsWriter(SectionWriter):
         if hasattr(options, "map") and options.map:
             text_list.append(" MAP                \t" + options.map)
         if options.hydraulics is not None:
-            text_list.append(Options.section_comments[0])
+            text_list.append(OptionsWriter.section_comments[0])
             text_list.append(HydraulicsOptionsWriter.as_text(options.hydraulics))
         if options.quality is not None:
-            text_list.append(Options.section_comments[1])
+            text_list.append(OptionsWriter.section_comments[1])
             text_list.append(QualityOptionsWriter.as_text(options.quality))
         return '\n'.join(text_list)
 
@@ -637,17 +500,6 @@ class ReactionsWriter(SectionWriter):
 
     SECTION_NAME = "[REACTIONS]"
 
-    #    attribute,               input_name, label, default, english, metric, hint
-    metadata = Metadata((
-        ("order_bulk",            "Order Bulk"),
-        ("order_wall",            "Order Wall"),
-        ("order_tank",            "Order Tank"),
-        ("global_bulk",           "Global Bulk"),
-        ("global_wall",           "Global Wall"),
-        ("limiting_potential",    "Limiting Potential"),
-        ("roughness_correlation", "Roughness Correlation")))
-    """Mapping between attribute name and name used in input file"""
-
     # @staticmethod
     # def as_text(reactions):
     #     """format contents of this item for writing to file"""
@@ -663,33 +515,6 @@ class ReportOptionsWriter(SectionWriter):
     """Report Options"""
 
     SECTION_NAME = "[REPORT]"
-
-    #     attribute, input_name
-    metadata = Metadata((
-        ("status",   "Status"),
-        ("summary",  "Summary"),
-        ("pagesize", "Page"),
-        ("energy",   "Energy"),
-        ("file",     "File")))
-
-    metadata_lists = Metadata((
-        ("nodes",   "Nodes"),
-        ("links",   "Links"),
-        ("elevation", "Elevation"),
-        ("demand", "Demand"),
-        ("head", "Head"),
-        ("pressure", "Pressure"),
-        ("quality", "Quality"),
-        ("length", "Length"),
-        ("diameter", "Diameter"),
-        ("flow", "Flow"),
-        ("velocity", "Velocity"),
-        ("headloss", "Headloss"),
-        ("position", "Position"),
-        ("setting", "Setting"),
-        ("reaction", "Reaction"),
-        ("friction_factor", "F-Factor")))
-    """Mapping between attribute name and name used in input file"""
 
     @staticmethod
     def as_text(report_options):

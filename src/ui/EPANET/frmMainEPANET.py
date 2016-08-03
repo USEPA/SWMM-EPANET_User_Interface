@@ -40,6 +40,8 @@ from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
 from core.epanet.epanet_project import EpanetProject as Project
+from core.epanet.inp_reader_project import ProjectReader
+from core.epanet.inp_writer_project import ProjectWriter
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
 from core.epanet.hydraulics.node import Tank
@@ -118,6 +120,8 @@ class frmMainEPANET(frmMain):
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''   # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
+        self.project_reader_type = ProjectReader
+        self.project_writer_type = ProjectWriter
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)

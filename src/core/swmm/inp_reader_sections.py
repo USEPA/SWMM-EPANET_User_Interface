@@ -1,7 +1,6 @@
 import traceback
 from enum import Enum
 from core.project_base import Section
-from core.metadata import Metadata
 from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
 from core.swmm.patterns import PatternType
@@ -134,19 +133,6 @@ class LanduseReader(SectionReader):
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-
-    #    attribute,              input_name, label,                     default, english, metric, hint
-    metadata = Metadata((
-        ("land_use_name",                '', "Land Use Name",                '', '', '',
-         "User-assigned name of the land use."),
-        ("street_sweeping_interval",     '', "Street Sweeping Interval",     '', "days", "days",
-         "Time between street sweeping within the land use (0 for no sweeping)."),
-        ("street_sweeping_availability", '', "Street Sweeping Availability", '', '', '',
-         "Fraction of pollutant buildup that is available for removal by sweeping."),
-        ("last_swept",                   '', "Last Swept",                   '', "days", "days",
-         "Time since land use was last swept at the start of the simulation.")
-    ))
-
     @staticmethod
     def read(new_text):
         landuse = Landuse()
@@ -164,40 +150,6 @@ class LanduseReader(SectionReader):
 
 class BuildupReader(SectionReader):
     """Specifies the rate at which pollutants build up over different land uses between rain events."""
-
-
-    """A different set of buildup property labels is used depending on the External Time Series buildup option"""
-
-    #    attribute,    input_name, label,                 default, english, metric, hint
-    metadata = Metadata((
-        ("function",           '', "Function",            "NONE", '', '',
-         "Buildup function: POW = power, EXP = exponential, SAT = saturation, EXT = external time series."),
-        ("max_buildup",        '', "Max. Buildup",        "0.0",  '', '',
-         "Maximum possible buildup (lbs (kg) per unit of normalizer variable)."),
-        ("rate_constant",      '', "Rate Constant",       "0.0",  "lbs per normalizer per day",
-                                                              "kg per normalizer per day",
-         "Rate constant of buildup function 1/days for exponential buildup or for power buildup"),
-        ("power_sat_constant", '', "Power/Sat. Constant", "0.0",  "days", "days",
-         "Time exponent for power buildup or half saturation constant for saturation buildup."),
-        ("normalizer",         '', "Normalizer",          "AREA", "acres", "hectares",
-         "Subcatchment variable to which buildup is normalized: curb length (any units) or area.")
-    ))
-
-    #    attribute,    input_name, label,                 default, english, metric, hint
-    metadata_ext = Metadata((
-        ("function",           '', "Function",            "NONE", '', '',
-         "Buildup function: POW = power, EXP = exponential, SAT = saturation, EXT = external time series."),
-        ("max_buildup",        '', "Max. Buildup",        "0.0",  "lbs per unit of normalizer variable",
-                                                                  "kg per unit of normalizer variable",
-         "Maximum possible buildup."),
-        ("scaling_factor",     '', "Scaling Factor",      "0.0",  '', '',
-         "Scaling factor used to modify loading rates by a fixed ratio."),
-        ("timeseries",         '', "Time Series",         "0.0",  "lbs per normalizer per day",
-                                                                  "kg per normalizer per day",
-         "Name of Time Series containing loading rates."),
-        ("normalizer",         '', "Normalizer",          "AREA", "acres", "hectares",
-         "Subcatchment variable to which buildup is normalized: curb length (any units) or area")
-    ))
 
     @staticmethod
     def read(new_text):
@@ -222,21 +174,6 @@ class BuildupReader(SectionReader):
 class WashoffReader(SectionReader):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
 
-
-    #    attribute,     input_name, label,           default, english, metric, hint
-    metadata = Metadata((
-        ("function",            '', "Function",        "EMC", '', '',
-         "Washoff function: EXP = exponential, RC = rating curve, EMC = event mean concentration."),
-        ("coefficient",         '', "Coefficient",     "0.0", '', '',
-         "Washoff coefficient or Event Mean Concentration (EMC)."),
-        ("exponent",            '', "Exponent",        "0.0", '', '',
-         "Runoff exponent in washoff function."),
-        ("cleaning_efficiency", '', "Cleaning Effic.", "0.0", "percent", "percent",
-         "Street cleaning removal efficiency for the pollutant."),
-        ("bmp_efficiency",      '', "BMP Effic.",      "0.0", "percent", "percent",
-         "Removal efficiency associated with any Best Management Practice utilized.")
-    ))
-
     @staticmethod
     def read(new_text):
         washoff = Washoff()
@@ -258,33 +195,7 @@ class WashoffReader(SectionReader):
 
 
 class PollutantReader(SectionReader):
-    """Identifies the pollutants being analyzed"""
-
-    #    attribute,       input_name, label,          default, english, metric, hint
-    metadata = Metadata((
-        ("name",                  '', "Name",          '',     '', '',
-         "User-assigned name of the pollutant."),
-        ("units",                 '', "Units",         "MG/L", '', '',
-         "Concentration units for the pollutant."),
-        ("rain_concentration",    '', "Rain Concen.",  "0.0",  '', '',
-         "Concentration of the pollutant in rain water."),
-        ("gw_concentration",      '', "GW Concen.",    "0.0",  '', '',
-         "Concentration of the pollutant in ground water."),
-        ("ii_concentration",      '', "I&I Concen.",   "0.0",  '', '',
-         "Concentration of the pollutant in infiltration/inflow flow."),
-        ("dwf_concentration",     '', "DWF Concen.",   "0.0",  '', '',
-         "Concentration of the pollutant in dry weather sanitary flow."),
-        ("initial_concentration", '', "Init. Concen.", "0.0",  '', '',
-         "Initial concentration of the pollutant throughout the conveyance system."),
-        ("decay_coefficient",     '', "Decay Coeff.",  "0.0",  "1/days", "1/days",
-         "First-order decay coefficient of the pollutant."),
-        ("snow_only",             '', "Snow Only",     False,  '', '',
-         "Does the pollutant build up only during snowfall events?"),
-        ("co_pollutant",          '', "Co-Pollutant",  '',     '', '',
-         "Name of another pollutant to whose runoff concentration the current pollutant is dependent on."),
-        ("co_fraction",           '', "Co-Fraction",   '',     '', '',
-         "Fraction of the co-pollutant's runoff concentration that becomes the current pollutant's runoff concentration.")
-    ))
+    """Read the pollutants being analyzed"""
 
     @staticmethod
     def read(new_text):
@@ -562,30 +473,6 @@ class AdjustmentsReader(SectionReader):
 class ConduitReader(Link):
     """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the conduit"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the conduit"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the conduit"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the conduit"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the conduit"),
-        ("shape",                   '', "Shape",           "",       '', '', "Click to edit the conduit's cross section geometry"),
-        ("max_depth",               '', "Max. Depth",      "",       '', '', "Maximum depth of cross section"),
-        ("length",                  '', "Length",          "0.0",    '', '', "Conduit length"),
-        ("roughness",               '', "Roughness",       "0.0",    '', '', "Manning's N roughness coefficient"),
-        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of conduit invert above node invert at inlet end"),
-        ("outlet_offset",           '', "Outlet Offset",   "0.0",    '', '', "Depth of conduit invert above node invert at outlet end"),
-        ("initial_flow",            '', "Initial Flow",    "0.0",    '', '', "Initial flow in the conduit (flow units)"),
-        ("maximum_flow",            '', "Maximum Flow",    "",       '', '', "Maximum flow allowed in the conduit (flow units)"),
-        ("entry_loss_coefficient",  '', "Entry Loss Coeff.","0.0",   '', '', "Coefficient for energy losses at the entrance of the conduit"),
-        ("exit_loss_coefficient",   '', "Exit Loss Coeff.","0.0",    '', '', "Coefficient for energy losses at the exit of the conduit"),
-        ("loss_coefficient",        '', "Avg. Loss Coeff.","0.0",    '', '', "Coefficient for energy losses along the length of the conduit"),
-        ("seepage",                 '', "Seepage Loss Rate","0.0",   '', '', "Rate of seepage loss into surrounding soil"),
-        ("flap_gate",               '', "Flap Gate",        "False", '', '', "True if a flap gate prevents reverse flow through conduit"),
-        ("culvert_code",            '', "Culvert Code",     "",      '', '', "Culvert type code (leave blank for no culvert")
-    ))
-
     @staticmethod
     def read(new_text):
         """Read properties from text.
@@ -614,20 +501,6 @@ class ConduitReader(Link):
 
 class PumpReader(Link):
     """A pump link in a SWMM model"""
-
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the pump"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the pump"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the pump"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the pump"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the pump"),
-        ("pump_curve",              '', "Pump Curve",      "*",      '', '', "Name of pump curve (or * for ideal pump)"),
-        ("initial_status",          '', "Initial Status",  "ON",     '', '', "Initial Status of the pump (ON or OFF)"),
-        ("startup_depth",           '', "Startup Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns on"),
-        ("shutoff_depth",           '', "Shutoff Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns off")
-    ))
 
     @staticmethod
     def read(new_text):
@@ -784,28 +657,6 @@ class TransectReader(SectionReader):
 class JunctionReader(SectionReader):
     """A Junction node"""
 
-
-    #    attribute, input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
-        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
-        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
-        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
-        ('',                '', "Inflows",         'NO', '',   '',
-         "Click to specify any external inflows received at the junction"),
-        ('.treatment(node_id)',                '', "Treatment",       'NO', '',   '',
-         "Click to specify any pollutant removal supplied at the junction"),
-        ("elevation",       '', "Invert El.",      '0', "ft",  "m", "Elevation of junction's invert"),
-        ("max_depth",       '', "Max. Depth",      '0', "ft",  "m",
-         "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance "
-         "from invert to top of highest connecting link)"),
-        ("initial_depth",   '', "Initial Depth",   '0', "ft",  "m",
-         "Initial water depth in junction"),
-        ("surcharge_depth", '', "Surcharge Depth", '0', "ft",  "m",
-         "Depth in excess of maximum depth before flooding occurs"),
-        ("ponded_area",     '', "Ponded Area",     '0', "ft2", "m2", "Area of ponded water when flooded")))
-
     @staticmethod
     def read(new_text):
         junction = Junction()
@@ -912,11 +763,6 @@ class TreatmentReader(SectionReader):
            "  C = BOD * exp(-0.05*HRT)\n" \
            "  R = 0.75 * R_TSS"
 
-    #    attribute, input_name, label,             default, english, metric, hint
-    metadata = Metadata((
-        ("pollutant",       '', "Pollutant",            '',  '',         '', hint),
-        ("function",        '', "Treatment Expression", '',  '',         '', hint)))
-
     @staticmethod
     def read(new_text):
         treatment = Treatment()
@@ -931,39 +777,6 @@ class TreatmentReader(SectionReader):
 
 class AquiferReader(SectionReader):
     """Sub-surface groundwater area that models water infiltrating."""
-
-
-    #    attribute,             input_name, label,              default,      english,    metric, hint
-    metadata = Metadata((
-        ("name",                        '', "Aquifer Name",          "",      '',         '',
-         "User-assigned aquifer name."),
-        ("porosity",                    '', "Porosity",              "0.5",   "fraction", "fraction",
-         "Volume of voids / total soil volume."),
-        ("wilting_point",               '', "Wilting Point",         "0.15",  "fraction", "fraction",
-         "Residual moisture content of a completely dry soil."),
-        ("field_capacity",              '', "Field Capacity",        "0.30",  "fraction", "fraction",
-         "Soil moisture content after all free water has drained off."),
-        ("conductivity",                '', "Conductivity",          "5.0",   "in/hr",    "mm/hr",
-         "Soil's saturated hydraulic conductivity."),
-        ("conductivity_slope",          '', "Conductivity Slope",    "10.0",  '',         '',
-         "Slope of log(conductivity) v. soil moisture deficit curve."),
-        ("tension_slope",               '', "Tension Slope",         "15.0",  '',         '',
-         "Slope of soil tension v. soil moisture content curve."),
-        ("upper_evaporation_fraction",  '', "Upper Evap. Fraction",  "0.35",  '',         '',
-         "Fraction of total evaporation available for upper unsaturated zone."),
-        ("lower_evaporation_depth",     '', "Lower Evap. Depth",     "14.0",  "ft",       "m",
-         "Depth into saturated zone over which evaporation can occur."),
-        ("lower_groundwater_loss_rate", '', "Lower GW Loss Rate",    "0.002", "in/hr",    "mm/hr",
-         "Rate of seepage to deep groundwater when aquifer is completely saturated."),
-        ("bottom_elevation",            '', "Bottom Elevation",      "0.0",   "ft",       "m",
-         "Elevation of the bottom of the aquifer."),
-        ("water_table_elevation",       '', "Water Table Elevation", "10.0",  "ft",       "m",
-         "Initial water table elevation."),
-        ("unsaturated_zone_moisture",   '', "Unsat. Zone Moisture",  "0.30",  "fraction", "fraction",
-         "Initial moisture content of the unsaturated upper zone."),
-        ("upper_evaporation_pattern",   '', "Upper Evap. Pattern",   "",      '',         '',
-         "Monthly pattern of adjustments to upper evaporation fraction. (optional)")
-    ))
 
     @staticmethod
     def read(new_text):
@@ -1149,36 +962,6 @@ class SnowPackReader(SectionReader):
 class SubcatchmentReader(SectionReader):
     """Subcatchment geometry, location, parameters, and time-series data"""
 
-
-    #    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of subcatchment"),
-        ("centroid.X",              '', "X-Coordinate",    "",       '', '', "X coordinate of subcatchment centroid on map"),
-        ("centroid.Y",              '', "Y-Coordinate",    "",       '', '', "Y coordinate of subcatchment centroid on map"),
-        ("description",             '', "Description",     "",       '', '', "Optional comment or description"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional category or classification"),
-        ("rain_gage",               '', "Rain Gage",       "*",      '', '', "Rain gage assigned to subcatchment"),
-        ("outlet",                  '', "Outlet",          "*",      '', '', "Name of node or another subcatchment that receives runoff"),
-        ("area",                    '', "Area",            "5",      '', '', "Area of subcatchment"),
-        ("width",                   '', "Width",           "500",    '', '', "Width of overland flow path"),
-        ("percent_slope",           '', "% Slope",         "0.5",    '', '', "Average surface slope"),
-        ("percent_impervious",      '', "% Imperv",        "25",     '', '', "Percent of impervious area"),
-        ("n_imperv",                '', "N-Imperv",        "0.01",   '', '', "Mannings N for impervious area"),
-        ("n_perv",                  '', "N-Perv",          "0.1",    '', '', "Mannings N for pervious area"),
-        ("storage_depth_imperv",    '', "Dstore-Imperv",   "0.05",   '', '', "Depth of depression storage on impervious area"),
-        ("storage_depth_perv",      '', "Dstore-Perv",     "0.05",   '', '', "Depth of depression storage on pervious area"),
-        ("percent_zero_impervious", '', "%Zero-Imperv",    "25",     '', '', "Percent of impervious area with no depression storage"),
-        ("subarea_routing",         '', "Subarea Routing", "OUTLET", '', '', "Choice of internal routing between pervious and impervious sub-areas"),
-        ("percent_routed",          '', "Percent Routed",  "100",    '', '', "Percent of runoff routed between sub-areas"),
-        ("infiltration_parameters", '', "Infiltration",    "HORTON", '', '', "Infiltration parameters (click to edit)"),
-        ("groundwater",             '', "Groundwater",     "NO",     '', '', "Groundwater flow parameters (click to edit)"),
-        ("snow_pack",               '', "Snow Pack",       "",       '', '', "Name of snow pack parameter set (for snow melt analysis only)"),
-        ("LIDUsage",                '', "LID Controls",    "0",      '', '', "LID controls (click to edit)"),
-        ("coverages",               '', "Land Uses",       "0",      '', '', "Assignment of land uses to subcatchment (click to edit)"),
-        ("initial_loadings",        '', "Initial Buildup", "NONE",   '', '', "Initial pollutant buildup on subcatchment (click to edit)"),
-        ("curb_length",             '', "Curb Length",     "0",      '', '', "Curb length (if needed for pollutant buildup functions)")
-    ))
-
     @staticmethod
     def read(new_text):
         subcatchment = Subcatchment()
@@ -1207,17 +990,6 @@ class SubcatchmentReader(SectionReader):
 class HortonInfiltrationReader(SectionReader):
     """Horton Infiltration parameters"""
 
-
-    #    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("subcatchment",     '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
-        ("max_rate",         '', "Max. Infil. Rate",   "", '', '', "Maximum rate on the Horton infiltration curve (in/hr or mm/hr)"),
-        ("min_rate",         '', "Min. Infil. Rate",   "", '', '', "Minimum rate on the Horton infiltration curve (in/hr or mm/hr)"),
-        ("decay",            '', "Decay Constant",     "", '', '', "Decay constant for the Horton infiltration curve (1/hr)"),
-        ("dry_time",         '', "Drying Time",        "", '', '', "Time for a fully saturated soil to completely dry (days)"),
-        ("max_volume",       '', "Max. Volume",        "", '', '', "Maximum infiltration volume possible (in or mm, 0 if not applicable)")
-    ))
-
     @staticmethod
     def read(new_text):
         horton_infiltration = HortonInfiltration()
@@ -1241,15 +1013,6 @@ class HortonInfiltrationReader(SectionReader):
 class GreenAmptInfiltrationReader(SectionReader):
     """Green-Ampt Infiltration parameters"""
 
-
-    #    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("subcatchment",             '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
-        ("suction",                  '', "Suction Head",       "", '', '', "Soil capillary suction head (in or mm)"),
-        ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "Soil saturated hydraulic conductivity (in/hr or mm/hr)"),
-        ("initial_moisture_deficit", '', "Initial Deficit",    "", '', '', "Difference between soil porosity and initial moisture content (a fraction)")
-    ))
-
     @staticmethod
     def read(new_text):
         green_ampt_infiltration = GreenAmptInfiltration()
@@ -1269,15 +1032,6 @@ class GreenAmptInfiltrationReader(SectionReader):
 class CurveNumberInfiltrationReader(SectionReader):
     """Curve Number Infiltration parameters"""
 
-
-    #    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("subcatchment",             '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
-        ("curve_number",             '', "Curve Number",       "", '', '', "SCS runoff curve number"),
-        ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "This property has been deprecated and its value is ignored."),
-        ("dry_days",                 '', "Drying Time",        "", '', '', "Time for a fully saturated soil to completely dry (days)")
-    ))
-
     @staticmethod
     def read(new_text):
         curve_number_infiltration = CurveNumberInfiltration()
@@ -1296,27 +1050,6 @@ class CurveNumberInfiltrationReader(SectionReader):
 
 class GroundwaterReader(SectionReader):
     """Link a subcatchment to an aquifer and to a drainage system node"""
-
-
-#    attribute,         input_name, label,         default, english, metric, hint
-    metadata = Metadata((
-        ("subcatchment",                        '', "Subcatchment Name",            "", '', '', "User-assigned name of subcatchment"),
-        ("aquifer",                             '', "Aquifer Name",                 "", '', '', "Name of Aquifer object that lies below subcatchment. Leave blank for no groundwater."),
-        ("receiving_node",                      '', "Receiving Node",               "", '', '', "Name of node that receives groundwater flow"),
-        ("surface_elevation",                   '', "Surface Elevation",            "", '', '', "Elevation of the ground surface (ft or m)"),
-        ("groundwater_flow_coefficient",        '', "A1 Coefficient",               "", '', '', "Groundwater influence multiplier."),
-        ("groundwater_flow_exponent",           '', "B1 Exponent",                  "", '', '', "Groundwater influence exponent."),
-        ("surface_water_flow_coefficient",      '', "A2 Coefficient",               "", '', '', "Tailwater influence multiplier."),
-        ("surface_water_flow_exponent",         '', "B2 Exponent",                  "", '', '', "Tailwater influence exponent."),
-        ("surface_gw_interaction_coefficient",  '', "A3 Coefficient",               "", '', '', "Combined groundwater/tailwater influence multiplier."),
-        ("fixed_surface_water_depth",           '', "Surface Water Depth",          "", '', '', "Depth of surface water above channel bottom (ft or m). Enter 0 to use depth from flow routing."),
-        ("threshold_groundwater_elevation",     '', "Threshold Water Table Elev.",  "", '', '', "Minimum water table elevation for flow to occur (ft or m). Leave blank to use node's invert elevation."),
-        ("bottom_elevation",                    '', "Aquifer Bottom Elevation",     "", '', '', "Elevation of aquifer bottom (ft or m). Leave blank to use Aquifer value."),
-        ("water_table_elevation",               '', "Initial Water Table Elev.",    "", '', '', "Initial water table elevation (ft or m). Leave blank to use Aquifer value."),
-        ("unsaturated_zone_moisture",           '', "Unsat. Zone Moisture",         "", '', '', "Initial moisture content of the unsaturated upper zone (fraction). Leave blank to use Aquifer value."),
-        ("custom_lateral_flow_equation",        '', "Custom Lateral Flow Equation", "", '', '', "Click to supply a custom equation for lateral GW flow."),
-        ("custom_deep_flow_equation",           '', "Custom Deep Flow Equation",    "", '', '', "Click to supply a custom equation for deep GW flow.")
-    ))
 
     @staticmethod
     def read(new_text):
@@ -1523,24 +1256,6 @@ class GeneralReader(SectionReader):
 
     SECTION_NAME = "[OPTIONS]"
 
-    #    attribute,            input_name, label, default, english, metric, hint
-    metadata = Metadata((
-        ("temp_dir",           "TEMPDIR"),
-        ("compatibility",      "COMPATIBILITY"),
-        ("flow_units",         "FLOW_UNITS"),
-        ("infiltration",       "INFILTRATION"),
-        ("flow_routing",       "FLOW_ROUTING"),
-        ("link_offsets",       "LINK_OFFSETS"),
-        ("min_slope",          "MIN_SLOPE"),
-        ("allow_ponding",      "ALLOW_PONDING"),
-        ("ignore_rainfall",    "IGNORE_RAINFALL"),
-        ("ignore_rdii",        "IGNORE_RDII"),
-        ("ignore_snowmelt",    "IGNORE_SNOWMELT"),
-        ("ignore_groundwater", "IGNORE_GROUNDWATER"),
-        ("ignore_routing",     "IGNORE_ROUTING"),
-        ("ignore_quality",     "IGNORE_QUALITY")))
-    """Mapping between attribute name and name used in input file"""
-
     old_flow_routing = {
         "UF": FlowRouting.STEADY,
         "KW": FlowRouting.KINWAVE,
@@ -1613,22 +1328,6 @@ class ReportReader(SectionReader):
     SECTION_NAME = "[REPORT]"
 
     DEFAULT_COMMENT = ";;Reporting Options"
-
-    #    attribute,            input_name, label, default, english, metric, hint
-    metadata = Metadata((
-        ("input", "INPUT"),
-        ("continuity", "CONTINUITY"),
-        ("flow_stats", "FLOWSTATS"),
-        ("controls", "CONTROLS"),
-        ("subcatchments", "SUBCATCHMENTS"),
-        ("nodes", "NODES"),
-        ("links", "LINKS"),
-        ("lids", "LID")))
-    """Mapping between attribute name and name used in input file"""
-
-    LISTS = ("subcatchments", "nodes", "links", "lids")
-
-    EMPTY_LIST = ["NONE"]
 
     @staticmethod
     def read(new_text):

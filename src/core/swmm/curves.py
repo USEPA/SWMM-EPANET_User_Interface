@@ -24,7 +24,7 @@ class Curve(Section):
         Section.__init__(self)
 
         self.name = ''      # string
-        """Curve ID Label"""
+        """Curve name/ID/Label"""
 
         self.curve_type = CurveType.PUMP1
         """Curve type"""

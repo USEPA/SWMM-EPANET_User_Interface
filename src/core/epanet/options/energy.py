@@ -27,7 +27,7 @@ class EnergyOptions(Section):
         Section.__init__(self)
 
         self.global_efficiency = "75"		# treat as string to preserve formatting
-        """global default value of pumping efficiency for all pumps or efficiency curve ID (percent)"""
+        """global default value of pumping efficiency for all pumps or efficiency curve name (percent)"""
 
         self.global_price = "0.0"		    # str
         """global default value of energy price for all pumps"""
@@ -51,5 +51,5 @@ class PumpEnergy(Section):
         self.PricePatternEfficiency = PumpEnergyType.PRICE 	# PRICE, PATTERN, or EFFICIENCY
         """Indicator whether this pump energy specification is entered as price, pattern, or efficiency"""
 
-        """price, efficiency curve id, or pattern id is stored in self.value"""
+        """price, efficiency curve name, or pattern name is stored in self.value"""
 

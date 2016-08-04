@@ -27,15 +27,13 @@ class frmTank(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for curve, show available curves
-            curve_section = self.project.find_section("CURVES")
-            curve_list = curve_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in curve_list:
-                combobox.addItem(value.curve_id)
-                if edit_these[column].volume_curve == value.curve_id:
-                    selected_index = int(combobox.count())-1
+            for curve in self.project.curves:
+                combobox.addItem(curve.name)
+                if edit_these[column].volume_curve == curve.name:
+                    selected_index = int(combobox.count()) - 1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(11, column, combobox)
             # also set special text plus button cells

@@ -537,7 +537,7 @@ class CrossSectionReader(SectionReader):
         barrels (str): number of barrels (i.e., number of parallel pipes of equal size, slope, and
                        roughness) associated with a conduit (default is 1).
         culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
-        curve (str): associated Shape Curve ID that defines how width varies with depth.
+        curve (str): name of associated Shape Curve that defines how width varies with depth.
     """
 
 

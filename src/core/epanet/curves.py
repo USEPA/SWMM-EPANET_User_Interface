@@ -18,8 +18,8 @@ class Curve(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.curve_id = ''      # string
-        """Curve ID Label"""
+        self.name = ''      # string
+        """Curve name/ID/Label"""
 
         self.description = ''   # string
         """Curve description"""

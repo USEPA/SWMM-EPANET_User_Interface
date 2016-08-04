@@ -28,14 +28,12 @@ class frmPump(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # pump curve
-            curve_section = self.project.find_section("CURVES")
-            curve_list = curve_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in curve_list:
-                combobox.addItem(value.curve_id)
-                if edit_these[column].head_curve_id == value.curve_id:
+            for value in self.project.curves:
+                combobox.addItem(value.name)
+                if edit_these[column].head_curve_name == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(5, column, combobox)
@@ -61,13 +59,11 @@ class frmPump(frmGenericPropertyEditor):
                 combobox.setCurrentIndex(1)
             self.tblGeneric.setCellWidget(9, column, combobox)
             # efficiency curve
-            curve_section = self.project.find_section("CURVES")
-            curve_list = curve_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in curve_list:
-                combobox.addItem(value.curve_id)
+            for value in self.project.curves:
+                combobox.addItem(value.name)
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(10, column, combobox)
             # for price pattern, show available patterns

@@ -115,12 +115,12 @@ class Pump(Link):
         ("outlet_node",      '', "End Node",           "",    '', '', "Node on the outlet end of the pump"),
         ("description",      '', "Description",        "",    '', '', "Optional description of the pump"),
         ("tag",              '', "Tag",                "",    '', '', "Optional label used to categorize or classify the pump"),
-        ("head_curve_id",    '', "Pump Curve",         "",    '', '', "Curve that describes head versus flow for the pump"),
+        ("head_curve_name",  '', "Pump Curve",         "",    '', '', "Curve that describes head versus flow for the pump"),
         ("power",            '', "Power",              "0.0", '', '', "Power value for constant energy pump, hp (kW)"),
         ("speed",            '', "Speed",              "0.0", '', '', "Relative speed setting (normal speed is 1.0, 0 means pump is off)"),
         ("pattern",          '', "Pattern",            "",    '', '', "Time pattern that describes how speed setting varies with time"),
         ("initial_status",   '', "Initial Status",     "",    '', '', "Initial status of a pump"),
-        ("PumpEnergy.value", '', "Effic. Curve",       "",    '', '', "Efficiency curve ID"),
+        ("PumpEnergy.value", '', "Effic. Curve",       "",    '', '', "Efficiency curve name"),
         ("PumpEnergy.value", '', "Energy Price",       "0.0", '', '', "Energy price for this pump"),
         ("PumpEnergy.value", '', "Price Pattern",      "",    '', '', "ID of price pattern for this pump"),
     ))
@@ -134,7 +134,7 @@ class Pump(Link):
         self.power = "0.0"
         """power value for constant energy pump, hp (kW)"""
 
-        self.head_curve_id = ''
+        self.head_curve_name = ''
         """curve that describes head versus flow for the pump"""
 
         self.speed = "0.0"
@@ -158,7 +158,7 @@ class Valve(Link):
         ("tag",                    '', "Tag",                "",    '', '', "Optional label used to categorize or classify the valve"),
         ("diameter",               '', "Diameter",           "0.0", '', '', "Valve diameter"),
         ("type",                   '', "Type",               "",    '', '', "Valve type"),
-        ("setting",                '', "Setting",            "",    '', '', "Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve ID for GPV"),
+        ("setting",                '', "Setting",            "",    '', '', "Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve name for GPV"),
         ("minor_loss_coefficient", '', "Loss Coeff.",        "",    '', '', "TCV (throttle control valve) Loss Coefficient"),
         ("status",                 '', "Fixed Status",       "",    '', '', "Initial status of a valve"),
     ))
@@ -178,7 +178,7 @@ class Valve(Link):
             GPV (general purpose valve) ID of head loss curve"""
 
         self.setting = "0.0"
-        """Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve ID for GPV"""
+        """Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve name for GPV"""
 
         self.minor_loss_coefficient = "0.0"
         """TCV (throttle control valve) Loss Coefficient"""

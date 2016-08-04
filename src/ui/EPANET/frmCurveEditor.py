@@ -19,17 +19,17 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         self.set_from(main_form.project, '1')
-        self.selected_curve_id = '1'
+        self.selected_curve_name = '1'
         self._main_form = main_form
 
-    def set_from(self, project, selected_curve_id):
+    def set_from(self, project, selected_curve_name):
         section = project.find_section("CURVES")
-        self.selected_curve_id = selected_curve_id
+        self.selected_curve_name = selected_curve_name
         curve_list = section.value[0:]
         # assume we want to edit the first one
         for curve in curve_list:
-            if curve.curve_id == selected_curve_id:
-                self.txtCurveID.setText(str(curve.curve_id))
+            if curve.name == selected_curve_name:
+                self.txtCurveName.setText(str(curve.name))
                 self.txtDescription.setText(str(curve.description))
                 ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
                 point_count = -1
@@ -42,14 +42,14 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 self.lblEquation.setText("Equation: ")
 
     def cmdOK_Clicked(self):
-        # TODO: Check for duplicate curve ID
+        # TODO: Check for duplicate curve name
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
         section = self._main_form.project.find_section("CURVES")
         curve_list = section.value[0:]
         for curve in curve_list:
-            if curve.curve_id == self.selected_curve_id:
-                curve.curve_id = self.txtCurveID.text()
+            if curve.name == self.selected_curve_name:
+                curve.name = self.txtCurveName.text()
                 curve.description = self.txtDescription.text()
                 curve.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
                 curve.curve_xy = []

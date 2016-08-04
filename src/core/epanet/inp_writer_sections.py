@@ -61,7 +61,7 @@ class CurveWriter(SectionWriter):
         elif curve.description:
             inp += ";{}\n".format(curve.description)
         for xy in curve.curve_xy:
-            inp += CurveWriter.field_format.format(curve.curve_id, xy[0], xy[1])
+            inp += CurveWriter.field_format.format(curve.name, xy[0], xy[1])
         return inp
 
 
@@ -173,7 +173,7 @@ class PumpWriter(Link):
         if len(pump.id) > 0:
             txt = PumpWriter.field_format.format(pump.id, pump.inlet_node, pump.outlet_node)
             if pump.type == PumpType.HEAD:
-                txt += "\tHEAD " + pump.head_curve_id
+                txt += "\tHEAD " + pump.head_curve_name
             else:
                 txt += "\tPOWER " + pump.power
             if pump.pattern:

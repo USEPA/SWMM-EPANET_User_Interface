@@ -23,12 +23,12 @@ class SimpleCurveTest(unittest.TestCase):
         """Test Curves section"""
         self.my_curve = curves.Curve()
         self.my_curve = curves.Curve()
-        self.my_curve.curve_id = "XXX"
+        self.my_curve.name = "XXX"
         self.my_curve.description = "test curve"
         self.my_curve.curve_type = curves.CurveType.HEADLOSS
         self.my_curve.curve_xy = ((1500, 250), (1400, 200))
 
-        assert self.my_curve.curve_id == "XXX"
+        assert self.my_curve.name == "XXX"
         assert self.my_curve.description == "test curve"
         assert self.my_curve.get_text().split() == [';HEADLOSS:', 'test', 'curve',
                                                     'XXX', '1500', '250', 'XXX', '1400', '200'], "incorrect pattern block"
@@ -46,7 +46,7 @@ class SimpleCurveTest(unittest.TestCase):
 
         assert len(project_curves.value) == 1
         this_curve = project_curves.value[0]
-        assert this_curve.curve_id == '1'
+        assert this_curve.name == '1'
         assert this_curve.description == "Pump Curve for Pump 9"
         assert this_curve.curve_type == curves.CurveType.PUMP
         assert this_curve.curve_xy == [("1500", "250")]

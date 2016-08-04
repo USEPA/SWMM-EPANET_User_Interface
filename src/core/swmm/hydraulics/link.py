@@ -333,7 +333,7 @@ class CrossSection(Section):
         barrels (str): number of barrels (i.e., number of parallel pipes of equal size, slope, and
                        roughness) associated with a conduit (default is 1).
         culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
-        curve (str): associated Shape Curve ID that defines how width varies with depth.
+        curve (str): name of associated Shape Curve that defines how width varies with depth.
     """
 
 
@@ -366,7 +366,7 @@ class CrossSection(Section):
         """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
 
         self.curve = ''
-        """str: associated Shape Curve ID that defines how width varies with depth."""
+        """str: name of associated Shape Curve that defines how width varies with depth."""
 
     # TODO: access geometry1 as a name such as transect or xsection_name or geometry
     # """str: name of cross-section geometry of an irregular channel"""

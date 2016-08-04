@@ -72,7 +72,7 @@ class CurveReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) > 2:
-                    curve.curve_id = fields[0]
+                    curve.name = fields[0]
                     curve.curve_xy.append((fields[1], fields[2]))
         return curve
 
@@ -216,7 +216,7 @@ class PumpReader(Link):
                 value_index = key_index + 1
                 if fields[key_index].upper() == "HEAD":
                     pump.type = PumpType.HEAD
-                    pump.head_curve_id = fields[value_index]
+                    pump.head_curve_name = fields[value_index]
                 elif fields[key_index].upper() == "POWER":
                     pump.type = PumpType.POWER
                     pump.power = fields[value_index]

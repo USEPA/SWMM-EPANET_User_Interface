@@ -422,9 +422,9 @@ class frmMainEPANET(frmMain):
             self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.pattern_id))
         elif section_name == "Curves":
             new_item = Curve()
-            new_item.curve_id = "NewCurve"
+            new_item.name = "NewCurve"
             self.project.curves.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.curve_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == "Junctions":
             new_item = Junction()
             new_item.id = "New"
@@ -468,7 +468,7 @@ class frmMainEPANET(frmMain):
                     self.project.patterns.value.remove(value)
         elif section_name == "Curves":
             for value in self.project.curves.value:
-                if value.curve_id == item_name:
+                if value.name == item_name:
                     self.project.curves.value.remove(value)
         elif section_name == "Junctions":
             for value in self.project.junctions.value:

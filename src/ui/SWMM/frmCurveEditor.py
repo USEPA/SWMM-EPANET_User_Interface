@@ -65,7 +65,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         curve_list = section.value[0:]
         for curve in curve_list:
             if curve.name == curve_name and curve.curve_type.name[:4] == self.curve_type[:4]:
-                self.txtCurveID.setText(str(curve.name))
+                self.txtCurveName.setText(str(curve.name))
                 # self.txtDescription.setText(str(curve.description))
                 if self.curve_type == "PUMP":
                     if curve.curve_type.name == "PUMP1":
@@ -85,14 +85,14 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                      self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
-        # TODO: Check for blank/duplicate curve ID
+        # TODO: Check for blank/duplicate curve name
         # TODO: Check if X-values are in ascending order
         section = self._main_form.project.curves
         curve_list = section.value[0:]
         # assume we are editing the first one
         for curve in curve_list:
             if curve.name == self.curve_name and curve.curve_type.name[:4] == self.curve_type[:4]:
-                curve.name = self.txtCurveID.text()
+                curve.name = self.txtCurveName.text()
                 # curve.description = self.txtDescription.text()
                 # curve.curve_type = core.swmm.curves.CurveType[self.cboCurveType.currentText()]
                 if self.curve_type == "PUMP":

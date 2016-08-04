@@ -2,6 +2,8 @@ import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 from enum import Enum
 import ui.convenience
+from core.metadata import Metadata, MetadataItem
+import traitlets
 
 
 class PropertyEditorBackend:
@@ -11,15 +13,21 @@ class PropertyEditorBackend:
         self._main_form = main_form
         if self.hint_label:
             table.currentCellChanged.connect(self.table_currentCellChanged)
-        if edit_these:
-            self.edit_these = edit_these
-            self.meta = edit_these[0].metadata
         self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, edit_these):
         self.edit_these = edit_these
         if edit_these:
-            self.meta = edit_these[0].metadata
+            if hasattr(edit_these[0], "metadata"):
+                self.meta = edit_these[0].metadata
+            else:
+                traits = []
+                for attribute, value in vars(edit_these[0]).iteritems():
+                    if traitlets.is_trait(value) and value.metadata.get("label", None):
+                        value.metadata["attribute"] = attribute
+                        traits.append(value)
+                self.meta = Metadata(traits)
+
             self.table.horizontalHeader().hide()
             self.table.setColumnCount(len(edit_these))
             self.table.setRowCount(len(self.meta))

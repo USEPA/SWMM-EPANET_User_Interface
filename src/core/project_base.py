@@ -1,5 +1,6 @@
 import inspect
 import traceback
+from traitlets.config import Configurable  # Allow class default values to be traitlets that are configurable at runtime
 from enum import Enum
 
 
@@ -47,7 +48,7 @@ class ProjectBase(object):
         return name.lower().replace(' ', '_').replace('[', '').replace(']', '')
 
 
-class Section(object):
+class Section(Configurable):
     """Any section or sub-section or value in an input sequence"""
 
     def __init__(self):

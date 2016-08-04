@@ -1,4 +1,5 @@
 from enum import Enum
+import traitlets
 
 
 class MetadataItem:
@@ -12,13 +13,25 @@ class MetadataItem:
         hint:          description to display when editing this attribute
     """
     def __init__(self, attr_specification):
-        self.attribute     = self.__value_from_list(attr_specification, 0)
-        self.input_name    = self.__value_from_list(attr_specification, 1)
-        self.label         = self.__value_from_list(attr_specification, 2)
-        self.default       = self.__value_from_list(attr_specification, 3)
-        self.units_english = self.__value_from_list(attr_specification, 4)
-        self.units_metric  = self.__value_from_list(attr_specification, 5)
-        self.hint          = self.__value_from_list(attr_specification, 6)
+        if traitlets.is_trait(attr_specification):
+            #meta_args = [trait.name]
+            #for trait_specs in ("input_name", "label", "default", "units_english", "units_metric"
+
+            self.attribute     = attr_specification.metadata.get("attribute", '')
+            self.input_name    = attr_specification.metadata.get("input_name", '')
+            self.label         = attr_specification.metadata.get("label", '')
+            self.default       = str(attr_specification.default_value)
+            self.units_english = attr_specification.metadata.get("units_english", '')
+            self.units_metric  = attr_specification.metadata.get("units_metric", '')
+            self.hint          = attr_specification.help
+        else:
+            self.attribute     = self.__value_from_list(attr_specification, 0)
+            self.input_name    = self.__value_from_list(attr_specification, 1)
+            self.label         = self.__value_from_list(attr_specification, 2)
+            self.default       = self.__value_from_list(attr_specification, 3)
+            self.units_english = self.__value_from_list(attr_specification, 4)
+            self.units_metric  = self.__value_from_list(attr_specification, 5)
+            self.hint          = self.__value_from_list(attr_specification, 6)
 
     @staticmethod
     def __value_from_list(values, index):
@@ -57,6 +70,8 @@ class Metadata(list):
                 value = getattr(instance, meta_item.attribute)
                 if isinstance(value, Enum):
                     return value     # return the whole enum type to populate combo box in editor
+                elif traitlets.is_trait(value):
+                    return str(value.getvalue())
                 elif len(str(value)) > 0:
                     return str(value)
             return meta_item.default

@@ -172,7 +172,7 @@ class LinkReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(link, new_text)
         fields = new_text.split(None, 3)
         if len(fields) > 2:
-            (link.id, link.inlet_node, link.outlet_node) = fields[0:3]
+            (link.name, link.inlet_node, link.outlet_node) = fields[0:3]
             if len(fields) > 3:
                 link.description = fields[3]
         return link
@@ -191,7 +191,7 @@ class PipeReader(Link):
         new_text = SectionReader.set_comment_check_section(pipe, new_text)
         fields = new_text.split(None, 8)
         if len(fields) > 2:
-            pipe.id, pipe.inlet_node, pipe.outlet_node = fields[0:3]
+            pipe.name, pipe.inlet_node, pipe.outlet_node = fields[0:3]
         if len(fields) > 6:
             pipe.length = fields[3]
             pipe.diameter = fields[4]
@@ -211,7 +211,7 @@ class PumpReader(Link):
         new_text = SectionReader.set_comment_check_section(pump, new_text)
         fields = new_text.split()
         if len(fields) > 2:
-            pump.id, pump.inlet_node, pump.outlet_node = fields[0:3]
+            pump.name, pump.inlet_node, pump.outlet_node = fields[0:3]
             for key_index in range(3, len(fields) - 1, 2):
                 value_index = key_index + 1
                 if fields[key_index].upper() == "HEAD":
@@ -236,7 +236,7 @@ class ValveReader(Link):
         new_text = SectionReader.set_comment_check_section(valve, new_text)
         fields = new_text.split()
         if len(fields) > 2:
-            valve.id = fields[0]
+            valve.name = fields[0]
             valve.inlet_node = fields[1]
             valve.outlet_node = fields[2]
             if len(fields) > 3:
@@ -264,7 +264,7 @@ class StatusReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(status, new_text)
         fields = new_text.split()
         if len(fields) > 1:
-            status.id = fields[0]
+            status.name = fields[0]
             status.status = fields[1]
         return status
 
@@ -274,7 +274,7 @@ class CoordinateReader(SectionReader):
     @staticmethod
     def read(new_text):
         coordinate = Coordinate()
-        (coordinate.id, coordinate.x, coordinate.y) = new_text.split()
+        (coordinate.name, coordinate.x, coordinate.y) = new_text.split()
         return coordinate
 
 
@@ -285,7 +285,7 @@ class QualityReader(SectionReader):
     @staticmethod
     def read(new_text):
         quality = Quality()
-        (quality.id, quality.initial_quality) = new_text.split()
+        (quality.name, quality.initial_quality) = new_text.split()
         return quality
 
 
@@ -298,7 +298,7 @@ class JunctionReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(junction, new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            junction.id = fields[0]
+            junction.name = fields[0]
         if len(fields) > 1:
             junction.elevation = fields[1]
         if len(fields) > 2:
@@ -317,7 +317,7 @@ class ReservoirReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(reservoir, new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            reservoir.id = fields[0]
+            reservoir.name = fields[0]
         if len(fields) > 1:
             reservoir.total_head = fields[1]
         if len(fields) > 2:
@@ -334,7 +334,7 @@ class TankReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(tank, new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            tank.id = fields[0]
+            tank.name = fields[0]
         if len(fields) > 1:
             tank.elevation = fields[1]
         if len(fields) > 2:
@@ -362,7 +362,7 @@ class MixingReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(mixing, new_text)
         fields = new_text.split()
         if len(fields) > 0:
-            mixing.id = fields[0]
+            mixing.name = fields[0]
         if len(fields) > 1:
             mixing.mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
         if len(fields) > 2:
@@ -379,7 +379,7 @@ class SourceReader(SectionReader):
         source = Source()
         fields = new_text.split()
         if len(fields) > 0:
-            source.id = fields[0]
+            source.name = fields[0]
         if len(fields) > 1:
             source.source_type = SourceType[fields[1].upper()]
         if len(fields) > 2:
@@ -463,7 +463,7 @@ class PumpEnergyReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(pump_energy, new_text)
         fields = new_text.split()
         if len(fields) > 3:
-            pump_energy.id = fields[1]
+            pump_energy.name = fields[1]
             pump_energy.PricePatternEfficiency = PumpEnergyType[fields[2].upper()]
             pump_energy.value = fields[3]
         return pump_energy

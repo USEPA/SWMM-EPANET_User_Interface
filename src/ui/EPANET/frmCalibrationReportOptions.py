@@ -19,7 +19,7 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         self.comboBox.addItems(['Demand','Head','Pressure','Quality','Flow','Velocity'])
         # this list needs to contain all nodes that have calibration data, just poplating with all junctions for now.
         for i in range(0, len(self.project.junctions.value)):
-            self.listWidget.addItem(self.project.junctions.value[i].id)
+            self.listWidget.addItem(self.project.junctions.value[i].name)
         self._main_form = main_form
         self.listWidget.setItemSelected(self.listWidget.item(0),True)
 

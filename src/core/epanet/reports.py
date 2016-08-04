@@ -119,7 +119,7 @@ class Reports:
             if (self.LineNum >= self.PAGESIZE):
                 self.write_energy_header(True)
             line = '{:15}  {:6.2f} {:6.2f} {:9.2f} {:9.2f} {:9.2f} {:9.2f}'.format(
-                    pump.id, x[0],   x[1],   x[2],   x[3],   x[4],   x[5])
+                    pump.name, x[0],   x[1],   x[2],   x[3],   x[4],   x[5])
             self.write_line(line)
 
         self.write_line(self.ULINE)
@@ -191,7 +191,7 @@ class Reports:
             # TODO: update progress bar: MainForm.UpdateProgressBar(Nprogress, ProgStep)
             for conduit in conduits.value:
                 # Note: Pascal report got these values from binary, we get them here from input
-                # length = self.output.get_LinkValue(conduits.id, 0, 1) # Uoutput.GetLinkValStr(LINKLENGTH,0,I,J)
+                # length = self.output.get_LinkValue(conduits.name, 0, 1) # Uoutput.GetLinkValStr(LINKLENGTH,0,I,J)
                 if (self.LineNum >= self.PAGESIZE):
                     self.write_link_info_header(True)
                 if hasattr(conduit, "length"):
@@ -202,7 +202,7 @@ class Reports:
                     diameter = conduit.diameter
                 else:
                     diameter = "#N/A"
-                S = '{:15}{:15}{:15}{:>10}{:>10}'.format(conduit.id, conduit.inlet_node, conduit.outlet_node,
+                S = '{:15}{:15}{:15}{:>10}{:>10}'.format(conduit.name, conduit.inlet_node, conduit.outlet_node,
                                                          length, diameter)
                 if conduits is self.project.pumps:
                     S += ' Pump'
@@ -220,15 +220,15 @@ class Reports:
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
             for input_node in nodes.value:
                 #         MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                output_node = self.output.nodes[input_node.id]
+                output_node = self.output.nodes[input_node.name]
                 if not output_node:
-                    line = '{:15} {}'.format(input_node.id, 'not found in output.')
+                    line = '{:15} {}'.format(input_node.name, 'not found in output.')
                 else:
                     values = output_node.get_all_attributes_at_time(self.output, period)
                     values_formatted = []
                     for attribute_type in table_attributes:
                         values_formatted.append(attribute_type.str(values[attribute_type.index]))
-                    line = '{:15} {}'.format(output_node.id, ' '.join(values_formatted))
+                    line = '{:15} {}'.format(output_node.name, ' '.join(values_formatted))
                 if nodes is self.project.reservoirs:
                     line += ' Reservoir'
                 elif nodes is self.project.tanks:
@@ -247,9 +247,9 @@ class Reports:
         for links in (self.project.pipes, self.project.pumps, self.project.valves):
             for input_link in links.value:
                 # MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                output_link = self.output.links[input_link.id]
+                output_link = self.output.links[input_link.name]
                 if not output_link:
-                    line = '{:15} {}'.format(input_link.id, 'not found in output.')
+                    line = '{:15} {}'.format(input_link.name, 'not found in output.')
                 else:
                     values = output_link.get_all_attributes_at_time(self.output, period)
                     values_formatted = []
@@ -258,7 +258,7 @@ class Reports:
                             values_formatted.append(attribute.str(values[attribute.index]))
                         else:                                           # custom formatting of numeric attributes
                             values_formatted.append('{:9.2f}'.format(values[attribute.index]))
-                    line = '{:15} {}'.format(input_link.id, ' '.join(values_formatted))
+                    line = '{:15} {}'.format(input_link.name, ' '.join(values_formatted))
                 if links is self.project.pumps:
                     line += ' Pump'
                 elif links is self.project.valves:
@@ -304,12 +304,12 @@ class Reports:
                                        (self.project.pumps.value, "Pump"),
                                        (self.project.valves.value, "Valve")]:
             for link in input_links:
-                item = self.output.links[link.id]
+                item = self.output.links[link.name]
                 if item:
                     item.category = category
                     items.append(item)
                 else:
-                    print("Skipping link " + link.id + " because it was not found in output")
+                    print("Skipping link " + link.name + " because it was not found in output")
         return items
 
     def all_nodes_set_category(self):
@@ -318,12 +318,12 @@ class Reports:
                                        (self.project.reservoirs.value, "Reservoir"),
                                        (self.project.tanks.value, "Tank")]:
             for node in input_nodes:
-                item = self.output.nodes[node.id]
+                item = self.output.nodes[node.name]
                 if item:
                     item.category = category
                     items.append(item)
                 else:
-                    print("Skipping node " + node.id + " because it was not found in output")
+                    print("Skipping node " + node.name + " because it was not found in output")
         return items
 
     def node_distances(self, node_ids):
@@ -335,7 +335,7 @@ class Reports:
         for node_id in node_ids:
             for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
                 for node in nodes.value:
-                    if node.id == node_id:
+                    if node.name == node_id:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
                         else:  # default: return distances = 0, 1, 2, ...

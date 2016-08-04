@@ -50,7 +50,7 @@ class Coordinate(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.id = ''
+        self.name = ''
         """Identifier of node at this location"""
 
         self.x = '0.0'
@@ -66,7 +66,7 @@ class Quality(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.id = ''
+        self.name = ''
         """node identifier/name this applies to"""
 
         self.initial_quality = '0.0'
@@ -93,7 +93,7 @@ class Junction(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.id = ''
+        self.name = ''
         """node identifier/name"""
 
         self.elevation = ''
@@ -129,7 +129,7 @@ class Reservoir(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.id = ''
+        self.name = ''
         """node identifier/name"""
 
         self.total_head = "0.0"
@@ -164,7 +164,7 @@ class Tank(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.id = ''
+        self.name = ''
         """node identifier/name"""
 
         self.elevation = "0.0"
@@ -196,7 +196,7 @@ class Mixing(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.id = ''
+        self.name = ''
         """node identifier/name"""
 
         self.mixing_model = MixingModel.MIXED
@@ -216,7 +216,7 @@ class Source(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.id = ''
+        self.name = ''
         """node identifier/name"""
 
         self.source_type = SourceType.CONCEN # TRATION

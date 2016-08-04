@@ -36,7 +36,7 @@ class Link(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.id = "Unnamed"
+        self.name = "Unnamed"
         """Link Identifier/Name"""
 
         self.inlet_node = ''
@@ -197,7 +197,7 @@ class Status(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.id = ''
+        self.name = ''
         """Identifier of link whose initial status is being specified"""
 
         self.status = ''

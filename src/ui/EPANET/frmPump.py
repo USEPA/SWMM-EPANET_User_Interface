@@ -19,7 +19,7 @@ class frmPump(frmGenericPropertyEditor):
             edit_these.extend(self.project.pumps.value)
         if len(edit_these) == 0:
             self.new_item = Pump()
-            self.new_item.id = "1"
+            self.new_item.name = "1"
             edit_these.append(self.new_item)
         else:
             self.new_item = False

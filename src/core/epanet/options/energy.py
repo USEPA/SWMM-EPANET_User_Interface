@@ -45,7 +45,7 @@ class PumpEnergy(Section):
 
 
     def __init__(self):
-        self.id = ''
+        self.name = ''
         """Identifier of pump"""
 
         self.PricePatternEfficiency = PumpEnergyType.PRICE 	# PRICE, PATTERN, or EFFICIENCY

@@ -22,17 +22,17 @@ _cint = c_int()
 
 class ENR_categoryBase:
     """ This class is not used directly, it is as a base class with shared code for ENR_node_type and ENR_link_type.
-        self.id stores the ID/name of the item and can be text or numeric.
+        self.name stores the ID/name of the item and can be text or numeric.
         self.index stores the index of this item used when accessing the binary file.
         Code outside this module should not need to access self.index. """
     TypeLabel = "Base"
 
     def __init__(self, item_id, index):
-        self.id = item_id
+        self.name = item_id
         self.index = index
 
     def __str__(self):
-        return self.id
+        return self.name
 
     @classmethod
     def read_all(cls, output):
@@ -63,7 +63,7 @@ class ENR_categoryBase:
     #     if return_code == 0:
     #         return ctypes_return.value
     #     else:
-    #         print("Error in get_value({}, {}, {})".format(str(self.id), str(time_index), str(attribute.name)))
+    #         print("Error in get_value({}, {}, {})".format(str(self.name), str(time_index), str(attribute.name)))
     #         output._raise_error(return_code)
 
     def get_series(self, output, attribute, start_index=0, end_index=-1):
@@ -115,7 +115,7 @@ class ENR_categoryBase:
                                          series_pointer)
 
         if error_get != 0:
-            print("Error reading series " + self.TypeLabel + " " + str(self.id) + ', att #' + str(attribute.index))
+            print("Error reading series " + self.TypeLabel + " " + str(self.name) + ', att #' + str(attribute.index))
             output._raise_error(error_get)
 
         build_array = [series_pointer[i] for i in range(returned_length.value)]
@@ -169,7 +169,7 @@ class ENR_categoryBase:
             for node in output.nodes:
                 attribute_values = node.get_all_attributes_at_time(output, time_index)
                 for value, definition in zip(attribute_values, node.attributes):
-                    print("At node " + node.id + ", attribute " + definition.name +
+                    print("At node " + node.name + ", attribute " + definition.name +
                           " has value " + str(value) + " at time step " + time_index)
         """
 
@@ -183,7 +183,7 @@ class ENR_categoryBase:
 
         error_get = self._get_result(output.ptrapi, time_index, self.index, array_pointer)
         if error_get != 0:
-            print("Error reading all attributes for " + self.id + " at " + str(time_index))
+            print("Error reading all attributes for " + self.name + " at " + str(time_index))
             output._raise_error(error_get)
         BldArray = [array_pointer[i] for i in range(returned_length.value)]
         _lib.ENR_free(array_pointer)

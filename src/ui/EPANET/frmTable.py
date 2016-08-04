@@ -112,11 +112,11 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             if self.rbnNodes.isChecked():
                 for item in self.report.all_nodes_set_category():
                     items_in_order.append(item)
-                    row_headers.append(item.category + ' ' + item.id)
+                    row_headers.append(item.category + ' ' + item.name)
             else:
                 for item in self.report.all_links_set_category():
                     items_in_order.append(item)
-                    row_headers.append(item.category + ' ' + item.id)
+                    row_headers.append(item.category + ' ' + item.name)
             time_index = self.cboTime.currentIndex()
             title = "Network Table - " + self.item_type.TypeLabel + "s at "+ self.output.get_time_string(time_index)
             self.make_table(frm, title, time_index, items_in_order,

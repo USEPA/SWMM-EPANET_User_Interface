@@ -24,7 +24,7 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         sources_list = section.value[0:]
         # assume we want to edit the first one
         for source in sources_list:
-            if source.id == node_id:
+            if source.name == node_id:
                 self.txtQuality.setText(str(source.baseline_strength))
                 self.txtPattern.setText(str(source.pattern_id))
                 if source.source_type == SourceType.CONCEN:
@@ -42,11 +42,11 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         # section.set_text(str(self.txtControls.toPlainText()))
         if len(sources_list) == 0:
             new_item = Source()
-            new_item.id = self.node_id
+            new_item.name = self.node_id
             section.value.append(new_item)
             sources_list = section.value[0:]
         for source in sources_list:
-            if source.id == self.node_id:
+            if source.name == self.node_id:
                 source.baseline_strength = self.txtQuality.text()
                 source.pattern_id = self.txtPattern.text()
                 if self.rbnConcentration.isChecked():

@@ -139,8 +139,8 @@ class LinkWriter(SectionWriter):
     @staticmethod
     def as_text(link):
         """format contents of this item for writing to file"""
-        if len(link.id) > 0:
-            return LinkWriter.field_format.format(link.id, link.inlet_node, link.outlet_node)  # link.description
+        if len(link.name) > 0:
+            return LinkWriter.field_format.format(link.name, link.inlet_node, link.outlet_node)  # link.description
         elif link.comment:
             return link.comment
 
@@ -154,8 +154,8 @@ class PipeWriter(Link):
     @staticmethod
     def as_text(pipe):
         """format contents of this item for writing to file"""
-        if len(pipe.id) > 0:
-            return PipeWriter.field_format.format(pipe.id, pipe.inlet_node, pipe.outlet_node, pipe.length, pipe.diameter,
+        if len(pipe.name) > 0:
+            return PipeWriter.field_format.format(pipe.name, pipe.inlet_node, pipe.outlet_node, pipe.length, pipe.diameter,
                                             pipe.roughness, pipe.loss_coefficient, pipe.initial_status, pipe.comment)
         elif pipe.comment:
             return pipe.comment
@@ -170,8 +170,8 @@ class PumpWriter(Link):
     @staticmethod
     def as_text(pump):
         """format contents of this item for writing to file"""
-        if len(pump.id) > 0:
-            txt = PumpWriter.field_format.format(pump.id, pump.inlet_node, pump.outlet_node)
+        if len(pump.name) > 0:
+            txt = PumpWriter.field_format.format(pump.name, pump.inlet_node, pump.outlet_node)
             if pump.type == PumpType.HEAD:
                 txt += "\tHEAD " + pump.head_curve_name
             else:
@@ -198,8 +198,8 @@ class ValveWriter(Link):
     @staticmethod
     def as_text(valve):
         """format contents of this item for writing to file"""
-        if len(valve.id) > 0:
-            return ValveWriter.field_format.format(valve.id,
+        if len(valve.name) > 0:
+            return ValveWriter.field_format.format(valve.name,
                                             valve.inlet_node,
                                             valve.outlet_node,
                                             valve.diameter,
@@ -224,8 +224,8 @@ class StatusWriter(SectionWriter):
     @staticmethod
     def as_text(status):
         """format contents of this item for writing to file"""
-        if len(status.id) > 0:
-            return StatusWriter.field_format.format(status.id,
+        if len(status.name) > 0:
+            return StatusWriter.field_format.format(status.name,
                                             status.status,
                                             status.comment)
         elif status.comment:
@@ -239,7 +239,7 @@ class CoordinateWriter(SectionWriter):
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
-        return CoordinateWriter.field_format.format(coordinate.id, coordinate.x, coordinate.y)
+        return CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
 
 
 
@@ -251,7 +251,7 @@ class QualityWriter(SectionWriter):
     @staticmethod
     def as_text(quality):
         """format contents of this item for writing to file"""
-        return QualityWriter.field_format.format(quality.id, quality.initial_quality)
+        return QualityWriter.field_format.format(quality.name, quality.initial_quality)
 
 
 
@@ -263,7 +263,7 @@ class JunctionWriter(SectionWriter):
     @staticmethod
     def as_text(junction):
         """format contents of this item for writing to file"""
-        return JunctionWriter.field_format.format(junction.id, junction.elevation, junction.base_demand_flow, junction.demand_pattern_id)
+        return JunctionWriter.field_format.format(junction.name, junction.elevation, junction.base_demand_flow, junction.demand_pattern_id)
 
 
 
@@ -275,7 +275,7 @@ class ReservoirWriter(SectionWriter):
     @staticmethod
     def as_text(reservoir):
         """format contents of this item for writing to file"""
-        return ReservoirWriter.field_format.format(reservoir.id, reservoir.total_head, reservoir.head_pattern_id, reservoir.comment)
+        return ReservoirWriter.field_format.format(reservoir.name, reservoir.total_head, reservoir.head_pattern_id, reservoir.comment)
 
 
 
@@ -287,7 +287,7 @@ class TankWriter(SectionWriter):
     @staticmethod
     def as_text(tank):
         """format contents of this item for writing to file"""
-        return TankWriter.field_format.format(tank.id, tank.elevation, tank.initial_level,
+        return TankWriter.field_format.format(tank.name, tank.elevation, tank.initial_level,
                                         tank.minimum_level, tank.maximum_level, tank.diameter,
                                         tank.minimum_volume, tank.volume_curve, tank.comment)
 
@@ -301,7 +301,7 @@ class MixingWriter(SectionWriter):
     @staticmethod
     def as_text(mixing):
         """format contents of this item for writing to file"""
-        return MixingWriter.field_format.format(mixing.id,
+        return MixingWriter.field_format.format(mixing.name,
                                         mixing.mixing_model.name.replace("TWO_", "2"),
                                         mixing.mixing_fraction,
                                         mixing.comment)
@@ -318,7 +318,7 @@ class SourceWriter(SectionWriter):
         inp = ''
         if source.comment:
             inp = source.comment + '\n'
-        inp += SourceWriter.field_format.format(source.id,
+        inp += SourceWriter.field_format.format(source.name,
                                         source.source_type.name,
                                         source.baseline_strength,
                                         source.pattern_id)
@@ -401,8 +401,8 @@ class PumpEnergyWriter(SectionWriter):
     @staticmethod
     def as_text(pump_energy):
         """format contents of this item for writing to file"""
-        if len(pump_energy.id) > 0:
-            return PumpEnergyWriter.field_format.format(pump_energy.id,
+        if len(pump_energy.name) > 0:
+            return PumpEnergyWriter.field_format.format(pump_energy.name,
                                             pump_energy.PricePatternEfficiency.name,
                                             pump_energy.value,
                                             pump_energy.comment)

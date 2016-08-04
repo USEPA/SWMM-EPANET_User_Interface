@@ -426,7 +426,6 @@ class ConduitWriter(Link):
             return conduit.comment
 
 
-
 class PumpWriter(Link):
     """A pump link in a SWMM model"""
 
@@ -435,29 +434,15 @@ class PumpWriter(Link):
     @staticmethod
     def as_text(pump):
         """format contents of this item for writing to file"""
-        if len(pump.name) > 0:
+        if pump.name:
             return PumpWriter.field_format.format(pump.name, pump.inlet_node, pump.outlet_node, pump.pump_curve,
                                             pump.initial_status, pump.startup_depth, pump.shutoff_depth, pump.comment)
         elif pump.comment:
             return pump.comment
 
 
-
 class CrossSectionWriter(SectionWriter):
-    """A cross section of a Conduit, Orifice, or Weir
-
-    Attributes:
-        link (str): name of the conduit, orifice, or weir this is a cross-section of.
-        shape (CrossSectionShape): name of cross-section shape.
-        geometry1 (str): full height of the cross-section (ft or m). For irregular, this is the cross-section name.
-        geometry2 (str): auxiliary parameters (width, side slopes, etc.)
-        geometry3 (str): auxiliary parameters (width, side slopes, etc.)
-        geometry4 (str): auxiliary parameters (width, side slopes, etc.)
-        barrels (str): number of barrels (i.e., number of parallel pipes of equal size, slope, and
-                       roughness) associated with a conduit (default is 1).
-        culvert_code (str): name of conduit inlet geometry if it is a culvert subject to possible inlet flow control
-        curve (str): name of associated Shape Curve that defines how width varies with depth.
-    """
+    """Make a string representation of a CrossSection of a Conduit, Orifice, or Weir"""
 
     field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
     field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}"
@@ -474,15 +459,14 @@ class CrossSectionWriter(SectionWriter):
         #     inp += CrossSectionWriter.field_format_irregular.format(cross_section.link, cross_section.shape.name, cross_section.transect)
         else:
             inp += CrossSectionWriter.field_format_shape.format(cross_section.link,
-                                                  cross_section.shape.name,
-                                                  cross_section.geometry1,
-                                                  cross_section.geometry2,
-                                                  cross_section.geometry3,
-                                                  cross_section.geometry4,
-                                                  cross_section.barrels,
-                                                  cross_section.culvert_code)
+                                                                cross_section.shape.name,
+                                                                cross_section.geometry1,
+                                                                cross_section.geometry2,
+                                                                cross_section.geometry3,
+                                                                cross_section.geometry4,
+                                                                cross_section.barrels,
+                                                                cross_section.culvert_code)
         return inp
-
 
 
 class TransectsWriter(SectionWriter):
@@ -505,8 +489,6 @@ class TransectsWriter(SectionWriter):
             return '\n'.join(text_list)
         else:
             return ''
-
-
 
 
 class TransectWriter(SectionWriter):

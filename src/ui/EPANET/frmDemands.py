@@ -44,7 +44,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
         if row_count == -1:
             # did not find any in demands table, so use whats in junction table
             for junction in junctions_list:
-                if junction.id == node_id:
+                if junction.name == node_id:
                     row_count += 1
                     led = QtGui.QLineEdit(str(junction.base_demand_flow))
                     self.tblDemands.setItem(row_count,0,QtGui.QTableWidgetItem(led.text()))
@@ -68,7 +68,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
         if demand_count == 1 and self.junction_only:
             # put this demand back into the junction table
             for junction in junctions_list:
-                if junction.id == self.node_id:
+                if junction.name == self.node_id:
                     for row in range(self.tblDemands.rowCount()):
                         if self.tblDemands.item(row,0):
                             x = self.tblDemands.item(row,0).text()

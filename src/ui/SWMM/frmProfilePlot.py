@@ -28,10 +28,10 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         self.cboEnd.clear()
         if project and self.output:
             for node in self.output.nodes:
-                self.cboStart.addItem(node.id)
-                self.cboEnd.addItem(node.id)
+                self.cboStart.addItem(node.name)
+                self.cboEnd.addItem(node.name)
             for link in self.output.links:
-                self.lstData.addItem(link.id)
+                self.lstData.addItem(link.name)
 
     def get_text(self):
         return self.MAGIC + '\n'.join([str(self.lstData.item(i).text()) for i in range(self.lstData.count())])

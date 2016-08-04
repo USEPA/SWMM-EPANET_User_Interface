@@ -67,7 +67,7 @@ class frmJunction(frmGenericPropertyEditor):
             section = self.project.find_section('JUNCTIONS')
             junctions_list = section.value[0:]
             for junction in junctions_list:
-                if junction.id == str(self.tblGeneric.item(0, column).text()):
+                if junction.name == str(self.tblGeneric.item(0, column).text()):
                     demand_count += 1
         tb.textbox.setText(str(demand_count))
         tb.textbox.setEnabled(False)
@@ -81,7 +81,7 @@ class frmJunction(frmGenericPropertyEditor):
         section = self.project.find_section('SOURCES')
         sources_list = section.value[0:]
         for source in sources_list:
-            if source.id == str(self.tblGeneric.item(0, column).text()):
+            if source.name == str(self.tblGeneric.item(0, column).text()):
                 tb.textbox.setText(str(source.baseline_strength))
         tb.textbox.setEnabled(False)
         tb.column = column

@@ -56,7 +56,7 @@ class frmReservior(frmGenericPropertyEditor):
         section = self.project.find_section('SOURCES')
         sources_list = section.value[0:]
         for source in sources_list:
-            if source.id == str(self.tblGeneric.item(0, column).text()):
+            if source.name == str(self.tblGeneric.item(0, column).text()):
                 tb.textbox.setText(str(source.baseline_strength))
         tb.textbox.setEnabled(False)
         tb.column = column

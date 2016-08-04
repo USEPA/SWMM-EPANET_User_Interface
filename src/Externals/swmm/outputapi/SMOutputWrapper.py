@@ -22,19 +22,19 @@ class SwmmOutputCategoryBase:
     """
     This class is not used directly, it is as a base class with shared code for
     SwmmOutputSubcatchment, SwmmOutputNode, SwmmOutputLink, and SwmmOutputSystem.
-    self.id stores the ID/name of the item and can be text or numeric.
+    self.name stores the ID/name of the item and can be text or numeric.
     self._index stores the index of this item used when accessing the binary file.
     Code outside this module should not need to access self._index.
-    SwmmOutputSystem does not use self.id and self._index because it does not have multiple locations.
+    SwmmOutputSystem does not use self.name and self._index because it does not have multiple locations.
     """
     type_label = "Base"
 
     def __init__(self, item_id, index):
-        self.id = item_id
+        self.name = item_id
         self._index = index
 
     def __str__(self):
-        return self.id
+        return self.name
 
     @classmethod
     def read_all(cls, output):
@@ -106,7 +106,7 @@ class SwmmOutputCategoryBase:
                                          series_pointer)
 
         if error_get != 0:
-            print("Error reading series " + self.type_label + " " + str(self.id) + ', att #' + str(attribute.index))
+            print("Error reading series " + self.type_label + " " + str(self.name) + ', att #' + str(attribute.index))
             output._raise_error(error_get)
 
         build_array = [series_pointer[i] for i in range(returned_length.value)]

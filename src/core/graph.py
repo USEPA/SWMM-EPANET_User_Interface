@@ -144,7 +144,7 @@ class EPANET:
         line_count = 0
         for item in items:
             y_values = item.get_series(output, attribute)
-            plt.plot(x_values, y_values, label=item.id)
+            plt.plot(x_values, y_values, label=item.name)
             line_count += 1
 
         if line_count > 0:
@@ -182,7 +182,7 @@ class EPANET:
                     min_y = y
                 y_values.append(y)
                 plt.annotate(
-                    item.id,
+                    item.name,
                     xy=(x_value, y), xytext=(0, 20),
                     textcoords='offset points', ha='center', va='bottom',
                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))

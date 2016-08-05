@@ -278,7 +278,6 @@ class StatisticUtility(object):
             #Date2 = aStats.Tser.index[T + 1]
             Date1 = output.StartDate + relativedelta(days=T * self.deltaDateTime)
             Date2 = Date1 + relativedelta(days=self.deltaDateTime)
-
             #Confirmed: the Uglobals.DeltaDateTime is "Reporting time step (in days)"
             #self.deltaDateTime = abs(relativedelta(Date2, Date1).days)
 

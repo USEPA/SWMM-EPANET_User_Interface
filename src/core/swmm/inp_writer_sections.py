@@ -1012,7 +1012,7 @@ class UnitHydrographWriter(SectionWriter):
         if unit_hydrograph.comment:
             text_list.append(unit_hydrograph.comment)
 
-        text_list.append(unit_hydrograph.first_row_format.format(unit_hydrograph.name, unit_hydrograph.rain_gage_id))
+        text_list.append(unit_hydrograph.first_row_format.format(unit_hydrograph.name, unit_hydrograph.rain_gage_name))
 
         for entry in unit_hydrograph.value:
             text_list.append(UnitHydrographWriter.field_format.format(unit_hydrograph.name,

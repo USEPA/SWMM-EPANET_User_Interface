@@ -1,5 +1,4 @@
 import unittest
-from core.swmm.swmm_project import SwmmProject
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
 from core.swmm.inp_reader_sections import *

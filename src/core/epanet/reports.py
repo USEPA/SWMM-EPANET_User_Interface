@@ -326,16 +326,16 @@ class Reports:
                     print("Skipping node " + node.name + " because it was not found in output")
         return items
 
-    def node_distances(self, node_ids):
-        return range(0, len(node_ids))
+    def node_distances(self, node_names):
+        return range(0, len(node_names))
         # TODO: compute distance from node coordinates
         distances = [0]
         x = None
         y = None
-        for node_id in node_ids:
+        for node_name in node_names:
             for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
                 for node in nodes.value:
-                    if node.name == node_id:
+                    if node.name == node_name:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
                         else:  # default: return distances = 0, 1, 2, ...

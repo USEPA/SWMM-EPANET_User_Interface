@@ -14,20 +14,20 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboLIDType.currentIndexChanged.connect(self.cboLIDType_currentIndexChanged)
-        self.lid_id = ''
+        self.lid_name = ''
         # set for first lid control for now
         self.set_from(main_form.project, 'rg')
 
-    def set_from(self, project, lid_id):
+    def set_from(self, project, lid_name):
         self.project = project
         self.cboLIDType_currentIndexChanged(0)
         # section = core.swmm.project.LIDControl
         section = project.lid_controls
         lid_list = section.value[0:]
         # assume we want to edit the first one
-        self.lid_id = lid_id
+        self.lid_name = lid_name
         for lid in lid_list:
-            if lid.name == lid_id:
+            if lid.name == lid_name:
                 # this is the lid control we want to edit
                 self.txtName.setText(lid.name)
                 if lid.lid_type == LIDType.BC:
@@ -86,7 +86,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         section = self.project.lid_controls
         lid_list = section.value[0:]
         for lid in lid_list:
-            if lid.name == self.lid_id:
+            if lid.name == self.lid_name:
                 # this is the lid
                 lid.name = self.txtName.text()
                 if self.cboLIDType.currentIndex() == 0:

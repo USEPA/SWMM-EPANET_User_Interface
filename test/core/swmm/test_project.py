@@ -1,5 +1,5 @@
 import os
-import core.swmm.project
+import core.swmm.swmm_project
 import unittest
 import inspect
 import shutil
@@ -12,8 +12,8 @@ import webbrowser
 class ProjectTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_project = core.swmm.project.Project()
-        self.new_project = core.swmm.project.Project()
+        self.my_project = core.swmm.swmm_project.SwmmProject()
+        self.new_project = core.swmm.swmm_project.SwmmProject()
 
     @staticmethod
     def get_immediate_subdirectories(a_dir):

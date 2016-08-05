@@ -33,8 +33,8 @@ class frmReservior(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_id)
-                if edit_these[column].head_pattern_id == value.pattern_id:
+                combobox.addItem(value.pattern_name)
+                if edit_these[column].head_pattern_name == value.pattern_name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(6, column, combobox)

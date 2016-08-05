@@ -29,8 +29,8 @@ class SwmmOutputCategoryBase:
     """
     type_label = "Base"
 
-    def __init__(self, item_id, index):
-        self.name = item_id
+    def __init__(self, item_name, index):
+        self.name = item_name
         self._index = index
 
     def __str__(self):
@@ -462,8 +462,8 @@ class SwmmOutputObject(object):
         report_date = self.StartDate + datetime.timedelta(hours=total_hours)
         return report_date.strftime("%Y-%m-%d %H:%M")
 
-    # def get_time_series(self, type_label, object_id, attribute_name):
-    #     item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
+    # def get_time_series(self, type_label, object_name, attribute_name):
+    #     item = self.get_items(type_label)[object_name]  # SwmmOutputSubcatchment
     #     attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
     #     y_values = item.get_series(attribute, 0, self.num_periods - 1)
     #     x_values = []

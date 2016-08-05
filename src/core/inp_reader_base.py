@@ -278,22 +278,22 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                 break
 
         item_text = ""
-        item_id = ""
+        item_name = ""
         for line in lines[next_index:]:
             if line.startswith(';'):  # Found a comment, must be the start of a new item
-                if len(item_id) > 0:
+                if len(item_name) > 0:
                     section.value.append(section.list_type(item_text))
                     item_text = ''
                 elif item_text:
                     item_text += '\n'
                 item_text += line
-                item_id = ''
+                item_name = ''
             else:
                 id_split = line.split()
                 if len(id_split) > 1:
-                    new_item_id = id_split[0].strip()
-                    if len(item_id) > 0:  # If we already read an ID that has not been saved to value yet
-                        if new_item_id != item_id:  # If this item is not the same one we are already reading
+                    new_item_name = id_split[0].strip()
+                    if len(item_name) > 0:  # If we already read an ID that has not been saved to value yet
+                        if new_item_name != item_name:  # If this item is not the same one we are already reading
                             try:  # then save the one we have been reading since we have read it all
                                 section.value.append(section.list_type(item_text))
                             except Exception as ex:
@@ -302,7 +302,7 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                                                                                             str(ex),
                                                                                             str(traceback.print_exc())))
                             item_text = ''  # clear the buffer after using it to create/append an item
-                    item_id = new_item_id
+                    item_name = new_item_name
                     if item_text:
                         item_text += '\n'
                     item_text += line

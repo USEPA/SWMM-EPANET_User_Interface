@@ -8,7 +8,7 @@ from ui.EPANET.frmCalibrationReportDesigner import Ui_frmCalibrationReport
 
 class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
 
-    def __init__(self, main_form, calibrate_against, node_id):
+    def __init__(self, main_form, calibrate_against, node_name):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Cali0078.htm"

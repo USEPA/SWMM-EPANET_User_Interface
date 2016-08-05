@@ -13,18 +13,18 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         QtCore.QObject.connect(self.btnFile, QtCore.SIGNAL("clicked()"), self.btnFile_Clicked)
         # QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
         self._main_form = main_form
-        self.timeseries_id = ''
+        self.timeseries_name = ''
         # set for first timeseries for now
         self.set_from(main_form.project, 'TS1')
 
-    def set_from(self, project, timeseries_id):
+    def set_from(self, project, timeseries_name):
         # section = core.swmm.project.SnowPack
         section = project.find_section("TIMESERIES")
         timeseries_list = section.value[0:]
         # assume we want to edit the first one
-        self.timeseries_id = timeseries_id
+        self.timeseries_name = timeseries_name
         for timeseries in timeseries_list:
-            if timeseries.name == timeseries_id:
+            if timeseries.name == timeseries_name:
                 # this is the timeseries we want to edit
                 self.txtTimeseriesName.setText(timeseries.name)
                 self.txtDescription.setText(timeseries.comment)
@@ -51,7 +51,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         section = self._main_form.project.find_section("TIMESERIES")
         timeseries_list = section.value[0:]
         for timeseries in timeseries_list:
-            if timeseries.name == self.timeseries_id:
+            if timeseries.name == self.timeseries_name:
                 # this is the timeseries
                 timeseries.name = self.txtTimeseriesName.text()
                 timeseries.comment = self.txtDescription.text()

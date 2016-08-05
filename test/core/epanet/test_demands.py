@@ -27,17 +27,17 @@ class SimpleDemandsTest(unittest.TestCase):
 
         assert match_omit(project_demands.get_text(), source_text, " \t-;\n")
 
-        assert project_demands.value[0].junction_id == "JUNCTION-0"
+        assert project_demands.value[0].junction_name == "JUNCTION-0"
         assert project_demands.value[0].base_demand == "0.0"
         assert project_demands.value[0].demand_pattern == "PATTERN-1"
         assert project_demands.value[0].category == ''
 
-        assert project_demands.value[1].junction_id == "JUNCTION-1"
+        assert project_demands.value[1].junction_name == "JUNCTION-1"
         assert project_demands.value[1].base_demand == "0.1"
         assert project_demands.value[1].demand_pattern == "PATTERN-2"
         assert project_demands.value[1].category == ''
 
-        assert project_demands.value[2].junction_id == "JUNCTION-12"
+        assert project_demands.value[2].junction_name == "JUNCTION-12"
         assert project_demands.value[2].base_demand == "0.2"
         assert project_demands.value[2].demand_pattern == "PATTERN-12"
         assert project_demands.value[2].category == "Category-12"

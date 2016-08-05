@@ -91,8 +91,8 @@ class LabelReader(SectionReader):
                 label.label = fields[2]
                 if label.label[0] == '"':  # split above would not work with quotes, so find end of label ourselves
                     endquote = label.label.rindex('"')
-                    if endquote + 1 < len(label.label):  # If there is more after the label, it is the anchor_node_id
-                        label.anchor_node_id = label.label[endquote + 1:].strip()
+                    if endquote + 1 < len(label.label):  # If there is more after the label, it is the anchor_node_name
+                        label.anchor_node_name = label.label[endquote + 1:].strip()
                         label.label = label.label[0:endquote + 1]
                 label.label = label.label.replace('"', '')  # label is quoted in the file, but not while in memory
         return label
@@ -114,7 +114,7 @@ class PatternReader:
             if line:
                 fields = line.split()
                 if len(fields) > 1:
-                    pattern.pattern_id = fields[0]
+                    pattern.pattern_name = fields[0]
                     pattern.multipliers.extend(fields[1:])
         return pattern
 
@@ -145,10 +145,10 @@ class ControlReader():
     def read(new_text):
         control = Control()
         fields = new_text.split()
-        control.link_id, control.status = fields[1], fields[2]
+        control.link_name, control.status = fields[1], fields[2]
         type_str = fields[4].upper()
         if type_str == "NODE":
-            control.node_id = fields[5]
+            control.node_name = fields[5]
             control.control_type = ControlType[fields[6].upper()]
             control.value = fields[7]
         elif type_str == "TIME":
@@ -304,7 +304,7 @@ class JunctionReader(SectionReader):
         if len(fields) > 2:
             junction.base_demand_flow = fields[2]
         if len(fields) > 3:
-            junction.demand_pattern_id = fields[3]
+            junction.demand_pattern_name = fields[3]
         return junction
 
 
@@ -321,7 +321,7 @@ class ReservoirReader(SectionReader):
         if len(fields) > 1:
             reservoir.total_head = fields[1]
         if len(fields) > 2:
-            reservoir.head_pattern_id = fields[2]
+            reservoir.head_pattern_name = fields[2]
         return reservoir
 
 
@@ -385,7 +385,7 @@ class SourceReader(SectionReader):
         if len(fields) > 2:
             source.baseline_strength = fields[2]
         if len(fields) > 3:
-            source.pattern_id = fields[3]
+            source.pattern_name = fields[3]
         return source
 
 
@@ -398,7 +398,7 @@ class DemandReader(SectionReader):
         demand = Demand()
         fields = new_text.split()
         if len(fields) > 0:
-            demand.junction_id = fields[0]
+            demand.junction_name = fields[0]
         if len(fields) > 1:
             demand.base_demand = fields[1]
         if len(fields) > 2:

@@ -13,7 +13,7 @@ class Label(Section):
         ("label_text",          '', "Text",            '',       '', '',  "Text of the label"),
         ('',                    '', "X-Coordinate",    '',       '', '',  "X coordinate of upper left corner of the label on the map"),
         ('',                    '', "Y-Coordinate",    '',       '', '',  "Y coordinate of upper left corner of the label on the map"),
-        ("anchor_id",           '', "Anchor Node",     "",       '', '',  "Name of a node or subcatchment to which the label is anchored when map is zoomed (optional)"),
+        ("anchor_name",         '', "Anchor Node",     "",       '', '',  "Name of a node or subcatchment to which the label is anchored when map is zoomed (optional)"),
         ("font",                '', "Font",            "",       '', '',  "The label's font"),
         ("size",                '', "Size",            "10.0",   '', '',  "The label's font size"),
         ("bold",                '', "Bold",            "False",  '', '',  "Set to True if the label is to be bold"),
@@ -27,7 +27,7 @@ class Label(Section):
         self.label_text = "New Label"   # string
         """Text of label in double quotes"""
 
-        self.anchor_id = ""			# string
+        self.anchor_name = ""			# string
         """ID label of an anchor node (optional)"""
 
         self.font = ""

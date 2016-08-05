@@ -85,7 +85,7 @@ class Junction(Section):
         ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
         ('elevation',       '', "Elevation",       '',   '',   '', "Elevation of junction"),
         ('base_demand_flow',    '', 'Base Demand',       '',  '',   '', "Base demand flow, characteristic of all demands at this node"),
-        ('demand_pattern_id',   '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
+        ('demand_pattern_name', '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
         ('demand_categories',   '', 'Demand Categories', '',  '',   '', "Number of demand categories, click to edit"),
         ('emitter_coefficient', '', 'Emitter Coeff.',    '',  '',   '', "Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which defaults to 0.5 and can be set in OPTIONS section."),
         ('initial_quality',     '', 'Initial Quality',   '',  '',   '', "Water quality level at the junction at the start of the simulation period"),
@@ -102,7 +102,7 @@ class Junction(Section):
         self.base_demand_flow = ''
         """Base demand flow, characteristic of all demands at this node"""
 
-        self.demand_pattern_id = ''
+        self.demand_pattern_name = ''
         """Demand pattern ID, optional"""
 
         # TODO: sync with EMITTERS section
@@ -117,15 +117,15 @@ class Reservoir(Section):
 
 #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
-        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
-        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
-        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
-        ('total_head',      '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
-        ('head_pattern_id', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
-        ('initial_quality', '', 'Initial Quality', '',    '',   '', "Water quality level at the reservior at the start of the simulation period"),
-        ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
+        ("id",                '', "Name",            '',    '',   '', "User-assigned name of reservior"),
+        ('',                  '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
+        ('',                  '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
+        ('',                  '', "Description",     '',    '',   '', "Optional comment or description"),
+        ('',                  '', "Tag",             '',    '',   '', "Optional category or classification"),
+        ('total_head',        '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
+        ('head_pattern_name', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
+        ('initial_quality',   '', 'Initial Quality', '',    '',   '', "Water quality level at the reservior at the start of the simulation period"),
+        ('source_quality',    '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self):
         Section.__init__(self)
@@ -135,7 +135,7 @@ class Reservoir(Section):
         self.total_head = "0.0"
         """Head is the hydraulic head (elevation + pressure head) of water in the reservoir"""
 
-        self.head_pattern_id = ''
+        self.head_pattern_name = ''
         """head pattern can be used to make the reservoir head vary with time"""
 
 class Tank(Section):
@@ -225,7 +225,7 @@ class Source(Section):
         self.baseline_strength = '0.0'                  # real, but stored as string
         """Baseline source strength"""
 
-        self.pattern_id = ""                            # string
+        self.pattern_name = ""                            # string
         """Time pattern ID (optional)"""
 
 class Demand(Section):
@@ -235,7 +235,7 @@ class Demand(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.junction_id = ''
+        self.junction_name = ''
         """Junction this demand applies to"""
 
         self.base_demand = "0.0"       # real, stored as string

@@ -1204,7 +1204,7 @@ class UnitHydrographReader(SectionReader):
                     raise ValueError("UnitHydrograph.set_text: name: " + fields[0] + " != " + unit_hydrograph.name + "\n"
                                      "in line: " + line)
                 if len(fields) == 2:
-                    (unit_hydrograph.name, unit_hydrograph.rain_gage_id) = fields
+                    (unit_hydrograph.name, unit_hydrograph.rain_gage_name) = fields
                 elif len(fields) > 5:
                     entry = UnitHydrographEntry()
                     entry.hydrograph_month = fields[1]

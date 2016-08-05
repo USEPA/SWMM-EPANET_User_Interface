@@ -22,7 +22,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(main_form.project)
         self._main_form = main_form
-        self.link_id = ''
+        self.link_name = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
         self.ellipse_major_axis_in = (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180)
         self.ellipse_minor_axis_mm = (356,483,559,610,686,737,813,864,965,1092,1219,1346,1473,1600,1727,1829,1956,2083,
@@ -94,14 +94,14 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         # set for first link for now
         self.set_link(main_form.project, '1')
 
-    def set_link(self, project, link_id):
+    def set_link(self, project, link_name):
         # section = core.swmm.project.CrossSection()
         section = project.find_section("XSECTIONS")
         link_list = section.value[0:]
         # assume we want to edit the first one
-        self.link_id = link_id
+        self.link_name = link_name
         for value in link_list:
-            if value.link == link_id:
+            if value.link == link_name:
                 # this is the link we want to edit
                 for list_index in range(0,self.listWidget.count()):
                     list_item = self.listWidget.item(list_index)
@@ -209,7 +209,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         section = self._main_form.project.find_section("XSECTIONS")
         link_list = section.value[0:]
         for value in link_list:
-            if value.link == self.link_id:
+            if value.link == self.link_name:
                 # this is the link we are editing
                 value.barrels = self.sbxNumber.text()
                 value.geometry1 = self.txt1.text()

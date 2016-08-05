@@ -74,7 +74,7 @@ class LabelWriter(SectionWriter):
     @staticmethod
     def as_text(label):
         """format contents of this item for writing to file"""
-        return LabelWriter.field_format.format(label.x, label.y, label.label, label.anchor_node_id)
+        return LabelWriter.field_format.format(label.x, label.y, label.label, label.anchor_node_name)
 
 
 
@@ -94,7 +94,7 @@ class PatternWriter:
             if count == 6:        # add ID to first line and break lines before they get too long
                 if section_text:  # If there are already values added, put next value on a new line
                     section_text += '\n'
-                section_text += " {:16}".format(pattern.pattern_id)
+                section_text += " {:16}".format(pattern.pattern_name)
                 count = 0
             section_text += "\t{:12}".format(multiplier)
             count += 1
@@ -119,10 +119,10 @@ class ControlWriter():
     @staticmethod
     def as_text(control):
         """format contents of this item for writing to file"""
-        if control.link_id:
-            prefix = " LINK " + control.link_id + ' ' + control.status
+        if control.link_name:
+            prefix = " LINK " + control.link_name + ' ' + control.status
             if control.control_type == ControlType.ABOVE or control.control_type == ControlType.BELOW:
-                return prefix + " IF NODE " + control.node_id + ' ' + control.control_type.name + ' ' + str(control.value)
+                return prefix + " IF NODE " + control.node_name + ' ' + control.control_type.name + ' ' + str(control.value)
             elif control.control_type == ControlType.TIME and len(control.time) > 0:
                 return prefix + " AT TIME " + control.time
             elif control.control_type == ControlType.CLOCKTIME and len(control.clocktime) > 0:
@@ -263,7 +263,7 @@ class JunctionWriter(SectionWriter):
     @staticmethod
     def as_text(junction):
         """format contents of this item for writing to file"""
-        return JunctionWriter.field_format.format(junction.name, junction.elevation, junction.base_demand_flow, junction.demand_pattern_id)
+        return JunctionWriter.field_format.format(junction.name, junction.elevation, junction.base_demand_flow, junction.demand_pattern_name)
 
 
 
@@ -275,7 +275,7 @@ class ReservoirWriter(SectionWriter):
     @staticmethod
     def as_text(reservoir):
         """format contents of this item for writing to file"""
-        return ReservoirWriter.field_format.format(reservoir.name, reservoir.total_head, reservoir.head_pattern_id, reservoir.comment)
+        return ReservoirWriter.field_format.format(reservoir.name, reservoir.total_head, reservoir.head_pattern_name, reservoir.comment)
 
 
 
@@ -321,7 +321,7 @@ class SourceWriter(SectionWriter):
         inp += SourceWriter.field_format.format(source.name,
                                         source.source_type.name,
                                         source.baseline_strength,
-                                        source.pattern_id)
+                                        source.pattern_name)
         return inp
 
 
@@ -336,7 +336,7 @@ class DemandWriter(SectionWriter):
         inp = ''
         if demand.comment:
             inp = demand.comment + '\n'
-        inp += DemandWriter.field_format.format(demand.junction_id,
+        inp += DemandWriter.field_format.format(demand.junction_name,
                                         demand.base_demand,
                                         demand.demand_pattern,
                                         demand.category)

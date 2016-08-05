@@ -24,11 +24,11 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         self.listWidget.setItemSelected(self.listWidget.item(0),True)
 
     def cmdOK_Clicked(self):
-        selected_id = ''
+        selected_name = ''
         for column_item in self.listWidget.selectedItems():
-                selected_id = str(column_item.text())
-        if selected_id:
-          self._frmCalibrationReport = frmCalibrationReport(self._main_form, self.comboBox.currentText(), selected_id)
+                selected_name = str(column_item.text())
+        if selected_name:
+          self._frmCalibrationReport = frmCalibrationReport(self._main_form, self.comboBox.currentText(), selected_name)
           self._frmCalibrationReport.show()
           self.close()
 

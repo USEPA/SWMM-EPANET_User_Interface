@@ -15,18 +15,18 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # self.set_from(parent.project)
         self._main_form = main_form
-        self.node_id = ''
+        self.node_name = ''
 
-    def set_from(self, project, node_id):
-        self.node_id = node_id
+    def set_from(self, project, node_name):
+        self.node_name = node_name
         # section = core.epanet.project.Source()
         section = project.sources
         sources_list = section.value[0:]
         # assume we want to edit the first one
         for source in sources_list:
-            if source.name == node_id:
+            if source.name == node_name:
                 self.txtQuality.setText(str(source.baseline_strength))
-                self.txtPattern.setText(str(source.pattern_id))
+                self.txtPattern.setText(str(source.pattern_name))
                 if source.source_type == SourceType.CONCEN:
                     self.rbnConcentration.setChecked(True)
                 elif source.source_type == SourceType.FLOWPACED:
@@ -42,13 +42,13 @@ class frmSourcesQuality(QtGui.QMainWindow, Ui_frmSourcesQuality):
         # section.set_text(str(self.txtControls.toPlainText()))
         if len(sources_list) == 0:
             new_item = Source()
-            new_item.name = self.node_id
+            new_item.name = self.node_name
             section.value.append(new_item)
             sources_list = section.value[0:]
         for source in sources_list:
-            if source.name == self.node_id:
+            if source.name == self.node_name:
                 source.baseline_strength = self.txtQuality.text()
-                source.pattern_id = self.txtPattern.text()
+                source.pattern_name = self.txtPattern.text()
                 if self.rbnConcentration.isChecked():
                     source.source_type = SourceType.CONCEN
                 elif self.rbnFlow.isChecked():

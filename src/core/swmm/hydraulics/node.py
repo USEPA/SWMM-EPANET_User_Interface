@@ -8,7 +8,7 @@ from core.metadata import Metadata
 # class Node(object):
 #     """A node in a SWMM model"""
 #     def __init__(self):
-#         self.node_id = ''
+#         self.node_name = ''
 #         """Node Name"""
 #
 #         self.centroid = Coordinates(0.0, 0.0)
@@ -49,7 +49,7 @@ class Junction(Section):
         ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
         ('',                '', "Inflows",         'NO', '',   '',
          "Click to specify any external inflows received at the junction"),
-        ('.treatment(node_id)',                '', "Treatment",       'NO', '',   '',
+        ('.treatment(node_name)',                '', "Treatment",       'NO', '',   '',
          "Click to specify any pollutant removal supplied at the junction"),
         ("elevation",       '', "Invert El.",      '0', "ft",  "m", "Elevation of junction's invert"),
         ("max_depth",       '', "Max. Depth",      '0', "ft",  "m",
@@ -135,7 +135,7 @@ class Outfall(Section):
         ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
         ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the outfall"),
-        ('.treatment(node_id)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of outfall's invert"),
         ("tide_gate",           '', "Tide Gate",       '0',  '',   '',  "True if outfall contains a tide gate to prevent backflow"),
         ("route_to",            '', "Route To",        '0',  '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
@@ -216,7 +216,7 @@ class Divider(Junction):
         ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
         ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
-        ('.treatment(node_id)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of divider's invert"),
         ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance from invert to top of highest connecting link)"),
         ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial water depth in junction"),
@@ -298,7 +298,7 @@ class StorageUnit(Junction):
         ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
         ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the storage unit"),
-        ('.treatment(node_id)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the storage unit"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the storage unit"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation at the bottom of the storage unit"),
         ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum depth of the storage unit"),
         ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial depth of water in the storage unit"),

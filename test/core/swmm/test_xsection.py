@@ -1,8 +1,13 @@
 import os
 import unittest
 import inspect
-import core.swmm.project
-from core.inputfile import SectionAsListOf
+from core.swmm.swmm_project import SwmmProject
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match, match_omit
+from core.project_base import SectionAsListOf
 from core.swmm.hydraulics.link import CrossSection, CrossSectionShape
 
 
@@ -10,15 +15,20 @@ class XsectionTest(unittest.TestCase):
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
         inp_filename = "CrossSectionAllShapes.inp"
-        my_project = core.swmm.project.Project()
-        my_project.read_file(os.path.join(directory, inp_filename))
+
+        project_reader = ProjectReader()
+        project_writer = ProjectWriter()
+        my_project = SwmmProject()
+        project_reader.read_file(my_project, os.path.join(directory, inp_filename))
         my_xsections = my_project.xsections
 
         assert len(my_xsections.value) == 26
 
-        my_copy = SectionAsListOf("[XSECTIONS]", CrossSection)
-        my_copy.set_text(my_xsections.get_text())
-        assert my_copy.matches(my_xsections)
+        section_text = project_writer.write_xsections.as_text(my_xsections)
+
+        my_copy = project_reader.read_xsections(section_text)
+        copy_text = project_writer.write_xsections.as_text(my_copy)  # my_copy.set_text(my_xsections.get_text())
+        assert match(section_text, copy_text)
 
         for index in range(1, 25):  # Purposely not checking last line: second CUSTOM test
             assert my_xsections.value[index].link == str(index)

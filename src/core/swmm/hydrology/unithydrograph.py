@@ -39,7 +39,7 @@ class UnitHydrograph(Section):
         self.name = "Unnamed"
         """str: Name assigned to this Unit Hydrograph group"""
 
-        self.rain_gage_id = ''
+        self.rain_gage_name = ''
         """str: Name of the rain gage that supplies rainfall data to the unit hydrographs in the group"""
 
         self.value = []

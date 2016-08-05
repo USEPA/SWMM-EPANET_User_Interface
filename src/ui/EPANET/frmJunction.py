@@ -34,8 +34,8 @@ class frmJunction(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_id)
-                if edit_these[column].demand_pattern_id == value.pattern_id:
+                combobox.addItem(value.pattern_name)
+                if edit_these[column].demand_pattern_name == value.pattern_name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(7, column, combobox)
@@ -60,7 +60,7 @@ class frmJunction(frmGenericPropertyEditor):
         demands_list = section.value[0:]
         demand_count = 0
         for demand in demands_list:
-            if demand.junction_id == str(self.tblGeneric.item(0, column).text()):
+            if demand.junction_name == str(self.tblGeneric.item(0, column).text()):
                 demand_count += 1
         if demand_count == 0:
             # did not find any in demands table, so use whats in junction table

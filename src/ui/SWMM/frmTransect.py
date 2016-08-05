@@ -10,18 +10,18 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self._main_form = main_form
-        self.transect_id = ''
+        self.transect_name = ''
         # set for first transect for now
         self.set_from(main_form.project, 'xx')
 
-    def set_from(self, project, transect_id):
+    def set_from(self, project, transect_name):
         # section = core.swmm.project.Transects
         section = project.find_section("TRANSECTS")
         transect_list = section.value[0:]
         # assume we want to edit the first one
-        self.transect_id = transect_id
+        self.transect_name = transect_name
         for transect in transect_list:
-            if transect.name == transect_id:
+            if transect.name == transect_name:
                 # this is the transect we want to edit
                 self.txtName.setText(transect.name)
                 self.txtDescription.setText(transect.comment)
@@ -45,7 +45,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
         section = self._main_form.project.find_section("TRANSECTS")
         transect_list = section.value[0:]
         for transect in transect_list:
-            if transect.name == self.transect_id:
+            if transect.name == self.transect_name:
                 # this is the transect
                 transect.name = self.txtName.text()
                 transect.comment = self.txtDescription.text()

@@ -417,9 +417,9 @@ class frmMainEPANET(frmMain):
     def add_object_clicked(self, section_name):
         if section_name == "Patterns":
             new_item = Pattern()
-            new_item.pattern_id = "NewPattern"
+            new_item.pattern_name = "NewPattern"
             self.project.patterns.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.pattern_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.pattern_name))
         elif section_name == "Curves":
             new_item = Curve()
             new_item.name = "NewCurve"
@@ -464,7 +464,7 @@ class frmMainEPANET(frmMain):
     def delete_object_clicked(self, section_name, item_name):
         if section_name == "Patterns":
             for value in self.project.patterns.value:
-                if value.pattern_id == item_name:
+                if value.pattern_name == item_name:
                     self.project.patterns.value.remove(value)
         elif section_name == "Curves":
             for value in self.project.curves.value:

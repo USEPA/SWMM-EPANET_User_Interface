@@ -16,16 +16,16 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
         self.set_from(main_form.project, '1')
-        self.selected_pattern_id = '1'
+        self.selected_pattern_name = '1'
         self._main_form = main_form
 
-    def set_from(self, project, selected_pattern_id):
+    def set_from(self, project, selected_pattern_name):
         # section = core.swmm.project.Pattern()
         section = project.patterns
-        self.selected_pattern_id = selected_pattern_id
+        self.selected_pattern_name = selected_pattern_name
         pattern_list = section.value[0:]
         for value in pattern_list:
-             if value.name == selected_pattern_id:
+             if value.name == selected_pattern_name:
                  self.txtPatternID.setText(str(value.name))
                  self.txtDescription.setText(str(value.description))
                  ui.convenience.set_combo(self.cboType, value.pattern_type)

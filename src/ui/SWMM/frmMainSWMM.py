@@ -213,7 +213,7 @@ class frmMainSWMM(frmMain):
         tree_TimePatterns,
         tree_MapLabels]
 
-    tree_items_using_id = (tree_hydrology_Aquifers,
+    tree_items_using_name = (tree_hydrology_Aquifers,
                            tree_hydrology_LIDControls,
                            tree_hydrology_UnitHydrographs,
                            tree_hydrology_SnowPacks,
@@ -442,7 +442,7 @@ class frmMainSWMM(frmMain):
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/maplabeleditordialog.htm"
-        elif edit_name in [item[0] for item in self.tree_items_using_id]:
+        elif edit_name in [item[0] for item in self.tree_items_using_name]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
         elif edit_name == self.tree_links_Orifices[0] and len(self.project.orifices.value) == 0:

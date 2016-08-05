@@ -27,8 +27,8 @@ class ENR_categoryBase:
         Code outside this module should not need to access self.index. """
     TypeLabel = "Base"
 
-    def __init__(self, item_id, index):
-        self.name = item_id
+    def __init__(self, item_name, index):
+        self.name = item_name
         self.index = index
 
     def __str__(self):

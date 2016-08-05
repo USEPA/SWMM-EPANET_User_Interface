@@ -12,18 +12,18 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self._main_form = main_form
-        self.pack_id = ''
+        self.pack_name = ''
         # set for first snow pack for now
         self.set_from(main_form.project, '2')
 
-    def set_from(self, project, pack_id):
+    def set_from(self, project, pack_name):
         # section = core.swmm.project.SnowPack
         section = project.find_section("SNOWPACKS")
         snow_list = section.value[0:]
         # assume we want to edit the first one
-        self.pack_id = pack_id
+        self.pack_name = pack_name
         for pack in snow_list:
-            if pack.name == pack_id:
+            if pack.name == pack_name:
                 # this is the snowpack we want to edit
                 self.txtSnow.setText(pack.name)
 
@@ -85,7 +85,7 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
 
         snow_list = section.value[0:]
         for pack in snow_list:
-            if pack.name == self.pack_id:
+            if pack.name == self.pack_name:
                 # this is the snowpack
                 pack.name = self.txtSnow.text()
 

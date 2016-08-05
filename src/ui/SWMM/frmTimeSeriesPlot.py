@@ -59,8 +59,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self.cboStart.setCurrentIndex(0)
         self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
 
-    def add(self, object_type, object_id, variable, axis, legend):
-        item = object_type + ',' + object_id + ',' + variable + ',' + axis + ',"' + legend + '"'
+    def add(self, object_type, object_name, variable, axis, legend):
+        item = object_type + ',' + object_name + ',' + variable + ',' + axis + ',"' + legend + '"'
         self.lstData.addItem(item)
 
     def cboStart_currentIndexChanged(self):

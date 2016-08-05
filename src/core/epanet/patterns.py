@@ -6,7 +6,7 @@ class Pattern:
     If another Pattern is defined with the same ID, it is a continuation of the same Pattern split across lines.
     """
     def __init__(self):
-        self.pattern_id = ""
+        self.pattern_name = ""
         """Pattern name"""
 
         self.description = ""

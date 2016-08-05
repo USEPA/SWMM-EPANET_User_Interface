@@ -44,8 +44,8 @@ class frmPump(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_id)
-                if edit_these[column].pattern == value.pattern_id:
+                combobox.addItem(value.pattern_name)
+                if edit_these[column].pattern == value.pattern_name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(8, column, combobox)
@@ -73,7 +73,7 @@ class frmPump(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_id)
+                combobox.addItem(value.pattern_name)
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(12, column, combobox)
 

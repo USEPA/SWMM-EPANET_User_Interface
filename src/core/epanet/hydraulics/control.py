@@ -12,13 +12,13 @@ class ControlType(Enum):
 class Control():
     """Defines simple controls that modify links based on a single condition"""
     def __init__(self):
-        self.link_id = ""		# string
+        self.link_name = ""		# string
         """a link ID label"""
 
         self.status = ""	    # string
         """OPEN or CLOSED, a pump speed setting, or a control valve setting"""
 
-        self.node_id = ""		# string
+        self.node_name = ""		# string
         """a node ID label"""
 
         self.value = 0.0		# real

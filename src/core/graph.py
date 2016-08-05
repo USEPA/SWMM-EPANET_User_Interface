@@ -18,18 +18,18 @@ class SWMM:
     """
     @staticmethod
     def plot_scatter(output, title,
-                     object_type_label_x, object_id_x, attribute_name_x,
-                     object_type_label_y, object_id_y, attribute_name_y,
+                     object_type_label_x, object_name_x, attribute_name_x,
+                     object_type_label_y, object_name_y, attribute_name_y,
                      start_index=0, num_steps=-1):
         """ Read the specified data from SWMM output and create a scatter plot.
             Args
             output: Externals.swmm.outputapi.SMOutputWrapper.SwmmOutputObject which has the output of interest open.
             title: Text to display as title of graph window
             object_type_label_x: type of object to use for x values: "Subcatchment", "Node", or "Link"
-            object_id_x: identifier/name of the Subcatchment, Node, or Link to supply x values
+            object_name_x: identifier/name of the Subcatchment, Node, or Link to supply x values
             attribute_name_x: name from the AttributeNames list of SMO_subcatchment, SMO_node or SMO_link.
             object_type_label_y: "Subcatchment", "Node", or "Link"
-            object_id_y: identifier/name of the Subcatchment, Node, or Link to supply y values
+            object_name_y: identifier/name of the Subcatchment, Node, or Link to supply y values
             attribute_name_y: name from the AttributeNames list of SMO_subcatchment, SMO_node or SMO_link.
             start_index: first model time step to include. Default = 0 (start at the first value)
             num_steps: number of model time steps to use. Default = -1 (end at the last value)
@@ -38,12 +38,12 @@ class SWMM:
         fig.canvas.set_window_title(title)
         plt.title(title)
 
-        x_item = output.get_items(object_type_label_x)[object_id_x]
+        x_item = output.get_items(object_type_label_x)[object_name_x]
         x_attribute = x_item.get_attribute_by_name(attribute_name_x)
         x_units = x_attribute.units(output.unit_system)
         x_values = x_item.get_series(output, x_attribute, start_index, num_steps)
 
-        y_item = output.get_items(object_type_label_y)[object_id_y]
+        y_item = output.get_items(object_type_label_y)[object_name_y]
         y_attribute = x_item.get_attribute_by_name(attribute_name_y)
         y_units = y_attribute.units(output.unit_system)
         y_values = y_item.get_series(output, y_attribute, start_index, num_steps)
@@ -56,8 +56,8 @@ class SWMM:
         if y_units:
             y_units = ' (' + y_units + ')'
 
-        plt.xlabel(object_type_label_x + ' ' + object_id_x + ' ' + attribute_name_x + x_units)
-        plt.ylabel(object_type_label_y + ' ' + object_id_y + ' ' + attribute_name_y + y_units)
+        plt.xlabel(object_type_label_x + ' ' + object_name_x + ' ' + attribute_name_x + x_units)
+        plt.ylabel(object_type_label_y + ' ' + object_name_y + ' ' + attribute_name_y + y_units)
 
         plt.grid(True)
         plt.show()
@@ -82,8 +82,8 @@ class SWMM:
                 left_y_plot.xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d %H:%M'))
 
         for line in lines_list:
-            type_label, object_id, attribute_name, axis, legend_text = line.split(',', 4)
-            item = output.get_items(type_label)[object_id]
+            type_label, object_name, attribute_name, axis, legend_text = line.split(',', 4)
+            item = output.get_items(type_label)[object_name]
             if item:
                 attribute = item.get_attribute_by_name(attribute_name)
                 y_values = item.get_series(output, attribute, start_index, num_steps)

@@ -349,6 +349,7 @@ class StatisticUtility(object):
         #            (Uglobals.Nperiods - 1) * Uglobals.DeltaDateTime)
         lrdelta =  (self.output.num_periods - 1) * self.deltaDateTime
         lnewdate =  self.output.StartDate + relativedelta(days=lrdelta)
+
         self.AddNewEvent(EventList, lnewdate, aStats)
 
         # Make sure we have at least one event period

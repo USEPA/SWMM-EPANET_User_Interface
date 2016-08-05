@@ -8,6 +8,7 @@ from ui.SWMM.frmStatisticsReportSelectionDesigner import Ui_frmStatisticsReportS
 from ui.SWMM.frmStatisticsReport import frmStatisticsReport
 from ui.help import HelpHandler
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import core.swmm.globals as Uglobals
 
 class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSelection):
 
@@ -106,8 +107,17 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.stats.ObjectID = id_index.data()
         self.stats.Variable = self.cboVariable.currentIndex()
         self.stats.VariableText = self.cboVariable.currentText()
-        self.stats.TimePeriod = self.cboEvent.currentIndex()
-        self.stats.TimePeriodText = self.cboEvent.currentText()
+        eventTxt = self.cboEvent.currentText()
+        if eventTxt in "Event-Dependent":
+            self.stats.TimePeriod = ostatistics.ETimePeriod.tpVariable
+        elif eventTxt in "Daily":
+            self.stats.TimePeriod = ostatistics.ETimePeriod.tpDaily
+        elif eventTxt in "Monthly":
+            self.stats.TimePeriod = ostatistics.ETimePeriod.tpMonthly
+        elif eventTxt in "Annual":
+            self.stats.TimePeriod = ostatistics.ETimePeriod.tpAnnual
+
+        self.stats.TimePeriodText = eventTxt
         self.stats.VarIndex = self.cboStatistic.currentIndex()
         self.stats.StatsType = self.cboStatistic.currentIndex()
         self.stats.StatsTypeText = self.cboStatistic.currentText()
@@ -135,3 +145,4 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
 
     def cmdCancel_Clicked(self):
         self.close()
+

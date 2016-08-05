@@ -1,5 +1,6 @@
 import unittest
-from core.swmm.climatology.climatology import Adjustments
+
+from core.swmm.climatology import Adjustments
 
 
 class AdjustmentsTest(unittest.TestCase):

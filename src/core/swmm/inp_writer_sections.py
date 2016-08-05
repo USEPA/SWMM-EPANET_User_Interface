@@ -16,15 +16,15 @@ from core.swmm.quality import Washoff
 from core.swmm.quality import Pollutant
 from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
-from core.swmm.climatology.climatology import TemperatureSource
-from core.swmm.climatology.climatology import EvaporationFormat
-from core.swmm.climatology.climatology import WindSource
-from core.swmm.climatology.climatology import Temperature
-from core.swmm.climatology.climatology import Evaporation
-from core.swmm.climatology.climatology import WindSpeed
-from core.swmm.climatology.climatology import SnowMelt
-from core.swmm.climatology.climatology import ArealDepletion
-from core.swmm.climatology.climatology import Adjustments
+from core.swmm.climatology import TemperatureSource
+from core.swmm.climatology import EvaporationFormat
+from core.swmm.climatology import WindSource
+from core.swmm.climatology import Temperature
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import WindSpeed
+from core.swmm.climatology import SnowMelt
+from core.swmm.climatology import ArealDepletion
+from core.swmm.climatology import Adjustments
 from core.swmm.hydraulics.link import Link
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import Pump
@@ -80,7 +80,6 @@ from core.swmm.options.report import Report
 from core.inp_writer_base import SectionWriter
 
 
-
 class CurveWriter(SectionWriter):
     """Defines data curves and their X,Y points"""
 
@@ -97,7 +96,6 @@ class CurveWriter(SectionWriter):
             inp += CurveWriter.field_format.format(curve.name, type_name, xy[0], xy[1])
             type_name = "          "
         return inp
-
 
 
 class PatternWriter(SectionWriter):
@@ -122,7 +120,6 @@ class PatternWriter(SectionWriter):
         return section_text
 
 
-
 class LanduseWriter(SectionWriter):
     """Identifies the various categories of land uses within the drainage area. Each subcatchment area
         can be assigned a different mix of land uses. Each land use can be subjected to a different
@@ -140,7 +137,6 @@ class LanduseWriter(SectionWriter):
                                            landuse.street_sweeping_availability,
                                            landuse.last_swept)
         return inp
-
 
 
 class BuildupWriter(SectionWriter):
@@ -168,7 +164,6 @@ class BuildupWriter(SectionWriter):
                                            buildup.normalizer.name)
 
 
-
 class WashoffWriter(SectionWriter):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
 
@@ -183,7 +178,6 @@ class WashoffWriter(SectionWriter):
                                            washoff.exponent,
                                            washoff.cleaning_efficiency,
                                            washoff.bmp_efficiency)
-
 
 
 class PollutantWriter(SectionWriter):
@@ -209,7 +203,6 @@ class PollutantWriter(SectionWriter):
                                              pollutant.initial_concentration)
 
 
-
 class TimeSeriesWriter(SectionWriter):
     """One time series from the TIMESERIES section"""
 
@@ -230,7 +223,6 @@ class TimeSeriesWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class TitleWriter(SectionWriter):
     """SWMM descriptive title"""
 
@@ -240,7 +232,6 @@ class TitleWriter(SectionWriter):
     def as_text(title):
         """format contents of this item for writing to file"""
         return Title.SECTION_NAME + '\n' + title.title
-
 
 
 class TemperatureWriter(SectionWriter):
@@ -271,7 +262,6 @@ class TemperatureWriter(SectionWriter):
         text_list.append(temperature.snow_melt.as_text())
         text_list.append(temperature.areal_depletion.as_text())
         return '\n'.join(text_list)
-
 
 
 class EvaporationWriter(SectionWriter):
@@ -308,7 +298,6 @@ class EvaporationWriter(SectionWriter):
         return ''
 
 
-
 class WindSpeedWriter:
     """wind speed parameters, stored as part of [TEMPERATURE] section"""
 
@@ -329,7 +318,6 @@ class WindSpeedWriter:
         return inp
 
 
-
 class SnowMeltWriter:
     """snow melt parameters"""
 
@@ -346,7 +334,6 @@ class SnowMeltWriter:
                snow_melt.time_correction
 
 
-
 class ArealDepletionWriter:
     """areal depletion parameters"""
 
@@ -360,7 +347,6 @@ class ArealDepletionWriter:
         if len(areal_depletion.adc_impervious) > 0:
             text_list.append("ADC PERVIOUS\t" + '\t'.join(areal_depletion.adc_pervious))
         return '\n'.join(text_list)
-
 
 
 class AdjustmentsWriter(SectionWriter):
@@ -407,7 +393,6 @@ class AdjustmentsWriter(SectionWriter):
             return formatted
         else:
             return ''
-
 
 
 class ConduitWriter(Link):
@@ -539,7 +524,6 @@ class TransectWriter(SectionWriter):
         return '\n'.join(lines)
 
 
-
 class JunctionWriter(SectionWriter):
     """A Junction node"""
 
@@ -550,7 +534,6 @@ class JunctionWriter(SectionWriter):
         """format contents of this item for writing to file"""
         return JunctionWriter.field_format.format(junction.name, junction.elevation,
                                         junction.max_depth, junction.initial_depth, junction.surcharge_depth, junction.ponded_area)
-
 
 
 class DirectInflowWriter(SectionWriter):
@@ -578,7 +561,6 @@ class DirectInflowWriter(SectionWriter):
         return inp
 
 
-
 class DryWeatherInflowWriter(SectionWriter):
     """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
 
@@ -595,7 +577,6 @@ class DryWeatherInflowWriter(SectionWriter):
         return inp
 
 
-
 class RDIInflowWriter(SectionWriter):
     """Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node"""
 
@@ -610,7 +591,6 @@ class RDIInflowWriter(SectionWriter):
                                         rdi_inflow.hydrograph_group,
                                         rdi_inflow.sewershed_area)
         return inp
-
 
 
 class TreatmentWriter(SectionWriter):
@@ -649,7 +629,6 @@ class TreatmentWriter(SectionWriter):
         return inp
 
 
-
 class AquiferWriter(SectionWriter):
     """Sub-surface groundwater area that models water infiltrating."""
 
@@ -677,51 +656,8 @@ class AquiferWriter(SectionWriter):
         return inp
 
 
-
 class LIDControlWriter(SectionWriter):
     """Defines scale-independent LID controls that can be deployed within subcatchments"""
-
-    LineTypes = (
-        ("has_surface_layer",
-         "SURFACE",
-         "surface_layer_storage_depth",
-         "surface_layer_vegetative_cover_fraction",
-         "surface_layer_surface_roughness",
-         "surface_layer_surface_slope",
-         "surface_layer_swale_side_slope"),
-        ("has_soil_layer",
-         "SOIL",
-         "soil_layer_thickness",
-         "soil_layer_porosity",
-         "soil_layer_field_capacity",
-         "soil_layer_wilting_point",
-         "soil_layer_conductivity",
-         "soil_layer_conductivity_slope",
-         "soil_layer_suction_head"),
-        ("has_pavement_layer",
-         "PAVEMENT",
-         "pavement_layer_thickness",
-         "pavement_layer_void_ratio",
-         "pavement_layer_impervious_surface_fraction",
-         "pavement_layer_permeability",
-         "pavement_layer_clogging_factor"),
-        ("has_storage_layer",
-         "STORAGE",
-         "storage_layer_height",
-         "storage_layer_void_ratio",
-         "storage_layer_filtration_rate",
-         "storage_layer_clogging_factor"),
-        ("has_underdrain_system",
-         "DRAIN",
-         "drain_coefficient",
-         "drain_exponent",
-         "drain_offset_height",
-         "drain_delay"),
-        ("has_drainmat_system",
-         "DRAINMAT",
-         "drainmat_thickness",
-         "drainmat_void_fraction",
-         "drainmat_roughness"))
 
     @staticmethod
     def as_text(lid_control):
@@ -739,47 +675,9 @@ class LIDControlWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class SnowPackWriter(SectionWriter):
     """Snow pack parameters"""
 
-    LineTypes = (
-        ("has_plowable",
-         "PLOWABLE",
-         "plowable_minimum_melt_coefficient",
-         "plowable_maximum_melt_coefficient",
-         "plowable_base_temperature",
-         "plowable_fraction_free_water_capacity",
-         "plowable_initial_snow_depth",
-         "plowable_initial_free_water",
-         "plowable_fraction_impervious_area"),
-        ("has_impervious",
-         "IMPERVIOUS",
-         "impervious_minimum_melt_coefficient",
-         "impervious_maximum_melt_coefficient",
-         "impervious_base_temperature",
-         "impervious_fraction_free_water_capacity",
-         "impervious_initial_snow_depth",
-         "impervious_initial_free_water",
-         "impervious_depth_100_cover"),
-        ("has_pervious",
-         "PERVIOUS",
-         "pervious_minimum_melt_coefficient",
-         "pervious_maximum_melt_coefficient",
-         "pervious_base_temperature",
-         "pervious_fraction_free_water_capacity",
-         "pervious_initial_snow_depth",
-         "pervious_initial_free_water",
-         "pervious_depth_100_cover"),
-        ("has_removal",
-         "REMOVAL",
-         "depth_snow_removal_begins",
-         "fraction_transferred_out_watershed",
-         "fraction_transferred_impervious_area",
-         "fraction_transferred_pervious_area",
-         "fraction_converted_immediate_melt",
-         "fraction_moved_another_subcatchment",
-         "subcatchment_transfer"))
 
     @staticmethod
     def as_text(snow_pack):
@@ -794,7 +692,6 @@ class SnowPackWriter(SectionWriter):
                     line += '\t' + str(getattr(snow_pack, field_name))
                 text_list.append(line)
         return '\n'.join(text_list)
-
 
 
 class SubcatchmentWriter(SectionWriter):
@@ -816,7 +713,6 @@ class SubcatchmentWriter(SectionWriter):
         return inp
 
 
-
 class HortonInfiltrationWriter(SectionWriter):
     """Horton Infiltration parameters"""
 
@@ -836,7 +732,6 @@ class HortonInfiltrationWriter(SectionWriter):
         return inp
 
 
-
 class GreenAmptInfiltrationWriter(SectionWriter):
     """Green-Ampt Infiltration parameters"""
 
@@ -854,7 +749,6 @@ class GreenAmptInfiltrationWriter(SectionWriter):
         return inp
 
 
-
 class CurveNumberInfiltrationWriter(SectionWriter):
     """Curve Number Infiltration parameters"""
 
@@ -870,7 +764,6 @@ class CurveNumberInfiltrationWriter(SectionWriter):
                                         curve_number_infiltration.hydraulic_conductivity,
                                         curve_number_infiltration.dry_days)
         return inp
-
 
 
 class GroundwaterWriter(SectionWriter):
@@ -900,7 +793,6 @@ class GroundwaterWriter(SectionWriter):
         return inp
 
 
-
 class LIDUsageWriter(SectionWriter):
     """Specifies how an LID control will be deployed in a subcatchment"""
 
@@ -923,7 +815,6 @@ class LIDUsageWriter(SectionWriter):
         return inp
 
 
-
 class CoverageWriter(SectionWriter):
     """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
 
@@ -932,7 +823,6 @@ class CoverageWriter(SectionWriter):
     @staticmethod
     def as_text(coverage):
         return CoverageWriter.field_format.format(coverage.subcatchment_name, coverage.land_use_name, coverage.percent_subcatchment_area)
-
 
 
 class CoveragesWriter(SectionWriter):
@@ -958,7 +848,6 @@ class CoveragesWriter(SectionWriter):
         return '\n'.join(lines)
 
 
-
 class InitialLoadingWriter(SectionWriter):
     """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
 
@@ -971,7 +860,6 @@ class InitialLoadingWriter(SectionWriter):
             inp = initial_loading.comment + '\n'
         inp += InitialLoadingWriter.field_format.format(initial_loading.subcatchment_name, initial_loading.pollutant_name, initial_loading.initial_buildup)
         return inp
-
 
 
 class InitialLoadingsWriter(SectionWriter):
@@ -996,6 +884,27 @@ class InitialLoadingsWriter(SectionWriter):
                 lines.append(loading.as_text())
         return '\n'.join(lines)
 
+
+class RainGageWriter(SectionWriter):
+    """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
+
+    field_format = "{:16}\t{:10}\t{:6}\t{:6}\t"
+
+    @staticmethod
+    def as_text(rain_gage):
+        inp = RainGageWriter.field_format.format(rain_gage.name,
+                                                 rain_gage.rain_format.name,
+                                                 rain_gage.rain_interval,
+                                                 rain_gage.snow_catch_factor)
+        if rain_gage.timeseries:
+            inp += "{:10}\t{}".format("TIMESERIES", rain_gage.timeseries)
+        else:
+            inp += "{:10}\t{}\t{:10}\t{:10}".format("FILE", rain_gage.data_file_name,
+                                      rain_gage.data_file_station_id,
+                                      rain_gage.data_file_rain_units)
+        if rain_gage.comment:
+            inp += " # " + rain_gage.comment
+        return inp
 
 
 class UnitHydrographWriter(SectionWriter):
@@ -1027,7 +936,6 @@ class UnitHydrographWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class BackdropOptionsWriter(SectionWriter):
     """Identifies a backdrop image and dimensions for the network map"""
 
@@ -1050,7 +958,6 @@ class BackdropOptionsWriter(SectionWriter):
             text_list.append(" {:17}\t{:16}\t{:16}".format("SCALING",
                              backdrop_options.scaling[0], backdrop_options.scaling[1]))
         return '\n'.join(text_list)
-
 
 
 class GeneralWriter(SectionWriter):
@@ -1078,7 +985,6 @@ class GeneralWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class MapOptionsWriter(SectionWriter):
     """SWMM Map Options"""
 
@@ -1099,7 +1005,6 @@ class MapOptionsWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class ReportWriter(SectionWriter):
     """Report Options"""
 
@@ -1115,5 +1020,3 @@ class ReportWriter(SectionWriter):
             if line.split() != ["LID", "NONE"]:
                 lines.append(line)
         return '\n'.join(lines)
-
-

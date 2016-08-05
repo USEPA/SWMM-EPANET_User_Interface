@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
                                         new_line = new_line.replace("self", class_var_name)
                                         new_line = new_line.replace("InputFile.format_as_attribute_name",
-                                                                    "Project.format_as_attribute_name")
+                                                                    "ProjectBase.format_as_attribute_name")
 
                                         if in_read_method:
                                             if orig_class_name:

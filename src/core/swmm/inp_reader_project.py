@@ -10,9 +10,9 @@ from core.swmm.options.report import Report
 from core.swmm.options.files import Files
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.map import MapOptions
-from core.swmm.climatology.climatology import Evaporation
-from core.swmm.climatology.climatology import Temperature
-from core.swmm.climatology.climatology import Adjustments
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import Temperature
+from core.swmm.climatology import Adjustments
 from core.swmm.curves import Curve
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.lidcontrol import LIDControl
@@ -56,7 +56,7 @@ class ProjectReader(InputFileReader):
         # self.read_files = FilesReader()             # FILES         interface file options
         self.read_backdrop = BackdropOptionsReader()  # BACKDROP      bounding rectangle and file name of backdrop image
         self.read_map = MapOptionsReader()            # MAP           map's bounding rectangle and units
-        self.read_raingages = SectionReaderAsListOf("[RAINGAGES]", RainGage, SectionReader,
+        self.read_raingages = SectionReaderAsListOf("[RAINGAGES]", RainGage, RainGageReader,
              ";;Name          \tFormat   \tInterval\tSCF     \tSource    \n"
              ";;--------------\t---------\t------  \t------  \t----------")
 

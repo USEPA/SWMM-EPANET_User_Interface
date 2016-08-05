@@ -1,8 +1,8 @@
 from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
-from core.swmm.climatology.climatology import EvaporationFormat
-from core.swmm.climatology.climatology import Evaporation
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import EvaporationFormat
 import unittest
 
 

@@ -1,5 +1,5 @@
 import unittest
-from core.swmm.climatology.climatology import Temperature
+from core.swmm.climatology import Temperature
 
 
 class TemperatureTest(unittest.TestCase):  # TODO: go over the tests

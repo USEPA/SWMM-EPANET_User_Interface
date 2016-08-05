@@ -31,8 +31,6 @@ class RainFileUnits(Enum):
 class RainGage(Section):
     """A rain gage, including reference to location and time-series data"""
 
-    field_format = "{:16}\t{:10}\t{:6}\t{:6}\t{:10}"
-
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                    '', "Name",                  "",       '', '', "User-assigned name of rain gage"),

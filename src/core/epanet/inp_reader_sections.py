@@ -1,6 +1,6 @@
 import traceback
 from enum import Enum
-from core.project_base import Section
+from core.project_base import Section, ProjectBase
 from core.epanet.curves import CurveType
 from core.epanet.curves import Curve
 from core.epanet.labels import MeterType
@@ -426,7 +426,7 @@ class BackdropOptionsReader(SectionReader):
                     elif fields[0].lower() == "offset" and len(fields) > 2:
                         backdrop_options.offset = (fields[1], fields[2])
                     else:
-                        backdrop_options.setattr_keep_type(Project.format_as_attribute_name(fields[0]), fields[1])
+                        backdrop_options.setattr_keep_type(ProjectBase.format_as_attribute_name(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)
         return backdrop_options

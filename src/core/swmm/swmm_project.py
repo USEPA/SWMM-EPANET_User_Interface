@@ -1,30 +1,28 @@
-from core.project_base import ProjectBase, Section, SectionAsListOf
-# from core.swmm.hydraulics.control import ControlRule
-from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
-from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
-from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
-from core.swmm.title import Title
-from core.swmm.options.general import General
-# from core.swmm.options.time_steps import TimeSteps
-from core.swmm.options.report import Report
-from core.swmm.options.files import Files
-from core.swmm.options.backdrop import BackdropOptions
-from core.swmm.options.map import MapOptions
-from core.swmm.climatology.climatology import Evaporation
-from core.swmm.climatology.climatology import Temperature
-from core.swmm.climatology.climatology import Adjustments
+from core.project_base import ProjectBase, SectionAsListOf
+from core.swmm.climatology import Adjustments
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import Temperature
 from core.swmm.curves import Curve
+from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
+from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
+from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
-from core.swmm.hydrology.unithydrograph import UnitHydrograph
-from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoadings, Coverages
 from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration, CurveNumberInfiltration
-from core.swmm.patterns import Pattern
-from core.swmm.timeseries import TimeSeries
+from core.swmm.hydrology.subcatchment import Subcatchment, LIDUsage, Groundwater, InitialLoadings, Coverages
+from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.labels import Label
+from core.swmm.options.backdrop import BackdropOptions
+from core.swmm.options.files import Files
+from core.swmm.options.general import General
+from core.swmm.options.map import MapOptions
+from core.swmm.options.report import Report
+from core.swmm.patterns import Pattern
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
+from core.swmm.timeseries import TimeSeries
+from core.swmm.title import Title
 
 try:
     unicode = unicode

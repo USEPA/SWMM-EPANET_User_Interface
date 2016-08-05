@@ -1,84 +1,66 @@
 import traceback
-from enum import Enum
-from core.project_base import Section
-from core.swmm.curves import CurveType
+
+from core.inp_reader_base import SectionReader
+from core.project_base import ProjectBase, Section
+from core.swmm.climatology import Adjustments
+from core.swmm.climatology import ArealDepletion
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import EvaporationFormat
+from core.swmm.climatology import SnowMelt
+from core.swmm.climatology import Temperature
+from core.swmm.climatology import TemperatureSource
+from core.swmm.climatology import WindSource
+from core.swmm.climatology import WindSpeed
 from core.swmm.curves import Curve
-from core.swmm.patterns import PatternType
-from core.swmm.patterns import Pattern
-from core.swmm.quality import BuildupFunction
-from core.swmm.quality import Normalizer
-from core.swmm.quality import WashoffFunction
-from core.swmm.quality import ConcentrationUnits
-from core.swmm.quality import ConcentrationUnitLabels
-from core.swmm.quality import Landuse
-from core.swmm.quality import Buildup
-from core.swmm.quality import Washoff
-from core.swmm.quality import Pollutant
-from core.swmm.timeseries import TimeSeries
-from core.swmm.title import Title
-from core.swmm.climatology.climatology import TemperatureSource
-from core.swmm.climatology.climatology import EvaporationFormat
-from core.swmm.climatology.climatology import WindSource
-from core.swmm.climatology.climatology import Temperature
-from core.swmm.climatology.climatology import Evaporation
-from core.swmm.climatology.climatology import WindSpeed
-from core.swmm.climatology.climatology import SnowMelt
-from core.swmm.climatology.climatology import ArealDepletion
-from core.swmm.climatology.climatology import Adjustments
-from core.swmm.hydraulics.link import Link
+from core.swmm.curves import CurveType
 from core.swmm.hydraulics.link import Conduit
-from core.swmm.hydraulics.link import Pump
-from core.swmm.hydraulics.link import OrificeType
-from core.swmm.hydraulics.link import Orifice
-from core.swmm.hydraulics.link import WeirType
-from core.swmm.hydraulics.link import RoadSurfaceType
-from core.swmm.hydraulics.link import Weir
-from core.swmm.hydraulics.link import OutletCurveType
-from core.swmm.hydraulics.link import Outlet
-from core.swmm.hydraulics.link import CrossSectionShape
 from core.swmm.hydraulics.link import CrossSection
-from core.swmm.hydraulics.link import Transects
+from core.swmm.hydraulics.link import CrossSectionShape
+from core.swmm.hydraulics.link import Link
+from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import Transect
-from core.swmm.hydraulics.node import Junction
-from core.swmm.hydraulics.node import OutfallType
-from core.swmm.hydraulics.node import Outfall
-from core.swmm.hydraulics.node import FlowDividerType
-from core.swmm.hydraulics.node import WeirDivider
-from core.swmm.hydraulics.node import Divider
-from core.swmm.hydraulics.node import StorageCurveType
-from core.swmm.hydraulics.node import StorageUnit
-from core.swmm.hydraulics.node import DirectInflowType
+from core.swmm.hydraulics.link import Transects
 from core.swmm.hydraulics.node import DirectInflow
+from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.hydraulics.node import DryWeatherInflow
+from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import RDIInflow
 from core.swmm.hydraulics.node import Treatment
 from core.swmm.hydrology.aquifer import Aquifer
-from core.swmm.hydrology.lidcontrol import LIDType
 from core.swmm.hydrology.lidcontrol import LIDControl
+from core.swmm.hydrology.lidcontrol import LIDType
+from core.swmm.hydrology.raingage import RainGage
 from core.swmm.hydrology.snowpack import SnowPack
-from core.swmm.hydrology.subcatchment import Routing
-from core.swmm.hydrology.subcatchment import Subcatchment
-from core.swmm.hydrology.subcatchment import HortonInfiltration
-from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
-from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
-from core.swmm.hydrology.subcatchment import Groundwater
-from core.swmm.hydrology.subcatchment import LIDUsage
 from core.swmm.hydrology.subcatchment import Coverage
 from core.swmm.hydrology.subcatchment import Coverages
+from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
+from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
+from core.swmm.hydrology.subcatchment import Groundwater
+from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
-from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
+from core.swmm.hydrology.subcatchment import LIDUsage
+from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
+from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from core.swmm.options.backdrop import BackdropOptions
-from core.swmm.options.general import FlowUnits
 from core.swmm.options.general import FlowRouting
-from core.swmm.options.general import LinkOffsets
 from core.swmm.options.general import General
-from core.swmm.options.map import MapUnits
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
-from core.inp_reader_base import SectionReader
-
+from core.swmm.patterns import Pattern
+from core.swmm.patterns import PatternType
+from core.swmm.quality import Buildup
+from core.swmm.quality import BuildupFunction
+from core.swmm.quality import ConcentrationUnitLabels
+from core.swmm.quality import ConcentrationUnits
+from core.swmm.quality import Landuse
+from core.swmm.quality import Normalizer
+from core.swmm.quality import Pollutant
+from core.swmm.quality import Washoff
+from core.swmm.quality import WashoffFunction
+from core.swmm.timeseries import TimeSeries
+from core.swmm.title import Title
 
 
 class CurveReader(SectionReader):
@@ -1153,7 +1135,6 @@ class CoveragesReader(SectionReader):
 class InitialLoadingReader(SectionReader):
     """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
 
-
     @staticmethod
     def read(new_text):
         initial_loading = InitialLoading()
@@ -1184,6 +1165,33 @@ class InitialLoadingsReader(SectionReader):
                     new_loading.set_text(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
                     initial_loadings.value.append(new_loading)
         return initial_loadings
+
+
+class RainGageReader(SectionReader):
+    """Read a rain gage from text"""
+
+    @staticmethod
+    def read(new_text):
+        rain_gage = RainGage()
+        new_text = SectionReader.set_comment_check_section(rain_gage, new_text)
+        fields = new_text.split()
+        if len(fields) > 0:
+            rain_gage.name = fields[0]
+        if len(fields) > 1:
+            rain_gage.setattr_keep_type("rain_format", fields[1])
+        if len(fields) > 2:
+            rain_gage.rain_interval = fields[2]
+        if len(fields) > 3:
+            rain_gage.snow_catch_factor = fields[3]
+        if len(fields) > 5:
+            if fields[4].upper() == "TIMESERIES":
+                rain_gage.timeseries = fields[5]
+            else:
+                rain_gage.data_file_name = fields[5]
+                if len(fields) > 6:
+                    rain_gage.data_file_station_id = fields[6]
+                if len(fields) > 7:
+                    rain_gage.data_file_rain_units = fields[7]
 
 
 class UnitHydrographReader(SectionReader):
@@ -1245,7 +1253,7 @@ class BackdropOptionsReader(SectionReader):
                     elif fields[0].lower() == "scaling" and len(fields) > 2:
                         backdrop_options.scaling = (float(fields[1]), float(fields[2]))
                     else:
-                        backdrop_options.setattr_keep_type(Project.format_as_attribute_name(fields[0]), fields[1])
+                        backdrop_options.setattr_keep_type(ProjectBase.format_as_attribute_name(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)
         return backdrop_options
@@ -1307,7 +1315,7 @@ class MapOptionsReader(SectionReader):
 
     @staticmethod
     def read(new_text):
-        MapOptions.__init__(map_options)
+        map_options = MapOptions()
         for line in new_text.splitlines():
             try:
                 line = SectionReader.set_comment_check_section(map_options, line)
@@ -1316,7 +1324,7 @@ class MapOptionsReader(SectionReader):
                     if fields[0].lower() == "dimensions" and len(fields) > 4:
                         map_options.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
                     else:
-                        map_options.setattr_keep_type(Project.format_as_attribute_name(fields[0]), fields[1])
+                        map_options.setattr_keep_type(ProjectBase.format_as_attribute_name(fields[0]), fields[1])
             except:
                 print("BackdropOptions skipping input line: " + line)
         return map_options

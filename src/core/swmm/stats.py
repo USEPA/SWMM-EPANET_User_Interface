@@ -206,7 +206,7 @@ class StatisticUtility(object):
         self.CategorizeStats(self.Stats)
         self.FindEvents(EventList, self.output, self.Stats)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
-        self.RankEvents(EventList)
+        self.RankEvents(EventList, self.output, self.Tser)
         self.FindStats(EventList, Results)
         #StatsSel = self.Stats #don't think this is necessary
         #return Results
@@ -349,6 +349,7 @@ class StatisticUtility(object):
         #            (Uglobals.Nperiods - 1) * Uglobals.DeltaDateTime)
         lrdelta =  (self.output.num_periods - 1) * self.deltaDateTime
         lnewdate =  self.output.StartDate + relativedelta(days=lrdelta)
+
         self.AddNewEvent(EventList, lnewdate, aStats)
 
         # Make sure we have at least one event period

@@ -57,7 +57,7 @@ class EStatsQuant(Enum):
 # Record which contains the properties of a single event
 class TStatsEvent:
     def __init__(self):
-        self.StartDate = datetime.now() #TDateTime
+        self.StartDate = None #TDateTime, datetime.datetime.now()
         self.Value = 0.0 #Single
         self.Duration = 0.0 # duration in milliseconds or seconds, Single
         self.Rank = 0 #Integer
@@ -175,7 +175,7 @@ class StatisticUtility(object):
         self.CategorizeStats(self.Stats)
         self.FindEvents(EventList, self.output, self.Stats)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
-        self.RankEvents(EventList, self.output, self.Tser)
+        self.RankEvents(EventList)
         self.FindStats(EventList, Results)
         StatsSel = self.Stats #??? what for ???
         return Results
@@ -415,7 +415,7 @@ class StatisticUtility(object):
             AnEvent = TStatsEvent()
             # Assign it a start date and duration
             # Looks like Uglobals.DeltaDateTime is in days
-            if "Event" in aStats.StatsTimePeriodText:    # self.stats.StatsTimePeriod == ETimePeriod.tpVariable:
+            if "Event" in aStats.TimePeriodText:    # self.stats.TimePeriod == ETimePeriod.tpVariable:
                 AnEvent.StartDate = self.WetStart
                 #AnEvent.Duration  = 24 * (self.WetEnd - self.WetStart)   # in hours
                 rdiff = relativedelta(self.WetEnd, self.WetStart)
@@ -470,7 +470,7 @@ class StatisticUtility(object):
             LastStartDate = self.output.StartDate
             LastDate = LastStartDate
         else:
-            LastEvent = EventList.Items[len(EventList)-1]
+            LastEvent = EventList[len(EventList)-1]
             LastStartDate = LastEvent.StartDate
             #LastDate = LastStartDate + LastEvent.Duration/24.0
             LastDate = LastStartDate + relativedelta(hours=LastEvent.Duration)
@@ -547,7 +547,7 @@ class StatisticUtility(object):
         # using the Compare function as the comparison function.
         #ToDo, how to sort
         # EventList.Sort(@Compare)
-        EventList.Sort(self.Compare)
+        EventList.sort(self.Compare)
         #EventList.sort(key=lambda x: x.Value)
         #import operator as op
         #EventList.sort(key=op.attrgetter('Value'))
@@ -556,16 +556,16 @@ class StatisticUtility(object):
         #  each event (events with the same value have the same rank)
         N = len(EventList)
         if N > 0:
-            E1 = EventList.Items[N - 1]
+            E1 = EventList[N - 1]
             E1.Rank = N
             for I in xrange(N - 2, -1, -1):
-                E2 = EventList.Items[I]
+                E2 = EventList[I]
                 if E1.Value == E2.Value:
                     E2.Rank = E1.Rank
                 else:
                     E2.Rank = I + 1
                 #ToDo: not sure what this means
-                E1 = E2 #or perhaps: E1 = EventList.Items[I]
+                E1 = E2 #or perhaps: E1 = EventList[I]
 
     def FindStats(self, EventList, Results):
         #def FindStats(EventList: TList var Results: TStatsResults):

@@ -160,6 +160,9 @@ class SwmmOutputAttribute():
         self.name = name
         self._units = units
         self.str_format = str_format
+        self.IsQualParam = False
+        self.IsRainParam = False
+        self.FlowVarIndex = -1
 
     def str(self, value):
         """Format a value using the string format of this attribute"""
@@ -268,6 +271,7 @@ class SwmmOutputSystem(SwmmOutputCategoryBase):
     attribute_outflow            = SwmmOutputAttribute(_lib.outfall_flows,        "Outflow",            ('CFS', 'CMS'))
     attribute_storage            = SwmmOutputAttribute(_lib.volume_stored,        "Storage",            ('ft3', 'm3'))
     attribute_evaporation        = SwmmOutputAttribute(_lib.evap_rate,            "Evaporation", ('in/day', 'mm/day'))
+    #attribute_pet                = SwmmOutputAttribute(_lib.pet,                  "PET",         ('in/day', 'mm/day'))
 
     attributes = (attribute_temperature,
                   attribute_precipitation,
@@ -466,7 +470,7 @@ class SwmmOutputObject(object):
     def get_time_series(self, type_label, object_id, attribute_name):
         item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
         attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
-        y_values = item.get_series(attribute, 0, self.num_periods - 1)
+        y_values = item.get_series(self, attribute, 0, self.num_periods - 1)
         x_values = []
         for time_index in range(0, self.num_periods):
             elapsed_hours = self.elapsed_hours_at_index(time_index)
@@ -476,3 +480,6 @@ class SwmmOutputObject(object):
             x_values.append(self.StartDate + datetime.timedelta(hours=elapsed_hours))
         # now make a time series data frame
         return Series(y_values, index=x_values)
+
+    def reportStepDays(self):
+        return self.reportStep / 86400.0;

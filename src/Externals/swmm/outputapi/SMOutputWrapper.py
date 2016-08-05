@@ -159,6 +159,9 @@ class SwmmOutputAttribute():
         self.name = name
         self._units = units
         self.str_format = str_format
+        self.IsQualParam = False
+        self.IsRainParam = False
+        self.FlowVarIndex = -1
 
     def str(self, value):
         """Format a value using the string format of this attribute"""

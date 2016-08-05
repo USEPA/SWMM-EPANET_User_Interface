@@ -314,8 +314,8 @@ class StatisticUtility(object):
         self.DryEnd = self.WetEnd + relativedelta(days= 1, hours= aStats.MinEventDelta)
         #self.AddNewEvent(EventList, Uglobals.StartDateTime +
         #            (Uglobals.Nperiods - 1) * Uglobals.DeltaDateTime)
-        lnewdate =  self.output.StartDateTime + \
-                    relativedelta(days=(self.output.numperiods - 1) * self.deltaDateTime)
+        lrdelta =  (self.output.num_periods - 1) * self.deltaDateTime
+        lnewdate =  self.output.StartDate + relativedelta(days=lrdelta)
         self.AddNewEvent(EventList, lnewdate, aStats)
 
         # Make sure we have at least one event period
@@ -467,7 +467,7 @@ class StatisticUtility(object):
 
         # Find the starting and ending dates of the previous event
         if len(EventList) == 0:
-            LastStartDate = self.output.StartDateTime
+            LastStartDate = self.output.StartDate
             LastDate = LastStartDate
         else:
             LastEvent = EventList.Items[len(EventList)-1]

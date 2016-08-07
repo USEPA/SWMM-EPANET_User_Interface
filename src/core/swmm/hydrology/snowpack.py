@@ -1,4 +1,4 @@
-from core.inputfile import Section
+from core.project_base import Section
 
 
 class SnowPack(Section):
@@ -42,7 +42,7 @@ class SnowPack(Section):
          "fraction_moved_another_subcatchment",
          "subcatchment_transfer"))
 
-    def __init__(self, new_text=None):
+    def __init__(self):
         Section.__init__(self)
 
         self.name = ''
@@ -142,41 +142,4 @@ class SnowPack(Section):
         self.subcatchment_transfer = ""
         """subcatchment receiving transfers of snow depth"""
 
-        if new_text:
-            self.set_text(new_text)
 
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        text_list = []
-        if self.comment:
-            text_list.append(self.comment)
-        for field_names in self.LineTypes:
-            if getattr(self, field_names[0]):               # If the flag for this group of fields is true,
-                line = self.name + '\t' + field_names[1]    # add a line with name, group name,
-                for field_name in field_names[2:]:          # and the field values in this group.
-                    line += '\t' + str(getattr(self, field_name))
-                text_list.append(line)
-        return '\n'.join(text_list)
-
-    def set_text(self, new_text):
-        self.__init__()
-        for line in new_text.splitlines():
-            line = self.set_comment_check_section(line)
-            if line:
-                fields = line.split()
-                if len(fields) > 2:
-                    if not self.name:                      # If we have not found a name yet, use the first one we find
-                        self.name = fields[0]
-                    elif fields[0] != self.name:           # If we find a different name, complain
-                        raise ValueError("SnowPack.set_text: name: " + fields[0] + " != " + self.name)
-                    check_type = fields[1].upper()
-                    found_type = False
-                    for field_names in self.LineTypes:
-                        if field_names[1].upper() == check_type:  # Find the group of fields this line is about
-                            found_type = True
-                            setattr(self, field_names[0], True)   # Set flag to show we have this group
-                            for (field_name, field_value) in zip(field_names[2:], fields[2:]):
-                                self.setattr_keep_type(field_name, field_value)
-                            continue
-                    if not found_type:
-                        raise ValueError("SnowPack.set_text: Unknown line: " + line)

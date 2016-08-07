@@ -1,5 +1,5 @@
 import os
-import core.swmm.project
+import core.swmm.swmm_project
 import unittest
 import inspect
 import shutil
@@ -12,8 +12,8 @@ import webbrowser
 class ProjectTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_project = core.swmm.project.Project()
-        self.new_project = core.swmm.project.Project()
+        self.my_project = core.swmm.swmm_project.SwmmProject()
+        self.new_project = core.swmm.swmm_project.SwmmProject()
 
     @staticmethod
     def get_immediate_subdirectories(a_dir):
@@ -300,7 +300,7 @@ class ProjectTest(unittest.TestCase):
 
         # Write HTML table
         # Print opening HTML tags -------------------------
-        text_file.write("<htm><body><table border='1'>")
+        text_file.write("<html><body><table border='1'>")
         # Print the content of the table, line by line ----
         for i in range(0, len(examples)):
             cur_status = status[i]

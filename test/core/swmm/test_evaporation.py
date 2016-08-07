@@ -1,7 +1,8 @@
-from core.inputfile import Section
-from core.swmm.project import Project
-from core.swmm.climatology.climatology import EvaporationFormat
-from core.swmm.climatology.climatology import Evaporation
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
+from core.swmm.climatology import Evaporation
+from core.swmm.climatology import EvaporationFormat
 import unittest
 
 
@@ -148,7 +149,7 @@ class EvaporationTest(unittest.TestCase):
         test_text = '\n'.join(test_text)
         from_text.set_text(test_text)
         project_section = from_text.evaporation
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), test_text, " \t-;\n")
         assert project_section.format == EvaporationFormat.CONSTANT
         assert project_section.constant == "0.2"
         assert project_section.monthly == ()

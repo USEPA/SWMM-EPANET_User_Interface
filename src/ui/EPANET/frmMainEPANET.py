@@ -22,6 +22,12 @@ from ui.EPANET.frmTitle import frmTitle
 
 from ui.EPANET.frmAbout import frmAbout
 from ui.EPANET.frmControls import frmControls
+from ui.EPANET.frmJunction import frmJunction
+from ui.EPANET.frmReservoir import frmReservior
+from ui.EPANET.frmTank import frmTank
+from ui.EPANET.frmPipe import frmPipe
+from ui.EPANET.frmPump import frmPump
+from ui.EPANET.frmValve import frmValve
 from ui.EPANET.frmCurveEditor import frmCurveEditor
 from ui.EPANET.frmPatternEditor import frmPatternEditor
 from ui.EPANET.frmSourcesQuality import frmSourcesQuality
@@ -31,17 +37,21 @@ from ui.EPANET.frmTable import frmTable
 from ui.EPANET.frmEnergyReport import frmEnergyReport
 from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
+from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
-from core.epanet.project import Project
+from core.epanet.epanet_project import EpanetProject as Project
+from core.epanet.inp_reader_project import ProjectReader
+from core.epanet.inp_writer_project import ProjectWriter
+from core.epanet.hydraulics.node import Junction
+from core.epanet.hydraulics.node import Reservoir
+from core.epanet.hydraulics.node import Tank
+from core.epanet.hydraulics.link import Pipe
+from core.epanet.hydraulics.link import Pump
+from core.epanet.hydraulics.link import Valve
+from core.epanet.labels import Label
+
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
-from core.epanet.project import Junction
-from core.epanet.project import Reservoir
-from core.epanet.project import Tank
-from core.epanet.project import Pipe
-from core.epanet.project import Pump
-from core.epanet.project import Valve
-from core.epanet.project import Label
 
 import core.epanet.reports as reports
 from Externals.epanet.model.epanet2 import ENepanet
@@ -78,12 +88,12 @@ class frmMainEPANET(frmMain):
 
     tree_TitleNotes = ["Title/Notes", frmTitle]
     tree_Options = ["Options", tree_options_items]
-    tree_Junctions = ["Junctions", None]
-    tree_Reservoirs = ["Reservoirs", None]
-    tree_Tanks = ["Tanks", None]
-    tree_Pipes = ["Pipes", None]
-    tree_Pumps = ["Pumps", None]
-    tree_Valves = ["Valves", None]
+    tree_Junctions = ["Junctions", frmJunction]
+    tree_Reservoirs = ["Reservoirs", frmReservior]
+    tree_Tanks = ["Tanks", frmTank]
+    tree_Pipes = ["Pipes", frmPipe]
+    tree_Pumps = ["Pumps", frmPump]
+    tree_Valves = ["Valves", frmValve]
     tree_Labels = ["Labels", None]
     tree_Patterns = ["Patterns", frmPatternEditor]
     tree_Curves = ["Curves", frmCurveEditor]
@@ -110,6 +120,8 @@ class frmMainEPANET(frmMain):
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''   # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
+        self.project_reader_type = ProjectReader
+        self.project_writer_type = ProjectWriter
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
@@ -338,158 +350,153 @@ class frmMainEPANET(frmMain):
 
         # the following items will respond to a click on a node form, not the tree diagram
         if edit_name == 'Reservoirs' or edit_name == 'Tanks':
-            # assume we're editing the first node for now
-            frm = frmSourcesQuality(self)
-            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
-            frm.set_from(self.project, '1')
+            return None
         elif edit_name == 'Junctions':
-            # assume we're editing the first junction for now
-            frm = frmDemands(self)
-            frm.setWindowTitle('EPANET Demands for Junction ' + '1')
-            frm.set_from(self.project, '1')
+            return None
         elif edit_name == 'Patterns':
             return None
         elif edit_name == 'Curves':
             return None
+        elif edit_name == 'Labels':
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        edit_these.extend(self.project.labels.value)
+                if len(edit_these) == 0:
+                    new_item = Label()
+                    new_item.name = "NewLabel"
+                    edit_these.append(new_item)
+                    self.project.labels.value = edit_these
+                else:
+                    self.new_item = False
+            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
+            frm.helper = HelpHandler(frm)
+            frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm
 
-    def get_editor_with_selected_item(self, edit_name, selected_item):
+    def get_editor_with_selected_items(self, edit_name, selected_items):
         frm = None
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Reservoirs' or edit_name == 'Tanks':
-            # assume we're editing the first node for now
-            frm = frmSourcesQuality(self)
-            frm.setWindowTitle('EPANET Source Editor for Node ' + '1')
-            frm.set_from(self.project, '1')
+        if edit_name == 'Tanks':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Reservoirs':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         elif edit_name == 'Junctions':
-            # assume we're editing the first junction for now
-            frm = frmDemands(self)
-            frm.setWindowTitle('EPANET Demands for Junction ' + '1')
-            frm.set_from(self.project, '1')
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Pipes':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Pumps':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Valves':
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
+        elif edit_name == 'Labels':
+            edit_these = []
+            if self.project and self.project.labels:
+                if not isinstance(self.project.labels.value, basestring):
+                    if isinstance(self.project.labels.value, list):
+                        for value in self.project.labels.value:
+                            if value.label in selected_items:
+                                edit_these.append(value)
+            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-            frm.set_from(self.project, selected_item)
+            frm.set_from(self.project, selected_items)
         return frm
 
     def get_object_list(self, category):
-        ids = []
-        if category.lower() == 'junctions':
-            for i in range(0, len(self.project.junctions.value)):
-                ids.append(self.project.junctions.value[i].id)
-        elif category.lower() == 'reservoirs':
-            for i in range(0, len(self.project.reservoirs.value)):
-                ids.append(self.project.reservoirs.value[i].id)
-        elif category.lower() == 'tanks':
-            for i in range(0, len(self.project.tanks.value)):
-                ids.append(self.project.tanks.value[i].id)
-        elif category.lower() == 'pipes':
-            for i in range(0, len(self.project.pipes.value)):
-                ids.append(self.project.pipes.value[i].id)
-        elif category.lower() == 'pumps':
-            for i in range(0, len(self.project.pumps.value)):
-                ids.append(self.project.pumps.value[i].id)
-        elif category.lower() == 'valves':
-            for i in range(0, len(self.project.valves.value)):
-                ids.append(self.project.valves.value[i].id)
-        elif category.lower() == 'labels':
-            for i in range(0, len(self.project.labels.value)):
-                ids.append(self.project.labels.value[i].label)
-        elif category.lower() == 'patterns':
-            for i in range(0, len(self.project.patterns.value)):
-                ids.append(self.project.patterns.value[i].pattern_id)
-        elif category.lower() == 'curves':
-            for i in range(0, len(self.project.curves.value)):
-                ids.append(self.project.curves.value[i].curve_id)
+        section = self.project.find_section(category)
+        if section:
+            return [item.name for item in section.value]
         else:
-            ids = None
-        return ids
+            return None
 
     def add_object_clicked(self, section_name):
         if section_name == "Patterns":
             new_item = Pattern()
-            new_item.pattern_id = "NewPattern"
+            new_item.pattern_name = "NewPattern"
             self.project.patterns.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.pattern_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.pattern_name))
         elif section_name == "Curves":
             new_item = Curve()
-            new_item.curve_id = "NewCurve"
+            new_item.name = "NewCurve"
             self.project.curves.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.curve_id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == "Junctions":
             new_item = Junction()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.junctions.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Reservoirs':
             new_item = Reservoir()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.reservoirs.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Tanks':
             new_item = Tank()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.tanks.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Pipes':
             new_item = Pipe()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.pipes.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Pumps':
             new_item = Pump()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.pumps.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Valves':
             new_item = Valve()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.valves.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
         elif section_name == 'Labels':
             new_item = Label()
-            new_item.id = "New"
+            new_item.name = "New"
             self.project.labels.value.append(new_item)
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, new_item.id))
+            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
 
     def delete_object_clicked(self, section_name, item_name):
         if section_name == "Patterns":
             for value in self.project.patterns.value:
-                if value.pattern_id == item_name:
+                if value.pattern_name == item_name:
                     self.project.patterns.value.remove(value)
         elif section_name == "Curves":
             for value in self.project.curves.value:
-                if value.curve_id == item_name:
+                if value.name == item_name:
                     self.project.curves.value.remove(value)
         elif section_name == "Junctions":
             for value in self.project.junctions.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.junctions.value.remove(value)
         elif section_name == 'Reservoirs':
             for value in self.project.reservoirs.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.reservoirs.value.remove(value)
         elif section_name == 'Tanks':
             for value in self.project.tanks.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.tanks.value.remove(value)
         elif section_name == 'Pipes':
             for value in self.project.pipes.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.pipes.value.remove(value)
         elif section_name == 'Pumps':
             for value in self.project.pumps.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.pumps.value.remove(value)
         elif section_name == 'Valves':
             for value in self.project.valves.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.valves.value.remove(value)
         elif section_name == 'Labels':
             for value in self.project.labels.value:
-                if value.id == item_name:
+                if value.name == item_name:
                     self.project.labels.value.remove(value)
 
     def run_simulation(self):
@@ -518,6 +525,9 @@ class frmMainEPANET(frmMain):
                     prefix, extension = os.path.splitext(file_name)
                     self.status_file_name = prefix + self.status_suffix
                     self.output_filename = prefix + '.out'
+                    if self.output:
+                        self.output.close()
+                        self.output = None
                     model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
@@ -536,8 +546,15 @@ class frmMainEPANET(frmMain):
 
                     frmRun.Execute()
                     self.report_status()
-                    self.output = ENOutputWrapper.OutputObject(self.output_filename)
-                    return
+                    try:
+                        self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                    self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
                     QMessageBox.information(None, self.model,

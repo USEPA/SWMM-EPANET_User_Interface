@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.hydrology.lidcontrol import LIDControl
 
 
@@ -92,4 +93,4 @@ Swale            SURFACE    36         0.0        0.24       1.0        5"""
         project_section = from_text.lid_controls
         actual_text = project_section.get_text()
         assert project_section.matches(test_text)
-        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        # assert match_omit(project_section.get_text(), test_text, " \t-;\n")

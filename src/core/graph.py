@@ -9,47 +9,44 @@ from matplotlib import dates
 import colorsys
 import datetime
 import numpy as np
-# from Externals.epanet.outputapi.ENOutputWrapper import ENR_demand
-ENR_demand = 0  # Avoid importing so SWMM does not depend on EPANET
 
 
 class SWMM:
     """
         Graphing methods used by SWMM.
-        parameter output is defined in Externals.swmm.outputapi.SMOutputWrapper as OutputObject
+        parameter output is defined in Externals.swmm.outputapi.SMOutputWrapper as SwmmOutputObject
     """
     @staticmethod
     def plot_scatter(output, title,
-                     object_type_label_x, object_id_x, attribute_name_x,
-                     object_type_label_y, object_id_y, attribute_name_y,
+                     object_type_label_x, object_name_x, attribute_name_x,
+                     object_type_label_y, object_name_y, attribute_name_y,
                      start_index=0, num_steps=-1):
         """ Read the specified data from SWMM output and create a scatter plot.
             Args
-            output: Externals.swmm.outputapi.SMOutputWrapper.OutputObject which has the output of interest open.
+            output: Externals.swmm.outputapi.SMOutputWrapper.SwmmOutputObject which has the output of interest open.
             title: Text to display as title of graph window
             object_type_label_x: type of object to use for x values: "Subcatchment", "Node", or "Link"
-            object_id_x: identifier/name of the Subcatchment, Node, or Link to supply x values
+            object_name_x: identifier/name of the Subcatchment, Node, or Link to supply x values
             attribute_name_x: name from the AttributeNames list of SMO_subcatchment, SMO_node or SMO_link.
             object_type_label_y: "Subcatchment", "Node", or "Link"
-            object_id_y: identifier/name of the Subcatchment, Node, or Link to supply y values
+            object_name_y: identifier/name of the Subcatchment, Node, or Link to supply y values
             attribute_name_y: name from the AttributeNames list of SMO_subcatchment, SMO_node or SMO_link.
             start_index: first model time step to include. Default = 0 (start at the first value)
             num_steps: number of model time steps to use. Default = -1 (end at the last value)
             """
         fig = plt.figure()
-        # if num_steps < self.output.numPeriods:
         fig.canvas.set_window_title(title)
         plt.title(title)
 
-        x_values, x_units = output.get_series_by_name(object_type_label_x,
-                                                      object_id_x,
-                                                      attribute_name_x,
-                                                      start_index, num_steps)
+        x_item = output.get_items(object_type_label_x)[object_name_x]
+        x_attribute = x_item.get_attribute_by_name(attribute_name_x)
+        x_units = x_attribute.units(output.unit_system)
+        x_values = x_item.get_series(output, x_attribute, start_index, num_steps)
 
-        y_values, y_units = output.get_series_by_name(object_type_label_y,
-                                                      object_id_y,
-                                                      attribute_name_y,
-                                                      start_index, num_steps)
+        y_item = output.get_items(object_type_label_y)[object_name_y]
+        y_attribute = x_item.get_attribute_by_name(attribute_name_y)
+        y_units = y_attribute.units(output.unit_system)
+        y_values = y_item.get_series(output, y_attribute, start_index, num_steps)
 
         plt.scatter(x_values, y_values, s=15, alpha=0.5)
 
@@ -59,8 +56,8 @@ class SWMM:
         if y_units:
             y_units = ' (' + y_units + ')'
 
-        plt.xlabel(object_type_label_x + ' ' + object_id_x + ' ' + attribute_name_x + x_units)
-        plt.ylabel(object_type_label_y + ' ' + object_id_y + ' ' + attribute_name_y + y_units)
+        plt.xlabel(object_type_label_x + ' ' + object_name_x + ' ' + attribute_name_x + x_units)
+        plt.ylabel(object_type_label_y + ' ' + object_name_y + ' ' + attribute_name_y + y_units)
 
         plt.grid(True)
         plt.show()
@@ -85,29 +82,33 @@ class SWMM:
                 left_y_plot.xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d %H:%M'))
 
         for line in lines_list:
-            type_label, object_id, attribute, axis, legend_text = line.split(',', 4)
-            legend_text = legend_text.strip('"')
-            y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
-            if y_values:
-                if axis == "Left":
-                    plot_on = left_y_plot
-                else:
-                    if not right_y_plot:
-                        right_y_plot = fig.add_subplot(111, sharex=left_y_plot, frameon=False)
-                        right_y_plot.yaxis.set_label_position("right")
-                        right_y_plot.yaxis.tick_right()  # Only show right-axis tics on right axis
-                        left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
-                    plot_on = right_y_plot
+            type_label, object_name, attribute_name, axis, legend_text = line.split(',', 4)
+            item = output.get_items(type_label)[object_name]
+            if item:
+                attribute = item.get_attribute_by_name(attribute_name)
+                y_values = item.get_series(output, attribute, start_index, num_steps)
+                if y_values:
+                    if axis == "Left":
+                        plot_on = left_y_plot
+                    else:
+                        if not right_y_plot:
+                            right_y_plot = fig.add_subplot(111, sharex=left_y_plot, frameon=False)
+                            right_y_plot.yaxis.set_label_position("right")
+                            right_y_plot.yaxis.tick_right()  # Only show right-axis tics on right axis
+                            left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
+                        plot_on = right_y_plot
 
-                color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
-                new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
-                lines_plotted.append(new_line)
-                line_legends.append(legend_text)
-                old_label = plot_on.get_ylabel()
-                if not old_label:
-                    plot_on.set_ylabel(units)
-                elif units not in old_label:
-                    plot_on.set_ylabel(old_label + ', ' + units)
+                    color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
+                    legend_text = legend_text.strip('"')
+                    new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
+                    lines_plotted.append(new_line)
+                    line_legends.append(legend_text)
+                    old_label = plot_on.get_ylabel()
+                    units = attribute.units(output.unit_system)
+                    if not old_label:
+                        plot_on.set_ylabel(units)
+                    elif units not in old_label:
+                        plot_on.set_ylabel(old_label + ', ' + units)
 
         # fig.suptitle("Time Series Plot")
         # plt.ylabel(parameter_label)
@@ -125,22 +126,25 @@ class SWMM:
 class EPANET:
 
     @staticmethod
-    def plot_time(output, get_index, get_value, parameter_code, parameter_label, ids):
+    def plot_time(output, attribute, items):
         fig = plt.figure()
-        title = "Time Series Plot of " + parameter_label
+
+        title = "Time Series Plot of " + attribute.name
+        units = attribute.units(output.unit_system)
+        parameter_label = attribute.name
+        if units:
+            parameter_label += ' (' + units + ')'
+
         fig.canvas.set_window_title(title)
         plt.title(title)
         x_values = []
-        for time_index in range(0, output.numPeriods):
+        for time_index in range(0, output.num_periods):
             x_values.append(output.elapsed_hours_at_index(time_index))
 
         line_count = 0
-        for each_id in ids:
-            output_index = get_index(each_id)
-            y_values = []
-            for time_index in range(0, output.numPeriods):
-                y_values.append(get_value(output_index, time_index, parameter_code))
-            plt.plot(x_values, y_values, label=each_id)
+        for item in items:
+            y_values = item.get_series(output, attribute)
+            plt.plot(x_values, y_values, label=item.name)
             line_count += 1
 
         if line_count > 0:
@@ -155,28 +159,34 @@ class EPANET:
             raise Exception("No lines were selected to graph")
 
     @staticmethod
-    def update_profile(output, graph_ids, x_values, get_index, get_value, parameter_code, parameter_label, fig_number, time_index):
+    def update_profile(output, items, x_values, attribute, fig_number, time_index):
         if time_index >= 0:
             fig = plt.figure(fig_number)
             fig.clear()
-            title = "Profile Plot of " + parameter_label + " at " + output.get_time_string(time_index)
+            title = "Profile Plot of " + attribute.name + " at " + output.get_time_string(time_index)
             fig.canvas.set_window_title(title)
             plt.title(title)
+            units = attribute.units(output.unit_system)
+            parameter_label = attribute.name
+            if units:
+                parameter_label += ' (' + units + ')'
+
+            all_y_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+
             y_values = []
             min_y = 999.9
 
-            for (graph_id, x_value) in zip(graph_ids, x_values):
-                output_index = get_index(graph_id)
-                y = get_value(output_index, time_index, parameter_code)
+            for (item, x_value) in zip(items, x_values):
+                y = all_y_values[item.index]
                 if min_y == 999.9 or y < min_y:
                     min_y = y
                 y_values.append(y)
                 plt.annotate(
-                    graph_id,
+                    item.name,
                     xy=(x_value, y), xytext=(0, 20),
                     textcoords='offset points', ha='center', va='bottom',
                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
-                #, arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+                # , arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
             plt.fill_between(x_values, y_values, min_y)
 
@@ -187,24 +197,30 @@ class EPANET:
             plt.show()
 
     @staticmethod
-    def plot_freq(output, get_index, get_value, parameter_code, parameter_label, time_index, ids):
+    def plot_freq(output, attribute, time_index, items):
         if time_index < 0:
             raise Exception("Time index not selected, cannot plot frequency")
-        count = len(ids)
+        count = len(items)
         if count < 1:
             raise Exception("No items in list, cannot plot frequency")
         fig = plt.figure()
-        title = "Distribution of " + parameter_label + " at " + output.get_time_string(time_index)
+        title = "Distribution of " + attribute.name + " at " + output.get_time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
+        units = attribute.units(output.unit_system)
+        parameter_label = attribute.name
+        if units:
+            parameter_label += ' (' + units + ')'
+
+        all_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+
         percent = []
         values = []
         index = 0
-        for each_id in ids:
+        for item in items:
             percent.append(index * 100 / count)
             index += 1
-            output_index = get_index(each_id)
-            values.append(get_value(output_index, time_index, parameter_code))
+            values.append(all_values[item.index])
 
         values.sort()
         # Cumulative distributions:
@@ -218,8 +234,10 @@ class EPANET:
 
     @staticmethod
     def plot_system_flow(output):
-        if output.nodeCount < 1:
+        if not output.nodes:
             raise Exception("No node results present in output, cannot plot system flow")
+        # import here to avoid SWMM depending on EPANET
+        from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type
         fig = plt.figure()
         title = "System Flow Balance"
         fig.canvas.set_window_title(title)
@@ -227,14 +245,14 @@ class EPANET:
         x_values = []
         produced = []
         consumed = []
-        for time_index in range(0, output.numPeriods):
+        for time_index in range(0, output.num_periods):
             x_values.append(output.elapsed_hours_at_index(time_index))
             produced.append(0)
             consumed.append(0)
 
-        for node_index in range(0, output.nodeCount - 1):
-            node_flows = output.get_NodeSeries(node_index, ENR_demand)
-            for time_index in range(0, output.numPeriods):
+        for node in output.nodes.values():
+            node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
+            for time_index in range(0, output.num_periods):
                 flow = node_flows[time_index]
                 if flow > 0:
                     consumed[time_index] += flow
@@ -245,7 +263,10 @@ class EPANET:
         plt.plot(x_values, produced, label="Produced")
 
         # fig.suptitle("Time Series Plot")
-        plt.ylabel("Flow")
+        flow_units = ""
+        if output.flowUnitsLabel:
+            flow_units = " (" + output.flowUnitsLabel + ")"
+        plt.ylabel("Flow" + flow_units)
         plt.xlabel("Time (hours)")
         plt.grid(True)
         plt.legend()

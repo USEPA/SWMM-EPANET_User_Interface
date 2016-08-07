@@ -220,10 +220,10 @@ class ENepanet():
         initializes hydraulic analysis
         
         Arguments:
-         * iFlag   = 2-digit flag where 1st (left) digit indicates
-                     if link flows should be re-initialized (1) or
-                     not (0) and 2nd digit indicates if hydraulic
-                     results should be saved to file (1) or not (0)
+        iFlag (int): 2-digit flag where 1st (left) digit indicates whether
+                     link flows should be re-initialized (1) or not (0)
+                     and 2nd digit indicates whether
+                     hydraulic results should be saved to file (1) or not (0)
         """
         self.errcode = self.ENlib.ENinitH(iFlag)
         self._error()
@@ -311,9 +311,7 @@ class ENepanet():
         initializes WQ analysis
         
         Arguments:
-         * saveflag= EN_SAVE (1) if results saved to file,
-                     EN_NOSAVE (0) if not
-        
+        saveflag: EN_SAVE (1) if results saved to file, EN_NOSAVE (0) if not
         """
         self.errcode = self.ENlib.ENinitQ(iSaveflag)
         self._error()

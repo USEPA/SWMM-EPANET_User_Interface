@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfiltration,CurveNumberInfiltration
 
 
@@ -59,7 +60,7 @@ class InfiltrationTest(unittest.TestCase):
         project_section = from_text.infiltration
         actual_text = project_section.get_text()
         assert project_section.matches(test_text)
-        # assert Section.match_omit(actual_text, test_text, " \t-;\n")
+        # assert match_omit(actual_text, test_text, " \t-;\n")
 
     def test_greenampt_infiltration_section(self):
         """Test INFILTRATION section Example 4a Green Ampt type"""
@@ -80,7 +81,7 @@ Swale6           3.5        0.2        0.2       """
         project_section = from_text.infiltration
         actual_text = project_section.get_text()
         assert project_section.matches(test_text)
-        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        # assert match_omit(project_section.get_text(), test_text, " \t-;\n")
 
     def test_curvenumber_infiltration_section(self):
         """Test INFILTRATION section curve_number type"""
@@ -101,4 +102,4 @@ Swale6           3.5        0.2        0.2       """
         project_section = from_text.infiltration
         actual_text = project_section.get_text()
         assert project_section.matches(test_text)
-        # assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        # assert match_omit(project_section.get_text(), test_text, " \t-;\n")

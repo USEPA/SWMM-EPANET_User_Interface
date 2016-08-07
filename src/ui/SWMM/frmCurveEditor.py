@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
@@ -24,11 +23,11 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # self.set_from(main_form.project)   # do after init to set curve type
         self._main_form = main_form
         self.curve_type = curve_type
-        self.curve_id = ''
+        self.curve_name = ''
         if main_form and main_form.project and curve_type:
-            self.set_from(main_form.project, self.curve_id)
+            self.set_from(main_form.project, self.curve_name)
 
-    def set_from(self, project, curve_id):
+    def set_from(self, project, curve_name):
         # section = core.swmm.project.Curves()
         section = project.find_section("CURVES")
 
@@ -65,8 +64,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
         curve_list = section.value[0:]
         for curve in curve_list:
-            if curve.curve_id == curve_id and curve.curve_type.name[:4] == self.curve_type[:4]:
-                self.txtCurveID.setText(str(curve.curve_id))
+            if curve.name == curve_name and curve.curve_type.name[:4] == self.curve_type[:4]:
+                self.txtCurveName.setText(str(curve.name))
                 # self.txtDescription.setText(str(curve.description))
                 if self.curve_type == "PUMP":
                     if curve.curve_type.name == "PUMP1":
@@ -86,14 +85,14 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                      self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
-        # TODO: Check for blank/duplicate curve ID
+        # TODO: Check for blank/duplicate curve name
         # TODO: Check if X-values are in ascending order
         section = self._main_form.project.curves
         curve_list = section.value[0:]
         # assume we are editing the first one
         for curve in curve_list:
-            if curve.curve_id == self.curve_id and curve.curve_type.name[:4] == self.curve_type[:4]:
-                curve.curve_id = self.txtCurveID.text()
+            if curve.name == self.curve_name and curve.curve_type.name[:4] == self.curve_type[:4]:
+                curve.name = self.txtCurveName.text()
                 # curve.description = self.txtDescription.text()
                 # curve.curve_type = core.swmm.curves.CurveType[self.cboCurveType.currentText()]
                 if self.curve_type == "PUMP":

@@ -20,17 +20,29 @@ class frmJunction(frmGenericPropertyEditor):
             edit_these.extend(self.project.junctions.value)
         if len(edit_these) == 0:
             self.new_item = Junction()
-            self.new_item.name = "1"
+            self.new_item.name = "New"
             edit_these.append(self.new_item)
+        else:
+            self.new_item = False
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Junction Editor")
+        self.set_from(self.project, edit_these)
+        self.installEventFilter(self)
+
+    def set_from(self, project, edit_these):
+        self.project = project
+
+        if edit_these:
+            if isinstance(edit_these[0], basestring):
+                edit_names = edit_these
+                edit_objects = [item for item in self.project.junctions.value if item.name in edit_these]
+                edit_these = edit_objects
+
+        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these, "SWMM Junction Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # also set special text plus button cells
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
-
-        self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
@@ -43,18 +55,15 @@ class frmJunction(frmGenericPropertyEditor):
     def set_inflow_cell(self, column):
         tb = TextPlusButton(self)
         tb.textbox.setText("NO")
-        direct_section = self.project.find_section("INFLOWS")
-        direct_list = direct_section.value[0:]
+        direct_list = self.project.inflows.value[0:]
         for value in direct_list:
             if value.node == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')
-        dry_section = self.project.find_section("DWF")
-        dry_list = dry_section.value[0:]
+        dry_list = self.project.dwf.value[0:]
         for value in dry_list:
             if value.node == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')
-        rdii_section = self.project.find_section("RDII")
-        rdii_list = rdii_section.value[0:]
+        rdii_list = self.project.rdii.value[0:]
         for value in rdii_list:
             if value.node == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')
@@ -67,8 +76,7 @@ class frmJunction(frmGenericPropertyEditor):
         # text plus button for treatments editor
         tb = TextPlusButton(self)
         tb.textbox.setText("NO")
-        treatment_section = self.project.find_section("TREATMENT")
-        treatment_list = treatment_section.value[0:]
+        treatment_list = self.project.treatment.value[0:]
         for value in treatment_list:
             if value.node == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')

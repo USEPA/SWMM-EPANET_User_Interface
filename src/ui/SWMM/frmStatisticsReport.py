@@ -4,10 +4,14 @@ import core.swmm.project
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 from ui.help import HelpHandler
+import numpy as np
+from pandas import Series, DataFrame
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
+import datetime
+import core.swmm.stats as UStats
+import Externals.swmm.outputapi.SMOutputWrapper as SMO
 
 class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
@@ -18,11 +22,65 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.helper = HelpHandler(self)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-
         # self.set_from(parent.project)
         self._main_form = main_form
+        self.stats = None
 
-    def set_from(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
+    def set_from(self, project, output, stats):
+        self.project = project
+        self.output = output #SMO.SwmmOutputObject(output)
+        self.stats = stats #UStats.TStatsSelection(stats)
+        #self.type_label = type_label      # Subcatchment
+        #self.object_id = object_id          # 1
+        #self.attribute_name = attribute_name  # Precipitation
+        #self.event_name = event_name        # Daily
+        #self.stat_name = stat_name          # Mean
+        #self.event_threshold_value = event_threshold_value   # 0
+        #self.event_volume = event_volume         # 0
+        #self.separation_time = separation_time   # 6
+        #self.setWindowTitle('SWMM Statistics ' + '- ' + self.type_label + ' ' + self.object_id + ' ' + self.attribute_name)
+        self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.stats.VariableText)
+        self.textEdit.setReadOnly(True)
+
+        # y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
+        units = '(in/hr)'
+        volume_units = '(in)'
+        start_date = '01/01/1998'
+        end_date = '01/02/1998'
+
+        # Ustats.GetStats(Stats, EventList, Results)
+        self.EventList = []
+        results_n = '2'
+        results_frequency = '0.194'
+        results_minimum = '0.300'
+        results_maximum = '0.410'
+        results_mean = '0.355'
+        results_std_deviation = '0.078'
+        results_skewness_coeff = '0.000'
+
+        if self.stats.TimePeriodText == "Event-Dependent":
+            frequency_note = '  *Fraction of all reporting periods belonging to an event.'
+            self.event_units = units
+            #self.stats.TimePeriodText == 'Variable'
+        elif self.stats.TimePeriodText == "Daily":
+            frequency_note = '  *Fraction of all days containing an event.'
+            self.event_units = '(days)'
+        elif self.stats.TimePeriodText == "Monthly":
+            frequency_note = '  *Fraction of all months containing an event.'
+            self.event_units = '(months)'
+        else:
+            frequency_note = '  *Fraction of all years containing an event.'
+            self.event_units = '(years)'
+
+        #Tser = self.output.get_time_series(self.stats.ObjectTypeText, \
+        #                                   self.stats.ObjectID, \
+        #                                   self.stats.VariableText)
+        #lStop = "STOP"
+
+        lUtil = UStats.StatisticUtility(self.output)
+        lUtil.GetStats(self.stats, self.EventList)
+
+    def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
                  threshold_value, event_volume, separation_time):
         self.project = project
         self.output = output
@@ -135,9 +193,6 @@ class MyHistogram(FigureCanvas):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.axes.hold(False)
-
-
-        import matplotlib.pyplot as plt
 
         plt.hist([1, 2, 1], bins=[0, 1, 2, 3])
 

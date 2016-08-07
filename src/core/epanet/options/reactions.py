@@ -1,4 +1,4 @@
-﻿from core.inputfile import Section
+﻿from core.project_base import Section
 from core.metadata import Metadata
 
 
@@ -41,29 +41,4 @@ class Reactions(Section):
 
         self.roughness_correlation = 0.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
-
-    # def get_text(self):
-    #     """format contents of this item for writing to file"""
-    #     if self.comment and self.comment.upper().startswith(";TYPE"):
-    #         # TODO: implement reactions table as list of reactions
-    #         return self.value
-    #     else:
-    #         return Section.get_text(self)
-
-    def set_text(self, new_text):
-        """Read properties from text.
-            Args:
-                new_text (str): Text to parse into properties.
-        """
-        # Replace "zero" (any capitalization) with numeral 0
-        zero_pos = new_text.upper().find("ZERO")
-        while zero_pos >= 0:
-            new_text = new_text[:zero_pos] + '0' + new_text[zero_pos + len("ZERO"):]
-            zero_pos = new_text.upper().find("ZERO", zero_pos)
-        for line in new_text.splitlines():
-            upper_line = line.upper().strip()
-            if upper_line.startswith("BULK") or upper_line.startswith("WALL") or upper_line.startswith("TANK"):
-                self.comment += '\n' + line  # TODO: parse into table of per pipe values
-            else:
-                self.set_text_line(line)
 

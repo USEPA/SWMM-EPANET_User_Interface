@@ -1,4 +1,4 @@
-from core.inputfile import InputFile, Section
+from core.project_base import Section
 from enum import Enum
 
 
@@ -30,29 +30,3 @@ class MapOptions(Section):
         self.units = MapUnits.NONE
         """map units"""
 
-    def get_text(self):
-        text_list = [MapOptions.SECTION_NAME]
-        if self.dimensions:
-            text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",
-                             self.dimensions[0], self.dimensions[1], self.dimensions[2], self.dimensions[3]))
-        if self.units:
-            if isinstance(self.units, Enum):
-                units_name = self.units.name
-            else:
-                units_name = str(self.units)
-            text_list.append(" {:17}\t{}".format("UNITS", units_name))
-        return '\n'.join(text_list)
-
-    def set_text(self, new_text):
-        MapOptions.__init__(self)
-        for line in new_text.splitlines():
-            try:
-                line = self.set_comment_check_section(line)
-                fields = line.split()
-                if len(fields) > 1:
-                    if fields[0].lower() == "dimensions" and len(fields) > 4:
-                        self.dimensions = (float(fields[1]), float(fields[2]), float(fields[3]), float(fields[4]))
-                    else:
-                        self.setattr_keep_type(InputFile.printable_to_attribute(fields[0]), fields[1])
-            except:
-                print("BackdropOptions skipping input line: " + line)

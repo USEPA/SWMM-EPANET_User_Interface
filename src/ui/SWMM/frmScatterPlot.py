@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.help import HelpHandler
 from ui.SWMM.frmScatterPlotDesigner import Ui_frmScatterPlot
 from ui.help import HelpHandler
@@ -26,7 +25,7 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
         self.output = output
         self.cboStart.clear()
         if project and self.output:
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 time_string = self.output.get_time_string(time_index)
                 self.cboStart.addItem(time_string)
                 self.cboEnd.addItem(time_string)
@@ -58,17 +57,19 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
     def cboYCat_currentIndexChanged(self):
         self.cboObjectType_currentIndexChanged(self.cboYCat, self.lstY, self.cboVarY)
 
-    def cboObjectType_currentIndexChanged(self, cboObjectType, lst_ids, cboVariable):
+    def cboObjectType_currentIndexChanged(self, cboObjectType, lst_names, cboVariable):
         items = self.output.get_items(cboObjectType.currentText())
 
-        lst_ids.clear()
+        lst_names.clear()
         for item in items:
-            lst_ids.addItem(item.id)
+            lst_names.addItem(item)
 
         cboVariable.clear()
         if items:
-            for variable in items[0].AttributeNames:
-                cboVariable.addItem(variable)
+            for item in items.values():
+                for attribute in item.attributes:
+                    cboVariable.addItem(attribute.name)
+                break  # Only need variables from first item
 
     def cmdOK_Clicked(self):
         if not self.lstX.currentItem():
@@ -85,14 +86,14 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
             num_steps = end_index - start_index + 1
             title = "Scatter Plot " + self.cboStart.currentText() + ' - ' + self.cboEnd.currentText()
             object_type_label_x = self.cboXCat.currentText()
-            object_id_x = self.lstX.currentItem().text()
+            object_name_x = self.lstX.currentItem().text()
             attribute_name_x = self.cboVarX.currentText()
             object_type_label_y = self.cboYCat.currentText()
-            object_id_y = self.lstY.currentItem().text()
+            object_name_y = self.lstY.currentItem().text()
             attribute_name_y = self.cboVarY.currentText()
             graphSWMM.plot_scatter(self.output, title,
-                                   object_type_label_x, object_id_x, attribute_name_x,
-                                   object_type_label_y, object_id_y, attribute_name_y, start_index, num_steps)
+                                   object_type_label_x, object_name_x, attribute_name_x,
+                                   object_type_label_y, object_name_y, attribute_name_y, start_index, num_steps)
 
     def cmdCancel_Clicked(self):
         self.close()

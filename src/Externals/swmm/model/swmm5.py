@@ -1,4 +1,4 @@
-'''
+"""
 Python extensions for the SWMM5 Programmers toolkit
 
 Open Water Analytics (http://wateranalytics.org/)
@@ -7,29 +7,29 @@ Developer: B. McDonnell
 
 Last Update 5-12-14 
 
-'''
+"""
 
 
 import os, sys
-from ctypes import byref, c_double, c_int, c_float
+from ctypes import byref, c_double, c_int, c_float, create_string_buffer
 #from pkg_resources import resource_filename
 
 class SWMMException(Exception):
     pass
 
 class pyswmm():
-    '''
+    """
     Wrapper class to lead SWMM DLL object, then perform operations on
     the SWMM object that is created when the file is being loaded.
-    '''
+    """
     SWMMlibobj = None
-    ''' The variable that holds the ctypes Library object'''
+    """ The variable that holds the ctypes Library object"""
     errcode = 0
-    ''' Return code from the SWMM library functions'''
+    """ Return code from the SWMM library functions"""
     Warnflag = False
-    ''' A warning occured at some point during SWMM execution'''
+    """ A warning occured at some point during SWMM execution"""
     Errflag = False
-    ''' A fatal error occured at some point during SWMM execution'''
+    """ A fatal error occured at some point during SWMM execution"""
 
     inpfile = ''
     rptfile = ''
@@ -38,14 +38,14 @@ class pyswmm():
     fileLoaded = False
 
     def __init__(self, inpfile = '', rptfile = '', binfile ='', swmm_lib_full_path=''):
-        '''
+        """
         Initialize the pyswmm object class
 
         Keyword arguments:
         * inpfile = the name of SWMM input file (default '')
         * rptfile = the report file to generate (default '')
         * binfile = the optional binary output file (default '')
-        '''
+        """
         self.inpfile = inpfile
         self.rptfile = rptfile
         self.binfile = binfile
@@ -218,7 +218,7 @@ class pyswmm():
          * text of error/warning message
         
         """
-        sErrmsg = ctypes.create_string_buffer(256)
+        sErrmsg = create_string_buffer(256)
         self.errcode = self.SWMMlibobj.swmmgeterror(iErrcode, byref(sErrmsg), 256)
         self._error()
         return sErrmsg.value

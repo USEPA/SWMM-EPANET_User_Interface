@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from ui.SWMM.frmUnitHydrographDesigner import Ui_frmUnitHydrograph
 
@@ -18,19 +17,19 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboHydrograph.currentIndexChanged.connect(self.cboHydrograph_currentIndexChanged)
         self._main_form = main_form
-        self.hydrograph_id = ''
+        self.hydrograph_name = ''
         # set for first unit hydrograph group for now
         self.set_from(main_form.project, 'uh')
 
-    def set_from(self, project, hydrograph_id):
+    def set_from(self, project, hydrograph_name):
         # section = core.swmm.project.UnitHydrograph
         section = project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
-        self.hydrograph_id = hydrograph_id
+        self.hydrograph_name = hydrograph_name
         for hydrograph in hydrograph_list:
-            if hydrograph.group_name == hydrograph_id:
+            if hydrograph.name == hydrograph_name:
                 # this is the unit hydrograph group we want to edit
-                self.txtGroup.setText(hydrograph.group_name)
+                self.txtGroup.setText(hydrograph.name)
 
                 self.cboHydrograph.setCurrentIndex(0)
                 for value in hydrograph.value:
@@ -63,7 +62,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
                 selected_index = 0
                 # for value in rain_list:
                     # self.cboRain.addItem(value.name)
-                    # if value.name == hydrograph.rain_gage_id:
+                    # if value.name == hydrograph.rain_gage_name:
                     #     selected_index = int(self.cboRain.count())-1
                     #     self.cboRain.setCurrentIndex(selected_index)
 
@@ -71,10 +70,10 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         section = self._main_form.project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
         for hydrograph in hydrograph_list:
-            if hydrograph.group_name == self.hydrograph_id:
+            if hydrograph.name == self.hydrograph_name:
                 # this is the unit hydrograph group
-                hydrograph.group_name = self.txtGroup.text()
-                hydrograph.rain_gage_id = self.cboRain.currentText()
+                hydrograph.name = self.txtGroup.text()
+                hydrograph.rain_gage_name = self.cboRain.currentText()
                 month = self.month3[self.cboHydrograph.currentIndex()]
                 month_found = False
                 for value in hydrograph.value:
@@ -152,7 +151,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         section = self._main_form.project.find_section("HYDROGRAPHS")
         hydrograph_list = section.value[0:]
         for hydrograph in hydrograph_list:
-            if hydrograph.group_name == self.hydrograph_id:
+            if hydrograph.name == self.hydrograph_name:
                 # this is the unit hydrograph group we want to edit
                 for value in hydrograph.value:
                     if value.hydrograph_month == self.month3[newIndex]:

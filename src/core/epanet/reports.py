@@ -7,11 +7,10 @@
 import sys
 import traceback
 from datetime import datetime
-from core.epanet.project import Project
-import Externals.epanet.outputapi.outputapi
+from core.epanet.epanet_project import EpanetProject
 from Externals.epanet.outputapi.ENOutputWrapper import *
-import Externals.epanet.outputapi.functionalwrapper
 # See Also: from core.epanet.options.report import ReportOptions
+
 
 class Reports:
     PAGESIZE = 55
@@ -49,10 +48,10 @@ class Reports:
             '*                           Version 2.0                              *',
             '**********************************************************************')
         self.F = None  # File being written to
-        if isinstance(epanet_project, Project):
+        if isinstance(epanet_project, EpanetProject):
             self.project = epanet_project
         elif isinstance(epanet_project, str):
-            self.project = Project()
+            self.project = EpanetProject()
             self.project.read_file(epanet_project)
         else:
             raise Exception("Report Initialization: could not read EPANET project.")
@@ -111,6 +110,7 @@ class Reports:
     def write_energy(self):
         self.write_energy_header(False)
         Csum = 0.0
+        Dcharge = 0
         for pump in self.project.pumps.value:
             x = [0,0,0,0,0,0]
             Dcharge = 0
@@ -119,7 +119,7 @@ class Reports:
             if (self.LineNum >= self.PAGESIZE):
                 self.write_energy_header(True)
             line = '{:15}  {:6.2f} {:6.2f} {:9.2f} {:9.2f} {:9.2f} {:9.2f}'.format(
-                    pump.id, x[0],   x[1],   x[2],   x[3],   x[4],   x[5])
+                    pump.name, x[0],   x[1],   x[2],   x[3],   x[4],   x[5])
             self.write_line(line)
 
         self.write_line(self.ULINE)
@@ -129,53 +129,45 @@ class Reports:
         self.write_line(line)
         self.write_line('')
 
-    def write_node_header(self, period, ContinueFlag):
+    def write_node_header(self, period, table_attributes, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
         line = self.TXT_NODE_RESULTS
-        if self.output.numPeriods > 1:
+        if self.output.num_periods > 1:
             line += self.TXT_AT + self.output.get_time_string(period)
         line += ':'
         if ContinueFlag:
             line += self.TXT_CONTINUED
         self.write_line(line)
         self.write_line(self.ULINE)
-        line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_NODE,
-                                                       ENR_NodeAttributeNames[ENR_demand],
-                                                       ENR_NodeAttributeNames[ENR_head],
-                                                       ENR_NodeAttributeNames[ENR_pressure],
-                                                       ENR_NodeAttributeNames[ENR_quality])
-        self.write_line(line)
-        line = '{:15} {:>10}{:>10}{:>10}{:>10}'.format(self.TXT_ID,
-                                                       ENR_NodeAttributeUnits[ENR_demand][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_head][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_pressure][self.output.unit_system],
-                                                       ENR_NodeAttributeUnits[ENR_quality][self.output.unit_system])
-        self.write_line(line)
+
+        names = '{:15} '.format(self.TXT_NODE)
+        units = '{:15} '.format(self.TXT_ID)
+        for attribute_type in table_attributes:
+            names += '{:>10}'.format(attribute_type.name)
+            units += '{:>10}'.format(attribute_type.units(self.output.unit_system))
+        self.write_line(names)
+        self.write_line(units)
         self.write_line(self.ULINE)
 
-    def write_link_header(self, period, ContinueFlag):
+    def write_link_header(self, period, table_attributes, ContinueFlag):
         if self.LineNum + 11 > self.PAGESIZE:
             self.LineNum = self.PAGESIZE
-        S = self.TXT_LINK_RESULTS
-        if self.output.numPeriods > 1:
-            S += self.TXT_AT + self.output.get_time_string(period)
-        S += ':'
+        line = self.TXT_LINK_RESULTS
+        if self.output.num_periods > 1:
+            line += self.TXT_AT + self.output.get_time_string(period)
+        line += ':'
         if ContinueFlag:
-            S += self.TXT_CONTINUED
-        self.write_line(S)
+            line += self.TXT_CONTINUED
+        self.write_line(line)
         self.write_line(self.ULINE)
-        S = '{:15} {:10}{:10}{:10}{:10}'.format(self.TXT_LINK,
-                                                ENR_LinkAttributeNames[ENR_flow],
-                                                ENR_LinkAttributeNames[ENR_velocity],
-                                                ENR_LinkAttributeNames[ENR_headloss],
-                                                ENR_LinkAttributeNames[ENR_status])
-        self.write_line(S)
-        S = '{:15} {:10}{:10}{:10}'.format(self.TXT_ID,
-                                           ENR_LinkAttributeUnits[ENR_flow][self.output.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_velocity][self.output.unit_system],
-                                           ENR_LinkAttributeUnits[ENR_headloss][self.output.unit_system])
-        self.write_line(S)
+        names = '{:15} '.format(self.TXT_LINK)
+        units = '{:15} '.format(self.TXT_ID)
+        for attribute_type in table_attributes:
+            names += '{:10}'.format(attribute_type.name)
+            units += '{:10}'.format(attribute_type.units(self.output.unit_system))
+        self.write_line(names)
+        self.write_line(units)
         self.write_line(self.ULINE)
 
     def write_link_info_header(self, ContinueFlag):
@@ -199,7 +191,7 @@ class Reports:
             # TODO: update progress bar: MainForm.UpdateProgressBar(Nprogress, ProgStep)
             for conduit in conduits.value:
                 # Note: Pascal report got these values from binary, we get them here from input
-                # length = self.output.get_LinkValue(conduits.id, 0, 1) # Uoutput.GetLinkValStr(LINKLENGTH,0,I,J)
+                # length = self.output.get_LinkValue(conduits.name, 0, 1) # Uoutput.GetLinkValStr(LINKLENGTH,0,I,J)
                 if (self.LineNum >= self.PAGESIZE):
                     self.write_link_info_header(True)
                 if hasattr(conduit, "length"):
@@ -210,7 +202,7 @@ class Reports:
                     diameter = conduit.diameter
                 else:
                     diameter = "#N/A"
-                S = '{:15}{:15}{:15}{:>10}{:>10}'.format(conduit.id, conduit.inlet_node, conduit.outlet_node,
+                S = '{:15}{:15}{:15}{:>10}{:>10}'.format(conduit.name, conduit.inlet_node, conduit.outlet_node,
                                                          length, diameter)
                 if conduits is self.project.pumps:
                     S += ' Pump'
@@ -220,54 +212,65 @@ class Reports:
         self.write_line('')
 
     def write_node_table(self, period):
-        self.write_node_header(period, False)
+        table_attributes = (ENR_node_type.AttributeDemand,
+                            ENR_node_type.AttributeHead,
+                            ENR_node_type.AttributePressure,
+                            ENR_node_type.AttributeQuality)
+        self.write_node_header(period, table_attributes, False)
         for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
+            for input_node in nodes.value:
                 #         MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index < 0:
-                    line = '{:15} {}'.format(node.id, 'not found in output.')
+                output_node = self.output.nodes[input_node.name]
+                if not output_node:
+                    line = '{:15} {}'.format(input_node.name, 'not found in output.')
                 else:
-                    demand     = self.output.get_NodeValue(node_index, period, ENR_demand)
-                    head       = self.output.get_NodeValue(node_index, period, ENR_head)
-                    pressure   = self.output.get_NodeValue(node_index, period, ENR_pressure)
-                    quality    = self.output.get_NodeValue(node_index, period, ENR_quality)
-                    line = '{:15} {:7.2f} {:7.2f} {:7.2f} {:7.2f}'.format(node.id, demand, head, pressure, quality)
+                    values = output_node.get_all_attributes_at_time(self.output, period)
+                    values_formatted = []
+                    for attribute_type in table_attributes:
+                        values_formatted.append(attribute_type.str(values[attribute_type.index]))
+                    line = '{:15} {}'.format(output_node.name, ' '.join(values_formatted))
                 if nodes is self.project.reservoirs:
                     line += ' Reservoir'
                 elif nodes is self.project.tanks:
                     line += ' Tank'
                 if (self.LineNum >= self.PAGESIZE):
-                    self.write_node_header(period, True)
+                    self.write_node_header(period, table_attributes, True)
                 self.write_line(line)
         self.write_line('')
 
     def write_link_table(self, period):
-        self.write_link_header(period, False)
+        table_attributes = (ENR_link_type.AttributeFlow,
+                            ENR_link_type.AttributeVelocity,
+                            ENR_link_type.AttributeHeadloss,
+                            ENR_link_type.AttributeStatus)
+        self.write_link_header(period, table_attributes, False)
         for links in (self.project.pipes, self.project.pumps, self.project.valves):
-            for link in links.value:
+            for input_link in links.value:
                 # MainForm.UpdateProgressBar(Nprogress, ProgStep)
-                link_index = self.output.get_LinkIndex(link.id)
-                if link_index < 0:
-                    line = '{:15} {}'.format(link.id, 'not found in output.')
+                output_link = self.output.links[input_link.name]
+                if not output_link:
+                    line = '{:15} {}'.format(input_link.name, 'not found in output.')
                 else:
-                    flow     = self.output.get_LinkValue(link_index, period, ENR_flow)
-                    velocity = self.output.get_LinkValue(link_index, period, ENR_velocity)
-                    headloss = self.output.get_LinkValue(link_index, period, ENR_headloss)
-                    linkstat = "Unknown"  # TODO: self.output.get_LinkValue(link_index, T, ENR_
-                    line = '{:15} {:9.2f} {:9.2f} {:9.2f} {:>10}'.format(link.id, flow, velocity, headloss, linkstat)
+                    values = output_link.get_all_attributes_at_time(self.output, period)
+                    values_formatted = []
+                    for attribute in table_attributes:
+                        if attribute == ENR_link_type.AttributeStatus:  # use default formatting of link status
+                            values_formatted.append(attribute.str(values[attribute.index]))
+                        else:                                           # custom formatting of numeric attributes
+                            values_formatted.append('{:9.2f}'.format(values[attribute.index]))
+                    line = '{:15} {}'.format(input_link.name, ' '.join(values_formatted))
                 if links is self.project.pumps:
                     line += ' Pump'
                 elif links is self.project.valves:
                     line += ' Valve'
 
                 if (self.LineNum >= self.PAGESIZE):
-                    self.write_link_header(period, True)
+                    self.write_link_header(period, table_attributes, True)
                 self.write_line(line)
         self.write_line('')
 
     def write_results(self):
-        for period in range(0, self.output.numPeriods):
+        for period in range(0, self.output.num_periods):
             # Application.ProcessMessages
             self.write_node_table(period)
             # Application.ProcessMessages
@@ -278,7 +281,7 @@ class Reports:
         with open(report_file_name, 'w') as self.F:
             try:
                 # Total = self.output.nodeCount + self.output.linkCount
-                # Total *= self.output.numPeriods
+                # Total *= self.output.num_periods
                 # Total += self.output.linkCount
                 # with MainForm.ProgressBar do
                 #   N = Max div Step
@@ -295,72 +298,46 @@ class Reports:
                 print "Finished writing report " + report_file_name
                 #   MainForm.HideProgressBar
 
-    def all_link_ids(self):
-        ids = []
-        for links in (self.project.pipes, self.project.pumps, self.project.valves):
-            for link in links.value:
-                if self.output.get_LinkIndex(link.id) > -1:
-                    ids.append(link.id)
+    def all_links_set_category(self):
+        items = []
+        for input_links, category in [(self.project.pipes.value, "Pipe"),
+                                       (self.project.pumps.value, "Pump"),
+                                       (self.project.valves.value, "Valve")]:
+            for link in input_links:
+                item = self.output.links[link.name]
+                if item:
+                    item.category = category
+                    items.append(item)
                 else:
-                    print("Skipping link " + link.id + " because it was not found in output")
-        return ids
+                    print("Skipping link " + link.name + " because it was not found in output")
+        return items
 
-    def all_link_types(self):
-        types = []
-        for link in self.project.pipes.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Pipe")
-        for link in self.project.pumps.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Pump")
-        for link in self.project.valves.value:
-            if self.output.get_LinkIndex(link.id) > -1:
-                types.append("Valve")
-        return types
-
-    def all_node_indexes(self):
-        indexes = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    indexes.append(node_index)
-        return indexes
-
-    def all_node_ids(self):
-        ids = []
-        for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
-            for node in nodes.value:
-                node_index = self.output.get_NodeIndex(node.id)
-                if node_index > -1:
-                    ids.append(node.id)
+    def all_nodes_set_category(self):
+        items = []
+        for input_nodes, category in [(self.project.junctions.value, "Junction"),
+                                       (self.project.reservoirs.value, "Reservoir"),
+                                       (self.project.tanks.value, "Tank")]:
+            for node in input_nodes:
+                item = self.output.nodes[node.name]
+                if item:
+                    item.category = category
+                    items.append(item)
                 else:
-                    print("Skipping node " + node.id + " because it was not found in output")
-        return ids
+                    print("Skipping node " + node.name + " because it was not found in output")
+        return items
 
-    def all_node_types(self):
-        types = []
-        for node in self.project.junctions.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Junction")
-        for node in self.project.reservoirs.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Reservoir")
-        for node in self.project.tanks.value:
-            if self.output.get_NodeIndex(node.id) > -1:
-                types.append("Tank")
-        return types
-
-    def node_distances(self, node_ids):
-        return range(0, len(node_ids))
+    def node_distances(self, node_names):
+        return range(0, len(node_names))
         # TODO: compute distance from node coordinates
         distances = [0]
         x = None
         y = None
-        for node_id in node_ids:
+        for node_name in node_names:
             for nodes in (self.project.junctions, self.project.reservoirs, self.project.tanks):
                 for node in nodes.value:
-                    if node.id == node_id:
+                    if node.name == node_name:
                         if x and y:
                             distances.append(sqrt((x - node.x) ^ 2 + (y - node.y) ^ 2))
+                        else:  # default: return distances = 0, 1, 2, ...
+                            distances.append(len(distances))
         return distances

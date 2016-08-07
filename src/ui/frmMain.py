@@ -17,7 +17,7 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
-from core.inputfile import InputFile as Project
+from core.project_base import ProjectBase
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -32,7 +32,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self._forms = []
         """List of editor windows used during this session, kept here so they are not automatically closed."""
         self.model = "Not Set"
-        self.project_type = Project
+        self.project_type = ProjectBase
         self.project = None
         self.obj_tree = None
         self.obj_list = None
@@ -103,7 +103,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         except Exception as eImport:
             self.canvas = None
-            print "QGIS libraries not found, Not creating map\n" + str(eImport)
+            print("QGIS libraries not found, Not creating map\n" + str(eImport))
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
         self.onLoad()
 
@@ -311,7 +311,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
 
-    def make_editor_from_tree(self, search_for, tree_list):
+    def make_editor_from_tree(self, search_for, tree_list, selected_items=[]):
         for tree_item in tree_list:
             if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
                 if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
@@ -322,12 +322,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             args.append(str(tree_item[2]))
                         else:  # tree_item[2] is a list that is not a string
                             args.extend(tree_item[2])
+                    if selected_items:
+                        args.append(selected_items)
                     edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
                     edit_form.helper = HelpHandler(edit_form)
                     return edit_form
                 return None
             if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
-                edit_form = self.make_editor_from_tree(search_for, tree_item[1])
+                edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items)
                 if edit_form:
                     return edit_form
 
@@ -355,9 +357,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # on double click of an item in the 'bottom left' list
         if not self.project or not self.get_editor:
             return
-        for item in self.listViewObjects.selectedIndexes():
-            selected_text = str(item.data())
-            self.show_edit_window(self.get_editor_with_selected_item(self.tree_section, selected_text))
+        selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+        self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, selected))
 
     def edit_object(self):
         self.list_item_clicked()
@@ -414,7 +415,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def open_project_quiet(self, file_name, gui_settings, directory):
         self.project = self.project_type()
         try:
-            self.project.read_file(file_name)
+            project_reader = self.project_reader_type()
+            project_reader.read_file(self.project, file_name)
             path_only, file_only = os.path.split(file_name)
             self.setWindowTitle(self.model + " - " + file_only)
             if path_only != directory:
@@ -422,11 +424,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.sync()
                 del gui_settings
         except:
-            self.project = Project()
+            self.project = ProjectBase()
             self.setWindowTitle(self.model)
 
     def save_project(self):
-        self.project.write_file(self.project.file_name)
+        project_writer = self.project_writer_type()
+        project_writer.write_file(self.project, self.project.file_name)
+
 
     def save_project_as(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
@@ -435,7 +439,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if file_name:
             path_only, file_only = os.path.split(file_name)
             try:
-                self.project.write_file(file_name)
+                project_writer = self.project_writer_type()
+                project_writer.write_file(self.project, file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)
@@ -449,15 +454,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                             str(ex), str(traceback.print_exc())),
                                         QMessageBox.Ok)
 
-    def dragEnterEvent(self, QDragEnterEvent):
-        if QDragEnterEvent.mimeData().hasUrls():
-            QDragEnterEvent.accept()
+    def dragEnterEvent(self, drag_enter_event):
+        if drag_enter_event.mimeData().hasUrls():
+            drag_enter_event.accept()
         else:
-            QDragEnterEvent.ignore()
+            drag_enter_event.ignore()
 
-    def dropEvent(self, QDropEvent):
+    def dropEvent(self, drop_event):
         #TODO: check project status and prompt if there are unsaved changes that would be overwritten
-        for url in QDropEvent.mimeData().urls():
+        for url in drop_event.mimeData().urls():
             directory, filename = os.path.split(str(url.encodedPath()))
             directory = str.lstrip(str(directory), 'file:')
             print(directory)

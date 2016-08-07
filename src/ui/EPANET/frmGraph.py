@@ -2,13 +2,11 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from PyQt4.QtGui import QMessageBox
 import matplotlib.pyplot as plt
-import core.epanet.project
 from core.epanet.reports import Reports
 from ui.convenience import all_list_items, selected_list_items
 from ui.model_utility import transl8
 from ui.EPANET.frmGraphDesigner import Ui_frmGraph
-from Externals.epanet.outputapi.ENOutputWrapper import *
-from Externals.epanet.outputapi.outputapi import ENR_demand, ENR_head, ENR_pressure, ENR_quality
+from Externals.epanet.outputapi.ENOutputWrapper import OutputObject, ENR_node_type, ENR_link_type
 from core.graph import EPANET as graphEPANET
 
 class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
@@ -44,7 +42,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.report = Reports(project, output)
         self.cboTime.clear()
         if project and self.output:
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 self.cboTime.addItem(self.output.get_time_string(time_index))
             self.rbnNodes.setChecked(True)
             self.rbnNodes_Clicked()
@@ -53,20 +51,19 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnNodes.isChecked():
             self.gbxToGraph.setTitle(transl8("frmGraph", "Nodes to Graph", None))
             self.cboParameter.clear()
-            self.cboParameter.addItems(ENR_NodeAttributeNames)
+            self.cboParameter.addItems([att.name for att in ENR_node_type.Attributes])
             self.lstToGraph.clear()
-            # for index in range(0, self.output.nodeCount - 1):
-            #     self.lstToGraph.addItem(str(self.output.get_NodeID(index)))
-            for node_id in self.report.all_node_ids():
-                self.lstToGraph.addItem(node_id)
+            self.list_items = self.output.nodes
+            self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
             self.gbxToGraph.setTitle(transl8("frmGraph", "Links to Graph", None))
             self.cboParameter.clear()
-            self.cboParameter.addItems(ENR_LinkAttributeNames)
+            self.cboParameter.addItems([att.name for att in ENR_link_type.Attributes])
             self.lstToGraph.clear()
-            self.lstToGraph.addItems(self.report.all_link_ids())
+            self.list_items = self.output.links
+            self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnTime_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -132,28 +129,16 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                 graph[0](*graph[1:])
 
     def cmdOK_Clicked(self):
-        attribute_index = self.cboParameter.currentIndex()
-        if self.rbnNodes.isChecked():
-            get_index = self.output.get_NodeIndex
-            get_value = self.output.get_NodeValue
-            get_series = self.output.get_NodeSeries
-            parameter_code = ENR_NodeAttributes[attribute_index]
-            units = ENR_NodeAttributeUnits[attribute_index][self.output.unit_system]
-
-        else:
-            get_index = self.output.get_LinkIndex
-            get_value = self.output.get_LinkValue
-            get_series = self.output.get_LinkSeries
-            parameter_code = ENR_LinkAttributes[attribute_index]
-            units = ENR_LinkAttributeUnits[attribute_index][self.output.unit_system]
-
         parameter_label = self.cboParameter.currentText()
-        if units:
-            parameter_label += ' (' + units + ')'
+        if self.rbnNodes.isChecked():
+            attribute = ENR_node_type.get_attribute_by_name(parameter_label)
+        else:
+            attribute = ENR_link_type.get_attribute_by_name(parameter_label)
+
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():  # TODO: use get_series instead of get_value if it is more efficient
-            graphEPANET.plot_time(self.output, get_index, get_value, parameter_code, parameter_label, selected_list_items(self.lstToGraph))
+            graphEPANET.plot_time(self.output, attribute, self.selected_items())
 
         if self.rbnSystem.isChecked():
             graphEPANET.plot_system_flow(self.output)
@@ -164,24 +149,30 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                                     QMessageBox.Ok)
         else:
             if self.rbnProfile.isChecked():
-                graph_ids = selected_list_items(self.lstToGraph)
-                if not graph_ids:
-                    graph_ids = self.report.all_node_ids()
-                self.plot_profile(get_index, get_value, parameter_code, parameter_label, time_index, graph_ids)
+                items = self.selected_items()
+                if len(items) < 2:  # if fewer than two items were selected, use all items
+                    items = self.list_items.values()
+                self.plot_profile(attribute, time_index, items)
             if self.rbnFrequency.isChecked():
-                graphEPANET.plot_freq(self.output, get_index, get_value, parameter_code, parameter_label,
-                                      time_index, all_list_items(self.lstToGraph))
+                graphEPANET.plot_freq(self.output, attribute, time_index, self.list_items.values())
 
-    def plot_profile(self, get_index, get_value, parameter_code, parameter_label, time_index, ids):
+    def selected_items(self):
+        names = selected_list_items(self.lstToGraph)
+        items = []
+        for name in names:
+            items.append(self.list_items[name])
+        return items
+
+    def plot_profile(self, attribute, time_index, items):
         fig = plt.figure()
         if self.rbnNodes.isChecked():
-            x_values = self.report.node_distances(ids)
+            x_values = self.report.node_distances(items)
         else:
-            x_values = range(0, len(ids))
-        self.time_linked_graphs.append([graphEPANET.update_profile, self.output, ids, x_values,
-             get_index, get_value, parameter_code, parameter_label, fig.number, time_index])
-        graphEPANET.update_profile(self.output, ids, x_values,
-                                   get_index, get_value, parameter_code, parameter_label, fig.number, time_index)
+            x_values = range(0, len(items))
+        self.time_linked_graphs.append([graphEPANET.update_profile, self.output, items, x_values,
+                                        attribute, fig.number, time_index])
+        graphEPANET.update_profile(self.output, items, x_values,
+                                   attribute, fig.number, time_index)
 
     def cmdCancel_Clicked(self):
         self.close()

@@ -1,7 +1,8 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
 from core.swmm.hydraulics.node import DryWeatherInflow
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 
 
 class SimpleDWITest(unittest.TestCase):
@@ -71,7 +72,7 @@ class SimpleDWITest(unittest.TestCase):
         """
         from_text.set_text(source_text)
         project_section = from_text.dwf
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), source_text, " \t-;\n")
 
     def test_dwf_section_example8(self):
         """Test DWF section from example 8"""
@@ -88,4 +89,4 @@ Aux3             FLOW             0.004     """
         # --Test set_text
         from_text.set_text(source_text)
         project_section = from_text.dwf
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), source_text, " \t-;\n")

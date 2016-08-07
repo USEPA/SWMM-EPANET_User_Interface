@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.epanet.project
 from ui.SWMM.frmAboutDesigner import Ui_frmAbout
 
 

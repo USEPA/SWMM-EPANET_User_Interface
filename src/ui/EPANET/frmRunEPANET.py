@@ -102,7 +102,8 @@ class frmRunEPANET(frmRunSimulation):
                 self.RunHydraulics(total_days)
             if self.run_status != RunStatus.rsCancelled:
                 self.RunQuality(total_days)
-            self.set_status(RunStatus.rsSuccess)
+            if self.run_status != RunStatus.rsCancelled:
+                self.set_status(RunStatus.rsSuccess)
         except Exception as e:  # Close solver if an exception occurs
             self.set_status_text(self.TXT_STATUS_ERROR)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())

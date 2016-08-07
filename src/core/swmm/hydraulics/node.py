@@ -1,13 +1,14 @@
-﻿from enum import Enum
+﻿from traitlets import HasTraits, Int, Unicode
+from enum import Enum
 from core.coordinates import Coordinates
-from core.inputfile import Section
+from core.project_base import Section
 from core.metadata import Metadata
 
 
 # class Node(object):
 #     """A node in a SWMM model"""
 #     def __init__(self):
-#         self.node_id = ''
+#         self.node_name = ''
 #         """Node Name"""
 #
 #         self.centroid = Coordinates(0.0, 0.0)
@@ -38,7 +39,6 @@ from core.metadata import Metadata
 class Junction(Section):
     """A Junction node"""
 
-    field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -49,7 +49,7 @@ class Junction(Section):
         ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
         ('',                '', "Inflows",         'NO', '',   '',
          "Click to specify any external inflows received at the junction"),
-        ('.treatment(node_id)',                '', "Treatment",       'NO', '',   '',
+        ('.treatment(node_name)',                '', "Treatment",       'NO', '',   '',
          "Click to specify any pollutant removal supplied at the junction"),
         ("elevation",       '', "Invert El.",      '0', "ft",  "m", "Elevation of junction's invert"),
         ("max_depth",       '', "Max. Depth",      '0', "ft",  "m",
@@ -61,62 +61,36 @@ class Junction(Section):
          "Depth in excess of maximum depth before flooding occurs"),
         ("ponded_area",     '', "Ponded Area",     '0', "ft2", "m2", "Area of ponded water when flooded")))
 
-    def __init__(self, new_text=None):
-        if new_text:
-            self.set_text(new_text)
-        else:
-            Section.__init__(self)
+    def __init__(self):
+        Section.__init__(self)
 
-            self.name = ''
-            """name assigned to junction node"""
+        self.name = Unicode(default_value='', label="Name", help="User-assigned name of junction")
+        """name assigned to junction node"""
 
-            self.elevation = ''
-            """Invert elevation of the Node (feet or meters)"""
+        self.elevation = ''
+        """Invert elevation of the Node (feet or meters)"""
 
-            self.max_depth = ''
-            """Maximum depth of junction (i.e., from ground surface to invert)
-                (feet or meters). If zero, then the distance from the invert to
-                the top of the highest connecting link will be used.  (Ymax)"""
+        self.max_depth = ''
+        """Maximum depth of junction (i.e., from ground surface to invert)
+            (feet or meters). If zero, then the distance from the invert to
+            the top of the highest connecting link will be used.  (Ymax)"""
 
-            self.initial_depth = ''
-            """Depth of water at the junction at the start of the simulation
-                (feet or meters) (Y0)"""
+        self.initial_depth = ''
+        """Depth of water at the junction at the start of the simulation
+            (feet or meters) (Y0)"""
 
-            self.surcharge_depth = ''
-            """Additional depth of water beyond the maximum depth that is
-                allowed before the junction floods (feet or meters).
-                This parameter can be used to simulate bolted manhole covers
-                or force main connections. (Ysur)"""
+        self.surcharge_depth = ''
+        """Additional depth of water beyond the maximum depth that is
+            allowed before the junction floods (feet or meters).
+            This parameter can be used to simulate bolted manhole covers
+            or force main connections. (Ysur)"""
 
-            self.ponded_area = ''
-            """Area occupied by ponded water atop the junction after flooding
-                occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-                option is turned on, a non-zero value of this parameter will allow
-                ponded water to be stored and subsequently returned to the
-                conveyance system when capacity exists. (Apond)"""
-
-    def get_text(self):
-        """format contents of this item for writing to file"""
-        return self.field_format.format(self.name, self.elevation,
-                                        self.max_depth, self.initial_depth, self.surcharge_depth, self.ponded_area)
-
-    def set_text(self, new_text):
-        self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 0:
-            self.name = fields[0]
-        if len(fields) > 1:
-            self.elevation = fields[1]
-        if len(fields) > 2:
-            self.max_depth = fields[2]
-        if len(fields) > 3:
-            self.initial_depth = fields[3]
-        if len(fields) > 4:
-            self.surcharge_depth = fields[4]
-        if len(fields) > 5:
-            self.ponded_area = fields[5]
-
+        self.ponded_area = ''
+        """Area occupied by ponded water atop the junction after flooding
+            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+            option is turned on, a non-zero value of this parameter will allow
+            ponded water to be stored and subsequently returned to the
+            conveyance system when capacity exists. (Apond)"""
 
 class OutfallType(Enum):
     """Type of outfall boundary condition:
@@ -152,8 +126,29 @@ class Outfall(Section):
             boundary condition type and stage description
             presence of a flap gate to prevent backflow through the outfall.
     """
+
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of outfall"),
+        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of outfall on study area map"),
+        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of outfall on study area map"),
+        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
+        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the outfall"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
+        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of outfall's invert"),
+        ("tide_gate",           '', "Tide Gate",       '0',  '',   '',  "True if outfall contains a tide gate to prevent backflow"),
+        ("route_to",            '', "Route To",        '0',  '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
+        ("outfall_type",        '', "Type",            '0',  '',   '',  "Type of outfall boundary condition"),
+        ("fixed_stage",         '', "Fixed Stage",     '0',  '',   '',  "Water elevation for a FIXED boundary condition"),
+        ("tidal_curve",         '', "Curve Name",      '0',  '',   '',  "Name of tidal curve used for a TIDAL boundary condition"),
+        ("time_series_name",    '', "Series Name",     '0',  '',   '',  "Name of time series for a TIMESERIES boundary condition")))
+
     def __init__(self):
         Section.__init__(self)
+
+        self.name = ''
+        """name assigned to outfall node"""
 
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""
@@ -212,6 +207,29 @@ class Divider(Junction):
         Flow dividers are only active under Kinematic Wave routing
         and are treated as simple junctions under Dynamic Wave routing.
     """
+
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of divider"),
+        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
+        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
+        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
+        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
+        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of divider's invert"),
+        ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance from invert to top of highest connecting link)"),
+        ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial water depth in junction"),
+        ("surcharge_depth",     '', "Surcharge Depth", '0',  '',   '',  "Depth in excess of maximum depth before flooding occurs"),
+        ("ponded_area",         '', "Ponded Area",     '0',  '',   '',  "Area of ponded water when flooded"),
+        ("diverted_link",       '', "Diverted Link",   '',   '',   '',  "Name of link which receives the diverted flow"),
+        ("flow_divider_type",   '', "Type",            '',   '',   '',  "Type of flow divider"),
+        ("cutoff_flow",         '', "Cutoff Flow",     '0',  '',   '',  "Cutoff flow value used for a CUTOFF divider"),
+        ("divider_curve",       '', "Tabular Curve Name",   '',   '',   '',  "Name of diversion curve used with a TABULAR divider"),
+        ("weir_min_flow",       '', "Weir Min. Flow",       '0',  '',   '',  "Minimum flow at which diversion begins for a WEIR divider"),
+        ("weir_max_depth",      '', "Weir Max. Depth",      '0',  '',   '',  "Depth at maximum flow for a WEIR divider"),
+        ("weir_coefficient",    '', "Weir Coefficient",     '0',  '',   '',  "Discharge coefficient for a WEIR divider")))
+
     def __init__(self):
         Junction.__init__(self)
 
@@ -249,8 +267,14 @@ class Divider(Junction):
         self.divider_curve = None
         """Diversion Curve used with a TABULAR divider"""
 
-        self.weir = None
-        """WeirDivider used with a WEIR divider"""
+        self.weir_min_flow = 0.0
+        """Minimum flow at which diversion begins for a WEIR divider"""
+
+        self.weir_max_depth = 0.0
+        """Depth at maximum flow for a WEIR divider"""
+
+        self.weir_coefficient = 0.0
+        """Discharge coefficient for a WEIR divider"""
 
 
 class StorageCurveType(Enum):
@@ -265,6 +289,27 @@ class StorageUnit(Junction):
         of a storage unit are described by a function or table of
         surface area versus height.
     """
+
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of storage unit"),
+        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of storage unit on study area map"),
+        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of storage unit on study area map"),
+        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
+        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the storage unit"),
+        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the storage unit"),
+        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation at the bottom of the storage unit"),
+        ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum depth of the storage unit"),
+        ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial depth of water in the storage unit"),
+        ("evaporation_factor",  '', "Evap. Factor",    '',   '',   '',  "Fraction of evaporation rate realized"),
+        ("seepage_loss",        '', "Seepage Loss",    '',   '',   '',  "Click to specify soil properties that determine seepage loss through the bottom and sloped sides of the storage unit"),
+        ("storage_curve_type",  '', "Storage Curve",   '0',  '',   '',  "Method of describing the geometric shape of the storage unit"),
+        ("coefficient",         '', "Functional Curve Coefficient",   '',   '',   '',  "A-value in expression Area = A*Depth^B + C"),
+        ("exponent",            '', "Functional Curve Exponent",      '0',  '',   '',  "B-value in expression Area = A*Depth^B + C"),
+        ("constant",            '', "Functional Curve Constant",      '0',  '',   '',  "C-value in expression Area = A*Depth^B + C"),
+        ("storage_curve",       '', "Tabular Curve Name",             '0',  '',   '',  "Name of storage curve to use")))
+
     def __init__(self):
         Junction.__init__(self)
         self.max_depth = ''
@@ -328,166 +373,73 @@ class DirectInflowType(Enum):
 class DirectInflow(Section):
     """Defines characteristics of inflows added directly into a node"""
 
-    field_format = "{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
 
-    def __init__(self, new_text=None):
-        if new_text:
-            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
-        else:
-            Section.__init__(self)
+    def __init__(self):
+        Section.__init__(self)
 
-            self.node = ''
-            """str: name of node where external inflow enters."""
+        self.node = ''
+        """str: name of node where external inflow enters."""
 
-            self.timeseries = ''
-            """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
+        self.timeseries = ''
+        """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
-            self.constituent = ''
-            """str: Name of constituent (pollutant) or FLOW"""
+        self.constituent = ''
+        """str: Name of constituent (pollutant) or FLOW"""
 
-            self.format = DirectInflowType.CONCEN
-            """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
+        self.format = DirectInflowType.CONCEN
+        """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
 
-            self.conversion_factor = '1.0'
-            """float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
-            into project mass units per second as specified in [POLLUTANTS]"""
+        self.conversion_factor = '1.0'
+        """float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
+        into project mass units per second as specified in [POLLUTANTS]"""
 
-            self.scale_factor = '1.0'
-            """float: Scaling factor that multiplies the recorded time series values."""
+        self.scale_factor = '1.0'
+        """float: Scaling factor that multiplies the recorded time series values."""
 
-            self.baseline = '0.0'
-            """float: Constant baseline added to the time series values."""
+        self.baseline = '0.0'
+        """float: Constant baseline added to the time series values."""
 
-            self.baseline_pattern = ''
-            """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
-
-    def get_text(self):
-        inp = ''
-        if self.comment:
-            inp = self.comment + '\n'
-        if self.constituent.upper() == "FLOW":
-            inp_format = "FLOW"
-        else:
-            inp_format = self.format.name
-        inp += self.field_format.format(self.node,
-                                        self.constituent,
-                                        self.timeseries,
-                                        inp_format,
-                                        self.conversion_factor,
-                                        self.scale_factor,
-                                        self.baseline,
-                                        self.baseline_pattern)
-        return inp
-
-    def set_text(self, new_text):
-        self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 0:
-            self.node = fields[0]
-        if len(fields) > 1:
-            self.constituent = fields[1]
-        if len(fields) > 2:
-            self.timeseries = fields[2]
-        if len(fields) > 3 and self.constituent.upper() != "FLOW":
-            self.setattr_keep_type("format", DirectInflowType[fields[3]])
-        if len(fields) > 4:
-            self.conversion_factor = fields[4]
-        if len(fields) > 5:
-            self.scale_factor = fields[5]
-        if len(fields) > 6:
-            self.baseline = fields[6]
-        if len(fields) > 7:
-            self.baseline_pattern = fields[7]
-
+        self.baseline_pattern = ''
+        """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
 
 class DryWeatherInflow(Section):
     """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
 
-    field_format = "{:16}\t{:16}\t{:10}"
 
-    def __init__(self, new_text=None):
-        if new_text:
-            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
-        else:
-            Section.__init__(self)
+    def __init__(self):
+        Section.__init__(self)
 
-            self.node = ''
-            """str: name of node where external inflow enters."""
+        self.node = ''
+        """str: name of node where external inflow enters."""
 
-            self.constituent = ''
-            """str: Name of constituent (pollutant) or FLOW"""
+        self.constituent = ''
+        """str: Name of constituent (pollutant) or FLOW"""
 
-            self.average = ''
-            """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
+        self.average = ''
+        """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
 
-            self.time_patterns = []
-            """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
-
-    def get_text(self):
-        inp = ''
-        if self.comment:
-            inp = self.comment + '\n'
-        inp += self.field_format.format(self.node,
-                                        self.constituent,
-                                        self.average) + '\t' + '\t'.join(self.time_patterns)
-        return inp
-
-    def set_text(self, new_text):
-        self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 2:
-            self.node = fields[0]
-            self.constituent = fields[1]
-            self.average = fields[2]
-            if len(fields) > 3:
-                self.time_patterns = fields[3:]
-
+        self.time_patterns = []
+        """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
 
 class RDIInflow(Section):
     """Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node"""
 
-    field_format = "{:16}\t{:16}\t{:10}"
 
-    def __init__(self, new_text=None):
-        if new_text:
-            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
-        else:
-            Section.__init__(self)
+    def __init__(self):
+        Section.__init__(self)
 
-            self.node = ''
-            """str: name of node where external inflow enters."""
+        self.node = ''
+        """str: name of node where external inflow enters."""
 
-            self.hydrograph_group = ""
-            """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
+        self.hydrograph_group = ""
+        """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
 
-            self.sewershed_area = ''
-            """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
-
-    def get_text(self):
-        inp = ''
-        if self.comment:
-            inp = self.comment + '\n'
-        inp += self.field_format.format(self.node,
-                                        self.hydrograph_group,
-                                        self.sewershed_area)
-        return inp
-
-    def set_text(self, new_text):
-        self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 2:
-            self.node = fields[0]
-            self.hydrograph_group = fields[1]
-            self.sewershed_area = fields[2]
-
+        self.sewershed_area = ''
+        """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
 
 class Treatment(Section):
     """Define the treatment properties of a node using a treatment expression"""
 
-    field_format = "{:16}\t{:16}\t{}"
 
     hint = "Treatment expressions have the general form:\n" \
            "  R = f(P, R_P, V)\n" \
@@ -514,36 +466,16 @@ class Treatment(Section):
         ("pollutant",       '', "Pollutant",            '',  '',         '', hint),
         ("function",        '', "Treatment Expression", '',  '',         '', hint)))
 
-    def __init__(self, new_text=None):
-        if new_text:
-            self.set_text(new_text)  # set_text will call __init__ without new_text to do the initialization below
-        else:
-            Section.__init__(self)
+    def __init__(self):
+        Section.__init__(self)
 
-            self.node = ''
-            """str: name of node where external inflow enters."""
+        self.node = ''
+        """str: name of node where external inflow enters."""
 
-            self.pollutant = ''
-            """Name of pollutant receiving treatment"""
+        self.pollutant = ''
+        """Name of pollutant receiving treatment"""
 
-            self.function = ''
-            """str: mathematical function expressing treatment result in terms of pollutant concentrations,
-            pollutant removals, and other standard variables. Starts with C for concentration or R for removal."""
+        self.function = ''
+        """str: mathematical function expressing treatment result in terms of pollutant concentrations,
+        pollutant removals, and other standard variables. Starts with C for concentration or R for removal."""
 
-    def get_text(self):
-        inp = ''
-        if self.comment:
-            inp = self.comment + '\n'
-        inp += self.field_format.format(self.node,
-                                        self.pollutant,
-                                        self.function)
-        return inp
-
-    def set_text(self, new_text):
-        self.__init__()
-        new_text = self.set_comment_check_section(new_text)
-        fields = new_text.split()
-        if len(fields) > 2:
-            self.node = fields[0]
-            self.pollutant = fields[1]
-            self.function = ' '.join(fields[2:])

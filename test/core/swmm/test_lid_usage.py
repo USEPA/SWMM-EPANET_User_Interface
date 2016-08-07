@@ -1,6 +1,7 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 from core.swmm.hydrology.subcatchment import LIDUsage
 
 
@@ -31,4 +32,4 @@ S2 Swale 1 10000 50 0 0 0 swale.rpt
         from_text = Project()
         from_text.set_text(test_text)
         project_section = from_text.lid_usage
-        assert Section.match_omit(project_section.get_text(), test_text, " \t-;\n")
+        assert match_omit(project_section.get_text(), test_text, " \t-;\n")

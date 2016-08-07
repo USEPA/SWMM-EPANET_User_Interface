@@ -1,6 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
+import core.swmm.swmm_project
 from ui.SWMM.frmTitleDesigner import Ui_frmTitle
 
 

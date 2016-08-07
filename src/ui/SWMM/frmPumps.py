@@ -1,0 +1,80 @@
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+from core.swmm.hydraulics.link import Pump
+from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
+from ui.text_plus_button import TextPlusButton
+from core.swmm.curves import CurveType
+
+
+class frmPumps(frmGenericPropertyEditor):
+
+    SECTION_NAME = "[PUMPS]"
+    SECTION_TYPE = Pump
+
+    def __init__(self, main_form):
+        self.help_topic = "swmm/src/src/pumpproperties.htm"
+        self._main_form = main_form
+        self.project = main_form.project
+        self.refresh_column = -1
+        self.project_section = self.project.aquifers
+        self.set_from(self.project, [])
+
+    def set_from(self, project, edit_these):
+        self.project = project
+        self.project_section = self.project.pumps
+
+        if self.project_section and isinstance(self.project_section.value, list) and \
+                        len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+                                          "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+
+        for column in range(0, self.tblGeneric.columnCount()):
+            # for curves, show available curves
+            curves_section = self.project.find_section("CURVES")
+            curves_list = curves_section.value[0:]
+            combobox = QtGui.QComboBox()
+            combobox.addItem('*')
+            selected_index = 0
+            for curve in curves_list:
+                if curve.curve_type in [CurveType.PUMP1, CurveType.PUMP2, CurveType.PUMP3, CurveType.PUMP4]:
+                    combobox.addItem(curve.name)
+                    if edit_these[column].pump_curve == curve.name:
+                        selected_index = int(combobox.count())-1
+            combobox.setCurrentIndex(selected_index)
+            self.tblGeneric.setCellWidget(5, column, combobox)
+            # for initial status, show on/off
+            combobox = QtGui.QComboBox()
+            combobox.addItem('OFF')
+            combobox.addItem('ON')
+            if edit_these[column].initial_status == 'ON':
+                combobox.setCurrentIndex(1)
+            else:
+                combobox.setCurrentIndex(0)
+            self.tblGeneric.setCellWidget(6, column, combobox)
+
+        self.installEventFilter(self)
+
+    def eventFilter(self, ui_object, event):
+        if event.type() == QtCore.QEvent.WindowUnblocked:
+            if self.refresh_column > -1:
+                self.refresh_column = -1
+        return False
+
+    def cmdOK_Clicked(self):
+        self.backend.apply_edits()
+        self.close()
+
+    def cmdCancel_Clicked(self):
+        self.close()

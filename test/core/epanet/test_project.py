@@ -4,38 +4,40 @@ import inspect
 import shutil
 import unittest
 import webbrowser
-import core.epanet.project
+from core.epanet.epanet_project import EpanetProject
+from core.epanet.inp_reader_project import ProjectReader
+from core.epanet.inp_writer_project import ProjectWriter
 
 
-class OldProjectTest(unittest.TestCase):
-    def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_project = core.epanet.project.Project()
-
-    def runTest(self):
-        directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
-
-        for inp_filename in ["Examples/Net1.inp"]:
-            self.my_project.read_file(os.path.join(directory, inp_filename))
-            assert len(self.my_project.sections) == 28
-
-            # with open(inp_filename + ".written_inp.txt", 'w') as writer:
-            #     writer.writelines(self.my_project.get_text())
-            # with open(inp_filename + ".written_inp_spaces.inp", 'w') as writer:
-            #     writer.writelines(' '.join(self.my_project.get_text().split()))
-            # with open(inp_filename + ".written_orig_spaces.inp", 'w') as writer:
-            #     with open(inp_filename, 'r') as read_inp:
-            #         writer.writelines(' '.join(read_inp.read().split()))
-
-            # with open(inp_filename, 'r') as read_inp:
-            #     assert ' '.join(self.my_project.get_text().split()) == ' '.join(read_inp.read().split())
+# class OldProjectTest(unittest.TestCase):
+#     def __init__(self):
+#         unittest.TestCase.__init__(self)
+#         self.my_project = core.epanet.project.Project()
+#
+#     def runTest(self):
+#         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
+#
+#         for inp_filename in ["Examples/Net1.inp"]:
+#             self.my_project.read_file(os.path.join(directory, inp_filename))
+#             assert len(self.my_project.sections) == 28
+#
+#             # with open(inp_filename + ".written_inp.txt", 'w') as writer:
+#             #     writer.writelines(self.my_project.get_text())
+#             # with open(inp_filename + ".written_inp_spaces.inp", 'w') as writer:
+#             #     writer.writelines(' '.join(self.my_project.get_text().split()))
+#             # with open(inp_filename + ".written_orig_spaces.inp", 'w') as writer:
+#             #     with open(inp_filename, 'r') as read_inp:
+#             #         writer.writelines(' '.join(read_inp.read().split()))
+#
+#             # with open(inp_filename, 'r') as read_inp:
+#             #     assert ' '.join(self.my_project.get_text().split()) == ' '.join(read_inp.read().split())
 
 
 class ProjectTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_project = core.epanet.project.Project()
-        self.new_project = core.epanet.project.Project()
+        self.my_project = EpanetProject()
+        self.new_project = EpanetProject()
 
     @staticmethod
     def get_immediate_subdirectories(a_dir):
@@ -178,16 +180,16 @@ class ProjectTest(unittest.TestCase):
 
                     # Read .inp file, count the number of sections
                     my_file = os.path.join(example_path, filename)
-                    self.my_project.read_file(my_file)
+                    self.my_project = ProjectReader().read_file(my_file)
                     number_of_sections = len(self.my_project.sections)
 
                     # Write my_project to new file .inptest
                     new_filename = filename + "_copy"
                     new_file = os.path.join(example_path, new_filename)
-                    self.my_project.write_file(new_file)
+                    ProjectWriter().write_file(self.my_project, new_file)
 
                     # Read .inptest into new_project, count the number of sections, assert
-                    self.new_project.read_file(new_file)
+                    self.new_project = ProjectReader().read_file(new_file)
                     new_number_of_sections = len(self.new_project.sections)
                     assert number_of_sections == new_number_of_sections
 
@@ -327,7 +329,7 @@ class ProjectTest(unittest.TestCase):
 
         # Write HTML table
         # Print opening HTML tags -------------------------
-        text_file.write("<htm><body><table border='1'>")
+        text_file.write("<html><body><table border='1'>")
         # Print the content of the table, line by line ----
         for i in range(0, len(examples)):
             cur_status = status[i]

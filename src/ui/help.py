@@ -18,7 +18,7 @@ class HelpHandler(QtCore.QObject):
             if assistant_executable_full_path:  # also search above specified folder
                 search_dir = os.path.dirname(assistant_executable_full_path)
                 while search_dir and not os.path.isfile(os.path.join(search_dir, HelpHandler.help_assistant_executable)):
-                    print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                    # print(HelpHandler.help_assistant_executable + " Not found in " + search_dir)
                     next_search_dir = os.path.dirname(search_dir)
                     if next_search_dir == search_dir:
                         break
@@ -28,7 +28,7 @@ class HelpHandler(QtCore.QObject):
             if not os.path.isfile(assistant_executable_full_path):
                 search_dir = os.path.dirname(os.path.abspath(__file__))
                 while search_dir and not os.path.isfile(os.path.join(search_dir, HelpHandler.help_assistant_executable)):
-                    print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                    # print(HelpHandler.help_assistant_executable + " Not found in " + search_dir)
                     next_search_dir = os.path.dirname(search_dir)
                     if next_search_dir == search_dir:
                         break
@@ -52,7 +52,7 @@ class HelpHandler(QtCore.QObject):
             search_dir = os.path.dirname(help_filename)
             help_file_name_only = help_filename[len(search_dir):]
             while search_dir and not os.path.isfile(os.path.join(search_dir, help_file_name_only)):
-                print HelpHandler.help_assistant_executable + " Not found in " + search_dir
+                # print help_file_name_only + " Not found in " + search_dir
                 next_search_dir = os.path.dirname(search_dir)
                 if next_search_dir == search_dir:
                     break

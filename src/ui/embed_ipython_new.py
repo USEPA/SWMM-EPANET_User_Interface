@@ -77,7 +77,7 @@ class EmbedIPython(QWidget):
 
 
 def print_process_id():
-    print 'Process ID is:', os.getpid()        
+    print('Process ID is:', os.getpid())
 
 
 def main():

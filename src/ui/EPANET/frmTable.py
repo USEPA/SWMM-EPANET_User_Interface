@@ -1,11 +1,11 @@
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
-from Externals.epanet.outputapi.ENOutputWrapper import *
+from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type, ENR_link_type
 from core.epanet.reports import Reports
 from ui.EPANET.frmTableDesigner import Ui_frmTable
 from ui.frmGenericListOutput import frmGenericListOutput
-from ui.model_utility import transl8
+from ui.model_utility import transl8, process_events
 
 
 class frmTable(QtGui.QMainWindow, Ui_frmTable):
@@ -21,7 +21,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
         self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
         self.rbnTimeseriesNode.clicked.connect(self.rbnTimeseriesNode_Clicked)
+        self.rbnTimeseriesLink.clicked.connect(self.rbnTimeseriesLink_Clicked)
         self._main_form = main_form
+        self.item_type = ENR_node_type
         self.forms = []
 
     def set_from(self, project, output):
@@ -30,9 +32,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.report = Reports(project, output)
         self.cboTime.clear()
         if self.project and self.output:
-            for time_index in range(0, self.output.numPeriods):
-                #if self.???:
-                    self.cboTime.addItem(self.output.get_time_string(time_index))
+            for time_index in range(0, self.output.num_periods):
+                #if self.???:  TODO: give choice between elapsed hours and date
+                self.cboTime.addItem(self.output.get_time_string(time_index))
                 #else:
                 #    self.cboTime.addItem(self.output.get_date_string(time_index))
 
@@ -41,112 +43,99 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
     def rbnNodes_Clicked(self):
         if self.rbnNodes.isChecked():
+            self.item_type = ENR_node_type
+            self.set_attributes()
             self.cbxSort.setEnabled(True)
             self.cbxSort.setText(transl8("frmTable", "Sort by Elevation", None))
-            self.lstColumns.clear()
-            self.lstColumns.addItems(ENR_NodeAttributeNames)
-            self.lstColumns.selectAll()
-            self.cboFilter.clear()
-            self.cboFilter.addItems(ENR_NodeAttributeNames)
             self.rbnLinks.setChecked(False)
             self.rbnTimeseriesNode.setChecked(False)
             self.rbnTimeseriesLink.setChecked(False)
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
+            self.item_type = ENR_link_type
+            self.set_attributes()
             self.cbxSort.setEnabled(True)
             self.cbxSort.setText(transl8("frmTable", "Sort by Length", None))
-            self.lstColumns.clear()
-            self.lstColumns.addItems(ENR_LinkAttributeNames)
-            self.lstColumns.selectAll()
-            self.cboFilter.clear()
-            self.cboFilter.addItems(ENR_LinkAttributeNames)
             self.rbnNodes.setChecked(False)
             self.rbnTimeseriesNode.setChecked(False)
             self.rbnTimeseriesLink.setChecked(False)
 
     def rbnTimeseriesNode_Clicked(self):
         if self.rbnTimeseriesNode.isChecked():
+            self.item_type = ENR_node_type
+            self.set_attributes()
             self.cbxSort.setEnabled(False)
             self.cbxSort.setText(transl8("frmTable", "Sort by", None))
-            self.lstColumns.clear()
-            self.lstColumns.addItems(ENR_NodeAttributeNames)
-            self.lstColumns.selectAll()
-            self.cboFilter.clear()
-            self.cboFilter.addItems(ENR_NodeAttributeNames)
             self.rbnNodes.setChecked(False)
             self.rbnLinks.setChecked(False)
             self.rbnTimeseriesLink.setChecked(False)
 
     def rbnTimeseriesLink_Clicked(self):
         if self.rbnTimeseriesLink.isChecked():
+            self.item_type = ENR_link_type
+            self.set_attributes()
             self.cbxSort.setEnabled(False)
             self.cbxSort.setText(transl8("frmTable", "Sort by", None))
-            self.lstColumns.clear()
-            self.lstColumns.addItems(ENR_LinkAttributeNames)
-            self.lstColumns.selectAll()
-            self.cboFilter.clear()
-            self.cboFilter.addItems(ENR_LinkAttributeNames)
             self.rbnNodes.setChecked(False)
             self.rbnLinks.setChecked(False)
             self.rbnTimeseriesNode.setChecked(False)
 
+    def set_attributes(self):
+        self.lstColumns.clear()
+        attribute_names = [attribute.name for attribute in self.item_type.Attributes]
+        self.lstColumns.addItems(attribute_names)
+        self.lstColumns.selectAll()
+        self.cboFilter.clear()
+        self.cboFilter.addItems(attribute_names)
+
     def cmdOK_Clicked(self):
         row_headers = []
         column_headers = []
-        parameter_codes = []
-        if self.rbnNodes.isChecked() or self.rbnTimeseriesNode.isChecked():
-            title = "Node"
-            get_index = self.output.get_NodeIndex
-            get_value = self.output.get_NodeValue
-            get_series = self.output.get_NodeSeries
-            for column_item in self.lstColumns.selectedItems():
-                attribute_name = str(column_item.text())
-                attribute_index = ENR_NodeAttributeNames.index(attribute_name)
-                parameter_codes.append(ENR_NodeAttributes[attribute_index])
-                units = ENR_NodeAttributeUnits[attribute_index][self.output.unit_system]
+        attributes = []
+        for column_index in self.lstColumns.selectedIndexes():
+            attribute_index = column_index.row()
+            if attribute_index < len(self.item_type.Attributes):
+                attribute = self.item_type.Attributes[attribute_index]
+                attributes.append(attribute)
+                column_header = attribute.name
+                units = attribute.units(self.output.unit_system)
                 if units:
-                    attribute_name += '\n(' + units + ')'
-                column_headers.append(attribute_name)
-
-        else:  # if self.rbnLinks.isChecked() or self.rbnTimeseriesLink.isChecked():
-            title = "Link"
-            get_index = self.output.get_LinkIndex
-            get_value = self.output.get_LinkValue
-            get_series = self.output.get_LinkSeries
-            for column_item in self.lstColumns.selectedItems():
-                attribute_name = str(column_item.text())
-                attribute_index = ENR_LinkAttributeNames.index(attribute_name)
-                parameter_codes.append(ENR_LinkAttributes[attribute_index])
-                units = ENR_LinkAttributeUnits[attribute_index][self.output.unit_system]
-                if units:
-                    attribute_name += '\n(' + units + ')'
-                column_headers.append(attribute_name)
+                    column_header += '\n(' + units + ')'
+                column_headers.append(column_header)
+            else:
+                print ("Did not find attribute " + attribute_index)
 
         frm = frmGenericListOutput(self._main_form, "EPANET Table Output")
         if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
+            items_in_order = list()
             if self.rbnNodes.isChecked():
-                ids = self.report.all_node_ids()
-                for node_type, node_id in zip(self.report.all_node_types(), ids):
-                    row_headers.append(node_type + ' ' + node_id)
+                for item in self.report.all_nodes_set_category():
+                    items_in_order.append(item)
+                    row_headers.append(item.category + ' ' + item.name)
             else:
-                ids = self.report.all_link_ids()
-                for link_type, link_id in zip(self.report.all_link_types(), ids):
-                    row_headers.append(link_type + ' ' + link_id)
+                for item in self.report.all_links_set_category():
+                    items_in_order.append(item)
+                    row_headers.append(item.category + ' ' + item.name)
             time_index = self.cboTime.currentIndex()
-            title = "Network Table - " + title + "s at "+ self.output.get_time_string(time_index)
-            self.make_table(frm, title, get_index, get_value, time_index,
-                            ids, row_headers, parameter_codes, column_headers)
+            title = "Network Table - " + self.item_type.TypeLabel + "s at "+ self.output.get_time_string(time_index)
+            self.make_table(frm, title, time_index, items_in_order,
+                            row_headers, attributes, column_headers)
         else:
-            id = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
-            title = "Time Series Table - " + title + ' ' + id
-            self.make_timeseries_table(frm, title, get_index, get_value, id, parameter_codes, column_headers)
+            name = self.txtNodeLink.text()  # TODO: turn this textbox into combo box or list?
+            if self.rbnTimeseriesNode.isChecked():
+                item = self.output.nodes[name]
+            else:
+                item = self.output.links[name]
+            title = "Time Series Table - " + self.item_type.TypeLabel + ' ' + name
+            self.make_timeseries_table(frm, title, item, attributes, column_headers)
         frm.tblGeneric.resizeColumnsToContents()
         frm.show()
+        frm.update()
         self.forms.append(frm)
         # self.close()
 
-    def make_table(self, frm, title, get_index, get_value, time_index, ids, row_headers, parameter_codes, column_headers):
+    def make_table(self, frm, title, time_index, items, row_headers, attributes, column_headers):
         frm.setWindowTitle(title)
         tbl = frm.tblGeneric
 
@@ -156,27 +145,27 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         tbl.setVerticalHeaderLabels(row_headers)
 
         row = 0
-        for this_id in ids:
+        for this_item in items:
             col = 0
-            for parameter_code in parameter_codes:
-                output_index = get_index(this_id)
-                if output_index >= 0:
-                    val = get_value(output_index, time_index, parameter_code)
-                    if parameter_code == ENR_status and val in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
-                        val_str = ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
-                    else:
-                        val_str = '{:7.2f}'.format(val)
-                    item = QtGui.QTableWidgetItem(val_str)
-                    item.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
-                    item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
-                    tbl.setItem(row, col, item)
+            values = this_item.get_all_attributes_at_time(self.output, time_index)
+            for attribute in attributes:
+                val_str = attribute.str(values[attribute.index])
+                table_cell_widget = QtGui.QTableWidgetItem(val_str)
+                table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
+                table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+                tbl.setItem(row, col, table_cell_widget)
                 col += 1
             row += 1
+            if row == 20:
+                tbl.resizeColumnsToContents()
+                frm.show()
+                frm.update()
+                process_events()
 
-    def make_timeseries_table(self, frm, title, get_index, get_value, this_id, parameter_codes, column_headers):
+    def make_timeseries_table(self, frm, title, item, attributes, column_headers):
         frm.setWindowTitle(title)
         row_headers = []
-        for time_index in range(0, self.output.numPeriods):
+        for time_index in range(0, self.output.num_periods):
             row_headers.append(self.output.get_time_string(time_index))
         tbl = frm.tblGeneric
         tbl.setRowCount(len(row_headers))
@@ -184,21 +173,17 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         tbl.setHorizontalHeaderLabels(column_headers)
         tbl.setVerticalHeaderLabels(row_headers)
 
-        output_index = get_index(this_id)
-        if output_index >= 0:
+        if item:
             row = 0
-            for time_index in range(0, self.output.numPeriods):
+            for time_index in range(0, self.output.num_periods):
                 col = 0
-                for parameter_code in parameter_codes:
-                    val = get_value(output_index, time_index, parameter_code)
-                    if parameter_code == ENR_status and val in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]:
-                        val_str = ('Closed', 'Closed', 'Closed', 'Open', 'Active', 'Open', 'Open', 'Open')[int(val)]
-                    else:
-                        val_str = '{:7.2f}'.format(val)
-                    item = QtGui.QTableWidgetItem(val_str)
-                    item.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
-                    item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
-                    tbl.setItem(row, col, item)
+                values = item.get_all_attributes_at_time(self.output, time_index)
+                for attribute in attributes:
+                    val_str = attribute.str(values[attribute.index])
+                    table_cell_widget = QtGui.QTableWidgetItem(val_str)
+                    table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
+                    table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+                    tbl.setItem(row, col, table_cell_widget)
                     col += 1
                 row += 1
 

@@ -1,6 +1,9 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match, match_omit
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 
 
@@ -32,19 +35,20 @@ class SimpleHydrographsTest(unittest.TestCase):
                      "UH101 ALL LONG 0.033 10.0 2.0",
                      "UH101 JUL SHORT 0.033 0.5 2.0",
                      "UH101 JUL MEDIUM 0.011 2.0 2.0")
-        from_text = Project()
-        source_text = '\n'.join(TEST_TEXT)
-        from_text.set_text(source_text)
-        project_hydrographs = from_text.hydrographs
 
-        assert Section.match_omit(project_hydrographs.get_text(), source_text, " \t-;\n")
+        source_text = '\n'.join(TEST_TEXT)
+        project_reader = ProjectReader()
+        project_writer = ProjectWriter()
+        project_hydrographs = project_reader.read_hydrographs.read(source_text)
+
+        assert match_omit(project_writer.write_hydrographs.as_text(project_hydrographs), source_text, " \t-;\n")
 
         assert len(project_hydrographs.value) == 1
 
         val = project_hydrographs.value[0]
 
-        assert val.group_name == "UH101"
-        assert val.rain_gage_id == "RG1"
+        assert val.name == "UH101"
+        assert val.rain_gage_name == "RG1"
         assert len(val.value) == 5
 
         hydrograph_item = val.value[0]

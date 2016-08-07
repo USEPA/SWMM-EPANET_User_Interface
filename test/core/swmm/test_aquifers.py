@@ -1,6 +1,9 @@
 import unittest
-from core.inputfile import Section
-from core.swmm.project import Project
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match, match_omit
 from core.swmm.hydrology.aquifer import Aquifer
 
 
@@ -15,14 +18,14 @@ class SimpleAquifersTest(unittest.TestCase):
 
     def test_aquifers(self):
         """Test AQUIFERS section using the Project class"""
-        from_text = Project()
         source_text = '\n'.join(self.TEST_TEXT)
-        from_text.set_text(source_text)
-        project_section = from_text.aquifers
+        project_reader = ProjectReader()
+        project_writer = ProjectWriter()
+        section_from_text = project_reader.read_aquifers.read(source_text)
 
-        assert Section.match_omit(project_section.get_text(), source_text, " \t-;\n")
+        assert match_omit(project_writer.write_aquifers.as_text(section_from_text), source_text, " \t-;\n")
 
-        val = project_section.value[0]
+        val = section_from_text.value[0]
 
         assert val.name == "1"
         assert val.porosity == "0.5"
@@ -39,7 +42,7 @@ class SimpleAquifersTest(unittest.TestCase):
         assert val.unsaturated_zone_moisture == "0.40"
         assert val.upper_evaporation_pattern == ""
 
-        val = project_section.value[1]
+        val = section_from_text.value[1]
 
         assert val.name == "1"
         assert val.porosity == "2"
@@ -61,12 +64,7 @@ class SimpleAquifersTest(unittest.TestCase):
 
     def test_aquifer(self):
         """Test one set of aquifer parameters in Example 5"""
-        self.my_options = Aquifer()
-        test_aquifer = r"""
-        ;;Aquifer       	Phi   	WP    	FC    	HydCon	Kslope	Tslope	UEF   	LED   	LGLR  	BEL   	WTEL  	UZM   	UEF Pat
-        ;;--------------	------	------	------	------	------	------	------	------	------	------	------	------	------
-               1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40
-        """
-        self.my_options.set_text(test_aquifer)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_aquifer)
+        test_aquifer = "1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40"
+        self.my_options = AquiferReader.read(test_aquifer)
+        actual_text = AquiferWriter.as_text(self.my_options) # display purpose
+        assert match(actual_text, test_aquifer)

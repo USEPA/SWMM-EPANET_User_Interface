@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.help import HelpHandler
 from core.swmm.hydrology.lidcontrol import LIDType
 from ui.SWMM.frmLIDUsageDesigner import Ui_frmLIDUsage
@@ -23,17 +22,17 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.btnFile.clicked.connect(self.btnFile_clicked)
         self.btnClear.clicked.connect(self.btnClear_clicked)
         # self.set_from(parent.parent.project)
-        self.subcatchment_id = ''
+        self.subcatchment_name = ''
         self.row_id = -1
 
-    def set_add(self, project, main_form, subcatchment_id):
+    def set_add(self, project, main_form, subcatchment_name):
         self._main_form = main_form
         section = project.lid_controls
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
         for lid in lid_list:
             self.cboLIDControl.addItem(lid.control_name)
-        self.subcatchment_id = subcatchment_id
+        self.subcatchment_name = subcatchment_name
         self.lblPercent.setText('0.000')
         self.spxUnits.setValue(1)
         self.txtArea.setText('0')
@@ -43,7 +42,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.txtDrain.setText('')
         self.txtFile.setText('')
 
-    def set_edit(self, project, parent_form, row_id, lid_selected, subcatchment_id):
+    def set_edit(self, project, parent_form, row_id, lid_selected, subcatchment_name):
         self.row_id = row_id
         self._main_form = parent_form
         section = project.lid_controls
@@ -52,12 +51,12 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         selected_index = 0
         item_count = -1
         for lid in lid_list:
-            self.cboLIDControl.addItem(lid.control_name)
+            self.cboLIDControl.addItem(lid.name)
             item_count += 1
-            if lid_selected == lid.control_name:
+            if lid_selected == lid.name:
                 selected_index = item_count
         self.cboLIDControl.setCurrentIndex(selected_index)
-        self.subcatchment_id = subcatchment_id
+        self.subcatchment_name = subcatchment_name
 
         number_replicate_units = parent_form.tblControls.item(row_id,5).text()
         area_each_unit = parent_form.tblControls.item(row_id,6).text()
@@ -117,7 +116,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
             # recalculate area and lid name
             self._main_form.SetLongLIDName(lid_control, self.row_id)
-            self._main_form.SetAreaTerm(self.subcatchment_id, self.row_id, number_replicate_units, area_each_unit)
+            self._main_form.SetAreaTerm(self.subcatchment_name, self.row_id, number_replicate_units, area_each_unit)
 
         self.close()
 
@@ -129,7 +128,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         section = self._main_form.project.find_section("LID_CONTROLS")
         lid_list = section.value[0:]
         for lid in lid_list:
-            if lid.control_name == selected_text:
+            if lid.name == selected_text:
                 # this is the lid control, get its type
                 if lid.lid_type == LIDType.BC:
                     self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))
@@ -155,7 +154,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         else:
             conversion_factor = 10000.0
 
-        # TODO: get area from subcatchment: core.swmm.project.find_subcatchment(self.subcatchment_id).area
+        # TODO: get area from subcatchment: core.swmm.project.find_subcatchment(self.subcatchment_name).area
         subcatchment_area = 1
         if subcatchment_area <= 0:
             subcatchment_area = 10.0

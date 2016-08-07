@@ -1,8 +1,8 @@
 import os
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from PyQt4.QtGui import QMessageBox
 import traceback
-import core.swmm.project
 from ui.help import HelpHandler
 import ui.convenience
 from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
@@ -48,7 +48,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self.cboStart.clear()
         self.cboEnd.clear()
         elapsed = self.rbnElapsed.isChecked()
-        for time_index in range(0, self.output.numPeriods):
+        for time_index in range(0, self.output.num_periods):
             if elapsed:
                 time_string = self.output.get_time_string(time_index)
             else:
@@ -59,8 +59,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         self.cboStart.setCurrentIndex(0)
         self.cboEnd.setCurrentIndex(self.cboEnd.count() - 1)
 
-    def add(self, object_type, object_id, variable, axis, legend):
-        item = object_type + ',' + object_id + ',' + variable + ',' + axis + ',"' + legend + '"'
+    def add(self, object_type, object_name, variable, axis, legend):
+        item = object_type + ',' + object_name + ',' + variable + ',' + axis + ',"' + legend + '"'
         self.lstData.addItem(item)
 
     def cboStart_currentIndexChanged(self):
@@ -86,7 +86,15 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         end_index = self.cboEnd.currentIndex()
         num_steps = end_index - start_index + 1
         lines_list = ui.convenience.all_list_items(self.lstData)
-        graphSWMM.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
+        try:
+            graphSWMM.plot_time(self.output, lines_list, elapsed_flag, start_index, num_steps)
+        except Exception as e1:
+            msg = str(e1) + '\n' + str(traceback.print_exc())
+            print(msg)
+            QMessageBox.information(None, "Plot",
+                                    "Error plotting:\n" + msg,
+                                    QMessageBox.Ok)
+
         # cb = QtGui.QApplication.clipboard()
         # cb.clear(mode=cb.Clipboard)
         # cb.setText(self.get_text(), mode=cb.Clipboard)
@@ -102,10 +110,10 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                 with open(file_name, 'w') as writer:
                     writer.write("from Externals.swmm.outputapi import SMOutputWrapper\n")
                     writer.write("from core.graph import SWMM as graphSWMM\n")
-                    writer.write("output = SMOutputWrapper.OutputObject('" + self.output.output_file_name + "')\n")
+                    writer.write("output = SMOutputWrapper.SwmmOutputObject('" + self.output.output_file_name + "')\n")
                     writer.write("elapsed_flag = " + str(self.rbnElapsed.isChecked()) + "\n")
                     writer.write("start_index = " + str(self.cboStart.currentIndex()) + "\n")
-                    if self.cboEnd.currentIndex() == self.output.numPeriods:
+                    if self.cboEnd.currentIndex() == self.output.num_periods:
                         writer.write("num_steps = -1\n")
                     else:
                         writer.write("end_index = " + str(self.cboEnd.currentIndex()) + "\n")

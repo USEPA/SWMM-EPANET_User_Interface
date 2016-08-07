@@ -1,14 +1,14 @@
-import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
-import core.swmm.climatology
+import PyQt4.QtGui as QtGui
+
+from core.swmm.climatology import EvaporationFormat
+from core.swmm.climatology import TemperatureSource
+from core.swmm.climatology import WindSource
 from ui.SWMM.frmClimatologyDesigner import Ui_frmClimatology
-from core.swmm.climatology.climatology import TemperatureSource
-from core.swmm.climatology.climatology import EvaporationFormat
-from core.swmm.climatology.climatology import WindSource
-from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.SWMM.frmPatternEditor import frmPatternEditor
-import ui.convenience
+from ui.SWMM.frmTimeseries import frmTimeseries
+
+
 # from PyQt4.QtGui import *
 
 
@@ -60,8 +60,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             self.tabClimate.setCurrentIndex(5)
 
     def set_all(self, project):
-        # evap_section = core.swmm.climatology
-        evap_section = project.find_section("EVAPORATION")
+        evap_section = project.evaporation
         # "Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"
         self.evap_pan_list = evap_section.monthly_pan_coefficients
         self.evap_monthly_list = evap_section.monthly
@@ -113,8 +112,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
                     selected_index = int(self.cboMonthly.count())-1
         self.cboMonthly.setCurrentIndex(selected_index)
 
-        # temp_section = core.swmm.climatology.climatology
-        temp_section = project.find_section("TEMPERATURE")
+        temp_section = project.temperature
         if temp_section.source == TemperatureSource.UNSET:
             self.rbnTimeseries.setChecked(False)
             self.rbnExternal.setChecked(False)
@@ -132,7 +130,7 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             self.rbnExternal.setChecked(False)
             self.rbnNoData.setChecked(True)
 
-        time_series_section = project.find_section("TIMESERIES")
+        time_series_section = project.timeseries
         time_series_list = time_series_section.value[0:]
         self.cboTimeSeries.clear()
         self.cboTimeSeries.addItem('')

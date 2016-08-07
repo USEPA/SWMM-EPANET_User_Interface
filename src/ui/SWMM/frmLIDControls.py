@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-import core.swmm.project
 from ui.SWMM.frmLIDControlsDesigner import Ui_frmLIDControls
 from ui.SWMM.frmLIDUsage import frmLIDUsage
 from core.swmm.hydrology.lidcontrol import LIDType
@@ -21,27 +20,27 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         QtCore.QObject.connect(self.btnDelete, QtCore.SIGNAL("clicked()"), self.btnDelete_Clicked)
         self._main_form = main_form
         # set for first subcatchment for now
-        self.subcatchment_id = subcatchment_name
+        self.subcatchment_name = subcatchment_name
         self.set_subcatchment(main_form.project, subcatchment_name)
 
-    def set_subcatchment(self, project, subcatchment_id):
+    def set_subcatchment(self, project, subcatchment_name):
         # section = core.swmm.project.LIDUsage()
         section = project.lid_usage
         lid_list = section.value[0:]
         # assume we want to edit the first one
-        self.subcatchment_id = subcatchment_id
-        self.setWindowTitle("LID Controls for Subcatchment " + subcatchment_id)
+        self.subcatchment_name = subcatchment_name
+        self.setWindowTitle("LID Controls for Subcatchment " + subcatchment_name)
         self.tblControls.setColumnCount(self.tblControls.columnCount()+6)  # add for hidden columns
         lid_count = -1
         for value in lid_list:
-            if value.subcatchment_name == subcatchment_id:
+            if value.subcatchment_name == subcatchment_name:
                 # this is the subcatchment we want to edit
                 lid_count += 1
                 self.tblControls.setRowCount(lid_count+1)
                 self.tblControls.setItem(lid_count,0,QtGui.QTableWidgetItem(str(value.control_name)))
 
                 self.SetLongLIDName(value.control_name,lid_count)
-                self.SetAreaTerm(subcatchment_id, lid_count, value.number_replicate_units, value.area_each_unit)
+                self.SetAreaTerm(subcatchment_name, lid_count, value.number_replicate_units, value.area_each_unit)
 
                 self.tblControls.setItem(lid_count,3,QtGui.QTableWidgetItem(str(value.percent_impervious_area_treated)))
 
@@ -69,7 +68,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         lid_list = section.value[0:]
         lid_count = 0
         for value in lid_list:
-            if value.subcatchment_name == self.subcatchment_id:
+            if value.subcatchment_name == self.subcatchment_name:
                 lid_count += 1
                 if lid_count <= row_count:
                     # put this lid back in this spot
@@ -89,8 +88,8 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
             # we added some rows, need to add to the lid list
             for row in range(self.tblControls.rowCount()):
                 if row > lid_count-1:
-                    new_lid = core.swmm.project.LIDUsage()
-                    new_lid.subcatchment_name = self.subcatchment_id
+                    new_lid = self._main_form.project.LIDUsage()
+                    new_lid.subcatchment_name = self.subcatchment_name
                     new_lid.control_name = self.tblControls.item(row,0).text()
                     new_lid.percent_impervious_area_treated = self.tblControls.item(row,3).text()
                     new_lid.detailed_report_file = self.tblControls.item(row,4).text()
@@ -109,7 +108,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
     def btnAdd_Clicked(self):
         self._frmLIDUsage = frmLIDUsage(self._main_form)
         # add to this subcatchment
-        self._frmLIDUsage.set_add(self._main_form.project, self, self.subcatchment_id)
+        self._frmLIDUsage.set_add(self._main_form.project, self, self.subcatchment_name)
         self._frmLIDUsage.show()
 
     def btnEdit_Clicked(self):
@@ -117,7 +116,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         row = self.tblControls.currentRow()
         lid_selected = str(self.tblControls.item(row,0).text())
         # edit the lid for this subcatchment and this lid name
-        self._frmLIDUsage.set_edit(self._main_form.project, self, row, lid_selected, self.subcatchment_id)
+        self._frmLIDUsage.set_edit(self._main_form.project, self, row, lid_selected, self.subcatchment_name)
         self._frmLIDUsage.show()
 
     def btnDelete_Clicked(self):
@@ -129,7 +128,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         lid_control_section = self._main_form.project.lid_controls
         lid_control_list = lid_control_section.value[0:]
         for lid in lid_control_list:
-            if lid.control_name == short_name:
+            if lid.name == short_name:
                 # this is the lid
                 if lid.lid_type == LIDType.BC:
                     lid_name = 'Bio-Retention'
@@ -147,9 +146,9 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
                     lid_name = 'Rooftop Disconnection'
                 elif lid.lid_type == LIDType.VS:
                     lid_name = 'Vegetative Swale'
-        self.tblControls.setItem(row,1,QtGui.QTableWidgetItem(str(lid_name)))
+        self.tblControls.setItem(row, 1, QtGui.QTableWidgetItem(str(lid_name)))
 
-    def SetAreaTerm(self, subcatchment_id, row, number_replicate_units, area_each_unit):
+    def SetAreaTerm(self, subcatchment_name, row, number_replicate_units, area_each_unit):
         area = float(number_replicate_units) * float(area_each_unit)
 
         units = 1
@@ -158,7 +157,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         else:
             conversion_factor = 10000.0
 
-        subcatchment_area = core.swmm.project.Subcatchment(subcatchment_id).area
+        subcatchment_area = self._main_form.project.Subcatchment(subcatchment_name).area
         if len(subcatchment_area) < 1:
             subcatchment_area = 10.0
         elif subcatchment_area <= 0:

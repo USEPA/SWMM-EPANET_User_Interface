@@ -33,8 +33,3 @@ class Control():
         self.control_type = ControlType.ABOVE
         """Simple controls are used to change link status or settings based on tank water level, junction pressure,
             time into the simulation or time of day"""
-
-    def __str__(self):
-        """Override default method to return string representation"""
-        return self.get_text()
-

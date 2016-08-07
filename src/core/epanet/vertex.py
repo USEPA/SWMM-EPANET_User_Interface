@@ -1,8 +1,8 @@
-from core.coordinates import Coordinates
+from core.coordinate import Coordinate
 
 
-class Vertex(Coordinates):
+class Vertex(Coordinate):
     """Assigns interior vertex points to network links"""
     def __init__(self, x, y, link):
-        Coordinates.__init__(self, x, y)
+        Coordinate.__init__(self, x, y)
         self.link = link

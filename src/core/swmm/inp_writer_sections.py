@@ -1,5 +1,6 @@
 import traceback
 from enum import Enum
+from core.coordinate import Coordinate
 from core.project_base import Section
 from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
@@ -78,6 +79,21 @@ from core.swmm.options.map import MapUnits
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
 from core.inp_writer_base import SectionWriter
+
+
+class CoordinateWriter(SectionWriter):
+    """Text version of a coordinate pair's name and X, Y"""
+
+    field_format = " {:16}\t{:10}\t{:10}\n"
+
+    @staticmethod
+    def as_text(coordinate):
+        """format contents of this item for writing to file"""
+        inp = ''
+        if coordinate.comment:
+            inp = coordinate.comment + '\n'
+        inp += CurveWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        return inp
 
 
 class CurveWriter(SectionWriter):

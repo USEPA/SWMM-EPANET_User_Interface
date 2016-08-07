@@ -3,6 +3,7 @@ try:
     from qgis.gui import *
     from PyQt4 import QtGui, QtCore
     from PyQt4.QtGui import *
+    import os
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
@@ -156,7 +157,7 @@ try:
                 # add a feature
                 feature = QgsFeature()
                 feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
-                feature.setAttributes([coordinate_pair.id])
+                feature.setAttributes([coordinate_pair.name])
                 features.append(feature)
 
             layer.startEditing()
@@ -218,9 +219,9 @@ try:
                 inlet_coord = None
                 outlet_coord = None
                 for coordinate_pair in coordinates:
-                    if coordinate_pair.id == link.inlet_node:
+                    if coordinate_pair.name == link.inlet_node:
                         inlet_coord = coordinate_pair
-                    if coordinate_pair.id == link.outlet_node:
+                    if coordinate_pair.name == link.outlet_node:
                         outlet_coord = coordinate_pair
                 if inlet_coord and outlet_coord:
                     # add a feature
@@ -255,25 +256,25 @@ try:
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
-            poly_id = None
+            poly_name = None
             poly_points = []
             for coordinate_pair in polygons:
-                if coordinate_pair.id != poly_id:
+                if coordinate_pair.name != poly_name:
                     if poly_points:
                         # add a feature
                         feature = QgsFeature()
                         feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                        feature.setAttributes([poly_id])
+                        feature.setAttributes([poly_name])
                         features.append(feature)
                         poly_points = []
-                    poly_id = coordinate_pair.id
+                    poly_name = coordinate_pair.name
                 poly_points.append(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y)))
 
             if poly_points:
                 # add a feature
                 feature = QgsFeature()
                 feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                feature.setAttributes([poly_id])
+                feature.setAttributes([poly_name])
                 features.append(feature)
 
             layer.startEditing()
@@ -310,6 +311,20 @@ try:
                         self.canvas.setExtent(layer.extent())
                     else:
                         self.canvas.setExtent(self.canvas.extent())
+
+        def saveVectorLayers(self, folder):
+            layer_index = 0
+            for map_layer in self.layers:
+                try:
+                    vector_layer = map_layer.layer()
+                    layer_index += 1
+                    file_name = os.path.join(folder, "layer" + str(layer_index) + ".json")
+
+                    QgsVectorFileWriter.writeAsVectorFormat(vector_layer, file_name, "utf-8", vector_layer.crs(),
+                                                            driverName="GeoJson")
+
+                except Exception as e:
+                    print str(e)
 
     class PanTool(QgsMapTool):
         def __init__(self, mapCanvas):

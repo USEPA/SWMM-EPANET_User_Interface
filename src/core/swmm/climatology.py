@@ -50,6 +50,7 @@ class Temperature(Section):
 
         self.areal_depletion = ArealDepletion()
 
+
 class Evaporation(Section):
     """How daily evaporation rates vary with time for the study area"""
 
@@ -84,6 +85,7 @@ class Evaporation(Section):
             If dry_only_specified == False, then DRY_ONLY is skipped in get_text if self.dry_only_specified == False.
             If dry_only_specified == True, DRY_ONLY will be included in get_text even if self.dry_only == False. """
 
+
 class WindSpeed:
     """wind speed parameters, stored as part of [TEMPERATURE] section"""
 
@@ -95,6 +97,7 @@ class WindSpeed:
 
         self.wind_speed_monthly = ()
         """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
+
 
 class SnowMelt:
     """snow melt parameters"""
@@ -120,6 +123,7 @@ class SnowMelt:
         self.time_correction = '0'
         """correction, in minutes of time, between true solar time and the standard clock time (default is 0)."""
 
+
 class ArealDepletion:
     """areal depletion parameters"""
 
@@ -131,6 +135,7 @@ class ArealDepletion:
 
         self.adc_pervious = ()
         """fraction of area covered by snow when ratio of snow depth to depth for pervious area"""
+
 
 class Adjustments(Section):
     """Specifies optional monthly adjustments to be made to temperature, evaporation rate,
@@ -151,4 +156,3 @@ class Adjustments(Section):
 
         self.soil_conductivity = []
         """monthly soil_conductivity adjustments as multipliers applied to soil hydraulic conductivity"""
-

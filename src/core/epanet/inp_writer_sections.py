@@ -19,7 +19,7 @@ from core.epanet.hydraulics.link import Valve
 from core.epanet.hydraulics.link import Status
 from core.epanet.hydraulics.node import SourceType
 from core.epanet.hydraulics.node import MixingModel
-from core.epanet.hydraulics.node import Coordinate
+from core.coordinate import Coordinate
 from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir

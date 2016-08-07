@@ -1,5 +1,5 @@
 from enum import Enum
-from core.coordinates import Coordinates
+from core.coordinate import Coordinate
 from core.project_base import Section
 from core.metadata import Metadata
 from core.swmm.hydrology.raingage import RainGage
@@ -54,7 +54,7 @@ class Subcatchment(Section):
         self.name = "NewSubcatchment"
         """str: Unique user-assigned Subcatchment name."""
 
-        self.centroid = Coordinates(None, None)
+        self.centroid = Coordinate()
         """Coordinates: Subcatchment's centroid on the Study Area Map.
             If not set, the subcatchment will not appear on the map."""
 

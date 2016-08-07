@@ -1,3 +1,4 @@
+from core.coordinate import Coordinate
 from core.project_base import ProjectBase, SectionAsListOf
 from core.swmm.climatology import Adjustments
 from core.swmm.climatology import Evaporation
@@ -156,8 +157,11 @@ class SwmmProject(ProjectBase):
         self.labels = SectionAsListOf("[LABELS]", Label)
         # X,Y coordinates and text of labels
 
-        # self.polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
-        # self.coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
+        self.polygons = SectionAsListOf("[POLYGONS]", Coordinate)
+        # X,Y coordinates for each vertex of subcatchment polygons
+
+        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate)  # X,Y coordinates for nodes
+
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.

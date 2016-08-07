@@ -1,4 +1,4 @@
-from core.coordinates import Coordinates
+from core.coordinate import Coordinate
 import core.swmm.timeseries
 from enum import Enum
 from core.metadata import Metadata

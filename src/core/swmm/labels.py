@@ -1,4 +1,4 @@
-import core.coordinates
+import core.coordinate
 from core.project_base import Section
 from core.metadata import Metadata
 

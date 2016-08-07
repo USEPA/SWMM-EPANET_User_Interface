@@ -1,5 +1,5 @@
 import traceback
-
+from core.coordinate import Coordinate
 from core.inp_reader_base import SectionReader
 from core.project_base import ProjectBase, Section
 from core.swmm.climatology import Adjustments
@@ -63,9 +63,18 @@ from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
 
 
+class CoordinatesReader(SectionReader):
+    @staticmethod
+    def read(new_text):
+        coordinates = Coordinate()
+        fields = new_text.split()
+        if len(fields) > 2:
+            coordinates.name, coordinates.x, coordinates.y = fields[0:3]
+        return coordinates
+
+
 class CurveReader(SectionReader):
     """Defines data curves and their X,Y points"""
-
 
     @staticmethod
     def read(new_text):
@@ -1292,9 +1301,9 @@ class GeneralReader(SectionReader):
                         try:
                             tried_set = True
 
-                            if attr_name == "flow_routing" and General.old_flow_routing.has_key(attr_value.upper()):
+                            if attr_name == "flow_routing" and GeneralReader.old_flow_routing.has_key(attr_value.upper()):
                                 # Translate from old flow routing name to new flow routing name
-                                attr_value = General.old_flow_routing[attr_value.upper()]
+                                attr_value = GeneralReader.old_flow_routing[attr_value.upper()]
 
                             if attr_name == "normal_flow_limited" and attr_value.upper() == "NO":
                                 # Translate from old value NO to new value SLOPE

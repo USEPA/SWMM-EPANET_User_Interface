@@ -427,10 +427,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.project = ProjectBase()
             self.setWindowTitle(self.model)
 
-    def save_project(self):
+    def save_project(self, file_name=None):
+        if not file_name:
+            file_name = self.project.file_name
         project_writer = self.project_writer_type()
-        project_writer.write_file(self.project, self.project.file_name)
-
+        project_writer.write_file(self.project, file_name)
+        if self.map_widget:
+            self.map_widget.saveVectorLayers(os.path.dirname(file_name))
 
     def save_project_as(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
@@ -439,8 +442,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if file_name:
             path_only, file_only = os.path.split(file_name)
             try:
-                project_writer = self.project_writer_type()
-                project_writer.write_file(self.project, file_name)
+                self.save_project(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)

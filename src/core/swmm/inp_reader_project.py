@@ -196,31 +196,39 @@ class ProjectReader(InputFileReader):
         # baseline dry weather sanitary inflow at nodes
 
         self.read_patterns = SectionReaderAsListGroupByID("[PATTERNS]", Pattern, PatternReader,
-                                               ";;Name          \tType      \tMultipliers\n"
-                                               ";;--------------\t----------\t-----------")
+                                                          ";;Name          \tType      \tMultipliers\n"
+                                                          ";;--------------\t----------\t-----------")
         # PATTERNS      periodic variation in dry weather inflow
 
         self.read_rdii = SectionReaderAsListOf("[RDII]", RDIInflow, RDIInflowReader,
-                                    ";;Node          \tUnit Hydrograph \tSewer Area\n"
-                                    ";;--------------\t----------------\t----------")
+                                               ";;Node          \tUnit Hydrograph \tSewer Area\n"
+                                               ";;--------------\t----------------\t----------")
         # rainfall-dependent I/I information at nodes
 
         self.read_loadings = InitialLoadingsReader()
         # initial pollutant loads on subcatchments
 
         self.read_curves = SectionReaderAsListGroupByID("[CURVES]", Curve, CurveReader,
-                                             ";;Name          \tType      \tX-Value   \tY-Value   \n"
-                                             ";;--------------\t----------\t----------\t----------")
+                                                        ";;Name          \tType      \tX-Value   \tY-Value   \n"
+                                                        ";;--------------\t----------\t----------\t----------")
         # CURVES        x-y tabular data referenced in other sections
 
         self.read_timeseries = SectionReaderAsListGroupByID("[TIMESERIES]", TimeSeries, TimeSeriesReader,
-                                                 ";;Name          \tDate      \tTime      \tValue\n"
-                                                 ";;--------------\t----------\t----------\t----------")
+                                                            ";;Name          \tDate      \tTime      \tValue\n"
+                                                            ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
         # self.read_labels = SectionReaderAsListGroupByID("[LABELS]", Label, LabelReader,
         #                                          ";;X-Coord         \tY-Coord           \tLabel\n")
         # X,Y coordinates and text of labels
+
+        self.read_polygons = SectionReaderAsListOf("[POLYGONS]", Coordinate, CoordinatesReader,
+                                              ";;Node             X-Coord          Y-Coord")
+        # X,Y coordinates for each vertex of subcatchment polygons
+
+        self.read_coordinates = SectionReaderAsListOf("[COORDINATES]", Coordinate, CoordinatesReader,
+                                                 ";;Node             X-Coord          Y-Coord")
+        # X,Y coordinates for nodes
 
         # self.read_polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.read_coordinates = [Section] # COORDINATES # X,Y coordinates for nodes

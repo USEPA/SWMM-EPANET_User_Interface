@@ -2,8 +2,7 @@ from core.inp_reader_base import InputFileReader, SectionReaderAsListOf, Section
 from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
 from core.epanet.title import Title
-from core.epanet.vertex import Vertex
-
+from core.coordinate import Coordinate
 from core.epanet.inp_reader_sections import *
 
 try:
@@ -77,6 +76,8 @@ class ProjectReader(InputFileReader):
         self.read_report = ReportOptionsReader()
         self.read_coordinates = SectionReaderAsListOf("[COORDINATES]", Coordinate, CoordinateReader,
                                                       ";Node            \tX-Coord         \tY-Coord")
+        # X,Y coordinates for nodes
+
         # "[VERTICES]": [Vertex]
         self.read_labels = SectionReaderAsListOf("[LABELS]", Label, LabelReader,
                                                  ";X-Coord        \tY-Coord         \tLabel & Anchor Node")

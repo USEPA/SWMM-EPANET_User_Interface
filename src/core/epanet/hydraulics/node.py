@@ -1,5 +1,5 @@
 ﻿from enum import Enum
-from core.coordinates import Coordinates
+from core.coordinate import Coordinate
 from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 from core.project_base import Section
@@ -45,19 +45,6 @@ class MixingModel(Enum):
 #         self.report_flag = ""
 #         """Indicates whether reporting is desired at this node"""
 
-class Coordinate(Section):
-
-    def __init__(self):
-        Section.__init__(self)
-
-        self.name = ''
-        """Identifier of node at this location"""
-
-        self.x = '0.0'
-        """east/west location coordinate"""
-
-        self.y = '0.0'
-        """north/south location coordinate"""
 
 class Quality(Section):
     """Initial water quality at a node."""

@@ -398,7 +398,7 @@ struct IDentry* SMO_getLinkIDs(SMOutputAPI* smoapi, int* errcode)
 //   Warning: Caller must free memory allocated by this function using SMO_free_list
 //
 {
-	int arraySize = (smoapi->Nnodes);
+	int arraySize = (smoapi->Nlinks);
 	int* numChar = (int*)calloc(arraySize, RECORDSIZE);
 	int stringSize = 0;
 	int i;

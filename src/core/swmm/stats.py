@@ -4,7 +4,6 @@ from dateutil.relativedelta import relativedelta
 import numpy as np
 import pandas as pd
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
-import core.swmm.Uglobals as Uglobals
 
 #-------------------------------------------------------------------}
 #                    Unit:    Ustats.pas                            }
@@ -21,6 +20,38 @@ import core.swmm.Uglobals as Uglobals
 #   and ordered listing of TStatsEvent records. Results is a        }
 #   TStatsResults record that contains summary event statistics.    }
 #-------------------------------------------------------------------}
+
+class EObjectType(Enum):
+    SUBCATCHMENTS = 0
+    NODES = 1
+    LINKS = 2
+    SYS = 3
+    UNKNOWN = 4
+
+class MiscConstants():
+    """
+    # Miscellaneous global constants
+    """
+    FLOWTOL         = 0.005             #Zero flow tolerance
+    MISSING         = -1.0e10           #Missing value
+    NOXY            = -9999999          #Missing map coordinate
+
+    #NOPOINT: TPoint = (X: -9999999; Y: -9999999)
+    #NORECT: TRect   = (Left: -9999999; Top: -9999999; Right: -9999999; Bottom: -9999999)
+
+    NODATE          = -693594   # 1/1/0001
+    NA              = '#N/A'
+    NONE            = 0
+    NOVIEW          = 0
+    PLUS            = 1
+    MINUS           = 2
+    DefMeasError    = 5
+    DefIDIncrement  = 1
+    DefMaxTrials    = 8
+    DefMinSurfAreaUS = '12.557' #(ft2)
+    DefMinSurfAreaSI = '1.14'   #(m2)
+    DefHeadTolUS     = '0.005'  #(ft)
+    DefHeadTolSI     = '0.0015' #(m)
 
 class EStatsCat(Enum):
     BASIC = 0
@@ -66,7 +97,7 @@ class TStatsEvent:
 class TStatsSelection:
     def __init__(self):
         self.ObjectID       = ""               # ID of object being analyzed
-        self.ObjectType     = Uglobals.EObjectType.UNKNOWN.value # Subcatch, Node or Link, or system
+        self.ObjectType     = EObjectType.UNKNOWN.value # Subcatch, Node or Link, or system
         self.ObjectTypeText = "UNKNOWN"        # Subcatch, Node or Link, or system
         self.Variable       = 0                # Index of variable analyzed, basic, flow, or qual
         self.VariableText   = "UNKNOWN"        # Text of variable analyzed, e.g. precipitation
@@ -157,8 +188,8 @@ class StatisticUtility(object):
 
         pass
 
-    def GetStats(self, StatsSel, EventList):
-        Results = TStatsResults()
+    def GetStats(self, StatsSel, EventList, Results):
+        #Results = TStatsResults()
         #-----------------------------------------------------------------------------
         #  Analyzes simulation results to find the frequency of events as
         #  defined by the StatsSel argument. EventList contains a rank ordered
@@ -177,8 +208,8 @@ class StatisticUtility(object):
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
         self.RankEvents(EventList)
         self.FindStats(EventList, Results)
-        StatsSel = self.Stats #??? what for ???
-        return Results
+        #StatsSel = self.Stats #don't think this is necessary
+        #return Results
 
     def FindDuration(self, EventList, Results): # : TStatsResults)
         #-----------------------------------------------------------------------------
@@ -241,10 +272,12 @@ class StatisticUtility(object):
         #theObject = Uoutput.GetObject(Stats.ObjectType, Stats.ObjectID)
 
         # Examine each reporting period
-        for T in xrange(0, output.num_periods - 1): #range last element doesn't include the last number
+        for T in xrange(0, output.num_periods): #range last element doesn't include the last number
             # Get the current and next reporting dates
-            Date1 = aStats.Tser.index[T] #Timestamp
-            Date2 = aStats.Tser.index[T + 1] #Timestamp
+            #Date1 = aStats.Tser.index[T]
+            #Date2 = aStats.Tser.index[T + 1]
+            Date1 = output.StartDate + relativedelta(days=T * self.deltaDateTime)
+            Date2 = Date1 + relativedelta(days=self.deltaDateTime)
 
             #Confirmed: the Uglobals.DeltaDateTime is "Reporting time step (in days)"
             #self.deltaDateTime = abs(relativedelta(Date2, Date1).days)
@@ -274,8 +307,8 @@ class StatisticUtility(object):
 
             # Update event properties
             self.DryEnd = Date2
-            if (Q != Uglobals.MiscConstants.MISSING and
-                Y != Uglobals.MiscConstants.MISSING and
+            if (Q != MiscConstants.MISSING and
+                Y != MiscConstants.MISSING and
                 Y > aStats.MinEventValue):
                 # Convert variables to absolute value
                 Q = abs(Q)
@@ -294,16 +327,16 @@ class StatisticUtility(object):
                     #Y = Y * Q * QtoMLD[Uglobals.Qunits]
                     Y *= Q * self.QtoMLD[self.output.flowUnits]
 
-            # Start a new wet period
-            if self.Nwet == 0:
-                self.WetStart = Date1
-            self.Nwet += 1
-            self.WetEnd = Date2
+                # Start a new wet period
+                if self.Nwet == 0:
+                    self.WetStart = Date1
+                self.Nwet += 1
+                self.WetEnd = Date2
 
-            # Update sum and max. value
-            self.Ysum += Y
-            if Y > self.Ymax:
-                self.Ymax = Y
+                # Update sum and max. value
+                self.Ysum += Y
+                if Y > self.Ymax:
+                    self.Ymax = Y
 
             # Update MainForm's progress bar
             # MainForm.UpdateProgressBar(Progress, ProgStep)
@@ -659,7 +692,7 @@ class StatisticUtility(object):
             also retrieve its corresponding flow
         '''
         #aStats = TStatsSelection()
-        if aStats.ObjectType == Uglobals.EObjectType.SUBCATCHMENTS.value:
+        if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
             if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
                 aStats.IsQualParam = True
                 aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
@@ -672,14 +705,14 @@ class StatisticUtility(object):
                    "Infil" in aStats.VariableText:
                    aStats.IsRainParam = True
 
-        elif aStats.ObjectType == Uglobals.EObjectType.NODES.value:
+        elif aStats.ObjectType == EObjectType.NODES.value:
             if aStats.Variable >= len(SMO.SwmmOutputNode.attributes) - 1:
                 aStats.IsQualParam = True
 
             if "Inflow" in aStats.VariableText or "Overflow" in aStats.VariableText:
                 aStats.TserFlow = aStats.Tser
 
-        elif aStats.ObjectType == Uglobals.EObjectType.LINKS.value:
+        elif aStats.ObjectType == EObjectType.LINKS.value:
             if aStats.Variable >= len(SMO.SwmmOutputLink.attributes) - 1:
                 aStats.IsQualParam = True
 
@@ -687,7 +720,7 @@ class StatisticUtility(object):
                                                               self.Stats.ObjectID, \
                                                               "Flow")
 
-        elif aStats.ObjectType == Uglobals.EObjectType.SYS.value:
+        elif aStats.ObjectType == EObjectType.SYS.value:
             if "Precip" in aStats.VariableText or \
                "Rain" in aStats.VariableText or \
                "Evap" in aStats.VariableText or \

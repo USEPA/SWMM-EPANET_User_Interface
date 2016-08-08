@@ -470,9 +470,13 @@ class SwmmOutputObject(object):
     def get_time_series(self, type_label, object_id, attribute_name):
         item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
         attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
-        y_values = item.get_series(self, attribute, 0, self.num_periods - 1)
+        #ToDo: need to debug get_series about not reading the first zero entry
+        y_values = item.get_series(self, attribute, 0, self.num_periods)
+        #hack #1:
+        y_values.insert(0, 0.0) #all rains Tser starts with zero
         x_values = []
-        for time_index in range(0, self.num_periods):
+        #hack #2, +1 is to end in the ending moment of a time step
+        for time_index in range(0, self.num_periods + 1):
             elapsed_hours = self.elapsed_hours_at_index(time_index)
             # if elapsed_flag:
             #    x_values.append(elapsed_hours)

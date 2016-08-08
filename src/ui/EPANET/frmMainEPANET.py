@@ -626,18 +626,21 @@ class frmMainEPANET(frmMain):
         try:
             from qgis.core import QgsMapLayerRegistry
             from ui.map_tools import EmbedMap
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
-            EmbedMap.layers = self.canvas.layers()
-            self.map_widget.addCoordinates(self.project.coordinates.value)
-            self.map_widget.addLinks(self.project.coordinates.value,
-                                     self.project.pipes.value, "Pipes", "id", QColor('gray'))
-            self.map_widget.addLinks(self.project.coordinates.value,
-                                     self.project.pumps.value, "Pumps", "id", QColor('red'))
-            self.map_widget.addLinks(self.project.coordinates.value,
-                                     self.project.valves.value, "Valves", "id", QColor('green'))
-            self.map_widget.zoomfull()
-        except Exception as ex:
-            print(str(ex) + '\n' + str(traceback.print_exc()))
+            try:
+                QgsMapLayerRegistry.instance().removeAllMapLayers()
+                EmbedMap.layers = self.canvas.layers()
+                self.map_widget.addCoordinates(self.project.coordinates.value)
+                self.map_widget.addLinks(self.project.coordinates.value,
+                                         self.project.pipes.value, "Pipes", "id", QColor('gray'))
+                self.map_widget.addLinks(self.project.coordinates.value,
+                                         self.project.pumps.value, "Pumps", "id", QColor('red'))
+                self.map_widget.addLinks(self.project.coordinates.value,
+                                         self.project.valves.value, "Valves", "id", QColor('green'))
+                self.map_widget.zoomfull()
+            except Exception as ex:
+                print(str(ex) + '\n' + str(traceback.print_exc()))
+        except:
+            pass  # QGIS not loaded, skip building map
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

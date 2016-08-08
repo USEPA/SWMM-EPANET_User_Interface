@@ -149,7 +149,7 @@ try:
             # changes are only possible when editing the layer
             layer.startEditing()
             # add fields
-            provider.addAttributes([QgsField("ID", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
@@ -211,7 +211,7 @@ try:
             # changes are only possible when editing the layer
             layer.startEditing()
             # add fields
-            provider.addAttributes([QgsField("ID", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
@@ -252,7 +252,7 @@ try:
             # changes are only possible when editing the layer
             layer.startEditing()
             # add fields
-            provider.addAttributes([QgsField("ID", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
@@ -322,7 +322,6 @@ try:
 
                     QgsVectorFileWriter.writeAsVectorFormat(vector_layer, file_name, "utf-8", vector_layer.crs(),
                                                             driverName="GeoJson")
-
                 except Exception as e:
                     print str(e)
 
@@ -518,6 +517,43 @@ try:
                 self.main_form.select_id(feature.attributes()[0])
             except Exception as e:
                 print str(e)
+
+
+    class SaveAsGis:
+        @staticmethod
+        def save_links(coordinates, links, layer_name, link_attributes):
+            layer = QgsVectorLayer("LineString", layer_name, "memory")
+            provider = layer.dataProvider()
+
+            # add fields
+            provider.addAttributes([QgsField(link_attr, QtCore.QVariant.String) for link_attr in link_attributes])
+
+            features = []
+            # Receivers = as in the above example 'Receivers' is a list of results
+            for link in links:
+                inlet_coord = None
+                outlet_coord = None
+                for coordinate_pair in coordinates:
+                    if coordinate_pair.name == link.inlet_node:
+                        inlet_coord = coordinate_pair
+                    if coordinate_pair.name == link.outlet_node:
+                        outlet_coord = coordinate_pair
+                if inlet_coord and outlet_coord:
+                    # add a feature
+                    feature = QgsFeature()
+                    feature.setGeometry(QgsGeometry.fromPolyline([
+                        QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+                        QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+                    feature.setAttributes([getattr(link, link_attr, '') for link_attr in link_attributes])
+                    features.append(feature)
+
+            # changes are only possible when editing the layer
+            layer.startEditing()
+            provider.addFeatures(features)
+            layer.commitChanges()
+            layer.updateExtents()
+
+
 
 except:
     print "Skipping map_tools"

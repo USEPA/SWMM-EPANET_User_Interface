@@ -56,6 +56,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.setAcceptDrops(True)
         self.tree_section = ''
 
+        # Map attributes will be set below if possible or will remain None to indicate map is not present.
+        self.canvas = None
+        self.map_widget = None
         try:
             from qgis.core import QgsApplication
             from qgis.gui import QgsMapCanvas

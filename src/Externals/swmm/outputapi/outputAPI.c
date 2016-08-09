@@ -180,15 +180,6 @@ int SMO_getUnits(SMOutputAPI* smoapi, SMO_unit code, int* unitFlag)
 //
 //   Purpose: Returns flow rate units.
 //
-//	 Note:    Concentration units are located after the pollutant ID names and before the object properties start,
-//			  and can differ for each pollutant.  They're stored as 4-byte integers with the following codes:
-//		          0: mg/L
-//				  1: ug/L
-//				  2: counts/L
-//		      Probably the best way to do this would not be here -- instead write a function that takes 
-//	          NPolluts and ObjPropPos, jump to ObjPropPos, count backward (NPolluts * 4), then read forward
-//			  to get the units for each pollutant
-//
 {
 	*unitFlag = -1;
 	if (smoapi->isOpened) 
@@ -199,6 +190,30 @@ int SMO_getUnits(SMOutputAPI* smoapi, SMO_unit code, int* unitFlag)
 			//		case concentration:		*unitFlag = ConcUnits; break;
 		default: return 421;
 		}
+		return 0;
+	}
+	return 412;
+}
+
+
+int SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int* unitFlag)
+//
+//   Purpose: Return integer flag representing the units that the given pollutant is measured in.
+//	          Concentration units are located after the pollutant ID names and before the object properties start,
+//			  and are stored for each pollutant.  They're stored as 4-byte integers with the following codes:
+//		          0: mg/L
+//				  1: ug/L
+//				  2: count/L
+//
+//   pollutantIndex: valid values are 0..Npolluts-1
+{
+	if (smoapi->isOpened)
+	{
+	    if (pollutantIndex < 0 || pollutantIndex >= smoapi->Npolluts)
+	        return 421;
+        int offset = smoapi->ObjPropPos - (smoapi->Npolluts - pollutantIndex) * RECORDSIZE;
+        fseek(smoapi->file, offset, SEEK_SET);
+        fread(unitFlag, RECORDSIZE, 1, smoapi->file);
 		return 0;
 	}
 	return 412;

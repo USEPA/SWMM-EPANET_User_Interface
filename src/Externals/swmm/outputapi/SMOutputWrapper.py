@@ -292,6 +292,8 @@ class SwmmOutputSystem(SwmmOutputCategoryBase):
 class SwmmOutputPollutant(SwmmOutputCategoryBase):
     type_label = "Pollutant"
     _get_ids = _lib.SMO_getPollutIDs
+    all_units = ["mg/L", "ug/L", "count/L"]
+
 
 swmm_output_object_types = (SwmmOutputSubcatchment, SwmmOutputNode, SwmmOutputLink, SwmmOutputSystem)
 swmm_output_object_labels = [ot.type_label for ot in swmm_output_object_types]
@@ -335,6 +337,10 @@ class SwmmOutputObject(object):
         self.links = SwmmOutputLink.read_all(self)
         self.system = {'-1': SwmmOutputSystem('-1', -1)}
         self.pollutants = SwmmOutputPollutant.read_all(self)
+        for pollutant in self.pollutants.values():
+            pollutant.units = SwmmOutputPollutant.all_units[
+                self._call_int(_lib.SMO_getPollutantUnits, pollutant._index)]
+
         self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
 
     def _call(self, function, *args):

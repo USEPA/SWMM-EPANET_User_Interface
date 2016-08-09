@@ -139,6 +139,7 @@ DLLEXPORT int SMR_open(const char* path, SMOutputAPI** smoapi);
 
 DLLEXPORT int SMO_getProjectSize(SMOutputAPI* smoapi, SMO_elementCount code, int* count);
 DLLEXPORT int SMO_getUnits(SMOutputAPI* smoapi, SMO_unit code, int* unitFlag);
+DLLEXPORT int SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int* unitFlag);
 DLLEXPORT int SMO_getStartTime(SMOutputAPI* smoapi, double* time);
 DLLEXPORT int SMO_getTimes(SMOutputAPI* smoapi, SMO_time code, int* time);
 

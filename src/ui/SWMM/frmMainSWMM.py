@@ -998,7 +998,10 @@ class frmMainSWMM(frmMain):
 
             # Could not run with library, try running with executable
             args = []
-            exe_name = "swmm5.exe"
+            if sys.platform == "linux2":
+                exe_name = "swmm5"
+            else:
+                exe_name = "swmm5.exe"
             exe_path = os.path.join(self.assembly_path, exe_name)
             if not os.path.isfile(exe_path):
                 pp = os.path.dirname(os.path.dirname(self.assembly_path))

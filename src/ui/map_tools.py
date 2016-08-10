@@ -1,7 +1,7 @@
 try:
     from qgis.core import *
     from qgis.gui import *
-    from PyQt4 import QtGui, QtCore
+    from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import *
     import os
 
@@ -19,6 +19,23 @@ try:
             self.canvas.setMouseTracking(True)
             self.canvas.useImageToRender(False)
             #canvas.setCanvasColor(QtGui.QColor.white)
+
+            # first thoughts about adding a legend - may be barking up wrong tree...
+            # self.root = QgsProject.instance().layerTreeRoot()
+            # self.bridge = QgsLayerTreeMapCanvasBridge(self.root, self.canvas)
+            #
+            # self.model = QgsLayerTreeModel(self.root)
+            # self.model.setFlag(QgsLayerTreeModel.ShowLegend)
+            # self.view = QgsLayerTreeView()
+            # self.view.setModel(self.model)
+            #
+            # self.LegendDock = QDockWidget("Layers", self)
+            # self.LegendDock.setObjectName("layers")
+            # self.LegendDock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+            # self.LegendDock.setWidget(self.view)
+            # self.LegendDock.setContentsMargins(9, 9, 9, 9)
+            # self.canvas.addDockWidget(Qt.LeftDockWidgetArea, self.LegendDock)
+
             self.canvas.show()
 
             self.session = session
@@ -146,8 +163,6 @@ try:
             layer = QgsVectorLayer("Point", "Nodes", "memory")
             provider = layer.dataProvider()
 
-            # changes are only possible when editing the layer
-            layer.startEditing()
             # add fields
             provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
@@ -160,6 +175,7 @@ try:
                 feature.setAttributes([coordinate_pair.name])
                 features.append(feature)
 
+            # changes are only possible when editing the layer
             layer.startEditing()
             provider.addFeatures(features)
             layer.commitChanges()
@@ -167,7 +183,7 @@ try:
 
             # create a new symbol layer with default properties
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
-            symbol_layer.setColor(QColor(130, 180, 255, 220))
+            symbol_layer.setColor(QColor(130, 180, 255, 255))
 
             # Label the coordinates if there are not too many of them
             if len(coordinates) > 100:
@@ -177,7 +193,7 @@ try:
                 pal_layer = QgsPalLayerSettings()
                 pal_layer.readFromLayer(layer)
                 pal_layer.enabled = True
-                pal_layer.fieldName = 'ID'
+                pal_layer.fieldName = 'name'
                 pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
                 pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, '8', '')
                 pal_layer.writeToLayer(layer)
@@ -208,8 +224,6 @@ try:
 
             layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
 
-            # changes are only possible when editing the layer
-            layer.startEditing()
             # add fields
             provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
@@ -232,6 +246,7 @@ try:
                     feature.setAttributes([getattr(link, link_attr, '')])
                     features.append(feature)
 
+            # changes are only possible when editing the layer
             layer.startEditing()
             provider.addFeatures(features)
             layer.commitChanges()
@@ -311,6 +326,10 @@ try:
                         self.canvas.setExtent(layer.extent())
                     else:
                         self.canvas.setExtent(self.canvas.extent())
+
+        # def select(self):
+        #    print(self.layers(0).name)
+        #    print('TODO: implement Select feature on Map')
 
         def saveVectorLayers(self, folder):
             layer_index = 0

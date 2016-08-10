@@ -46,7 +46,6 @@ from core.epanet.options.report import ReportOptions
 from core.inp_writer_base import SectionWriter
 
 
-
 class CurveWriter(SectionWriter):
     """Defines a data curve of X,Y points"""
 
@@ -65,7 +64,6 @@ class CurveWriter(SectionWriter):
         return inp
 
 
-
 class LabelWriter(SectionWriter):
     """A label on the map with location, text, and optional anchor node ID"""
 
@@ -75,7 +73,6 @@ class LabelWriter(SectionWriter):
     def as_text(label):
         """format contents of this item for writing to file"""
         return LabelWriter.field_format.format(label.x, label.y, label.label, label.anchor_node_name)
-
 
 
 class PatternWriter:
@@ -101,7 +98,6 @@ class PatternWriter:
         return section_text
 
 
-
 class TitleWriter(SectionWriter):
     """EPANET descriptive title"""
 
@@ -111,7 +107,6 @@ class TitleWriter(SectionWriter):
     def as_text(title):
         """format contents of this item for writing to file"""
         return Title.SECTION_NAME + '\n' + title.title + '\n' + title.notes
-
 
 
 class ControlWriter():
@@ -130,7 +125,6 @@ class ControlWriter():
         return ''
 
 
-
 class LinkWriter(SectionWriter):
     """A link in an EPANET model"""
 
@@ -143,7 +137,6 @@ class LinkWriter(SectionWriter):
             return LinkWriter.field_format.format(link.name, link.inlet_node, link.outlet_node)  # link.description
         elif link.comment:
             return link.comment
-
 
 
 class PipeWriter(Link):
@@ -159,7 +152,6 @@ class PipeWriter(Link):
                                             pipe.roughness, pipe.loss_coefficient, pipe.initial_status, pipe.comment)
         elif pipe.comment:
             return pipe.comment
-
 
 
 class PumpWriter(Link):
@@ -189,7 +181,6 @@ class PumpWriter(Link):
             return pump.comment
 
 
-
 class ValveWriter(Link):
     """A valve link in an EPANET model"""
 
@@ -209,7 +200,6 @@ class ValveWriter(Link):
                                             valve.comment)
         elif valve.comment:
             return valve.comment
-
 
 
 class StatusWriter(SectionWriter):
@@ -232,15 +222,16 @@ class StatusWriter(SectionWriter):
             return status.comment
 
 
-
 class CoordinateWriter(SectionWriter):
     field_format = "{:16}\t{:16}\t{:16}"
 
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
-        return CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
-
+        inp = CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        if hasattr(coordinate, "comment") and coordinate.comment:
+            inp += "  # " + coordinate.comment
+        return inp
 
 
 class QualityWriter(SectionWriter):
@@ -254,7 +245,6 @@ class QualityWriter(SectionWriter):
         return QualityWriter.field_format.format(quality.name, quality.initial_quality)
 
 
-
 class JunctionWriter(SectionWriter):
     """Junction properties"""
 
@@ -266,7 +256,6 @@ class JunctionWriter(SectionWriter):
         return JunctionWriter.field_format.format(junction.name, junction.elevation, junction.base_demand_flow, junction.demand_pattern_name)
 
 
-
 class ReservoirWriter(SectionWriter):
     """Reservoir properties"""
 
@@ -276,7 +265,6 @@ class ReservoirWriter(SectionWriter):
     def as_text(reservoir):
         """format contents of this item for writing to file"""
         return ReservoirWriter.field_format.format(reservoir.name, reservoir.total_head, reservoir.head_pattern_name, reservoir.comment)
-
 
 
 class TankWriter(SectionWriter):
@@ -292,7 +280,6 @@ class TankWriter(SectionWriter):
                                         tank.minimum_volume, tank.volume_curve, tank.comment)
 
 
-
 class MixingWriter(SectionWriter):
     """Mixing model and volume fraction of a Tank"""
 
@@ -305,7 +292,6 @@ class MixingWriter(SectionWriter):
                                         mixing.mixing_model.name.replace("TWO_", "2"),
                                         mixing.mixing_fraction,
                                         mixing.comment)
-
 
 
 class SourceWriter(SectionWriter):
@@ -325,7 +311,6 @@ class SourceWriter(SectionWriter):
         return inp
 
 
-
 class DemandWriter(SectionWriter):
     """Define multiple water demands at junction nodes"""
 
@@ -341,7 +326,6 @@ class DemandWriter(SectionWriter):
                                         demand.demand_pattern,
                                         demand.category)
         return inp
-
 
 
 class BackdropOptionsWriter(SectionWriter):
@@ -371,7 +355,6 @@ class BackdropOptionsWriter(SectionWriter):
             return ''
 
 
-
 class EnergyOptionsWriter(SectionWriter):
     """Defines global parameters used to compute pumping energy and cost"""
 
@@ -392,7 +375,6 @@ class EnergyOptionsWriter(SectionWriter):
             return '\n'.join(txt)
 
 
-
 class PumpEnergyWriter(SectionWriter):
     """Parameters used to compute pumping energy and cost for a particular pump"""
 
@@ -408,7 +390,6 @@ class PumpEnergyWriter(SectionWriter):
                                             pump_energy.comment)
         elif pump_energy.comment:
             return pump_energy.comment
-
 
 
 class HydraulicsOptionsWriter(SectionWriter):
@@ -437,7 +418,6 @@ class HydraulicsOptionsWriter(SectionWriter):
         return '\n'.join(text_list)
 
 
-
 class OptionsWriter(SectionWriter):
     """EPANET Options"""
 
@@ -458,7 +438,6 @@ class OptionsWriter(SectionWriter):
             text_list.append(OptionsWriter.section_comments[1])
             text_list.append(QualityOptionsWriter.as_text(options.quality))
         return '\n'.join(text_list)
-
 
 
 class QualityOptionsWriter(SectionWriter):
@@ -494,7 +473,6 @@ class QualityOptionsWriter(SectionWriter):
         return txt
 
 
-
 class ReactionsWriter(SectionWriter):
     """Defines parameters related to chemical reactions occurring in the network"""
 
@@ -508,7 +486,6 @@ class ReactionsWriter(SectionWriter):
     #         return reactions.value
     #     else:
     #         return SectionWriter.as_text(reactions)
-
 
 
 class ReportOptionsWriter(SectionWriter):
@@ -541,5 +518,3 @@ class ReportOptionsWriter(SectionWriter):
     #     if report_options.nodes:
     #         txt += '\n' + ReportOptionsWriter.field_format.format("Nodes", ' '.join()
     #     return '\n'.join(txt)
-
-

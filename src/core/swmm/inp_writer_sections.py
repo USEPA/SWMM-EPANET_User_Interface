@@ -89,10 +89,9 @@ class CoordinateWriter(SectionWriter):
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
-        inp = ''
-        if coordinate.comment:
-            inp = coordinate.comment + '\n'
-        inp += CurveWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        inp = CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        if hasattr(coordinate, "comment") and coordinate.comment:
+            inp += "  # " + coordinate.comment
         return inp
 
 
@@ -378,13 +377,13 @@ class AdjustmentsWriter(SectionWriter):
                                        (adjustments.evaporation,       "0.0", "EVAPORATION"),
                                        (adjustments.rainfall,          "1.0", "RAINFALL"),
                                        (adjustments.soil_conductivity, "1.0", "CONDUCTIVITY")):
-            values = adjustments.format_values(data, default)
+            values = AdjustmentsWriter.format_values(data, default)
             if values:
                 text_list.append(label + '\t' + values)
 
         # Only add section name and comment if there is some content in this section
         if len(text_list) > 0:
-            text_list.insert(0, adjustments.SECTION_NAME)
+            text_list.insert(0, AdjustmentsWriter.SECTION_NAME)
             if adjustments.comment:
                 text_list.insert(1, adjustments.comment)
         return '\n'.join(text_list)
@@ -718,14 +717,36 @@ class SubcatchmentWriter(SectionWriter):
     @staticmethod
     def as_text(subcatchment):
         inp = SubcatchmentWriter.field_format.format(subcatchment.name,
-                                       subcatchment.rain_gage,
-                                       subcatchment.outlet,
-                                       subcatchment.area,
-                                       subcatchment.percent_impervious,
-                                       subcatchment.width,
-                                       subcatchment.percent_slope,
-                                       subcatchment.curb_length,
-                                       subcatchment.snow_pack)
+                                                     subcatchment.rain_gage,
+                                                     subcatchment.outlet,
+                                                     subcatchment.area,
+                                                     subcatchment.percent_impervious,
+                                                     subcatchment.width,
+                                                     subcatchment.percent_slope,
+                                                     subcatchment.curb_length,
+                                                     subcatchment.snow_pack)
+        return inp
+
+
+class SubareaWriter(SectionWriter):
+    """Subcatchment geometry, location, parameters, and time-series data"""
+
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
+
+    @staticmethod
+    def as_text(subcatchment):
+        if subcatchment.subarea_routing == Routing.OUTLET:
+            percent_routed = ""
+        else:
+            percent_routed = str(subcatchment.percent_routed)
+        inp = SubareaWriter.field_format.format(subcatchment.name,
+                                                subcatchment.n_imperv,
+                                                subcatchment.n_perv,
+                                                subcatchment.storage_depth_imperv,
+                                                subcatchment.storage_depth_perv,
+                                                subcatchment.percent_zero_impervious,
+                                                subcatchment.subarea_routing.name,
+                                                percent_routed)
         return inp
 
 

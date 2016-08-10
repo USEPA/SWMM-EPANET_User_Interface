@@ -49,7 +49,9 @@ class RainGage(Section):
     ))
 
     def __init__(self):
-        self.name = "Unnamed"
+        Section.__init__(self)
+
+        self.name = ''
         """User-assigned rain gage name"""
 
         self.coordinates = None  # Coordinates(None, None)

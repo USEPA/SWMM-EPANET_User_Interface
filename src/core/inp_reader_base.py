@@ -11,8 +11,8 @@ class InputFileReader(object):
         """ Read the contents of file_name into project. """
         try:
             with open(file_name, 'r') as inp_reader:
-                self.set_from_text_lines(project, iter(inp_reader))
                 project.file_name = file_name
+                self.set_from_text_lines(project, iter(inp_reader))
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
@@ -35,6 +35,10 @@ class InputFileReader(object):
                 section_whole.append(line.rstrip())
         if section_name:
             self.read_section(project, section_name, '\n'.join(section_whole))
+        self.finished_reading(project)
+
+    def finished_reading(self, project):
+        print "Finished reading " + project.file_name
 
     def read_section(self, project, section_name, section_text):
         """ Read the section named section_name whose complete text is section_text into project. """
@@ -264,18 +268,26 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
         lines = new_text.splitlines()
         self.set_comment_check_section(section, lines[0])  # Check first line against section name
         next_index = 1
-        expected_comment_lines = section.comment.splitlines()
-        for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into comment
-            if str(lines[line_number]).startswith(';'):
-                # On multi-line initial comment, make sure last line is just dashes if the default comment was.
-                # Otherwise it is kept out of the section comment and will be assigned to go with an item.
-                if next_index < expected_comment_lines \
-                        or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0 \
-                        or len(Section.omit_these(expected_comment_lines[line_number - 1], ";-_ \t")) > 0:
-                    self.set_comment_check_section(section, lines[line_number])
-                    next_index += 1
-            else:
+        # expected_comment_lines = section.comment.splitlines()
+        # for line_number in range(1, len(expected_comment_lines) + 1):  # Parse initial comment lines into comment
+        #     if str(lines[line_number]).startswith(';'):
+        #         # On multi-line initial comment, make sure last line is just dashes if the default comment was.
+        #         # Otherwise it is kept out of the section comment and will be assigned to go with an item.
+        #         if next_index < expected_comment_lines \
+        #                 or len(Section.omit_these(lines[line_number], ";-_ \t")) == 0 \
+        #                 or len(Section.omit_these(expected_comment_lines[line_number - 1], ";-_ \t")) > 0:
+        #             self.set_comment_check_section(section, lines[line_number])
+        #             next_index += 1
+        #     else:
+        #         break
+
+        for next_index in range(1, len(lines) - 1):
+            if not lines[next_index].strip().startswith(';'):
                 break
+
+        # If last comment line is not just a separator line, it is kept as the first item comment.
+        if len(SectionReader.omit_these(lines[next_index-1], ";-_ \t")) > 0:
+            next_index -= 1
 
         item_text = ""
         item_name = ""

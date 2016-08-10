@@ -1,4 +1,4 @@
-from core.inp_writer_base import InputFileWriterBase, SectionWriterAsListOf
+from core.inp_writer_base import InputFileWriterBase, SectionWriterAsListOf, SectionAsListOf
 # from core.swmm.hydraulics.control import ControlRule
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
@@ -73,7 +73,10 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------------\t----------------\t--------\t--------\t--------\t--------\t--------\t----------------")
         # basic subcatchment information
 
-        # self.write_subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
+        self.write_subareas = SectionWriterAsListOf("[SUBAREAS]", Subcatchment, SubareaWriter,
+            ";;Subcatchment  \tN-Imperv  \tN-Perv    \tS-Imperv  \tS-Perv    \tPctZero   \tRouteTo   \tPctRouted\n"
+            ";;--------------\t----------\t------------\t--------\t----------\t----------\t----------\t---------")
+        # subcatchment impervious/pervious sub-area data
 
         #self.write_infiltration = SectionWriterAsListOf("[INFILTRATION]", basestring, SectionWriter, None)
         # write_infiltration is set in as_text based on the kind of infiltration being used in the project.
@@ -221,8 +224,14 @@ class ProjectWriter(InputFileWriterBase):
         #                                          ";;X-Coord         \tY-Coord           \tLabel\n")
         # X,Y coordinates and text of labels
 
-        # self.write_polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
-        # self.write_coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
+        self.write_polygons = SectionWriterAsListOf("[POLYGONS]", Coordinate, CoordinateWriter,
+                                                    ";Subbasin        \tX-Coord         \tY-Coord")
+        # X, Y coordinates for each vertex of subcatchment polygons
+
+        self.write_coordinates = SectionWriterAsListOf("[COORDINATES]", Coordinate, CoordinateWriter,
+                                                       ";Node            \tX-Coord         \tY-Coord")
+        # X, Y coordinates for nodes
+
         # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.write_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
@@ -246,4 +255,6 @@ class ProjectWriter(InputFileWriterBase):
                 "[INFILTRATION]", CurveNumberInfiltration, CurveNumberInfiltrationWriter,
                 ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                 ";;--------------\t----------\t----------\t----------")
-        return InputFileWriterBase.as_text(self, project)
+        subareas = SectionAsListOf("[SUBAREAS]", Subcatchment)
+        subareas.value = project.subcatchments.value
+        return InputFileWriterBase.as_text(self, project) + '\n' + self.write_subareas.as_text(subareas)

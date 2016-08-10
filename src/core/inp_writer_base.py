@@ -170,16 +170,17 @@ class SectionWriterAsListOf(SectionWriter):
             Args:
                 section (Section): section of input sequence that contains a list of items in its value attribute
         """
-        if section.value or \
-            (section.comment and (not hasattr(section, "DEFAULT_COMMENT") or \
-                                  section.comment != section.DEFAULT_COMMENT)):
+        if section.value or (section.comment and (not hasattr(section, "DEFAULT_COMMENT") or
+                                                      section.comment != section.DEFAULT_COMMENT)):
             text_list = []
             if hasattr(section, "SECTION_NAME") and section.SECTION_NAME and section.SECTION_NAME != "Comment":
                 text_list.append(section.SECTION_NAME)
             elif hasattr(self, "SECTION_NAME") and self.SECTION_NAME and self.SECTION_NAME != "Comment":
-                text_list.append(section.SECTION_NAME)
+                text_list.append(self.SECTION_NAME)
             if section.comment:
                 text_list.append(section.comment)
+            elif self.DEFAULT_COMMENT:
+                text_list.append(self.DEFAULT_COMMENT)
             if isinstance(section.value, basestring):
                 text_list.append(section.value.rstrip('\n'))  # strip any newlines from end of each item
             else:

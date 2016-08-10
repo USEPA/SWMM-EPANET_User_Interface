@@ -40,7 +40,7 @@ from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
 from core.swmm.hydrology.subcatchment import LIDUsage
-from core.swmm.hydrology.subcatchment import Subcatchment
+from core.swmm.hydrology.subcatchment import Subcatchment, Routing
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from core.swmm.options.backdrop import BackdropOptions
@@ -1201,6 +1201,37 @@ class RainGageReader(SectionReader):
                     rain_gage.data_file_station_id = fields[6]
                 if len(fields) > 7:
                     rain_gage.data_file_rain_units = fields[7]
+        return rain_gage
+
+
+class SubareasReader(SectionReader):
+    """Read subarea information from text into project.subbasins"""
+
+    @staticmethod
+    def read(new_text, project):
+        disposable_subareas = Section()
+        disposable_subareas.SECTION_NAME = "[SUBAREAS]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_subareas, line)
+            fields = line.split()
+            if len(fields) > 5:
+                subcatchment_name = fields[0]
+                for subcatchment in project.subcatchments.value:
+                    if subcatchment.name == subcatchment_name:
+                        subcatchment.setattr_keep_type("n_imperv", fields[1])
+                        subcatchment.setattr_keep_type("n_perv", fields[2])
+                        subcatchment.setattr_keep_type("storage_depth_imperv", fields[3])
+                        subcatchment.setattr_keep_type("storage_depth_perv", fields[4])
+                        subcatchment.setattr_keep_type("percent_zero_impervious", fields[5])
+                        subcatchment.subarea_routing = Routing.OUTLET
+                        if len(fields) > 6:
+                            routing = fields[6].upper()
+                            if routing.startswith("I"):
+                                subcatchment.subarea_routing = Routing.IMPERVIOUS
+                            elif routing.startswith("P"):
+                                subcatchment.subarea_routing = Routing.PERVIOUS
+                        if len(fields) > 7:
+                            subcatchment.setattr_keep_type("percent_routed", fields[7])
 
 
 class UnitHydrographReader(SectionReader):

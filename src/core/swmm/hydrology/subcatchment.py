@@ -10,8 +10,8 @@ class Routing(Enum):
         IMPERV: runoff from pervious area flows to impervious area,
         PERV: runoff from impervious area flows to pervious area,
         OUTLET: runoff from both areas flows directly to outlet. """
-    IMPERV = 1
-    PERV = 2
+    IMPERVIOUS = 1
+    PERVIOUS = 2
     OUTLET = 3
 
 
@@ -131,13 +131,9 @@ class Subcatchment(Section):
         """ Total length of curbs in the subcatchment (any length units).
             Used only when initial_loadings are normalized to curb length."""
 
-    def __str__(self):
-        """Override default method to return string representation"""
-        return self.get_text()
 
 class HortonInfiltration(Section):
     """Horton Infiltration parameters"""
-
 
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -170,9 +166,9 @@ class HortonInfiltration(Section):
         self.max_volume = ''
         """Maximum infiltration volume possible (in or mm)."""
 
+
 class GreenAmptInfiltration(Section):
     """Green-Ampt Infiltration parameters"""
-
 
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -197,9 +193,9 @@ class GreenAmptInfiltration(Section):
         self.initial_moisture_deficit = ''
         """Initial soil moisture deficit (volume of voids / total volume)."""
 
+
 class CurveNumberInfiltration(Section):
     """Curve Number Infiltration parameters"""
-
 
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -224,11 +220,11 @@ class CurveNumberInfiltration(Section):
         self.dry_days = ''
         """Time it takes for fully saturated soil to dry (days)."""
 
+
 class Groundwater(Section):
     """Link a subcatchment to an aquifer and to a drainage system node"""
 
-
-#    attribute,         input_name, label,         default, english, metric, hint
+    #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("subcatchment",                        '', "Subcatchment Name",            "", '', '', "User-assigned name of subcatchment"),
         ("aquifer",                             '', "Aquifer Name",                 "", '', '', "Name of Aquifer object that lies below subcatchment. Leave blank for no groundwater."),
@@ -304,9 +300,9 @@ class Groundwater(Section):
         self.custom_deep_flow_equation = ''
         """expression for vertical loss to deep groundwater"""
 
+
 class LIDUsage(Section):
     """Specifies how an LID control will be deployed in a subcatchment"""
-
 
     def __init__(self):
 
@@ -343,9 +339,9 @@ class LIDUsage(Section):
         self.subcatchment_drains_to = ""
         """ID of a subcatchment that this LID drains to"""
 
+
 class Coverage(Section):
     """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
-
 
     def __init__(self, subcatchment_name = '', land_use_name = '', percent_subcatchment_area = ''):
         Section.__init__(self)
@@ -359,6 +355,7 @@ class Coverage(Section):
         self.percent_subcatchment_area = percent_subcatchment_area
         """percent of subcatchment area covered by this land use"""
 
+
 class Coverages(Section):
     """Specifies the percentage of a subcatchments area that is covered by each category of land use."""
 
@@ -370,9 +367,9 @@ class Coverages(Section):
         Section.__init__(self)
         self.value = []
 
+
 class InitialLoading(Section):
     """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
-
 
     def __init__(self):
         Section.__init__(self)
@@ -385,6 +382,7 @@ class InitialLoading(Section):
         self.initial_buildup = ''
         """Initial buildup of pollutant (lbs/acre or kg/hectare)"""
 
+
 class InitialLoadings(Section):
     """Specifies the pollutant buildup that exists on each subcatchment at the start of a simulation."""
 
@@ -395,4 +393,3 @@ class InitialLoadings(Section):
     def __init__(self):
         Section.__init__(self)
         self.value = []
-

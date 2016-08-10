@@ -223,12 +223,12 @@ class ProjectReader(InputFileReader):
         # X,Y coordinates and text of labels
 
         self.read_polygons = SectionReaderAsListOf("[POLYGONS]", Coordinate, CoordinatesReader,
-                                              ";;Node             X-Coord          Y-Coord")
-        # X,Y coordinates for each vertex of subcatchment polygons
+                                                   ";;Subcatchment     X-Coord          Y-Coord")
+        # X, Y coordinates for each vertex of subcatchment polygons
 
         self.read_coordinates = SectionReaderAsListOf("[COORDINATES]", Coordinate, CoordinatesReader,
-                                                 ";;Node             X-Coord          Y-Coord")
-        # X,Y coordinates for nodes
+                                                      ";;Node             X-Coord          Y-Coord")
+        # X, Y coordinates for nodes
 
         # self.read_polygons = [Section] # POLYGONS # X,Y coordinates for each vertex of subcatchment polygons
         # self.read_coordinates = [Section] # COORDINATES # X,Y coordinates for nodes
@@ -255,4 +255,12 @@ class ProjectReader(InputFileReader):
                     section_name, CurveNumberInfiltration, CurveNumberInfiltrationReader,
                     ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                     ";;--------------\t----------\t----------\t----------")
+        elif section_name.upper() == "[SUBAREAS]":
+            self.defer_subareas = section_text
+            return  # Skip read_section, defer until finished_reading is called.
         InputFileReader.read_section(self, project, section_name, section_text)
+
+    def finished_reading(self, project):
+        if self.defer_subareas:
+            SubareasReader.read(self.defer_subareas, project)
+            self.defer_subareas = None

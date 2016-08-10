@@ -4,7 +4,6 @@ from core.project_base import Section
 class TimeSeries(Section):
     """One time series from the TIMESERIES section"""
 
-
     def __init__(self):
         Section.__init__(self)
 

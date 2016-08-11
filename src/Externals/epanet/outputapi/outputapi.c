@@ -436,13 +436,14 @@ int DLLEXPORT ENR_getEnergyUsage(ENResultsAPI* enrapi, int pumpIndex,
 /*
  * Purpose: Returns pump energy usage statistics.
  *
- * Energy usage statistics:
- *    0 = pump utilization
- *    1 = avg. efficiency
- *    2 = avg. kW/flow
- *    3 = avg. kwatts
- *    4 = peak kwatts
- *    5 = cost/day
+ * Energy usage statistics array indexes:
+ *    0 = (unused)
+ *    1 = pump utilization
+ *    2 = avg. efficiency
+ *    3 = avg. kW/flow
+ *    4 = avg. kwatts
+ *    5 = peak kwatts
+ *    6 = cost/day
  */
 {
 	F_OFF offset;

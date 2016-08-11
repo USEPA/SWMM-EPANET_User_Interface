@@ -319,7 +319,6 @@ class OutputObject(object):
         print("ENR opened {} Version {}".format(output_file_name, str(file_version)))
         self._measure_new_out_value_series()
         self._get_units()
-        self._get_sizes()
         self._get_times()
         self.nodes = ENR_node_type.read_all(self)
         self.links = ENR_link_type.read_all(self)
@@ -424,13 +423,13 @@ class OutputObject(object):
         ENR_node_type.AttributeDemand._units = (self.flowUnitsLabel, self.flowUnitsLabel)
         ENR_link_type.AttributeFlow._units = (self.flowUnitsLabel, self.flowUnitsLabel)
 
-    def _get_sizes(self):
-        """
-        Populates object attributes with the water object counts
-        """
-        self.tankCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_tankCount)
-        self.pumpCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_pumpCount)
-        self.valveCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_valveCount)
+    # def _get_sizes(self):
+    #     """
+    #     Populates object attributes with the water object counts
+    #     """
+    #     self.tankCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_tankCount)
+    #     self.pumpCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_pumpCount)
+    #     self.valveCount = self._call_int(_lib.ENR_getNetSize, _lib.ENR_valveCount)
 
     def _get_times(self):
         """
@@ -440,7 +439,33 @@ class OutputObject(object):
         self.reportStart = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStart)
         self.reportStep  = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStep)
         self.simDuration = self._call_int(_lib.ENR_getTimes, _lib.ENR_simDuration)
-        self.num_periods  = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
+        self.num_periods = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
+
+    def get_pump_energy_usage_statistics(self):
+        """ Read pump energy usage statistics for all pumps.
+            Returns: dictionary (keyed by each pump's link name) of PumpEnergy instances """
+        all_pump_energy = {}
+        pump_count = self._call_int(_lib.ENR_getNetSize, _lib.ENR_pumpCount)
+        if pump_count:
+            link_index_return = c_int()
+            returned_length = c_int()
+            error_new = c_int()
+            array_pointer = _lib.ENR_newOutValueArray(self.ptrapi,
+                                                      _lib.ENR_getEnergy,
+                                                      _lib.ENR_link,
+                                                      byref(returned_length),
+                                                      byref(error_new))
+            for pump_index in range(1, pump_count + 1):
+                self.call(_lib.ENR_getEnergyUsage, pump_index, byref(link_index_return), array_pointer)
+                link_index = link_index_return.value
+                for link in self.links.itervalues():
+                    if link.index == link_index:
+                        all_pump_energy[link.name] = PumpEnergy(link.name,
+                                                                array_pointer[1], array_pointer[2], array_pointer[3],
+                                                                array_pointer[4], array_pointer[5], array_pointer[6])
+                        break
+            _lib.ENR_free(array_pointer)
+        return all_pump_energy
 
     def close(self):
         """
@@ -467,3 +492,23 @@ class OutputObject(object):
     #     total_hours = self.elapsed_hours_at_index(report_time_index)
     #     report_date = self.StartDate + datetime.timedelta(hours=total_hours)
     #     return report_date.strftime("%Y-%m-%d %H:%M")
+
+
+class PumpEnergy:
+    def __init__(self, link, utilization, efficiency, kw_per_flow, average_kw, peak_kw, cost_per_day):
+        self.link = link
+        self.utilization = utilization
+        self.efficiency = efficiency
+        self.kw_per_flow = kw_per_flow
+        self.average_kw = average_kw
+        self.peak_kw = peak_kw
+        self.cost_per_day = cost_per_day
+
+    def __str__(self):
+        return "name: " + self.link + '\n' +\
+            "utilization: " + str(self.utilization) + '\n' +\
+            "efficiency: " + str(self.efficiency) + '\n' +\
+            "kw_per_flow: " + str(self.kw_per_flow) + '\n' +\
+            "average_kw: " + str(self.average_kw) + '\n' +\
+            "peak_kw: " + str(self.peak_kw) + '\n' +\
+            "cost_per_day: " + str(self.cost_per_day) + '\n'

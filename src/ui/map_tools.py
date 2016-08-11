@@ -540,8 +540,8 @@ try:
 
     class SaveAsGis:
         @staticmethod
-        def save_links(coordinates, links, layer_name, link_attributes):
-            layer = QgsVectorLayer("LineString", layer_name, "memory")
+        def save_links(coordinates, links, link_attributes, file_name, driver_name="GeoJson"):
+            layer = QgsVectorLayer("LineString", "links", "memory")
             provider = layer.dataProvider()
 
             # add fields
@@ -571,6 +571,8 @@ try:
             provider.addFeatures(features)
             layer.commitChanges()
             layer.updateExtents()
+
+            QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
 
 
 

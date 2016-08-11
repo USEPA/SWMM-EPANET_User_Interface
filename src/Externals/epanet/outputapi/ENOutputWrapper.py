@@ -180,6 +180,9 @@ class ENR_categoryBase:
                                                   self._elementType,
                                                   byref(returned_length),
                                                   byref(error_new))
+        if error_new.value != 0:
+            print("Error " + str(error_new.value) + " calling ENR_newOutValueArray for " + self.TypeLabel)
+            output._raise_error(error_new.value)
 
         error_get = self._get_result(output.ptrapi, time_index, self.index, array_pointer)
         if error_get != 0:
@@ -455,6 +458,10 @@ class OutputObject(object):
                                                       _lib.ENR_link,
                                                       byref(returned_length),
                                                       byref(error_new))
+            if error_new.value != 0:
+                print("Error " + str(error_new.value) + " calling ENR_newOutValueArray for getEnergy")
+                self._raise_error(error_new.value)
+
             for pump_index in range(1, pump_count + 1):
                 self.call(_lib.ENR_getEnergyUsage, pump_index, byref(link_index_return), array_pointer)
                 link_index = link_index_return.value
@@ -466,6 +473,28 @@ class OutputObject(object):
                         break
             _lib.ENR_free(array_pointer)
         return all_pump_energy
+
+    def get_reaction_summary(self):
+        """ Read reaction summary (network-wide average reaction rates and average source mass inflow)
+            Returns: four floating-point numbers: bulk, wall, tank, source """
+        returned_length = c_int()
+        error_new = c_int()
+        array_pointer = _lib.ENR_newOutValueArray(self.ptrapi,
+                                                  _lib.ENR_getReacts,
+                                                  _lib.ENR_link,
+                                                  byref(returned_length),
+                                                  byref(error_new))
+        if error_new.value != 0:
+            print("Error " + str(error_new.value) + " calling ENR_newOutValueArray for getReacts")
+            self._raise_error(error_new.value)
+
+        self.call(_lib.ENR_getNetReacts, array_pointer)
+        bulk = array_pointer[1]
+        wall = array_pointer[2]
+        tank = array_pointer[3]
+        source = array_pointer[4]
+        _lib.ENR_free(array_pointer)
+        return bulk, wall, tank, source
 
     def close(self):
         """

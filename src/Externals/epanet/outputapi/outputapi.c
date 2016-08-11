@@ -474,10 +474,11 @@ int DLLEXPORT ENR_getNetReacts(ENResultsAPI* enrapi, float* outValues)
 /*
  *  Purpose: Returns network wide average reaction rates and average
  *  source mass inflow:
- *     0 = bulk
- *     1 = wall
- *     2 = tank
- *     3 = source
+ *     0 = (unused)
+ *     1 = bulk
+ *     2 = wall
+ *     3 = tank
+ *     4 = source
  */
 {
 	F_OFF offset;

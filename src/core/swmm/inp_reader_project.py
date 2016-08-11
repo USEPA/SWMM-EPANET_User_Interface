@@ -109,7 +109,7 @@ class ProjectReader(InputFileReader):
                                          ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # junction node information
 
-        self.read_outfalls = SectionReaderAsListOf("[OUTFALLS]", Outfall, SectionReader,
+        self.read_outfalls = SectionReaderAsListOf("[OUTFALLS]", Outfall, OutfallReader,
                                          ";;Name          \tElevation \tType      \tStage Data      \tGated   \tRoute To\n"
                                          ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
         #  outfall node information

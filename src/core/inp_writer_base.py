@@ -38,7 +38,7 @@ class InputFileWriterBase(object):
                         section_text_list.append(section_text)
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
-            return '\n'.join(section_text_list) + '\n'
+            return '\n\n'.join(section_text_list) + '\n'
         except Exception as e2:
             return str(e2) + '\n' + str(traceback.print_exc())
 
@@ -137,6 +137,13 @@ class SectionWriter(object):
                 return SectionWriter.field_format.format(label, attr_value)
         else:
             return None
+
+    @staticmethod
+    def yes_no(true_false):
+        if true_false:
+            return "YES"
+        else:
+            return "NO"
 
 
 class SectionWriterAsListOf(SectionWriter):

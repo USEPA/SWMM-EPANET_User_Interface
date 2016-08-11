@@ -99,19 +99,20 @@ class SectionReader(object):
         if len(comment_split) == 2:  # Found a comment
             line = comment_split[0]
             this_comment = ';' + comment_split[1]
-            if section.comment:
-                # Compare with existing comment and decide whether to discard one or combine them
-                omit_chars = " ;\t-_"
-                this_stripped = SectionReader.omit_these(this_comment, omit_chars).upper()
-                if len(this_stripped) == 0 and ("---" in this_comment) and not ("---" in section.comment):
-                    section.comment += '\n'  # Add dashed line on a new line if comment does not already have one
-                elif this_stripped in SectionReader.omit_these(section.comment, omit_chars).upper():
-                    this_comment = ''  # Already have this comment, don't add it again
-                elif hasattr(section, "DEFAULT_COMMENT") and section.comment == section.DEFAULT_COMMENT:
-                    section.comment = ''  # Replace default comment with the one we are reading
-                else:
+            if section.value:
+                if section.comment:
+                    # # Compare with existing comment and decide whether to discard one or combine them
+                    # omit_chars = " ;\t-_"
+                    # this_stripped = SectionReader.omit_these(this_comment, omit_chars).upper()
+                    # if len(this_stripped) == 0 and ("---" in this_comment) and not ("---" in section.comment):
+                    #     section.comment += '\n'  # Add dashed line on a new line if comment does not already have one
+                    # elif this_stripped in SectionReader.omit_these(section.comment, omit_chars).upper():
+                    #     this_comment = ''  # Already have this comment, don't add it again
+                    # elif hasattr(section, "DEFAULT_COMMENT") and section.comment == section.DEFAULT_COMMENT:
+                    #     section.comment = ''  # Replace default comment with the one we are reading
+                    # else:
                     section.comment += '\n'  # Separate from existing comment with newline
-            section.comment += this_comment
+                section.comment += this_comment
         if line.startswith('['):
             if hasattr(section, "SECTION_NAME") and line.strip().upper() != section.SECTION_NAME.upper():
                 raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())

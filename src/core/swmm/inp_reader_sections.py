@@ -24,6 +24,7 @@ from core.swmm.hydraulics.node import DirectInflow
 from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.hydraulics.node import DryWeatherInflow
 from core.swmm.hydraulics.node import Junction
+from core.swmm.hydraulics.node import Outfall, OutfallType
 from core.swmm.hydraulics.node import RDIInflow
 from core.swmm.hydraulics.node import Treatment
 from core.swmm.hydrology.aquifer import Aquifer
@@ -666,6 +667,36 @@ class JunctionReader(SectionReader):
         if len(fields) > 5:
             junction.ponded_area = fields[5]
         return junction
+
+
+class OutfallReader(SectionReader):
+    """Read outfall properties"""
+
+    @staticmethod
+    def read(new_text):
+        outfall = Outfall()
+        new_text = SectionReader.set_comment_check_section(outfall, new_text)
+        fields = new_text.split()
+        if len(fields) > 2:
+            outfall.name = fields[0]
+            outfall.setattr_keep_type("elevation", fields[1])
+            outfall.setattr_keep_type("outfall_type", fields[2])
+            gated_field = 4
+            if outfall.outfall_type == OutfallType.FIXED:
+                outfall.setattr_keep_type("fixed_stage", fields[3])
+            elif outfall.outfall_type == OutfallType.TIDAL:
+                outfall.setattr_keep_type("tidal_curve", fields[3])
+            elif outfall.outfall_type == OutfallType.TIMESERIES:
+                outfall.time_series_name = fields[3]
+            else:
+                gated_field = 3
+            if len(fields) > gated_field:
+                outfall.setattr_keep_type("tidal_gate", fields[gated_field])
+            if len(fields) > gated_field + 1:
+                outfall.route_to = fields[gated_field + 1]
+        else:
+            outfall = None
+        return outfall
 
 
 class DirectInflowReader(SectionReader):

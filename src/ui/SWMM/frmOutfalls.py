@@ -31,9 +31,9 @@ class frmOutfalls(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             # for tide gate, show true/false
             combobox = QtGui.QComboBox()
-            combobox.addItem('True')
-            combobox.addItem('False')
-            if edit_these[column].tide_gate == 'True':
+            combobox.addItem('YES')
+            combobox.addItem('NO')
+            if edit_these[column].tide_gate:
                 combobox.setCurrentIndex(0)
             else:
                 combobox.setCurrentIndex(1)

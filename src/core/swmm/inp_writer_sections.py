@@ -84,7 +84,7 @@ from core.inp_writer_base import SectionWriter
 class CoordinateWriter(SectionWriter):
     """Text version of a coordinate pair's name and X, Y"""
 
-    field_format = " {:16}\t{:10}\t{:10}\n"
+    field_format = " {:16}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(coordinate):
@@ -98,7 +98,7 @@ class CoordinateWriter(SectionWriter):
 class CurveWriter(SectionWriter):
     """Defines data curves and their X,Y points"""
 
-    field_format = " {:16}\t{:10}\t{:10}\t{:10}\n"
+    field_format = " {:16}\t{:10}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(curve):
@@ -140,7 +140,7 @@ class LanduseWriter(SectionWriter):
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-    field_format = " {:15}\t{:10}\t{:10}\t{:10}\n"
+    field_format = " {:15}\t{:10}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(landuse):
@@ -157,7 +157,7 @@ class LanduseWriter(SectionWriter):
 class BuildupWriter(SectionWriter):
     """Specifies the rate at which pollutants build up over different land uses between rain events."""
 
-    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
+    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
 
     """A different set of buildup property labels is used depending on the External Time Series buildup option"""
 
@@ -182,7 +182,7 @@ class BuildupWriter(SectionWriter):
 class WashoffWriter(SectionWriter):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
 
-    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\n"
+    field_format = "{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(washoff):
@@ -197,21 +197,17 @@ class WashoffWriter(SectionWriter):
 
 class PollutantWriter(SectionWriter):
     """Identifies the pollutants being analyzed"""
-    field_format = " {:16}\t{:6}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:16}\t{:10}\t{:10}\t{:10}\n"
+    field_format = " {:16}\t{:6}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:16}\t{:10}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(pollutant):
-        if pollutant.snow_only:
-            snow_flag = "YES"
-        else:
-            snow_flag = "NO"
         return PollutantWriter.field_format.format(pollutant.name,
                                              ConcentrationUnitLabels[pollutant.units.value],
                                              pollutant.rain_concentration,
                                              pollutant.gw_concentration,
                                              pollutant.ii_concentration,
                                              pollutant.decay_coefficient,
-                                             snow_flag,
+                                             SectionWriter.yes_no(pollutant.snow_only),
                                              pollutant.co_pollutant,
                                              pollutant.co_fraction,
                                              pollutant.dwf_concentration,
@@ -549,6 +545,29 @@ class JunctionWriter(SectionWriter):
         """format contents of this item for writing to file"""
         return JunctionWriter.field_format.format(junction.name, junction.elevation,
                                         junction.max_depth, junction.initial_depth, junction.surcharge_depth, junction.ponded_area)
+
+
+class OutfallWriter(SectionWriter):
+    """Write Outfall properties"""
+
+    field_format = "{:16}\t{:10}\t{:10}\t{:16}\t{:8}\t{:8}"
+
+    @staticmethod
+    def as_text(outfall):
+        """format contents of this item for writing to file"""
+
+        if outfall.outfall_type == OutfallType.FIXED:
+            source = str(outfall.fixed_stage)
+        elif outfall.outfall_type == OutfallType.TIDAL:
+            source = outfall.tidal_curve
+        elif outfall.outfall_type == OutfallType.TIMESERIES:
+            source = outfall.time_series_name
+        else:
+            source = ''
+
+        inp = OutfallWriter.field_format.format(outfall.name, outfall.elevation, outfall.outfall_type.name,
+                                                source, SectionWriter.yes_no(outfall.tide_gate), outfall.route_to)
+        return inp
 
 
 class DirectInflowWriter(SectionWriter):
@@ -925,20 +944,23 @@ class InitialLoadingsWriter(SectionWriter):
 class RainGageWriter(SectionWriter):
     """Specifies a pollutant buildup that exists on a subcatchment at the start of a simulation."""
 
-    field_format = "{:16}\t{:10}\t{:6}\t{:6}\t"
+    field_format = "{:16}\t{:9}\t{:8}\t{:8}\t"
 
     @staticmethod
     def as_text(rain_gage):
-        inp = RainGageWriter.field_format.format(rain_gage.name,
-                                                 rain_gage.rain_format.name,
-                                                 rain_gage.rain_interval,
-                                                 rain_gage.snow_catch_factor)
+        inp = RainGageWriter.field_format.format(
+                rain_gage.name,
+                rain_gage.rain_format.name,
+                rain_gage.rain_interval,
+                rain_gage.snow_catch_factor)
         if rain_gage.timeseries:
-            inp += "{:10}\t{}".format("TIMESERIES", rain_gage.timeseries)
+            inp += "{:10}\t{:16}".format("TIMESERIES", rain_gage.timeseries)
         else:
-            inp += "{:10}\t{}\t{:10}\t{:10}".format("FILE", rain_gage.data_file_name,
-                                      rain_gage.data_file_station_id,
-                                      rain_gage.data_file_rain_units)
+            inp += '{:10}\t"{:16}"\t{:10}\t{:5}'.format(
+                "FILE",
+                rain_gage.data_file_name,
+                rain_gage.data_file_station_id,
+                rain_gage.data_file_rain_units)
         if rain_gage.comment:
             inp += " # " + rain_gage.comment
         return inp

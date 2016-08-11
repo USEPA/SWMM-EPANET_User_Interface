@@ -58,7 +58,7 @@ class ProjectWriter(InputFileWriterBase):
         self.write_map = MapOptionsWriter()            # MAP           map's bounding rectangle and units
         self.write_raingages = SectionWriterAsListOf("[RAINGAGES]", RainGage, RainGageWriter,
              ";;Name          \tFormat   \tInterval\tSCF     \tSource    \n"
-             ";;--------------\t---------\t------  \t------  \t----------")
+             ";;--------------\t---------\t--------\t--------\t----------")
 
         self.write_hydrographs = SectionWriterAsListOf("[HYDROGRAPHS]", UnitHydrograph, UnitHydrographWriter,
             ";;Hydrograph    \tRain Gage/Month \tResponse\tR       \tT       \tK       \tDmax    \tDrecov  \tDinit   \n"
@@ -111,9 +111,9 @@ class ProjectWriter(InputFileWriterBase):
                                          ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # junction node information
 
-        self.write_outfalls = SectionWriterAsListOf("[OUTFALLS]", Outfall, SectionWriter,
-                                         ";;Name          \tElevation \tType      \tStage Data      \tGated   \tRoute To\n"
-                                         ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
+        self.write_outfalls = SectionWriterAsListOf("[OUTFALLS]", Outfall, OutfallWriter,
+                              ";;Name          \tElevation \tType      \tStage Data      \tGated   \tRoute To\n"
+                              ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
         #  outfall node information
 
         self.write_dividers = SectionWriterAsListOf("[DIVIDERS]", Divider, SectionWriter,
@@ -225,7 +225,7 @@ class ProjectWriter(InputFileWriterBase):
         # X,Y coordinates and text of labels
 
         self.write_polygons = SectionWriterAsListOf("[POLYGONS]", Coordinate, CoordinateWriter,
-                                                    ";Subbasin        \tX-Coord         \tY-Coord")
+                                                    ";Subcatchment    \tX-Coord         \tY-Coord")
         # X, Y coordinates for each vertex of subcatchment polygons
 
         self.write_coordinates = SectionWriterAsListOf("[COORDINATES]", Coordinate, CoordinateWriter,

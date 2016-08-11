@@ -49,7 +49,7 @@ from core.inp_writer_base import SectionWriter
 class CurveWriter(SectionWriter):
     """Defines a data curve of X,Y points"""
 
-    field_format = " {:16}\t{:12}\t{:12}\n"
+    field_format = " {:16}\t{:12}\t{:12}"
 
     @staticmethod
     def as_text(curve):

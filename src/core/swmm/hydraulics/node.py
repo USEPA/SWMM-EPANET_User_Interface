@@ -159,15 +159,15 @@ class Outfall(Section):
         self.fixed_stage = 0.0
         """Water elevation for a FIXED type of outfall (feet or meters)."""
 
-        self.tidal_curve = None
+        self.tidal_curve = ''
         """The TidalCurve relating water elevation to hour of the
             day for a TIDAL outfall."""
 
-        self.time_series_name = None
+        self.time_series_name = ''
         """Name of time series containing time history of outfall elevations
             for a TIMESERIES outfall"""
 
-        self.route_to = None
+        self.route_to = ''
         """Optional name of a subcatchment that receives the outfall's discharge"""
 
 

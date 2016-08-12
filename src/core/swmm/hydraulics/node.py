@@ -5,11 +5,11 @@ from core.project_base import Section
 from core.metadata import Metadata
 
 
-# class Node(object):
-#     """A node in a SWMM model"""
-#     def __init__(self):
-#         self.node_name = ''
-#         """Node Name"""
+class Node(Section):
+    """A node in a SWMM model (base class of Junction, Outfall, Divider, and Storage)"""
+    def __init__(self):
+        self.name = ''
+        """Unique name or number identifying this node"""
 #
 #         self.centroid = Coordinates(0.0, 0.0)
 #         """Coordinates of Node location (x, y)"""
@@ -17,8 +17,8 @@ from core.metadata import Metadata
 #         self.description = ''
 #         """Optional description of the Node"""
 #
-#         self.tag = ''
-#         """Optional label used to categorize or classify the Node"""
+        self.tag = ''
+        """Optional label used to categorize or classify this Node"""
 #
 #         self.direct_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
@@ -36,9 +36,8 @@ from core.metadata import Metadata
 #         """Invert elevation of the Node (feet or meters)"""
 
 
-class Junction(Section):
+class Junction(Node):
     """A Junction node"""
-
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -62,10 +61,10 @@ class Junction(Section):
         ("ponded_area",     '', "Ponded Area",     '0', "ft2", "m2", "Area of ponded water when flooded")))
 
     def __init__(self):
-        Section.__init__(self)
+        Node.__init__(self)
 
-        self.name = Unicode(default_value='', label="Name", help="User-assigned name of junction")
-        """name assigned to junction node"""
+        # self.name = ''  # Unicode(default_value='', label="Name", help="User-assigned name of junction")
+        # """name assigned to junction node"""
 
         self.elevation = ''
         """Invert elevation of the Node (feet or meters)"""
@@ -110,7 +109,7 @@ class OutfallType(Enum):
     TIMESERIES = 5
 
 
-class Outfall(Section):
+class Outfall(Node):
     """A terminal node of the drainage system
         Defines a final downstream boundary under Dynamic Wave flow routing.
         For other types of flow routing they behave as a junction.
@@ -145,10 +144,10 @@ class Outfall(Section):
         ("time_series_name",    '', "Series Name",     '0',  '',   '',  "Name of time series for a TIMESERIES boundary condition")))
 
     def __init__(self):
-        Section.__init__(self)
+        Node.__init__(self)
 
-        self.name = ''
-        """name assigned to outfall node"""
+        # self.name = ''
+        # """name assigned to outfall node"""
 
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""
@@ -373,7 +372,6 @@ class DirectInflowType(Enum):
 class DirectInflow(Section):
     """Defines characteristics of inflows added directly into a node"""
 
-
     def __init__(self):
         Section.__init__(self)
 
@@ -402,9 +400,9 @@ class DirectInflow(Section):
         self.baseline_pattern = ''
         """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
 
+
 class DryWeatherInflow(Section):
     """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
-
 
     def __init__(self):
         Section.__init__(self)
@@ -421,9 +419,9 @@ class DryWeatherInflow(Section):
         self.time_patterns = []
         """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
 
+
 class RDIInflow(Section):
     """Defines characteristics of Rainfall-Dependent Infiltration/Inflows entering the system at a node"""
-
 
     def __init__(self):
         Section.__init__(self)
@@ -437,9 +435,9 @@ class RDIInflow(Section):
         self.sewershed_area = ''
         """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
 
+
 class Treatment(Section):
     """Define the treatment properties of a node using a treatment expression"""
-
 
     hint = "Treatment expressions have the general form:\n" \
            "  R = f(P, R_P, V)\n" \

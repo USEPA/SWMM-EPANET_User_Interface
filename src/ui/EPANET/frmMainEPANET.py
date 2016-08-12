@@ -636,13 +636,6 @@ class frmMainEPANET(frmMain):
                                          self.project.pumps.value, "Pumps", "name", QColor('red'))
                 self.map_widget.addLinks(self.project.coordinates.value,
                                          self.project.valves.value, "Valves", "name", QColor('green'))
-
-                SaveAsGis.save_links(self.project.coordinates.value,
-                                           self.project.pipes.value,
-                                           ["name", "description", "tag"],
-                                           os.path.join(os.path.dirname(file_name), "pipes.json"),
-                                           driver_name="GeoJson")
-
                 self.map_widget.zoomfull()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))

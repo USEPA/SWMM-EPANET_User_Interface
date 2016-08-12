@@ -107,14 +107,13 @@ class Section(object):
             setattr(self, attr_name, attr_value)
 
 
-class SectionAsListOf(Section):
-    def __init__(self, section_name, list_type, section_comment=None):
+class SectionAsList(Section):
+    def __init__(self, section_name, section_comment=None):
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
         if section_comment:
             self.DEFAULT_COMMENT = section_comment
         Section.__init__(self)
-        self.list_type = list_type
 
 # class SectionAsListGroupByID(SectionAsListOf):

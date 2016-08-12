@@ -1,5 +1,5 @@
 from core.coordinate import Coordinate
-from core.project_base import ProjectBase, SectionAsListOf
+from core.project_base import ProjectBase, SectionAsList
 from core.swmm.climatology import Adjustments
 from core.swmm.climatology import Evaporation
 from core.swmm.climatology import Temperature
@@ -53,114 +53,114 @@ class SwmmProject(ProjectBase):
         self.files = Files()                    # FILES         interface file options
         self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
         self.map = MapOptions()                 # MAP           map's bounding rectangle and units
-        self.raingages = SectionAsListOf("[RAINGAGES]", RainGage)  # RAINGAGES  rain gage information
+        self.raingages = SectionAsList("[RAINGAGES]")  # (list of RainGage)  # RAINGAGES  rain gage information
 
-        self.hydrographs = SectionAsListOf("[HYDROGRAPHS]", UnitHydrograph)
+        self.hydrographs = SectionAsList("[HYDROGRAPHS]")  # (list of UnitHydrograph)
         # unit hydrograph data used to construct RDII inflows
 
         self.evaporation = Evaporation()        # EVAPORATION   evaporation data
         self.temperature = Temperature()        # TEMPERATURE   air temperature and snow melt data
         self.adjustments = Adjustments()        # ADJUSTMENTS   monthly climate adjustments
-        self.subcatchments = SectionAsListOf("[SUBCATCHMENTS]", Subcatchment)
+        self.subcatchments = SectionAsList("[SUBCATCHMENTS]")  # (list of Subcatchment)
         # basic subcatchment information
 
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
 
-        self.infiltration = SectionAsListOf("[INFILTRATION]", basestring)
-        # This is set to SectionAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration on read
+        self.infiltration = SectionAsList("[INFILTRATION]")  # (list of basestring)
         # subcatchment infiltration parameters
 
-        self.lid_controls = SectionAsListOf("[LID_CONTROLS]", LIDControl)
+        self.lid_controls = SectionAsList("[LID_CONTROLS]")  # (list of LIDControl)
         # low impact development control information
 
-        self.lid_usage = SectionAsListOf("[LID_USAGE]", LIDUsage)
+        self.lid_usage = SectionAsList("[LID_USAGE]")  # (list of LIDUsage)
         # assignment of LID controls to subcatchments
 
-        self.aquifers = SectionAsListOf("[AQUIFERS]", Aquifer)
+        self.aquifers = SectionAsList("[AQUIFERS]")  # (list of Aquifer)
         # groundwater aquifer parameters
 
-        self.groundwater = SectionAsListOf("[GROUNDWATER]", Groundwater)
+        self.groundwater = SectionAsList("[GROUNDWATER]")  # (list of Groundwater)
         # subcatchment groundwater parameters
 
-        self.snowpacks = SectionAsListOf("[SNOWPACKS]", SnowPack)
+        self.snowpacks = SectionAsList("[SNOWPACKS]")  # (list of SnowPack)
         # subcatchment snow pack parameters
 
-        self.junctions = SectionAsListOf("[JUNCTIONS]", Junction)
+        self.junctions = SectionAsList("[JUNCTIONS]")  # (list of Junction)
         # junction node information
 
-        self.outfalls = SectionAsListOf("[OUTFALLS]", Outfall)
+        self.outfalls = SectionAsList("[OUTFALLS]")  # (list of Outfall)
         #  outfall node information
 
-        self.dividers = SectionAsListOf("[DIVIDERS]", Divider)
+        self.dividers = SectionAsList("[DIVIDERS]")  # (list of Divider)
         #  flow divider node information
 
-        self.storage = SectionAsListOf("[STORAGE]", StorageUnit)
+        self.storage = SectionAsList("[STORAGE]")  # (list of StorageUnit)
         #  storage node information
 
-        self.conduits = SectionAsListOf("[CONDUITS]", Conduit)
+        self.conduits = SectionAsList("[CONDUITS]")  # (list of Conduit)
         # conduit link information
 
-        self.pumps = SectionAsListOf("[PUMPS]", Pump)
+        self.pumps = SectionAsList("[PUMPS]")  # (list of Pump)
         # pump link information
 
-        self.orifices = SectionAsListOf("[ORIFICES]", Orifice)
+        self.orifices = SectionAsList("[ORIFICES]")  # (list of Orifice)
         # orifice link information
 
-        self.weirs = SectionAsListOf("[WEIRS]", Weir)
+        self.weirs = SectionAsList("[WEIRS]")  # (list of Weir)
         # weir link information
 
-        self.outlets = SectionAsListOf("[OUTLETS]", Outlet)
+        self.outlets = SectionAsList("[OUTLETS]")  # (list of Outlet)
         # outlet link information
 
-        self.xsections = SectionAsListOf("[XSECTIONS]", CrossSection)
+        self.xsections = SectionAsList("[XSECTIONS]")  # (list of CrossSection)
         # conduit, orifice, and weir cross-section geometry
 
         self.transects = Transects() # TRANSECTS   transect geometry for conduits with irregular cross-sections
         # self.losses = [Section] # LOSSES   conduit entrance/exit losses and flap valves
-        self.controls = SectionAsListOf("[CONTROLS]", basestring)  # rules that control pump and regulator operation
-        self.landuses = SectionAsListOf("[LANDUSES]", Landuse)     # land use categories
+        self.controls = SectionAsList("[CONTROLS]")  # rules that control pump and regulator operation
+        self.landuses = SectionAsList("[LANDUSES]")  # (list of Landuse)     # land use categories
 
-        self.buildup = SectionAsListOf("[BUILDUP]", Buildup)
+        self.buildup = SectionAsList("[BUILDUP]")  # (list of Buildup)
         # buildup functions for pollutants and land uses
 
-        self.washoff = SectionAsListOf("[WASHOFF]", Washoff)
+        self.washoff = SectionAsList("[WASHOFF]")  # (list of Washoff)
         # washoff functions for pollutants and land uses
 
-        self.pollutants = SectionAsListOf("[POLLUTANTS]", Pollutant)
+        self.pollutants = SectionAsList("[POLLUTANTS]")  # (list of Pollutant)
         # pollutant information
 
         self.coverages = Coverages() # COVERAGES   assignment of land uses to subcatchments
-        self.treatment = SectionAsListOf("[TREATMENT]", Treatment)
+        self.treatment = SectionAsList("[TREATMENT]")  # (list of Treatment)
         # pollutant removal functions at conveyance system nodes
 
-        self.inflows = SectionAsListOf("[INFLOWS]", DirectInflow)
+        self.inflows = SectionAsList("[INFLOWS]")  # (list of DirectInflow)
         # INFLOWS # external hydrograph/pollutograph inflow at nodes
 
-        self.dwf = SectionAsListOf("[DWF]", DryWeatherInflow)
+        self.dwf = SectionAsList("[DWF]")  # (list of DryWeatherInflow)
         # baseline dry weather sanitary inflow at nodes
 
-        self.patterns = SectionAsListOf("[PATTERNS]", Pattern)
+        self.patterns = SectionAsList("[PATTERNS]")  # (list of Pattern)
         # PATTERNS      periodic variation in dry weather inflow
 
-        self.rdii = SectionAsListOf("[RDII]", RDIInflow)
+        self.rdii = SectionAsList("[RDII]")  # (list of RDIInflow)
         # rainfall-dependent I/I information at nodes
 
         self.loadings = InitialLoadings()
         # initial pollutant loads on subcatchments
 
-        self.curves = SectionAsListOf("[CURVES]", Curve)
+        self.curves = SectionAsList("[CURVES]")  # (list of Curve)
         # CURVES        x-y tabular data referenced in other sections
 
-        self.timeseries = SectionAsListOf("[TIMESERIES]", TimeSeries)
+        self.timeseries = SectionAsList("[TIMESERIES]")  # (list of TimeSeries)
         # time series data referenced in other sections
 
-        self.labels = SectionAsListOf("[LABELS]", Label)
-        # X,Y coordinates and text of labels
+        self.labels = SectionAsList("[LABELS]")  # (list of Label)
+        # X, Y coordinates and text of labels
 
-        self.polygons = SectionAsListOf("[POLYGONS]", Coordinate)
-        # X,Y coordinates for each vertex of subcatchment polygons
+        self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
+        # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate)  # X,Y coordinates for nodes
+        self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
+        # X, Y coordinates for nodes
 
         # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
@@ -169,11 +169,4 @@ class SwmmProject(ProjectBase):
         ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
     def add_section(self, section_name, section_text):
-        if section_name == self.infiltration.SECTION_NAME:
-            if self.options.infiltration.upper() == "HORTON":
-                self.infiltration = SectionAsListOf(self.infiltration.SECTION_NAME, HortonInfiltration)
-            elif self.options.infiltration.upper().startswith("GREEN"):
-                self.infiltration = SectionAsListOf(self.infiltration.SECTION_NAME, GreenAmptInfiltration)
-            elif self.options.infiltration.upper().startswith("CURVE"):
-                self.infiltration = SectionAsListOf(self.infiltration.SECTION_NAME, CurveNumberInfiltration)
         ProjectBase.add_section(self, section_name, section_text)

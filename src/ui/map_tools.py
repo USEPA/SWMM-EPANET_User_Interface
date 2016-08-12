@@ -302,13 +302,16 @@ try:
             self.canvas.setLayerSet(self.layers)
 
         def addVectorLayer(self, filename):
-            if filename.lower().endswith('.shp'):
-                layerCtr = len(self.layers)
-                layer=QgsVectorLayer(filename, "layer_v_" + str(layerCtr), "ogr")
+            layer_count = len(self.layers)
+            #if filename.lower().endswith('.shp'):
+            layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
+            #elif filename.lower().endswith('.json'):
+            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
+            if layer:
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
                 self.layers.append(QgsMapCanvasLayer(layer))
                 self.canvas.setLayerSet(self.layers)
-                if layerCtr == 0:
+                if layer_count == 0:
                     self.canvas.setExtent(layer.extent())
                 else:
                     self.canvas.setExtent(self.canvas.extent())

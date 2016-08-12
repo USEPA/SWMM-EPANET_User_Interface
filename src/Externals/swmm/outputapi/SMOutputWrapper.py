@@ -267,6 +267,7 @@ class SwmmOutputSystem(SwmmOutputCategoryBase):
     attribute_outflow            = SwmmOutputAttribute(_lib.outfall_flows,        "Outflow",            ('CFS', 'CMS'))
     attribute_storage            = SwmmOutputAttribute(_lib.volume_stored,        "Storage",            ('ft3', 'm3'))
     attribute_evaporation        = SwmmOutputAttribute(_lib.evap_rate,            "Evaporation", ('in/day', 'mm/day'))
+    #attribute_pet                = SwmmOutputAttribute(_lib.pet,                  "PET",         ('in/day', 'mm/day'))
 
     attributes = (attribute_temperature,
                   attribute_precipitation,
@@ -487,3 +488,4 @@ class SwmmOutputObject(object):
     #         x_values.append(self.StartDate + datetime.timedelta(hours=elapsed_hours))
     #     # now make a time series data frame
     #     return Series(y_values, index=x_values)
+

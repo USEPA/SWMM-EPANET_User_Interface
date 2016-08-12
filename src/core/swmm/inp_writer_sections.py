@@ -1079,3 +1079,33 @@ class ReportWriter(SectionWriter):
             if line.split() != ["LID", "NONE"]:
                 lines.append(line)
         return '\n'.join(lines)
+
+
+class TagsWriter(SectionWriter):
+    """Write tags to a string"""
+
+    SECTION_NAME = "[TAGS]"
+
+    field_format = "{:10}{:16}\t{:16}"
+
+    @staticmethod
+    def as_text(project):
+        text_list = [TagsWriter.SECTION_NAME]
+        section_map = {"Gage      ": [project.raingages.value],
+                       "Subcatch  ": [project.subcatchments.value],
+                       "Node      ": [project.junctions.value, project.outfalls.value,
+                                      project.dividers.value, project.storage.value],
+                       "Link      ": [project.conduits.value, project.pumps.value, project.orifices.value,
+                                      project.weirs.value, project.outlets.value]}
+        for object_type_name, sections in section_map.items():
+            for section in sections:
+                for item in section:
+                    if hasattr(item, "tag") and item.tag:
+                        name = "Unknown"
+                        if hasattr(item, "name") and item.name:
+                            name = item.name
+                        text_list.append(TagsWriter.field_format.format(object_type_name, item.name, item.tag))
+        if len(text_list) > 1:
+            return '\n'.join(text_list)
+        else:
+            return ''

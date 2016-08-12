@@ -235,6 +235,8 @@ class ProjectWriter(InputFileWriterBase):
         # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.write_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+
+        self.write_tags = TagsWriter()
         # [TAGS]
 
     def as_text(self, project):
@@ -255,6 +257,17 @@ class ProjectWriter(InputFileWriterBase):
                 "[INFILTRATION]", CurveNumberInfiltrationWriter,
                 ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                 ";;--------------\t----------\t----------\t----------")
+
+        inp = InputFileWriterBase.as_text(self, project)
+
         subareas = SectionAsList("[SUBAREAS]")  # (list of Subcatchment)
         subareas.value = project.subcatchments.value
-        return InputFileWriterBase.as_text(self, project) + '\n' + self.write_subareas.as_text(subareas)
+        subareas_text = self.write_subareas.as_text(subareas)
+        if subareas_text:
+            inp += '\n' + subareas_text + '\n'
+
+        tags_text = self.write_tags.as_text(project)
+        if tags_text:
+            inp += '\n' + tags_text + '\n'
+
+        return inp

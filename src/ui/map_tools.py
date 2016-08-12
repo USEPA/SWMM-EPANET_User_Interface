@@ -140,6 +140,7 @@ try:
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
+            self.set_extent(self.canvas.extent())
 
         def setMouseTracking(self, flag):
             def recursive_set(parent):
@@ -312,11 +313,14 @@ try:
                 self.layers.append(QgsMapCanvasLayer(layer))
                 self.canvas.setLayerSet(self.layers)
                 if layer_count == 0:
-                    self.canvas.setExtent(layer.extent())
+                    self.set_extent(layer.extent())
                 else:
-                    self.canvas.setExtent(self.canvas.extent())
-                self.canvas.refresh()
-                #self.canvas.refreshAllLayers()
+                    self.set_extent(self.canvas.extent())
+
+        def set_extent(self, extent):
+            buffered_extent = extent.buffer(extent.height() / 20)
+            self.canvas.setExtent(buffered_extent)
+            self.canvas.refresh()
 
         def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:
@@ -326,9 +330,9 @@ try:
                     self.layers.append(QgsMapCanvasLayer(layer))
                     self.canvas.setLayerSet(self.layers)
                     if layerCtr ==0:
-                        self.canvas.setExtent(layer.extent())
+                        self.set_extent(layer.extent())
                     else:
-                        self.canvas.setExtent(self.canvas.extent())
+                        self.set_extent(self.canvas.extent())
 
         # def select(self):
         #    print(self.layers(0).name)

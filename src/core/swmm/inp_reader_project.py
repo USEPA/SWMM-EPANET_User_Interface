@@ -258,9 +258,16 @@ class ProjectReader(InputFileReader):
         elif section_name.upper() == "[SUBAREAS]":
             self.defer_subareas = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name.upper() == "[TAGS]":
+            self.defer_tags = section_text
+            return  # Skip read_section, defer until finished_reading is called.
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
         if self.defer_subareas:
             SubareasReader.read(self.defer_subareas, project)
             self.defer_subareas = None
+        if self.defer_tags:
+            TagsReader.read(self.defer_tags, project)
+            self.defer_tags = None
+

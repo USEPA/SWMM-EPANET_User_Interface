@@ -255,17 +255,19 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
         Parse new_text into a section comment (column headers) followed by items of type section.list_type.
         section.value is created as a list of items of section.list_type.
         section.list_type was set by the SectionAsListOf constructor.
-        Each item text is made into a section.list_type using a constructor that takes a string,
-         then it is added to section.value.
+        Each item text is made into a section.list_type using self.list_type_reader.read(item_text)
             Args:
-                section (Section): object to populate.
                 new_text (str): Text of whole section to parse into comments and a list of items.
+            Returns:
+                new self.section_type with a value attribute populated from new_text
         """
         section = self.section_type()
         # Set new section's SECTION_NAME if it has not already been set
         if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
             section.SECTION_NAME = self.SECTION_NAME
         section.value = []
+        if not hasattr(section, "list_type") and hasattr(self, "list_type") and self.list_type:
+            section.list_type = self.list_type
         lines = new_text.splitlines()
         self.set_comment_check_section(section, lines[0])  # Check first line against section name
         next_index = 1
@@ -295,7 +297,10 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
         for line in lines[next_index:]:
             if line.startswith(';'):  # Found a comment, must be the start of a new item
                 if len(item_name) > 0:
-                    section.value.append(section.list_type(item_text))
+                    if hasattr(self, "list_type_reader"):
+                        section.value.append(self.list_type_reader.read(item_text))
+                    else:
+                        section.value.append(item_text)
                     item_text = ''
                 elif item_text:
                     item_text += '\n'
@@ -308,7 +313,10 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                     if len(item_name) > 0:  # If we already read an ID that has not been saved to value yet
                         if new_item_name != item_name:  # If this item is not the same one we are already reading
                             try:  # then save the one we have been reading since we have read it all
-                                section.value.append(section.list_type(item_text))
+                                if hasattr(self, "list_type_reader"):
+                                    section.value.append(self.list_type_reader.read(item_text))
+                                else:
+                                    section.value.append(item_text)
                             except Exception as ex:
                                 raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(section.list_type.__name__,
                                                                                             item_text,

@@ -216,7 +216,6 @@ class PollutantReader(SectionReader):
 class TimeSeriesReader(SectionReader):
     """One time series from the TIMESERIES section"""
 
-
     @staticmethod
     def read(new_text):
         time_series = TimeSeries()
@@ -1263,6 +1262,41 @@ class SubareasReader(SectionReader):
                                 subcatchment.subarea_routing = Routing.PERVIOUS
                         if len(fields) > 7:
                             subcatchment.setattr_keep_type("percent_routed", fields[7])
+
+
+class TagsReader(SectionReader):
+    """Read tag information from text into project objects that have tags"""
+
+    @staticmethod
+    def read(new_text, project):
+        section_map = {"GAGE": [project.raingages.value],
+                       "SUBCATCH": [project.subcatchments.value],
+                       "NODE": [project.junctions.value, project.outfalls.value,
+                                project.dividers.value, project.storage.value],
+                       "LINK": [project.conduits.value, project.pumps.value, project.orifices.value,
+                                project.weirs.value, project.outlets.value]}
+        disposable_tags = Section()
+        disposable_tags.SECTION_NAME = "[TAGS]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_tags, line)
+            fields = line.split()
+            if len(fields) > 2:
+                object_type_name = fields[0].upper()
+                object_name = fields[1].upper()
+                tag = ' '.join(fields[2:])
+                sections = section_map[object_type_name]
+                found = False
+                for section in sections:
+                    for candidate in section:
+                        if candidate.name.upper() == object_name:
+                            candidate.tag = tag
+                            found = True
+                            print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
+                            break
+                    if found:
+                        break
+                if not found:
+                    print "Tag not applied: " + line
 
 
 class UnitHydrographReader(SectionReader):

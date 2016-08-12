@@ -1,7 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project_base import ProjectBase, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsList
 
 
 class InputFileReader(object):
@@ -198,14 +198,13 @@ class SectionReader(object):
         return None, None
 
 
-class SectionReaderAsListOf(SectionReader):
+class SectionReaderAsList(SectionReader):
     """ Section reader that reads a section that contain a list of items """
-    def __init__(self, section_name, list_type, list_type_reader, section_comment):
+    def __init__(self, section_name, list_type_reader, section_comment):
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
         SectionReader.__init__(self)
-        self.list_type = list_type
         if isinstance(list_type_reader, type):
             self.list_type_reader = list_type_reader()
         else:
@@ -241,7 +240,7 @@ class SectionReaderAsListOf(SectionReader):
         return section
 
 
-class SectionReaderAsListGroupByID(SectionReaderAsListOf):
+class SectionReaderAsListGroupByID(SectionReaderAsList):
     """
     Reader for a section that contains items which may each span more than one line.
     Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
@@ -252,22 +251,18 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
         Read a Section that contains items which may each span more than one line.
         Each item includes zero or more comment lines and one or more lines with the first field being the item ID.
 
-        Parse new_text into a section comment (column headers) followed by items of type section.list_type.
-        section.value is created as a list of items of section.list_type.
-        section.list_type was set by the SectionAsListOf constructor.
-        Each item text is made into a section.list_type using self.list_type_reader.read(item_text)
+        Parse new_text into a section comment (column headers) followed by items created by self.list_type_reader.
+        section.value is created as a list of items read from new_text.
             Args:
                 new_text (str): Text of whole section to parse into comments and a list of items.
             Returns:
-                new self.section_type with a value attribute populated from new_text
+                new self.section_type with value attribute populated from items in new_text.
         """
         section = self.section_type()
         # Set new section's SECTION_NAME if it has not already been set
         if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
             section.SECTION_NAME = self.SECTION_NAME
         section.value = []
-        if not hasattr(section, "list_type") and hasattr(self, "list_type") and self.list_type:
-            section.list_type = self.list_type
         lines = new_text.splitlines()
         self.set_comment_check_section(section, lines[0])  # Check first line against section name
         next_index = 1
@@ -318,10 +313,9 @@ class SectionReaderAsListGroupByID(SectionReaderAsListOf):
                                 else:
                                     section.value.append(item_text)
                             except Exception as ex:
-                                raise Exception("Create: {}\nfrom string:{}\n{}\n{}".format(section.list_type.__name__,
-                                                                                            item_text,
-                                                                                            str(ex),
-                                                                                            str(traceback.print_exc())))
+                                raise Exception("Read from string:{}\n{}\n{}".format(item_text,
+                                                                                     str(ex),
+                                                                                     str(traceback.print_exc())))
                             item_text = ''  # clear the buffer after using it to create/append an item
                     item_name = new_item_name
                     if item_text:

@@ -7,7 +7,6 @@ from core.swmm.inp_writer_project import ProjectWriter
 from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match, match_omit
-from core.project_base import SectionAsListOf
 from core.swmm.hydraulics.link import CrossSection, CrossSectionShape
 
 

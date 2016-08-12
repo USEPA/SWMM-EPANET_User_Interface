@@ -426,7 +426,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.setValue("ProjectDir", path_only)
                 gui_settings.sync()
                 del gui_settings
-        except:
+        except Exception as ex:
+            print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
             self.project = ProjectBase()
             self.setWindowTitle(self.model)
 

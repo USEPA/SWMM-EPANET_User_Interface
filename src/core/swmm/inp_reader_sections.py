@@ -587,9 +587,7 @@ class TransectsReader(SectionReader):
             elif line.startswith(';'):
                 if found_non_comment:  # This comment must be the start of the next one, so build the previous one
                     try:
-                        make_one = transects.list_type()
-                        make_one.set_text('\n'.join(item_lines))
-                        transects.value.append(make_one)
+                        transects.value.append(TransectReader.read('\n'.join(item_lines)))
                         item_lines = []
                         found_non_comment = False
                     except Exception as e:
@@ -606,9 +604,7 @@ class TransectsReader(SectionReader):
 
         if found_non_comment:  # Found a final one that has not been built yet, build it now
             try:
-                make_one = transects.list_type()
-                make_one.set_text('\n'.join(item_lines))
-                transects.value.append(make_one)
+                transects.value.append(TransectReader.read('\n'.join(item_lines)))
             except Exception as e:
                 print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
         return transects

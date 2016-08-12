@@ -575,6 +575,5 @@ try:
             QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
 
 
-
 except:
     print "Skipping map_tools"

@@ -72,7 +72,7 @@ class EpanetProject(ProjectBase):
         self.times = TimesOptions()
         self.report = ReportOptions()
         self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
-        # "[VERTICES]": [Vertex]
+        self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         self.backdrop = BackdropOptions()
 

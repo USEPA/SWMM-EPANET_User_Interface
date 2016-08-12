@@ -216,8 +216,8 @@ class ProjectWriter(InputFileWriterBase):
         # CURVES        x-y tabular data referenced in other sections
 
         self.write_timeseries = SectionWriterAsList("[TIMESERIES]", TimeSeriesWriter,
-                                                 ";;Name          \tDate      \tTime      \tValue\n"
-                                                 ";;--------------\t----------\t----------\t----------")
+                                                    ";;Name          \tDate      \tTime      \tValue\n"
+                                                    ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
         # self.write_labels = SectionWriterAsListGroupByID("[LABELS]", Label, LabelWriter,
@@ -225,13 +225,15 @@ class ProjectWriter(InputFileWriterBase):
         # X,Y coordinates and text of labels
 
         self.write_polygons = SectionWriterAsList("[POLYGONS]", CoordinateWriter,
-                                                    ";Subcatchment    \tX-Coord         \tY-Coord")
+                                                  ";Subcatchment    \tX-Coord   \tY-Coord")
         # X, Y coordinates for each vertex of subcatchment polygons
 
         self.write_coordinates = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
-                                                       ";Node            \tX-Coord         \tY-Coord")
+                                                     ";Node            \tX-Coord   \tY-Coord")
         # X, Y coordinates for nodes
 
+        self.write_vertices = SectionWriterAsList("[VERTICES]", CoordinateWriter,
+                                                  ";Link            \tX-Coord   \tY-Coord")
         # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
         # self.write_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.

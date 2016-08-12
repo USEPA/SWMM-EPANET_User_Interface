@@ -200,7 +200,7 @@ class SectionReader(object):
 
 class SectionReaderAsList(SectionReader):
     """ Section reader that reads a section that contain a list of items """
-    def __init__(self, section_name, list_type_reader, section_comment):
+    def __init__(self, section_name, list_type_reader, default_comment=None):
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
@@ -209,9 +209,8 @@ class SectionReaderAsList(SectionReader):
             self.list_type_reader = list_type_reader()
         else:
             self.list_type_reader = list_type_reader
-
-        if section_comment:
-            self.DEFAULT_COMMENT = section_comment
+        if default_comment:
+            self.DEFAULT_COMMENT = default_comment
 
     def read(self, new_text):
         section = self.section_type()

@@ -88,7 +88,7 @@ class EStatsQuant(Enum):
 # Record which contains the properties of a single event
 class TStatsEvent:
     def __init__(self):
-        self.StartDate = datetime.now() #TDateTime
+        self.StartDate = None #TDateTime, datetime.datetime.now()
         self.Value = 0.0 #Single
         self.Duration = 0.0 # duration in milliseconds or seconds, Single
         self.Rank = 0 #Integer
@@ -589,7 +589,7 @@ class StatisticUtility(object):
         #  each event (events with the same value have the same rank)
         N = len(EventList)
         if N > 0:
-            E1 = EventList.Items[N - 1]
+            E1 = EventList[N - 1]
             E1.Rank = N
             for I in xrange(N - 2, -1, -1):
                 E2 = EventList.Items[I]

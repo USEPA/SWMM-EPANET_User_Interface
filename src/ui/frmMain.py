@@ -426,7 +426,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.setValue("ProjectDir", path_only)
                 gui_settings.sync()
                 del gui_settings
-        except:
+        except Exception as ex:
+            print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
             self.project = ProjectBase()
             self.setWindowTitle(self.model)
 
@@ -477,18 +478,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 directory = directory[1:]
             filename = str.rstrip(str(filename), '\r\n')
             print(filename)
-            if filename.endswith('.inp'):
+            full_path = os.path.join(directory, filename)
+            lfilename = filename.lower()
+            if lfilename.endswith('.inp'):
                 gui_settings = QtCore.QSettings(self.model, "GUI")
-                self.open_project_quiet(os.path.join(directory, filename), gui_settings, directory)
+                self.open_project_quiet(full_path, gui_settings, directory)
             #TODO - check to see if QGIS can handle file type
-            elif filename.endswith('.shp'):
-                self.map_widget.addVectorLayer(os.path.join(directory, filename))
+            elif lfilename.endswith('.shp') or lfilename.endswith(".json"):
+                self.map_widget.addVectorLayer(full_path)
             else:
                 try:
-                    self.map_widget.addRasterLayer(os.path.join(directory, filename))
+                    self.map_widget.addRasterLayer(full_path)
                 except:
                     QMessageBox.information(self, self.model,
-                            "Dropped file '" + filename + "' is not a know type of file",
+                            "Dropped file '" + full_path + "' is not a know type of file",
                             QMessageBox.Ok)
 
     def action_exit(self):

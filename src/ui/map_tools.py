@@ -140,6 +140,7 @@ try:
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
+            self.set_extent(self.canvas.extent())
 
         def setMouseTracking(self, flag):
             def recursive_set(parent):
@@ -302,18 +303,24 @@ try:
             self.canvas.setLayerSet(self.layers)
 
         def addVectorLayer(self, filename):
-            if filename.lower().endswith('.shp'):
-                layerCtr = len(self.layers)
-                layer=QgsVectorLayer(filename, "layer_v_" + str(layerCtr), "ogr")
+            layer_count = len(self.layers)
+            #if filename.lower().endswith('.shp'):
+            layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
+            #elif filename.lower().endswith('.json'):
+            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
+            if layer:
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
                 self.layers.append(QgsMapCanvasLayer(layer))
                 self.canvas.setLayerSet(self.layers)
-                if layerCtr == 0:
-                    self.canvas.setExtent(layer.extent())
+                if layer_count == 0:
+                    self.set_extent(layer.extent())
                 else:
-                    self.canvas.setExtent(self.canvas.extent())
-                self.canvas.refresh()
-                #self.canvas.refreshAllLayers()
+                    self.set_extent(self.canvas.extent())
+
+        def set_extent(self, extent):
+            buffered_extent = extent.buffer(extent.height() / 20)
+            self.canvas.setExtent(buffered_extent)
+            self.canvas.refresh()
 
         def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:
@@ -323,9 +330,9 @@ try:
                     self.layers.append(QgsMapCanvasLayer(layer))
                     self.canvas.setLayerSet(self.layers)
                     if layerCtr ==0:
-                        self.canvas.setExtent(layer.extent())
+                        self.set_extent(layer.extent())
                     else:
-                        self.canvas.setExtent(self.canvas.extent())
+                        self.set_extent(self.canvas.extent())
 
         # def select(self):
         #    print(self.layers(0).name)

@@ -1,4 +1,4 @@
-from core.project_base import ProjectBase, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsList
 from core.epanet.curves import Curve
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.link import Pipe
@@ -46,34 +46,34 @@ class EpanetProject(ProjectBase):
         """Initialize the sections of an EPANET input file.
            Any sections not initialized here will be handled by the generic core.project_base.Section class."""
         self.title = Title()
-        self.junctions = SectionAsListOf("[JUNCTIONS]", Junction)
-        self.reservoirs = SectionAsListOf("[RESERVOIRS]", Reservoir)
-        self.tanks = SectionAsListOf("[TANKS]", Tank)
+        self.junctions = SectionAsList("[JUNCTIONS]")  # (list of Junction)
+        self.reservoirs = SectionAsList("[RESERVOIRS]")  # (list of Reservoir)
+        self.tanks = SectionAsList("[TANKS]")  # (list of Tank)
 
-        self.mixing = SectionAsListOf("[MIXING]", Mixing)
-        self.pipes = SectionAsListOf("[PIPES]", Pipe)
-        self.pumps = SectionAsListOf("[PUMPS]", Pump)
-        self.valves = SectionAsListOf("[VALVES]", Valve)
+        self.mixing = SectionAsList("[MIXING]")  # (list of Mixing)
+        self.pipes = SectionAsList("[PIPES]")  # (list of Pipe)
+        self.pumps = SectionAsList("[PUMPS]")  # (list of Pump)
+        self.valves = SectionAsList("[VALVES]")  # (list of Valve)
         # self.emitters = [(Junction, "emitter_coefficient")]
-        self.patterns = SectionAsListOf("[PATTERNS]", Pattern)
-        self.curves = SectionAsListOf("[CURVES]", Curve)
+        self.patterns = SectionAsList("[PATTERNS]")  # (list of Pattern)
+        self.curves = SectionAsList("[CURVES]")  # (list of Curve)
         self.energy = EnergyOptions()
-        self.status = SectionAsListOf("[STATUS]", Status)
-        self.controls = SectionAsListOf("[CONTROLS]", Control)
-        self.rules = SectionAsListOf("[RULES]", basestring)
-        self.demands = SectionAsListOf("[DEMANDS]", Demand)
+        self.status = SectionAsList("[STATUS]")  # (list of Status)
+        self.controls = SectionAsList("[CONTROLS]")  # (list of Control)
+        self.rules = SectionAsList("[RULES]")  # (list of basestring)
+        self.demands = SectionAsList("[DEMANDS]")  # (list of Demand)
 
-        self.quality = SectionAsListOf("[QUALITY]", Quality)
+        self.quality = SectionAsList("[QUALITY]")  # (list of Quality)
         self.reactions = Reactions()
-        self.sources = SectionAsListOf("[SOURCES]", Source)
+        self.sources = SectionAsList("[SOURCES]")  # (list of Source)
         # [MIXING]
         # self.options = MapOptions,
         self.options = Options()
         self.times = TimesOptions()
         self.report = ReportOptions()
-        self.coordinates = SectionAsListOf("[COORDINATES]", Coordinate)
-        # "[VERTICES]": [Vertex]
-        self.labels = SectionAsListOf("[LABELS]", Label)
+        self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
+        self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
+        self.labels = SectionAsList("[LABELS]")  # (list of Label)
         self.backdrop = BackdropOptions()
 
         ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

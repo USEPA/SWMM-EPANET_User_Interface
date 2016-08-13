@@ -336,7 +336,6 @@ class CrossSection(Section):
         curve (str): name of associated Shape Curve that defines how width varies with depth.
     """
 
-
     def __init__(self):
         Section.__init__(self)
 
@@ -378,11 +377,10 @@ class Transects(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.list_type = Transect
+
 
 class Transect(Section):
     """the cross-section geometry of a natural channel or conduit with irregular shapes"""
-
 
     def __init__(self):
         Section.__init__(self)

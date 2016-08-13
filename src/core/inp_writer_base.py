@@ -1,7 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
-from core.project_base import ProjectBase, Section, SectionAsListOf
+from core.project_base import ProjectBase, Section, SectionAsList
 
 try:
     basestring
@@ -31,7 +31,7 @@ class InputFileWriterBase(object):
                 elif isinstance(section.value, basestring):
                     writer = SectionWriter()
                 else:
-                    writer = SectionWriterAsListOf(section.SECTION_NAME, type(section), SectionWriter(), None)
+                    writer = SectionWriterAsList(section.SECTION_NAME, SectionWriter(), None)
                 try:
                     section_text = writer.as_text(section).rstrip('\n')
                     if section_text:                               # Skip adding blank sections
@@ -146,14 +146,13 @@ class SectionWriter(object):
             return "NO"
 
 
-class SectionWriterAsListOf(SectionWriter):
+class SectionWriterAsList(SectionWriter):
     """ Section writer that can serialize a section that contains a list of items. """
-    def __init__(self, section_name, list_type, list_type_writer, section_comment):
+    def __init__(self, section_name, list_type_writer, section_comment):
         """
         Create a section writer that can serialize a section that contains a list of items.
         Args:
             section_name (str): Name of section. Square brackets will be added if not already present.
-            list_type (type): Type of items in the section.
             list_type_writer (type or instance): Writer that can serialize items in the section.
             section_comment (str): Default comment lines that appear at the beginning of the section. Can be None.
         """
@@ -163,7 +162,6 @@ class SectionWriterAsListOf(SectionWriter):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
         SectionWriter.__init__(self)
-        self.list_type = list_type
         if isinstance(list_type_writer, type):
             self.list_type_writer = list_type_writer()
         else:
@@ -186,7 +184,7 @@ class SectionWriterAsListOf(SectionWriter):
                 text_list.append(self.SECTION_NAME)
             if section.comment:
                 text_list.append(section.comment)
-            elif self.DEFAULT_COMMENT:
+            elif hasattr(self, "DEFAULT_COMMENT") and self.DEFAULT_COMMENT:
                 text_list.append(self.DEFAULT_COMMENT)
             if isinstance(section.value, basestring):
                 text_list.append(section.value.rstrip('\n'))  # strip any newlines from end of each item

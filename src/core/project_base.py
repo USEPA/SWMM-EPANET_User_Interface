@@ -109,6 +109,7 @@ class Section(object):
 
 class SectionAsList(Section):
     def __init__(self, section_name, section_comment=None):
+        self.value = []
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()

@@ -108,7 +108,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             exit()
 
         self.RefreshStatsPage()
-        #self.RefreshTablePage()
+        self.RefreshTablePage()
         #self.RefreshHistoPage()
         #self.RefreshFreqPage()
 
@@ -156,7 +156,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
         line18 = "" #StatsMemo.Lines.Add('')
         #StatsMemo.Lines.Add(FrequencyNoteText[Ord(Stats.TimePeriod)])
-        line19 = UStats.TStatsUnits.FrequencyNoteText[self.stats.TimePeriod]
+        line19 = UStats.TStatsUnits.FrequencyNoteText[self.stats.TimePeriod.value]
         self.txtStatsMemo.append(line0)
         self.txtStatsMemo.append(line1)
         self.txtStatsMemo.append(line2)
@@ -176,10 +176,66 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.txtStatsMemo.append(line16)
         self.txtStatsMemo.append(line17)
         self.txtStatsMemo.append(line18)
-        #self.txtStatsMemo.append(line19)
+        self.txtStatsMemo.append(line19)
         pass
 
     def RefreshTablePage(self):
+        # Events Tab (grid)
+        ColHeadingText1 = (' ',    ' ',          ' ',        ' ', 'Exceedance', 'Return')
+        ColHeadingText2 = (' ',    ' ',          'Duration', ' ', 'Frequency',  'Period')
+        ColHeadingText3 = ('Rank', 'Start Date', '(hours)',  ' ', '(percent)',  '(years)')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
+        TimePeriodLabel = UStats.TStatsUnits.TimePeriodText[self.stats.TimePeriod.value]
+        #StatsTypeLabel = self.stats.StatsTypeText
+        #StatsUnitsLabel = lunit
+        ColHeading1 = list(ColHeadingText1)
+        ColHeading2 = list(ColHeadingText2)
+        ColHeading3 = list(ColHeadingText3)
+        ColHeading1[2] = TimePeriodLabel
+        ColHeading1[3] = TimePeriodLabel
+        ColHeading2[3] = self.stats.StatsTypeText
+        ColHeading3[3] = "(" + lunit + ")"
+        if self.stats.PlotPosition == UStats.EPlotPosition.ppMonths:
+            ColHeading3[5] = '(months)'
+        else:
+            ColHeading3[5] = '(years)'
+
+        if self.stats.StatsType == UStats.EStatsType.stDelta:
+            ColHeading1[3] = 'Inter-Event'
+            ColHeading2[3] = 'Time'
+
+        #Set up number of rows/cols in the table
+        num_cols = 6
+        self.tableWidget.setColumnCount(num_cols)
+        if len(self.EventList) == 0:
+            num_rows = 2
+        else:
+            num_rows = len(self.EventList) + 1
+        self.tableWidget.setRowCount(num_rows)
+        self.tableWidget.verticalHeader().setVisible(False)
+        #column_headers = ""
+        #self.tableWidget.setHorizontalHeaderLabels(column_headers)
+        for c in xrange(0, num_cols):
+            header_item = QtGui.QTableWidgetItem(ColHeading1[c] + '\n' +
+                                                 ColHeading2[c] + '\n' +
+                                                 ColHeading3[c])
+            self.tableWidget.setHorizontalHeaderItem(c, header_item)
+
+        #Set up data grid
+        row = 0
+        for e in self.EventList:
+            #e = UStats.TStatsEvent() #debug only
+            datestr = datetime.datetime.strftime(e.StartDate, '%m/%d/%Y')
+            self.tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(str(e.Rank)))
+            self.tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(datestr))
+            self.tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(str(e.Duration)))
+            self.tableWidget.setItem(row, 3, QtGui.QTableWidgetItem('%.3f' % (e.Value)))
+            #self.tableWidget.setItem(row, 4, QtGui.QTableWidgetItem(str(e.Frequency)))
+            #self.tableWidget.setItem(row, 5, QtGui.QTableWidgetItem(str(e.ReturnPeriod)))
+            row += 1
+
         pass
 
     def RefreshHistoPage(self):

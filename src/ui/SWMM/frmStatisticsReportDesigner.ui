@@ -40,7 +40,7 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QTextEdit" name="textEdit">
+            <widget class="QTextEdit" name="txtStatsMemo">
              <property name="font">
               <font>
                <family>Courier New</family>

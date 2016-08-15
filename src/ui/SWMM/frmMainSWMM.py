@@ -52,7 +52,7 @@ from ui.SWMM.frmTimeSeriesPlot import frmTimeSeriesPlot
 from ui.SWMM.frmProfilePlot import frmProfilePlot
 from ui.SWMM.frmScatterPlot import frmScatterPlot
 from ui.SWMM.frmTableSelection import frmTableSelection
-# from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
+from ui.SWMM.frmStatisticsReportSelection import frmStatisticsReportSelection
 
 from core.swmm.swmm_project import SwmmProject as Project
 from core.swmm.inp_reader_project import ProjectReader

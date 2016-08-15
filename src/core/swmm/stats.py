@@ -4,6 +4,8 @@ from dateutil.relativedelta import relativedelta
 import numpy as np
 import pandas as pd
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import core.swmm.swmm_project as SMP
+import core.swmm.quality as SMQ
 
 #-------------------------------------------------------------------}
 #                    Unit:    Ustats.pas                            }
@@ -93,6 +95,25 @@ class TStatsEvent:
         self.Duration = 0.0 # duration in milliseconds or seconds, Single
         self.Rank = 0 #Integer
 
+class TStatsUnits:
+    # Notes (Fstats.pas):
+    # Conversion factors for flow to million liters per day
+    QtoMLD = (2.446589, 0.005451, 3.785414, 86.4, 0.0864, 1.0)
+    # Conversion from flow time units to days
+    QtimeToDays = (86400.0, 1440.0, 1.0, 86400.0, 86400.0, 1.0)
+    RainVolumeText = ('(in)', '(in)', '(in)', '(mm)', '(mm)', '(mm)')
+    FlowVolumeText = ('(ft3)' , '(gal)', '(Mgal)', '(m3)', '(liters)', '(Mliters)')
+    # ('(ft3/s)', '(gal/min)', '(Mgal/d)', '(m3/s)', '(liters/s)', '(Mliters/d)');
+    DeltaTimeUnits = ('(hours)', '(days)', '(months)', '(years)')
+    StatsTypeText = ('Mean', 'Peak', 'Total', 'Duration', 'Inter-Event Time',
+                    'Mean Concen.', 'Peak Concen.', 'Mean Loading', 'Peak Loading',
+                    'Total Load')
+    FrequencyNoteText = ('  *Fraction of all reporting periods belonging to an event.',
+                         '  *Fraction of all days containing an event.',
+                         '  *Fraction of all months containing an event.',
+                         '  *Fraction of all years containing an event.')
+    pass
+
 # Record which contains information about what kind of report to generate
 class TStatsSelection:
     def __init__(self):
@@ -116,6 +137,7 @@ class TStatsSelection:
         self.IsRainParam    = False            # True if variable is rainfall
         self.Tser           = None             # time series for the chosen output
         self.TserFlow       = None             # flow time series for the chosen quality output
+        self.StatsUnitsLabel = ""              # statistic unit
 
 # Record which contains statistical analysis results
 class TStatsResults:
@@ -155,20 +177,10 @@ class StatisticUtility(object):
         self.TXT_FINDING_EVENTS = 'Finding events... '
         self.TXT_RANKING_EVENTS = 'Ranking events... '
         self.output = output #SMO.SwmmOutputObject(output)
+        self.proj = SMP.SwmmProject() #SMP.SwmmProject, none by default
 
         # The following arrays of flow conversion factors are for
         # CFS, GPM, MGD, CMS, LPS, and MLD, respectively.
-
-        # Conversion factors for flow to million liters per day
-        self.QtoMLD = (2.446589, 0.005451, 3.785414, 86.4, 0.0864, 1.0)
-
-        # Conversion from flow time units to days
-        self.QtimeToDays = (86400.0, 1440.0, 1.0, 86400.0, 86400.0, 1.0)
-        #Notes (Fstats.pas):
-        #RainVolumeText: array[0..5] of String = ('(in)', '(in)', '(in)', '(mm)', '(mm)', '(mm)');
-        #FlowVolumeText: array[0..5] of String =
-        #('(ft3)'  , '(gal)'    , '(Mgal)'  , '(m3)'  , '(liters)'  , '(Mliters)');
-        #('(ft3/s)', '(gal/min)', '(Mgal/d)', '(m3/s)', '(liters/s)', '(Mliters/d)');
 
         self.Stats = None #TStatsSelection()  # Local copy of stat. event defn.
 
@@ -185,7 +197,6 @@ class StatisticUtility(object):
         self.deltaDateTime = 0.0 # trying to be the replacement of Uglobals.DeltaDateTime
         if self.output is not None:
             self.deltaDateTime = self.output.reportStepDays()
-
         pass
 
     def GetStats(self, StatsSel, EventList, Results):
@@ -206,7 +217,7 @@ class StatisticUtility(object):
         self.CategorizeStats(self.Stats)
         self.FindEvents(EventList, self.output, self.Stats)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
-        self.RankEvents(EventList, self.output, self.Tser)
+        self.RankEvents(EventList)
         self.FindStats(EventList, Results)
         #StatsSel = self.Stats #don't think this is necessary
         #return Results
@@ -315,7 +326,7 @@ class StatisticUtility(object):
 
                 # Update the event volume (Vsum)
                 #CF = self.QtimeToDays[Uglobals.Qunits]
-                CF = self.QtimeToDays[self.output.flowUnits]
+                CF = TStatsUnits.QtimeToDays[self.output.flowUnits]
                 if aStats.IsRainParam:
                     CF = 24
                 #self.Vsum += Q * Uglobals.DeltaDateTime * CF
@@ -324,7 +335,7 @@ class StatisticUtility(object):
                 # If computing mass load statistics, convert concentration to load
                 if aStats.IsQualParam and aStats.StatsType >= EStatsType.stMeanLoad.value:
                     #Y = Y * Q * QtoMLD[Uglobals.Qunits]
-                    Y *= Q * self.QtoMLD[self.output.flowUnits]
+                    Y *= Q * TStatsUnits.QtoMLD[self.output.flowUnits]
 
                 # Start a new wet period
                 if self.Nwet == 0:
@@ -691,7 +702,7 @@ class StatisticUtility(object):
             Doesn't return anything, but instead set the 'aStats' IsQualParam, IsRainParam parameter
             also retrieve its corresponding flow
         '''
-        #aStats = TStatsSelection()
+        #aStats = TStatsSelection() #debug only
         if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
             if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
                 aStats.IsQualParam = True
@@ -729,6 +740,82 @@ class StatisticUtility(object):
 
             aStats.TserFlow = aStats.Tser
 
+        # Set unit
+        if aStats.StatsType == EStatsType.stTotal.value:
+            if aStats.IsRainParam:
+                aStats.StatsUnitsLabel = TStatsUnits.RainVolumeText[self.output.flowUnits]
+            else:
+                aStats.StatsUnitsLabel = TStatsUnits.FlowVolumeText[self.output.flowUnits]
+        elif aStats.StatsType == EStatsType.stDuration.value:
+            aStats.StatsUnitsLabel = "(hours)"
+        elif aStats.StatsType == EStatsType.stDelta.value:
+            aStats.StatsUnitsLabel = TStatsUnits.DeltaTimeUnits[aStats.TimePeriod]
+        elif aStats.StatsType == EStatsType.stMeanLoad.value or aStats.StatsType == EStatsType.stPeakLoad.value:
+            pass
+        elif aStats.StatsType == EStatsType.stTotalLoad.value:
+            pass
+
+    def GetObjVarNames(self, aStats, aObjName, aVarName, aVarUnits):
+        """
+        Uglobals::GetObjVarNames
+        Args:
+            aStats:
+            Need an Object Type (aStats.ObjectType)
+            Need a statistic variable index (aStats.StatsType)
+        Returns:
+            set aObjName, aVarName, aVarUnits
+        """
+        aStats = TStatsSelection()
+        if self.proj is None or aStats is None:
+            exit
+
+        aObjName = ""
+        aVarName = ""
+        aVarUnits = ""
+        if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
+            aObjName = "Subcatch"
+            if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
+                K = aStats.Variable - len(SMO.SwmmOutputSubcatchment.attributes)
+                aVarName = self.proj.pollutants[K]
+                #lPol = SMQ.Pollutant()
+                aVarUnits = self.proj.pollutants[K].units.name #lPol.units.name
+            else:
+                # for non-pollutant variable, it should be known from the output???
+                #aVarName = SubcatchVariable[VarIndex].Name
+                #aVarUnits = SubcatchUnits[VarIndex].Units
+                pass
+            pass
+        elif aStats.ObjectType == EObjectType.NODES.value:
+            aObjName = "Node"
+            if aStats.Variable >= len(SMO.SwmmOutputNode.attributes) - 1:
+                K = aStats.Variable - len(SMO.SwmmOutputNode.attributes)
+                aVarName = self.proj.pollutants[K]
+                #lPol = SMQ.Pollutant()
+                aVarUnits = self.proj.pollutants[K].units.name #lPol.units.name
+            else:
+                # for non-pollutant variable, it should be known from the output???
+                #aVarName = NodeVariable[VarIndex].Name
+                #aVarUnits = NodeUnits[VarIndex].Units
+                pass
+            pass
+        elif aStats.ObjectType == EObjectType.LINKS.value:
+            aObjName = "Link"
+            if aStats.Variable >= len(SMO.SwmmOutputLink.attributes) - 1:
+                K = aStats.Variable - len(SMO.SwmmOutputLink.attributes)
+                aVarName = self.proj.pollutants[K]
+                #lPol = SMQ.Pollutant()
+                aVarUnits = self.proj.pollutants[K].units.name #lPol.units.name
+            else:
+                #for non-pollutant variable, it should be known from the output???
+                #aVarName = LinkVariable[VarIndex].Name
+                #aVarUnits = LinkUnits[VarIndex].Units
+                pass
+            pass
+        elif aStats.ObjectType == EObjectType.SYS.value:
+            aObjName = "System"
+            aVarName = aStats.VariableText
+            aVarUnits = self.output.attributes[aStats.Variable].units
+            pass
 
     def close(self):
         pass

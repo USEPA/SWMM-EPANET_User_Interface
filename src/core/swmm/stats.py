@@ -112,6 +112,8 @@ class TStatsUnits:
                          '  *Fraction of all days containing an event.',
                          '  *Fraction of all months containing an event.',
                          '  *Fraction of all years containing an event.')
+    TimePeriodText = ('Event', 'Daily', 'Monthly', 'Annual')
+
     pass
 
 # Record which contains information about what kind of report to generate
@@ -128,7 +130,7 @@ class TStatsSelection:
         self.PlotParameter  = 0.0              # e.g., = 0 for Weibull probability
         self.TimePeriod     = ETimePeriod.tpVariable # Event-depent, Daily, Monthly, Annual
         self.TimePeriodText = "UNKNOWN"        # Event-depent, Daily, Monthly, Annual
-        self.PlotPosition   = EPlotPosition.ppFrequency.value # Frequency, Yearly, Monthly Ret. Per.
+        self.PlotPosition   = EPlotPosition.ppFrequency # Frequency, Yearly, Monthly Ret. Per.
         self.StatsType      = EStatsType.stMean.value    # Index of Mean, Peak, Total, Duration, Delta
         self.StatsTypeText  = "UNKNOWN"        # Mean, Peak, Total, Duration, Delta
         self.VarIndex       = 0                # Index of variable analyzed in output file
@@ -246,10 +248,10 @@ class StatisticUtility(object):
         #Years  = Floor((D2 - D1)/365 + 0.5)
         # Assign value to PlotPosition
         if abs(Results.Timespan.years) < 3:
-            #Stats.PlotPosition = ppMonths
+            self.Stats.PlotPosition = EPlotPosition.ppMonths
             Results.Duration = Results.Timespan.months
         else:
-            #Stats.PlotPosition = ppYears
+            self.Stats.PlotPosition = EPlotPosition.ppYears
             Results.Duration = Results.Timespan.years
 
     def FindEvents(self, EventList, output, aStats):  # TList

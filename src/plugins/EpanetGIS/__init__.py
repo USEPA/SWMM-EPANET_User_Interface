@@ -7,19 +7,18 @@ try:
     from core.epanet.hydraulics.link import Pipe
     import os
 
-    plugin_name = "EpanetGIS"  # "Save EPANET to GIS"
+    plugin_name = "EpanetGIS"
     plugin_create_menu = True
-    # __all__ = {"Save Pipes": "pipes", "Save Pumps": "pumps"}
-    __all__ = {"Save Pipes to GIS": 1, "Load Pipes from GIS": 2}
-
+    __all__ = {"Save Pipes to GIS": 1,
+               "Load Pipes from GIS": 2}
 
     def run(session=None, choice=None):
         print("run " + str(choice))
-        try:
-            if choice == 1:
-                if not session or not session.project:
-                    result = "Project is not open"
-                else:
+        if not session or not session.project:
+            result = "Project is not open"
+        else:
+            try:
+                if choice == 1:
                     file_name = os.path.join(os.path.dirname(session.project.file_name), "pipes.json")
                     print("save pipes to " + file_name)
                     links = session.project.pipes.value
@@ -28,10 +27,7 @@ try:
                     save_links(session.project, links, file_name, attributes)
                     result = "Saved " + file_name
 
-            elif choice == 2:
-                if not session or not session.project:
-                    result = "Project is not open"
-                else:
+                elif choice == 2:
                     gui_settings = QtCore.QSettings("EPANET", "GUI")
                     directory = gui_settings.value("ImportGIS", "")
                     file_name = QtGui.QFileDialog.getOpenFileName(session, "Select GIS file to import", directory,
@@ -45,12 +41,7 @@ try:
 
                         section = session.project.pipes
 
-                        if not type(session.project.coordinates.value) is list:
-                            session.project.coordinates.value = []
-
-                        if not type(section.value) is list:
-                            section.value = []
-                        elif len(section.value) > 0:
+                        if len(section.value) > 0:
                             msg = QMessageBox()
                             msg.setIcon(QMessageBox.Question)
                             msg.setText("Discard " + len(section.value) + " pipes in model before import?")
@@ -73,11 +64,11 @@ try:
                         session.map_widget.addLinks(session.project.coordinates.value,
                                                     section.value, "Pipes", "name", QtGui.QColor('gray'))
                         session.map_widget.zoomfull()
-            else:
-                result = "Selected operation not yet implemented."
-            QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
-        except Exception as ex:
-            print str(ex)
+                else:
+                    result = "Selected operation not yet implemented."
+                QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
+            except Exception as ex:
+                print str(ex)
 
     def load_links(project, links, file_name, attributes, model_type):
         count = 0

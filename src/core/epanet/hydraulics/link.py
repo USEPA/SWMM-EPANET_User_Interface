@@ -32,7 +32,6 @@ class FixedStatus(Enum):
 class Link(Section):
     """A link in an EPANET model"""
 
-
     def __init__(self):
         Section.__init__(self)
 
@@ -61,13 +60,13 @@ class Link(Section):
         self.initial_status = ''
         """initial status of a pipe, pump, or valve; can be a speed setting for a pump"""
 
+
 class Pipe(Link):
     """A Pipe link in an EPANET model"""
 
-
-#    attribute,         input_name, label,         default, english, metric, hint
+    #    attribute,           input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",                        '', "Pipe ID",            "",    '', '', "User-assigned name of the pipe"),
+        ("name",                      '', "Pipe ID",            "",    '', '', "User-assigned name of the pipe"),
         ("inlet_node",                '', "Start Node",         "",    '', '', "Node on the inlet end of the pipe"),
         ("outlet_node",               '', "End Node",           "",    '', '', "Node on the outlet end of the pipe"),
         ("description",               '', "Description",        "",    '', '', "Optional description of the pipe"),
@@ -107,10 +106,9 @@ class Pipe(Link):
 class Pump(Link):
     """A Pump link in an EPANET model"""
 
-
-#    attribute,         input_name, label,         default, english, metric, hint
+    #    attribute,  input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",               '', "Pump ID",            "",    '', '', "User-assigned name of the pump"),
+        ("name",             '', "Pump ID",            "",    '', '', "User-assigned name of the pump"),
         ("inlet_node",       '', "Start Node",         "",    '', '', "Node on the inlet end of the pump"),
         ("outlet_node",      '', "End Node",           "",    '', '', "Node on the outlet end of the pump"),
         ("description",      '', "Description",        "",    '', '', "Optional description of the pump"),
@@ -145,13 +143,13 @@ class Pump(Link):
 
         # TODO: access pump-specific energy parameters in options/energy
 
+
 class Valve(Link):
     """A valve link in an EPANET model"""
 
-
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",                     '', "Valve ID",           "",    '', '', "User-assigned name of the valve"),
+        ("name",                   '', "Valve ID",           "",    '', '', "User-assigned name of the valve"),
         ("inlet_node",             '', "Start Node",         "",    '', '', "Node on the inlet end of the valve"),
         ("outlet_node",            '', "End Node",           "",    '', '', "Node on the outlet end of the valve"),
         ("description",            '', "Description",        "",    '', '', "Optional description of the valve"),
@@ -186,13 +184,13 @@ class Valve(Link):
         # TODO: access this: self.fixed_status = FixedStatus.OPEN
         """valve is open or closed"""
 
+
 class Status(Section):
     """
         Initial status of a link at the start of the simulation.
         Pipes can have a status of OPEN, CLOSED, or CV.
         Pumps can have a status of OPEN, CLOSED, or a speed.
     """
-
 
     def __init__(self):
         Section.__init__(self)

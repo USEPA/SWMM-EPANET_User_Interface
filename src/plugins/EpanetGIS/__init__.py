@@ -3,6 +3,7 @@ try:
     from qgis.gui import *
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import QMessageBox
+    from core.coordinate import Coordinate
     from core.epanet.hydraulics.link import Pipe
     import os
 
@@ -44,12 +45,15 @@ try:
 
                         section = session.project.pipes
 
+                        if not type(session.project.coordinates.value) is list:
+                            session.project.coordinates.value = []
+
                         if not type(section.value) is list:
                             section.value = []
                         elif len(section.value) > 0:
                             msg = QMessageBox()
                             msg.setIcon(QMessageBox.Question)
-                            msg.setText("Discard " + len(items) + " pipes in model before import?")
+                            msg.setText("Discard " + len(section.value) + " pipes in model before import?")
                             msg.setWindowTitle("Importing Pipes")
                             msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
                             retval = msg.exec_()
@@ -65,25 +69,45 @@ try:
                                       "loss_coefficient": "loss_coefficient"}
                         """ Dictionary of attribute names in vector layer: attribute names of EPANET object. """
 
-                        result = load_links(section.value, file_name, attributes, Pipe)
+                        result = load_links(session.project, section.value, file_name, attributes, Pipe)
+                        session.map_widget.addLinks(session.project.coordinates.value,
+                                                    section.value, "Pipes", "name", QtGui.QColor('gray'))
+                        session.map_widget.zoomfull()
             else:
                 result = "Selected operation not yet implemented."
             QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
         except Exception as ex:
             print str(ex)
 
-    def load_links(links, file_name, attributes, model_type):
+    def load_links(project, links, file_name, attributes, model_type):
         count = 0
         try:
             layer = QgsVectorLayer(file_name, "import", "ogr")
             if layer:
                 for feature in layer.getFeatures():
-                    model_item = model_type()
-                    for layer_attribute, model_attribute in attributes.items():
-                        attr_value = feature[layer_attribute]
-                        setattr(model_item, model_attribute, attr_value)
-                    links.append(model_item)
-                    count += 1
+                    geom = feature.geometry()
+                    if geom.type() == QGis.Line:
+                        line = geom.asPolyline()
+                        model_item = model_type()
+                        for layer_attribute, model_attribute in attributes.items():
+                            attr_value = feature[layer_attribute]
+                            setattr(model_item, model_attribute, attr_value)
+                            index = -1
+                            if model_attribute == "inlet_node":
+                                index = 0
+                            elif model_attribute == "outlet_node":
+                                index = len(line) - 1
+                            if index >= 0:
+                                for existing_coord in project.coordinates.value:
+                                    if existing_coord.name == attr_value:
+                                        project.coordinates.value.remove(existing_coord)
+                                new_coord = Coordinate()
+                                new_coord.name = attr_value
+                                new_coord.x = line[index].x()
+                                new_coord.y = line[index].y()
+                                project.coordinates.value.append(new_coord)
+                        links.append(model_item)
+                        count += 1
         except Exception as ex:
             print(str(ex))
         return "Imported " + str(count) + " features"

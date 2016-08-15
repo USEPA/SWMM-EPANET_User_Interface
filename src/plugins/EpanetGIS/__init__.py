@@ -43,22 +43,31 @@ try:
 
                         if len(section.value) > 0:
                             msg = QMessageBox()
-                            msg.setIcon(QMessageBox.Question)
-                            msg.setText("Discard " + len(section.value) + " pipes in model before import?")
+                            msg.setText("Discard " + str(len(section.value)) + " pipes already in model before import?")
                             msg.setWindowTitle("Importing Pipes")
+                            msg.setIcon(QMessageBox.Question)
                             msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
                             retval = msg.exec_()
+                            if retval == QMessageBox.Yes:
+                                section.value = []
+                            elif retval == QMessageBox.No:
+                                pass
+                            elif retval == QMessageBox.Cancel:
+                                return
                             print("value of pressed message box button:", retval)
 
-                        attributes = {"name": "name",
-                                      "description": "description",
-                                      "inlet_node": "inlet_node",
-                                      "outlet_node": "outlet_node",
-                                      "length": "length",
-                                      "diameter": "diameter",
-                                      "roughness": "roughness",
+                        attributes = {"name":             "name",
+                                      "description":      "description",
+                                      "inlet_node":       "inlet_node",
+                                      "outlet_node":      "outlet_node",
+                                      "length":           "length",
+                                      "diameter":         "diameter",
+                                      "roughness":        "roughness",
                                       "loss_coefficient": "loss_coefficient"}
-                        """ Dictionary of attribute names in vector layer: attribute names of EPANET object. """
+                        """ Dictionary of attribute names in vector layer: attribute names of EPANET object.
+                            Edit strings in the left column as needed to match layer being imported.
+                            If a field is not available in the GIS layer, leave an empty string in the left column.
+                         """
 
                         result = load_links(session.project, section.value, file_name, attributes, Pipe)
                         session.map_widget.addLinks(session.project.coordinates.value,

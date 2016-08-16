@@ -144,6 +144,7 @@ class TStatsSelection:
 # Record which contains statistical analysis results
 class TStatsResults:
     def __init__(self):
+        self.EventList      = []               # event listing of TStatsEvent
         self.Duration       = 0                # Period of analysis (yrs or months)
         self.Timespan       = None             # relativedelta in datetime
         self.Mean           = 0.0              # Mean value
@@ -201,7 +202,7 @@ class StatisticUtility(object):
             self.deltaDateTime = self.output.reportStepDays()
         pass
 
-    def GetStats(self, StatsSel, EventList, Results):
+    def GetStats(self, StatsSel, Results):
         #Results = TStatsResults()
         #-----------------------------------------------------------------------------
         #  Analyzes simulation results to find the frequency of events as
@@ -215,16 +216,16 @@ class StatisticUtility(object):
                                                 self.Stats.ObjectID, \
                                                 self.Stats.VariableText)
 
-        self.FindDuration(EventList, Results)
+        self.FindDuration(Results)
         self.CategorizeStats(self.Stats)
-        self.FindEvents(EventList, self.output, self.Stats)
+        self.FindEvents(Results, self.output, self.Stats)
         # MainForm.ShowProgressBar(TXT_RANKING_EVENTS)
-        self.RankEvents(EventList)
-        self.FindStats(EventList, Results)
+        self.RankEvents(Results)
+        self.FindStats(Results)
         #StatsSel = self.Stats #don't think this is necessary
         #return Results
 
-    def FindDuration(self, EventList, Results): # : TStatsResults)
+    def FindDuration(self, Results): # : TStatsResults)
         #-----------------------------------------------------------------------------
         #  Finds the duration of the total simulation period.
         #-----------------------------------------------------------------------------
@@ -254,7 +255,7 @@ class StatisticUtility(object):
             self.Stats.PlotPosition = EPlotPosition.ppYears
             Results.Duration = Results.Timespan.years
 
-    def FindEvents(self, EventList, output, aStats):  # TList
+    def FindEvents(self, aResults, output, aStats):  # TList
         # -----------------------------------------------------------------------------
         #  Identifies all events that occurred over the simulation period.
         # -----------------------------------------------------------------------------
@@ -300,7 +301,7 @@ class StatisticUtility(object):
 
             # If in a wet period, see if a new event has begun
             if self.Nwet > 0:
-                self.AddNewEvent(EventList, Date1, aStats)
+                self.AddNewEvent(aResults.EventList, Date1, aStats)
 
             # Get current values of the event variable (Y) and flow (Q)
             Y = aStats.Tser[T] #ToDo: handle more than one time series in this dataframe
@@ -362,7 +363,7 @@ class StatisticUtility(object):
         lrdelta =  (self.output.num_periods - 1) * self.deltaDateTime
         lnewdate =  self.output.StartDate + relativedelta(days=lrdelta)
 
-        self.AddNewEvent(EventList, lnewdate, aStats)
+        self.AddNewEvent(aResults.EventList, lnewdate, aStats)
 
         # Make sure we have at least one event period
         if self.TotalPeriods == 0:
@@ -406,7 +407,7 @@ class StatisticUtility(object):
         self.Vsum   = 0
         self.Nwet   = 0
 
-    def AddNewEvent(self, EventList, NewDate, aStats): #: TList const, : TDateTime
+    def AddNewEvent(self, aEventList, NewDate, aStats): #: TList const, : TDateTime
         #-----------------------------------------------------------------------------
         #  Sees if a new event has occurred and adds it to the event list.
         #-----------------------------------------------------------------------------
@@ -485,7 +486,7 @@ class StatisticUtility(object):
             elif aStats.StatsType == EStatsType.stDuration.value:
                 AnEvent.Value = AnEvent.Duration
             elif aStats.StatsType == EStatsType.stDelta.value:
-                AnEvent.Value = self.GetEventDelta(EventList, aStats)  # inter-event hours
+                AnEvent.Value = self.GetEventDelta(aEventList, aStats)  # inter-event hours
             elif aStats.StatsType == EStatsType.stMeanConcen.value or \
                  aStats.StatsType == EStatsType.stMeanLoad.value:
                 AnEvent.Value = self.Ysum/self.Nwet
@@ -498,10 +499,10 @@ class StatisticUtility(object):
             else:
                 AnEvent.Value = 0.0
             # Add the new event to the event list and initiialize the next event
-            EventList.append(AnEvent)
+            aEventList.append(AnEvent)
             self.InitConditions(NewDate)
 
-    def GetEventDelta(self, EventList, aStats): # Single
+    def GetEventDelta(self, aEventList, aStats): # Single
         #-----------------------------------------------------------------------------
         #  Computes the time between events for the most recent event and its
         #  predeccessor.
@@ -512,11 +513,11 @@ class StatisticUtility(object):
         #  Year1, Year2, Day, Month1, Month2 : Word
 
         # Find the starting and ending dates of the previous event
-        if len(EventList) == 0:
+        if len(aEventList) == 0:
             LastStartDate = self.output.StartDate
             LastDate = LastStartDate
         else:
-            LastEvent = EventList[len(EventList)-1]
+            LastEvent = aEventList[len(aEventList)-1]
             LastStartDate = LastEvent.StartDate
             #LastDate = LastStartDate + LastEvent.Duration/24.0
             LastDate = LastStartDate + relativedelta(hours=LastEvent.Duration)
@@ -579,7 +580,7 @@ class StatisticUtility(object):
 
         return Result
 
-    def RankEvents(self, EventList):
+    def RankEvents(self, aResults):
         #def RankEvents(EventList: TList)
         # -----------------------------------------------------------------------------
         #  Rank the events in the event list with respect to the event variable.
@@ -591,19 +592,19 @@ class StatisticUtility(object):
         #  EventList is a list of objects of type: TStatsEvent
         # Call the TList Sort method to sort the objects in the event list,
         # using the Compare function as the comparison function.
-        EventList.sort(self.Compare)
+        aResults.EventList.sort(self.Compare)
         #EventList.sort(key=lambda x: x.Value)
         #import operator as op
         #EventList.sort(key=op.attrgetter('Value'))
 
         # Starting from the  of the sorted event list, assign ranks to
         #  each event (events with the same value have the same rank)
-        N = len(EventList)
+        N = len(aResults.EventList)
         if N > 0:
-            E1 = EventList[N - 1]
+            E1 = aResults.EventList[N - 1]
             E1.Rank = N
             for I in xrange(N - 2, -1, -1):
-                E2 = EventList[I]
+                E2 = aResults.EventList[I]
                 if E1.Value == E2.Value:
                     E2.Rank = E1.Rank
                 else:
@@ -611,7 +612,7 @@ class StatisticUtility(object):
                 #ToDo: not sure what this means
                 E1 = E2 #or perhaps: E1 = EventList[I]
 
-    def FindStats(self, EventList, Results):
+    def FindStats(self, aResults):
         #def FindStats(EventList: TList var Results: TStatsResults):
         #-----------------------------------------------------------------------------
         #  Finds summary statistics of the identified events.
@@ -639,31 +640,31 @@ class StatisticUtility(object):
         E = None #TStatsEvent
 
        # Exit if too few events
-        N = len(EventList)
+        N = len(aResults.EventList)
         if N < 1: return None
 
         # Initialize results
         #Results = TStatsResults()
-        Results.EventFreq = 0.0
-        Results.Xmin = 0.0
-        Results.Xmax = 0.0
-        Results.StdDev = 0.0
-        Results.Mean = 0.0
-        Results.Skew = 0.0
+        aResults.EventFreq = 0.0
+        aResults.Xmin = 0.0
+        aResults.Xmax = 0.0
+        aResults.StdDev = 0.0
+        aResults.Mean = 0.0
+        aResults.Skew = 0.0
 
         # Find max. and min. event values
         # (obviously this is AFTER the events are sorted)
-        E = EventList[0]
-        Results.Xmax = E.Value
-        E = EventList[N - 1]
-        Results.Xmin = E.Value
+        E = aResults.EventList[0]
+        aResults.Xmax = E.Value
+        E = aResults.EventList[N - 1]
+        aResults.Xmin = E.Value
 
         # Find event frequency
-        Results.EventFreq = self.EventPeriods * 1.0 / (self.TotalPeriods * 1.0)
+        aResults.EventFreq = self.EventPeriods * 1.0 / (self.TotalPeriods * 1.0)
 
         # Find sums of 1st three moments
         for J in xrange(0, N):
-            E = EventList[J]
+            E = aResults.EventList[J]
             X = E.Value
             A[1] += X ** 1
             A[2] += X ** 2
@@ -686,9 +687,9 @@ class StatisticUtility(object):
         T2 = T
         if N > 1:
             T2 = T - 1
-        Results.StdDev = (T1/T2) ** 0.5 #Sqrt(T1 / T2)
-        Results.Mean = A[1] / T
-        Results.Skew = G
+        aResults.StdDev = (T1/T2) ** 0.5 #Sqrt(T1 / T2)
+        aResults.Mean = A[1] / T
+        aResults.Skew = G
         #return Results
 
     def CategorizeStats(self, aStats):

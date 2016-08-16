@@ -70,7 +70,6 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         end_date = '01/02/1998'
 
         # Ustats.GetStats(Stats, EventList, Results)
-        self.EventList = []
         results_n = '2'
         results_frequency = '0.194'
         results_minimum = '0.300'
@@ -100,7 +99,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
         lUtil = UStats.StatisticUtility(self.output)
         self.statsResult = UStats.TStatsResults()
-        lUtil.GetStats(self.stats, self.EventList, self.statsResult)
+        lUtil.GetStats(self.stats, self.statsResult)
         self.RefreshResults()
 
     def RefreshResults(self):
@@ -144,10 +143,10 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         line9 = StatsText[9] % (str(self.output.StartDate), str(self.output.EndDate))
         # List the number & frequency of events
         line10 = StatsText[10]
-        line11 = StatsText[11] % (len(self.EventList))
+        line11 = StatsText[11] % (len(self.statsResult.EventList))
         line12 = StatsText[12] % (self.statsResult.EventFreq)
         # Display summary statistics
-        if len(self.EventList) > 0:
+        if len(self.statsResult.EventList) > 0:
             line13 = StatsText[13] % (self.statsResult.Xmin)
             line14 = StatsText[14] % (self.statsResult.Xmax)
             line15 = StatsText[15] % (self.statsResult.Mean)
@@ -209,10 +208,10 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         #Set up number of rows/cols in the table
         num_cols = 6
         self.tableWidget.setColumnCount(num_cols)
-        if len(self.EventList) == 0:
+        if len(self.statsResult.EventList) == 0:
             num_rows = 2
         else:
-            num_rows = len(self.EventList) + 1
+            num_rows = len(self.statsResult.EventList) + 1
         self.tableWidget.setRowCount(num_rows)
         self.tableWidget.verticalHeader().setVisible(False)
         #column_headers = ""
@@ -225,7 +224,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
         #Set up data grid
         row = 0
-        for e in self.EventList:
+        for e in self.statsResult.EventList:
             #e = UStats.TStatsEvent() #debug only
             datestr = datetime.datetime.strftime(e.StartDate, '%m/%d/%Y')
             self.tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(str(e.Rank)))

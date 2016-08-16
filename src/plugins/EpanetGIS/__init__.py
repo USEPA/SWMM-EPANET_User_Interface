@@ -9,8 +9,8 @@ try:
 
     plugin_name = "EpanetGIS"
     plugin_create_menu = True
-    __all__ = {"Save Pipes to GIS": 1,
-               "Load Pipes from GIS": 2}
+    __all__ = {"Export to GIS": 1,
+               "Import from GIS": 2}
 
     def run(session=None, choice=None):
         print("run " + str(choice))
@@ -20,22 +20,31 @@ try:
             try:
                 if choice == 1:
                     gui_settings = QtCore.QSettings("EPANET", "GUI")
-                    directory = gui_settings.value("ImportGIS", os.path.dirname(session.project.file_name))
-                    file_name = QtGui.QFileDialog.getSaveFileName(session, "Save as GIS file", directory,
+                    directory = gui_settings.value("GISPath", os.path.dirname(session.project.file_name))
+                    file_name = QtGui.QFileDialog.getSaveFileName(session, "Export to GIS", directory,
                                                                   "GeoJSON (*.json);;Shapefile (*.shp);;All files (*.*)")
                     if file_name:
                         path_only, file_only = os.path.split(file_name)
                         if path_only != directory:
-                            gui_settings.setValue("ImportGIS", path_only)
+                            gui_settings.setValue("GISPath", path_only)
                             gui_settings.sync()
                             del gui_settings
 
                     # file_name = os.path.join(os.path.dirname(session.project.file_name), "pipes.json")
-                    print("save pipes to " + file_name)
+                    print("export to " + file_name)
+
                     links = session.project.pipes.value
-                    attributes = ["name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
-                                  "loss_coefficient"]
+                    attributes = {"type": "type",
+                                  "name": "name",
+                                  "description": "description",
+                                  "inlet_node": "inlet_node",
+                                  "outlet_node": "outlet_node",
+                                  "length": "length",
+                                  "diameter": "diameter",
+                                  "roughness": "roughness",
+                                  "loss_coefficient": "loss_coefficient"}
                     save_links(session.project, links, file_name, attributes)
+
                     result = "Saved " + file_name
 
                 elif choice == 2:
@@ -129,7 +138,10 @@ try:
         provider = layer.dataProvider()
 
         # add fields
-        provider.addAttributes([QgsField(link_attr, QtCore.QVariant.String) for link_attr in attributes])
+        fields = []
+        for layer_attribute, model_attribute in attributes.items():
+            fields.append(QgsField(model_attribute, QtCore.QVariant.String))
+        provider.addAttributes(fields)
 
         features = []
         # Receivers = as in the above example 'Receivers' is a list of results
@@ -148,7 +160,13 @@ try:
                         QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
                         QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
 
-                    feature.setAttributes([getattr(link, link_attr, '') for link_attr in attributes])
+                    values = []
+                    for layer_attribute, model_attribute in attributes.items():
+                        if model_attribute == "type":
+                            values.append(type(link).__name__)
+                        else:
+                            values.append(getattr(link, model_attribute, ''))
+                    feature.setAttributes(values)
                     features.append(feature)
                     break  # stop looking for more coordinates
 

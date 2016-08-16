@@ -53,6 +53,6 @@ class ProjectReader(InputFileReader):
         # self.read_times = TimesOptionsReader()
         self.read_report = ReportOptionsReader()
         self.read_coordinates = SectionReaderAsList("[COORDINATES]", CoordinateReader)
-        self.read_coordinates = SectionReaderAsList("[VERTICES]", CoordinateReader)
+        self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)
         self.read_labels = SectionReaderAsList("[LABELS]", LabelReader)
         self.read_backdrop = BackdropOptionsReader()

@@ -24,19 +24,15 @@ def import_from_gis(session, file_name):
             return
 
     section = session.project.pipes
-    attributes = {"name": "name",
-                  "description": "description",
-                  "inlet_node": "inlet_node",
-                  "outlet_node": "outlet_node",
-                  "length": "length",
-                  "diameter": "diameter",
-                  "roughness": "roughness",
-                  "loss_coefficient": "loss_coefficient"}
-    """ Dictionary of attribute names in vector layer: attribute names of EPANET object.
-        Edit strings in the left column as needed to match layer being imported.
-        If a field is not available in the GIS layer, leave an empty string in the left column.
+    model_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+    gis_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+    """ Mapping of attribute names in vector layer to attribute names of model objects.
+        Edit gis_attributes as needed to match layer being imported.
+        If a field is not available in the GIS layer, remove the field from both lists.
     """
-    result = import_links(session.project, section.value, file_name, attributes, Pipe)
+    result = import_links(session.project, section.value, file_name, model_attributes, gis_attributes, Pipe)
     session.map_widget.addLinks(session.project.coordinates.value,
                                 section.value, "Pipes", "name", QtGui.QColor('gray'))
 
@@ -44,7 +40,7 @@ def import_from_gis(session, file_name):
     return result
 
 
-def import_links(project, links, file_name, attributes, model_type):
+def import_links(project, links, file_name, model_attributes, gis_attributes, model_type):
     count = 0
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
@@ -55,9 +51,11 @@ def import_links(project, links, file_name, attributes, model_type):
                 if geom.type() == QGis.Line:
                     line = geom.asPolyline()
                     model_item = model_type()
-                    for layer_attribute, model_attribute in attributes.items():
-                        attr_value = feature[layer_attribute]
+                    for model_attribute, gis_attribute in zip(model_attributes, gis_attributes):
+                        attr_value = feature[gis_attribute]
                         setattr(model_item, model_attribute, attr_value)
+
+                        # If this attribute is the inlet or outlet node, make sure project has its coordinates
                         index = -1
                         if model_attribute == "inlet_node":
                             index = 0

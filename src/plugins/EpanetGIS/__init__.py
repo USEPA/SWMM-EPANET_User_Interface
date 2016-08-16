@@ -19,7 +19,18 @@ try:
         else:
             try:
                 if choice == 1:
-                    file_name = os.path.join(os.path.dirname(session.project.file_name), "pipes.json")
+                    gui_settings = QtCore.QSettings("EPANET", "GUI")
+                    directory = gui_settings.value("ImportGIS", os.path.dirname(session.project.file_name))
+                    file_name = QtGui.QFileDialog.getSaveFileName(session, "Save as GIS file", directory,
+                                                                  "GeoJSON (*.json);;Shapefile (*.shp);;All files (*.*)")
+                    if file_name:
+                        path_only, file_only = os.path.split(file_name)
+                        if path_only != directory:
+                            gui_settings.setValue("ImportGIS", path_only)
+                            gui_settings.sync()
+                            del gui_settings
+
+                    # file_name = os.path.join(os.path.dirname(session.project.file_name), "pipes.json")
                     print("save pipes to " + file_name)
                     links = session.project.pipes.value
                     attributes = ["name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
@@ -31,7 +42,7 @@ try:
                     gui_settings = QtCore.QSettings("EPANET", "GUI")
                     directory = gui_settings.value("ImportGIS", "")
                     file_name = QtGui.QFileDialog.getOpenFileName(session, "Select GIS file to import", directory,
-                                                                  "All files (*.*)")
+                                                                  "GeoJSON (*.json);;Shapefile (*.shp);;All files (*.*)")
                     if file_name:
                         path_only, file_only = os.path.split(file_name)
                         if path_only != directory:
@@ -148,7 +159,7 @@ try:
         layer.updateExtents()
 
         if file_name.lower().endswith("shp"):
-            driver_name = "GeoJson"
+            driver_name = "ESRI Shapefile"
         else:
             driver_name = "GeoJson"
         QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)

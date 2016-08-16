@@ -94,6 +94,9 @@ class TStatsEvent:
         self.Value = 0.0 #Single
         self.Duration = 0.0 # duration in milliseconds or seconds, Single
         self.Rank = 0 #Integer
+        self.ExceedancePCT = 0.0 #exceedance frequence in a listing of events in one timeseries, in Pct
+        self.ReturnPeriod = 0.0 #return period based on TStatsSelection's PlotParameter;
+        #ToDo: find out PlotParameter's setting process as it is simply zero in the ori program
 
 class TStatsUnits:
     # Notes (Fstats.pas):
@@ -153,6 +156,31 @@ class TStatsResults:
         self.Xmin           = 0.0              # Minmimum value
         self.Xmax           = 0.0              # Maximum value
         self.EventFreq      = 0.0              # Event frequency
+
+    def CalcEventExceedance(self):
+        """
+        Fstats.pas --> GetRowColEntry
+        Returns:
+
+        """
+        if self.EventList is None or len(self.EventList) == 0:
+            exit()
+        for e in self.EventList:
+            #e = TStatsEvent() #debug only
+            e.ExceedancePCT = 100.0 * e.Rank / (len(self.EventList) + 1)
+
+    def CalcEventReturnPeriod(self, aPlotParameter):
+        """
+        Fstats.pas --> GetRowColEntry
+        Returns:
+
+        """
+        if self.EventList is None or len(self.EventList) == 0:
+            exit()
+        for e in self.EventList:
+            #e = TStatsEvent() #debug only
+            e.ReturnPeriod = (self.Duration + 1.0 - 2.0 * aPlotParameter) / (e.Rank - aPlotParameter)
+
 
 # class Uglobals:
 #     Nsubcatchs = 0  # Integer;             # Number of subcatchments
@@ -690,6 +718,9 @@ class StatisticUtility(object):
         aResults.StdDev = (T1/T2) ** 0.5 #Sqrt(T1 / T2)
         aResults.Mean = A[1] / T
         aResults.Skew = G
+        aResults.CalcEventExceedance()
+        aResults.CalcEventReturnPeriod(self.Stats.PlotParameter)
+        pass
         #return Results
 
     def CategorizeStats(self, aStats):

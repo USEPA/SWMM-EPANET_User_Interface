@@ -231,10 +231,9 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             self.tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(datestr))
             self.tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(str(e.Duration)))
             self.tableWidget.setItem(row, 3, QtGui.QTableWidgetItem('%.3f' % (e.Value)))
-            #self.tableWidget.setItem(row, 4, QtGui.QTableWidgetItem(str(e.Frequency)))
-            #self.tableWidget.setItem(row, 5, QtGui.QTableWidgetItem(str(e.ReturnPeriod)))
+            self.tableWidget.setItem(row, 4, QtGui.QTableWidgetItem('%.2f' % (e.ExceedancePCT)))
+            self.tableWidget.setItem(row, 5, QtGui.QTableWidgetItem('%.2f' % (e.ReturnPeriod)))
             row += 1
-
         pass
 
     def RefreshHistoPage(self):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\SWMM\frmStatisticsReportDesigner.ui'
+# Form implementation generated from reading ui file 'frmStatisticsReportDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Mon Aug 15 11:05:43 2016
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,37 +33,29 @@ class Ui_frmStatisticsReport(object):
         self.centralWidget = QtGui.QWidget(frmStatisticsReport)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout_8 = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout_8.setMargin(11)
-        self.verticalLayout_8.setSpacing(6)
         self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
         self.fraTop = QtGui.QFrame(self.centralWidget)
         self.fraTop.setFrameShape(QtGui.QFrame.StyledPanel)
         self.fraTop.setFrameShadow(QtGui.QFrame.Raised)
         self.fraTop.setObjectName(_fromUtf8("fraTop"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.fraTop)
-        self.horizontalLayout_3.setMargin(11)
-        self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.tabWidget = QtGui.QTabWidget(self.fraTop)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tabSummary = QtGui.QWidget()
         self.tabSummary.setObjectName(_fromUtf8("tabSummary"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.tabSummary)
-        self.verticalLayout_4.setMargin(11)
-        self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-        self.textEdit = QtGui.QTextEdit(self.tabSummary)
+        self.txtStatsMemo = QtGui.QTextEdit(self.tabSummary)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier New"))
-        self.textEdit.setFont(font)
-        self.textEdit.setObjectName(_fromUtf8("textEdit"))
-        self.verticalLayout_4.addWidget(self.textEdit)
+        self.txtStatsMemo.setFont(font)
+        self.txtStatsMemo.setObjectName(_fromUtf8("txtStatsMemo"))
+        self.verticalLayout_4.addWidget(self.txtStatsMemo)
         self.tabWidget.addTab(self.tabSummary, _fromUtf8(""))
         self.tabEvents = QtGui.QWidget()
         self.tabEvents.setObjectName(_fromUtf8("tabEvents"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.tabEvents)
-        self.verticalLayout_3.setMargin(11)
-        self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.tableWidget = QtGui.QTableWidget(self.tabEvents)
         self.tableWidget.setRowCount(0)
@@ -85,8 +78,6 @@ class Ui_frmStatisticsReport(object):
         self.tabHistogram = QtGui.QWidget()
         self.tabHistogram.setObjectName(_fromUtf8("tabHistogram"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.tabHistogram)
-        self.verticalLayout_2.setMargin(11)
-        self.verticalLayout_2.setSpacing(6)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.widgetHistogram = QtGui.QWidget(self.tabHistogram)
         self.widgetHistogram.setObjectName(_fromUtf8("widgetHistogram"))
@@ -95,8 +86,6 @@ class Ui_frmStatisticsReport(object):
         self.tabFrequency = QtGui.QWidget()
         self.tabFrequency.setObjectName(_fromUtf8("tabFrequency"))
         self.verticalLayout = QtGui.QVBoxLayout(self.tabFrequency)
-        self.verticalLayout.setMargin(11)
-        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.widgetFrequency = QtGui.QWidget(self.tabFrequency)
         self.widgetFrequency.setObjectName(_fromUtf8("widgetFrequency"))
@@ -109,8 +98,6 @@ class Ui_frmStatisticsReport(object):
         self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
-        self.horizontalLayout.setMargin(11)
-        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)

@@ -1,6 +1,5 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import core.swmm.project
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 from ui.help import HelpHandler
@@ -12,6 +11,27 @@ import matplotlib.pyplot as plt
 import datetime
 import core.swmm.stats as UStats
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import core.swmm.swmm_project as SMP
+
+StatsText = \
+    ('  S U M M A R Y   S T A T I S T I C S',
+     '  ===================================',
+     '  Object  .............. %s %s',
+     '  Variable ............. %s %s',
+     '  Event Period ......... %s',
+     '  Event Statistic ...... %s %s',
+     '  Event Threshold ...... %s > %.4f %s',
+     '  Event Threshold ...... Event Volume > %.4f %s',
+     '  Event Threshold ...... Separation Time >= %.1f  (hr)',
+     '  Period of Record ..... %s to %s',
+     ' ',
+     '  Number of Events ..... %d',
+     '  Event Frequency*...... %.3f',
+     '  Minimum Value ........ %.3f',
+     '  Maximum Value ........ %.3f',
+     '  Mean Value ........... %.3f',
+     '  Std. Deviation ....... %.3f',
+     '  Skewness Coeff. ...... %.3f');
 
 class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
@@ -25,6 +45,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         # self.set_from(parent.project)
         self._main_form = main_form
         self.stats = None
+        self.statsResult = None #UStats.TStatsResults()
 
     def set_from(self, project, output, stats):
         self.project = project
@@ -40,7 +61,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         #self.separation_time = separation_time   # 6
         #self.setWindowTitle('SWMM Statistics ' + '- ' + self.type_label + ' ' + self.object_id + ' ' + self.attribute_name)
         self.setWindowTitle('SWMM Statistics ' + '- ' + self.stats.ObjectTypeText + ' ' + self.stats.ObjectID + ' ' + self.stats.VariableText)
-        self.textEdit.setReadOnly(True)
+        self.txtStatsMemo.setReadOnly(True)
 
         # y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
         units = '(in/hr)'
@@ -78,7 +99,150 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         #lStop = "STOP"
 
         lUtil = UStats.StatisticUtility(self.output)
-        lUtil.GetStats(self.stats, self.EventList)
+        self.statsResult = UStats.TStatsResults()
+        lUtil.GetStats(self.stats, self.EventList, self.statsResult)
+        self.RefreshResults()
+
+    def RefreshResults(self):
+        if self.statsResult is None:
+            exit()
+
+        self.RefreshStatsPage()
+        self.RefreshTablePage()
+        #self.RefreshHistoPage()
+        #self.RefreshFreqPage()
+
+        pass
+
+    def RefreshStatsPage(self):
+        # List the object & type of statistical analysis performed
+        #self.stats = UStats.TStatsSelection() #debug only
+        #self.output = SMO.SwmmOutputObject() #debug only
+        line0 = StatsText[0]
+        line1 = StatsText[1]
+        line2 = StatsText[2] % (self.stats.ObjectTypeText, self.stats.ObjectID)
+        #self.output.pollutants.values()[0].name
+        #self.output.pollutants.values()[0].units
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
+        line3 = StatsText[3] % (self.stats.VariableText, "(" + lunit + ")")
+        line4 = StatsText[4] % (self.stats.TimePeriodText)
+        line5 = StatsText[5] % (self.stats.StatsTypeText, lunit) #self.stats.StatsUnitsLabel)
+        line6 = ""
+        if self.stats.MinEventValue >= 0:
+            line6= StatsText[6] % (self.stats.VariableText, self.stats.MinEventValue, lunit) #self.stats.VarUnits)
+        line7= ""
+        if self.stats.MinEventVolume >= 0:
+            if self.stats.IsRainParam:
+                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.RainVolumeText[self.stats.Variable])
+            else:
+                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.FlowVolumeText[self.stats.Variable])
+        line8 = ""
+        if (self.stats.TimePeriod == UStats.ETimePeriod.tpVariable) and (self.stats.MinEventDelta > 0):
+            line8 = StatsText[8] % (self.stats.MinEventDelta)
+        line9 = StatsText[9] % (str(self.output.StartDate), str(self.output.EndDate))
+        # List the number & frequency of events
+        line10 = StatsText[10]
+        line11 = StatsText[11] % (len(self.EventList))
+        line12 = StatsText[12] % (self.statsResult.EventFreq)
+        # Display summary statistics
+        if len(self.EventList) > 0:
+            line13 = StatsText[13] % (self.statsResult.Xmin)
+            line14 = StatsText[14] % (self.statsResult.Xmax)
+            line15 = StatsText[15] % (self.statsResult.Mean)
+            line16 = StatsText[16] % (self.statsResult.StdDev)
+            line17 = StatsText[17] % (self.statsResult.Skew)
+
+        line18 = "" #StatsMemo.Lines.Add('')
+        #StatsMemo.Lines.Add(FrequencyNoteText[Ord(Stats.TimePeriod)])
+        line19 = UStats.TStatsUnits.FrequencyNoteText[self.stats.TimePeriod.value]
+        self.txtStatsMemo.append(line0)
+        self.txtStatsMemo.append(line1)
+        self.txtStatsMemo.append(line2)
+        self.txtStatsMemo.append(line3)
+        self.txtStatsMemo.append(line4)
+        self.txtStatsMemo.append(line5)
+        self.txtStatsMemo.append(line6)
+        self.txtStatsMemo.append(line7)
+        self.txtStatsMemo.append(line8)
+        self.txtStatsMemo.append(line9)
+        self.txtStatsMemo.append(line10)
+        self.txtStatsMemo.append(line11)
+        self.txtStatsMemo.append(line12)
+        self.txtStatsMemo.append(line13)
+        self.txtStatsMemo.append(line14)
+        self.txtStatsMemo.append(line15)
+        self.txtStatsMemo.append(line16)
+        self.txtStatsMemo.append(line17)
+        self.txtStatsMemo.append(line18)
+        self.txtStatsMemo.append(line19)
+        pass
+
+    def RefreshTablePage(self):
+        # Events Tab (grid)
+        ColHeadingText1 = (' ',    ' ',          ' ',        ' ', 'Exceedance', 'Return')
+        ColHeadingText2 = (' ',    ' ',          'Duration', ' ', 'Frequency',  'Period')
+        ColHeadingText3 = ('Rank', 'Start Date', '(hours)',  ' ', '(percent)',  '(years)')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
+        TimePeriodLabel = UStats.TStatsUnits.TimePeriodText[self.stats.TimePeriod.value]
+        #StatsTypeLabel = self.stats.StatsTypeText
+        #StatsUnitsLabel = lunit
+        ColHeading1 = list(ColHeadingText1)
+        ColHeading2 = list(ColHeadingText2)
+        ColHeading3 = list(ColHeadingText3)
+        ColHeading1[2] = TimePeriodLabel
+        ColHeading1[3] = TimePeriodLabel
+        ColHeading2[3] = self.stats.StatsTypeText
+        ColHeading3[3] = "(" + lunit + ")"
+        if self.stats.PlotPosition == UStats.EPlotPosition.ppMonths:
+            ColHeading3[5] = '(months)'
+        else:
+            ColHeading3[5] = '(years)'
+
+        if self.stats.StatsType == UStats.EStatsType.stDelta:
+            ColHeading1[3] = 'Inter-Event'
+            ColHeading2[3] = 'Time'
+
+        #Set up number of rows/cols in the table
+        num_cols = 6
+        self.tableWidget.setColumnCount(num_cols)
+        if len(self.EventList) == 0:
+            num_rows = 2
+        else:
+            num_rows = len(self.EventList) + 1
+        self.tableWidget.setRowCount(num_rows)
+        self.tableWidget.verticalHeader().setVisible(False)
+        #column_headers = ""
+        #self.tableWidget.setHorizontalHeaderLabels(column_headers)
+        for c in xrange(0, num_cols):
+            header_item = QtGui.QTableWidgetItem(ColHeading1[c] + '\n' +
+                                                 ColHeading2[c] + '\n' +
+                                                 ColHeading3[c])
+            self.tableWidget.setHorizontalHeaderItem(c, header_item)
+
+        #Set up data grid
+        row = 0
+        for e in self.EventList:
+            #e = UStats.TStatsEvent() #debug only
+            datestr = datetime.datetime.strftime(e.StartDate, '%m/%d/%Y')
+            self.tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(str(e.Rank)))
+            self.tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(datestr))
+            self.tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(str(e.Duration)))
+            self.tableWidget.setItem(row, 3, QtGui.QTableWidgetItem('%.3f' % (e.Value)))
+            #self.tableWidget.setItem(row, 4, QtGui.QTableWidgetItem(str(e.Frequency)))
+            #self.tableWidget.setItem(row, 5, QtGui.QTableWidgetItem(str(e.ReturnPeriod)))
+            row += 1
+
+        pass
+
+    def RefreshHistoPage(self):
+        pass
+
+    def RefreshFreqPage(self):
+        pass
 
     def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
                  threshold_value, event_volume, separation_time):
@@ -95,7 +259,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.separation_time = separation_time   # 6
 
         self.setWindowTitle('SWMM Statistics ' + '- ' + self.object_name + ' ' + self.object_id + ' ' + self.variable_name)
-        self.textEdit.setReadOnly(True)
+        self.txtStatsMemo.setReadOnly(True)
 
         # y_values, units = output.get_series_by_name(type_label, object_id, attribute, start_index, num_steps)
         units = '(in/hr)'
@@ -147,7 +311,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                               '  Skewness Coeff. ...... ' + results_skewness_coeff + '\n' + \
                               ' ' + '\n' + frequency_note
 
-        self.textEdit.setText(summary_string)
+        self.txtStatsMemo.setText(summary_string)
 
         # Events Tab (grid)
 

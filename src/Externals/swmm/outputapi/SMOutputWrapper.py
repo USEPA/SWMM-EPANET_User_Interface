@@ -494,5 +494,10 @@ class SwmmOutputObject(object):
         # now make a time series data frame
         return Series(y_values, index=x_values)
 
+    def get_item_unit(self, type_label, object_id, attribute_name):
+        item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
+        attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
+        return attribute.units(attribute.index)
+
     def reportStepDays(self):
         return self.reportStep / 86400.0;

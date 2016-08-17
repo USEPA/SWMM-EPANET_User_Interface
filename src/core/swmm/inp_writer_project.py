@@ -136,12 +136,12 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 
-        self.write_orifices = SectionWriterAsList("[ORIFICES]", SectionWriter,
+        self.write_orifices = SectionWriterAsList("[ORIFICES]", OrificeWriter,
             ";;Name          \tFrom Node       \tTo Node         \tType        \tOffset    \tQcoeff    \tGated   \tCloseTime\n"
             ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t----------")
         # orifice link information
 
-        self.write_weirs = SectionWriterAsList("[WEIRS]", SectionWriter,
+        self.write_weirs = SectionWriterAsList("[WEIRS]", WeirWriter,
             ";;Name          \tFrom Node       \tTo Node         \tType        \tCrestHt   \tQcoeff    \tGated   \tEndCon  \tEndCoeff  \tSurcharge \tRoadWidth \tRoadSurf\n"
             ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------")
         # weir link information
@@ -211,8 +211,8 @@ class ProjectWriter(InputFileWriterBase):
         # initial pollutant loads on subcatchments
 
         self.write_curves = SectionWriterAsList("[CURVES]", CurveWriter,
-                                             ";;Name          \tType      \tX-Value   \tY-Value   \n"
-                                             ";;--------------\t----------\t----------\t----------")
+                                                ";;Name          \tType      \tX-Value   \tY-Value   \n"
+                                                ";;--------------\t----------\t----------\t----------")
         # CURVES        x-y tabular data referenced in other sections
 
         self.write_timeseries = SectionWriterAsList("[TIMESERIES]", TimeSeriesWriter,
@@ -220,9 +220,9 @@ class ProjectWriter(InputFileWriterBase):
                                                     ";;--------------\t----------\t----------\t----------")
         # time series data referenced in other sections
 
-        # self.write_labels = SectionWriterAsListGroupByID("[LABELS]", Label, LabelWriter,
-        #                                          ";;X-Coord         \tY-Coord           \tLabel\n")
-        # X,Y coordinates and text of labels
+        self.write_labels = SectionWriterAsList("[LABELS]", LabelWriter,
+                                                ";;X-Coord         \tY-Coord           \tLabel")
+        # X, Y coordinates, text, and font details of labels
 
         self.write_polygons = SectionWriterAsList("[POLYGONS]", CoordinateWriter,
                                                   ";Subcatchment    \tX-Coord   \tY-Coord")
@@ -235,7 +235,9 @@ class ProjectWriter(InputFileWriterBase):
         self.write_vertices = SectionWriterAsList("[VERTICES]", CoordinateWriter,
                                                   ";Link            \tX-Coord   \tY-Coord")
         # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        # self.write_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
+        self.write_symbols = SectionWriterAsList("[SYMBOLS]", CoordinateWriter,
+                                                 ";Gage            \tX-Coord   \tY-Coord")
+        # X, Y coordinates for rain gages
         #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
 
         self.write_tags = TagsWriter()

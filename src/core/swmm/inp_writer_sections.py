@@ -95,10 +95,28 @@ class CoordinateWriter(SectionWriter):
         return inp
 
 
+class LabelWriter(SectionWriter):
+    field_format = ' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
+
+    @staticmethod
+    def as_text(label):
+        if label.bold:
+            bold = '1'
+        else:
+            bold = '0'
+        if label.italic:
+            italic = '1'
+        else:
+            italic = '0'
+        return LabelWriter.field_format.format(label.centroid.x, label.centroid.y, label.label_text,
+                                               label.anchor_name, label.font, label.size, bold, italic)
+        return label
+
+
 class CurveWriter(SectionWriter):
     """Defines data curves and their X,Y points"""
 
-    field_format = " {:16}\t{:10}\t{:10}\t{:10}"
+    field_format = " {:16}\t{:10}\t{:10}\t{:10}\n"
 
     @staticmethod
     def as_text(curve):
@@ -414,10 +432,11 @@ class ConduitWriter(Link):
     @staticmethod
     def as_text(conduit):
         """format contents of this item for writing to file"""
-        if len(conduit.name) > 0:
-            return ConduitWriter.field_format.format(conduit.name, conduit.inlet_node, conduit.outlet_node, conduit.length, conduit.roughness,
-                                            conduit.inlet_offset, conduit.outlet_offset, conduit.initial_flow, conduit.maximum_flow,
-                                            conduit.comment)
+        if conduit.name:
+            return ConduitWriter.field_format.format(conduit.name, conduit.inlet_node, conduit.outlet_node,
+                                                     conduit.length, conduit.roughness,
+                                                     conduit.inlet_offset, conduit.outlet_offset,
+                                                     conduit.initial_flow, conduit.maximum_flow, conduit.comment)
         elif conduit.comment:
             return conduit.comment
 
@@ -435,6 +454,47 @@ class PumpWriter(Link):
                                             pump.initial_status, pump.startup_depth, pump.shutoff_depth, pump.comment)
         elif pump.comment:
             return pump.comment
+
+
+class OrificeWriter(Link):
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:10}\t{}"
+
+    @staticmethod
+    def as_text(orifice):
+        """format contents of this item for writing to file"""
+        if orifice.name:
+            return OrificeWriter.field_format.format(orifice.name, orifice.inlet_node, orifice.outlet_node,
+                                                     orifice.type.name, orifice.inlet_offset,
+                                                     orifice.discharge_coefficient,
+                                                     SectionWriter.yes_no(orifice.flap_gate),
+                                                     orifice.initial_flow, orifice.o_rate, orifice.comment)
+        elif orifice.comment:
+            return orifice.comment
+
+
+class WeirWriter(Link):
+
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:8}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
+
+    @staticmethod
+    def as_text(weir):
+        """format contents of this item for writing to file"""
+        if weir.name:
+            if weir.type == WeirType.ROADWAY:
+                road_width = weir.road_width
+                road_surface = weir.road_surface.name
+            else:
+                road_width = ''
+                road_surface = ''
+            return ConduitWriter.field_format.format(weir.name, weir.inlet_node, weir.outlet_node,
+                                                     weir.type.name, weir.inlet_offset, weir.discharge_coefficient,
+                                                     SectionWriter.yes_no(weir.flap_gate),
+                                                     weir.end_contractions,
+                                                     weir.end_coefficient,
+                                                     SectionWriter.yes_no(weir.can_surcharge),
+                                                     road_width, road_surface, weir.comment)
+        elif weir.comment:
+            return weir.comment
 
 
 class CrossSectionWriter(SectionWriter):

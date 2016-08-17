@@ -1,4 +1,5 @@
 import traceback
+import shlex
 from core.coordinate import Coordinate
 from core.inp_reader_base import SectionReader
 from core.project_base import ProjectBase, Section
@@ -17,6 +18,8 @@ from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
 from core.swmm.hydraulics.link import Link
+from core.swmm.hydraulics.link import Orifice
+from core.swmm.hydraulics.link import Weir
 from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import Transect
 from core.swmm.hydraulics.link import Transects
@@ -44,6 +47,7 @@ from core.swmm.hydrology.subcatchment import LIDUsage
 from core.swmm.hydrology.subcatchment import Subcatchment, Routing
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
+from core.swmm.labels import Label
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.general import FlowRouting
 from core.swmm.options.general import General
@@ -72,6 +76,29 @@ class CoordinatesReader(SectionReader):
         if len(fields) > 2:
             coordinates.name, coordinates.x, coordinates.y = fields[0:3]
         return coordinates
+
+
+class LabelReader(SectionReader):
+    @staticmethod
+    def read(new_text):
+        label = Label()
+        fields = shlex.split(new_text)
+        if len(fields) > 2:
+            label.centroid = Coordinate()
+            label.centroid.x, label.centroid.y, label.centroid.name = fields[0:3]
+            label.label_text = label.centroid.name
+
+            if len(fields) > 3:
+                label.anchor_name = fields[3]  # name of an anchor node (optional)
+            if len(fields) > 4:
+                label.font = fields[4]
+            if len(fields) > 5:
+                label.size = fields[5]
+            if len(fields) > 6:
+                label.bold = (fields[6] and fields[6] != '0')
+            if len(fields) > 7:
+                label.italic = (fields[7] and fields[7] != '0')
+        return label
 
 
 class CurveReader(SectionReader):
@@ -513,6 +540,65 @@ class PumpReader(Link):
         if len(fields) > 6:
             pump.shutoff_depth = fields[6]
         return pump
+
+
+class OrificeReader(Link):
+    @staticmethod
+    def read(new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        orifice = Orifice()
+        new_text = SectionReader.set_comment_check_section(orifice, new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 2:
+            orifice.name, orifice.inlet_node, orifice.outlet_node = fields[0:3]
+        if len(fields) > 3:
+            orifice.setattr_keep_type("type", fields[3])
+        if len(fields) > 4:
+            orifice.setattr_keep_type("inlet_offset", fields[4])
+        if len(fields) > 5:
+            orifice.setattr_keep_type("discharge_coefficient", fields[5])
+        if len(fields) > 6:
+            orifice.setattr_keep_type("flap_gate", fields[6])
+        if len(fields) > 7:
+            orifice.setattr_keep_type("initial_flow", fields[7])
+        if len(fields) > 8:
+            orifice.setattr_keep_type("o_rate", fields[8])
+        return orifice
+
+
+class WeirReader(Link):
+    @staticmethod
+    def read(new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        weir = Weir()
+        new_text = SectionReader.set_comment_check_section(weir, new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 5:
+            weir.name = fields[0]
+            weir.inlet_node = fields[1]
+            weir.outlet_node = fields[2]
+            weir.setattr_keep_type("type", fields[3])
+            weir.setattr_keep_type("inlet_offset", fields[4])
+            weir.setattr_keep_type("discharge_coefficient", fields[5])
+        if len(fields) > 6:
+            weir.setattr_keep_type("flap_gate", fields[6])
+        if len(fields) > 7:
+            weir.setattr_keep_type("end_contractions", fields[7])
+        if len(fields) > 8:
+            weir.setattr_keep_type("end_coefficient", fields[8])
+        if len(fields) > 9:
+            weir.setattr_keep_type("can_surcharge", fields[9])
+        if len(fields) > 10:
+            weir.setattr_keep_type("road_width", fields[10])
+        if len(fields) > 11:
+            weir.setattr_keep_type("road_surface", fields[11])
+        return weir
 
 
 class CrossSectionReader(SectionReader):

@@ -218,9 +218,6 @@ class Weir(Link):
         self.type = WeirType.TRANSVERSE
         """Type of weir"""
 
-        self.cross_section = ''
-        """Name of cross section in XSECTIONS Section"""
-
         self.inlet_offset = 0.0
         """float: Depth of bottom of weir opening from inlet node invert"""
 
@@ -230,8 +227,8 @@ class Weir(Link):
         self.flap_gate = False
         """bool: True if weir contains a flap gate to prevent backflow"""
 
-        self.end_contractions = 0.0
-        """float: Number of end contractions"""
+        self.end_contractions = 0
+        """Number of end contractions for TRANSVERSE or TRAPEZOIDAL"""
 
         self.end_coefficient = 0.0
         """float: Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""

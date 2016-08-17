@@ -8,7 +8,7 @@ class Label(Section):
 
     field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
-#    attribute,         input_name, label,         default, english, metric, hint
+    #    attribute,     input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("label_text",          '', "Text",            '',       '', '',  "Text of the label"),
         ('',                    '', "X-Coordinate",    '',       '', '',  "X coordinate of upper left corner of the label on the map"),

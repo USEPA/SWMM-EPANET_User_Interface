@@ -106,10 +106,10 @@ class ProjectReader(InputFileReader):
         self.read_pumps = SectionReaderAsList("[PUMPS]", PumpReader)
         # pump link information
 
-        self.read_orifices = SectionReaderAsList("[ORIFICES]", SectionReader)
+        self.read_orifices = SectionReaderAsList("[ORIFICES]", OrificeReader)
         # orifice link information
 
-        self.read_weirs = SectionReaderAsList("[WEIRS]", SectionReader)
+        self.read_weirs = SectionReaderAsList("[WEIRS]", WeirReader)
         # weir link information
 
         self.read_outlets = SectionReaderAsList("[OUTLETS]", SectionReader)
@@ -159,9 +159,8 @@ class ProjectReader(InputFileReader):
         self.read_timeseries = SectionReaderAsListGroupByID("[TIMESERIES]", TimeSeriesReader)
         # time series data referenced in other sections
 
-        # self.read_labels = SectionReaderAsListGroupByID("[LABELS]", Label, LabelReader,
-        #                                          ";;X-Coord         \tY-Coord           \tLabel\n")
-        # X,Y coordinates and text of labels
+        self.read_labels = SectionReaderAsList("[LABELS]", LabelReader)
+        # X, Y coordinates, text, and font details of labels
 
         self.read_polygons = SectionReaderAsList("[POLYGONS]", CoordinatesReader)
         # X, Y coordinates for each vertex of subcatchment polygons
@@ -172,8 +171,8 @@ class ProjectReader(InputFileReader):
         self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinatesReader)
         # X, Y coordinates for intermediate points on links between nodes
 
-        # self.read_symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
-        #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+        self.read_symbols = SectionReaderAsList("[SYMBOLS]", CoordinatesReader)
+        # X, Y coordinates for rain gages
 
     def read_section(self, project, section_name, section_text):
         if section_name.upper() == project.infiltration.SECTION_NAME.upper():

@@ -67,8 +67,6 @@ class ProjectReader(InputFileReader):
         self.read_subcatchments = SectionReaderAsList("[SUBCATCHMENTS]", SubcatchmentReader)
         # basic subcatchment information
 
-        # self.read_subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
-
         self.read_infiltration = SectionReaderAsList("[INFILTRATION]", None)
         # This is set to SectionReaderAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration
         # below in add_section based on subcatchment infiltration parameters
@@ -118,9 +116,12 @@ class ProjectReader(InputFileReader):
         self.read_xsections = SectionReaderAsList("[XSECTIONS]", CrossSectionReader)
         # conduit, orifice, and weir cross-section geometry
 
-        self.read_transects = TransectsReader() # TRANSECTS # transect geometry for conduits with irregular cross-sections
-        # self.read_losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
-        self.read_controls = SectionReaderAsList("[CONTROLS]", None)  # rules that control pump and regulator operation
+        self.read_transects = TransectsReader()
+        # transect geometry for conduits with irregular cross-sections
+
+        self.read_controls = SectionReaderAsList("[CONTROLS]", None)
+        # rules that control pump and regulator operation
+
         self.read_landuses = SectionReaderAsList("[LANDUSES]", LanduseReader)
         # land use categories
 
@@ -175,7 +176,8 @@ class ProjectReader(InputFileReader):
         # X, Y coordinates for rain gages
 
     def read_section(self, project, section_name, section_text):
-        if section_name.upper() == project.infiltration.SECTION_NAME.upper():
+        section_name_upper = section_name.upper()
+        if section_name_upper == project.infiltration.SECTION_NAME.upper():
             infiltration = project.options.infiltration.upper()
             if infiltration == "HORTON":
                 self.read_infiltration = SectionReaderAsList(section_name, HortonInfiltrationReader)
@@ -183,12 +185,15 @@ class ProjectReader(InputFileReader):
                 self.read_infiltration = SectionReaderAsList(section_name, GreenAmptInfiltrationReader)
             elif infiltration.startswith("CURVE"):
                 self.read_infiltration = SectionReaderAsList(section_name, CurveNumberInfiltrationReader)
-        elif section_name.upper() == "[SUBAREAS]":
+        elif section_name_upper == "[SUBAREAS]":
             self.defer_subareas = section_text
             return  # Skip read_section, defer until finished_reading is called.
-        elif section_name.upper() == "[TAGS]":
+        elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[LOSSES]":
+            self.defer_losses = section_text
+            return
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -198,4 +203,7 @@ class ProjectReader(InputFileReader):
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
+        if self.defer_losses:
+            LossesReader.read(self.defer_losses, project)
+            self.defer_losses = None
 

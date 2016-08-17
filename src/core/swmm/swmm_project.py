@@ -114,8 +114,8 @@ class SwmmProject(ProjectBase):
         self.xsections = SectionAsList("[XSECTIONS]")  # (list of CrossSection)
         # conduit, orifice, and weir cross-section geometry
 
-        self.transects = Transects() # TRANSECTS   transect geometry for conduits with irregular cross-sections
-        # self.losses = [Section] # LOSSES   conduit entrance/exit losses and flap valves
+        self.transects = Transects()  # transect geometry for conduits with irregular cross-sections
+
         self.controls = SectionAsList("[CONTROLS]")  # rules that control pump and regulator operation
         self.landuses = SectionAsList("[LANDUSES]")  # (list of Landuse)     # land use categories
 
@@ -139,7 +139,7 @@ class SwmmProject(ProjectBase):
         # baseline dry weather sanitary inflow at nodes
 
         self.patterns = SectionAsList("[PATTERNS]")  # (list of Pattern)
-        # PATTERNS      periodic variation in dry weather inflow
+        # periodic variation in dry weather inflow
 
         self.rdii = SectionAsList("[RDII]")  # (list of RDIInflow)
         # rainfall-dependent I/I information at nodes

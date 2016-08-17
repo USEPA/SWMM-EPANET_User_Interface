@@ -327,7 +327,7 @@ class EvaporationWriter(SectionWriter):
         return ''
 
 
-class WindSpeedWriter:
+class WindSpeedWriter(SectionWriter):
     """wind speed parameters, stored as part of [TEMPERATURE] section"""
 
     SECTION_NAME = "WINDSPEED"
@@ -347,7 +347,7 @@ class WindSpeedWriter:
         return inp
 
 
-class SnowMeltWriter:
+class SnowMeltWriter(SectionWriter):
     """snow melt parameters"""
 
     SECTION_NAME = "SNOWMELT"
@@ -363,7 +363,7 @@ class SnowMeltWriter:
                snow_melt.time_correction
 
 
-class ArealDepletionWriter:
+class ArealDepletionWriter(SectionWriter):
     """areal depletion parameters"""
 
     SECTION_NAME = "ADC"
@@ -424,7 +424,7 @@ class AdjustmentsWriter(SectionWriter):
             return ''
 
 
-class ConduitWriter(Link):
+class ConduitWriter(SectionWriter):
     """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
@@ -441,7 +441,29 @@ class ConduitWriter(Link):
             return conduit.comment
 
 
-class PumpWriter(Link):
+class LossWriter(SectionWriter):
+    """Convert minor head loss coefficients, flap gates, and seepage rates for a conduit into text."""
+
+    field_format = "{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
+
+    @staticmethod
+    def as_text(conduit):
+        """format conduit loss information for writing to file"""
+        if conduit.name and (conduit.entry_loss_coefficient
+                             or conduit.exit_loss_coefficient
+                             or conduit.loss_coefficient
+                             or conduit.seepage):
+            return LossWriter.field_format.format(conduit.name,
+                                                  conduit.entry_loss_coefficient,
+                                                  conduit.exit_loss_coefficient,
+                                                  conduit.loss_coefficient,
+                                                  SectionWriter.yes_no(conduit.flap_gate),
+                                                  conduit.seepage)
+        else:
+            return None
+
+
+class PumpWriter(SectionWriter):
     """A pump link in a SWMM model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:16}\t{:8}\t{:8}\t{:8}\t{}"
@@ -456,7 +478,7 @@ class PumpWriter(Link):
             return pump.comment
 
 
-class OrificeWriter(Link):
+class OrificeWriter(SectionWriter):
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:10}\t{}"
 
     @staticmethod
@@ -472,7 +494,7 @@ class OrificeWriter(Link):
             return orifice.comment
 
 
-class WeirWriter(Link):
+class WeirWriter(SectionWriter):
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:8}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
@@ -486,7 +508,7 @@ class WeirWriter(Link):
             else:
                 road_width = ''
                 road_surface = ''
-            return ConduitWriter.field_format.format(weir.name, weir.inlet_node, weir.outlet_node,
+            return WeirWriter.field_format.format(weir.name, weir.inlet_node, weir.outlet_node,
                                                      weir.type.name, weir.inlet_offset, weir.discharge_coefficient,
                                                      SectionWriter.yes_no(weir.flap_gate),
                                                      weir.end_contractions,

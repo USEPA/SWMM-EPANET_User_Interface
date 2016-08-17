@@ -156,13 +156,18 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t------------\t----------------\t----------\t----------\t----------\t----------\t----------")
         # conduit, orifice, and weir cross-section geometry
 
-        self.write_transects = TransectsWriter() # TRANSECTS # transect geometry for conduits with irregular cross-sections
-        # self.write_losses = [Section] # LOSSES # conduit entrance/exit losses and flap valves
+        self.write_transects = TransectsWriter()  # transect geometry for conduits with irregular cross-sections
+
+        self.write_losses = SectionWriterAsList("[LOSSES]", LossWriter,
+            ";;Link          \tKentry    \tKexit     \tKavg      \tFlap Gate \tSeepage   \n"
+            ";;--------------\t----------\t----------\t----------\t----------\t----------")
+        # conduit entrance/exit losses and flap valves
+
         self.write_controls = SectionWriterAsList("[CONTROLS]", SectionWriter, None)  # rules that control pump and regulator operation
         self.write_landuses = SectionWriterAsList("[LANDUSES]", LanduseWriter,
-                                        ";;              \tSweeping  \tFraction  \tLast\n"
-                                        ";;Name          \tInterval  \tAvailable \tSwept\n"
-                                        ";;--------------\t----------\t----------\t----------")
+                                                  ";;              \tSweeping  \tFraction  \tLast\n"
+                                                  ";;Name          \tInterval  \tAvailable \tSwept\n"
+                                                  ";;--------------\t----------\t----------\t----------")
         # land use categories
 
         self.write_buildup = SectionWriterAsList("[BUILDUP]", BuildupWriter,
@@ -182,9 +187,8 @@ class ProjectWriter(InputFileWriterBase):
 
         self.write_coverages = CoveragesWriter() # COVERAGES # assignment of land uses to subcatchments
         self.write_treatment = SectionWriterAsList("[TREATMENT]", TreatmentWriter,
-                                         ";;Node          \tPollutant       \tFunction\n"
-                                         ";;--------------\t----------------\t--------")
-
+                                                   ";;Node          \tPollutant       \tFunction\n"
+                                                   ";;--------------\t----------------\t--------")
         # pollutant removal functions at conveyance system nodes
 
         self.write_inflows = SectionWriterAsList("[INFLOWS]", DirectInflowWriter,
@@ -273,5 +277,11 @@ class ProjectWriter(InputFileWriterBase):
         tags_text = self.write_tags.as_text(project)
         if tags_text:
             inp += '\n' + tags_text + '\n'
+
+        losses = SectionAsList("[LOSSES]")  # (list of Conduit)
+        losses.value = project.conduits.value
+        losses_text = self.write_losses.as_text(losses)
+        if losses_text:
+            inp += '\n' + losses_text + '\n'
 
         return inp

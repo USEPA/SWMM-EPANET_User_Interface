@@ -195,10 +195,11 @@ class SectionWriterAsList(SectionWriter):
                             item_str = item
                         else:
                             item_str = self.list_type_writer.as_text(item)
-                        # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank
-                        # if item_str.strip() or isinstance(item, basestring) or
-                        #  (isinstance(item, Section) and item.SECTION_NAME == "Comment"):
-                        text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
+                        if item_str is not None:
+                            # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank
+                            # if item_str.strip() or isinstance(item, basestring) or
+                            #  (isinstance(item, Section) and item.SECTION_NAME == "Comment"):
+                            text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
             return '\n'.join(text_list)
         else:
             return ''

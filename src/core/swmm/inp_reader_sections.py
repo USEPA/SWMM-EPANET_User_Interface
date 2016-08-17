@@ -1373,7 +1373,7 @@ class TagsReader(SectionReader):
                         if candidate.name.upper() == object_name:
                             candidate.tag = tag
                             found = True
-                            print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
+                            # print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
                             break
                     if found:
                         break
@@ -1381,11 +1381,32 @@ class TagsReader(SectionReader):
                     print "Tag not applied: " + line
 
 
+class LossesReader(SectionReader):
+    """Read LOSSES section from text into project.conduits"""
+
+    @staticmethod
+    def read(new_text, project):
+        disposable_losses = Section()
+        disposable_losses.SECTION_NAME = "[LOSSES]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_losses, line)
+            fields = line.split()
+            if len(fields) > 3:
+                conduit_name = fields[0]
+                for conduit in project.conduits.value:
+                    if conduit.name == conduit_name:
+                        conduit.setattr_keep_type("entry_loss_coefficient", fields[1])
+                        conduit.setattr_keep_type("exit_loss_coefficient", fields[2])
+                        conduit.setattr_keep_type("loss_coefficient", fields[3])
+                        if len(fields) > 4:
+                            conduit.setattr_keep_type("flap_gate", fields[4])
+                        if len(fields) > 5:
+                            conduit.setattr_keep_type("seepage", fields[5])
+
+
 class UnitHydrographReader(SectionReader):
     """Specifies the shapes of the triangular unit hydrographs that determine the amount of
         rainfall-dependent infiltration/inflow (RDII) entering the drainage system"""
-
-    first_row_format = "{:16}\t{:16}"
 
     @staticmethod
     def read(new_text):

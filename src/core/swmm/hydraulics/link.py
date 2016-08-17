@@ -79,23 +79,22 @@ class Conduit(Link):
         """Maximum flow allowed in the conduit (flow units)."""
 
         # TODO: provide access to the following:
-
         # self.cross_section = ''
-        """See class CrossSection"""             # from [XSECTIONS] table
+        # """See class CrossSection"""             # from [XSECTIONS] table
 
-        # self.entry_loss_coefficient = 0.0      # from [LOSSES] table
+        self.entry_loss_coefficient = 0.0      # from [LOSSES] table
         """Head loss coefficient associated with energy losses at the entrance of the conduit"""
 
-        # self.exit_loss_coefficient = 0.0
+        self.exit_loss_coefficient = 0.0
         """Head loss coefficient associated with energy losses at the exit of the conduit"""
 
-        # self.loss_coefficient = 0.0
+        self.loss_coefficient = 0.0
         """Head loss coefficient associated with energy losses along the length of the conduit"""
 
-        # self.flap_gate = False
+        self.flap_gate = False
         """True if a flap gate exists that prevents backflow."""
 
-        # self.seepage = 0.0
+        self.seepage = 0.0
         """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
 
 class Pump(Link):
@@ -367,8 +366,8 @@ class CrossSection(Section):
     # TODO: access geometry1 as a name such as transect or xsection_name or geometry
     # """str: name of cross-section geometry of an irregular channel"""
 
-class Transects(Section):
 
+class Transects(Section):
     SECTION_NAME = "[TRANSECTS]"
     DEFAULT_COMMENT = ";;Transect Data in HEC-2 format"
 
@@ -385,7 +384,7 @@ class Transect(Section):
         self.name = ''
         """Transect Name"""
 
-        self.n_left = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_left = ''   # Manning's n of left overbank portion of channel. Use 0 if no change from previous NC line.
         self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
         self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
         self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
@@ -394,4 +393,3 @@ class Transect(Section):
         self.elevations_modifier = '0'  # amount added (or subtracted) from the elevation of each station (ft or m).
         self.meander_modifier = '0'  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
         self.stations = []          # list of (station, elevation) pairs
-

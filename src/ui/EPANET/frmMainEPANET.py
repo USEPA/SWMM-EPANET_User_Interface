@@ -208,10 +208,15 @@ class frmMainEPANET(frmMain):
                                     QMessageBox.Ok)
 
     def report_energy(self):
-        self._frmEnergyReport = frmEnergyReport(self)
-        self._frmEnergyReport.set_data()
-        self._frmEnergyReport.show()
-        pass
+        if self.output:
+            self._frmEnergyReport = frmEnergyReport(self)
+            self._frmEnergyReport.set_data(self.project, self.output)
+            self._frmEnergyReport.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def report_calibration(self):
         if self.output:

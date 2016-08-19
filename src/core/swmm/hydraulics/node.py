@@ -238,28 +238,6 @@ class Divider(Junction):
         self.flow_divider_type = FlowDividerType.CUTOFF
         """Type of flow divider from FlowDividerType(Enum)"""
 
-        self.max_depth = 0.0
-        """Maximum depth of node (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used. """
-
-        self.initial_depth = 0.0
-        """Depth of water at the node at the start of the simulation
-            (feet or meters)."""
-
-        self.surcharge_depth = 0.0
-        """Additional depth of water beyond the maximum depth that is
-            allowed before the node floods (feet or meters).
-            This parameter can be used to simulate bolted manhole covers
-            or force main connections. """
-
-        self.ponded_area = 0.0
-        """Area occupied by ponded water atop the node after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists."""
-
         self.min_diversion_flow = 0.0
         """Flow at which diversion begins for a CUTOFF or WEIR divider (flow units)."""
 

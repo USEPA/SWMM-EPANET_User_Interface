@@ -299,14 +299,10 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                                 self.stats.VariableText + " " +
                                 "?Unit?")
 
-        #self.setParent(self._main_form)
-        #self.tabHistogram.
-        # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabHistogram)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(histogram)
         self.tabHistogram.setLayout(layout)
-        #self.setWindowTitle(self.model)
         pass
 
     def RefreshFreqPage(self):

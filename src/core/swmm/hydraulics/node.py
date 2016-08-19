@@ -286,14 +286,6 @@ class StorageUnit(Junction):
 
     def __init__(self):
         Junction.__init__(self)
-        self.max_depth = ''
-        """Maximum depth of node (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used. """
-
-        self.initial_depth = ''
-        """Depth of water at the node at the start of the simulation
-            (feet or meters)."""
 
         self.storage_curve_type = StorageCurveType.TABULAR
         """StorageCurveType: FUNCTIONAL or TABULAR"""
@@ -313,13 +305,6 @@ class StorageUnit(Junction):
         self.constant = ''
         """C-value in the functional relationship
             between surface area and storage depth."""
-
-        self.ponded_area = ''
-        """Area occupied by ponded water atop the node after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists."""
 
         self.evaporation_factor = ''
         """The fraction of the potential evaporation from the storage units

@@ -683,6 +683,37 @@ class DividerWriter(SectionWriter):
         return inp
 
 
+class StorageWriter(SectionWriter):
+    """Write Divider properties"""
+
+    field_format = "{:16}\t{:8}\t{:10}\t{:10}\t{:10}\t{:28}\t{:8}\t{:8}\t{:8}\t{:8}\t{:8}"
+
+    @staticmethod
+    def as_text(storage):
+        """format contents of this item for writing to file"""
+
+        middle_part = ''
+        if storage.storage_curve_type == StorageCurveType.TABULAR:
+            middle_part = str(storage.storage_curve)
+        elif storage.storage_curve_type == StorageCurveType.FUNCTIONAL:
+            middle_part = "{:8}  {:8}  {:8}".format(str(storage.coefficient),
+                                                    str(storage.exponent),
+                                                    str(storage.constant))
+
+        inp = StorageWriter.field_format.format(storage.name,
+                                                str(storage.elevation),
+                                                str(storage.max_depth),
+                                                str(storage.initial_depth),
+                                                storage.storage_curve_type.name,
+                                                middle_part,
+                                                str(storage.ponded_area),
+                                                str(storage.evaporation_factor),
+                                                str(storage.seepage_suction_head),
+                                                str(storage.seepage_hydraulic_conductivity),
+                                                str(storage.seepage_initial_moisture_deficit))
+        return inp
+
+
 class DirectInflowWriter(SectionWriter):
     """Defines characteristics of inflows added directly into a node"""
 

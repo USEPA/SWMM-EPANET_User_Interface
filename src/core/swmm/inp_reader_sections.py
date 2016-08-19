@@ -29,6 +29,7 @@ from core.swmm.hydraulics.node import DryWeatherInflow
 from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import Outfall, OutfallType
 from core.swmm.hydraulics.node import Divider, FlowDividerType
+from core.swmm.hydraulics.node import StorageUnit, StorageCurveType
 from core.swmm.hydraulics.node import RDIInflow
 from core.swmm.hydraulics.node import Treatment
 from core.swmm.hydrology.aquifer import Aquifer
@@ -839,6 +840,47 @@ class DividerReader(SectionReader):
                     if len(fields) > 10:
                         divider.setattr_keep_type("ponded_area", fields[10])
         return divider
+
+
+class StorageReader(SectionReader):
+    """Read a storage unit from text"""
+
+    @staticmethod
+    def read(new_text):
+        storage = StorageUnit()
+        new_text = SectionReader.set_comment_check_section(storage, new_text)
+        fields = new_text.split()
+        if len(fields) > 4:
+            storage.name = fields[0]
+            storage.setattr_keep_type("elevation", fields[1])
+            storage.setattr_keep_type("max_depth", fields[2])
+            storage.setattr_keep_type("initial_depth", fields[3])
+            storage.setattr_keep_type("storage_curve_type", fields[4])
+            if len(fields) > 5:
+                if storage.storage_curve_type == StorageCurveType.TABULAR:
+                    storage.storage_curve = fields[5]
+                    next_field = 6
+                elif storage.storage_curve_type == StorageCurveType.FUNCTIONAL and len(fields) > 7:
+                    storage.setattr_keep_type("coefficient", fields[5])
+                    storage.setattr_keep_type("exponent", fields[6])
+                    storage.setattr_keep_type("constant", fields[7])
+                    next_field = 8
+
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("ponded_area", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("evaporation_factor", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_suction_head", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_hydraulic_conductivity", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_initial_moisture_deficit", fields[next_field])
+        return storage
 
 
 class DirectInflowReader(SectionReader):

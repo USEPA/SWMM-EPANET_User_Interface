@@ -95,7 +95,7 @@ class ProjectReader(InputFileReader):
         self.read_dividers = SectionReaderAsList("[DIVIDERS]", DividerReader)
         #  flow divider node information
 
-        self.read_storage = SectionReaderAsList("[STORAGE]", SectionReader)
+        self.read_storage = SectionReaderAsList("[STORAGE]", StorageReader)
         #  storage node information
 
         self.read_conduits = SectionReaderAsList("[CONDUITS]", ConduitReader)

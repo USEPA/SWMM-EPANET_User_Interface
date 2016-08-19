@@ -497,7 +497,11 @@ class SwmmOutputObject(object):
     def get_item_unit(self, type_label, object_id, attribute_name):
         item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
         attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
-        return attribute.units(attribute.index)
+        if attribute.index < len(item.attributes) - 1:
+            return attribute.units(self.unit_system)
+        else:
+            return self.pollutants[attribute_name].units
+            pass
 
     def reportStepDays(self):
         return self.reportStep / 86400.0;

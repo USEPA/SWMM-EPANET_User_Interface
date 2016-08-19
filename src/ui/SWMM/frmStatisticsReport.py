@@ -101,6 +101,11 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         lUtil = UStats.StatisticUtility(self.output)
         self.statsResult = UStats.TStatsResults()
         lUtil.GetStats(self.stats, self.statsResult)
+        #lObjName = ""
+        #lVarName = ""
+        #lVarUnits = ""
+        #lUtil.GetObjVarNames(self.stats, self.project, lObjName, lVarName, lVarUnits)
+
         self.RefreshResults()
 
     def RefreshResults(self):
@@ -288,16 +293,19 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                            self.stats.ObjectID + " " +
                            self.stats.VariableText)
         histogram.setYlabel('Percent of Total')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
         if self.stats.StatsType == UStats.EStatsType.stDuration.value or \
             self.stats.StatsType == UStats.EStatsType.stDelta.value:
             histogram.setXlabel(self.stats.TimePeriodText + " " +
                                 self.stats.StatsTypeText + " " +
-                                "?Unit?")
+                                "(" + lunit + ")")
         else:
             histogram.setXlabel(self.stats.TimePeriodText + " " +
                                 self.stats.StatsTypeText + " " +
                                 self.stats.VariableText + " " +
-                                "?Unit?")
+                                "(" + lunit + ")")
 
         layout = QtGui.QVBoxLayout(self.tabHistogram)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -332,16 +340,19 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                            self.stats.ObjectID + " " +
                            self.stats.VariableText)
         freqplot.setYlabel('Exceedance Frequency (%)')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
         if self.stats.StatsType == UStats.EStatsType.stDuration.value or \
            self.stats.StatsType == UStats.EStatsType.stDelta.value:
             freqplot.setXlabel(self.stats.TimePeriodText + " " +
                                 self.stats.StatsTypeText + " " +
-                                "?Unit?")
+                                "(" + lunit + ")")
         else:
             freqplot.setXlabel(self.stats.TimePeriodText + " " +
                                 self.stats.StatsTypeText + " " +
                                 self.stats.VariableText + " " +
-                                "?Unit?")
+                                "(" + lunit + ")")
 
         layout = QtGui.QVBoxLayout(self.tabFrequency)
         layout.setContentsMargins(0, 0, 0, 0)

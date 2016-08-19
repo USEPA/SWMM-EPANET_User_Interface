@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmStatisticsReportDesigner.ui'
 #
-# Created: Mon Aug 15 11:05:43 2016
+# Created: Thu Aug 18 13:42:06 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -77,11 +77,6 @@ class Ui_frmStatisticsReport(object):
         self.tabWidget.addTab(self.tabEvents, _fromUtf8(""))
         self.tabHistogram = QtGui.QWidget()
         self.tabHistogram.setObjectName(_fromUtf8("tabHistogram"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.tabHistogram)
-        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.widgetHistogram = QtGui.QWidget(self.tabHistogram)
-        self.widgetHistogram.setObjectName(_fromUtf8("widgetHistogram"))
-        self.verticalLayout_2.addWidget(self.widgetHistogram)
         self.tabWidget.addTab(self.tabHistogram, _fromUtf8(""))
         self.tabFrequency = QtGui.QWidget()
         self.tabFrequency.setObjectName(_fromUtf8("tabFrequency"))
@@ -108,7 +103,7 @@ class Ui_frmStatisticsReport(object):
         frmStatisticsReport.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(frmStatisticsReport)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(frmStatisticsReport)
 
     def retranslateUi(self, frmStatisticsReport):

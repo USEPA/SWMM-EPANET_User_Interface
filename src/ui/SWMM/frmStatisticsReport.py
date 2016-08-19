@@ -110,7 +110,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.RefreshStatsPage()
         self.RefreshTablePage()
         self.RefreshHistoPage()
-        #self.RefreshFreqPage()
+        self.RefreshFreqPage()
 
         pass
 
@@ -306,6 +306,48 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         pass
 
     def RefreshFreqPage(self):
+        # Frequency Tab
+        freqplot = MyFrequencyPlot(self.tabFrequency,
+                                width=self.tabFrequency.width(),
+                                height=self.tabFrequency.height(),
+                                dpi=100)
+        N = len(self.statsResult.EventList)
+        if N == 0:
+            exit()
+
+        M = int(N) / 50
+        if M == 0:
+            M = 1
+        lX = []
+        lY = []
+        for I in xrange(0, N):
+            if np.mod(I, M) > 0:
+                continue
+            E = self.statsResult.EventList[I]
+            lX.append(E.Value)
+            lY.append(100.0 * E.Rank/N)
+
+        freqplot.setData(lX, lY)
+        freqplot.setTitle(self.stats.ObjectTypeText + " " +
+                           self.stats.ObjectID + " " +
+                           self.stats.VariableText)
+        freqplot.setYlabel('Exceedance Frequency (%)')
+        if self.stats.StatsType == UStats.EStatsType.stDuration.value or \
+           self.stats.StatsType == UStats.EStatsType.stDelta.value:
+            freqplot.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                "?Unit?")
+        else:
+            freqplot.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                self.stats.VariableText + " " +
+                                "?Unit?")
+
+        layout = QtGui.QVBoxLayout(self.tabFrequency)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(freqplot)
+        self.tabFrequency.setLayout(layout)
+
         pass
 
     def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
@@ -466,12 +508,9 @@ class MyFrequencyPlot(FigureCanvas):
 
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        self.axes.hold(False)
-
-        y = (0.0, 3.0, 0.01)
-        x = (0,1,2)
-        self.axes.plot(x, y)
+        self.ax = fig.add_subplot(111)
+        #self.axes.hold(False)
+        self.ax.grid(True)
 
         FigureCanvas.__init__(self, fig)
         self.setParent(main_form)
@@ -480,3 +519,28 @@ class MyFrequencyPlot(FigureCanvas):
                                    QtGui.QSizePolicy.Expanding,
                                    QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
+    def setData(self, aData, aBins=None):
+        if aBins is not None:
+            self.ax.plot(aData, aBins)
+        else:
+            self.ax.plot(aData)
+
+        #self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+        pass
+
+    def setTitle(self, aTitle):
+        if self.ax is not None:
+            self.ax.set_title(aTitle)
+        pass
+
+    def setXlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_xlabel(aLabel, fontsize=10)
+        # self.ax = plt.AxesSubplot() #debug only
+        pass
+
+    def setYlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_ylabel(aLabel)
+        pass

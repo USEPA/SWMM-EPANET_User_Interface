@@ -28,6 +28,7 @@ from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.hydraulics.node import DryWeatherInflow
 from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import Outfall, OutfallType
+from core.swmm.hydraulics.node import Divider, FlowDividerType
 from core.swmm.hydraulics.node import RDIInflow
 from core.swmm.hydraulics.node import Treatment
 from core.swmm.hydrology.aquifer import Aquifer
@@ -778,6 +779,66 @@ class OutfallReader(SectionReader):
         else:
             outfall = None
         return outfall
+
+
+class DividerReader(SectionReader):
+    """Read a flow divider node"""
+
+    @staticmethod
+    def read(new_text):
+        divider = Divider()
+        new_text = SectionReader.set_comment_check_section(divider, new_text)
+        fields = new_text.split()
+        if len(fields) > 3:
+            divider.name = fields[0]
+            divider.setattr_keep_type("elevation", fields[1])
+            divider.diverted_link = fields[2]
+            divider.setattr_keep_type("flow_divider_type", fields[3])
+            if len(fields) > 4:
+                if divider.flow_divider_type == FlowDividerType.OVERFLOW:
+                    divider.setattr_keep_type("max_depth", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("initial_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("surcharge_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("ponded_area", fields[7])
+                elif divider.flow_divider_type == FlowDividerType.CUTOFF:
+                    divider.setattr_keep_type("min_diversion_flow", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("initial_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("surcharge_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("ponded_area", fields[8])
+                elif divider.flow_divider_type == FlowDividerType.TABULAR:
+                    divider.divider_curve = fields[4]
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("initial_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("surcharge_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("ponded_area", fields[8])
+
+                elif divider.flow_divider_type == FlowDividerType.WEIR:
+                    divider.setattr_keep_type("min_diversion_flow", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("weir_max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("weir_coefficient", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("max_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("initial_depth", fields[8])
+                    if len(fields) > 9:
+                        divider.setattr_keep_type("surcharge_depth", fields[9])
+                    if len(fields) > 10:
+                        divider.setattr_keep_type("ponded_area", fields[10])
+        return divider
 
 
 class DirectInflowReader(SectionReader):

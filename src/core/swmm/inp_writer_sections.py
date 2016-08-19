@@ -652,6 +652,37 @@ class OutfallWriter(SectionWriter):
         return inp
 
 
+class DividerWriter(SectionWriter):
+    """Write Divider properties"""
+
+    field_format = "{:16}\t{:10}\t{:16}\t{:10}\t{}{:10}\t{:10}\t{:10}\t{:10}"
+
+    @staticmethod
+    def as_text(divider):
+        """format contents of this item for writing to file"""
+
+        middle_part = ''
+        if divider.flow_divider_type == FlowDividerType.CUTOFF:
+            middle_part = "{:10}\t".format(str(divider.min_diversion_flow))
+        elif divider.flow_divider_type == FlowDividerType.TABULAR:
+            middle_part = "{:10}\t".format(divider.divider_curve)
+        elif divider.flow_divider_type == FlowDividerType.WEIR:
+            middle_part = "{:10}\t{:10}\t{:10}\t".format(str(divider.min_diversion_flow),
+                                                         str(divider.weir_max_depth),
+                                                         str(divider.weir_coefficient))
+
+        inp = DividerWriter.field_format.format(divider.name,
+                                                str(divider.elevation),
+                                                divider.diverted_link,
+                                                divider.flow_divider_type.name,
+                                                middle_part,
+                                                str(divider.max_depth),
+                                                str(divider.initial_depth),
+                                                str(divider.surcharge_depth),
+                                                str(divider.ponded_area))
+        return inp
+
+
 class DirectInflowWriter(SectionWriter):
     """Defines characteristics of inflows added directly into a node"""
 

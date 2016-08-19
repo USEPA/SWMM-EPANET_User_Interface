@@ -116,7 +116,7 @@ class ProjectWriter(InputFileWriterBase):
                               ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
         #  outfall node information
 
-        self.write_dividers = SectionWriterAsList("[DIVIDERS]", SectionWriter,
+        self.write_dividers = SectionWriterAsList("[DIVIDERS]", DividerWriter,
                                          ";;Name          \tElevation \tDiverted Link   \tType      \tParameters\n"
                                          ";;--------------\t----------\t----------------\t----------\t----------")
         #  flow divider node information

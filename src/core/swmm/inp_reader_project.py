@@ -92,7 +92,7 @@ class ProjectReader(InputFileReader):
         self.read_outfalls = SectionReaderAsList("[OUTFALLS]", OutfallReader)
         #  outfall node information
 
-        self.read_dividers = SectionReaderAsList("[DIVIDERS]", SectionReader)
+        self.read_dividers = SectionReaderAsList("[DIVIDERS]", DividerReader)
         #  flow divider node information
 
         self.read_storage = SectionReaderAsList("[STORAGE]", SectionReader)
@@ -174,6 +174,11 @@ class ProjectReader(InputFileReader):
 
         self.read_symbols = SectionReaderAsList("[SYMBOLS]", CoordinatesReader)
         # X, Y coordinates for rain gages
+
+        # temporary storage for sections that need to be read after other sections
+        self.defer_subareas = None
+        self.defer_tags = None
+        self.defer_losses = None
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()

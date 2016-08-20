@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\EPANET\frmEnergyReportDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Sat Aug 20 17:40:43 2016
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,24 +33,18 @@ class Ui_frmEnergyReport(object):
         self.centralWidget = QtGui.QWidget(frmEnergyReport)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout_8 = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout_8.setMargin(11)
-        self.verticalLayout_8.setSpacing(6)
         self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
         self.fraTop = QtGui.QFrame(self.centralWidget)
         self.fraTop.setFrameShape(QtGui.QFrame.StyledPanel)
         self.fraTop.setFrameShadow(QtGui.QFrame.Raised)
         self.fraTop.setObjectName(_fromUtf8("fraTop"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.fraTop)
-        self.horizontalLayout_3.setMargin(11)
-        self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.tabWidget = QtGui.QTabWidget(self.fraTop)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tabTable = QtGui.QWidget()
         self.tabTable.setObjectName(_fromUtf8("tabTable"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.tabTable)
-        self.verticalLayout_4.setMargin(11)
-        self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
         self.tableWidget = QtGui.QTableWidget(self.tabTable)
         self.tableWidget.setRowCount(3)
@@ -78,8 +73,6 @@ class Ui_frmEnergyReport(object):
         self.tabChart = QtGui.QWidget()
         self.tabChart.setObjectName(_fromUtf8("tabChart"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.tabChart)
-        self.horizontalLayout_2.setMargin(11)
-        self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.fraColumn = QtGui.QFrame(self.tabChart)
         self.fraColumn.setMaximumSize(QtCore.QSize(400, 16777215))
@@ -87,8 +80,6 @@ class Ui_frmEnergyReport(object):
         self.fraColumn.setFrameShadow(QtGui.QFrame.Raised)
         self.fraColumn.setObjectName(_fromUtf8("fraColumn"))
         self.verticalLayout = QtGui.QVBoxLayout(self.fraColumn)
-        self.verticalLayout.setMargin(11)
-        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.rbnUtilization = QtGui.QRadioButton(self.fraColumn)
         self.rbnUtilization.setObjectName(_fromUtf8("rbnUtilization"))
@@ -110,6 +101,11 @@ class Ui_frmEnergyReport(object):
         self.verticalLayout.addWidget(self.rbnCost)
         self.horizontalLayout_2.addWidget(self.fraColumn)
         self.widgetChart = QtGui.QWidget(self.tabChart)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(80)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widgetChart.sizePolicy().hasHeightForWidth())
+        self.widgetChart.setSizePolicy(sizePolicy)
         self.widgetChart.setObjectName(_fromUtf8("widgetChart"))
         self.horizontalLayout_2.addWidget(self.widgetChart)
         self.tabWidget.addTab(self.tabChart, _fromUtf8(""))
@@ -120,8 +116,6 @@ class Ui_frmEnergyReport(object):
         self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
-        self.horizontalLayout.setMargin(11)
-        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)

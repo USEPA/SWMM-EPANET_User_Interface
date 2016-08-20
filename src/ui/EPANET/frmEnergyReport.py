@@ -14,7 +14,12 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
         self.help_topic = "epanet/src/src/Energy_R.htm"
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
+        QtCore.QObject.connect(self.rbnUtilization, QtCore.SIGNAL("clicked()"), self.rbnUtilization_Clicked)
+        QtCore.QObject.connect(self.rbnAverageKw, QtCore.SIGNAL("clicked()"), self.rbnAverageKw_Clicked)
+        QtCore.QObject.connect(self.rbnCost, QtCore.SIGNAL("clicked()"), self.rbnCost_Clicked)
+        QtCore.QObject.connect(self.rbnEfficiency, QtCore.SIGNAL("clicked()"), self.rbnEfficiency_Clicked)
+        QtCore.QObject.connect(self.rbnKwHr, QtCore.SIGNAL("clicked()"), self.rbnKwHr_Clicked)
+        QtCore.QObject.connect(self.rbnPeakKw, QtCore.SIGNAL("clicked()"), self.rbnPeakKw_Clicked)
         self._main_form = main_form
 
     def set_data(self, project, output):
@@ -40,7 +45,6 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
             this_pump = all_pump_energy[item]
 
             self.tableWidget.setVerticalHeaderItem(row,QtGui.QTableWidgetItem('Pump ' + item))
-            # self.tableWidget.verticalHeaderItem(row).setText('Pump ' + item)
 
             led = QtGui.QLineEdit(format(this_pump.utilization,'0.2f'))
             led.setReadOnly(True)
@@ -88,23 +92,60 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
         led.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
         self.tableWidget.setItem(row+2, 5, QtGui.QTableWidgetItem(led.text()))
 
-        sc = MyMplCanvas(self.widgetChart, width=3, height=2, dpi=100)
+        self.rbnUtilization.setChecked(True)
+        sc = MyMplCanvas('Utilization', self.widgetChart, width=8, height=5, dpi=50)
+        self.setParent(self._main_form)
+        self.widgetChart = sc
+
+    def DoPlot(self,title):
+        sc = MyMplCanvas(title, self.widgetChart, width=8, height=5, dpi=50)
         self.setParent(self._main_form)
         self.widgetChart = sc
 
     def cmdCancel_Clicked(self):
         self.close()
 
+    def rbnUtilization_Clicked(self):
+        if self.rbnUtilization.isChecked():
+            self.DoPlot('Utilization')
+
+    def rbnAverageKw_Clicked(self):
+        if self.rbnAverageKw.isChecked():
+            self.DoPlot('AverageKw')
+
+    def rbnCost_Clicked(self):
+        if self.rbnCost.isChecked():
+            self.DoPlot('Cost')
+
+    def rbnEfficiency_Clicked(self):
+        if self.rbnEfficiency.isChecked():
+            self.DoPlot('Efficiency')
+
+    def rbnKwHr_Clicked(self):
+        if self.rbnKwHr.isChecked():
+            self.DoPlot('KwHr')
+
+    def rbnPeakKw_Clicked(self):
+        if self.rbnPeakKw.isChecked():
+            self.DoPlot('PeakKw')
+
 class MyMplCanvas(FigureCanvas):
 
-    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+    def __init__(self, title, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        self.axes.hold(False)
+        p = fig.gca()
 
-        y = (0.0, 3.0, 0.01)
-        x = (0,1,2)
-        self.axes.plot(x, y)
+        import numpy as np
+        N = 5
+        values = (20, 35, 30, 35, 27)
+        ind = np.arange(N)
+        width = 0.75
+
+        p.set_title(title)
+        p.set_xticks(ind + width/2)
+        p.set_xticklabels(('Pump 1', 'Pump 2', 'Pump 3', 'Pump 4', 'Pump 5'))
+
+        p.bar(ind, values, width)
 
         FigureCanvas.__init__(self, fig)
         self.setParent(main_form)

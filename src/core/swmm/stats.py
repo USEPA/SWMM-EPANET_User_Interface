@@ -181,6 +181,30 @@ class TStatsResults:
             #e = TStatsEvent() #debug only
             e.ReturnPeriod = (self.Duration + 1.0 - 2.0 * aPlotParameter) / (e.Rank - aPlotParameter)
 
+class Uutil:
+    @staticmethod
+    def RoundToScale(X):
+        """
+        Rounds X down to a nice scaling factor (e.g. RoundToScale(879) = 800)
+        Args:
+            X:
+
+        Returns:
+
+        """
+        ScaleValues = (2, 4, 5, 8, 10)
+        if X <= 0:
+            return 1
+        else:
+            OrderOfMagnitude = np.floor(np.log(X) / np.log(10))
+            Exponent = 10 ** OrderOfMagnitude
+            R = X / Exponent
+            #assume ScaleValues is sorted in ascending order
+            for I in xrange(0, len(ScaleValues)):
+                if R <= ScaleValues[I]:
+                    return ScaleValues[I] * Exponent
+            return Exponent
+
 
 # class Uglobals:
 #     Nsubcatchs = 0  # Integer;             # Number of subcatchments

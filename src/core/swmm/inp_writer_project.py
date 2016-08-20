@@ -116,14 +116,14 @@ class ProjectWriter(InputFileWriterBase):
                               ";;--------------\t----------\t----------\t----------------\t--------\t----------------")
         #  outfall node information
 
-        self.write_dividers = SectionWriterAsList("[DIVIDERS]", SectionWriter,
+        self.write_dividers = SectionWriterAsList("[DIVIDERS]", DividerWriter,
                                          ";;Name          \tElevation \tDiverted Link   \tType      \tParameters\n"
                                          ";;--------------\t----------\t----------------\t----------\t----------")
         #  flow divider node information
 
-        self.write_storage = SectionWriterAsList("[STORAGE]", SectionWriter,
-                                         ";;Name          \tElev.   \tMaxDepth  \tInitDepth  \tShape     \tCurve Name/Params           \tN/A     \tFevap   \tPsi     \tKsat    \tIMD\n"
-                                         ";;--------------\t--------\t----------\t-----------\t----------\t----------------------------\t--------\t--------\t--------\t--------\t--------")
+        self.write_storage = SectionWriterAsList("[STORAGE]", StorageWriter,
+             ";;Name          \tElev.   \tMaxDepth  \tInitDepth  \tShape     \tCurve Name/Params           \tN/A-Pond\tFevap   \tPsi     \tKsat    \tIMD\n"
+             ";;--------------\t--------\t----------\t-----------\t----------\t----------------------------\t--------\t--------\t--------\t--------\t--------")
         #  storage node information
 
         self.write_conduits = SectionWriterAsList("[CONDUITS]", ConduitWriter,

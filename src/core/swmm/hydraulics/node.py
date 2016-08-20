@@ -210,67 +210,42 @@ class Divider(Junction):
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                '', "Name",            '',   '',   '',  "User-assigned name of divider"),
-        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
-        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
-        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
-        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
-        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
+        # ('',                  '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
+        # ('',                  '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
+        # ('',                  '', "Description",     '',   '',   '',  "Optional comment or description"),
+        # ('',                  '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        # ('',                  '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
+        # ('.treatment(node_name)', '', "Treatment",   'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of divider's invert"),
-        ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance from invert to top of highest connecting link)"),
+        ("max_depth",           '', "Max Depth",       '0',  'ft', 'm',
+         "Maximum water depth (distance from invert to ground) or 0 to use distance from invert to top of highest connecting link"),
         ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial water depth in junction"),
         ("surcharge_depth",     '', "Surcharge Depth", '0',  '',   '',  "Depth in excess of maximum depth before flooding occurs"),
         ("ponded_area",         '', "Ponded Area",     '0',  '',   '',  "Area of ponded water when flooded"),
         ("diverted_link",       '', "Diverted Link",   '',   '',   '',  "Name of link which receives the diverted flow"),
         ("flow_divider_type",   '', "Type",            '',   '',   '',  "Type of flow divider"),
-        ("cutoff_flow",         '', "Cutoff Flow",     '0',  '',   '',  "Cutoff flow value used for a CUTOFF divider"),
-        ("divider_curve",       '', "Tabular Curve Name",   '',   '',   '',  "Name of diversion curve used with a TABULAR divider"),
-        ("weir_min_flow",       '', "Weir Min. Flow",       '0',  '',   '',  "Minimum flow at which diversion begins for a WEIR divider"),
-        ("weir_max_depth",      '', "Weir Max. Depth",      '0',  '',   '',  "Depth at maximum flow for a WEIR divider"),
-        ("weir_coefficient",    '', "Weir Coefficient",     '0',  '',   '',  "Discharge coefficient for a WEIR divider")))
+        ("min_diversion_flow",  '', "Diversion Flow",  '0',  '',   '',  "Minimum flow at which diversion begins"),
+        ("divider_curve",       '', "Tabular Curve Name", '', '',  '',  "Name of diversion curve used with a TABULAR divider"),
+        ("weir_height",         '', "Weir Height",      '0',  '',  '',  "Depth at maximum flow for a WEIR divider"),
+        ("weir_coefficient",    '', "Weir Coefficient", '0',  '',  '',  "Discharge coefficient for a WEIR divider")))
 
     def __init__(self):
         Junction.__init__(self)
 
-        self.diverted_link = None
+        self.diverted_link = ''
         """Name of link which receives the diverted flow."""
 
         self.flow_divider_type = FlowDividerType.CUTOFF
         """Type of flow divider from FlowDividerType(Enum)"""
 
-        self.max_depth = 0.0
-        """Maximum depth of node (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used. """
+        self.min_diversion_flow = 0.0
+        """Flow at which diversion begins for a CUTOFF or WEIR divider (flow units)."""
 
-        self.initial_depth = 0.0
-        """Depth of water at the node at the start of the simulation
-            (feet or meters)."""
-
-        self.surcharge_depth = 0.0
-        """Additional depth of water beyond the maximum depth that is
-            allowed before the node floods (feet or meters).
-            This parameter can be used to simulate bolted manhole covers
-            or force main connections. """
-
-        self.ponded_area = 0.0
-        """Area occupied by ponded water atop the node after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists."""
-
-        self.cutoff_flow = 0
-        """Cutoff flow value used for a CUTOFF divider (flow units)."""
-
-        self.divider_curve = None
+        self.divider_curve = ''
         """Diversion Curve used with a TABULAR divider"""
 
-        self.weir_min_flow = 0.0
-        """Minimum flow at which diversion begins for a WEIR divider"""
-
-        self.weir_max_depth = 0.0
-        """Depth at maximum flow for a WEIR divider"""
+        self.weir_height = 0.0
+        """Height of WEIR divider (ft or m)"""
 
         self.weir_coefficient = 0.0
         """Discharge coefficient for a WEIR divider"""
@@ -311,14 +286,6 @@ class StorageUnit(Junction):
 
     def __init__(self):
         Junction.__init__(self)
-        self.max_depth = ''
-        """Maximum depth of node (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used. """
-
-        self.initial_depth = ''
-        """Depth of water at the node at the start of the simulation
-            (feet or meters)."""
 
         self.storage_curve_type = StorageCurveType.TABULAR
         """StorageCurveType: FUNCTIONAL or TABULAR"""
@@ -338,13 +305,6 @@ class StorageUnit(Junction):
         self.constant = ''
         """C-value in the functional relationship
             between surface area and storage depth."""
-
-        self.ponded_area = ''
-        """Area occupied by ponded water atop the node after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists."""
 
         self.evaporation_factor = ''
         """The fraction of the potential evaporation from the storage units

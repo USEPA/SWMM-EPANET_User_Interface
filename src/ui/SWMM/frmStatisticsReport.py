@@ -8,6 +8,7 @@ from pandas import Series, DataFrame
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import datetime
 import core.swmm.stats as UStats
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
@@ -31,7 +32,7 @@ StatsText = \
      '  Maximum Value ........ %.3f',
      '  Mean Value ........... %.3f',
      '  Std. Deviation ....... %.3f',
-     '  Skewness Coeff. ...... %.3f');
+     '  Skewness Coeff. ...... %.3f')
 
 class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
@@ -100,6 +101,11 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         lUtil = UStats.StatisticUtility(self.output)
         self.statsResult = UStats.TStatsResults()
         lUtil.GetStats(self.stats, self.statsResult)
+        #lObjName = ""
+        #lVarName = ""
+        #lVarUnits = ""
+        #lUtil.GetObjVarNames(self.stats, self.project, lObjName, lVarName, lVarUnits)
+
         self.RefreshResults()
 
     def RefreshResults(self):
@@ -108,8 +114,8 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 
         self.RefreshStatsPage()
         self.RefreshTablePage()
-        #self.RefreshHistoPage()
-        #self.RefreshFreqPage()
+        self.RefreshHistoPage()
+        self.RefreshFreqPage()
 
         pass
 
@@ -237,9 +243,122 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         pass
 
     def RefreshHistoPage(self):
+        # Histogram Tab
+        histogram = MyHistogram(self.tabHistogram,
+                                width=self.tabHistogram.width(),
+                                height=self.tabHistogram.height(),
+                                dpi=100)
+        N = len(self.statsResult.EventList)
+        Nbins = 0
+        if N < 10:
+            Nbins = 10
+        elif N < 20:
+            Nbins = 20
+        else:
+            Nbins  = 50
+        E = self.statsResult.EventList[0]
+        xmax = E.Value
+        E = self.statsResult.EventList[N - 1]
+        xmin = E.Value
+        BinWidth = UStats.Uutil.RoundToScale((xmax - xmin)/ Nbins)
+        xmin = BinWidth * np.floor(xmin / BinWidth)
+        Nbins = np.ceil((xmax - xmin)/BinWidth)
+        if xmin + Nbins * BinWidth <= xmax:
+            Nbins += 1
+        if Nbins > 50:
+            Nbins = 50
+        # lContents = []
+        # for I in xrange(0, int(Nbins)):
+        #     lContents.append(0.0)
+        # for I in xrange(0, N):
+        #     E = self.statsResult.EventList[I]
+        #     K = np.floor((E.Value - xmin)/BinWidth)
+        #     if K < Nbins:
+        #         lContents[int(K)] += 1.0
+        #
+        # lBins = []
+        # lData = []
+        # for I in xrange(0, int(Nbins)):
+        #     lX = xmin + I * BinWidth + BinWidth /2.0
+        #     lY = 100.0 * lContents[I] / N
+        #     lData.append(lY)
+        #     lBins.append(lX)
+
+        lData = []
+        for e in self.statsResult.EventList:
+            lData.append(e.Value)
+        histogram.setData(lData, Nbins)
+
+        histogram.setTitle(self.stats.ObjectTypeText + " " +
+                           self.stats.ObjectID + " " +
+                           self.stats.VariableText)
+        histogram.setYlabel('Percent of Total')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
+        if self.stats.StatsType == UStats.EStatsType.stDuration.value or \
+            self.stats.StatsType == UStats.EStatsType.stDelta.value:
+            histogram.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                "(" + lunit + ")")
+        else:
+            histogram.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                self.stats.VariableText + " " +
+                                "(" + lunit + ")")
+
+        layout = QtGui.QVBoxLayout(self.tabHistogram)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(histogram)
+        self.tabHistogram.setLayout(layout)
         pass
 
     def RefreshFreqPage(self):
+        # Frequency Tab
+        freqplot = MyFrequencyPlot(self.tabFrequency,
+                                width=self.tabFrequency.width(),
+                                height=self.tabFrequency.height(),
+                                dpi=100)
+        N = len(self.statsResult.EventList)
+        if N == 0:
+            exit()
+
+        M = int(N) / 50
+        if M == 0:
+            M = 1
+        lX = []
+        lY = []
+        for I in xrange(0, N):
+            if np.mod(I, M) > 0:
+                continue
+            E = self.statsResult.EventList[I]
+            lX.append(E.Value)
+            lY.append(100.0 * E.Rank/N)
+
+        freqplot.setData(lX, lY)
+        freqplot.setTitle(self.stats.ObjectTypeText + " " +
+                           self.stats.ObjectID + " " +
+                           self.stats.VariableText)
+        freqplot.setYlabel('Exceedance Frequency (%)')
+        lunit = self.output.get_item_unit(self.stats.ObjectTypeText, \
+                                          self.stats.ObjectID, \
+                                          self.stats.VariableText)
+        if self.stats.StatsType == UStats.EStatsType.stDuration.value or \
+           self.stats.StatsType == UStats.EStatsType.stDelta.value:
+            freqplot.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                "(" + lunit + ")")
+        else:
+            freqplot.setXlabel(self.stats.TimePeriodText + " " +
+                                self.stats.StatsTypeText + " " +
+                                self.stats.VariableText + " " +
+                                "(" + lunit + ")")
+
+        layout = QtGui.QVBoxLayout(self.tabFrequency)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(freqplot)
+        self.tabFrequency.setLayout(layout)
+
         pass
 
     def set_from_old(self, project, output, object_name, object_id, variable_name, event_name, stat_name,
@@ -350,14 +469,13 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.close()
 
 class MyHistogram(FigureCanvas):
-
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        self.axes.hold(False)
-
-        plt.hist([1, 2, 1], bins=[0, 1, 2, 3])
-
+        self.ax = fig.add_subplot(111)
+        #self.ax.hold(False)
+        #self.rect = self.ax.patch
+        #self.rect.set_facecolor('cyan')
+        self.ax.grid(True)
         FigureCanvas.__init__(self, fig)
         self.setParent(main_form)
 
@@ -365,17 +483,45 @@ class MyHistogram(FigureCanvas):
                                    QtGui.QSizePolicy.Expanding,
                                    QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
+    def setData(self, aData, aBins=None):
+        if aBins is not None:
+            self.n, self.bins, self.patches = self.ax.hist(aData, aBins)
+        else:
+            self.n, self.bins, self.patches = self.ax.hist(aData)
+
+        N = sum(self.n)
+        for item in self.patches:
+            item.set_height(item.get_height()/N)
+
+        self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+        pass
+
+    def setTitle(self, aTitle):
+        if self.ax is not None:
+            self.ax.set_title(aTitle)
+        pass
+
+    def setXlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_xlabel(aLabel, fontsize=10)
+        #self.ax = plt.AxesSubplot() #debug only
+        pass
+
+    def setYlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_ylabel(aLabel)
+        pass
+
 
 class MyFrequencyPlot(FigureCanvas):
 
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        self.axes.hold(False)
-
-        y = (0.0, 3.0, 0.01)
-        x = (0,1,2)
-        self.axes.plot(x, y)
+        self.ax = fig.add_subplot(111)
+        #self.axes.hold(False)
+        self.ax.grid(True)
 
         FigureCanvas.__init__(self, fig)
         self.setParent(main_form)
@@ -384,3 +530,28 @@ class MyFrequencyPlot(FigureCanvas):
                                    QtGui.QSizePolicy.Expanding,
                                    QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
+    def setData(self, aData, aBins=None):
+        if aBins is not None:
+            self.ax.plot(aData, aBins)
+        else:
+            self.ax.plot(aData)
+
+        #self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+        pass
+
+    def setTitle(self, aTitle):
+        if self.ax is not None:
+            self.ax.set_title(aTitle)
+        pass
+
+    def setXlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_xlabel(aLabel, fontsize=10)
+        # self.ax = plt.AxesSubplot() #debug only
+        pass
+
+    def setYlabel(self, aLabel):
+        if self.ax is not None:
+            self.ax.set_ylabel(aLabel)
+        pass

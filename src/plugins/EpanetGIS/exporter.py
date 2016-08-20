@@ -106,3 +106,39 @@ def make_links_layer(coordinates, vertices, links, model_attributes, gis_attribu
     else:  # No features were created, so do not create a GIS layer. Probably this model does not have any of these.
         return None
 
+
+def make_points_layer(coordinates, model_points, model_attributes, gis_attributes):
+    features = []
+    # Receivers = as in the above example 'Receivers' is a list of results
+    for model_point in model_points:
+        for coordinate_pair in coordinates:
+            if coordinate_pair.name == model_point.name:
+                # add a feature
+                feature = QgsFeature()
+                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
+                values = []
+                for model_attribute in model_attributes:
+                    if model_attribute == "element_type":
+                        values.append(type(model_point).__name__)
+                    else:
+                        values.append(getattr(model_point, model_attribute, ''))
+                feature.setAttributes(values)
+                features.append(feature)
+
+    if features:  # If features were created, build and return a GIS layer containing these features
+        layer = QgsVectorLayer("Point", "Nodes", "memory")
+        provider = layer.dataProvider()
+
+        # create GIS fields
+        fields = []
+        for gis_attribute in gis_attributes:
+            fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
+        provider.addAttributes(fields)
+
+        layer.startEditing()  # changes are only possible when editing the layer
+        provider.addFeatures(features)
+        layer.commitChanges()
+        layer.updateExtents()
+        return layer
+    else:  # No features were created, so do not create a GIS layer. Probably this model does not have any of these.
+        return None

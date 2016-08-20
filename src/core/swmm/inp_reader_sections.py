@@ -28,6 +28,8 @@ from core.swmm.hydraulics.node import DirectInflowType
 from core.swmm.hydraulics.node import DryWeatherInflow
 from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import Outfall, OutfallType
+from core.swmm.hydraulics.node import Divider, FlowDividerType
+from core.swmm.hydraulics.node import StorageUnit, StorageCurveType
 from core.swmm.hydraulics.node import RDIInflow
 from core.swmm.hydraulics.node import Treatment
 from core.swmm.hydrology.aquifer import Aquifer
@@ -778,6 +780,107 @@ class OutfallReader(SectionReader):
         else:
             outfall = None
         return outfall
+
+
+class DividerReader(SectionReader):
+    """Read a flow divider node"""
+
+    @staticmethod
+    def read(new_text):
+        divider = Divider()
+        new_text = SectionReader.set_comment_check_section(divider, new_text)
+        fields = new_text.split()
+        if len(fields) > 3:
+            divider.name = fields[0]
+            divider.setattr_keep_type("elevation", fields[1])
+            divider.diverted_link = fields[2]
+            divider.setattr_keep_type("flow_divider_type", fields[3])
+            if len(fields) > 4:
+                if divider.flow_divider_type == FlowDividerType.OVERFLOW:
+                    divider.setattr_keep_type("max_depth", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("initial_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("surcharge_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("ponded_area", fields[7])
+                elif divider.flow_divider_type == FlowDividerType.CUTOFF:
+                    divider.setattr_keep_type("min_diversion_flow", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("initial_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("surcharge_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("ponded_area", fields[8])
+                elif divider.flow_divider_type == FlowDividerType.TABULAR:
+                    divider.divider_curve = fields[4]
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("initial_depth", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("surcharge_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("ponded_area", fields[8])
+
+                elif divider.flow_divider_type == FlowDividerType.WEIR:
+                    divider.setattr_keep_type("min_diversion_flow", fields[4])
+                    if len(fields) > 5:
+                        divider.setattr_keep_type("weir_max_depth", fields[5])
+                    if len(fields) > 6:
+                        divider.setattr_keep_type("weir_coefficient", fields[6])
+                    if len(fields) > 7:
+                        divider.setattr_keep_type("max_depth", fields[7])
+                    if len(fields) > 8:
+                        divider.setattr_keep_type("initial_depth", fields[8])
+                    if len(fields) > 9:
+                        divider.setattr_keep_type("surcharge_depth", fields[9])
+                    if len(fields) > 10:
+                        divider.setattr_keep_type("ponded_area", fields[10])
+        return divider
+
+
+class StorageReader(SectionReader):
+    """Read a storage unit from text"""
+
+    @staticmethod
+    def read(new_text):
+        storage = StorageUnit()
+        new_text = SectionReader.set_comment_check_section(storage, new_text)
+        fields = new_text.split()
+        if len(fields) > 4:
+            storage.name = fields[0]
+            storage.setattr_keep_type("elevation", fields[1])
+            storage.setattr_keep_type("max_depth", fields[2])
+            storage.setattr_keep_type("initial_depth", fields[3])
+            storage.setattr_keep_type("storage_curve_type", fields[4])
+            if len(fields) > 5:
+                if storage.storage_curve_type == StorageCurveType.TABULAR:
+                    storage.storage_curve = fields[5]
+                    next_field = 6
+                elif storage.storage_curve_type == StorageCurveType.FUNCTIONAL and len(fields) > 7:
+                    storage.setattr_keep_type("coefficient", fields[5])
+                    storage.setattr_keep_type("exponent", fields[6])
+                    storage.setattr_keep_type("constant", fields[7])
+                    next_field = 8
+
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("ponded_area", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("evaporation_factor", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_suction_head", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_hydraulic_conductivity", fields[next_field])
+                    next_field += 1
+                if len(fields) > next_field:
+                    storage.setattr_keep_type("seepage_initial_moisture_deficit", fields[next_field])
+        return storage
 
 
 class DirectInflowReader(SectionReader):

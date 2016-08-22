@@ -545,8 +545,10 @@ class frmMainEPANET(frmMain):
                         frmRun.showNormal()
                         frmRun.set_status_text("Reading " + file_name)
 
-                        self.project = Project()
-                        self.project.read_file(file_name)
+                        gui_settings = QtCore.QSettings(self.model, "GUI")
+                        directory = gui_settings.value("ProjectDir", "")
+                        self.open_project_quiet(file_name, gui_settings, directory)
+
                         frmRun.project = self.project
 
                     frmRun.Execute()

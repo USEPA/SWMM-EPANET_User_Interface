@@ -927,9 +927,11 @@ class frmMainSWMM(frmMain):
             file_name = self.project.file_name
             # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
-            directory = QtCore.QSettings(self.model, "GUI").value("ProjectDir", "")
-            file_name = QFileDialog.getOpenFileName(self, "Open Project...", directory,
-                                                          "Inp files (*.inp);;All files (*.*)")
+            self.open_project()
+
+        if self.project:
+            file_name = self.project.file_name
+
         if os.path.exists(file_name):
 
             prefix, extension = os.path.splitext(file_name)

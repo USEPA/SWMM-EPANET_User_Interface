@@ -40,16 +40,16 @@ class Report(Section):
         self.controls = False
         """Whether to list all control actions taken during a simulation"""
 
-        self.subcatchments = Report.EMPTY_LIST
+        self.subcatchments = ["ALL"]
         """List of subcatchments whose results are to be reported, or ALL or NONE"""
 
-        self.nodes = Report.EMPTY_LIST
+        self.nodes = ["ALL"]
         """List of nodes whose results are to be reported, or ALL or NONE"""
 
-        self.links = Report.EMPTY_LIST
+        self.links = ["ALL"]
         """List of links whose results are to be reported, or ALL or NONE"""
 
-        self.lids = Report.EMPTY_LIST
+        self.lids = ["ALL"]
         """List of lid specifications whose results are to be reported.
         Includes LID control name, subcatchment id and file name."""
 

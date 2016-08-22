@@ -512,9 +512,10 @@ class frmMainEPANET(frmMain):
             file_name = self.project.file_name
             # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
-            directory = QtCore.QSettings(self.model, "GUI").value("ProjectDir", "")
-            file_name = QFileDialog.getOpenFileName(self, "Open Project...", directory,
-                                                          "Inp files (*.inp);;All files (*.*)")
+            self.open_project()
+
+        if self.project:
+            file_name = self.project.file_name
 
         if os.path.exists(file_name):
             if not os.path.exists(self.model_path):
@@ -536,19 +537,6 @@ class frmMainEPANET(frmMain):
                     model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
-                    if not use_existing:
-                        # Read this project so we can refer to it while running
-                        frmRun.progressBar.setVisible(False)
-                        frmRun.lblTime.setVisible(False)
-                        frmRun.fraTime.setVisible(False)
-                        frmRun.fraBottom.setVisible(False)
-                        frmRun.showNormal()
-                        frmRun.set_status_text("Reading " + file_name)
-
-                        self.project = Project()
-                        self.project.read_file(file_name)
-                        frmRun.project = self.project
-
                     frmRun.Execute()
                     self.report_status()
                     try:

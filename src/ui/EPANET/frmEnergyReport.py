@@ -119,26 +119,31 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
 
     def rbnUtilization_Clicked(self):
         if self.rbnUtilization.isChecked():
+            self.widgetChart.p.cla()
             self.widgetChart.p.set_title('Utilization')
             self.DoPlot(self.utilization_values)
 
     def rbnAverageKw_Clicked(self):
         if self.rbnAverageKw.isChecked():
+            self.widgetChart.p.cla()
             self.widgetChart.p.set_title('Average Kw')
             self.DoPlot(self.average_kw_values)
 
     def rbnCost_Clicked(self):
         if self.rbnCost.isChecked():
+            self.widgetChart.p.cla()
             self.widgetChart.p.set_title('Cost / day')
             self.DoPlot(self.cost_values)
 
     def rbnEfficiency_Clicked(self):
         if self.rbnEfficiency.isChecked():
+            self.widgetChart.p.cla()
             self.widgetChart.p.set_title('Efficiency')
             self.DoPlot(self.efficiency_values)
 
     def rbnKwHr_Clicked(self):
         if self.rbnKwHr.isChecked():
+            self.widgetChart.p.cla()
             if self.output.unit_system == 0:
                 self.widgetChart.p.set_title('Kw-hr/Mgal')
             else:
@@ -147,6 +152,7 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
 
     def rbnPeakKw_Clicked(self):
         if self.rbnPeakKw.isChecked():
+            self.widgetChart.p.cla()
             self.widgetChart.p.set_title('Peak Kw')
             self.DoPlot(self.peak_kw_values)
 

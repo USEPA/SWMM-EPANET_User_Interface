@@ -162,9 +162,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="widgetChart" native="true">
+            <widget class="QFrame" name="frameChart">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>80</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>

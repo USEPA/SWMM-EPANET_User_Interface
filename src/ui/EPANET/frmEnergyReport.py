@@ -106,64 +106,71 @@ class frmEnergyReport(QtGui.QMainWindow, Ui_frmEnergyReport):
         led.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
         self.tableWidget.setItem(row+2, 5, QtGui.QTableWidgetItem(led.text()))
 
-        sc = MyMplCanvas(self.labels, self.utilization_values, self.widgetChart, width=8, height=5, dpi=50)
+        sc = MyMplCanvas(self.labels, self.utilization_values, self.frameChart, width=8, height=5, dpi=50)
+
+        layout = QtGui.QVBoxLayout(self.frameChart)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(sc)
+        self.frameChart.setLayout(layout)
+
         self.setParent(self._main_form)
-        self.widgetChart = sc
+        self.frameChart = sc
 
         # set for utilization to start
         self.rbnUtilization.setChecked(True)
-        self.widgetChart.draw()
+        self.frameChart.draw()
 
     def cmdCancel_Clicked(self):
         self.close()
 
     def rbnUtilization_Clicked(self):
         if self.rbnUtilization.isChecked():
-            self.widgetChart.p.cla()
-            self.widgetChart.p.set_title('Utilization')
+            self.frameChart.p.cla()
+            self.frameChart.p.set_title('Utilization')
             self.DoPlot(self.utilization_values)
 
     def rbnAverageKw_Clicked(self):
         if self.rbnAverageKw.isChecked():
-            self.widgetChart.p.cla()
-            self.widgetChart.p.set_title('Average Kw')
+            self.frameChart.p.cla()
+            self.frameChart.p.set_title('Average Kw')
             self.DoPlot(self.average_kw_values)
 
     def rbnCost_Clicked(self):
         if self.rbnCost.isChecked():
-            self.widgetChart.p.cla()
-            self.widgetChart.p.set_title('Cost / day')
+            self.frameChart.p.cla()
+            self.frameChart.p.set_title('Cost / day')
             self.DoPlot(self.cost_values)
 
     def rbnEfficiency_Clicked(self):
         if self.rbnEfficiency.isChecked():
-            self.widgetChart.p.cla()
-            self.widgetChart.p.set_title('Efficiency')
+            self.frameChart.p.cla()
+            self.frameChart.p.set_title('Efficiency')
             self.DoPlot(self.efficiency_values)
 
     def rbnKwHr_Clicked(self):
         if self.rbnKwHr.isChecked():
-            self.widgetChart.p.cla()
+            self.frameChart.p.cla()
             if self.output.unit_system == 0:
-                self.widgetChart.p.set_title('Kw-hr/Mgal')
+                self.frameChart.p.set_title('Kw-hr/Mgal')
             else:
-                self.widgetChart.p.set_title('Kw-hr/m3')
+                self.frameChart.p.set_title('Kw-hr/m3')
             self.DoPlot(self.kw_values)
 
     def rbnPeakKw_Clicked(self):
         if self.rbnPeakKw.isChecked():
-            self.widgetChart.p.cla()
-            self.widgetChart.p.set_title('Peak Kw')
+            self.frameChart.p.cla()
+            self.frameChart.p.set_title('Peak Kw')
             self.DoPlot(self.peak_kw_values)
 
     def DoPlot(self,values):
         import numpy as np
         ind = np.arange(len(self.labels))
         width = 0.75
-        self.widgetChart.p.set_xticks(ind + width/2)
-        self.widgetChart.p.set_xticklabels(self.labels)
-        self.widgetChart.p.bar(ind, values, width)
-        self.widgetChart.draw()
+        self.frameChart.p.set_xticks(ind + width/2)
+        self.frameChart.p.set_xticklabels(self.labels)
+        self.frameChart.p.bar(ind, values, width)
+        self.frameChart.draw()
+
 
 class MyMplCanvas(FigureCanvas):
 

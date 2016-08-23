@@ -5,41 +5,46 @@ import os
 
 
 def export_to_gis(session, file_name):
-    if file_name.lower().endswith("shp"):
+    path_file, extension = os.path.splitext(file_name)
+    if extension.lower() == ".shp":
         driver_name = "ESRI Shapefile"
         one_file = False
     else:
         driver_name = "GeoJson"
         one_file = True
+        extension = ".json"
     coordinates = session.project.coordinates.value
     vertices = session.project.vertices.value
 
-    path_file, extension = os.path.splitext(file_name)
     layer_count = 0
     layer = None
 
     pipe_model_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
     pipe_gis_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+
     pumps_model_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
     pumps_gis_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+
     valves_model_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
     valves_gis_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+        "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
     """ Mapping of attribute names of model objects to attribute names exported to vector layer.
         Edit gis_attributes as needed to specify attribute names as they will appear when exported.
         To omit an attribute from the GIS layer, delete the attribute name from both lists.
-        EPANET object attribute "element_type" will be exported as, for example, "Pipe", "Pump" or "Valve".
+        model attribute "element_type" will be exported as, for example, "Pipe", "Pump" or "Valve".
     """
 
+    all_gis_attributes = pipe_gis_attributes
     if one_file:  # if putting all types in one file, need all attributes to include ones from all layers
-        all_gis_attributes = set(pipe_gis_attributes + pumps_gis_attributes + valves_gis_attributes)
-    else:
-        all_gis_attributes = pipe_gis_attributes
+        for attributes in (pumps_gis_attributes, valves_gis_attributes):
+            for attribute in attributes:
+                if not attribute in all_gis_attributes:
+                    all_gis_attributes.append(attribute)
 
     # Export Pipes
     layer = make_links_layer(coordinates, vertices, session.project.pipes.value,

@@ -7,62 +7,92 @@ import os
 def export_to_gis(session, file_name):
     if file_name.lower().endswith("shp"):
         driver_name = "ESRI Shapefile"
+        one_file = False
     else:
         driver_name = "GeoJson"
+        one_file = True
     coordinates = session.project.coordinates.value
     vertices = session.project.vertices.value
 
     path_file, extension = os.path.splitext(file_name)
     layer_count = 0
+    layer = None
 
-    # Export Pipes
     pipe_model_attributes = [
         "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
     pipe_gis_attributes = [
         "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+    pumps_model_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+    pumps_gis_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+    valves_model_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+    valves_gis_attributes = [
+        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
     """ Mapping of attribute names of model objects to attribute names exported to vector layer.
         Edit gis_attributes as needed to specify attribute names as they will appear when exported.
         To omit an attribute from the GIS layer, delete the attribute name from both lists.
         EPANET object attribute "element_type" will be exported as, for example, "Pipe", "Pump" or "Valve".
     """
+
+    if one_file:  # if putting all types in one file, need all attributes to include ones from all layers
+        all_gis_attributes = pipe_gis_attributes | pumps_gis_attributes | valves_gis_attributes
+    else:
+        all_gis_attributes = pipe_gis_attributes
+
+    # Export Pipes
     layer = make_links_layer(coordinates, vertices, session.project.pipes.value,
-                             pipe_model_attributes, pipe_gis_attributes)
+                             pipe_model_attributes, pipe_gis_attributes, all_gis_attributes, layer)
     if layer:
-        layer_file_name = path_file + "_pipes" + extension
-        QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-        print("saved " + layer_file_name)
         layer_count += 1
+        if not one_file:
+            layer_file_name = path_file + "_pipes" + extension
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
+            print("saved " + layer_file_name)
 
     # Export Pumps
-    pumps_model_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
-    pumps_gis_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+    if not one_file:
+        layer = None
+        all_gis_attributes = pumps_gis_attributes
+
     layer = make_links_layer(coordinates, vertices, session.project.pumps.value,
-                             pumps_model_attributes, pumps_gis_attributes)
+                             pumps_model_attributes, pumps_gis_attributes, all_gis_attributes, layer)
     if layer:
-        layer_file_name = path_file + "_pumps" + extension
-        QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-        print("saved " + layer_file_name)
         layer_count += 1
+        if not one_file:
+            layer_file_name = path_file + "_pumps" + extension
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
+            print("saved " + layer_file_name)
 
     # Export Valves
-    valves_model_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
-    valves_gis_attributes = [
-        "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+    if not one_file:
+        layer = None
+        all_gis_attributes = valves_gis_attributes
     layer = make_links_layer(coordinates, vertices, session.project.valves.value,
-                             valves_model_attributes, valves_gis_attributes)
+                             valves_model_attributes, valves_gis_attributes, all_gis_attributes, layer)
     if layer:
-        layer_file_name = path_file + "_valves" + extension
-        QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-        print("saved " + layer_file_name)
         layer_count += 1
+        if not one_file:
+            layer_file_name = path_file + "_valves" + extension
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
+            print("saved " + layer_file_name)
 
-    result = "Exported " + str(layer_count) + " layers to GIS"
+    if one_file:
+        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
+        print("saved " + file_name)
+
+    return "Exported " + str(layer_count) + " layers to GIS"
 
 
-def make_links_layer(coordinates, vertices, links, model_attributes, gis_attributes):
+def make_gis_fields(gis_attributes):
+    # create GIS fields
+    fields = []
+    for gis_attribute in gis_attributes:
+        fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
+
+
+def make_links_layer(coordinates, vertices, links, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []
     for link in links:       # For each link, create a GIS feature
         inlet_coord = None
@@ -83,23 +113,27 @@ def make_links_layer(coordinates, vertices, links, model_attributes, gis_attribu
                 feature.setGeometry(QgsGeometry.fromPolyline(points))
 
                 values = []
-                for model_attribute in model_attributes:
-                    if model_attribute == "element_type":
-                        values.append(type(link).__name__)
-                    else:
-                        values.append(getattr(link, model_attribute, ''))
+                for gis_attribute in all_gis_attributes:
+                    try:
+                        index = gis_attributes.index(gis_attribute)
+                        model_attribute = model_attributes[index]
+                        if model_attribute == "element_type":
+                            values.append(type(link).__name__)
+                        else:
+                            values.append(getattr(link, model_attribute, ''))
+                    except:
+                        values.append(None)
                 feature.setAttributes(values)
                 features.append(feature)
                 break  # stop looking for more coordinates
     if features:  # If features were created, build and return a GIS layer containing these features
-        layer = QgsVectorLayer("LineString", "links", "memory")
-        provider = layer.dataProvider()
-
-        # create GIS fields
-        fields = []
-        for gis_attribute in gis_attributes:
-            fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
-        provider.addAttributes(fields)
+        creating_layer = (layer is None)
+        if creating_layer:
+            layer = QgsVectorLayer("LineString", "links", "memory")
+            provider = layer.dataProvider()
+            provider.addAttributes(make_gis_fields(all_gis_attributes))
+        else:
+            provider = layer.dataProvider()
 
         layer.startEditing()  # changes are only possible when editing the layer
         provider.addFeatures(features)

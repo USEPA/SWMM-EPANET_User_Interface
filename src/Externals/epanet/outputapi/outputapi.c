@@ -505,26 +505,27 @@ float* DLLEXPORT ENR_newOutValueSeries(ENResultsAPI* enrapi, int startPeriod,
 //
 //  Warning: Caller must free memory allocated by this function using ENR_free().
 //
+//  Valid values for startPeriod and endPeriod are 0..Nperiods-1.
+//  endPeriod must be >= startPeriod.
 {
     int size;
     float* array;
 
     if (enrapi!=NULL)
     {
-    	if (startPeriod < 0 || endPeriod >= enrapi->nPeriods ||
-    			endPeriod <= startPeriod)
+    	if (startPeriod < 0 || endPeriod >= enrapi->nPeriods ||	endPeriod < startPeriod)
     	{
     		*errcode = 422; return NULL;
     	}
 
-        size = endPeriod - startPeriod;
-        if (size > enrapi->nPeriods) size = enrapi->nPeriods - 1;
+        size = endPeriod - startPeriod + 1;
+        if (size > enrapi->nPeriods) size = enrapi->nPeriods;
 
         // Allocate memory for outValues
-        array = (float*) calloc(size + 1, sizeof(float));
+        array = (float*) calloc(size, sizeof(float));
         *errcode = (MEMCHECK(array));
 
-        *length = size + 1;
+        *length = size;
         return array;
     }
     *errcode = 412;

@@ -39,28 +39,37 @@ class SwmmOutputCategoryBase:
 
     @classmethod
     def read_all(cls, output):
-        """ Read all items of this class from the output file into a dictionary.
+        """ Read all items of this type from the output file into a dictionary.
             Intended to be called only in the constructor of the output file object.
-            Args
+            Also add pollutants present in this output as attributes of this class.
+
+            Args:
             output (SwmmOutputObject): object that has already opened the desired output file.
-            Notes
-            Not used for SwmmOutputSystem because it does not have a list of names/IDs.
             Returns (dictionary): Python dictionary of all objects of this type, keyed by name.
+
+            Notes:
+            Not used for SwmmOutputSystem because it does not have a list of names/IDs to read,
+            and it does not have pollutants as attributes to set.
         """
         items = {}
-        index = 0
-        # Traverse a linked list of struct IDentry (char* IDname, IDentry* nextID).
-        id_head = cls._get_ids(output.ptrapi, byref(cint))
-        next_id = id_head
-        if cint.value != 0:
-            print("Error reading IDs for " + cls.type_label)
-            output._raise_error(cint.value)
-        while next_id:
-            name = str(next_id.contents.IDname.data)
+        item_count = output._call_int(_lib.SMO_getProjectSize, cls._count_flag)
+        ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
+        for index in range(0, item_count):
+            _lib.SMO_getElementName(output.ptrapi, cls._element_type, index, ctypes_name, _lib.MAXID)
+            name = str(ctypes_name)
             items[name] = cls(name, index)
-            next_id = next_id.contents.nextID
-            index += 1
-        _lib.SMO_freeIDList(id_head)
+
+        # Populate pollutants as attributes of this class
+        if hasattr(cls, "_first_pollutant"):
+            pollutant_index = cls._first_pollutant
+            if len(cls.attributes) == pollutant_index:
+                for pollutant in output.pollutants.values():
+                    cls.attributes.append(SwmmOutputAttribute(pollutant_index, pollutant.name,
+                                                              (pollutant.units, pollutant.units)))
+                    pollutant_index += 1
+            else:
+                print "Not reading pollutants because len(cls.attributes) == " + str(len(cls.attributes)) +\
+                      " and pollutant_index == " + str(pollutant_index)
         return items
 
     def get_series(self, output, attribute, start_index=0, num_values=-1):
@@ -82,10 +91,10 @@ class SwmmOutputCategoryBase:
                             " Outside Number of TimeSteps " + str(output.num_periods))
         returned_length = c_int()
         error_new = c_int()
-        ask_for_length = num_values
-        if output.newOutValueSeriesLengthIsEnd:
-            ask_for_length += start_index + 1
-        series_pointer = _lib.SMO_newOutValueSeries(output.ptrapi, start_index, ask_for_length,
+        end_index = start_index + num_values - 1
+        # if output.newOutValueSeriesLengthIsEnd:
+        #     ask_for_length += start_index + 1
+        series_pointer = _lib.SMO_newOutValueSeries(output.ptrapi, start_index, end_index,
                                                     byref(returned_length), byref(error_new))
         if error_new.value != 0:
             print("Error " + str(error_new.value) +
@@ -180,23 +189,22 @@ class SwmmOutputSubcatchment(SwmmOutputCategoryBase):
     attribute_groundwater_flow      = SwmmOutputAttribute(_lib.gwoutflow_rate,          "Groundwater Flow",      ('CFS', 'CMS'))
     attribute_groundwater_elevation = SwmmOutputAttribute(_lib.gwtable_elev,            "Groundwater Elevation", ('ft', 'm'))
     attribute_soil_moisture         = SwmmOutputAttribute(_lib.soil_moisture,           "Soil Moisture",         ('', ''))
-    attribute_concentration         = SwmmOutputAttribute(_lib.pollutant_conc_subcatch, "Concentration",         ('mg/L', 'mg/L'))
 
-    attributes = (attribute_precipitation,
+    attributes = [attribute_precipitation,
                   attribute_snow_depth,
                   attribute_evaporation,
                   attribute_infiltration,
                   attribute_runoff,
                   attribute_groundwater_flow,
                   attribute_groundwater_elevation,
-                  attribute_soil_moisture,
-                  attribute_concentration)
+                  attribute_soil_moisture]
 
-    _get_ids = _lib.SMO_getSubcatchIDs
+    _count_flag = _lib.subcatchCount
     _get_series = _lib.SMO_getSubcatchSeries
     _get_attribute = _lib.SMO_getSubcatchAttribute
     _get_result = _lib.SMO_getSubcatchResult
     _element_type = _lib.subcatch  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _first_pollutant = _lib.pollutant_conc_subcatch
 
 
 class SwmmOutputNode(SwmmOutputCategoryBase):
@@ -208,22 +216,20 @@ class SwmmOutputNode(SwmmOutputCategoryBase):
     attribute_lateral_inflow = SwmmOutputAttribute(_lib.lateral_inflow,       "Lateral Inflow", ('CFS', 'CMS'))
     attribute_total_inflow   = SwmmOutputAttribute(_lib.total_inflow,         "Total Inflow",   ('CFS', 'CMS'))
     attribute_flooding       = SwmmOutputAttribute(_lib.flooding_losses,      "Flooding",       ('CFS', 'CMS'))
-    attribute_tss            = SwmmOutputAttribute(_lib.pollutant_conc_node,  "TSS",            ('mg/L', 'mg/L'))
 
-    attributes = (attribute_depth,
+    attributes = [attribute_depth,
                   attribute_head,
                   attribute_volume,
                   attribute_lateral_inflow,
                   attribute_total_inflow,
-                  attribute_flooding,
-                  attribute_tss)
+                  attribute_flooding]
 
-    _get_ids = _lib.SMO_getNodeIDs
-    # _get_value = _lib.SMO_getNodeValue
+    _count_flag = _lib.nodeCount
     _get_series = _lib.SMO_getNodeSeries
     _get_attribute = _lib.SMO_getNodeAttribute
     _get_result = _lib.SMO_getNodeResult
     _element_type = _lib.node  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _first_pollutant = _lib.pollutant_conc_node
 
 
 class SwmmOutputLink(SwmmOutputCategoryBase):
@@ -234,21 +240,19 @@ class SwmmOutputLink(SwmmOutputCategoryBase):
     attribute_velocity      = SwmmOutputAttribute(_lib.flow_velocity,       "Velocity",      ('fps', 'm/s'))
     attribute_volume        = SwmmOutputAttribute(_lib.flow_volume,         "Volume",        ('ft3', 'm3'))
     attribute_capacity      = SwmmOutputAttribute(_lib.capacity,            "Capacity",      ('', ''))
-    attribute_concentration = SwmmOutputAttribute(_lib.pollutant_conc_link, "Concentration", ('mg/L', 'mg/L'))
 
-    attributes = (attribute_flow,
+    attributes = [attribute_flow,
                   attribute_depth,
                   attribute_velocity,
                   attribute_volume,
-                  attribute_capacity,
-                  attribute_concentration)
+                  attribute_capacity]
 
-    _get_ids = _lib.SMO_getLinkIDs
-    # _get_value = _lib.SMO_getLinkValue
+    _count_flag = _lib.linkCount
     _get_series = _lib.SMO_getLinkSeries
     _get_attribute = _lib.SMO_getLinkAttribute
     _get_result = _lib.SMO_getLinkResult
     _element_type = _lib.link  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _first_pollutant = _lib.pollutant_conc_link
 
 
 class SwmmOutputSystem(SwmmOutputCategoryBase):
@@ -288,13 +292,14 @@ class SwmmOutputSystem(SwmmOutputCategoryBase):
     _get_series = _lib.SMO_getSystemSeries
     _get_attribute = _lib.SMO_getSystemAttribute
     _get_result = _lib.SMO_getSystemResult
-    _element_type = 3  # typedef enum {subcatch, node, link, sys} SMO_elementType
+    _element_type = _lib._sys  # 3 typedef enum {subcatch, node, link, sys} SMO_elementType
 
 
 class SwmmOutputPollutant(SwmmOutputCategoryBase):
     type_label = "Pollutant"
-    _get_ids = _lib.SMO_getPollutIDs
     all_units = ["mg/L", "ug/L", "count/L"]
+    _count_flag = _lib.pollutantCount
+    _element_type = _lib._sys  # This is recognized when getting names from the API. (There are no names for sys.)
 
 
 swmm_output_object_types = (SwmmOutputSubcatchment, SwmmOutputNode, SwmmOutputLink, SwmmOutputSystem)
@@ -323,26 +328,30 @@ class SwmmOutputObject(object):
             Args
             output_file_name (str): full path and file name of EPANET binary output file to open
         """
-        self.ptrapi = c_void_p()
         self._call_int_return = c_int()  # Private variable used only inside call_int
         self._call_double_return = c_double()  # Private variable used only inside call_double
         self.output_file_name = str(output_file_name)
-        ret = _lib.SMR_open(self.output_file_name, byref(self.ptrapi))
+
+        self.ptrapi = _lib.SMO_init()
+        ret = _lib.SMO_open(self.ptrapi, self.output_file_name)
         if ret != 0:
             self._raise_error(ret)
-        self._measure_new_out_value_series()
+
+        # self._measure_new_out_value_series()
         self._get_units()
         self._get_sizes()
         self._get_times()
-        self.subcatchments = SwmmOutputSubcatchment.read_all(self)
-        self.nodes = SwmmOutputNode.read_all(self)
-        self.links = SwmmOutputLink.read_all(self)
-        self.system = {'-1': SwmmOutputSystem('-1', -1)}
+
         self.pollutants = SwmmOutputPollutant.read_all(self)
         for pollutant in self.pollutants.values():
             pollutant.units = SwmmOutputPollutant.all_units[
                 self._call_int(_lib.SMO_getPollutantUnits, pollutant._index)]
 
+        # Read all the model elements into dictionaries (also add pollutants to attributes)
+        self.subcatchments = SwmmOutputSubcatchment.read_all(self)
+        self.nodes = SwmmOutputNode.read_all(self)
+        self.links = SwmmOutputLink.read_all(self)
+        self.system = {'-1': SwmmOutputSystem('-1', -1)}
         self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
 
     def _call(self, function, *args):
@@ -384,17 +393,17 @@ class SwmmOutputObject(object):
         # else:
         raise Exception("SWMM output error #{0}".format(ErrNo))
 
-    def _measure_new_out_value_series(self):
-        """Test SMO_newOutValueSeries to see whether it treats the requested length as length or end.
-            Sets self.newOutValueSeriesLengthIsEnd flag so we can adjust how we call this method."""
-        returned_length = c_int()
-        error_new = c_int()
-        series_pointer = _lib.SMO_newOutValueSeries(self.ptrapi, 1, 2, byref(returned_length), byref(error_new))
-        if error_new.value != 0:
-            print("Error allocating series start to test ENR_newOutValueSeries: " + str(error_new.value))
-            self._raise_error(error_new.value)
-        self.newOutValueSeriesLengthIsEnd = (returned_length.value == 1)
-        _lib.SMO_free(series_pointer)
+    # def _measure_new_out_value_series(self):
+    #     """Test SMO_newOutValueSeries to see whether it treats the requested length as length or end.
+    #         Sets self.newOutValueSeriesLengthIsEnd flag so we can adjust how we call this method."""
+    #     returned_length = c_int()
+    #     error_new = c_int()
+    #     series_pointer = _lib.SMO_newOutValueSeries(self.ptrapi, 1, 2, byref(returned_length), byref(error_new))
+    #     if error_new.value != 0:
+    #         print("Error allocating series start to test ENR_newOutValueSeries: " + str(error_new.value))
+    #         self._raise_error(error_new.value)
+    #     self.newOutValueSeriesLengthIsEnd = (returned_length.value == 1)
+    #     _lib.SMO_free(series_pointer)
 
     def _get_units(self):
         """

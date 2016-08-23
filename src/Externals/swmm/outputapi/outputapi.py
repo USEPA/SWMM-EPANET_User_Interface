@@ -605,351 +605,303 @@ else:
 
 # No modules
 
-# outputAPI.h: 41
+# outputAPI.h: 33
 class struct_SMOutputAPI(Structure):
     pass
 
-SMOutputAPI = struct_SMOutputAPI # outputAPI.h: 41
+SMOutputAPI = struct_SMOutputAPI # outputAPI.h: 33
 
-enum_anon_1 = c_int # outputAPI.h: 49
+enum_anon_1 = c_int # outputAPI.h: 41
 
-subcatchCount = 0 # outputAPI.h: 49
+subcatchCount = 0 # outputAPI.h: 41
 
-nodeCount = (subcatchCount + 1) # outputAPI.h: 49
+nodeCount = (subcatchCount + 1) # outputAPI.h: 41
 
-linkCount = (nodeCount + 1) # outputAPI.h: 49
+linkCount = (nodeCount + 1) # outputAPI.h: 41
 
-pollutantCount = (linkCount + 1) # outputAPI.h: 49
+pollutantCount = (linkCount + 1) # outputAPI.h: 41
 
-SMO_elementCount = enum_anon_1 # outputAPI.h: 49
+SMO_elementCount = enum_anon_1 # outputAPI.h: 41
 
-enum_anon_2 = c_int # outputAPI.h: 55
+enum_anon_2 = c_int # outputAPI.h: 47
 
-flow_rate = 0 # outputAPI.h: 55
+flow_rate = 0 # outputAPI.h: 47
 
-concentration = (flow_rate + 1) # outputAPI.h: 55
+concentration = (flow_rate + 1) # outputAPI.h: 47
 
-SMO_unit = enum_anon_2 # outputAPI.h: 55
+SMO_unit = enum_anon_2 # outputAPI.h: 47
 
-enum_anon_3 = c_int # outputAPI.h: 62
+enum_anon_3 = c_int # outputAPI.h: 54
 
-getAttribute = 0 # outputAPI.h: 62
+getAttribute = 0 # outputAPI.h: 54
 
-getResult = (getAttribute + 1) # outputAPI.h: 62
+getResult = (getAttribute + 1) # outputAPI.h: 54
 
-SMO_apiFunction = enum_anon_3 # outputAPI.h: 62
+SMO_apiFunction = enum_anon_3 # outputAPI.h: 54
 
-enum_anon_4 = c_int # outputAPI.h: 70
+enum_anon_4 = c_int # outputAPI.h: 62
 
-subcatch = 0 # outputAPI.h: 70
+subcatch = 0 # outputAPI.h: 62
 
-node = (subcatch + 1) # outputAPI.h: 70
+node = (subcatch + 1) # outputAPI.h: 62
 
-link = (node + 1) # outputAPI.h: 70
+link = (node + 1) # outputAPI.h: 62
 
-_sys = (link + 1) # outputAPI.h: 70
+_sys = (link + 1) # outputAPI.h: 62
 
-SMO_elementType = enum_anon_4 # outputAPI.h: 70
+SMO_elementType = enum_anon_4 # outputAPI.h: 62
 
-enum_anon_5 = c_int # outputAPI.h: 77
+enum_anon_5 = c_int # outputAPI.h: 69
 
-reportStep = 0 # outputAPI.h: 77
+reportStep = 0 # outputAPI.h: 69
 
-numPeriods = (reportStep + 1) # outputAPI.h: 77
+numPeriods = (reportStep + 1) # outputAPI.h: 69
 
-SMO_time = enum_anon_5 # outputAPI.h: 77
+SMO_time = enum_anon_5 # outputAPI.h: 69
 
-enum_anon_6 = c_int # outputAPI.h: 90
+enum_anon_6 = c_int # outputAPI.h: 82
 
-rainfall_subcatch = 0 # outputAPI.h: 90
+rainfall_subcatch = 0 # outputAPI.h: 82
 
-snow_depth_subcatch = (rainfall_subcatch + 1) # outputAPI.h: 90
+snow_depth_subcatch = (rainfall_subcatch + 1) # outputAPI.h: 82
 
-evap_loss = (snow_depth_subcatch + 1) # outputAPI.h: 90
+evap_loss = (snow_depth_subcatch + 1) # outputAPI.h: 82
 
-infil_loss = (evap_loss + 1) # outputAPI.h: 90
+infil_loss = (evap_loss + 1) # outputAPI.h: 82
 
-runoff_rate = (infil_loss + 1) # outputAPI.h: 90
+runoff_rate = (infil_loss + 1) # outputAPI.h: 82
 
-gwoutflow_rate = (runoff_rate + 1) # outputAPI.h: 90
+gwoutflow_rate = (runoff_rate + 1) # outputAPI.h: 82
 
-gwtable_elev = (gwoutflow_rate + 1) # outputAPI.h: 90
+gwtable_elev = (gwoutflow_rate + 1) # outputAPI.h: 82
 
-soil_moisture = (gwtable_elev + 1) # outputAPI.h: 90
+soil_moisture = (gwtable_elev + 1) # outputAPI.h: 82
 
-pollutant_conc_subcatch = (soil_moisture + 1) # outputAPI.h: 90
+pollutant_conc_subcatch = (soil_moisture + 1) # outputAPI.h: 82
 
-SMO_subcatchAttribute = enum_anon_6 # outputAPI.h: 90
+SMO_subcatchAttribute = enum_anon_6 # outputAPI.h: 82
 
-enum_anon_7 = c_int # outputAPI.h: 101
+enum_anon_7 = c_int # outputAPI.h: 93
 
-invert_depth = 0 # outputAPI.h: 101
+invert_depth = 0 # outputAPI.h: 93
 
-hydraulic_head = (invert_depth + 1) # outputAPI.h: 101
+hydraulic_head = (invert_depth + 1) # outputAPI.h: 93
 
-stored_ponded_volume = (hydraulic_head + 1) # outputAPI.h: 101
+stored_ponded_volume = (hydraulic_head + 1) # outputAPI.h: 93
 
-lateral_inflow = (stored_ponded_volume + 1) # outputAPI.h: 101
+lateral_inflow = (stored_ponded_volume + 1) # outputAPI.h: 93
 
-total_inflow = (lateral_inflow + 1) # outputAPI.h: 101
+total_inflow = (lateral_inflow + 1) # outputAPI.h: 93
 
-flooding_losses = (total_inflow + 1) # outputAPI.h: 101
+flooding_losses = (total_inflow + 1) # outputAPI.h: 93
 
-pollutant_conc_node = (flooding_losses + 1) # outputAPI.h: 101
+pollutant_conc_node = (flooding_losses + 1) # outputAPI.h: 93
 
-SMO_nodeAttribute = enum_anon_7 # outputAPI.h: 101
+SMO_nodeAttribute = enum_anon_7 # outputAPI.h: 93
 
-enum_anon_8 = c_int # outputAPI.h: 111
+enum_anon_8 = c_int # outputAPI.h: 103
 
-flow_rate_link = 0 # outputAPI.h: 111
+flow_rate_link = 0 # outputAPI.h: 103
 
-flow_depth = (flow_rate_link + 1) # outputAPI.h: 111
+flow_depth = (flow_rate_link + 1) # outputAPI.h: 103
 
-flow_velocity = (flow_depth + 1) # outputAPI.h: 111
+flow_velocity = (flow_depth + 1) # outputAPI.h: 103
 
-flow_volume = (flow_velocity + 1) # outputAPI.h: 111
+flow_volume = (flow_velocity + 1) # outputAPI.h: 103
 
-capacity = (flow_volume + 1) # outputAPI.h: 111
+capacity = (flow_volume + 1) # outputAPI.h: 103
 
-pollutant_conc_link = (capacity + 1) # outputAPI.h: 111
+pollutant_conc_link = (capacity + 1) # outputAPI.h: 103
 
-SMO_linkAttribute = enum_anon_8 # outputAPI.h: 111
+SMO_linkAttribute = enum_anon_8 # outputAPI.h: 103
 
-enum_anon_9 = c_int # outputAPI.h: 129
+enum_anon_9 = c_int # outputAPI.h: 121
 
-air_temp = 0 # outputAPI.h: 129
+air_temp = 0 # outputAPI.h: 121
 
-rainfall_system = (air_temp + 1) # outputAPI.h: 129
+rainfall_system = (air_temp + 1) # outputAPI.h: 121
 
-snow_depth_system = (rainfall_system + 1) # outputAPI.h: 129
+snow_depth_system = (rainfall_system + 1) # outputAPI.h: 121
 
-evap_infil_loss = (snow_depth_system + 1) # outputAPI.h: 129
+evap_infil_loss = (snow_depth_system + 1) # outputAPI.h: 121
 
-runoff_flow = (evap_infil_loss + 1) # outputAPI.h: 129
+runoff_flow = (evap_infil_loss + 1) # outputAPI.h: 121
 
-dry_weather_inflow = (runoff_flow + 1) # outputAPI.h: 129
+dry_weather_inflow = (runoff_flow + 1) # outputAPI.h: 121
 
-groundwater_inflow = (dry_weather_inflow + 1) # outputAPI.h: 129
+groundwater_inflow = (dry_weather_inflow + 1) # outputAPI.h: 121
 
-RDII_inflow = (groundwater_inflow + 1) # outputAPI.h: 129
+RDII_inflow = (groundwater_inflow + 1) # outputAPI.h: 121
 
-direct_inflow = (RDII_inflow + 1) # outputAPI.h: 129
+direct_inflow = (RDII_inflow + 1) # outputAPI.h: 121
 
-total_lateral_inflow = (direct_inflow + 1) # outputAPI.h: 129
+total_lateral_inflow = (direct_inflow + 1) # outputAPI.h: 121
 
-flood_losses = (total_lateral_inflow + 1) # outputAPI.h: 129
+flood_losses = (total_lateral_inflow + 1) # outputAPI.h: 121
 
-outfall_flows = (flood_losses + 1) # outputAPI.h: 129
+outfall_flows = (flood_losses + 1) # outputAPI.h: 121
 
-volume_stored = (outfall_flows + 1) # outputAPI.h: 129
+volume_stored = (outfall_flows + 1) # outputAPI.h: 121
 
-evap_rate = (volume_stored + 1) # outputAPI.h: 129
+evap_rate = (volume_stored + 1) # outputAPI.h: 121
 
-SMO_systemAttribute = enum_anon_9 # outputAPI.h: 129
+SMO_systemAttribute = enum_anon_9 # outputAPI.h: 121
 
-# outputAPI.h: 131
-class struct_IDentry(Structure):
-    pass
+# outputAPI.h: 138
+if hasattr(_libs['outputapi'], 'SMO_init'):
+    SMO_init = _libs['outputapi'].SMO_init
+    SMO_init.argtypes = []
+    SMO_init.restype = POINTER(SMOutputAPI)
 
-struct_IDentry.__slots__ = [
-    'IDname',
-    'nextID',
-]
-struct_IDentry._fields_ = [
-    ('IDname', String),
-    ('nextID', POINTER(struct_IDentry)),
-]
+# outputAPI.h: 139
+if hasattr(_libs['outputapi'], 'SMO_open'):
+    SMO_open = _libs['outputapi'].SMO_open
+    SMO_open.argtypes = [POINTER(SMOutputAPI), String]
+    SMO_open.restype = c_int
 
-idEntry = struct_IDentry # outputAPI.h: 135
-
-# outputAPI.h: 137
-if hasattr(_libs['outputapi'], 'SMR_open'):
-    SMR_open = _libs['outputapi'].SMR_open
-    SMR_open.argtypes = [String, POINTER(POINTER(SMOutputAPI))]
-    SMR_open.restype = c_int
-
-# outputAPI.h: 140
+# outputAPI.h: 141
 if hasattr(_libs['outputapi'], 'SMO_getProjectSize'):
     SMO_getProjectSize = _libs['outputapi'].SMO_getProjectSize
     SMO_getProjectSize.argtypes = [POINTER(SMOutputAPI), SMO_elementCount, POINTER(c_int)]
     SMO_getProjectSize.restype = c_int
 
-# outputAPI.h: 141
+# outputAPI.h: 142
+if hasattr(_libs['outputapi'], 'SMO_getResultCount'):
+    SMO_getResultCount = _libs['outputapi'].SMO_getResultCount
+    SMO_getResultCount.argtypes = [POINTER(SMOutputAPI), SMO_elementType, POINTER(c_int)]
+    SMO_getResultCount.restype = c_int
+
+# outputAPI.h: 144
 if hasattr(_libs['outputapi'], 'SMO_getUnits'):
     SMO_getUnits = _libs['outputapi'].SMO_getUnits
     SMO_getUnits.argtypes = [POINTER(SMOutputAPI), SMO_unit, POINTER(c_int)]
     SMO_getUnits.restype = c_int
 
-# outputAPI.h: 142
-for _lib in _libs.itervalues():
-    if not hasattr(_lib, 'SMO_getPollutantUnits'):
-        continue
-    SMO_getPollutantUnits = _lib.SMO_getPollutantUnits
+# outputAPI.h: 145
+if hasattr(_libs['outputapi'], 'SMO_getPollutantUnits'):
+    SMO_getPollutantUnits = _libs['outputapi'].SMO_getPollutantUnits
     SMO_getPollutantUnits.argtypes = [POINTER(SMOutputAPI), c_int, POINTER(c_int)]
     SMO_getPollutantUnits.restype = c_int
-    break
 
-# outputAPI.h: 143
+# outputAPI.h: 147
 if hasattr(_libs['outputapi'], 'SMO_getStartTime'):
     SMO_getStartTime = _libs['outputapi'].SMO_getStartTime
     SMO_getStartTime.argtypes = [POINTER(SMOutputAPI), POINTER(c_double)]
     SMO_getStartTime.restype = c_int
 
-# outputAPI.h: 144
+# outputAPI.h: 148
 if hasattr(_libs['outputapi'], 'SMO_getTimes'):
     SMO_getTimes = _libs['outputapi'].SMO_getTimes
     SMO_getTimes.argtypes = [POINTER(SMOutputAPI), SMO_time, POINTER(c_int)]
     SMO_getTimes.restype = c_int
 
-# outputAPI.h: 147
-if hasattr(_libs['outputapi'], 'SMO_getSubcatchIDs'):
-    SMO_getSubcatchIDs = _libs['outputapi'].SMO_getSubcatchIDs
-    SMO_getSubcatchIDs.argtypes = [POINTER(SMOutputAPI), POINTER(c_int)]
-    SMO_getSubcatchIDs.restype = POINTER(struct_IDentry)
-
-# outputAPI.h: 148
-if hasattr(_libs['outputapi'], 'SMO_getNodeIDs'):
-    SMO_getNodeIDs = _libs['outputapi'].SMO_getNodeIDs
-    SMO_getNodeIDs.argtypes = [POINTER(SMOutputAPI), POINTER(c_int)]
-    SMO_getNodeIDs.restype = POINTER(struct_IDentry)
-
-# outputAPI.h: 149
-if hasattr(_libs['outputapi'], 'SMO_getLinkIDs'):
-    SMO_getLinkIDs = _libs['outputapi'].SMO_getLinkIDs
-    SMO_getLinkIDs.argtypes = [POINTER(SMOutputAPI), POINTER(c_int)]
-    SMO_getLinkIDs.restype = POINTER(struct_IDentry)
-
 # outputAPI.h: 150
-if hasattr(_libs['outputapi'], 'SMO_getPollutIDs'):
-    SMO_getPollutIDs = _libs['outputapi'].SMO_getPollutIDs
-    SMO_getPollutIDs.argtypes = [POINTER(SMOutputAPI), POINTER(c_int)]
-    SMO_getPollutIDs.restype = POINTER(struct_IDentry)
+if hasattr(_libs['outputapi'], 'SMO_getElementName'):
+    SMO_getElementName = _libs['outputapi'].SMO_getElementName
+    SMO_getElementName.argtypes = [POINTER(SMOutputAPI), SMO_elementType, c_int, String, c_int]
+    SMO_getElementName.restype = c_int
 
 # outputAPI.h: 153
 if hasattr(_libs['outputapi'], 'SMO_newOutValueSeries'):
     SMO_newOutValueSeries = _libs['outputapi'].SMO_newOutValueSeries
-    SMO_newOutValueSeries.argtypes = [POINTER(SMOutputAPI), c_int, c_int, POINTER(c_int), POINTER(c_int)]
+    SMO_newOutValueSeries.argtypes = [POINTER(SMOutputAPI), c_long, c_long, POINTER(c_long), POINTER(c_int)]
     SMO_newOutValueSeries.restype = POINTER(c_float)
 
 # outputAPI.h: 155
 if hasattr(_libs['outputapi'], 'SMO_newOutValueArray'):
     SMO_newOutValueArray = _libs['outputapi'].SMO_newOutValueArray
-    SMO_newOutValueArray.argtypes = [POINTER(SMOutputAPI), SMO_apiFunction, SMO_elementType, POINTER(c_int), POINTER(c_int)]
+    SMO_newOutValueArray.argtypes = [POINTER(SMOutputAPI), SMO_apiFunction, SMO_elementType, POINTER(c_long), POINTER(c_int)]
     SMO_newOutValueArray.restype = POINTER(c_float)
 
-# outputAPI.h: 159
-if hasattr(_libs['outputapi'], 'SMO_newOutTimeList'):
-    SMO_newOutTimeList = _libs['outputapi'].SMO_newOutTimeList
-    SMO_newOutTimeList.argtypes = [POINTER(SMOutputAPI), POINTER(c_int)]
-    SMO_newOutTimeList.restype = POINTER(c_double)
-
-# outputAPI.h: 160
-if hasattr(_libs['outputapi'], 'SMO_getTimeList'):
-    SMO_getTimeList = _libs['outputapi'].SMO_getTimeList
-    SMO_getTimeList.argtypes = [POINTER(SMOutputAPI), POINTER(c_double)]
-    SMO_getTimeList.restype = c_int
-
-# outputAPI.h: 163
+# outputAPI.h: 158
 if hasattr(_libs['outputapi'], 'SMO_getSubcatchSeries'):
     SMO_getSubcatchSeries = _libs['outputapi'].SMO_getSubcatchSeries
-    SMO_getSubcatchSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_subcatchAttribute, c_int, c_int, POINTER(c_float)]
+    SMO_getSubcatchSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_subcatchAttribute, c_long, c_long, POINTER(c_float)]
     SMO_getSubcatchSeries.restype = c_int
 
-# outputAPI.h: 165
+# outputAPI.h: 160
 if hasattr(_libs['outputapi'], 'SMO_getNodeSeries'):
     SMO_getNodeSeries = _libs['outputapi'].SMO_getNodeSeries
-    SMO_getNodeSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_nodeAttribute, c_int, c_int, POINTER(c_float)]
+    SMO_getNodeSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_nodeAttribute, c_long, c_long, POINTER(c_float)]
     SMO_getNodeSeries.restype = c_int
 
-# outputAPI.h: 167
+# outputAPI.h: 162
 if hasattr(_libs['outputapi'], 'SMO_getLinkSeries'):
     SMO_getLinkSeries = _libs['outputapi'].SMO_getLinkSeries
-    SMO_getLinkSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_linkAttribute, c_int, c_int, POINTER(c_float)]
+    SMO_getLinkSeries.argtypes = [POINTER(SMOutputAPI), c_int, SMO_linkAttribute, c_long, c_long, POINTER(c_float)]
     SMO_getLinkSeries.restype = c_int
 
-# outputAPI.h: 169
+# outputAPI.h: 164
 if hasattr(_libs['outputapi'], 'SMO_getSystemSeries'):
     SMO_getSystemSeries = _libs['outputapi'].SMO_getSystemSeries
-    SMO_getSystemSeries.argtypes = [POINTER(SMOutputAPI), SMO_systemAttribute, c_int, c_int, POINTER(c_float)]
+    SMO_getSystemSeries.argtypes = [POINTER(SMOutputAPI), SMO_systemAttribute, c_long, c_long, POINTER(c_float)]
     SMO_getSystemSeries.restype = c_int
 
-# outputAPI.h: 173
+# outputAPI.h: 167
 if hasattr(_libs['outputapi'], 'SMO_getSubcatchAttribute'):
     SMO_getSubcatchAttribute = _libs['outputapi'].SMO_getSubcatchAttribute
-    SMO_getSubcatchAttribute.argtypes = [POINTER(SMOutputAPI), c_int, SMO_subcatchAttribute, POINTER(c_float)]
+    SMO_getSubcatchAttribute.argtypes = [POINTER(SMOutputAPI), c_long, SMO_subcatchAttribute, POINTER(c_float)]
     SMO_getSubcatchAttribute.restype = c_int
 
-# outputAPI.h: 175
+# outputAPI.h: 169
 if hasattr(_libs['outputapi'], 'SMO_getNodeAttribute'):
     SMO_getNodeAttribute = _libs['outputapi'].SMO_getNodeAttribute
-    SMO_getNodeAttribute.argtypes = [POINTER(SMOutputAPI), c_int, SMO_nodeAttribute, POINTER(c_float)]
+    SMO_getNodeAttribute.argtypes = [POINTER(SMOutputAPI), c_long, SMO_nodeAttribute, POINTER(c_float)]
     SMO_getNodeAttribute.restype = c_int
 
-# outputAPI.h: 177
+# outputAPI.h: 171
 if hasattr(_libs['outputapi'], 'SMO_getLinkAttribute'):
     SMO_getLinkAttribute = _libs['outputapi'].SMO_getLinkAttribute
-    SMO_getLinkAttribute.argtypes = [POINTER(SMOutputAPI), c_int, SMO_linkAttribute, POINTER(c_float)]
+    SMO_getLinkAttribute.argtypes = [POINTER(SMOutputAPI), c_long, SMO_linkAttribute, POINTER(c_float)]
     SMO_getLinkAttribute.restype = c_int
 
-# outputAPI.h: 179
+# outputAPI.h: 173
 if hasattr(_libs['outputapi'], 'SMO_getSystemAttribute'):
     SMO_getSystemAttribute = _libs['outputapi'].SMO_getSystemAttribute
-    SMO_getSystemAttribute.argtypes = [POINTER(SMOutputAPI), c_int, SMO_systemAttribute, POINTER(c_float)]
+    SMO_getSystemAttribute.argtypes = [POINTER(SMOutputAPI), c_long, SMO_systemAttribute, POINTER(c_float)]
     SMO_getSystemAttribute.restype = c_int
 
-# outputAPI.h: 183
+# outputAPI.h: 176
 if hasattr(_libs['outputapi'], 'SMO_getSubcatchResult'):
     SMO_getSubcatchResult = _libs['outputapi'].SMO_getSubcatchResult
-    SMO_getSubcatchResult.argtypes = [POINTER(SMOutputAPI), c_int, c_int, POINTER(c_float)]
+    SMO_getSubcatchResult.argtypes = [POINTER(SMOutputAPI), c_long, c_int, POINTER(c_float)]
     SMO_getSubcatchResult.restype = c_int
 
-# outputAPI.h: 185
+# outputAPI.h: 178
 if hasattr(_libs['outputapi'], 'SMO_getNodeResult'):
     SMO_getNodeResult = _libs['outputapi'].SMO_getNodeResult
-    SMO_getNodeResult.argtypes = [POINTER(SMOutputAPI), c_int, c_int, POINTER(c_float)]
+    SMO_getNodeResult.argtypes = [POINTER(SMOutputAPI), c_long, c_int, POINTER(c_float)]
     SMO_getNodeResult.restype = c_int
 
-# outputAPI.h: 187
+# outputAPI.h: 180
 if hasattr(_libs['outputapi'], 'SMO_getLinkResult'):
     SMO_getLinkResult = _libs['outputapi'].SMO_getLinkResult
-    SMO_getLinkResult.argtypes = [POINTER(SMOutputAPI), c_int, c_int, POINTER(c_float)]
+    SMO_getLinkResult.argtypes = [POINTER(SMOutputAPI), c_long, c_int, POINTER(c_float)]
     SMO_getLinkResult.restype = c_int
 
-# outputAPI.h: 189
+# outputAPI.h: 182
 if hasattr(_libs['outputapi'], 'SMO_getSystemResult'):
     SMO_getSystemResult = _libs['outputapi'].SMO_getSystemResult
-    SMO_getSystemResult.argtypes = [POINTER(SMOutputAPI), c_int, POINTER(c_float)]
+    SMO_getSystemResult.argtypes = [POINTER(SMOutputAPI), c_long, c_int, POINTER(c_float)]
     SMO_getSystemResult.restype = c_int
 
-# outputAPI.h: 192
+# outputAPI.h: 185
 if hasattr(_libs['outputapi'], 'SMO_free'):
     SMO_free = _libs['outputapi'].SMO_free
     SMO_free.argtypes = [POINTER(c_float)]
     SMO_free.restype = None
 
-# outputAPI.h: 193
-if hasattr(_libs['outputapi'], 'SMO_freeTimeList'):
-    SMO_freeTimeList = _libs['outputapi'].SMO_freeTimeList
-    SMO_freeTimeList.argtypes = [POINTER(c_double)]
-    SMO_freeTimeList.restype = None
-
-# outputAPI.h: 194
-if hasattr(_libs['outputapi'], 'SMO_freeIDList'):
-    SMO_freeIDList = _libs['outputapi'].SMO_freeIDList
-    SMO_freeIDList.argtypes = [POINTER(struct_IDentry)]
-    SMO_freeIDList.restype = None
-
-# outputAPI.h: 197
+# outputAPI.h: 187
 if hasattr(_libs['outputapi'], 'SMO_close'):
     SMO_close = _libs['outputapi'].SMO_close
     SMO_close.argtypes = [POINTER(SMOutputAPI)]
     SMO_close.restype = c_int
 
-# outputAPI.h: 198
+# outputAPI.h: 188
 if hasattr(_libs['outputapi'], 'SMO_errMessage'):
     SMO_errMessage = _libs['outputapi'].SMO_errMessage
     SMO_errMessage.argtypes = [c_int, String, c_int]
-    SMO_errMessage.restype = c_int
+    SMO_errMessage.restype = None
 
 # <command-line>: 1
 try:
@@ -965,71 +917,93 @@ try:
 except:
     pass
 
+# outputAPI.h: 13
+try:
+    MAXFILENAME = 259
+except:
+    pass
+
+# outputAPI.h: 14
+try:
+    MAXELENAME = 31
+except:
+    pass
+
+# outputAPI.h: 17
+try:
+    ERR410 = 'Error 410: SMO_init() has not been called'
+except:
+    pass
+
+# outputAPI.h: 18
+try:
+    ERR411 = 'Error 411: SMO_open() has not been called'
+except:
+    pass
+
+# outputAPI.h: 19
+try:
+    ERR414 = 'Error 414: memory allocation failure'
+except:
+    pass
+
+# outputAPI.h: 21
+try:
+    ERR421 = 'Input Error 421: invalid parameter code'
+except:
+    pass
+
+# outputAPI.h: 22
+try:
+    ERR422 = 'Input Error 422: reporting period index out of range'
+except:
+    pass
+
+# outputAPI.h: 23
+try:
+    ERR423 = 'Input Error 423: element index out of range'
+except:
+    pass
+
+# outputAPI.h: 24
+try:
+    ERR424 = 'Input Error 424: no memory allocated for results'
+except:
+    pass
+
+# outputAPI.h: 26
+try:
+    ERR434 = 'File Error 434: unable to open binary output file'
+except:
+    pass
+
 # outputAPI.h: 27
 try:
-    MAXFNAME = 259
+    ERR435 = 'File Error 435: invalid file - not created by SWMM'
 except:
     pass
 
-# c:\\mingw\\lib64\\gcc\\x86_64-w64-mingw32\\4.8.3\\include\\stdbool.h: 34
+# outputAPI.h: 28
 try:
-    true = 1
+    ERR436 = 'File Error 436: invalid file - contains no results'
 except:
     pass
 
-# c:\\mingw\\lib64\\gcc\\x86_64-w64-mingw32\\4.8.3\\include\\stdbool.h: 35
+# outputAPI.h: 29
 try:
-    false = 0
+    ERR437 = 'File Error 437: invalid file - model run issued warnings'
 except:
     pass
 
-# c:\\mingw\\lib64\\gcc\\x86_64-w64-mingw32\\4.8.3\\include\\stdbool.h: 48
+# outputAPI.h: 31
 try:
-    __bool_true_false_are_defined = 1
+    ERR440 = 'ERROR 440: an unspecified error has occurred'
 except:
     pass
 
-INT4 = c_int # outputAPI.h: 31
+MAXID = 31
 
-# outputAPI.h: 34
-try:
-    ERR411 = 'Input Error 411: no memory allocated for results.'
-except:
-    pass
-
-# outputAPI.h: 35
-try:
-    ERR412 = "Input Error 412: no results; binary file hasn't been opened."
-except:
-    pass
-
-# outputAPI.h: 36
-try:
-    ERR421 = 'Input Error 421: invalid parameter code.'
-except:
-    pass
-
-# outputAPI.h: 37
-try:
-    ERR434 = 'File Error  434: unable to open binary output file.'
-except:
-    pass
-
-# outputAPI.h: 38
-try:
-    ERR435 = 'File Error  435: run terminated; no results in binary file.'
-except:
-    pass
-
-# outputAPI.h: 39
-try:
-    ERR441 = 'Error 441: need to call SMR_open before calling this function'
-except:
-    pass
-
-SMOutputAPI = struct_SMOutputAPI # outputAPI.h: 41
-
-IDentry = struct_IDentry # outputAPI.h: 131
+SMOutputAPI = struct_SMOutputAPI # outputAPI.h: 33
 
 # No inserted files
 

@@ -46,7 +46,7 @@ class ENR_categoryBase:
         item_count = output._call_int(_lib.ENR_getNetSize, cls._count_flag)
         ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
         for index in range(1, item_count + 1):
-            cls._get_name(output.ptrapi, cls._elementType, index, ctypes_name)
+            _lib.ENR_getElementName(output.ptrapi, cls._elementType, index, ctypes_name)
             name = str(ctypes_name)
             items[name] = cls(name, index)
         return items
@@ -258,7 +258,6 @@ class ENR_node_type(ENR_categoryBase):
     Attributes = (AttributeDemand, AttributeHead, AttributePressure, AttributeQuality)
 
     _count_flag = _lib.ENR_nodeCount
-    _get_name = _lib.ENR_getElementName
     # _get_value = _lib.ENR_getNodeValue
     _get_series = _lib.ENR_getNodeSeries
     _get_attribute = _lib.ENR_getNodeAttribute
@@ -288,7 +287,6 @@ class ENR_link_type(ENR_categoryBase):
                   AttributeStatus, AttributeSetting, AttributeReactionRate, AttributeFrictionFactor)
 
     _count_flag = _lib.ENR_linkCount
-    _get_name = _lib.ENR_getElementName
     # _get_value = _lib.ENR_getLinkValue
     _get_series = _lib.ENR_getLinkSeries
     _get_attribute = _lib.ENR_getLinkAttribute

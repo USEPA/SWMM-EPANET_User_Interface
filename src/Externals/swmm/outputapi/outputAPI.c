@@ -281,16 +281,18 @@ int DLLEXPORT SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int
 //
 //   pollutantIndex: valid values are 0..Npolluts-1
 {
-	if (smoapi->isOpened)
-	{
-	    if (pollutantIndex < 0 || pollutantIndex >= smoapi->Npolluts)
-	        return 421;
+	int errorcode = 0;
+    if (smoapi == NULL) errorcode = 410;
+    else if (smoapi->file == NULL) errorcode = 411;
+	else if (pollutantIndex < 0 || pollutantIndex >= smoapi->Npolluts) errorcode = 423;
+    else
+    {
         int offset = smoapi->ObjPropPos - (smoapi->Npolluts - pollutantIndex) * RECORDSIZE;
         fseek(smoapi->file, offset, SEEK_SET);
         fread(unitFlag, RECORDSIZE, 1, smoapi->file);
-		return 0;
-	}
-	return 412;
+    }
+
+	return errorcode;
 }
 
 int DLLEXPORT SMO_getStartTime(SMOutputAPI* smoapi, double* time)
@@ -404,18 +406,19 @@ float* DLLEXPORT SMO_newOutValueSeries(SMOutputAPI* smoapi, long startPeriod,
 //
 //  Warning: Caller must free memory allocated by this function using SMO_free().
 //
+//  Valid values for startPeriod and endPeriod are 0..Nperiods-1.
+//  endPeriod must be >= startPeriod.
 {
 	long size;
 	float* array;
 
     if (smoapi == NULL) *errcode = 410;
     else if (smoapi->file == NULL) *errcode = 411;
-	else if (startPeriod < 0 || endPeriod >= smoapi->Nperiods ||
-			endPeriod <= startPeriod) *errcode = 422;
+	else if (startPeriod < 0 || endPeriod >= smoapi->Nperiods || endPeriod < startPeriod)
+	    *errcode = 422;
 	else
 	{
-
-		size = endPeriod - startPeriod;
+		size = endPeriod - startPeriod + 1;
 		if (size > smoapi->Nperiods)
 			size = smoapi->Nperiods;
 
@@ -489,7 +492,7 @@ int DLLEXPORT SMO_getSubcatchSeries(SMOutputAPI* smoapi, int subcatchIndex,
 	SMO_subcatchAttribute attr, long startPeriod, long length, float* outValueSeries)
 //
 //  Purpose: Get time series results for particular attribute. Specify series
-//  start and length using timeIndex and length respectively.
+//  start and length using startPeriod and length respectively.
 //
 {
 	int errorcode = 0;
@@ -500,7 +503,7 @@ int DLLEXPORT SMO_getSubcatchSeries(SMOutputAPI* smoapi, int subcatchIndex,
     else if (smoapi->file == NULL) errorcode = 411;
 	else if (subcatchIndex < 0 || subcatchIndex > smoapi->Nsubcatch) errorcode = 420;
     else if (startPeriod < 0 || startPeriod >= smoapi->Nperiods ||
-        		length > smoapi->Nperiods) errorcode = 422;
+        		startPeriod + length > smoapi->Nperiods) errorcode = 422;
 	else if (outValueSeries == NULL) errorcode = 424;
 	else
 	{
@@ -518,7 +521,7 @@ int DLLEXPORT SMO_getNodeSeries(SMOutputAPI* smoapi, int nodeIndex, SMO_nodeAttr
 	long startPeriod, long length, float* outValueSeries)
 //
 //  Purpose: Get time series results for particular attribute. Specify series
-//  start and length using timeIndex and length respectively.
+//  start and length using startPeriod and length respectively.
 //
 {
 	int errorcode = 0;
@@ -528,8 +531,7 @@ int DLLEXPORT SMO_getNodeSeries(SMOutputAPI* smoapi, int nodeIndex, SMO_nodeAttr
     if (smoapi == NULL) errorcode = 410;
     else if (smoapi->file == NULL) errorcode = 411;
 	else if (nodeIndex < 0 || nodeIndex > smoapi->Nnodes) errorcode = 420;
-    else if (startPeriod < 0 || startPeriod >= smoapi->Nperiods ||
-        		length > smoapi->Nperiods) errorcode = 422;
+    else if (startPeriod < 0 || length < 1 || startPeriod + length > smoapi->Nperiods) errorcode = 422;
 	else if (outValueSeries == NULL) errorcode = 424;
 	else
 	{
@@ -547,7 +549,7 @@ int DLLEXPORT SMO_getLinkSeries(SMOutputAPI* smoapi, int linkIndex, SMO_linkAttr
 	long startPeriod, long length, float* outValueSeries)
 //
 //  Purpose: Get time series results for particular attribute. Specify series
-//  start and length using timeIndex and length respectively.
+//  start and length using startPeriod and length respectively.
 //
 {
 	int errorcode = 0;
@@ -557,8 +559,7 @@ int DLLEXPORT SMO_getLinkSeries(SMOutputAPI* smoapi, int linkIndex, SMO_linkAttr
     if (smoapi == NULL) errorcode = 410;
     else if (smoapi->file == NULL) errorcode = 411;
 	else if (linkIndex < 0 || linkIndex > smoapi->Nlinks) errorcode = 420;
-    else if (startPeriod < 0 || startPeriod >= smoapi->Nperiods ||
-        		length > smoapi->Nperiods) errorcode = 422;
+    else if (startPeriod < 0 || length < 1 || startPeriod + length > smoapi->Nperiods) errorcode = 422;
 	else if (outValueSeries == NULL) errorcode = 424;
 	else
 	{
@@ -576,7 +577,7 @@ int DLLEXPORT SMO_getSystemSeries(SMOutputAPI* smoapi, SMO_systemAttribute attr,
 	long startPeriod, long length, float *outValueSeries)
 //
 //  Purpose: Get time series results for particular attribute. Specify series
-//  start and length using timeIndex and length respectively.
+//  start and length using startPeriod and length respectively.
 //
 {
 	int errorcode = 0;
@@ -585,8 +586,7 @@ int DLLEXPORT SMO_getSystemSeries(SMOutputAPI* smoapi, SMO_systemAttribute attr,
 
     if (smoapi == NULL) errorcode = 410;
     else if (smoapi->file == NULL) errorcode = 411;
-    else if (startPeriod < 0 || startPeriod >= smoapi->Nperiods ||
-        		length > smoapi->Nperiods) errorcode = 422;
+    else if (startPeriod < 0 || length < 1 || startPeriod + length > smoapi->Nperiods) errorcode = 422;
 	else if (outValueSeries == NULL) errorcode = 424;
 	else
 	{

@@ -37,7 +37,7 @@ def export_to_gis(session, file_name):
     """
 
     if one_file:  # if putting all types in one file, need all attributes to include ones from all layers
-        all_gis_attributes = pipe_gis_attributes | pumps_gis_attributes | valves_gis_attributes
+        all_gis_attributes = set(pipe_gis_attributes + pumps_gis_attributes + valves_gis_attributes)
     else:
         all_gis_attributes = pipe_gis_attributes
 
@@ -90,6 +90,7 @@ def make_gis_fields(gis_attributes):
     fields = []
     for gis_attribute in gis_attributes:
         fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
+    return fields
 
 
 def make_links_layer(coordinates, vertices, links, model_attributes, gis_attributes, all_gis_attributes, layer):
@@ -139,9 +140,7 @@ def make_links_layer(coordinates, vertices, links, model_attributes, gis_attribu
         provider.addFeatures(features)
         layer.commitChanges()
         layer.updateExtents()
-        return layer
-    else:  # No features were created, so do not create a GIS layer. Probably this model does not have any of these.
-        return None
+    return layer
 
 
 def make_points_layer(coordinates, model_points, model_attributes, gis_attributes):

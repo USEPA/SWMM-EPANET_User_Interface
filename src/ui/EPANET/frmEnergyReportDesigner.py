@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\EPANET\frmEnergyReportDesigner.ui'
 #
-# Created: Sat Aug 20 17:40:43 2016
+# Created: Mon Aug 22 17:45:58 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -100,14 +100,14 @@ class Ui_frmEnergyReport(object):
         self.rbnCost.setObjectName(_fromUtf8("rbnCost"))
         self.verticalLayout.addWidget(self.rbnCost)
         self.horizontalLayout_2.addWidget(self.fraColumn)
-        self.widgetChart = QtGui.QWidget(self.tabChart)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        self.frameChart = QtGui.QFrame(self.tabChart)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(80)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.widgetChart.sizePolicy().hasHeightForWidth())
-        self.widgetChart.setSizePolicy(sizePolicy)
-        self.widgetChart.setObjectName(_fromUtf8("widgetChart"))
-        self.horizontalLayout_2.addWidget(self.widgetChart)
+        sizePolicy.setHeightForWidth(self.frameChart.sizePolicy().hasHeightForWidth())
+        self.frameChart.setSizePolicy(sizePolicy)
+        self.frameChart.setObjectName(_fromUtf8("frameChart"))
+        self.horizontalLayout_2.addWidget(self.frameChart)
         self.tabWidget.addTab(self.tabChart, _fromUtf8(""))
         self.horizontalLayout_3.addWidget(self.tabWidget)
         self.verticalLayout_8.addWidget(self.fraTop)

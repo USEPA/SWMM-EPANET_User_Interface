@@ -16,16 +16,17 @@ def export_to_gis(session, file_name):
     layer_count = 0
 
     # Export Pipes
-    model_attributes = [
+    pipe_model_attributes = [
         "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
-    gis_attributes = [
+    pipe_gis_attributes = [
         "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
     """ Mapping of attribute names of model objects to attribute names exported to vector layer.
         Edit gis_attributes as needed to specify attribute names as they will appear when exported.
         To omit an attribute from the GIS layer, delete the attribute name from both lists.
         EPANET object attribute "element_type" will be exported as, for example, "Pipe", "Pump" or "Valve".
     """
-    layer = make_links_layer(coordinates, vertices, session.project.pipes.value, model_attributes, gis_attributes)
+    layer = make_links_layer(coordinates, vertices, session.project.pipes.value,
+                             pipe_model_attributes, pipe_gis_attributes)
     if layer:
         layer_file_name = path_file + "_pipes" + extension
         QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
@@ -33,11 +34,12 @@ def export_to_gis(session, file_name):
         layer_count += 1
 
     # Export Pumps
-    model_attributes = [
+    pumps_model_attributes = [
         "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
-    gis_attributes = [
+    pumps_gis_attributes = [
         "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
-    layer = make_links_layer(coordinates, vertices, session.project.pumps.value, model_attributes, gis_attributes)
+    layer = make_links_layer(coordinates, vertices, session.project.pumps.value,
+                             pumps_model_attributes, pumps_gis_attributes)
     if layer:
         layer_file_name = path_file + "_pumps" + extension
         QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
@@ -45,11 +47,12 @@ def export_to_gis(session, file_name):
         layer_count += 1
 
     # Export Valves
-    model_attributes = [
+    valves_model_attributes = [
         "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
-    gis_attributes = [
+    valves_gis_attributes = [
         "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
-    layer = make_links_layer(coordinates, vertices, session.project.valves.value, model_attributes, gis_attributes)
+    layer = make_links_layer(coordinates, vertices, session.project.valves.value,
+                             valves_model_attributes, valves_gis_attributes)
     if layer:
         layer_file_name = path_file + "_valves" + extension
         QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)

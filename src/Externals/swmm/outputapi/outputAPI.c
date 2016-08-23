@@ -269,6 +269,30 @@ int DLLEXPORT SMO_getUnits(SMOutputAPI* smoapi, SMO_unit code, int* unitFlag)
 	return errorcode;
 }
 
+
+int DLLEXPORT SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int* unitFlag)
+//
+//   Purpose: Return integer flag representing the units that the given pollutant is measured in.
+//	          Concentration units are located after the pollutant ID names and before the object properties start,
+//			  and are stored for each pollutant.  They're stored as 4-byte integers with the following codes:
+//		          0: mg/L
+//				  1: ug/L
+//				  2: count/L
+//
+//   pollutantIndex: valid values are 0..Npolluts-1
+{
+	if (smoapi->isOpened)
+	{
+	    if (pollutantIndex < 0 || pollutantIndex >= smoapi->Npolluts)
+	        return 421;
+        int offset = smoapi->ObjPropPos - (smoapi->Npolluts - pollutantIndex) * RECORDSIZE;
+        fseek(smoapi->file, offset, SEEK_SET);
+        fread(unitFlag, RECORDSIZE, 1, smoapi->file);
+		return 0;
+	}
+	return 412;
+}
+
 int DLLEXPORT SMO_getStartTime(SMOutputAPI* smoapi, double* time)
 //
 //	Purpose: Returns start date.

@@ -142,6 +142,8 @@ int DLLEXPORT SMO_getProjectSize(SMOutputAPI* smoapi, SMO_elementCount code, int
 int DLLEXPORT SMO_getResultCount(SMOutputAPI* smoapi, SMO_elementType, int* count);
 
 int DLLEXPORT SMO_getUnits(SMOutputAPI* smoapi, SMO_unit code, int* unitFlag);
+int DLLEXPORT SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int* unitFlag);
+
 int DLLEXPORT SMO_getStartTime(SMOutputAPI* smoapi, double* time);
 int DLLEXPORT SMO_getTimes(SMOutputAPI* smoapi, SMO_time code, int* time);
 

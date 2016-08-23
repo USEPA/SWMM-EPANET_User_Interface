@@ -22,17 +22,17 @@ def export_to_gis(session, file_name):
     pipe_model_attributes = [
         "element_type", "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
     pipe_gis_attributes = [
-        "element_type", "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+        "element_type", "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
 
     pumps_model_attributes = [
         "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
     pumps_gis_attributes = [
-        "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+        "element_type", "id", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
 
     valves_model_attributes = [
         "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
     valves_gis_attributes = [
-        "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+        "element_type", "id", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
     """ Mapping of attribute names of model objects to attribute names exported to vector layer.
         Edit gis_attributes as needed to specify attribute names as they will appear when exported.
         To omit an attribute from the GIS layer, delete the attribute name from both lists.

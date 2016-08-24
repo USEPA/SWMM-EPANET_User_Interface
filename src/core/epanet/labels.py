@@ -17,10 +17,10 @@ class Label(Section):
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("label",            '', "Text",            '',    '',   '', "Text of label"),
+        ("name",             '', "Text",            '',    '',   '', "Text of label"),
         ('x',                '', "X-Coordinate",    '',    '',   '', "X coordinate of label on study area map"),
         ('y',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of label on study area map"),
-        ('anchor_node_name', '', "Anchor Node",     '',    '',   '', "ID label of an anchor node (optional)"),
+        ('anchor_name',      '', "Anchor Node",     '',    '',   '', "ID label of an anchor node (optional)"),
         ('meter_type',       '', "Meter Type",      '',    '',   '', "Type of object being metered by the label"),
         ('meter_name',       '', "Meter ID",        '',    '',   '', "ID of the object (Node or Link) being metered"),
         ("font",             '', "Font",            "",       '', '',  "The label's font"),
@@ -38,10 +38,10 @@ class Label(Section):
         self.y = '0.0'
         """north/south label centroid coordinate"""
 
-        self.label = ''
+        self.name = ''
         """Text of label in double quotes"""
 
-        self.anchor_node_name = ''  # string
+        self.anchor_name = ''  # string
         """ID label of an anchor node (optional)"""
 
         self.meter_type = MeterType.NONE

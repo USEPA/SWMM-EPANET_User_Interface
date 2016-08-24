@@ -108,7 +108,7 @@ class LabelWriter(SectionWriter):
             italic = '1'
         else:
             italic = '0'
-        return LabelWriter.field_format.format(label.centroid.x, label.centroid.y, label.label_text,
+        return LabelWriter.field_format.format(label.centroid.x, label.centroid.y, label.name,
                                                label.anchor_name, label.font, label.size, bold, italic)
         return label
 

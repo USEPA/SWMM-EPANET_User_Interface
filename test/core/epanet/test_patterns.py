@@ -31,10 +31,10 @@ class SimplePatternTest(unittest.TestCase):
         """Test one Pattern section"""
         self.my_pattern = patterns.Pattern()
         self.my_pattern.description = "test pattern"
-        self.my_pattern.pattern_name = "XXX"
+        self.my_pattern.name = "XXX"
         self.my_pattern.multipliers = ("1.0", "1.1", "1.2", "1.3")
 
-        assert self.my_pattern.pattern_name == "XXX"
+        assert self.my_pattern.name == "XXX"
         assert self.my_pattern.description == "test pattern"
         assert PatternWriter().as_text(self.my_pattern).split() ==\
                [";test", "pattern", "XXX", "1.0", "1.1", "1.2", "1.3"], "get_text"
@@ -51,8 +51,8 @@ class SimplePatternTest(unittest.TestCase):
         from_text = InputFileReader().set_from_text_lines(test_text)  # TODO: does this tuple work as iterator?
         pattern_list = from_text.patterns.value
         assert len(pattern_list) == 2
-        assert int(pattern_list[0].pattern_name) == 1
-        assert int(pattern_list[1].pattern_name) == 2
+        assert int(pattern_list[0].name) == 1
+        assert int(pattern_list[1].name) == 2
 
         assert float(pattern_list[0].multipliers[0]) == 1.0
         assert float(pattern_list[0].multipliers[1]) == 1.2

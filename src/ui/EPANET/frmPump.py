@@ -38,14 +38,13 @@ class frmPump(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(5, column, combobox)
             # for pattern, show available patterns
-            pattern_section = self.project.find_section("PATTERNS")
-            pattern_list = pattern_section.value[0:]
+            pattern_list = self.project.patterns.value
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_name)
-                if edit_these[column].pattern == value.pattern_name:
+                combobox.addItem(value.name)
+                if edit_these[column].pattern == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(8, column, combobox)
@@ -67,13 +66,12 @@ class frmPump(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(10, column, combobox)
             # for price pattern, show available patterns
-            pattern_section = self.project.find_section("PATTERNS")
-            pattern_list = pattern_section.value[0:]
+            pattern_list = self.project.patterns.value
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_name)
+                combobox.addItem(value.name)
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(12, column, combobox)
 

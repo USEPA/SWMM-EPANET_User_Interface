@@ -1,4 +1,5 @@
 import traceback
+import shlex
 from enum import Enum
 from core.project_base import Section, ProjectBase
 from core.epanet.curves import CurveType
@@ -84,17 +85,13 @@ class LabelReader(SectionReader):
     def read(new_text):
         label = Label()
         new_text = SectionReader.set_comment_check_section(label, new_text)
-        fields = new_text.split(None, 2)  # Only use split for first two splits, do last one manually below
-        if len(fields) > 1:
+        fields = shlex.split(new_text)
+        if len(fields) > 2:
             (label.x, label.y) = fields[0:2]
-            if len(fields) > 2:
-                label.label = fields[2]
-                if label.label[0] == '"':  # split above would not work with quotes, so find end of label ourselves
-                    endquote = label.label.rindex('"')
-                    if endquote + 1 < len(label.label):  # If there is more after the label, it is the anchor_node_name
-                        label.anchor_node_name = label.label[endquote + 1:].strip()
-                        label.label = label.label[0:endquote + 1]
-                label.label = label.label.replace('"', '')  # label is quoted in the file, but not while in memory
+            label.name = fields[2]
+
+            if len(fields) > 3:
+                label.anchor_name = fields[3]  # name of an anchor node (optional)
         return label
 
 
@@ -114,7 +111,7 @@ class PatternReader:
             if line:
                 fields = line.split()
                 if len(fields) > 1:
-                    pattern.pattern_name = fields[0]
+                    pattern.name = fields[0]
                     pattern.multipliers.extend(fields[1:])
         return pattern
 
@@ -145,7 +142,7 @@ class ControlReader():
     def read(new_text):
         control = Control()
         fields = new_text.split()
-        control.link_name, control.status = fields[1], fields[2]
+        control.name, control.status = fields[1], fields[2]
         type_str = fields[4].upper()
         if type_str == "NODE":
             control.node_name = fields[5]

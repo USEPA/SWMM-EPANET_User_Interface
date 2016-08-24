@@ -27,13 +27,12 @@ class frmReservior(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns
-            pattern_section = self.project.find_section("PATTERNS")
-            pattern_list = pattern_section.value[0:]
+            pattern_list = self.project.patterns.value
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_name)
+                combobox.addItem(value.name)
                 if edit_these[column].head_pattern_name == value.pattern_name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)

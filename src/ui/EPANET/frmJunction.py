@@ -34,8 +34,8 @@ class frmJunction(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
-                combobox.addItem(value.pattern_name)
-                if edit_these[column].demand_pattern_name == value.pattern_name:
+                combobox.addItem(value.name)
+                if edit_these[column].demand_pattern_name == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(7, column, combobox)

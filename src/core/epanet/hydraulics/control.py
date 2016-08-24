@@ -1,4 +1,5 @@
 from enum import Enum
+from core.project_base import Section
 
 
 class ControlType(Enum):
@@ -9,11 +10,11 @@ class ControlType(Enum):
     CLOCKTIME = 4
 
 
-class Control():
-    """Defines simple controls that modify links based on a single condition"""
+class Control(Section):
+    """A simple control that modifies a link based on a single condition"""
     def __init__(self):
-        self.link_name = ""		# string
-        """a link ID label"""
+        self.name = ""		# string
+        """Name of link modified by this control"""
 
         self.status = ""	    # string
         """OPEN or CLOSED, a pump speed setting, or a control valve setting"""

@@ -483,7 +483,7 @@ class frmMainSWMM(frmMain):
                 if not isinstance(self.project.labels.value, basestring):
                     if isinstance(self.project.labels.value, list):
                         for value in self.project.labels.value:
-                            if value.label_text in selected_items:
+                            if value.name in selected_items:
                                 edit_these.append(value)
             frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
@@ -524,7 +524,7 @@ class frmMainSWMM(frmMain):
                     ids.append(self.project.curves.value[i].name)
         elif category == self.tree_MapLabels[0]:
             for i in range(0, len(self.project.labels.value)):
-                ids.append(self.project.labels.value[i].label_text)
+                ids.append(self.project.labels.value[i].name)
         else:
             section = self.project.find_section(category)
             if section:

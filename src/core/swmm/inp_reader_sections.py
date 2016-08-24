@@ -88,7 +88,7 @@ class LabelReader(SectionReader):
         if len(fields) > 2:
             label.centroid = Coordinate()
             label.centroid.x, label.centroid.y, label.centroid.name = fields[0:3]
-            label.label_text = label.centroid.name
+            label.name = label.centroid.name
 
             if len(fields) > 3:
                 label.anchor_name = fields[3]  # name of an anchor node (optional)

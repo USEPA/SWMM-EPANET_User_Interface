@@ -72,7 +72,7 @@ class LabelWriter(SectionWriter):
     @staticmethod
     def as_text(label):
         """format contents of this item for writing to file"""
-        return LabelWriter.field_format.format(label.x, label.y, label.label, label.anchor_node_name)
+        return LabelWriter.field_format.format(str(label.x), str(label.y), label.name, label.anchor_name)
 
 
 class PatternWriter:
@@ -91,7 +91,7 @@ class PatternWriter:
             if count == 6:        # add ID to first line and break lines before they get too long
                 if section_text:  # If there are already values added, put next value on a new line
                     section_text += '\n'
-                section_text += " {:16}".format(pattern.pattern_name)
+                section_text += " {:16}".format(pattern.name)
                 count = 0
             section_text += "\t{:12}".format(multiplier)
             count += 1
@@ -114,8 +114,8 @@ class ControlWriter():
     @staticmethod
     def as_text(control):
         """format contents of this item for writing to file"""
-        if control.link_name:
-            prefix = " LINK " + control.link_name + ' ' + control.status
+        if control.name:
+            prefix = " LINK " + control.name + ' ' + control.status
             if control.control_type == ControlType.ABOVE or control.control_type == ControlType.BELOW:
                 return prefix + " IF NODE " + control.node_name + ' ' + control.control_type.name + ' ' + str(control.value)
             elif control.control_type == ControlType.TIME and len(control.time) > 0:

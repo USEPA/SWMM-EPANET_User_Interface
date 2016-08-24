@@ -279,7 +279,7 @@ int DLLEXPORT SMO_getPollutantUnits(SMOutputAPI* smoapi, int pollutantIndex, int
 //				  1: ug/L
 //				  2: count/L
 //
-//   pollutantIndex: valid values are 0..Npolluts-1
+//   pollutantIndex: valid values are 0 to Npolluts-1
 {
 	int errorcode = 0;
     if (smoapi == NULL) errorcode = 410;
@@ -400,25 +400,30 @@ int DLLEXPORT SMO_getElementName(SMOutputAPI* smoapi, SMO_elementType type,
 
 
 float* DLLEXPORT SMO_newOutValueSeries(SMOutputAPI* smoapi, long startPeriod,
-	long endPeriod, long* length, int* errcode)
+	long seriesLength, long* length, int* errcode)
 //
 //  Purpose: Allocates memory for outValue Series.
 //
 //  Warning: Caller must free memory allocated by this function using SMO_free().
 //
-//  Valid values for startPeriod and endPeriod are 0..Nperiods-1.
-//  endPeriod must be >= startPeriod.
+//  Valid values for startPeriod are 0 to Nperiods-1.
+//  Valid values for seriesLength are 1 to Nperiods - startPeriod.
+//  If seriesLength is specified as -1, it will be interpreted as Nperiods - startPeriod
+//     so all values at and after startPeriod will fit.
 {
 	long size;
 	float* array;
 
+	if (seriesLength == -1)
+	    seriesLength = smoapi->Nperiods - startPeriod;
+
     if (smoapi == NULL) *errcode = 410;
     else if (smoapi->file == NULL) *errcode = 411;
-	else if (startPeriod < 0 || endPeriod >= smoapi->Nperiods || endPeriod < startPeriod)
+	else if (startPeriod < 0 || seriesLength < 1 || startPeriod + seriesLength > smoapi->Nperiods)
 	    *errcode = 422;
 	else
 	{
-		size = endPeriod - startPeriod + 1;
+		size = seriesLength;
 		if (size > smoapi->Nperiods)
 			size = smoapi->Nperiods;
 

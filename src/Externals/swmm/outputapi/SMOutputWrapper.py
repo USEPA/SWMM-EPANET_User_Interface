@@ -91,10 +91,7 @@ class SwmmOutputCategoryBase:
                             " Outside Number of TimeSteps " + str(output.num_periods))
         returned_length = c_int()
         error_new = c_int()
-        end_index = start_index + num_values - 1
-        # if output.newOutValueSeriesLengthIsEnd:
-        #     ask_for_length += start_index + 1
-        series_pointer = _lib.SMO_newOutValueSeries(output.ptrapi, start_index, end_index,
+        series_pointer = _lib.SMO_newOutValueSeries(output.ptrapi, start_index, num_values,
                                                     byref(returned_length), byref(error_new))
         if error_new.value != 0:
             print("Error " + str(error_new.value) +

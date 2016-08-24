@@ -35,6 +35,7 @@ class InputFileReader(object):
                 section_whole.append(line.rstrip())
         if section_name:
             self.read_section(project, section_name, '\n'.join(section_whole))
+        project.add_sections_from_attributes()  # if there are any sections not in the file, add them to list
         self.finished_reading(project)
 
     def finished_reading(self, project):

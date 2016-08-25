@@ -277,72 +277,52 @@ class frmMainEPANET(frmMain):
                                     QMessageBox.Ok)
 
     def reaction_report(self):
+        # Reaction Report'
+        if self.output:
+            # Find conversion factor to kilograms/day
+            ucf = 1.0e6/24
+            quality_options = self.project.options.quality
+            if 'ug' in str(quality_options.mass_units):
+                ucf = 1.0e9/24
 
-        # TXT_NO_REACTION = 'No reactions occurred'
-        # TXT_AVG_RATES = 'Average Reaction Rates (kg/day)'
-        # ' Reaction Report'
+            # Get average reaction rates from output file
+            bulk, wall, tank, source = self.output.get_reaction_summary()
+            bulk /= ucf
+            wall /= ucf
+            tank /= ucf
+            source /= ucf
 
-        # Find conversion factor to kilograms/day
-        ucf = 1.0e6/24
-        quality_options = self.project.options.quality
-        if 'ug' in str(quality_options.mass_units):
-            ucf = 1.0e9/24
+            if bulk > 0 or wall > 0 or tank > 0 or source > 0:
+                footer_text = "Inflow Rate = " + format(source,'0.1f')
+            else:
+                footer_text = 'No reactions occurred'
 
-        #
-        # // Get average reaction rates from output file
-        # Uoutput.GetReactRates(r);
+            import matplotlib.pyplot as plt
 
-#         procedure GetReactRates(var R: array of Single);
-# //-----------------------------------------------
-# // Retrieves overall average reaction rates
-# // NOTE: The 3 avg. reaction rates + avg. source
-# //       input rate are stored at end of the
-# //       binary output file just before the last
-# //       3 records.
-# //-----------------------------------------------
-# begin
-#   Seek(Fout, FileSize(Fout)-7*RECORDSIZE);
-#   BlockRead(Fout, R, 4*Sizeof(Single));
-# end;
+            labels = "%10.1f Tanks" % tank, "%10.1f Bulk" % bulk, "%10.1f Wall" % wall
+            sum_reaction = bulk + wall + tank
+            size_bulk = bulk / sum_reaction
+            size_wall = wall / sum_reaction
+            size_tank = tank / sum_reaction
+            sizes = [size_tank, size_bulk, size_wall]
+            colors = ['green', 'blue', 'red']
+            explode = (0, 0, 0)
 
-        # for i := 0 to 3 do rate[i] := r[i] / ucf;
-        #
-        # // Check max. rate to see if any reactions occurred
-        # maxrate := MaxValue(Slice(rate,3));
-        # if maxrate = 0 then
-        # begin
-        #   Chart1.Foot.Text.Add(TXT_NO_REACTION);
-        # end
-        #
-        # // Add each rate category to chart
-        # else
-        # begin
-        # Chart1.Title.Text.Add(TXT_AVG_RATES);
-        # Add(rate[0],TXT_BULK,clBlue);
-        # Add(rate[1],TXT_WALL,clRed);
-        # Add(rate[2],TXT_TANKS,clGreen);
-        #  Active := True;
-        # Chart1.Foot.Text.Add(Format(FMT_INFLOW,[rate[3]]));
-        # end;
-        # end;
+            plt.figure("Reaction Report")
 
-        import matplotlib.pyplot as plt
+            plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+                    autopct='%1.2f%%', shadow=True, startangle=180)
 
-        # The slices will be ordered and plotted counter-clockwise.
-        labels = '2.8 Tanks', '0.5 Bulk', '2.1 Wall'
-        sizes = [52.49, 8.57, 38.93]
-        colors = ['green', 'blue', 'red']
-        explode = (0, 0, 0)
+            plt.axis('equal')
+            plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
+            plt.text(0.9,-0.9,footer_text)
 
-        plt.figure("Reaction Report")
-        plt.pie(sizes, explode=explode, labels=labels, colors=colors,
-                autopct='%1.2f%%', shadow=True, startangle=180)
-        # Set aspect ratio to be equal so that pie is drawn as a circle.
-        plt.axis('equal')
-        plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
-        plt.text(0.9,-0.9,"Inflow Rate = 6")
-
-        plt.show()
+            plt.show()
+        else:
+            QMessageBox.information(None, self.model,
+                                    "Model output not found.\n"
+                                    "Run the model to generate output.",
+                                    QMessageBox.Ok)
 
     def calibration_data(self):
         self._frmCalibrationData = frmCalibrationData(self)

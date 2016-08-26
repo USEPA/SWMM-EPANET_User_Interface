@@ -60,24 +60,36 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.canvas = None
         self.map_widget = None
         try:
-            from qgis.core import QgsApplication
-            from qgis.gui import QgsMapCanvas
-            from map_tools import EmbedMap
-
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
-            search_paths = [os.path.join(INSTALL_DIR, "qgis"),
-                            os.path.join(INSTALL_DIR, "../qgis"),
-                            os.path.join(INSTALL_DIR, "../../qgis"),
-                            "C:/OSGeo4W/apps/qgis/",
-                            "/usr",
-                            "/Applications/QGIS.app/Contents/MacOS"]
-            if os.environ.has_key("QGIS_HOME"):
-                search_paths.insert(0, os.environ.get("QGIS_HOME"))
+            orig_path = os.environ["Path"]
+            search_paths = []
             if os.environ.has_key("QGIS_PREFIX_PATH"):
-                search_paths.insert(0, os.environ.get("QGIS_PREFIX_PATH"))
-            try:
-                for qgis_home in search_paths:
+                search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
+            if os.environ.has_key("QGIS_HOME"):
+                search_paths.append(os.environ.get("QGIS_HOME"))
+            dirname = INSTALL_DIR
+            while dirname:
+                search_paths.append(os.path.join(dirname, "qgis"))
+                updir = os.path.dirname(dirname)
+                if not updir or updir == dirname:
+                    break
+                dirname = updir
+            search_paths.extend([r"C:\OSGeo4W64\apps\qgis",
+                                 r"C:\OSGeo4W\apps\qgis",
+                                 r"/usr",
+                                 r"/Applications/QGIS.app/Contents/MacOS"])
+            for qgis_home in search_paths:
+                try:
                     if os.path.isdir(qgis_home):
+                        # os.environ["Path"] = r"C:/OSGeo4W64/apps/Python27/Scripts;C:/OSGeo4W64/apps/qgis/bin;C:/OSGeo4W64/bin;" + os.environ["Path"]
+                        updir = os.path.dirname(qgis_home)
+                        updir2 = os.path.dirname(updir)
+                        os.environ["Path"] = os.path.join(updir, r"/Python27/Scripts;") +\
+                                             os.path.join(qgis_home, "bin;") + \
+                                             os.path.join(updir2, "bin;") + orig_path
+                        from qgis.core import QgsApplication
+                        from qgis.gui import QgsMapCanvas
+                        from map_tools import EmbedMap
                         QgsApplication.setPrefixPath(qgis_home, True)
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
@@ -97,16 +109,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
                             QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
                             break  # Success, done looking for a qgis_home
-                else:
-                    QMessageBox.information(None, "QGIS Home not found", "Not creating map", QMessageBox.Ok)
-            except Exception as e1:
-                msg = str(e1) + '\n' + str(traceback.print_exc())
-                print(msg)
-                QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
+                except Exception as e1:
+                    msg = "Did not load QGIS from " + qgis_home + ": " + str(e1) + '\n' # + str(traceback.print_exc())
+                    print(msg)
+                    # QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
 
         except Exception as eImport:
             self.canvas = None
-            print("QGIS libraries not found, Not creating map\n" + str(eImport))
+        if not self.canvas:
+            print("QGIS libraries not found, Not creating map\n")
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
         self.onLoad()
 

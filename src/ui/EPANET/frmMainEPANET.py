@@ -1,8 +1,8 @@
 import os, sys
 os.environ['QT_API'] = 'pyqt'
 import sip
-sip.setapi("QString", 2)
-sip.setapi("QVariant", 2)
+for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", "QUrl"]:
+    sip.setapi(typ, 2)
 import traceback
 import webbrowser
 from PyQt4 import QtGui, QtCore

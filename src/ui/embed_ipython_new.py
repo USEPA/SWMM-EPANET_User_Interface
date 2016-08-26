@@ -13,8 +13,8 @@ easily plugged into an application. It's setup to work with pyqt4 and IPython 1.
 import os
 os.environ['QT_API'] = 'pyqt'
 import sip
-sip.setapi("QString", 2)
-sip.setapi("QVariant", 2)
+for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", "QUrl"]:
+    sip.setapi(typ, 2)
 from PyQt4.QtGui import *
 # Import the console machinery from ipython
 from qtconsole.rich_jupyter_widget import RichJupyterWidget

@@ -190,13 +190,20 @@ try:
             if len(coordinates) > 100:
                 symbol_layer.setSize(2.0)
             else:
-                symbol_layer.setSize(8.0)
+                if hasattr(coordinates[0], "size"):
+                    size = coordinates[0].size
+                    symbol_layer.setSize(10.0)
+                    symbol_layer.setOutlineColor(QColor('transparent'))
+                    symbol_layer.setColor(QColor('transparent'))
+                else:
+                    size = 8.0
+                    symbol_layer.setSize(8.0)
                 pal_layer = QgsPalLayerSettings()
                 pal_layer.readFromLayer(layer)
                 pal_layer.enabled = True
                 pal_layer.fieldName = 'name'
                 pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
-                pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, '8', '')
+                pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, str(size), '')
                 pal_layer.writeToLayer(layer)
 
             # replace the default symbol layer with the new symbol layer

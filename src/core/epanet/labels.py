@@ -2,6 +2,7 @@ from enum import Enum
 
 from core.project_base import Section
 from core.metadata import Metadata
+from core.coordinate import Coordinate
 
 
 class MeterType(Enum):
@@ -11,7 +12,7 @@ class MeterType(Enum):
     LINK = 3
 
 
-class Label(Section):
+class Label(Section, Coordinate):
     """A label on the map with location, text, and optional anchor node ID"""
 
 
@@ -31,15 +32,9 @@ class Label(Section):
 
     def __init__(self):
         Section.__init__(self)
+        Coordinate.__init__(self)
 
-        self.x = '0.0'
-        """east/west label centroid coordinate"""
-
-        self.y = '0.0'
-        """north/south label centroid coordinate"""
-
-        self.name = ''
-        """Text of label in double quotes"""
+        """Text of label is saved in name attribute defined in Coordinate base class."""
 
         self.anchor_name = ''  # string
         """ID label of an anchor node (optional)"""

@@ -603,6 +603,7 @@ class frmMainEPANET(frmMain):
                 QgsMapLayerRegistry.instance().removeAllMapLayers()
                 EmbedMap.layers = self.canvas.layers()
                 self.map_widget.addCoordinates(self.project.coordinates.value)
+                self.map_widget.addCoordinates(self.project.labels.value)
                 self.map_widget.addLinks(self.project.coordinates.value,
                                          self.project.pipes.value, "Pipes", "name", QColor('gray'))
                 self.map_widget.addLinks(self.project.coordinates.value,

@@ -525,6 +525,9 @@ class frmMainSWMM(frmMain):
         elif category == self.tree_MapLabels[0]:
             for i in range(0, len(self.project.labels.value)):
                 ids.append(self.project.labels.value[i].name)
+        elif category == self.tree_nodes_StorageUnits[0]:
+            for i in range(0, len(self.project.storage.value)):
+                ids.append(self.project.storage.value[i].name)
         else:
             section = self.project.find_section(category)
             if section:

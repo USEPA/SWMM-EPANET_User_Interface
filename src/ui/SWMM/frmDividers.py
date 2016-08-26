@@ -11,26 +11,30 @@ from core.swmm.curves import CurveType
 
 
 class frmDividers(frmGenericPropertyEditor):
+
+    SECTION_NAME = "[DIVIDERS]"
+    SECTION_TYPE = Divider
+
     def __init__(self, main_form, edit_these=[]):
         self.help_topic = "swmm/src/src/dividerproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
+        self.project_section = self.project.dividers
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-        if self.project.dividers and isinstance(self.project.dividers.value, list):
             if edit_these:  # Edit only specified item(s) in section
                 if isinstance(edit_these[0], basestring):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
+
             else:  # Edit all items in section
-                edit_these.extend(self.project.dividers.value)
-        if len(edit_these) == 0:
-            self.new_item = Divider()
-            self.new_item.name = "1"
-            edit_these.append(self.new_item)
-        else:
-            self.new_item = False
+                edit_these = []
+                edit_these.extend(self.project_section.value)
 
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Dividers Editor")
 

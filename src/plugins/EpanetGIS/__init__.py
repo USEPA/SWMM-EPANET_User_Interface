@@ -5,8 +5,7 @@ try:
     from PyQt4.QtGui import QMessageBox
     from core.coordinate import Coordinate
     from core.epanet.hydraulics.link import Pipe
-    import plugins.EpanetGIS.exporter
-    import plugins.EpanetGIS.importer
+    import plugins.EpanetGIS.import_export
     import os
 
     plugin_name = "EpanetGIS"
@@ -40,9 +39,9 @@ try:
                         gui_settings.sync()
 
                     if choice == 1:
-                        result = plugins.EpanetGIS.exporter.export_to_gis(session, file_name)
+                        result = plugins.EpanetGIS.import_export.export_to_gis(session, file_name)
                     elif choice == 2:
-                        result = plugins.EpanetGIS.importer.import_from_gis(session, file_name)
+                        result = plugins.EpanetGIS.import_export.import_from_gis(session, file_name)
                 else:
                     result = "Selected operation not yet implemented."
                 del gui_settings

@@ -162,10 +162,12 @@ class SwmmProject(ProjectBase):
         self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
         # X, Y coordinates for nodes
 
-        # self.vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        # self.symbols = [Section] # SYMBOLS # X,Y coordinates for rain gages
-        #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
-        # [TAGS]
+        self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
+        # X,Y coordinates for each interior vertex of polyline links
+
+        self.symbols = SectionAsList("[SYMBOLS]")    # (list of Coordinate)
+        # X,Y coordinates for rain gages
+
         ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
     def add_section(self, section_name, section_text):

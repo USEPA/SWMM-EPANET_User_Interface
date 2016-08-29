@@ -519,6 +519,26 @@ class WeirWriter(SectionWriter):
             return weir.comment
 
 
+class OutletWriter(SectionWriter):
+
+    field_format = "{:16}\t{:16}\t{:16}\t{:10}\t{:15}\t"
+
+    @staticmethod
+    def as_text(outlet):
+        """format contents of this item for writing to file"""
+        inp = OutletWriter.field_format.format(outlet.name, outlet.inlet_node, outlet.outlet_node,
+                                               str(outlet.inlet_offset),
+                                               outlet.curve_type.name.replace('_', '/'))
+        if outlet.curve_type in (OutletCurveType.TABULAR_DEPTH, OutletCurveType.TABULAR_HEAD):
+            inp += "{:16}".format(str(outlet.rating_curve))
+        elif outlet.curve_type in (OutletCurveType.FUNCTIONAL_DEPTH, OutletCurveType.FUNCTIONAL_HEAD):
+            inp += "{:16}\t{:10}".format(outlet.coefficient, outlet.exponent)
+        elif outlet.comment:
+            return outlet.comment
+        inp += "\t{:8}".format(SectionWriter.yes_no(outlet.flap_gate))
+        return inp
+
+
 class CrossSectionWriter(SectionWriter):
     """Make a string representation of a CrossSection of a Conduit, Orifice, or Weir"""
 

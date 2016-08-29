@@ -110,7 +110,7 @@ class ProjectReader(InputFileReader):
         self.read_weirs = SectionReaderAsList("[WEIRS]", WeirReader)
         # weir link information
 
-        self.read_outlets = SectionReaderAsList("[OUTLETS]", SectionReader)
+        self.read_outlets = SectionReaderAsList("[OUTLETS]", OutletReader)
         # outlet link information
 
         self.read_xsections = SectionReaderAsList("[XSECTIONS]", CrossSectionReader)

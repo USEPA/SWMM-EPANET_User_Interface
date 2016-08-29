@@ -146,7 +146,7 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------")
         # weir link information
 
-        self.write_outlets = SectionWriterAsList("[OUTLETS]", SectionWriter,
+        self.write_outlets = SectionWriterAsList("[OUTLETS]", OutletWriter,
             ";;Name          \tFrom Node       \tTo Node         \tOffset    \tType           \tQTable/Qcoeff   \tQexpon    \tGated\n"
             ";;--------------\t----------------\t----------------\t----------\t---------------\t----------------\t----------\t--------")
         # outlet link information

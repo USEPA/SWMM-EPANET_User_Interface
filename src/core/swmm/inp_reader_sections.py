@@ -20,6 +20,7 @@ from core.swmm.hydraulics.link import CrossSectionShape
 from core.swmm.hydraulics.link import Link
 from core.swmm.hydraulics.link import Orifice
 from core.swmm.hydraulics.link import Weir
+from core.swmm.hydraulics.link import Outlet, OutletCurveType
 from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import Transect
 from core.swmm.hydraulics.link import Transects
@@ -599,6 +600,37 @@ class WeirReader(Link):
         if len(fields) > 11:
             weir.setattr_keep_type("road_surface", fields[11])
         return weir
+
+
+class OutletReader(Link):
+    @staticmethod
+    def read(new_text):
+        """Read properties from text.
+            Args:
+                new_text (str): Text to parse into properties.
+        """
+        outlet = Outlet()
+        new_text = SectionReader.set_comment_check_section(outlet, new_text)
+        fields = new_text.split(None, 8)
+        if len(fields) > 4:
+            outlet.name = fields[0]
+            outlet.inlet_node = fields[1]
+            outlet.outlet_node = fields[2]
+            outlet.setattr_keep_type("inlet_offset", fields[3])
+            outlet.setattr_keep_type("curve_type", fields[4].replace('/', '_'))
+        if outlet.curve_type in (OutletCurveType.TABULAR_DEPTH, OutletCurveType.TABULAR_HEAD):
+            if len(fields) > 5:
+                outlet.setattr_keep_type("rating_curve", fields[5])
+            if len(fields) > 6:
+                outlet.setattr_keep_type("flap_gate", fields[6])
+        elif outlet.curve_type in (OutletCurveType.FUNCTIONAL_DEPTH, OutletCurveType.FUNCTIONAL_HEAD):
+            if len(fields) > 5:
+                outlet.setattr_keep_type("coefficient", fields[5])
+            if len(fields) > 6:
+                outlet.setattr_keep_type("exponent", fields[6])
+            if len(fields) > 7:
+                outlet.setattr_keep_type("flap_gate", fields[7])
+        return outlet
 
 
 class CrossSectionReader(SectionReader):

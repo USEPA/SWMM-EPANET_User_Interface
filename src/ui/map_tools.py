@@ -142,6 +142,7 @@ try:
             self.canvas.zoomToFullExtent()
             self.set_extent(self.canvas.extent())
 
+
         def setMouseTracking(self, flag):
             def recursive_set(parent):
                 for child in parent.findChildren(QtCore.QObject):
@@ -244,11 +245,13 @@ try:
             for link in links:
                 inlet_coord = None
                 outlet_coord = None
-                for coordinate_pair in coordinates:
-                    if coordinate_pair.name == link.inlet_node:
-                        inlet_coord = coordinate_pair
-                    if coordinate_pair.name == link.outlet_node:
-                        outlet_coord = coordinate_pair
+                inlet_coord = coordinates[link.inlet_node]
+                outlet_coord = coordinates[link.outlet_node]
+                # for coordinate_pair in coordinates:
+                #     if coordinate_pair.name == link.inlet_node:
+                #         inlet_coord = coordinate_pair
+                #     if coordinate_pair.name == link.outlet_node:
+                #         outlet_coord = coordinate_pair
                 if inlet_coord and outlet_coord:
                     # add a feature
                     feature = QgsFeature()

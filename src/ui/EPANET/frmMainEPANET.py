@@ -395,7 +395,10 @@ class frmMainEPANET(frmMain):
     def get_object_list(self, category):
         section = self.project.find_section(category)
         if section:
-            return [item.name for item in section.value]
+            try:
+                return [item.name for item in section.value]
+            except Exception as ex:
+                return [str(item) for item in section.value]
         else:
             return None
 
@@ -602,8 +605,8 @@ class frmMainEPANET(frmMain):
             try:
                 QgsMapLayerRegistry.instance().removeAllMapLayers()
                 EmbedMap.layers = self.canvas.layers()
-                self.map_widget.addCoordinates(self.project.coordinates.value)
-                self.map_widget.addCoordinates(self.project.labels.value)
+                self.map_widget.addCoordinates(self.project.coordinates.value, "Nodes")
+                self.map_widget.addCoordinates(self.project.labels.value, "Labels")
                 self.map_widget.addLinks(self.project.coordinates.value,
                                          self.project.pumps.value, "Pumps", "name", QColor('red'), 1)
                 self.map_widget.addLinks(self.project.coordinates.value,

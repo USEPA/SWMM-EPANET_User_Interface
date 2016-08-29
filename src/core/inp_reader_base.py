@@ -2,6 +2,7 @@ import inspect
 import traceback
 from enum import Enum
 from core.project_base import ProjectBase, Section, SectionAsList
+from core.indexed_list import IndexedList
 
 
 class InputFileReader(object):
@@ -218,7 +219,13 @@ class SectionReaderAsList(SectionReader):
         # Set new section's SECTION_NAME if it has not already been set
         if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
             section.SECTION_NAME = self.SECTION_NAME
-        section.value = []
+
+        if section.SECTION_NAME in ["[COORDINATES]"]:
+            unique_fields = ['name']
+            section.value = IndexedList([], unique_fields)
+        else:
+            section.value = []
+
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
                 if section.value:  # If we have already added items to this section, add comment as a Section

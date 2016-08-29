@@ -52,8 +52,8 @@ class Label(Section, Coordinate):
         """label size"""
 
         self.bold = False
-        """label bold"""
+        """True to use bold"""
 
         self.italic = False
-        """lable italics"""
+        """True to use italics"""
 

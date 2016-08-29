@@ -161,6 +161,8 @@ try:
             pass
 
         def addCoordinates(self, coordinates):
+            if len(coordinates) < 1:
+                return None
             layer = QgsVectorLayer("Point", "Nodes", "memory")
             provider = layer.dataProvider()
 
@@ -215,6 +217,8 @@ try:
             return layer
 
         def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black')):
+            if len(links) < 1:
+                return None
             layer = QgsVectorLayer("LineString", layer_name, "memory")
             provider = layer.dataProvider()
 
@@ -267,8 +271,11 @@ try:
             QgsMapLayerRegistry.instance().addMapLayer(layer)
             self.layers.append(QgsMapCanvasLayer(layer))
             self.canvas.setLayerSet(self.layers)
+            return layer
 
         def addPolygons(self, polygons, layer_name):
+            if len(polygons) < 1:
+                return None
             layer = QgsVectorLayer("Polygon", layer_name, "memory")
             provider = layer.dataProvider()
 
@@ -308,6 +315,7 @@ try:
             QgsMapLayerRegistry.instance().addMapLayer(layer)
             self.layers.append(QgsMapCanvasLayer(layer))
             self.canvas.setLayerSet(self.layers)
+            return layer
 
         def addVectorLayer(self, filename):
             layer_count = len(self.layers)

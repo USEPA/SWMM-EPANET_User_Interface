@@ -1042,8 +1042,9 @@ class frmMainSWMM(frmMain):
                 from ui.map_tools import EmbedMap
                 QgsMapLayerRegistry.instance().removeAllMapLayers()
                 EmbedMap.layers = self.canvas.layers()
-                self.map_widget.addCoordinates(self.project.coordinates.value)
-                self.map_widget.addCoordinates(self.project.symbols.value)
+                self.map_widget.addCoordinates(self.project.coordinates.value)  # All Nodes
+                self.map_widget.addCoordinates(self.project.symbols.value)      # Rain Gages
+                self.map_widget.addCoordinates(self.project.labels.value)
                 self.map_widget.addLinks(self.project.coordinates.value,
                                          self.project.conduits.value, "Conduits", "name", QColor('gray'))
                 self.map_widget.addPolygons(self.project.polygons.value, "Subcatchments")

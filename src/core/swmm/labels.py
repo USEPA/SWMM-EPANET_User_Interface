@@ -1,12 +1,11 @@
 import core.coordinate
 from core.project_base import Section
 from core.metadata import Metadata
+from core.coordinate import Coordinate
 
 
-class Label(Section):
+class Label(Section, Coordinate):
     """Assigns coordinates to map labels"""
-
-    field_format = "{:16}\t{:10}\t{:10}\t{:10}"
 
     #    attribute,     input_name, label,         default, english, metric, hint
     metadata = Metadata((
@@ -21,11 +20,10 @@ class Label(Section):
     ))
 
     def __init__(self):
-        self.centroid = None  # core.coordinates
-        """X and Y coordinates of label centroid"""
+        Section.__init__(self)
+        Coordinate.__init__(self)
 
-        self.name = "New Label"   # string
-        """Text of label"""
+        """Text of label is saved in name attribute defined in Coordinate base class."""
 
         self.anchor_name = ""			# string
         """ID label of an anchor node (optional)"""

@@ -11,13 +11,28 @@ class frmPumps(frmGenericPropertyEditor):
     SECTION_NAME = "[PUMPS]"
     SECTION_TYPE = Pump
 
-    def __init__(self, main_form):
+    def __init__(self, main_form, edit_these=[]):
         self.help_topic = "swmm/src/src/pumpproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
-        self.project_section = self.project.aquifers
-        self.set_from(self.project, [])
+        self.project_section = self.project.pumps
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        self.set_from(self.project, edit_these)
 
     def set_from(self, project, edit_these):
         self.project = project

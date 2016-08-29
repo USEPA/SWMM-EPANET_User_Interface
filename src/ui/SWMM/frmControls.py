@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.SWMM.frmControlsDesigner import Ui_frmControls
 from ui.help import HelpHandler
+from core.inp_writer_base import SectionWriterAsList, SectionWriter
 
 
 class frmControls(QtGui.QMainWindow, Ui_frmControls):
@@ -19,7 +20,7 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
     def set_from(self, project):
         # section = core.epanet.project.Control()
         section = project.find_section("CONTROLS")
-        self.txtControls.setPlainText(str(section.get_text()))
+        self.txtControls.setPlainText(str(SectionWriterAsList("[CONTROLS]", SectionWriter, None).as_text(section)))
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("CONTROLS")

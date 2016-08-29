@@ -530,7 +530,7 @@ class frmMainSWMM(frmMain):
                 ids.append(self.project.storage.value[i].name)
         else:
             section = self.project.find_section(category)
-            if section:
+            if section and isinstance(section.value, list):
                 ids = [item.name for item in section.value]
             else:
                 ids = None

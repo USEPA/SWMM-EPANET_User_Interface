@@ -373,6 +373,7 @@ class Transects(Section):
 
     def __init__(self):
         Section.__init__(self)
+        self.value = []
 
 
 class Transect(Section):

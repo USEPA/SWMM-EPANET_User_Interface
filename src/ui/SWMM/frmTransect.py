@@ -4,7 +4,7 @@ from ui.SWMM.frmTransectDesigner import Ui_frmTransect
 
 
 class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -12,7 +12,11 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
         self._main_form = main_form
         self.transect_name = ''
         # set for first transect for now
-        self.set_from(main_form.project, 'xx')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, transect_name):
         # section = core.swmm.project.Transects

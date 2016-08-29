@@ -160,10 +160,10 @@ try:
             self.session.btnCoord.setText('x,y: {:.4f}, {:.4f}'.format(pm.x(), pm.y()))
             pass
 
-        def addCoordinates(self, coordinates):
+        def addCoordinates(self, coordinates, layer_name):
             if len(coordinates) < 1:
                 return None
-            layer = QgsVectorLayer("Point", "Nodes", "memory")
+            layer = QgsVectorLayer("Point", layer_name, "memory")
             provider = layer.dataProvider()
 
             # add fields

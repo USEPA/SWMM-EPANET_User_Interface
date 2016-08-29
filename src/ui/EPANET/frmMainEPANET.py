@@ -605,11 +605,11 @@ class frmMainEPANET(frmMain):
                 self.map_widget.addCoordinates(self.project.coordinates.value)
                 self.map_widget.addCoordinates(self.project.labels.value)
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.pipes.value, "Pipes", "name", QColor('gray'))
+                                         self.project.pumps.value, "Pumps", "name", QColor('red'), 1)
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.pumps.value, "Pumps", "name", QColor('red'))
+                                         self.project.valves.value, "Valves", "name", QColor('green'), 2)
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.valves.value, "Valves", "name", QColor('green'))
+                                         self.project.pipes.value, "Pipes", "name", QColor('gray'), 3)
                 self.map_widget.zoomfull()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))

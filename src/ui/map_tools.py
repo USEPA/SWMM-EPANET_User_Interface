@@ -216,7 +216,7 @@ try:
             self.canvas.setLayerSet(self.layers)
             return layer
 
-        def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black')):
+        def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black'), link_width=1):
             if len(links) < 1:
                 return None
             layer = QgsVectorLayer("LineString", layer_name, "memory")
@@ -224,8 +224,8 @@ try:
 
             symbol_layer = QgsSimpleLineSymbolLayerV2()
             symbol_layer.setColor(link_color)
-            if len(coordinates) <= 100:
-                symbol_layer.setWidth(2.5)
+            if len(coordinates) <= 100 and link_width > 1:
+                symbol_layer.setWidth(link_width)
 
             # markerLayer = markerMeta.createSymbolLayer({'width': '0.26',
             #                                             'color': '255,0,0',

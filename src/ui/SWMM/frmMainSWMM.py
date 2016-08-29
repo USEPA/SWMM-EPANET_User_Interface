@@ -1046,11 +1046,13 @@ class frmMainSWMM(frmMain):
                 self.map_widget.addCoordinates(self.project.symbols.value, "Rain Gages")
                 self.map_widget.addCoordinates(self.project.labels.value, "Labels")
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.orifices.value, "Orifices", "name", QColor('green'))
+                                         self.project.pumps.value, "Pumps", "name", QColor('red'), 1)
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.weirs.value, "Weirs", "name", QColor('orange'))
+                                         self.project.orifices.value, "Orifices", "name", QColor('green'), 1)
                 self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.conduits.value, "Conduits", "name", QColor('gray'))
+                                         self.project.weirs.value, "Weirs", "name", QColor('orange'), 2)
+                self.map_widget.addLinks(self.project.coordinates.value,
+                                         self.project.conduits.value, "Conduits", "name", QColor('gray'), 3)
                 self.map_widget.addPolygons(self.project.polygons.value, "Subcatchments")
                 self.map_widget.zoomfull()
             except Exception as ex:

@@ -141,7 +141,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         if self.stats.MinEventVolume >= 0:
             if self.stats.IsRainParam:
                 line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.RainVolumeText[self.stats.Variable])
-            else:
+            elif not self.stats.IsQualParam:
                 line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.FlowVolumeText[self.stats.Variable])
         line8 = ""
         if (self.stats.TimePeriod == UStats.ETimePeriod.tpVariable) and (self.stats.MinEventDelta > 0):
@@ -152,12 +152,17 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         line11 = StatsText[11] % (len(self.statsResult.EventList))
         line12 = StatsText[12] % (self.statsResult.EventFreq)
         # Display summary statistics
-        if len(self.statsResult.EventList) > 0:
-            line13 = StatsText[13] % (self.statsResult.Xmin)
-            line14 = StatsText[14] % (self.statsResult.Xmax)
-            line15 = StatsText[15] % (self.statsResult.Mean)
-            line16 = StatsText[16] % (self.statsResult.StdDev)
-            line17 = StatsText[17] % (self.statsResult.Skew)
+        line13 = StatsText[13] % (self.statsResult.Xmin)
+        line14 = StatsText[14] % (self.statsResult.Xmax)
+        line15 = StatsText[15] % (self.statsResult.Mean)
+        line16 = StatsText[16] % (self.statsResult.StdDev)
+        line17 = StatsText[17] % (self.statsResult.Skew)
+        #if len(self.statsResult.EventList) > 0:
+        #    line13 = StatsText[13] % (self.statsResult.Xmin)
+        #    line14 = StatsText[14] % (self.statsResult.Xmax)
+        #    line15 = StatsText[15] % (self.statsResult.Mean)
+        #    line16 = StatsText[16] % (self.statsResult.StdDev)
+        #    line17 = StatsText[17] % (self.statsResult.Skew)
 
         line18 = "" #StatsMemo.Lines.Add('')
         #StatsMemo.Lines.Add(FrequencyNoteText[Ord(Stats.TimePeriod)])
@@ -175,12 +180,13 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.txtStatsMemo.append(line10)
         self.txtStatsMemo.append(line11)
         self.txtStatsMemo.append(line12)
-        self.txtStatsMemo.append(line13)
-        self.txtStatsMemo.append(line14)
-        self.txtStatsMemo.append(line15)
-        self.txtStatsMemo.append(line16)
-        self.txtStatsMemo.append(line17)
-        self.txtStatsMemo.append(line18)
+        if len(self.statsResult.EventList) > 0:
+            self.txtStatsMemo.append(line13)
+            self.txtStatsMemo.append(line14)
+            self.txtStatsMemo.append(line15)
+            self.txtStatsMemo.append(line16)
+            self.txtStatsMemo.append(line17)
+            self.txtStatsMemo.append(line18)
         self.txtStatsMemo.append(line19)
         pass
 
@@ -215,7 +221,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         num_cols = 6
         self.tableWidget.setColumnCount(num_cols)
         if len(self.statsResult.EventList) == 0:
-            num_rows = 2
+            num_rows = 1
         else:
             num_rows = len(self.statsResult.EventList) + 1
         self.tableWidget.setRowCount(num_rows)
@@ -256,38 +262,43 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             Nbins = 20
         else:
             Nbins  = 50
-        E = self.statsResult.EventList[0]
-        xmax = E.Value
-        E = self.statsResult.EventList[N - 1]
-        xmin = E.Value
-        BinWidth = UStats.Uutil.RoundToScale((xmax - xmin)/ Nbins)
-        xmin = BinWidth * np.floor(xmin / BinWidth)
-        Nbins = np.ceil((xmax - xmin)/BinWidth)
-        if xmin + Nbins * BinWidth <= xmax:
-            Nbins += 1
-        if Nbins > 50:
-            Nbins = 50
-        # lContents = []
-        # for I in xrange(0, int(Nbins)):
-        #     lContents.append(0.0)
-        # for I in xrange(0, N):
-        #     E = self.statsResult.EventList[I]
-        #     K = np.floor((E.Value - xmin)/BinWidth)
-        #     if K < Nbins:
-        #         lContents[int(K)] += 1.0
-        #
-        # lBins = []
-        # lData = []
-        # for I in xrange(0, int(Nbins)):
-        #     lX = xmin + I * BinWidth + BinWidth /2.0
-        #     lY = 100.0 * lContents[I] / N
-        #     lData.append(lY)
-        #     lBins.append(lX)
 
-        lData = []
-        for e in self.statsResult.EventList:
-            lData.append(e.Value)
-        histogram.setData(lData, Nbins)
+        if N > 0:
+            E = self.statsResult.EventList[0]
+            xmax = E.Value
+            E = self.statsResult.EventList[N - 1]
+            xmin = E.Value
+            BinWidth = UStats.Uutil.RoundToScale((xmax - xmin)/ Nbins)
+            xmin = BinWidth * np.floor(xmin / BinWidth)
+            Nbins = np.ceil((xmax - xmin)/BinWidth)
+            if xmin + Nbins * BinWidth <= xmax:
+                Nbins += 1
+            if Nbins > 50:
+                Nbins = 50
+            # lContents = []
+            # for I in xrange(0, int(Nbins)):
+            #     lContents.append(0.0)
+            # for I in xrange(0, N):
+            #     E = self.statsResult.EventList[I]
+            #     K = np.floor((E.Value - xmin)/BinWidth)
+            #     if K < Nbins:
+            #         lContents[int(K)] += 1.0
+            #
+            # lBins = []
+            # lData = []
+            # for I in xrange(0, int(Nbins)):
+            #     lX = xmin + I * BinWidth + BinWidth /2.0
+            #     lY = 100.0 * lContents[I] / N
+            #     lData.append(lY)
+            #     lBins.append(lX)
+
+            lData = []
+            for e in self.statsResult.EventList:
+                lData.append(e.Value)
+            histogram.setData(lData, Nbins)
+        else:
+            #histogram.setData([0], None)
+            pass
 
         histogram.setTitle(self.stats.ObjectTypeText + " " +
                            self.stats.ObjectID + " " +
@@ -320,22 +331,24 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                                 height=self.tabFrequency.height(),
                                 dpi=100)
         N = len(self.statsResult.EventList)
-        if N == 0:
-            exit()
+        if N > 0:
+            M = int(N) / 50
+            if M == 0:
+                M = 1
+            lX = []
+            lY = []
+            for I in xrange(0, N):
+                if np.mod(I, M) > 0:
+                    continue
+                E = self.statsResult.EventList[I]
+                lX.append(E.Value)
+                lY.append(100.0 * E.Rank/N)
 
-        M = int(N) / 50
-        if M == 0:
-            M = 1
-        lX = []
-        lY = []
-        for I in xrange(0, N):
-            if np.mod(I, M) > 0:
-                continue
-            E = self.statsResult.EventList[I]
-            lX.append(E.Value)
-            lY.append(100.0 * E.Rank/N)
+            freqplot.setData(lX, lY)
+        else:
+            #freqplot.setData([0], [100])
+            pass
 
-        freqplot.setData(lX, lY)
         freqplot.setTitle(self.stats.ObjectTypeText + " " +
                            self.stats.ObjectID + " " +
                            self.stats.VariableText)
@@ -471,6 +484,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
 class MyHistogram(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
+        fig.subplots_adjust(bottom=0.2)
         self.ax = fig.add_subplot(111)
         #self.ax.hold(False)
         #self.rect = self.ax.patch
@@ -478,6 +492,7 @@ class MyHistogram(FigureCanvas):
         self.ax.grid(True)
         FigureCanvas.__init__(self, fig)
         self.setParent(main_form)
+
 
         FigureCanvas.setSizePolicy(self,
                                    QtGui.QSizePolicy.Expanding,
@@ -491,8 +506,9 @@ class MyHistogram(FigureCanvas):
             self.n, self.bins, self.patches = self.ax.hist(aData)
 
         N = sum(self.n)
-        for item in self.patches:
-            item.set_height(item.get_height()/N)
+        if N > 0:
+            for item in self.patches:
+                item.set_height(item.get_height()/N)
 
         self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 
@@ -514,11 +530,11 @@ class MyHistogram(FigureCanvas):
             self.ax.set_ylabel(aLabel)
         pass
 
-
 class MyFrequencyPlot(FigureCanvas):
 
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
+        fig.subplots_adjust(bottom=0.2)
         self.ax = fig.add_subplot(111)
         #self.axes.hold(False)
         self.ax.grid(True)

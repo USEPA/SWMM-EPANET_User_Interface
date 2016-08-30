@@ -54,6 +54,7 @@ class MiscConstants():
     DefMinSurfAreaSI = '1.14'   #(m2)
     DefHeadTolUS     = '0.005'  #(ft)
     DefHeadTolSI     = '0.0015' #(m)
+    BOT = pd.Timestamp('1/1/1700 0:0:0')
 
 class EStatsCat(Enum):
     BASIC = 0
@@ -252,6 +253,7 @@ class StatisticUtility(object):
         self.deltaDateTime = 0.0 # trying to be the replacement of Uglobals.DeltaDateTime
         if self.output is not None:
             self.deltaDateTime = self.output.reportStepDays()
+
         pass
 
     def GetStats(self, StatsSel, Results):
@@ -267,6 +269,9 @@ class StatisticUtility(object):
         self.Stats.Tser = self.output.get_time_series(self.Stats.ObjectTypeText, \
                                                 self.Stats.ObjectID, \
                                                 self.Stats.VariableText)
+
+        #self.Stats.Tser = pd.DataFrame()
+        #self.Stats.Tser.to_csv('c:/temp/tser_list.txt')
 
         self.FindDuration(Results)
         self.CategorizeStats(self.Stats)
@@ -488,9 +493,15 @@ class StatisticUtility(object):
             # exceeds the start of the current wet period (in integer days)
             #if Floor(NewDate) > Floor(WetStart):
             #if np.floor(NewDate) > np.floor(self.WetStart):
-            rdiff = relativedelta(NewDate, self.WetStart)
-            if rdiff.days >= 1:
+
+            a1 = NewDate - MiscConstants.BOT
+            a2 = self.WetStart - MiscConstants.BOT
+            if a1.days > a2.days:
                 NewEvent = True
+
+            #rdiff = relativedelta(NewDate, self.WetStart)
+            #if rdiff.days >= 1:
+            #    NewEvent = True
 
         elif "Monthly" in aStats.TimePeriodText:
             # For monthly events, a new event occurs if the new month is different
@@ -761,9 +772,15 @@ class StatisticUtility(object):
             also retrieve its corresponding flow
         '''
         #aStats = TStatsSelection() #debug only
-        if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
-            if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
+        #if self.output.pollutants[aStats.VariableText] is not None:
+        for pname in self.output.pollutants:
+            if pname == aStats.VariableText:
                 aStats.IsQualParam = True
+
+        if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
+            #if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
+            #   aStats.IsQualParam = True
+            if aStats.IsQualParam:
                 aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
                                                       self.Stats.ObjectID, \
                                                       "Runoff")
@@ -775,17 +792,19 @@ class StatisticUtility(object):
                    aStats.IsRainParam = True
 
         elif aStats.ObjectType == EObjectType.NODES.value:
-            if aStats.Variable >= len(SMO.SwmmOutputNode.attributes) - 1:
-                aStats.IsQualParam = True
+            #if aStats.Variable >= len(SMO.SwmmOutputNode.attributes) - 1:
+            #if self.output.pollutants[aStats.VariableText] is not None:
+            #    aStats.IsQualParam = True
 
             if "Inflow" in aStats.VariableText or "Overflow" in aStats.VariableText:
                 aStats.TserFlow = aStats.Tser
 
         elif aStats.ObjectType == EObjectType.LINKS.value:
-            if aStats.Variable >= len(SMO.SwmmOutputLink.attributes) - 1:
-                aStats.IsQualParam = True
-
-            self.Stats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
+            #if aStats.Variable >= len(SMO.SwmmOutputLink.attributes) - 1:
+            #if self.output.pollutants[aStats.VariableText] is not None:
+            #    aStats.IsQualParam = True
+            if aStats.IsQualParam:
+                self.Stats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
                                                               self.Stats.ObjectID, \
                                                               "Flow")
 

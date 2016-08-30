@@ -8,7 +8,7 @@ from core.swmm.curves import CurveType
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, main_form, title, curve_type):
+    def __init__(self, main_form, title, curve_type, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/curveeditordialog.htm"
         self.setupUi(self)
@@ -25,10 +25,15 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.curve_type = curve_type
         self.curve_name = ''
         if main_form and main_form.project and curve_type:
-            self.set_from(main_form.project, self.curve_name)
+            if edit_these:
+                if isinstance(edit_these, list):
+                    self.set_from(main_form.project, edit_these[0])
+                else:
+                    self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, curve_name):
         # section = core.swmm.project.Curves()
+        self.curve_name = curve_name
         section = project.find_section("CURVES")
 
         if self.curve_type == "CONTROL":

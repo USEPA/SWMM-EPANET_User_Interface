@@ -165,10 +165,10 @@ class LanduseWriter(SectionWriter):
         inp = ''
         if landuse.comment:
             inp = landuse.comment + '\n'
-        inp += LanduseWriter.field_format.format(landuse.land_use_name,
-                                           landuse.street_sweeping_interval,
-                                           landuse.street_sweeping_availability,
-                                           landuse.last_swept)
+        inp += LanduseWriter.field_format.format(landuse.name,
+                                                 landuse.street_sweeping_interval,
+                                                 landuse.street_sweeping_availability,
+                                                 landuse.last_swept)
         return inp
 
 

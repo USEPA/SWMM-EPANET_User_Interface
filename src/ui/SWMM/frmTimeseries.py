@@ -4,7 +4,7 @@ from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
 
 
 class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
         self.setupUi(self)
@@ -14,8 +14,11 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         # QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
         self._main_form = main_form
         self.timeseries_name = ''
-        # set for first timeseries for now
-        self.set_from(main_form.project, 'TS1')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, timeseries_name):
         # section = core.swmm.project.SnowPack

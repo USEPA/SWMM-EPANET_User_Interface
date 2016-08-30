@@ -38,7 +38,7 @@ class Landuse(Section):
 
     #    attribute,              input_name, label,                     default, english, metric, hint
     metadata = Metadata((
-        ("land_use_name",                '', "Land Use Name",                '', '', '',
+        ("name",                         '', "Land Use Name",                '', '', '',
          "User-assigned name of the land use."),
         ("street_sweeping_interval",     '', "Street Sweeping Interval",     '', "days", "days",
          "Time between street sweeping within the land use (0 for no sweeping)."),
@@ -50,7 +50,7 @@ class Landuse(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.land_use_name = ""
+        self.name = ""
         """Name assigned to the land use"""
 
         self.street_sweeping_interval = ''

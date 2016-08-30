@@ -159,7 +159,7 @@ class LanduseReader(SectionReader):
         landuse = Landuse()
         fields = new_text.split()
         if len(fields) > 0:
-            landuse.land_use_name = fields[0]
+            landuse.name = fields[0]
         if len(fields) > 1:
             landuse.street_sweeping_interval = fields[1]
         if len(fields) > 2:

@@ -10,7 +10,7 @@ from core.swmm.quality import WashoffFunction
 
 
 class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/landuseeditorgeneralpage.htm"
         self.setupUi(self)
@@ -39,8 +39,11 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         self.tblWashoff.setRowCount(5)
         self.tblWashoff.setHorizontalHeaderLabels(self.local_pollutant_list)
         self.tblWashoff.setVerticalHeaderLabels(("Function","Coefficient","Exponent","Cleaning Effic.","BMP Effic."))
-        # set for first land use for now
-        self.set_from(main_form.project, 'Residential')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
         self.resize(400,450)
 
     def set_from(self, project, land_use_name):
@@ -48,9 +51,9 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         section = project.find_section("LANDUSES")
         land_use_list = section.value[0:]
         for land_use in land_use_list:
-            if land_use.land_use_name == land_use_name:
+            if land_use.name == land_use_name:
                 # this is the land_use we want to edit
-                led = QtGui.QLineEdit(land_use.land_use_name)
+                led = QtGui.QLineEdit(land_use.name)
                 self.tblGeneral.setItem(0,0,QtGui.QTableWidgetItem(led.text()))
                 led = QtGui.QLineEdit(land_use.comment)
                 self.tblGeneral.setItem(1,0,QtGui.QTableWidgetItem(led.text()))
@@ -123,9 +126,9 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         section = self._main_form.project.landuses
         land_uses_list = section.value[0:]
         for land_use in land_uses_list:
-            if land_use.land_use_name == self.land_use_name:
+            if land_use.name == self.land_use_name:
                 # put this back in place
-                land_use.land_use_name = self.tblGeneral.item(0,0).text()
+                land_use.name = self.tblGeneral.item(0,0).text()
                 land_use.comment = self.tblGeneral.item(1,0).text()
                 land_use.last_swept = self.tblGeneral.item(3,0).text()
                 land_use.street_sweeping_availability = self.tblGeneral.item(4,0).text()

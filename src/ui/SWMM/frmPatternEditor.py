@@ -6,7 +6,7 @@ from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
 
 
 class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.setupUi(self)
@@ -15,8 +15,12 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
-        self.set_from(main_form.project, '1')
-        self.selected_pattern_name = '1'
+        self.selected_pattern_name = ''
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
         self._main_form = main_form
 
     def set_from(self, project, selected_pattern_name):
@@ -44,7 +48,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
             if value.name:
                 value.name = self.txtPatternID.text()
                 value.description = self.txtDescription.text()
-                value.pattern_type = core.swmm.patterns.PatternType[self.cboType.currentText()]
+                value.pattern_type = PatternType[self.cboType.currentText()]
                 value.multipliers = []
                 for row in range(self.tblMult.rowCount()):
                     if self.tblMult.item(row,0):
@@ -57,7 +61,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         self.close()
 
     def cboType_currentIndexChanged(self, newIndex):
-        pattern_type = core.swmm.patterns.PatternType[self.cboType.currentText()]
+        pattern_type = PatternType[self.cboType.currentText()]
         if pattern_type == PatternType.DAILY:
             self.tblMult.setColumnCount(1)
             self.tblMult.setRowCount(7)

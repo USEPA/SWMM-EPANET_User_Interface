@@ -26,7 +26,8 @@ class ProjectBase(object):
             Args:
                  section_name (str): Name of section to find.
         """
-        compare_title = self.format_as_attribute_name(section_name)
+        compare_title = self.format_as_attribute_name(section_name).replace('_', '')
+
         for section in self.sections:
             this_section_name = ''
             if hasattr(section, "SECTION_NAME"):

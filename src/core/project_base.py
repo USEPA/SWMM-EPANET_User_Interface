@@ -27,6 +27,14 @@ class ProjectBase(object):
                  section_name (str): Name of section to find.
         """
         compare_title = self.format_as_attribute_name(section_name).replace('_', '')
+        if compare_title == 'timepatterns':
+            compare_title = 'patterns'
+        elif compare_title == 'unithydrographs':
+            compare_title = 'hydrographs'
+        elif compare_title == 'lidcontrols':
+            compare_title = 'lid_controls'
+        elif compare_title == 'lid_usage':
+            compare_title = 'lid_usage'
 
         for section in self.sections:
             this_section_name = ''

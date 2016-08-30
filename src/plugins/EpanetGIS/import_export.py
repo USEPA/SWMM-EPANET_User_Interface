@@ -1,7 +1,9 @@
+import os
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
-import os
+from core.coordinate import Coordinate
+from core.epanet.hydraulics.link import Pipe, Pump, Valve
 
 """Export (save) model elements as GIS data or Import (read) model elements from existing GIS data."""
 
@@ -104,7 +106,7 @@ def export_to_gis(session, file_name):
     if layer:
         layer_count += 1
         if not one_file:
-            layer_file_name = path_file + "_pumps" + extension
+            layer_file_name = path_file + "_junctions" + extension
             QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
             print("saved " + layer_file_name)
 
@@ -127,27 +129,22 @@ def make_gis_fields(gis_attributes):
 def make_links_layer(coordinates, vertices, links, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []
     for link in links:       # For each link, create a GIS feature
-        inlet_coord = None
-        outlet_coord = None
-        for coordinate_pair in coordinates:  # Find the locations of both ends of this link
-            if coordinate_pair.name == link.inlet_node:
-                inlet_coord = coordinate_pair
-            if coordinate_pair.name == link.outlet_node:
-                outlet_coord = coordinate_pair
-            if inlet_coord and outlet_coord:
-                # Found both inlet and outlet coordinates, ready to create a GIS feature
-                feature = QgsFeature()
-                points = [QgsPoint(float(inlet_coord.x), float(inlet_coord.y))]
-                for vertex_pair in vertices:  # Add any intermediate points between inlet and outlet
-                    if vertex_pair.name == link.name:
-                        points.append(QgsPoint(float(vertex_pair.x), float(vertex_pair.y)))
-                points.append(QgsPoint(float(outlet_coord.x), float(outlet_coord.y)))
-                feature.setGeometry(QgsGeometry.fromPolyline(points))
+        try:
+            inlet_coord = coordinates[link.inlet_node]
+            outlet_coord = coordinates[link.outlet_node]
+            feature = QgsFeature()
+            points = [QgsPoint(float(inlet_coord.x), float(inlet_coord.y))]
+            for vertex_pair in vertices:  # Add any intermediate points between inlet and outlet
+                if vertex_pair.name == link.name:
+                    points.append(QgsPoint(float(vertex_pair.x), float(vertex_pair.y)))
+            points.append(QgsPoint(float(outlet_coord.x), float(outlet_coord.y)))
+            feature.setGeometry(QgsGeometry.fromPolyline(points))
 
-                values = gis_values_from_model(link, model_attributes, gis_attributes, all_gis_attributes)
-                feature.setAttributes(values)
-                features.append(feature)
-                break  # stop looking for more coordinates
+            values = gis_values_from_model(link, model_attributes, gis_attributes, all_gis_attributes)
+            feature.setAttributes(values)
+            features.append(feature)
+        except Exception as exLink:
+            print "Skipping link " + link.name + ": " + str(exLink)
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)
         if creating_layer:
@@ -183,14 +180,16 @@ def make_points_layer(coordinates, model_points, model_attributes, gis_attribute
     features = []
     # Receivers = as in the above example 'Receivers' is a list of results
     for model_point in model_points:
-        for coordinate_pair in coordinates:
-            if coordinate_pair.name == model_point.name:
-                # add a feature
-                feature = QgsFeature()
-                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
-                values = gis_values_from_model(model_point, model_attributes, gis_attributes, all_gis_attributes)
-                feature.setAttributes(values)
-                features.append(feature)
+        try:
+            coordinate_pair = coordinates[model_point.name]
+            # add a feature
+            feature = QgsFeature()
+            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
+            values = gis_values_from_model(model_point, model_attributes, gis_attributes, all_gis_attributes)
+            feature.setAttributes(values)
+            features.append(feature)
+        except Exception as exLink:
+            print "Skipping point " + model_point.name + ": " + str(exLink)
 
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)
@@ -235,7 +234,23 @@ def import_from_gis(session, file_name):
     return result
 
 
-def import_links(project, links, file_name, model_attributes, gis_attributes, model_type):
+def import_links(project, links, file_name, model_attributes, gis_attributes, model_type, type_field='', type_value=''):
+    """ Read GIS vector layer in file_name into links list.
+    Args:
+        project: EPANET project to import into, used for access to its coordinates attribute
+                 which is updated with the newly imported values.
+        links: list of project objects which non-geographic properties are imported into.
+        file_name: GIS file to read.
+        model_attributes: attribute names of the model objects in "links" list.
+        gis_attributes: name of attributes as they exist in file_name.
+
+
+    Notes:
+        model_attributes and gis_attributes must be aligned with each other.
+        Each value found by gis_attribute is assigned to the model_attribute in the same position in its array.
+
+         Special model_attribute names "inlet_node" and "outlet_node" are set in project.coordinates section.
+    """
     count = 0
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
@@ -257,9 +272,13 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
                         elif model_attribute == "outlet_node":
                             index = len(line) - 1
                         if index >= 0:
-                            for existing_coord in coordinates:
-                                if existing_coord.name == attr_value:
-                                    project.coordinates.value.remove(existing_coord)
+                            try:     # Remove this coordinate if it already exists
+                                existing_coord = project.coordinates.value[attr_value]
+                                if existing_coord:
+                                    project.coordinates.remove(existing_coord)
+                            except:  # do not already have this coordinate, do not need to remove it
+                                pass
+
                             new_coord = Coordinate()
                             new_coord.name = attr_value
                             new_coord.x = line[index].x()

@@ -3,6 +3,8 @@ try:
     from qgis.gui import *
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import *
+    import traceback
+    import math
     import os
 
     class EmbedMap(QWidget):
@@ -243,23 +245,19 @@ try:
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
             for link in links:
-                inlet_coord = None
-                outlet_coord = None
-                inlet_coord = coordinates[link.inlet_node]
-                outlet_coord = coordinates[link.outlet_node]
-                # for coordinate_pair in coordinates:
-                #     if coordinate_pair.name == link.inlet_node:
-                #         inlet_coord = coordinate_pair
-                #     if coordinate_pair.name == link.outlet_node:
-                #         outlet_coord = coordinate_pair
-                if inlet_coord and outlet_coord:
-                    # add a feature
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPolyline([
-                        QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
-                        QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
-                    feature.setAttributes([getattr(link, link_attr, '')])
-                    features.append(feature)
+                try:
+                    inlet_coord = coordinates[link.inlet_node]
+                    outlet_coord = coordinates[link.outlet_node]
+                    if inlet_coord and outlet_coord:
+                        # add a feature
+                        feature = QgsFeature()
+                        feature.setGeometry(QgsGeometry.fromPolyline([
+                            QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+                            QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+                        feature.setAttributes([getattr(link, link_attr, '')])
+                        features.append(feature)
+                except Exception as exLink:
+                    print "Skipping link " + link.name + ": " + str(exLink)
 
             # changes are only possible when editing the layer
             layer.startEditing()
@@ -533,35 +531,83 @@ try:
             self.canvas = canvas
             self.main_form = main_form
             QgsMapToolEmitPoint.__init__(self, self.canvas)
-            self.spatial_index = QgsSpatialIndex()
-            self.layer = self.canvas.layers()[0]
-            # for lyr in self.canvas.layers():
-            try:
-                provider = self.layer.dataProvider()
-                # TODO: check whether provider is vector and has ID field
-                feat = QgsFeature()
-                feats = provider.getFeatures()  # get all features in layer
-                # insert features to index
-                while feats.nextFeature(feat):
-                    self.spatial_index.insertFeature(feat)
-            except Exception as e:
-                print str(e)
+            self.layer_spatial_indexes = []
+            for lyr in self.canvas.layers():
+                try:
+                    provider = lyr.dataProvider()
+                    # TODO: check whether provider is vector and has ID field
+                    feat = QgsFeature()
+                    feats = provider.getFeatures()  # get all features in layer
+                    # insert features to index
+                    spatial_index = []  # QgsSpatialIndex()
+                    ids = []
+                    found = False
+                    while feats.nextFeature(feat):
+                        geometry = feat.geometry()
+                        if geometry.wkbType() == QGis.WKBLineString:
+                            line = geometry.asPolyline()
+                            spatial_index.append(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2))
+                            ids.append(feat.id())
+                            found = True
+                        elif geometry.wkbType() == QGis.WKBPolygon:
+                            # name = feat.attribute("name")
+                            # line = geometry.asPolyline()
+                            # feat = QgsFeature()
+                            # feat.setGeometry(
+                            #     QgsGeometry.fromPoint(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2)))
+                            # feat.setAttributes([name])
+                            # spatial_index.append(feat)
+                            # ids.append(feat.id())
+                            # found = True
+                            pass
+                        elif geometry.wkbType() == QGis.WKBPoint:
+                            spatial_index.append(geometry.asPoint())
+                            ids.append(feat.id())
+                            found = True
+                            pass
+                    if found:
+                        self.layer_spatial_indexes.append((lyr, spatial_index, ids))
+                except Exception as e:
+                    print str(e)
 
         def canvasPressEvent(self, e):
             try:
-                clicked_point = self.toMapCoordinates(e.pos())
-                nearest_feature = self.spatial_index.nearestNeighbor(clicked_point, 1)[0]
                 if not (e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)):
-                    self.layer.removeSelection()
                     self.main_form.select_id(None)
-                # self.layer.setSelectedFeatures([nearest_feature])
-                self.layer.select(nearest_feature)
-                iterator = self.layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature))
-                feature = next(iterator)
-                self.main_form.select_id(feature.attributes()[0])
-            except Exception as e:
-                print str(e)
+                    for (lyr, pts, ids) in self.layer_spatial_indexes:
+                        lyr.removeSelection()
 
+                nearest_layer, nearest_feature_id = self.nearest_feature(self.toMapCoordinates(e.pos()))
+
+                if nearest_layer:
+                    iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_id))
+                    if iterator:
+                        nearest_feature = next(iterator)
+                        if nearest_feature:
+                            nearest_layer.select(nearest_feature_id)
+                            self.main_form.select_id(nearest_feature.attributes()[0])
+                            return
+            except Exception as e2:
+                print str(e2) + '\n' + str(traceback.print_exc())
+
+        def nearest_feature(self, map_point):
+            nearest_layer = None
+            nearest_pt_id = -1
+            nearest_distance = float("inf")
+            for (lyr, points, ids) in self.layer_spatial_indexes:
+                try:
+                    pt_index = 0
+                    for pt in points:
+                        distance = map_point.sqrDist(pt)
+                        if distance < nearest_distance:
+                            nearest_layer = lyr
+                            nearest_pt_id = ids[pt_index]
+                            nearest_distance = distance
+                        pt_index += 1
+
+                except Exception as e1:
+                    print str(e1)
+            return nearest_layer, nearest_pt_id
 
     class SaveAsGis:
         @staticmethod

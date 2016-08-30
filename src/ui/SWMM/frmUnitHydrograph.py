@@ -9,7 +9,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
              'July', 'August', 'September', 'October', 'November', 'December']
     month3 = ['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/unithydrographeditordialog.htm"
         self.setupUi(self)
@@ -18,8 +18,11 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
         self.cboHydrograph.currentIndexChanged.connect(self.cboHydrograph_currentIndexChanged)
         self._main_form = main_form
         self.hydrograph_name = ''
-        # set for first unit hydrograph group for now
-        self.set_from(main_form.project, 'uh')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, hydrograph_name):
         # section = core.swmm.project.UnitHydrograph
@@ -32,6 +35,24 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
                 self.txtGroup.setText(hydrograph.name)
 
                 self.cboHydrograph.setCurrentIndex(0)
+                self.tblPack.setItem(0, 0, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(0, 1, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(0, 2, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(0, 0, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(0, 1, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(0, 2, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(1, 0, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(1, 1, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(1, 2, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(1, 0, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(1, 1, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(1, 2, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(2, 0, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(2, 1, QtGui.QTableWidgetItem(''))
+                self.tblPack.setItem(2, 2, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(2, 0, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(2, 1, QtGui.QTableWidgetItem(''))
+                self.tblAbstraction.setItem(2, 2, QtGui.QTableWidgetItem(''))
                 for value in hydrograph.value:
                     month_index = self.month3.index(value.hydrograph_month)
                     self.cboHydrograph.setItemText(month_index, self.month[month_index] + " (*)")
@@ -60,11 +81,11 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
                 rain_list = rain_section.value[0:]
                 self.cboRain.clear()
                 selected_index = 0
-                # for value in rain_list:
-                    # self.cboRain.addItem(value.name)
-                    # if value.name == hydrograph.rain_gage_name:
-                    #     selected_index = int(self.cboRain.count())-1
-                    #     self.cboRain.setCurrentIndex(selected_index)
+                for value in rain_list:
+                    self.cboRain.addItem(value.name)
+                    if value.name == hydrograph.rain_gage_name:
+                        selected_index = int(self.cboRain.count())-1
+                        self.cboRain.setCurrentIndex(selected_index)
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("HYDROGRAPHS")

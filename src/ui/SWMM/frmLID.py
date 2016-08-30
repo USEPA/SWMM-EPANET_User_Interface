@@ -5,7 +5,7 @@ from ui.SWMM.frmLIDDesigner import Ui_frmLID
 
 
 class frmLID(QtGui.QMainWindow, Ui_frmLID):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/lidcontroleditor.htm"
         self.setupUi(self)
@@ -14,9 +14,13 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboLIDType.currentIndexChanged.connect(self.cboLIDType_currentIndexChanged)
+        self.main_form = main_form
         self.lid_name = ''
-        # set for first lid control for now
-        self.set_from(main_form.project, 'rg')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, lid_name):
         self.project = project
@@ -188,7 +192,7 @@ class frmLID(QtGui.QMainWindow, Ui_frmLID):
                 lid.drainmat_thickness = self.txtDrain1.text()
                 lid.drainmat_void_fraction = self.txtDrain2.text()
                 lid.drainmat_roughness = self.txtDrain3.text()
-        self._main_form.list_objects()
+        self.main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

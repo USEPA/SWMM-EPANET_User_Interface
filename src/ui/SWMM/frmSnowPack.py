@@ -4,7 +4,7 @@ from ui.SWMM.frmSnowPackDesigner import Ui_frmSnowPack
 
 
 class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/snowpackparameterseditor.htm"
         # TODO: include help topic for snow removal (on separate tab?)
@@ -13,8 +13,11 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self._main_form = main_form
         self.pack_name = ''
-        # set for first snow pack for now
-        self.set_from(main_form.project, '2')
+        if edit_these:
+            if isinstance(edit_these, list):
+                self.set_from(main_form.project, edit_these[0])
+            else:
+                self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, pack_name):
         # section = core.swmm.project.SnowPack

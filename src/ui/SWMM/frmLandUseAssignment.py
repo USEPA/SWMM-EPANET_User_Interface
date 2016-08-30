@@ -29,7 +29,7 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
         row_count = 0
         for value in land_use_section.value:
             row_count += 1
-            self.local_land_use_list.append(value.land_use_name)
+            self.local_land_use_list.append(value.name)
         self.tblGeneric.setRowCount(row_count)
         self.tblGeneric.setVerticalHeaderLabels(self.local_land_use_list)
         self.resize(300,300)

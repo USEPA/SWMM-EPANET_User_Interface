@@ -371,6 +371,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # on double click of an item in the 'bottom left' list
         if not self.project or not self.get_editor:
             return
+        if len(self.listViewObjects.selectedItems()) == 0:
+            return
         selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
         self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, selected))
 

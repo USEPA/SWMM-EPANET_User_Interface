@@ -19,24 +19,27 @@ class frmSubcatchments(frmGenericPropertyEditor):
     SECTION_NAME = "[SUBCATCHMENTS]"
     SECTION_TYPE = Subcatchment
 
-    def __init__(self, main_form):
+    def __init__(self, main_form, edit_these=[]):
         self.help_topic = "swmm/src/src/subcatchmentproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
-        edit_these = []
-        project_section = self.project.find_section(self.SECTION_NAME)
-        if project_section and\
-                isinstance(project_section.value, list) and\
-                len(project_section.value) > 0 and\
-                isinstance(project_section.value[0], self.SECTION_TYPE):
-                    edit_these.extend(project_section.value)
-        if len(edit_these) == 0:
-            self.new_item = self.SECTION_TYPE()
-            # self.new_item.name = "1"
-            edit_these.append(self.new_item)
-        else:
-            self.new_item = False
+        self.project_section = self.project.find_section(self.SECTION_NAME)
+        self.project_section = self.project.find_section(self.SECTION_NAME)
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
 
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
@@ -101,7 +104,10 @@ class frmSubcatchments(frmGenericPropertyEditor):
         # text plus button for lid controls
         tb = TextPlusButton(self)
         section = self.project.find_section("LID_USAGE")
-        lid_list = section.value[0:]
+        if section:
+            lid_list = section.value[0:]
+        else:
+            lid_list = []
         lid_count = 0
         for value in lid_list:
             if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):

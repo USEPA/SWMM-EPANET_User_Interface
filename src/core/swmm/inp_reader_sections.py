@@ -14,6 +14,7 @@ from core.swmm.climatology import WindSource
 from core.swmm.climatology import WindSpeed
 from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
+from core.swmm.hydraulics.control import Controls
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
@@ -685,6 +686,18 @@ class CrossSectionReader(SectionReader):
             if len(fields) > 7:
                 cross_section.culvert_code = fields[7]
         return cross_section
+
+
+class ControlsReader(SectionReader):
+
+    SECTION_NAME = "[CONTROLS]"
+
+    @staticmethod
+    def read(new_text):
+        controls = Controls()
+        start_search = new_text.find("RULE") + 1
+        controls.value = new_text[0:start_search] + new_text[start_search:].replace("\nRULE", "\n\nRULE")
+        return controls
 
 
 class TransectsReader(SectionReader):

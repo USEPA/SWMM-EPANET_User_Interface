@@ -19,9 +19,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
                 self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, transect_name):
-        # section = core.swmm.project.Transects
-        section = project.find_section("TRANSECTS")
-        transect_list = section.value[0:]
+        transect_list = project.transects.value
         # assume we want to edit the first one
         self.transect_name = transect_name
         for transect in transect_list:

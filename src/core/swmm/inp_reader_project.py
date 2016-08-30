@@ -119,7 +119,7 @@ class ProjectReader(InputFileReader):
         self.read_transects = TransectsReader()
         # transect geometry for conduits with irregular cross-sections
 
-        self.read_controls = SectionReaderAsList("[CONTROLS]", None)
+        self.read_controls = ControlsReader()
         # rules that control pump and regulator operation
 
         self.read_landuses = SectionReaderAsList("[LANDUSES]", LanduseReader)

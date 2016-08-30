@@ -4,6 +4,7 @@ from core.swmm.climatology import Adjustments
 from core.swmm.climatology import Evaporation
 from core.swmm.climatology import Temperature
 from core.swmm.curves import Curve
+from core.swmm.hydraulics.control import Controls
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
@@ -116,7 +117,9 @@ class SwmmProject(ProjectBase):
 
         self.transects = Transects()  # transect geometry for conduits with irregular cross-sections
 
-        self.controls = SectionAsList("[CONTROLS]")  # rules that control pump and regulator operation
+        self.controls = Controls()
+        # rules that control pump and regulator operation
+
         self.landuses = SectionAsList("[LANDUSES]")  # (list of Landuse)     # land use categories
 
         self.buildup = SectionAsList("[BUILDUP]")  # (list of Buildup)

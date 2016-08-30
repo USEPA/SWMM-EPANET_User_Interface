@@ -91,6 +91,7 @@ class Junction(Node):
             ponded water to be stored and subsequently returned to the
             conveyance system when capacity exists. (Apond)"""
 
+
 class OutfallType(Enum):
     """Type of outfall boundary condition:
         FREE: outfall stage determined by minimum of critical flow

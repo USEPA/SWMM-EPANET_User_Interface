@@ -163,7 +163,9 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # conduit entrance/exit losses and flap valves
 
-        self.write_controls = SectionWriterAsList("[CONTROLS]", SectionWriter, None)  # rules that control pump and regulator operation
+        self.write_controls = SectionWriter()
+        # rules that control pump and regulator operation
+
         self.write_landuses = SectionWriterAsList("[LANDUSES]", LanduseWriter,
                                                   ";;              \tSweeping  \tFraction  \tLast\n"
                                                   ";;Name          \tInterval  \tAvailable \tSwept\n"

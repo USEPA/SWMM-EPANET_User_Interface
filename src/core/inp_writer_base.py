@@ -25,10 +25,12 @@ class InputFileWriterBase(object):
         section_text_list = []
         try:
             for section in project.sections:
-                attr_name = "write_" + project.format_as_attribute_name(section.SECTION_NAME)
+                attr_name = ''
+                if hasattr(section, "SECTION_NAME"):
+                    attr_name = "write_" + project.format_as_attribute_name(section.SECTION_NAME)
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)
-                elif isinstance(section.value, basestring):
+                elif hasattr(section, "value") and isinstance(section.value, basestring):
                     writer = SectionWriter()
                 else:
                     writer = SectionWriterAsList(section.SECTION_NAME, SectionWriter(), None)

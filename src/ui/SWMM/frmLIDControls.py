@@ -4,6 +4,7 @@ from ui.help import HelpHandler
 from ui.SWMM.frmLIDControlsDesigner import Ui_frmLIDControls
 from ui.SWMM.frmLIDUsage import frmLIDUsage
 from core.swmm.hydrology.lidcontrol import LIDType
+from core.swmm.hydrology.subcatchment import LIDUsage
 
 
 class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
@@ -88,7 +89,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
             # we added some rows, need to add to the lid list
             for row in range(self.tblControls.rowCount()):
                 if row > lid_count-1:
-                    new_lid = self._main_form.project.LIDUsage()
+                    new_lid = LIDUsage()
                     new_lid.subcatchment_name = self.subcatchment_name
                     new_lid.control_name = self.tblControls.item(row,0).text()
                     new_lid.percent_impervious_area_treated = self.tblControls.item(row,3).text()
@@ -109,6 +110,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         self._frmLIDUsage = frmLIDUsage(self._main_form)
         # add to this subcatchment
         self._frmLIDUsage.set_add(self._main_form.project, self, self.subcatchment_name)
+        self._frmLIDUsage.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmLIDUsage.show()
 
     def btnEdit_Clicked(self):
@@ -117,6 +119,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         lid_selected = str(self.tblControls.item(row,0).text())
         # edit the lid for this subcatchment and this lid name
         self._frmLIDUsage.set_edit(self._main_form.project, self, row, lid_selected, self.subcatchment_name)
+        self._frmLIDUsage.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmLIDUsage.show()
 
     def btnDelete_Clicked(self):
@@ -157,7 +160,11 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
         else:
             conversion_factor = 10000.0
 
-        subcatchment_area = self._main_form.project.Subcatchment(subcatchment_name).area
+        subcatchment_area = 0.0
+        for value in self._main_form.project.subcatchments.value:
+            if value.name == subcatchment_name:
+                subcatchment_area = value.area
+
         if len(subcatchment_area) < 1:
             subcatchment_area = 10.0
         elif subcatchment_area <= 0:

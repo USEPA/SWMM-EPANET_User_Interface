@@ -24,14 +24,16 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         # self.set_from(parent.parent.project)
         self.subcatchment_name = ''
         self.row_id = -1
+        self.project = ''
 
     def set_add(self, project, main_form, subcatchment_name):
         self._main_form = main_form
+        self.project = project
         section = project.lid_controls
         lid_list = section.value[0:]
         self.cboLIDControl.clear()
         for lid in lid_list:
-            self.cboLIDControl.addItem(lid.control_name)
+            self.cboLIDControl.addItem(lid.name)
         self.subcatchment_name = subcatchment_name
         self.lblPercent.setText('0.000')
         self.spxUnits.setValue(1)
@@ -43,6 +45,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.txtFile.setText('')
 
     def set_edit(self, project, parent_form, row_id, lid_selected, subcatchment_name):
+        self.project = project
         self.row_id = row_id
         self._main_form = parent_form
         section = project.lid_controls
@@ -104,15 +107,15 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
         if self.row_id >= 0:
             # editing an existing lid usage, put back
-            tblControls.setItem(self.row_id, 0, QtGui.QTableWidgetItem(lid_control))
-            tblControls.setItem(self.row_id, 3, QtGui.QTableWidgetItem(percent_impervious_area_treated))
-            tblControls.setItem(self.row_id, 4, QtGui.QTableWidgetItem(detailed_report_file))
-            tblControls.setItem(self.row_id, 5, QtGui.QTableWidgetItem(number_replicate_units))
-            tblControls.setItem(self.row_id, 6, QtGui.QTableWidgetItem(area_each_unit))
-            tblControls.setItem(self.row_id, 7, QtGui.QTableWidgetItem(top_width_overland_flow_surface))
-            tblControls.setItem(self.row_id, 8, QtGui.QTableWidgetItem(percent_initially_saturated))
+            tblControls.setItem(self.row_id, 0, QtGui.QTableWidgetItem(str(lid_control)))
+            tblControls.setItem(self.row_id, 3, QtGui.QTableWidgetItem(str(percent_impervious_area_treated)))
+            tblControls.setItem(self.row_id, 4, QtGui.QTableWidgetItem(str(detailed_report_file)))
+            tblControls.setItem(self.row_id, 5, QtGui.QTableWidgetItem(str(number_replicate_units)))
+            tblControls.setItem(self.row_id, 6, QtGui.QTableWidgetItem(str(area_each_unit)))
+            tblControls.setItem(self.row_id, 7, QtGui.QTableWidgetItem(str(top_width_overland_flow_surface)))
+            tblControls.setItem(self.row_id, 8, QtGui.QTableWidgetItem(str(percent_initially_saturated)))
             tblControls.setItem(self.row_id, 9, QtGui.QTableWidgetItem(str(send_outflow_pervious_area)))
-            tblControls.setItem(self.row_id, 10, QtGui.QTableWidgetItem(subcatchment_drains_to))
+            tblControls.setItem(self.row_id, 10, QtGui.QTableWidgetItem(str(subcatchment_drains_to)))
 
             # recalculate area and lid name
             self._main_form.SetLongLIDName(lid_control, self.row_id)
@@ -125,27 +128,28 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
     def cboLIDControl_currentIndexChanged(self, newIndex):
         selected_text = self.cboLIDControl.currentText()
-        section = self._main_form.project.find_section("LID_CONTROLS")
+        # section = self._main_form.project.find_section("LID_CONTROLS")
+        section = self.project.lid_controls
         lid_list = section.value[0:]
         for lid in lid_list:
             if lid.name == selected_text:
                 # this is the lid control, get its type
                 if lid.lid_type == LIDType.BC:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1237LID.png"))
                 elif lid.lid_type == LIDType.RG:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1237LID.png"))
                 elif lid.lid_type == LIDType.GR:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1237LID.png"))
                 elif lid.lid_type == LIDType.IT:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/4LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/4LID.png"))
                 elif lid.lid_type == LIDType.PP:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/5LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/5LID.png"))
                 elif lid.lid_type == LIDType.RB:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/6LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/6LID.png"))
                 elif lid.lid_type == LIDType.RD:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/1237LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1237LID.png"))
                 elif lid.lid_type == LIDType.VS:
-                    self.lblImage.setPixmap(QtGui.QPixmap("../swmmimages/8LID.png"))
+                    self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/8LID.png"))
 
     def calculate_area(self):
         units = 1

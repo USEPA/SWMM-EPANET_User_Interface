@@ -217,12 +217,6 @@ class frmSubcatchments(frmGenericPropertyEditor):
         return local_show
 
     def cmdOK_Clicked(self):
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            project_section = self.project.find_section(self.SECTION_NAME)
-            if project_section and isinstance(project_section.value, list):
-                project_section.value.append(self.new_item)
-            else:
-                print("Unable to add new item to project: section is not a list: " + self.SECTION_NAME)
         self.backend.apply_edits()
         self.close()
 

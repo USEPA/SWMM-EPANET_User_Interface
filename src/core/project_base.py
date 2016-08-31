@@ -33,7 +33,7 @@ class ProjectBase(object):
             compare_title = 'hydrographs'
         elif compare_title == 'lidcontrols':
             compare_title = 'lid_controls'
-        elif compare_title == 'lid_usage':
+        elif compare_title == 'lidusage':
             compare_title = 'lid_usage'
 
         for section in self.sections:

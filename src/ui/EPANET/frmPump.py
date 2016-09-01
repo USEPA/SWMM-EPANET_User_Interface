@@ -31,7 +31,7 @@ class frmPump(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in self.project.curves:
+            for value in self.project.curves.value:
                 combobox.addItem(value.name)
                 if edit_these[column].head_curve_name == value.name:
                     selected_index = int(combobox.count())-1
@@ -61,7 +61,7 @@ class frmPump(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in self.project.curves:
+            for value in self.project.curves.value:
                 combobox.addItem(value.name)
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(10, column, combobox)

@@ -65,7 +65,7 @@ class Junction(Section):
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
+        ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
         ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
         ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
         ('',                '', "Description",     '',   '',   '', "Optional comment or description"),

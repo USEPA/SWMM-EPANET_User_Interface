@@ -334,11 +334,7 @@ class frmMainEPANET(frmMain):
         # First handle special cases where forms need more than simply being created
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Reservoirs' or edit_name == 'Tanks':
-            return None
-        elif edit_name == 'Junctions':
-            return None
-        elif edit_name == 'Patterns':
+        if edit_name == 'Patterns':
             return None
         elif edit_name == 'Curves':
             return None
@@ -366,19 +362,7 @@ class frmMainEPANET(frmMain):
         frm = None
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Tanks':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Reservoirs':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Junctions':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Pipes':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Pumps':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Valves':
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-        elif edit_name == 'Labels':
+        if edit_name == 'Labels':
             edit_these = []
             if self.project and self.project.labels:
                 if not isinstance(self.project.labels.value, basestring):
@@ -388,17 +372,15 @@ class frmMainEPANET(frmMain):
                                 edit_these.append(value)
             frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
         else:  # General-purpose case finds most editors from tree information
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-            frm.set_from(self.project, selected_items)
+            frm = self.make_editor_from_tree(edit_name, self.tree_top_items, selected_items)
         return frm
 
     def get_object_list(self, category):
         section = self.project.find_section(category)
-        if section:
-            try:
-                return [item.name for item in section.value]
-            except Exception as ex:
-                return [str(item) for item in section.value]
+        if category == 'Quality' or category == 'Controls':
+            return None
+        if section and isinstance(section.value, list):
+            return [item.name for item in section.value]
         else:
             return None
 

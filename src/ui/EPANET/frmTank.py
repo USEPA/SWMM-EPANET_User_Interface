@@ -30,7 +30,7 @@ class frmTank(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for curve in self.project.curves:
+            for curve in self.project.curves.value:
                 combobox.addItem(curve.name)
                 if edit_these[column].volume_curve == curve.name:
                     selected_index = int(combobox.count()) - 1

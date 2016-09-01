@@ -483,10 +483,16 @@ class SwmmOutputObject(object):
         return report_date.strftime("%Y-%m-%d %H:%M")
 
     def get_time_series(self, type_label, object_id, attribute_name):
-        item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
-        attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
         #ToDo: need to debug get_series about not reading the first zero entry
+        item = None
+        if "SYSTEM" in type_label.upper():
+            item = self.system.items()[0][1] # SwmmOutputSystem
+        else:
+            item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment, Link, Node
+
+        attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
         y_values = item.get_series(self, attribute, 0, self.num_periods)
+
         #hack #1:
         y_values.insert(0, 0.0) #all rains Tser starts with zero
         x_values = []
@@ -501,13 +507,27 @@ class SwmmOutputObject(object):
         return Series(y_values, index=x_values)
 
     def get_item_unit(self, type_label, object_id, attribute_name):
-        item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
-        attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
-        if attribute.index < len(item.attributes) - 1:
-            return attribute.units(self.unit_system)
+        if "SYSTEM" in type_label.upper():
+            item = self.system.items()[0][1]
         else:
+            item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
+        attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
+
+        lisPollutant = False
+        for pname in self.pollutants:
+            if pname.upper() == attribute_name.upper():
+                lisPollutant = True
+                break
+        if lisPollutant:
             return self.pollutants[attribute_name].units
-            pass
+        else:
+            return attribute.units(self.unit_system)
+
+        # if attribute.index < len(item.attributes) - 1:
+        #     return attribute.units(self.unit_system)
+        # else:
+        #     return self.pollutants[attribute_name].units
+        #     pass
 
     def reportStepDays(self):
         return self.reportStep / 86400.0;

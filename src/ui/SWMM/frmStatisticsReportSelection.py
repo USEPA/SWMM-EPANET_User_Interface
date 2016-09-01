@@ -102,7 +102,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         #ToDo: ensure type order is the same as in the type Enum
         self.stats.ObjectType = self.cboCategory.currentIndex()
         self.stats.ObjectTypeText = self.cboCategory.currentText()
-        self.stats.ObjectID = id_index.data()
+        self.stats.ObjectID = selected_id #id_index.data()
         self.stats.Variable = self.cboVariable.currentIndex()
         self.stats.VariableText = self.cboVariable.currentText()
         eventTxt = self.cboEvent.currentText()
@@ -114,7 +114,6 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
             self.stats.TimePeriod = ostatistics.ETimePeriod.tpMonthly
         elif eventTxt in "Annual":
             self.stats.TimePeriod = ostatistics.ETimePeriod.tpAnnual
-
         self.stats.TimePeriodText = eventTxt
         self.stats.VarIndex = self.cboStatistic.currentIndex()
         self.stats.StatsType = self.cboStatistic.currentIndex()
@@ -122,6 +121,10 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         self.stats.MinEventValue = float(self.txtMinEventValue.text())
         self.stats.MinEventVolume = float(self.txtMinEventVolume.text())
         self.stats.MinEventDelta = float(self.txtMinEventDelta.text())
+
+        if "SYSTEM" in self.stats.ObjectTypeText.upper() and \
+           "PET" in self.stats.VariableText.upper():
+            return
 
         self._frmStatisticsReport.set_from(self.project, self.output, self.stats)
         # def set_from(self, project, output, type_label, object_id, attribute_name, event_name, stat_name,

@@ -8,9 +8,6 @@ import unittest
 class SimpleTitleTest(unittest.TestCase):
     """Test Title section"""
 
-    def setUp(self):
-        """Set up test"""
-
     def test_bare(self):
         """Bare section"""
         self.my_title = Title()
@@ -63,3 +60,10 @@ class SimpleTitleTest(unittest.TestCase):
         self.my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(self.my_title)
         assert match(actual_text, test_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()
+

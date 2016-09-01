@@ -3,6 +3,9 @@ from core.epanet.options.options import Options
 from core.epanet.options import hydraulics
 from core.epanet.options import map
 from core.epanet.options import quality
+from core.epanet.inp_reader_sections import OptionsReader
+from core.epanet.inp_writer_sections import OptionsWriter
+from test.core.section_match import match
 
 
 class SimpleOptionsTest(unittest.TestCase):
@@ -75,17 +78,18 @@ class SimpleOptionsTest(unittest.TestCase):
                         " Accuracy           	0.001\n"\
                         " Headloss           	H-W"
 
-        assert self.my_HydraulicsOptions.matches(expected_text)
+        actual_text = OptionsWriter.as_text(self.my_HydraulicsOptions)
+        assert match(actual_text, expected_text)
 
         # Use matches method to test map options
         assert self.my_MapOptions.map == ""
         expected_text = ""
-        assert self.my_MapOptions.matches(expected_text)
+        actual_text = OptionsWriter.as_text(self.my_MapOptions)
+        assert match(actual_text, expected_text)
 
     def test_setget(self):
         """Test both set_text and get_text of Options, data from Net1.inp"""
 
-        self.my_options = Options()
         test_text = """
         [OPTIONS]
          Units              	GPM
@@ -105,6 +109,13 @@ class SimpleOptionsTest(unittest.TestCase):
          Diffusivity        	1.0
          Tolerance          	0.01
          """
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()
-        assert self.my_options.matches(test_text)
+
+        my_options = OptionsReader.read(test_text)
+        actual_text = OptionsWriter.as_text(my_options)
+        assert match(actual_text, test_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

@@ -1,22 +1,25 @@
 import unittest
 from core.epanet.options import reactions
+from core.epanet.inp_reader_sections import ReactionsReader
+from core.epanet.inp_writer_sections import ReactionsWriter
+from test.core.section_match import match
 
 
 class SimpleReactionsTest(unittest.TestCase):
     """Test Reaction section"""
 
     def test_get(self):
-        """Test get_text through matches()"""
-        self.my_reactions = reactions.Reactions()
-        self.my_reactions.order_bulk = 1.1
-        self.my_reactions.order_wall = 1.2
-        self.my_reactions.order_tank = 1.3
-        self.my_reactions.global_bulk = 2.1
-        self.my_reactions.global_wall = 2.2
-        self.my_reactions.limiting_potential = 0.1
-        self.my_reactions.roughness_correlation = 0.2
+        """Test ReactionsWriter through match()"""
+        my_reactions = reactions.Reactions()
+        my_reactions.order_bulk = 1.1
+        my_reactions.order_wall = 1.2
+        my_reactions.order_tank = 1.3
+        my_reactions.global_bulk = 2.1
+        my_reactions.global_wall = 2.2
+        my_reactions.limiting_potential = 0.1
+        my_reactions.roughness_correlation = 0.2
 
-        name = self.my_reactions.SECTION_NAME
+        name = my_reactions.SECTION_NAME
         assert name == "[REACTIONS]"
         expected_text = "[REACTIONS]\n" \
             " Order Tank         	1.3\n" \
@@ -27,11 +30,11 @@ class SimpleReactionsTest(unittest.TestCase):
             " Order Bulk         	1.1\n" \
             " Order Wall         	1.2"
 
-        assert self.my_reactions.matches(expected_text)
+        actual_text = ReactionsWriter.as_text(my_reactions)
+        assert match(actual_text, expected_text)
 
     def test_setget(self):
         """Test set_text and get_text"""
-        self.my_reactions = reactions.Reactions()
         test_text = "[REACTIONS]\n" \
             " Order Tank         	1.3\n" \
             " Global Wall        	2.2\n" \
@@ -40,7 +43,14 @@ class SimpleReactionsTest(unittest.TestCase):
             " Global Bulk        	2.1\n" \
             " Order Bulk         	1.1\n" \
             " Order Wall         	1.2"
-        self.my_reactions.set_text(test_text)
-        assert self.my_reactions.matches(test_text)
+        my_reactions = ReactionsReader.read(test_text)
+        actual_text = ReactionsWriter.as_text(my_reactions)
+        assert match(actual_text, test_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()
 
 

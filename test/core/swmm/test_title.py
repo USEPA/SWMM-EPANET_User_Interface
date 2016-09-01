@@ -10,36 +10,33 @@ class SimpleTitleTest(unittest.TestCase):
 
     def test_bare(self):
         """Bare section read/write"""
-        self.my_title = Title()
-        default_text = TitleWriter.as_text(self.my_title)
+        my_title = Title()
+        default_text = TitleWriter.as_text(my_title)
         test_text = ""
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert actual_text == default_text
 
     def test_empty(self):
         """Empty section read/write"""
         test_text = "[TITLE]\n"
-        self.my_title = Title()
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert match(actual_text, test_text)
 
     def test_empty_wo_return(self):
         """Empty section read/write wo ending carriage return"""
         test_text = "[TITLE]"
-        self.my_title = Title()
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert match(actual_text, test_text)
 
     def test_one_row_wt_return(self):
         """One-row title wt ending carriage return"""
         test_text = "[TITLE]\n" \
                     "test_title\n"
-        self.my_title = Title()
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert match(actual_text, test_text)
 
     def test_multiple_lines(self):
@@ -49,9 +46,8 @@ class SimpleTitleTest(unittest.TestCase):
                 test_title
 
                 """
-        self.my_title = Title()
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert match(actual_text, test_text)
 
     def test_return_before_title(self):
@@ -59,9 +55,8 @@ class SimpleTitleTest(unittest.TestCase):
         test_text = "\n"\
                     "[TITLE]\n"\
                     "test_title"
-        self.my_title = Title()
-        self.my_title = TitleReader.read(test_text)
-        actual_text = TitleWriter.as_text(self.my_title)
+        my_title = TitleReader.read(test_text)
+        actual_text = TitleWriter.as_text(my_title)
         assert match(actual_text, test_text)
 
 def main():

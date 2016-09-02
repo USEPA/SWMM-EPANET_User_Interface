@@ -1,8 +1,8 @@
 import unittest
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
+from core.swmm.inp_reader_sections import AquiferReader
+from core.swmm.inp_writer_sections import AquiferWriter
 from test.core.section_match import match, match_omit
 from core.swmm.hydrology.aquifer import Aquifer
 
@@ -23,7 +23,9 @@ class SimpleAquifersTest(unittest.TestCase):
         project_writer = ProjectWriter()
         section_from_text = project_reader.read_aquifers.read(source_text)
 
-        assert match_omit(project_writer.write_aquifers.as_text(section_from_text), source_text, " \t-;\n")
+        actual_text = project_writer.write_aquifers.as_text(section_from_text)
+        msg = '\nSet:'+source_text+'\nGet:'+actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 
         val = section_from_text.value[0]
 
@@ -64,7 +66,14 @@ class SimpleAquifersTest(unittest.TestCase):
 
     def test_aquifer(self):
         """Test one set of aquifer parameters in Example 5"""
-        test_aquifer = "1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40"
-        self.my_options = AquiferReader.read(test_aquifer)
-        actual_text = AquiferWriter.as_text(self.my_options) # display purpose
-        assert match(actual_text, test_aquifer)
+        test_text = "1            	0.5   	0.15  	0.30  	0.1   	12    	15.0  	0.35  	14.0  	0.002 	0.0   	3.5   	0.40"
+        my_options = AquiferReader.read(test_text)
+        actual_text = AquiferWriter.as_text(my_options) # display purpose
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

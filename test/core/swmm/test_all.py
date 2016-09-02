@@ -98,8 +98,10 @@ my_suite.addTest(SimpleFilesTest('test_interface_files'))
 my_suite.addTest(OptionsGeneralTest('test_all_opts'))
 my_suite.addTest(OptionsGeneralTest('test_current_text'))
 # my_suite.addTest(OptionsInterfaceFilesTest())
-my_suite.addTest(SimpleMapTest())
-my_suite.addTest(SimpleReportTest())
+my_suite.addTest(SimpleMapTest("test_reader"))
+my_suite.addTest(SimpleMapTest("test_writer"))
+my_suite.addTest(SimpleReportTest("test_reader_writer"))
+my_suite.addTest(SimpleReportTest("test_more"))
 my_suite.addTest(OptionsTimestepTest())
 
 # Climatology

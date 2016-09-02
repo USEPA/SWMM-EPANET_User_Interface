@@ -1,44 +1,16 @@
 import unittest
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
-from test.core.section_match import match
+from core.swmm.inp_reader_sections import SubcatchmentReader
+from core.swmm.inp_writer_sections import SubcatchmentWriter
 from core.swmm.hydrology.subcatchment import Subcatchment
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleSubcatchmentTest(unittest.TestCase):
     """Test SUBCATCHMENTS section"""
 
-    def test_pk(self):
-        """Test one set of subcatchment parameters with spack"""
-        self.my_options = Subcatchment()
-        test_subcatchment_all = "SUB1  RG1	OT2	5	0	140     0.05 	0 s1"
-        self.my_options.set_text(test_subcatchment_all)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_subcatchment_all)
-
-
-    def test_nopk(self):
-        """Test one set of subcatchment parameters without spack"""
-        # This should print fine
-        self.my_options = Subcatchment()
-        test_subcatchment_wospack = "SUB1	RG1	OT2	5	0 140	0.5	0"
-        self.my_options.set_text(test_subcatchment_wospack)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_subcatchment_wospack)
-
-    def test_missing(self):
-        """Test one set of subcatchment parameters missing last two parameters Slope and Clength"""
-        # This should report error
-        self.my_options = Subcatchment()
-        test_subcatchment_partial = "SUB1	RG1	OT2	5 0 140"
-        self.my_options.set_text(test_subcatchment_partial)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_subcatchment_partial)
-        # self.assertFalse(self.my_options.matches(test_subcatchment_partial))
-
-    def test_subcatchments(self):
-        """Test SUBCATCHMENTS section from Example 1"""
-        test_text = """[SUBCATCHMENTS]
+    TEST_TEXTS = ["SUB1  RG1	OT2	5	0	140     0.05 	0 s1"]
+    SOURCE_TEXTS = ["""[SUBCATCHMENTS]
 ;;                                                   Total    Pcnt.             Pcnt.    Curb     Snow
 ;;Name             Raingage         Outlet           Area     Imperv   Width    Slope    Length   Pack
 ;;----------------------------------------------------------------------------------------------------
@@ -50,8 +22,58 @@ class SimpleSubcatchmentTest(unittest.TestCase):
   6                RG1              23               12       10       500      0.01     0
   7                RG1              19               4        10       500      0.01     0
   8                RG1              18               10       10       500      0.01     0
-"""
-        from_text = Project()
-        from_text.set_text(test_text)
-        project_section = from_text.subcatchments
-        assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+"""]
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
+    def test_pk(self):
+        """Test one set of subcatchment parameters with spack"""
+        for test_text in self.TEST_TEXTS:
+            my_options = SubcatchmentReader.read(test_text)
+            actual_text = SubcatchmentWriter.as_text(my_options)
+            msg = '\nSet:'+test_text+'\nGet:'+actual_text
+            self.assertTrue(match(actual_text, test_text), msg)
+
+    def test_nopk(self):
+        """Test one set of subcatchment parameters without spack"""
+        # This should print fine
+        test_subcatchment_wospack = "SUB1	RG1	OT2	5	0 140	0.5	0"
+        for test_text in [test_subcatchment_wospack]:
+            my_options = SubcatchmentReader.read(test_text)
+            actual_text = SubcatchmentWriter.as_text(my_options)
+            msg = '\nSet:'+test_text+'\nGet:'+actual_text
+            self.assertTrue(match(actual_text, test_text), msg)
+
+    def test_missing(self):
+        """Test one set of subcatchment parameters missing last two parameters Slope and Clength"""
+        # This should report error
+        test_text = "SUB1	RG1	OT2	5 0 140"
+        try:
+            my_options = SubcatchmentReader.read(test_text)
+            actual_text = SubcatchmentWriter.as_text(my_options)
+            msg = '\nSet:' + test_text + '\nGet:' + actual_text
+            msg = "\nShould detected error and not read/write"
+            find_error = False
+        except Exception as e:
+            msg = "\nSet:" + test_text + '\nGet:' + str(e)
+            find_error = True
+        self.assertTrue(find_error, msg)
+
+        # self.assertFalse(self.my_options.matches(test_subcatchment_partial))
+
+    def test_subcatchments(self):
+        """Test SUBCATCHMENTS section from Example 1"""
+        for source_text in self.SOURCE_TEXTS:
+            section_from_text = self.project_reader.read_subcatchments.read(source_text)
+            actual_text = self.project_writer.write_subcatchments.as_text(section_from_text)
+            msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+            self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

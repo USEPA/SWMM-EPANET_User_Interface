@@ -21,3 +21,9 @@ class OptionsTimestepTest(unittest.TestCase):
                         " ROUTING_STEP       	00:05:00"
 
         assert self.my_options.matches(expected_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

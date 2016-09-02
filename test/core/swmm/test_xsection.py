@@ -11,6 +11,12 @@ from core.swmm.hydraulics.link import CrossSection, CrossSectionShape
 
 
 class XsectionTest(unittest.TestCase):
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
         inp_filename = "CrossSectionAllShapes.inp"
@@ -200,3 +206,8 @@ class XsectionTest(unittest.TestCase):
         assert cur_section.curve == "curve2"
         assert cur_section.barrels == "5"
 
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

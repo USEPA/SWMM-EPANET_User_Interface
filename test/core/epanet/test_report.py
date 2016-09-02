@@ -1,26 +1,28 @@
 import unittest
-from core.epanet.options.options import Options
 from core.epanet.options import report
+from core.epanet.inp_reader_sections import ReportOptionsReader
+from core.epanet.inp_writer_sections import ReportOptionsWriter
+from test.core.section_match import match
 
 
 class SimpleReportTest(unittest.TestCase):
     """Test Report section"""
     def test_simple(self):
         """Test simple report options"""
-        self.my_report = report.ReportOptions()
-        self.my_report.pagesize = 64
-        name = self.my_report.SECTION_NAME
+        my_report = report.ReportOptions()
+        my_report.pagesize = 64
+        name = my_report.SECTION_NAME
         assert name == "[REPORT]"
         expected_text = "[REPORT]\n" + \
                         " Status             	NO\n" + \
                         " Energy             	NO\n" + \
                         " Page               \t64\n" + \
                         " Summary            	YES"
-        assert self.my_report.matches(expected_text)
+        actual_text = ReportOptionsWriter.as_text(my_report)
+        assert match(actual_text, expected_text)
 
     def test_page(self):
         """Test simple report options with small variation in page setup"""
-        self.my_report = report.ReportOptions()
         test_text = "[REPORT]\n" + \
                     " Status             	NO\n" + \
                     " Summary            	YES\n" \
@@ -28,14 +30,14 @@ class SimpleReportTest(unittest.TestCase):
                     " Nodes            	    Node1 Node2 Node3\n" \
                     " Links             	Link1 Link2\n " \
                     " Page  64"
-        self.my_report.set_text(test_text)
-        actual_text = self.my_report.get_text()
-        assert self.my_report.matches(test_text)
+        my_report = ReportOptionsReader.read(test_text)
+        actual_text = ReportOptionsWriter.as_text(my_report)
+        assert match(actual_text, test_text)
 
     def test_all(self):
         """Test all report options based on manual P162"""
-        self.my_report = report.ReportOptions()
-        name = self.my_report.SECTION_NAME
+        my_report = report.ReportOptions()
+        name = my_report.SECTION_NAME
         assert name == "[REPORT]"
         test_text = "[REPORT]\n" + \
                     "Status NO\n" + \
@@ -47,7 +49,12 @@ class SimpleReportTest(unittest.TestCase):
                     "VELOCITY PRECISION 4\n" \
                     "F-FACTOR PRECISION 4\n " \
                     "VELOCITY ABOVE 3.0"
-        self.my_report.set_text(test_text)
-        actual_text = self.my_report.get_text()
-        assert self.my_report.matches(test_text)
+        my_report = ReportOptionsReader.read(test_text)
+        actual_text = ReportOptionsWriter.as_text(my_report)
+        assert match(actual_text, test_text)
 
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

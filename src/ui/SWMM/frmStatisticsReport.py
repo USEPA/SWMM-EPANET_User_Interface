@@ -140,9 +140,12 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         line7= ""
         if self.stats.MinEventVolume >= 0:
             if self.stats.IsRainParam:
-                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.RainVolumeText[self.stats.Variable])
+                #line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.RainVolumeText[self.stats.Variable])
+                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.RainVolumeText[self.output.flowUnits])
             elif not self.stats.IsQualParam:
-                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.FlowVolumeText[self.stats.Variable])
+                #line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.FlowVolumeText[self.stats.Variable])
+                line7 = StatsText[7] % (self.stats.MinEventVolume, UStats.TStatsUnits.FlowVolumeText[self.output.flowUnits])
+                pass
         line8 = ""
         if (self.stats.TimePeriod == UStats.ETimePeriod.tpVariable) and (self.stats.MinEventDelta > 0):
             line8 = StatsText[8] % (self.stats.MinEventDelta)

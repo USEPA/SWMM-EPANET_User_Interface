@@ -1,18 +1,16 @@
 import unittest
-from core.epanet.options.options import Options
 from core.epanet.options import times
+from core.epanet.inp_reader_sections import TimesOptionsReader()
+from core.epanet.inp_writer_sections import TimesOptionsWriter()
+from test.core.section_match import match
 
 
 class SimpleTimesTest(unittest.TestCase):
     """Test Times section"""
 
-    def setUp(self):
-        """Set up test"""
-
     def test_no_leading_space(self):
         """Case 1. data from Net1.inp
         No leading white spaces in input texts"""
-        self.my_options = times.TimesOptions()
         test_text = "[TIMES]\n" \
                     "Duration\t24:00\n" \
                     "Hydraulic Timestep\t1:00\n" \
@@ -24,15 +22,13 @@ class SimpleTimesTest(unittest.TestCase):
                     "Report Start\t0:00\n" \
                     "Start ClockTime\t12 am\n" \
                     "Statistic\tNone"
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()
-        # assert nw_actual_text == nw_test_text
-        assert self.my_options.matches(test_text)
+        my_times  = OptionsReader.read(test_text)
+        actual_text = OptionsWriter.as_text(my_times)
+        assert match(actual_text, test_text)
 
     def test_leading_space(self):
         """Case 2. data from Net1.inp
         With leading white spaces in input texts"""
-        self.my_options = times.TimesOptions()
         test_text = " [TIMES]\n" \
                     "     Duration           	24:00\n" \
                     "     Hydraulic Timestep 	1:00\n" \
@@ -44,26 +40,25 @@ class SimpleTimesTest(unittest.TestCase):
                     "     Report Start       	0:00\n" \
                     "     Start ClockTime    	12 am\n" \
                     "     Statistic          	None"
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()
-        assert self.my_options.matches(test_text)
+        my_times  = TimesOptionsReader.read(test_text)
+        actual_text = TimesOptionsWriter.as_text(my_times)
+        assert match(actual_text, test_text)
 
     def test_get(self):
         """Test get_text"""
-        self.my_options = Options()
-        self.my_times = times.TimesOptions()
-        self.my_times.duration = "24:00"
-        self.my_times.hydraulic_timestep = "1:00"	    # hours:minutes
-        self.my_times.quality_timestep = "0:05"		    # hours:minutes
-        self.my_times.rule_timestep = "0:05" 		    # hours:minutes
-        self.my_times.pattern_timestep = "1:00" 		    # hours:minutes
-        self.my_times.pattern_start = "0:00"	            # hours:minutes
-        self.my_times.report_timestep = "1:00"		    # hours:minutes
-        self.my_times.report_start = "0:00"	            # hours:minutes
-        self.my_times.start_clocktime = "12 am"		    # hours:minutes AM/PM
-        self.my_times.statistic = times.StatisticOptions.AVERAGED  # NONE/AVERAGED/MINIMUM/MAXIMUM/RANGE
+        my_times = times.TimesOptions()
+        my_times.duration = "24:00"
+        my_times.hydraulic_timestep = "1:00"	    # hours:minutes
+        my_times.quality_timestep = "0:05"		    # hours:minutes
+        my_times.rule_timestep = "0:05" 		    # hours:minutes
+        my_times.pattern_timestep = "1:00" 		    # hours:minutes
+        my_times.pattern_start = "0:00"	            # hours:minutes
+        my_times.report_timestep = "1:00"		    # hours:minutes
+        my_times.report_start = "0:00"	            # hours:minutes
+        my_times.start_clocktime = "12 am"		    # hours:minutes AM/PM
+        my_times.statistic = times.StatisticOptions.AVERAGED  # NONE/AVERAGED/MINIMUM/MAXIMUM/RANGE
 
-        name = self.my_times.SECTION_NAME
+        name = my_times.SECTION_NAME
         assert name == "[TIMES]"
 
         expected_text = "[TIMES]\n" + \
@@ -78,4 +73,11 @@ class SimpleTimesTest(unittest.TestCase):
                         " Pattern Start      	0:00\n" + \
                         " Rule Timestep      	0:05"
 
-        assert self.my_times.matches(expected_text)
+        actual_text = TimesOptionsWriter.as_text(my_times)
+        assert match(actual_text, expected_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

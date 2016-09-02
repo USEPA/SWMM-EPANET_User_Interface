@@ -1,11 +1,11 @@
 import unittest
 from core.swmm.options import dynamic_wave
-
+from core.swmm.inp_reader_sections import *
+from core.swmm.inp_writer_sections import *
+from test.core.section_match import match
 
 class  OptionsDynamicWaveTest(unittest.TestCase):
     """Test OPTIONS section: Dynamic Wave"""
-    def __init__(self):
-        unittest.TestCase.__init__(self)
 
     def setUp(self):
 
@@ -30,7 +30,11 @@ class  OptionsDynamicWaveTest(unittest.TestCase):
 
 
         # Test example from expected_text
-        test_text = expected_text
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        my_options = SectionReader.read(expected_text)
+        assert match(SectionWriter.as_text(my_options), expected_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

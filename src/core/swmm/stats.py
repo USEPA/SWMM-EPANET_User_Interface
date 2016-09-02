@@ -56,7 +56,7 @@ class MiscConstants():
     DefHeadTolSI     = '0.0015' #(m)
     BOT = pd.Timestamp('1/1/1700 0:0:0')
 
-class EStatsCat(Enum):
+class EStatsCategory(Enum):
     BASIC = 0
     FLOW = 1
     QUAL = 2
@@ -137,6 +137,7 @@ class TStatsSelection:
         self.PlotPosition   = EPlotPosition.ppFrequency # Frequency, Yearly, Monthly Ret. Per.
         self.StatsType      = EStatsType.stMean.value    # Index of Mean, Peak, Total, Duration, Delta
         self.StatsTypeText  = "UNKNOWN"        # Mean, Peak, Total, Duration, Delta
+        self.StatsCategory  = EStatsCategory.BASIC #Dstats.pas, StatsTypeIndex
         self.VarIndex       = 0                # Index of variable analyzed in output file
         self.FlowVarIndex   = -1                # Index of flow variable in output file
         self.IsQualParam    = False            # True if variable is quality
@@ -393,7 +394,8 @@ class StatisticUtility(object):
                 self.Vsum += Q * self.deltaDateTime * CF
 
                 # If computing mass load statistics, convert concentration to load
-                if aStats.IsQualParam and aStats.StatsType >= EStatsType.stMeanLoad.value:
+                #if aStats.IsQualParam and aStats.StatsType >= EStatsType.stMeanLoad.value:
+                if aStats.IsQualParam and "LOAD" in aStats.StatsTypeText.upper():
                     #Y = Y * Q * QtoMLD[Uglobals.Qunits]
                     Y *= Q * TStatsUnits.QtoMLD[self.output.flowUnits]
 
@@ -525,7 +527,7 @@ class StatisticUtility(object):
             AnEvent = TStatsEvent()
             # Assign it a start date and duration
             # Looks like Uglobals.DeltaDateTime is in days
-            if "Event" in aStats.TimePeriodText:    # self.stats.TimePeriod == ETimePeriod.tpVariable:
+            if "EVENT" in aStats.TimePeriodText.upper():    # self.stats.TimePeriod == ETimePeriod.tpVariable:
                 AnEvent.StartDate = self.WetStart
                 #AnEvent.Duration  = 24 * (self.WetEnd - self.WetStart)   # in hours
                 rdiff = relativedelta(self.WetEnd, self.WetStart)
@@ -533,6 +535,12 @@ class StatisticUtility(object):
                 #self.EventPeriods += (self.WetEnd - self.WetStart) / Uglobals.DeltaDateTime
                 #self.EventPeriods += (self.WetEnd - self.WetStart) / self.deltaDateTime
                 self.EventPeriods += (AnEvent.Duration / 24.0) / self.deltaDateTime
+                #there seems to be a 1 period less than Pascal counting for the two attributes below for
+                #nodal flows, but not for anything for subcatchment outputs
+                #add 1 more hours to match pascal hour difference counting
+                #AnEvent.Duration = rdiff.days * 24.0 + rdiff.hours + 1
+                #add 1 more period to match pascal Nwet counting
+                #self.Nwet += 1
             else:
                 AnEvent.StartDate = self.WetStart
                 #AnEvent.Duration = self.Nwet * 24 * Uglobals.DeltaDateTime     # in hours
@@ -585,7 +593,7 @@ class StatisticUtility(object):
             #LastDate = LastStartDate + LastEvent.Duration/24.0
             LastDate = LastStartDate + relativedelta(hours=LastEvent.Duration)
 
-        if aStats.TimePeriod == EStatsType.tpVariable.value:
+        if aStats.TimePeriod == ETimePeriod.tpVariable:
             # For variable time period events, the inter-event time is the
             # difference between the midpoints of the current event and the
             # previous event
@@ -596,7 +604,7 @@ class StatisticUtility(object):
             Result += rdiff.days * 24.0 + rdiff.hours
             Result /= 2.0
 
-        elif aStats.TimePeriod == EStatsType.tpMonthly.value:
+        elif aStats.TimePeriod == ETimePeriod.tpMonthly:
             # For monthly events, the inter-event time is the difference
             # between the start month of the current event and start month
             # of the previous event
@@ -608,7 +616,7 @@ class StatisticUtility(object):
                 Result = lmonth2 - lmonth1
             else:
                 Result = lmonth2 + (12 - lmonth1)
-        elif aStats.TimePeriod == EStatsType.tpAnnual.value:
+        elif aStats.TimePeriod == ETimePeriod.tpAnnual:
             # For annual events, the time is the difference between the starting
             # year of the current and previous events
             #DecodeDate(LastStartDate, Year1, Month1, Day)
@@ -777,6 +785,7 @@ class StatisticUtility(object):
             if pname == aStats.VariableText:
                 aStats.IsQualParam = True
 
+        StatsVariableTextUpper = aStats.VariableText.upper()
         if aStats.ObjectType == EObjectType.SUBCATCHMENTS.value:
             #if aStats.Variable >= len(SMO.SwmmOutputSubcatchment.attributes) - 1:
             #   aStats.IsQualParam = True
@@ -784,20 +793,43 @@ class StatisticUtility(object):
                 aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
                                                       self.Stats.ObjectID, \
                                                       "Runoff")
+                aStats.StatsCategory = EStatsCategory.QUAL
             else:
+                aStats.StatsCategory = EStatsCategory.FLOW
                 aStats.TserFlow = aStats.Tser
-                if "Precip" in aStats.VariableText or \
-                   "Evap" in aStats.VariableText or \
-                   "Infil" in aStats.VariableText:
+                if "PRECIP" in StatsVariableTextUpper or \
+                   "EVAP" in StatsVariableTextUpper or \
+                   "INFIL" in StatsVariableTextUpper:
                    aStats.IsRainParam = True
 
         elif aStats.ObjectType == EObjectType.NODES.value:
             #if aStats.Variable >= len(SMO.SwmmOutputNode.attributes) - 1:
             #if self.output.pollutants[aStats.VariableText] is not None:
             #    aStats.IsQualParam = True
-
-            if "Inflow" in aStats.VariableText or "Overflow" in aStats.VariableText:
+            if aStats.IsQualParam:
+                aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
+                                                              self.Stats.ObjectID, \
+                                                              "Total Inflow")
+            else:
                 aStats.TserFlow = aStats.Tser
+
+            # if "TOTAL INFLOW" in StatsVariableTextUpper:
+            #     aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
+            #                                                   self.Stats.ObjectID, \
+            #                                                   "Inflow")
+            # elif "OVERFLOW" in StatsVariableTextUpper or \
+            #      "FLOOD" in StatsVariableTextUpper:
+            #     aStats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
+            #                                                   self.Stats.ObjectID, \
+            #                                                   "Overflow")
+
+            if "DEPTH" in StatsVariableTextUpper or \
+               "HEAD" in StatsVariableTextUpper or \
+               aStats.IsQualParam:
+                aStats.StatsCategory = EStatsCategory.BASIC
+            else:
+                aStats.StatsCategory = EStatsCategory.FLOW
+                pass
 
         elif aStats.ObjectType == EObjectType.LINKS.value:
             #if aStats.Variable >= len(SMO.SwmmOutputLink.attributes) - 1:
@@ -807,15 +839,57 @@ class StatisticUtility(object):
                 self.Stats.TserFlow = self.output.get_time_series(self.Stats.ObjectTypeText, \
                                                               self.Stats.ObjectID, \
                                                               "Flow")
+                self.StatsCategory = EStatsCategory.QUAL
+            elif "FLOW" in StatsVariableTextUpper:
+                self.StatsCategory = EStatsCategory.FLOW
+                aStats.TserFlow = aStats.Tser
+            else:
+                self.StatsCategory = EStatsCategory.BASIC
+                aStats.TserFlow = aStats.Tser
 
         elif aStats.ObjectType == EObjectType.SYS.value:
-            if "Precip" in aStats.VariableText or \
-               "Rain" in aStats.VariableText or \
-               "Evap" in aStats.VariableText or \
-               "Infil" in aStats.VariableText:
+            if "PRECIP" in StatsVariableTextUpper or \
+               "RAIN" in StatsVariableTextUpper or \
+               "EVAP" in StatsVariableTextUpper or \
+               "INFIL" in StatsVariableTextUpper:
                 aStats.IsRainParam = True
 
             aStats.TserFlow = aStats.Tser
+
+            if "SNOWDEPTH" in StatsVariableTextUpper or \
+               "EVAP" in StatsVariableTextUpper:
+                aStats.StatsCategory = EStatsCategory.BASIC
+            else:
+                aStats.StatsCategory = EStatsCategory.FLOW
+
+        #set standardized statistic type code
+        StatsTypeTextUpper = aStats.StatsTypeText.upper()
+        if "MEAN" in StatsTypeTextUpper:
+            if "CONCEN" in StatsTypeTextUpper:
+                aStats.StatsType = EStatsType.stMeanConcen.value
+            elif "LOAD" in StatsTypeTextUpper:
+                aStats.StatsType = EStatsType.stMeanLoad.value
+            else:
+                aStats.StatsType = EStatsType.stMean.value
+        elif "PEAK" in StatsTypeTextUpper:
+            if "CONCEN" in StatsTypeTextUpper:
+                aStats.StatsType = EStatsType.stPeakConcen.value
+            elif "LOAD" in StatsTypeTextUpper:
+                aStats.StatsType = EStatsType.stPeakLoad.value
+            else:
+                aStats.StatsType = EStatsType.stPeak.value
+        elif "TOTAL" in StatsTypeTextUpper:
+            if "LOAD" in StatsTypeTextUpper:
+                aStats.StatsType = EStatsType.stTotalLoad.value
+            else:
+                aStats.StatsType = EStatsType.stTotal.value
+        elif "DURATION" in StatsTypeTextUpper:
+            aStats.StatsType = EStatsType.stDuration.value
+        elif "DELTA" in StatsTypeTextUpper or "INTER-EVENT" in StatsTypeTextUpper:
+            aStats.StatsType = EStatsType.stDelta.value
+            pass
+        else:
+            pass
 
         # Set unit
         if aStats.StatsType == EStatsType.stTotal.value:
@@ -826,7 +900,7 @@ class StatisticUtility(object):
         elif aStats.StatsType == EStatsType.stDuration.value:
             aStats.StatsUnitsLabel = "(hours)"
         elif aStats.StatsType == EStatsType.stDelta.value:
-            aStats.StatsUnitsLabel = TStatsUnits.DeltaTimeUnits[aStats.TimePeriod]
+            aStats.StatsUnitsLabel = TStatsUnits.DeltaTimeUnits[aStats.TimePeriod.value]
         elif aStats.StatsType == EStatsType.stMeanLoad.value or aStats.StatsType == EStatsType.stPeakLoad.value:
             pass
         elif aStats.StatsType == EStatsType.stTotalLoad.value:

@@ -1,19 +1,19 @@
 import os
-import core.swmm.swmm_project
 import unittest
 import inspect
 import shutil
 import filecmp
 import webbrowser
-# from ui.swmm.frmRunSWMM import frmRunSWMM
-# from ui.model_utility import StatusMonitor0
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from core.swmm.swmm_project import SwmmProject
 
 
 class ProjectTest(unittest.TestCase):
     def __init__(self):
         unittest.TestCase.__init__(self)
-        self.my_project = core.swmm.swmm_project.SwmmProject()
-        self.new_project = core.swmm.swmm_project.SwmmProject()
+        self.my_project = SwmmProject()
+        self.new_project = SwmmProject()
 
     @staticmethod
     def get_immediate_subdirectories(a_dir):
@@ -156,16 +156,16 @@ class ProjectTest(unittest.TestCase):
 
                     # Read .inp file, count the number of sections
                     my_file = os.path.join(example_path, filename)
-                    self.my_project.read_file(my_file)
+                    ProjectReader().read_file(self.my_project, my_file)
                     number_of_sections = len(self.my_project.sections)
 
                     # Write my_project to new file .inptest
                     new_filename = filename + "_copy"
                     new_file = os.path.join(example_path, new_filename)
-                    self.my_project.write_file(new_file)
+                    ProjectWriter().write_file(self.my_project, new_file)
 
                     # Read .inptest into new_project, count the number of sections, assert
-                    self.new_project.read_file(new_file)
+                    ProjectReader().read_file(self.new_project, new_file)
                     new_number_of_sections = len(self.new_project.sections)
                     assert number_of_sections == new_number_of_sections
 

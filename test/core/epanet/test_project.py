@@ -180,7 +180,7 @@ class ProjectTest(unittest.TestCase):
 
                     # Read .inp file, count the number of sections
                     my_file = os.path.join(example_path, filename)
-                    self.my_project = ProjectReader().read_file(my_file)
+                    ProjectReader().read_file(self.my_project,my_file)
                     number_of_sections = len(self.my_project.sections)
 
                     # Write my_project to new file .inptest
@@ -189,7 +189,7 @@ class ProjectTest(unittest.TestCase):
                     ProjectWriter().write_file(self.my_project, new_file)
 
                     # Read .inptest into new_project, count the number of sections, assert
-                    self.new_project = ProjectReader().read_file(new_file)
+                    ProjectReader().read_file(self.new_project, new_file)
                     new_number_of_sections = len(self.new_project.sections)
                     assert number_of_sections == new_number_of_sections
 

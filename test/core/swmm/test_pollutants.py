@@ -3,10 +3,17 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.quality import Pollutant
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimplePollutantTest(unittest.TestCase):
     """Test POLLUTANTS section"""
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_one_pollutant(self):
         """Test one pollutant"""
@@ -37,3 +44,9 @@ class SimplePollutantTest(unittest.TestCase):
         actual_text = project_section.get_text()
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
         self.assertTrue(project_section.matches(test_text), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

@@ -168,3 +168,9 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
         actual_text = self.my_options.get_text() # display purpose
         self.assertFalse(self.my_options.matches(test_snowmelt))
 
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()
+

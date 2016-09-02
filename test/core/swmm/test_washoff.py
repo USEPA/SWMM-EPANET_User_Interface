@@ -3,11 +3,17 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.quality import Washoff
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleWashoffTest(unittest.TestCase):
     """Test WASHOFF section"""
 
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_one_washoff(self):
         """Test all options"""
@@ -34,3 +40,9 @@ class SimpleWashoffTest(unittest.TestCase):
         from_text.set_text(test_text)
         project_section = from_text.washoff
         assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

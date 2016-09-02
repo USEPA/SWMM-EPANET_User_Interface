@@ -244,3 +244,9 @@ TEMPDIR .\temp"""
         self.options.set_text(expected_text)
         actual_text = self.options.get_text()
         assert self.options.matches(expected_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

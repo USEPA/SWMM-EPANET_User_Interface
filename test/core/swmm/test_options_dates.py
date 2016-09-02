@@ -28,3 +28,9 @@ class OptionsDatesTest(unittest.TestCase):
                         " REPORT_START_DATE  	1/1/2002"
 
         assert match(SectionWriter.as_text(self.my_options), expected_text)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

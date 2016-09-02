@@ -1,25 +1,31 @@
 import unittest
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
-from test.core.section_match import match
 from core.swmm.hydraulics.link import Conduit
+from core.swmm.inp_reader_sections import ConduitReader
+from core.swmm.inp_writer_sections import ConduitWriter
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 
 class SimpleConduitTest(unittest.TestCase):
     """Test CONDUIT section, MTP3"""
 
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
     def test_conduit(self):
         """Test one set of conduit parameters"""
-        self.my_options = Conduit()
         # Predefined shapes with Geoms only
         test_text = r"""C2a   J2a   J2   157.48     0.016  4  4  0  0"""
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        my_options = ConduitReader.read(test_text)
+        actual_text = ConduitWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_conduit_section(self):
         """Test CONDUIT section using Project class, data from Example 7"""
-        from_text = Project()
         source_text = "[CONDUITS]\n" \
                       " ;;               Inlet            Outlet                      Manning    Inlet      Outlet     Init.      Max.\n" \
                       " ;;Name           Node             Node             Length     N          Offset     Offset     Flow       Flow\n" \
@@ -47,9 +53,16 @@ class SimpleConduitTest(unittest.TestCase):
                       " P6               J4               J7               360.39     0.016      0          0          0          0\n" \
                       " P7               J7               J10              507.76     0.016      0          0          0          0\n" \
                       " P8               J10              J11              144.50     0.016      0          0          0          0"
-        from_text.set_text(source_text)
-        project_section = from_text.conduits
-        assert match_omit(project_section.get_text(), source_text, " \t-;\n")
+        section_from_text = self.project_reader.read_conduits.read(source_text)
+        actual_text = self.project_writer.write_conduits.as_text(section_from_text)
+        msg = '\nSet:' + source_text + '\nGet:' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()
 
 
 

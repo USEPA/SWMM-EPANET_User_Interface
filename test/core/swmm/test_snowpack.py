@@ -3,9 +3,16 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.hydrology.snowpack import SnowPack
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleSnowPackTest(unittest.TestCase):
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_one_pack(self):
         """Test one snow pack
@@ -58,3 +65,9 @@ s                REMOVAL    1.0        0.0        0.0        0.0        0.0     
         from_text.set_text(test_text)
         project_section = from_text.snowpacks
         assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

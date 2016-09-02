@@ -23,7 +23,8 @@ class SimpleBackdropTest(unittest.TestCase):
                         "OFFSET 0.0 0.0"
 
         actual_text = BackdropOptionsWriter.as_text(my_backdrop)
-        assert match(actual_text, expected_text)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
         my_backdrop.dimensions = ("1.0", "2.0", "30000.0", "40000.0")
         my_backdrop.units = backdrop.BackdropUnits.METERS
@@ -36,7 +37,8 @@ class SimpleBackdropTest(unittest.TestCase):
                         "OFFSET 1.1 2.2"
 
         actual_text = BackdropOptionsWriter.as_text(my_backdrop)
-        assert match(actual_text, expected_text)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
     def test_reader(self):
         """Test BackdropOptionsReader by reading from file"""
@@ -47,7 +49,8 @@ class SimpleBackdropTest(unittest.TestCase):
                     "OFFSET 0.0 0.0"
         my_backdrop = BackdropOptionsReader.read(test_text)
         actual_text = BackdropOptionsWriter.as_text(my_backdrop)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
 def main():
     unittest.main()

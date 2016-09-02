@@ -3,10 +3,17 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.timeseries import TimeSeries
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleTimeSeriesTest(unittest.TestCase):
     """Test TIMESERIES section"""
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_file(self):
         """Use external file, Created based on SWMM 5.1 manual Page335"""
@@ -59,3 +66,9 @@ class SimpleTimeSeriesTest(unittest.TestCase):
         actual_text = project_section.get_text()
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
         self.assertTrue(project_section.matches(test_text), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

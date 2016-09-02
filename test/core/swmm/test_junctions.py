@@ -1,33 +1,38 @@
 import unittest
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
-from test.core.section_match import match
+from core.swmm.inp_reader_sections import JunctionReader
+from core.swmm.inp_writer_sections import JunctionWriter
 from core.swmm.hydraulics.node import Junction
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleJunctionTest(unittest.TestCase):
     """Test JUNCTIONS section"""
 
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_all_opts(self):
         """Test junction with all options"""
-        self.my_options = Junction()
-        test_junction = " J1 2.0 0.1 0.2 0.3 0.4"
-        self.my_options.set_text(test_junction)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_junction)
+        test_text = " J1 2.0 0.1 0.2 0.3 0.4"
+        my_options = JunctionReader.read(test_text)
+        actual_text = JunctionWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_selected_parameters(self):
         """Test junction omit some parameters"""
-        self.my_options = Junction()
-        test_junction = " J1 2.0 "
-        self.my_options.set_text(test_junction)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_junction)
+        test_text = " J1 2.0 "
+        my_options = JunctionReader.read(test_text)
+        actual_text = JunctionWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_junctions(self):
         """Test JUNCTIONS section through Project class"""
-        test_text = r"""
+        source_text = r"""
 [JUNCTIONS]
 ;;               Invert     Max.       Init.      Surcharge  Ponded
 ;;Name           Elev.      Depth      Depth      Depth      Area
@@ -50,7 +55,13 @@ J15              4974.5     0          0          0          0
 J16              4973.5     0          0          0          0
 J17              4973.5     0          0          0          0
         """
-        from_text = Project()
-        from_text.set_text(test_text)
-        project_section = from_text.junctions
-        assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+        section_from_text = self.project_reader.read_junctions.read(source_text)
+        actual_text = self.project_writer.write_junctions.as_text(section_from_text)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

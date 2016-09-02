@@ -1,39 +1,38 @@
 import unittest
 from core.swmm.hydraulics.node import DryWeatherInflow
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
-from test.core.section_match import match
+from core.swmm.inp_reader_sections import DryWeatherInflowReader
+from core.swmm.inp_writer_sections import DryWeatherInflowWriter
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 
 class SimpleDWITest(unittest.TestCase):
     """Test DryWeatherInflow(DWF) Section"""
 
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
     def test_example3(self):
         """Test one set of DWI from example 3"""
-        self.my_options = DryWeatherInflow()
-        # Test example 3
         test_text = r"""KRO3001          FLOW             1          "" "" "DWF" "" "" "" """""
-        # --Test set_text
-        self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        my_options = DryWeatherInflowReader.read(test_text)
+        actual_text = DryWeatherInflowWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_example8(self):
         """Test one set of DWI from example 8"""
-        self.my_options = DryWeatherInflow()
-        # Test example 8
         test_text = r"""J1               FLOW             0.008 """
-        # --Test set_text
-        self.my_options.set_text(test_text)
-        # --Test get_text through matches
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_text)
+        my_options = DryWeatherInflowReader.read(test_text)
+        actual_text = DryWeatherInflowWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_dwf_section_example3(self):
         """Test DWF section from example 3"""
-
-        from_text = Project()
         source_text = r"""
 [DWF]
 ;;                                  Average    Time
@@ -70,13 +69,13 @@ class SimpleDWITest(unittest.TestCase):
   KRO4019          FLOW             1          "" "" "DWF" "" "" "" ""
   SU1              FLOW             1          "" "" "DWF" "" "" "" ""
         """
-        from_text.set_text(source_text)
-        project_section = from_text.dwf
-        assert match_omit(project_section.get_text(), source_text, " \t-;\n")
+        section_from_text = self.project_reader.read_dwf.read(source_text)
+        actual_text = self.project_writer.write_dwf.as_text(section_from_text)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 
     def test_dwf_section_example8(self):
         """Test DWF section from example 8"""
-        from_text = Project()
         source_text = r"""[DWF]
 ;;                                Average    Time
 ;;Node           Parameter        Value      Patterns
@@ -86,7 +85,13 @@ J2a              FLOW             0.01
 J12              FLOW             0.0125
 J13              FLOW             0.0123
 Aux3             FLOW             0.004     """
-        # --Test set_text
-        from_text.set_text(source_text)
-        project_section = from_text.dwf
-        assert match_omit(project_section.get_text(), source_text, " \t-;\n")
+        section_from_text = self.project_reader.read_dwf.read(source_text)
+        actual_text = self.project_writer.write_dwf.as_text(section_from_text)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

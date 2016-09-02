@@ -3,10 +3,17 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.hydraulics.node import RDIInflow
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleRDIITest(unittest.TestCase):
     """Test RDII section"""
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_one_rdii(self):
         """Test one set of rdii"""
@@ -30,3 +37,9 @@ class SimpleRDIITest(unittest.TestCase):
         from_text.set_text(test_text)
         project_section = from_text.rdii
         assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

@@ -35,4 +35,8 @@ class SubAreasTest(unittest.TestCase):
         actual_text = self.my_options.get_text() # display purpose
         assert self.my_options.matches(test_subarea)
 
-        pass
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

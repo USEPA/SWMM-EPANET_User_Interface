@@ -3,10 +3,17 @@ from core.swmm.inp_reader_sections import *
 from core.swmm.inp_writer_sections import *
 from test.core.section_match import match
 from core.swmm.patterns import Pattern, PatternType
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimplePatternTest(unittest.TestCase):
     """Test PATTERNS section"""
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_daily(self):
         """Test Pattern: Daily total 7 per week"""
@@ -190,3 +197,9 @@ x                           1.0   1.0   1.0   1.0   1.0   1.0"""
  5               	4531        	4521        	4449        	4439        	4449        	4460
  5               	4439        	4419        	4368        	4399        	4470        	4480
 """
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

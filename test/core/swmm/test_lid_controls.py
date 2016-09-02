@@ -1,12 +1,18 @@
 import unittest
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
-from test.core.section_match import match
+from core.swmm.inp_reader_sections import LIDControlReader
+from core.swmm.inp_writer_sections import LIDControlWriter
 from core.swmm.hydrology.lidcontrol import LIDControl
-
+from core.swmm.inp_reader_project import ProjectReader
+from core.swmm.inp_writer_project import ProjectWriter
+from test.core.section_match import match, match_omit
 
 class SimpleLIDControlTest(unittest.TestCase):
     """Test LID_CONTROLS section"""
+
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
 
     def test_lid_surface(self):
         """Test LID parameters from Example 4a, examined according to SWMM 5.1 manual
@@ -14,16 +20,15 @@ class SimpleLIDControlTest(unittest.TestCase):
         This test passed for an individual LID control.
         However, a data structure for LID_CONTROLS has not yet created."""
         # Case 1: test all LID controls
-        test_lid_control_surface_only = """
+        test_text = """
         Swale            VS
         Swale            SURFACE    36         0.0        0.24       1.0        5"""
-        self.my_options = LIDControl()
-        self.my_options.set_text(test_lid_control_surface_only)
-        actual_text = self.my_options.get_text()  # display purpose
-        assert self.my_options.matches(test_lid_control_surface_only)
+        my_options = LIDControlReader.read(test_text)
+        actual_text = LIDControlWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_lid_control(self):
-        self.my_options = LIDControl()
         test_text = r"""
 ;;Name           Type
 ;;BC bio-retention cell
@@ -50,13 +55,16 @@ PorousPave       STORAGE    12         0.75       0.2        0
 PorousPave       DRAIN      0          0.5        0          6
 PorousPave       DRAINMAT   1          0.4        0.01
         """
-        self.my_options.set_text(test_text)
-        actual_text = self.my_options.get_text() # display purpose
-        assert self.my_options.matches(test_text)
+        my_options = LIDControlReader.read(test_text)
+        actual_text = LIDControlWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        msg += "xw09/01/2016: new comment lines in actual text"
+        # self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match_omit(actual_text, test_text, " \t-;\n"), msg)
 
     def test_example4a(self):
         """Test LID parameters from Example 4a, examined according to SWMM 5.1 manual"""
-        test_text = r"""
+        source_text = r"""
 [LID_CONTROLS]
 GreenRoof        BC
 GreenRoof        SURFACE    0.0        0.0        0.1        1.0        5
@@ -88,9 +96,13 @@ RainBarrels      DRAIN      1          0.5        0          6
 Swale            VS
 Swale            SURFACE    36         0.0        0.24       1.0        5"""
 
-        from_text = Project()
-        from_text.set_text(test_text)
-        project_section = from_text.lid_controls
-        actual_text = project_section.get_text()
-        assert project_section.matches(test_text)
-        # assert match_omit(project_section.get_text(), test_text, " \t-;\n")
+        section_from_text = self.project_reader.read_lid_controls.read(source_text)
+        actual_text = self.project_writer.write_lid_controls.as_text(section_from_text)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

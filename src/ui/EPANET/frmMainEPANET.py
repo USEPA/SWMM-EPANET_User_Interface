@@ -353,6 +353,20 @@ class frmMainEPANET(frmMain):
         elif edit_name == 'Patterns' or edit_name == 'Curves':
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None
+        elif edit_name == self.tree_Junctions[0] and len(self.project.junctions.value) == 0:
+            return None
+        elif edit_name == self.tree_Reservoirs[0] and len(self.project.reservoirs.value) == 0:
+            return None
+        elif edit_name == self.tree_Tanks[0] and len(self.project.tanks.value) == 0:
+            return None
+        elif edit_name == self.tree_Pipes[0] and len(self.project.pipes.value) == 0:
+            return None
+        elif edit_name == self.tree_Pumps[0] and len(self.project.pumps.value) == 0:
+            return None
+        elif edit_name == self.tree_Valves[0] and len(self.project.valves.value) == 0:
+            return None
+        elif edit_name == self.tree_Labels[0] and len(self.project.labels.value) == 0:
+            return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm

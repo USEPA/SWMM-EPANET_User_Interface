@@ -19,7 +19,8 @@ class SimpleReportTest(unittest.TestCase):
                         " Page               \t64\n" + \
                         " Summary            	YES"
         actual_text = ReportOptionsWriter.as_text(my_report)
-        assert match(actual_text, expected_text)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
     def test_page(self):
         """Test simple report options with small variation in page setup"""
@@ -32,7 +33,8 @@ class SimpleReportTest(unittest.TestCase):
                     " Page  64"
         my_report = ReportOptionsReader.read(test_text)
         actual_text = ReportOptionsWriter.as_text(my_report)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_all(self):
         """Test all report options based on manual P162"""
@@ -51,7 +53,8 @@ class SimpleReportTest(unittest.TestCase):
                     "VELOCITY ABOVE 3.0"
         my_report = ReportOptionsReader.read(test_text)
         actual_text = ReportOptionsWriter.as_text(my_report)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
 def main():
     unittest.main()

@@ -22,9 +22,10 @@ class SimpleTimesTest(unittest.TestCase):
                     "Report Start\t0:00\n" \
                     "Start ClockTime\t12 am\n" \
                     "Statistic\tNone"
-        my_times  = OptionsReader.read(test_text)
-        actual_text = OptionsWriter.as_text(my_times)
-        assert match(actual_text, test_text)
+        my_times  = TimesOptionsReader.read(test_text)
+        actual_text = TimesOptionsWriter.as_text(my_times)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_leading_space(self):
         """Case 2. data from Net1.inp
@@ -42,7 +43,8 @@ class SimpleTimesTest(unittest.TestCase):
                     "     Statistic          	None"
         my_times  = TimesOptionsReader.read(test_text)
         actual_text = TimesOptionsWriter.as_text(my_times)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_get(self):
         """Test get_text"""
@@ -74,7 +76,8 @@ class SimpleTimesTest(unittest.TestCase):
                         " Rule Timestep      	0:05"
 
         actual_text = TimesOptionsWriter.as_text(my_times)
-        assert match(actual_text, expected_text)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
 def main():
     unittest.main()

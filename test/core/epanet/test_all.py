@@ -5,7 +5,7 @@ from test_title import SimpleTitleTest
 from test_options import SimpleOptionsTest
 from test_quality import SimpleQualityTest
 from test_reactions import SimpleReactionsTest
-from test_times import SimpleTimesTest
+# from test_times import SimpleTimesTest
 from test_energy import SimpleEnergyTest
 from test_report import SimpleReportTest
 from test_backdrop import SimpleBackdropTest
@@ -27,9 +27,9 @@ my_suite.addTest(SimpleTitleTest('test_rt_before_title'))
 # Options and reporting - MTP 1:
 my_suite.addTest(SimpleOptionsTest('test_get'))
 my_suite.addTest(SimpleOptionsTest('test_setget'))
-my_suite.addTest(SimpleTimesTest('test_get'))
-my_suite.addTest(SimpleTimesTest('test_no_leading_space'))
-my_suite.addTest(SimpleTimesTest('test_leading_space'))
+# my_suite.addTest(SimpleTimesTest('test_get'))
+# my_suite.addTest(SimpleTimesTest('test_no_leading_space'))
+# my_suite.addTest(SimpleTimesTest('test_leading_space'))
 my_suite.addTest(SimpleReportTest('test_simple'))
 my_suite.addTest(SimpleReportTest('test_page'))
 my_suite.addTest(SimpleReportTest('test_all'))
@@ -48,7 +48,8 @@ my_suite.addTest(SimplePatternTest('test_pattern'))
 my_suite.addTest(SimplePatternTest('test_patterns'))
 my_suite.addTest(SimpleCurveTest('test_curve'))
 my_suite.addTest(SimpleCurveTest('test_curves'))
-my_suite.addTest(SimpleEnergyTest())
+my_suite.addTest(SimpleEnergyTest('test_reader_writer'))
+my_suite.addTest(SimpleEnergyTest('test_writer'))
 # Status - MTP 3
 # Controls
 # Rules
@@ -59,15 +60,16 @@ my_suite.addTest(SimpleQualityTest('test_get'))
 my_suite.addTest(SimpleQualityTest('test_setget'))
 my_suite.addTest(SimpleReactionsTest('test_get'))
 my_suite.addTest(SimpleReactionsTest('test_setget'))
-my_suite.addTest(SimpleSourcesTest())
+my_suite.addTest(SimpleSourcesTest('test_row'))
+my_suite.addTest(SimpleSourcesTest('test_section'))
 # Mixing - MTP 3?
 
 # Network Map/Tags - MTP 3:
 # Coordinates
 # Vertices
 # Labels
-# Backdrop - MTP2?
-my_suite.addTest(SimpleBackdropTest())
+my_suite.addTest(SimpleBackdropTest('test_writer'))
+my_suite.addTest(SimpleBackdropTest('test_reader'))
 # Tags
 
 # Project test

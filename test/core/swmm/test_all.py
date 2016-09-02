@@ -8,7 +8,7 @@ from test_options_dates import OptionsDatesTest
 from test_options_dynamicwave import OptionsDynamicWaveTest
 from test_files import SimpleFilesTest
 from test_options_general import OptionsGeneralTest
-# from test_options_interfacefiles import OptionsInterfaceFilesTest
+from test_options_interfacefiles import OptionsInterfaceFilesTest
 from test_map import SimpleMapTest
 from test_report import SimpleReportTest
 from test_options_timesteps import OptionsTimestepTest
@@ -33,7 +33,6 @@ from test_hydrographs import SimpleHydrographsTest
 
 # Hydraulics
 # Link:
-# Conduit
 from test_conduits import SimpleConduitTest
 # Pump
 # Orifice
@@ -48,6 +47,7 @@ from test_xsection import XsectionTest
 from test_junctions import SimpleJunctionTest
 from test_outfalls import SimpleOutfallTest
 from test_dividers import SimpleDividerTest
+
 # Storage
 from test_inflows import SimpleInflowTest
 from test_dwf import SimpleDWITest
@@ -77,7 +77,7 @@ from test_patterns import SimplePatternTest
 from test_timeseries import SimpleTimeSeriesTest
 
 # Mislaneous
-# from test_energy import SimpleEnergyTest
+from test_energy import SimpleEnergyTest
 from test_project import ProjectTest
 from test_title import SimpleTitleTest
 
@@ -86,7 +86,7 @@ my_suite = unittest.TestSuite()
 # Options
 my_suite.addTest(SimpleBackdropTest('test_bare'))
 my_suite.addTest(SimpleBackdropTest('test_backdrop'))
-# my_suite.addTest(SimpleBackdropTest('test_missing_value'))
+my_suite.addTest(SimpleBackdropTest('test_missing_value'))
 my_suite.addTest(OptionsDatesTest())
 my_suite.addTest(OptionsDynamicWaveTest())
 my_suite.addTest(SimpleFilesTest('test_space_delimited'))
@@ -97,7 +97,7 @@ my_suite.addTest(SimpleFilesTest('test_all_options'))
 my_suite.addTest(SimpleFilesTest('test_interface_files'))
 my_suite.addTest(OptionsGeneralTest('test_all_opts'))
 my_suite.addTest(OptionsGeneralTest('test_current_text'))
-# my_suite.addTest(OptionsInterfaceFilesTest())
+my_suite.addTest(OptionsInterfaceFilesTest())
 my_suite.addTest(SimpleMapTest("test_reader"))
 my_suite.addTest(SimpleMapTest("test_writer"))
 my_suite.addTest(SimpleReportTest("test_reader_writer"))
@@ -138,8 +138,8 @@ my_suite.addTest(SimpleAquifersTest('test_aquifers'))
 my_suite.addTest(SimpleLIDControlTest('test_lid_surface'))
 my_suite.addTest(SimpleLIDControlTest('test_lid_control'))
 my_suite.addTest(SimpleLIDControlTest('test_example4a'))
-# MTP3 my_suite.addTest(SimpleRainGageTest('test_one_raingage'))
-# MTP3 my_suite.addTest(SimpleRainGageTest('test_raingage_section'))
+my_suite.addTest(SimpleRainGageTest('test_one_raingage'))
+my_suite.addTest(SimpleRainGageTest('test_raingage_section'))
 my_suite.addTest(SimpleSnowPackTest('test_one_pack'))
 my_suite.addTest(SimpleSnowPackTest('test_one_type'))
 my_suite.addTest(SimpleSnowPackTest('test_snowpacks_section'))
@@ -167,8 +167,8 @@ my_suite.addTest(SimpleHydrographsTest('test_hydrographs'))
 
 # Hydraulics
 # Link:
-# MTP3 my_suite.addTest(SimpleConduitTest('test_conduit'))
-# MTP3 my_suite.addTest(SimpleConduitTest('test_conduit_section'))
+my_suite.addTest(SimpleConduitTest('test_conduit'))
+my_suite.addTest(SimpleConduitTest('test_conduit_section'))
 # MTP3 Pump
 # MTP3 Orifice
 # MTP3 Weir
@@ -179,7 +179,7 @@ my_suite.addTest(SimpleCrossSectionTest('test_custom_curve'))
 my_suite.addTest(SimpleCrossSectionTest('test_custom_curve_barrelnum'))
 my_suite.addTest(SimpleCrossSectionTest('test_irregular_tsectnum'))
 my_suite.addTest(SimpleCrossSectionTest('test_xsections_section'))
-# my_suite.addTest(XsectionTest())
+my_suite.addTest(XsectionTest())
 
 my_suite.addTest(SimpleTransectTest('test_one_transect'))
 my_suite.addTest(SimpleTransectTest('test_transects'))
@@ -190,12 +190,12 @@ my_suite.addTest(SimpleJunctionTest('test_all_opts'))
 my_suite.addTest(SimpleJunctionTest('test_selected_parameters'))
 my_suite.addTest(SimpleJunctionTest('test_junctions'))
 my_suite.addTest(SimpleOutfallTest('test_one_outfall'))
-# MTP3 outfall does not exist my_suite.addTest(SimpleOutfallTest('test_outfall_section'))
-# MTP3 my_suite.addTest(SimpleDividerTest('test_overflow_divider'))
-# MTP3 my_suite.addTest(SimpleDividerTest('test_cutoff_divider'))
-# MTP3 my_suite.addTest(SimpleDividerTest('test_tabular_divider'))
-# MTP3 my_suite.addTest(SimpleDividerTest('test_weir_divider'))
-# MTP3 my_suite.addTest(SimpleDividerTest('test_dividers'))
+my_suite.addTest(SimpleOutfallTest('test_outfall_section'))
+my_suite.addTest(SimpleDividerTest('test_overflow_divider'))
+my_suite.addTest(SimpleDividerTest('test_cutoff_divider'))
+my_suite.addTest(SimpleDividerTest('test_tabular_divider'))
+my_suite.addTest(SimpleDividerTest('test_weir_divider'))
+my_suite.addTest(SimpleDividerTest('test_dividers'))
 
 # Storage
 my_suite.addTest(SimpleInflowTest('test_flow_type'))

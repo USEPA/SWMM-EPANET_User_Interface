@@ -2,8 +2,8 @@ import unittest
 from core.epanet.epanet_project import EpanetProject
 from core.epanet.inp_reader_project import ProjectReader
 from core.epanet.inp_writer_project import ProjectWriter
-from core.epanet.inp_reader_sections import *
-from core.epanet.inp_writer_sections import *
+from core.epanet.inp_reader_sections import DemandReader
+from core.epanet.inp_writer_sections import DemandWriter
 from test.core.section_match import match, match_omit
 from core.epanet.hydraulics.node import Demand
 
@@ -18,15 +18,20 @@ class SimpleDemandsTest(unittest.TestCase):
                  "JUNCTION-1\t0.1\tPATTERN-2",
                  "JUNCTION-12 \t0.2 \tPATTERN-12 \tCategory-12")
 
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
     def runTest(self):
         """Test set_text and get_text of demand options"""
-        from_text = EpanetProject()
         source_text = '\n'.join(self.TEST_TEXT)
-        from_text.set_text(source_text)
-        project_demands = from_text.demands
+        section_from_text = self.project_reader.read_demands.read(source_text)
+        actual_text = self.project_writer.write_demands.as_text(section_from_text)
+        msg = '\nSet:' + source_text + '\nGet:' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 
-        assert match_omit(project_demands.get_text(), source_text, " \t-;\n")
-
+        project_demands = section_from_text
         assert project_demands.value[0].junction_name == "JUNCTION-0"
         assert project_demands.value[0].base_demand == "0.0"
         assert project_demands.value[0].demand_pattern == "PATTERN-1"
@@ -41,3 +46,9 @@ class SimpleDemandsTest(unittest.TestCase):
         assert project_demands.value[2].base_demand == "0.2"
         assert project_demands.value[2].demand_pattern == "PATTERN-12"
         assert project_demands.value[2].category == "Category-12"
+
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

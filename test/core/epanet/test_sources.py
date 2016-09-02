@@ -2,8 +2,8 @@ import unittest
 from core.epanet.epanet_project import EpanetProject
 from core.epanet.inp_reader_project import ProjectReader
 from core.epanet.inp_writer_project import ProjectWriter
-from core.epanet.inp_reader_sections import *
-from core.epanet.inp_writer_sections import *
+from core.epanet.inp_reader_sections import SourceReader
+from core.epanet.inp_writer_sections import SourceWriter
 from test.core.section_match import match, match_omit
 from core.epanet.hydraulics.node import SourceType
 
@@ -18,14 +18,25 @@ class SimpleSourcesTest(unittest.TestCase):
                  " JUNCTION-9093\tSETPOINT     \t8333    \tPattern-D",
                  " JUNCTION-9094\tCONCEN       \t8334")
 
-    def runTest(self):
+    def setUp(self):
+        """"""
+        self.project_reader = ProjectReader()
+        self.project_writer = ProjectWriter()
+
+    def test_row(self):
+        source_text = " JUNCTION-9090\tCONCEN       \t8330    \tPattern-A"
+        my_source = SourceReader.read(source_text)
+        actual_text = SourceWriter.as_text(my_source)
+        msg = '\nSet:' + source_text + '\nGet:' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+
+    def test_section(self):
         """Test set_text and get_text"""
         source_text = '\n'.join(self.TEST_TEXT)
-        project_sources = ProjectReader().read_sources(source_text)
-
-        assert match_omit(SourceWriter.as_text(project_sources), source_text, " \t-;\n")
-
-        assert match_omit(project_sources.get_text(), source_text, " \t-;\n")
+        project_sources = self.project_reader.read_sources.read(source_text)
+        actual_text = self.project_writer.write_sources.as_text(project_sources)
+        msg = '\nSet:' + source_text + '\nGet:' + actual_text
+        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 
         assert project_sources.value[0].name == "JUNCTION-9090"
         assert project_sources.value[0].source_type == SourceType.CONCEN
@@ -52,3 +63,8 @@ class SimpleSourcesTest(unittest.TestCase):
         assert project_sources.value[4].baseline_strength == "8334"
         assert project_sources.value[4].pattern_name == ""
 
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

@@ -13,7 +13,7 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
     def test_default(self):
         """Test default, default is empty string, no adjustments"""
         my_options = Temperature()
-        name = self.my_options.SECTION_NAME
+        name = my_options.SECTION_NAME
         assert name == "[TEMPERATURE]"
         actual_text = TemperatureWriter.as_text(my_options)
         assert actual_text == ""

@@ -82,8 +82,6 @@ class frmTank(frmGenericPropertyEditor):
         return local_show
 
     def cmdOK_Clicked(self):
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            self.project.tanks.value.append(self.new_item)
         self.backend.apply_edits()
         self.close()
 

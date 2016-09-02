@@ -31,7 +31,8 @@ class SimpleReactionsTest(unittest.TestCase):
             " Order Wall         	1.2"
 
         actual_text = ReactionsWriter.as_text(my_reactions)
-        assert match(actual_text, expected_text)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
     def test_setget(self):
         """Test set_text and get_text"""
@@ -45,7 +46,8 @@ class SimpleReactionsTest(unittest.TestCase):
             " Order Wall         	1.2"
         my_reactions = ReactionsReader.read(test_text)
         actual_text = ReactionsWriter.as_text(my_reactions)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
 def main():
     unittest.main()

@@ -10,16 +10,19 @@ class SimpleTitleTest(unittest.TestCase):
 
     def test_bare(self):
         """Bare section"""
+        test_text = ""
         my_title = Title()
         # default_text = self.my_title.get_text()
         default_text = TitleWriter.as_text(my_title)
+        msg = '\nSet:'+test_text+'\nGet:'+default_text
+        self.assertTrue(match(default_text, test_text), msg)
 
-        test_text = ""
         # self.my_title.set_text(test_text)
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         # assert actual_text == test_text
-        assert actual_text == default_text
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_empty(self):
         """Empty section (has section name)"""
@@ -27,7 +30,8 @@ class SimpleTitleTest(unittest.TestCase):
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         # assert self.my_title.matches(test_text)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_one_row(self):
         """One-row title with carriage return"""
@@ -35,7 +39,8 @@ class SimpleTitleTest(unittest.TestCase):
                     "test_title\n"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_multi_row(self):
         """Multiple-row title include empty lines"""
@@ -45,7 +50,8 @@ class SimpleTitleTest(unittest.TestCase):
                     "    "
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_rt_before_title(self):
         """Carriage return before section title"""
@@ -55,7 +61,8 @@ class SimpleTitleTest(unittest.TestCase):
                     "test_title"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
 def main():
     unittest.main()

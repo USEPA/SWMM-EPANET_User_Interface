@@ -19,16 +19,19 @@ class SimpleEnergyTest(unittest.TestCase):
         ("[ENERGY]\n"
          " Global Efficiency  \t75\n"
          " Global Price       \t0.0\n"
-         " Demand Charge      \t0.0", "75", "0.0", "0.0"),
+         " Demand Charge      \t0.0", "75", "0.0", "0.0")
     )
 
-    def test_reader(self):
+    def test_reader_writer(self):
         """Test EnergyOptionsReader by comparing attributes values"""
         for test_text in self.TEST_TEXTS:
             my_energy = EnergyOptionsReader.read(test_text[0])
             assert my_energy.global_efficiency == test_text[1]
             assert my_energy.global_price == test_text[2]
             assert my_energy.demand_charge == test_text[3]
+            actual_text = EnergyOptionsWriter.as_text(my_energy)
+            msg = '\nSet:\n' + test_text[0] + '\nGet:\n' + actual_text
+            self.assertTrue(match(actual_text, test_text[0]), msg)
 
     def test_writer(self):
         """Test EnergyOptionsWriter"""
@@ -54,7 +57,8 @@ class SimpleEnergyTest(unittest.TestCase):
                         " Global Price       	1.23\n" + \
                         " Demand Charge      	2.34"
 
-        assert match(actual_text2, expected_text)
+        msg = '\nSet:\n' + expected_text + '\nGet:\n' + actual_text2
+        self.assertTrue(match(actual_text2, expected_text), msg)
 
     # def runTest(self):
     #     """Test set_text and get_text of energy options"""

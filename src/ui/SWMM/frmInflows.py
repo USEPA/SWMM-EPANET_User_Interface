@@ -127,7 +127,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.cboInflowType.addItem('MASS')
         self.cboConstituent.setCurrentIndex(0)
 
-        for value in self.project.inflows:
+        for value in self.project.inflows.value:
             if value.node == self.node_name:
                 index = -1
                 local_column = -1
@@ -144,7 +144,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                     self.local_baseline_pattern[local_column] = value.baseline_pattern
 
         # dry_section = core.swmm.project.DryWeatherInflow()
-        for value in self.project.dwf:
+        for value in self.project.dwf.value:
             if value.node == self.node_name:
                 index = -1
                 local_column = -1

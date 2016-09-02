@@ -334,11 +334,7 @@ class frmMainEPANET(frmMain):
         # First handle special cases where forms need more than simply being created
 
         # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Patterns':
-            return None
-        elif edit_name == 'Curves':
-            return None
-        elif edit_name == 'Labels':
+        if edit_name == 'Labels':
             edit_these = []
             if self.project and self.project.labels:
                 if not isinstance(self.project.labels.value, basestring):
@@ -354,6 +350,9 @@ class frmMainEPANET(frmMain):
             frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"
+        elif edit_name == 'Patterns' or edit_name == 'Curves':
+            # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
+            return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm

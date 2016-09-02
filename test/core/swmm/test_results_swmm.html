@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-01 22:22:23</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.060000</p>
-<p class='attribute'><strong>Status:</strong> Pass 44 Failure 12 Error 71</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-01 23:19:42</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.050000</p>
+<p class='attribute'><strong>Status:</strong> Pass 71 Failure 20 Error 36</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -742,9 +742,9 @@ AttributeError: 'TimeSteps' object has no attribute 'matches'
 <tr class='errorClass'>
     <td>test_temperature.TemperatureTest: Test TEMPERATURE section</td>
     <td>11</td>
-    <td>0</td>
-    <td>0</td>
-    <td>11</td>
+    <td>2</td>
+    <td>1</td>
+    <td>8</td>
     <td><a href="javascript:showClassDetail('c10',11)">Detail</a></td>
 </tr>
 
@@ -764,9 +764,9 @@ AttributeError: 'TimeSteps' object has no attribute 'matches'
         <pre>
         
 ft10.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 13, in test_default
-    actual_text = self.my_options.get_text()
-AttributeError: 'Temperature' object has no attribute 'get_text'
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 16, in test_default
+    name = self.my_options.SECTION_NAME
+AttributeError: 'TemperatureTest' object has no attribute 'my_options'
 
 
         </pre>
@@ -791,10 +791,13 @@ AttributeError: 'Temperature' object has no attribute 'get_text'
         </div>
         <pre>
         
-ft10.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 27, in test_timeseries
-    self.my_options.set_text(test_time_series)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.2: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 31, in test_timeseries
+    my_options = TemperatureReader.read(test_time_series)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -819,10 +822,13 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 41, in test_file
-    self.my_options.set_text(test_file)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.3: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 45, in test_file
+    my_options = TemperatureReader.read(test_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -847,10 +853,13 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.4: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 56, in test_file_wt_date
-    self.my_options.set_text(test_file)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.4: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 61, in test_file_wt_date
+    my_options = TemperatureReader.read(test_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -875,10 +884,14 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.5: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 74, in test_windspeed_monthly
-    self.my_options.set_text(test_windspeed_monthly)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.5: [TEMPERATURE] skipping input line:  WINDSPEED MONTHLY   1.0    1.0    3.0    2.0    2.0    2.0    2.0    2.0    2.0    2.0    1.0    0.0
+[TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 79, in test_windspeed_monthly
+    my_options = TemperatureReader.read(test_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -903,10 +916,14 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.6: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 90, in test_windspeed_file_wt_temperature
-    self.my_options.set_text(test_windspeed_file)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.6: [TEMPERATURE] skipping input line: WINDSPEED FILE
+[TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 95, in test_windspeed_file_wt_temperature
+    my_options = TemperatureReader.read(test_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -916,25 +933,22 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
     </td>
 </tr>
 
-<tr id='ft10.7' class='none'>
-    <td class='errorCase'><div class='testcase'>test_windspeed_file_fail: Test windspeed file - 2</div></td>
+<tr id='pt10.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_windspeed_file_fail: Test windspeed file - 2</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.7')" >
-        error</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt10.7')" >
+        pass</a>
 
-    <div id='div_ft10.7' class="popup_window">
+    <div id='div_pt10.7' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.7').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt10.7').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft10.7: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 106, in test_windspeed_file_fail
-    self.my_options.set_text(test_windspeed_file)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+pt10.7: [TEMPERATURE] skipping input line:         WINDSPEED FILE
 
 
         </pre>
@@ -959,10 +973,14 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.8: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 123, in test_snowmelt
-    self.my_options.set_text(test_snowmelt)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.8: [TEMPERATURE] skipping input line:         WINDSPEED FILE
+[TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 134, in test_snowmelt
+    my_options = TemperatureReader.read(test_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+    temperature.areal_depletion.set_text(areal_depletion_text)
+AttributeError: ArealDepletion instance has no attribute 'set_text'
 
 
         </pre>
@@ -972,25 +990,23 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
     </td>
 </tr>
 
-<tr id='ft10.9' class='none'>
-    <td class='errorCase'><div class='testcase'>test_snowmelt_fail: Test snowmelt wo one ADC PERVIOUS, assert failed</div></td>
+<tr id='pt10.9' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_snowmelt_fail: Test snowmelt wo one ADC PERVIOUS, assert failed</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.9')" >
-        error</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt10.9')" >
+        pass</a>
 
-    <div id='div_ft10.9' class="popup_window">
+    <div id='div_pt10.9' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.9').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt10.9').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft10.9: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 139, in test_snowmelt_fail
-    self.my_options.set_text(test_snowmelt)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+pt10.9: [TEMPERATURE] skipping input line:         WINDSPEED FILE
+[TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
 
 
         </pre>
@@ -1015,10 +1031,14 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.10: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 153, in test_snowmelt_wo_adc
-    self.my_options.set_text(test_snowmelt)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.10: [TEMPERATURE] skipping input line:         WINDSPEED FILE
+[TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 171, in test_snowmelt_wo_adc
+    actual_text = TemperatureWriter.as_text(my_options)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 290, in as_text
+    text_list.append(temperature.wind_speed.as_text())
+AttributeError: WindSpeed instance has no attribute 'as_text'
 
 
         </pre>
@@ -1029,12 +1049,12 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
 </tr>
 
 <tr id='ft10.11' class='none'>
-    <td class='errorCase'><div class='testcase'>test_snowmelt_wo_temperature: Test snowmelt -- without temperature</div></td>
+    <td class='failCase'><div class='testcase'>test_snowmelt_wo_temperature: Test snowmelt -- without temperature</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.11')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft10.11' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -1043,10 +1063,17 @@ AttributeError: 'Temperature' object has no attribute 'set_text'
         </div>
         <pre>
         
-ft10.11: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 167, in test_snowmelt_wo_temperature
-    self.my_options.set_text(test_snowmelt)
-AttributeError: 'Temperature' object has no attribute 'set_text'
+ft10.11: [TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
+Traceback (most recent call last):
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 187, in test_snowmelt_wo_temperature
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:
+        [TEMPERATURE]
+        ;;Parameter  TimeSeries
+        SNOWMELT 2 0.5 0.6 0.0 50 0
+        
+Get:
 
 
         </pre>
@@ -1303,78 +1330,32 @@ Swale	SURFACE	36	0.0	0.24	1.0	5
     </td>
 </tr>
 
-<tr class='errorClass'>
-    <td>test_snowpack.SimpleSnowPackTest</td>
+<tr class='failClass'>
+    <td>test_snowpack.SimpleSnowPackTest: Test snowpack section</td>
     <td>3</td>
+    <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>3</td>
     <td><a href="javascript:showClassDetail('c14',3)">Detail</a></td>
 </tr>
 
-<tr id='ft14.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_pack: Test one snow pack</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft14.1')" >
-        error</a>
-
-    <div id='div_ft14.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft14.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft14.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_snowpack.py", line 32, in test_one_pack
-    self.my_options.set_text(test_snowpack_all)
-AttributeError: 'SnowPack' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt14.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_pack: Test one snow pack</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft14.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_type: test only one type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft14.2')" >
-        error</a>
-
-    <div id='div_ft14.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft14.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft14.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_snowpack.py", line 44, in test_one_type
-    self.my_options.set_text(test_snowpack_removal)
-AttributeError: 'SnowPack' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt14.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_type: test only one type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft14.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_snowpacks_section: Test SNOWPACKS section</div></td>
+    <td class='failCase'><div class='testcase'>test_snowpacks_section: Test SNOWPACKS section</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft14.3')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft14.3' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -1384,9 +1365,37 @@ AttributeError: 'SnowPack' object has no attribute 'set_text'
         <pre>
         
 ft14.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_snowpack.py", line 64, in test_snowpacks_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_snowpack.py", line 69, in test_snowpacks_section
+    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+AssertionError: 
+Set:
+
+[SNOWPACKS]
+;;Name           Surface    Parameters
+;;-------------- ---------- ----------
+sno              PLOWABLE   0.001      0.001      32.0       0.10       0.00       0.00       0.0
+sno              IMPERVIOUS 0.001      0.001      32.0       0.10       0.00       0.00       0.00
+sno              PERVIOUS   0.001      0.001      32.0       0.10       0.00       0.00       0.00
+sno              REMOVAL    1.0        0.0        0.0        0.0        0.0        0.0
+s                PLOWABLE   0.001      0.001      32.0       0.10       0.00       0.00       0.0
+s                IMPERVIOUS 0.001      0.001      32.0       0.10       0.00       0.00       0.00
+s                PERVIOUS   0.001      0.001      32.0       0.10       0.00       0.00       0.00
+s                REMOVAL    1.0        0.0        0.0        0.0        0.0        0.0        w
+        
+Get:
+[SNOWPACKS]
+;;Name          	Surface   	Parameters
+;;--------------	----------	----------
+;;Name           Surface    Parameters
+;;-------------- ---------- ----------
+sno	PLOWABLE	0.001	0.001	32.0	0.10	0.00	0.00	0.0
+sno	IMPERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
+sno	PERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
+sno	REMOVAL	1.0	0.0	0.0	0.0	0.0	0.0	
+s	PLOWABLE	0.001	0.001	32.0	0.10	0.00	0.00	0.0
+s	IMPERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
+s	PERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
+s	REMOVAL	1.0	0.0	0.0	0.0	0.0	0.0	w
 
 
         </pre>
@@ -1396,78 +1405,32 @@ NameError: global name 'Project' is not defined
     </td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='failClass'>
     <td>test_subcatchments.SimpleSubcatchmentTest: Test SUBCATCHMENTS section</td>
     <td>4</td>
+    <td>3</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>4</td>
     <td><a href="javascript:showClassDetail('c15',4)">Detail</a></td>
 </tr>
 
-<tr id='ft15.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_pk: Test one set of subcatchment parameters with spack</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.1')" >
-        error</a>
-
-    <div id='div_ft15.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft15.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft15.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 22, in test_pk
-    self.my_options.set_text(test_subcatchment_all)
-AttributeError: 'Subcatchment' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt15.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pk: Test one set of subcatchment parameters with spack</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft15.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_nopk: Test one set of subcatchment parameters without spack</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.2')" >
-        error</a>
-
-    <div id='div_ft15.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft15.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft15.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 32, in test_nopk
-    self.my_options.set_text(test_subcatchment_wospack)
-AttributeError: 'Subcatchment' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt15.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_nopk: Test one set of subcatchment parameters without spack</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft15.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_missing: Test one set of subcatchment parameters missing last two parameters Slope and Clength</div></td>
+    <td class='failCase'><div class='testcase'>test_missing: Test one set of subcatchment parameters missing last two parameters Slope and Clength</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.3')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft15.3' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -1477,9 +1440,10 @@ AttributeError: 'Subcatchment' object has no attribute 'set_text'
         <pre>
         
 ft15.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 41, in test_missing
-    self.my_options.set_text(test_subcatchment_partial)
-AttributeError: 'Subcatchment' object has no attribute 'set_text'
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 63, in test_missing
+    self.assertTrue(find_error, msg)
+AssertionError: 
+Should detected error and not read/write
 
 
         </pre>
@@ -1489,32 +1453,9 @@ AttributeError: 'Subcatchment' object has no attribute 'set_text'
     </td>
 </tr>
 
-<tr id='ft15.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_subcatchments: Test SUBCATCHMENTS section from Example 1</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft15.4')" >
-        error</a>
-
-    <div id='div_ft15.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft15.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft15.4: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 61, in test_subcatchments
-    from_text = Project()
-NameError: global name 'Project' is not defined
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt15.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_subcatchments: Test SUBCATCHMENTS section from Example 1</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='errorClass'>
@@ -1886,178 +1827,40 @@ xw09/01/2016: Difference in first comment line Month vs. Rain Gage/Month
 <tr class='errorClass'>
     <td>test_xsections.SimpleCrossSectionTest: Test XSECTIONS section</td>
     <td>7</td>
+    <td>6</td>
     <td>0</td>
-    <td>0</td>
-    <td>7</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c22',7)">Detail</a></td>
 </tr>
 
-<tr id='ft22.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.1')" >
-        error</a>
-
-    <div id='div_ft22.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 22, in test_geom
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_geom_barrel: Predefined shapes with Geoms and Barrel only</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.2')" >
-        error</a>
-
-    <div id='div_ft22.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 31, in test_geom_barrel
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_geom_barrel: Predefined shapes with Geoms and Barrel only</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_geom_barrel_culvert: Predefined shapes with Geoms, Barrel and culvert</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.3')" >
-        error</a>
-
-    <div id='div_ft22.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 40, in test_geom_barrel_culvert
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_geom_barrel_culvert: Predefined shapes with Geoms, Barrel and culvert</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.4')" >
-        error</a>
-
-    <div id='div_ft22.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.4: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 49, in test_custom_curve
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.5' class='none'>
-    <td class='errorCase'><div class='testcase'>test_custom_curve_barrelnum: CUSTOM with Curve and number of barrels</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.5')" >
-        error</a>
-
-    <div id='div_ft22.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.5: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 59, in test_custom_curve_barrelnum
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_custom_curve_barrelnum: CUSTOM with Curve and number of barrels</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft22.6' class='none'>
-    <td class='errorCase'><div class='testcase'>test_irregular_tsectnum: IRREGULAR with Tsect number, example 7</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.6')" >
-        error</a>
-
-    <div id='div_ft22.6' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.6').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.6: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 70, in test_irregular_tsectnum
-    self.my_options.set_text(test_text)
-AttributeError: 'CrossSection' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_irregular_tsectnum: IRREGULAR with Tsect number, example 7</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft22.7' class='none'>
@@ -2076,9 +1879,13 @@ AttributeError: 'CrossSection' object has no attribute 'set_text'
         <pre>
         
 ft22.7: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 102, in test_xsections_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 96, in test_xsections_section
+    actual_text = self.project_writer.write_xsections.as_text(section_from_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+    item_str = self.list_type_writer.as_text(item)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 554, in as_text
+    if cross_section.shape == CrossSectionShape.CUSTOM:
+AttributeError: 'Section' object has no attribute 'shape'
 
 
         </pre>
@@ -2088,50 +1895,27 @@ NameError: global name 'Project' is not defined
     </td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='failClass'>
     <td>test_transects.SimpleTransectTest: Test TRANSECTS section</td>
     <td>3</td>
+    <td>1</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
-    <td>3</td>
     <td><a href="javascript:showClassDetail('c23',3)">Detail</a></td>
 </tr>
 
-<tr id='ft23.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_transect: Test one transect from Example-7-final</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft23.1')" >
-        error</a>
-
-    <div id='div_ft23.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft23.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft23.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 25, in test_one_transect
-    self.my_options.set_text(test_text)
-AttributeError: 'Transect' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt23.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_transect: Test one transect from Example-7-final</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft23.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_transects: Test transects:Example-7-final inp</div></td>
+    <td class='failCase'><div class='testcase'>test_transects: Test transects:Example-7-final inp</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft23.2')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft23.2' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -2141,9 +1925,24 @@ AttributeError: 'Transect' object has no attribute 'set_text'
         <pre>
         
 ft23.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 46, in test_transects
-    self.my_options.set_text(test_text)
-AttributeError: 'Transects' object has no attribute 'set_text'
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 44, in test_transects
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:[TRANSECTS]
+        NC 0.015    0.015    0.015
+        X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20
+        GR 0.5      20       1.3      40
+
+        NC 0.016    0.016    0.016
+        X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0
+        
+Get:[TRANSECTS]
+;;Transect Data in HEC-2 format
+
+
+
 
 
         </pre>
@@ -2154,12 +1953,12 @@ AttributeError: 'Transects' object has no attribute 'set_text'
 </tr>
 
 <tr id='ft23.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_transect_section: Test transects: using Project</div></td>
+    <td class='failCase'><div class='testcase'>test_transect_section: Test transects: using Project</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft23.3')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft23.3' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -2169,9 +1968,24 @@ AttributeError: 'Transects' object has no attribute 'set_text'
         <pre>
         
 ft23.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 63, in test_transect_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 61, in test_transect_section
+    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+AssertionError: 
+Set:
+[TRANSECTS]
+        NC 0.015    0.015    0.015
+        X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20
+        GR 0.5      20       1.3      40
+        NC 0.016    0.016    0.016
+        X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0
+        
+Get:
+[TRANSECTS]
+;;Transect Data in HEC-2 format
+
+
 
 
         </pre>
@@ -2232,41 +2046,18 @@ AttributeError: 'Section' object has no attribute 'name'
     </td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>test_outfalls.SimpleOutfallTest: Test OUTFALLS section</td>
     <td>1</td>
-    <td>0</td>
-    <td>0</td>
     <td>1</td>
+    <td>0</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c25',1)">Detail</a></td>
 </tr>
 
-<tr id='ft25.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_outfall: Test one outfall will all parameters</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft25.1')" >
-        error</a>
-
-    <div id='div_ft25.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft25.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft25.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_outfalls.py", line 22, in test_one_outfall
-    self.my_options.set_text(test_outfall)
-AttributeError: 'Outfall' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt25.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_outfall: Test one outfall will all parameters</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='errorClass'>
@@ -2466,38 +2257,15 @@ AttributeError: 'Section' object has no attribute 'node'
 <tr class='errorClass'>
     <td>test_RDII.SimpleRDIITest: Test RDII section</td>
     <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>2</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c28',2)">Detail</a></td>
 </tr>
 
-<tr id='ft28.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_rdii: Test one set of rdii</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft28.1')" >
-        error</a>
-
-    <div id='div_ft28.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft28.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft28.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_RDII.py", line 22, in test_one_rdii
-    self.my_options.set_text(test_text)
-AttributeError: 'RDIInflow' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt28.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_rdii: Test one set of rdii</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft28.2' class='none'>
@@ -2516,9 +2284,13 @@ AttributeError: 'RDIInflow' object has no attribute 'set_text'
         <pre>
         
 ft28.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_RDII.py", line 36, in test_rdii_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_RDII.py", line 37, in test_rdii_section
+    actual_text = self.project_writer.write_rdii.as_text(section_from_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+    item_str = self.list_type_writer.as_text(item)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 788, in as_text
+    inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
+AttributeError: 'Section' object has no attribute 'node'
 
 
         </pre>
@@ -2531,66 +2303,20 @@ NameError: global name 'Project' is not defined
 <tr class='errorClass'>
     <td>test_treatment.SimpleTreatmentTest</td>
     <td>3</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
-    <td>3</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c29',3)">Detail</a></td>
 </tr>
 
-<tr id='ft29.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_bod: BOD first order decay, from SWMM 5.1 manual</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.1')" >
-        error</a>
-
-    <div id='div_ft29.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft29.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 22, in test_bod
-    self.my_options.set_text(test_text)
-AttributeError: 'Treatment' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt29.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bod: BOD first order decay, from SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft29.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_lead: Lead removal 20% of TSS removal</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.2')" >
-        error</a>
-
-    <div id='div_ft29.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft29.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 31, in test_lead
-    self.my_options.set_text(test_text)
-AttributeError: 'Treatment' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt29.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_lead: Lead removal 20% of TSS removal</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft29.3' class='none'>
@@ -2609,9 +2335,13 @@ AttributeError: 'Treatment' object has no attribute 'set_text'
         <pre>
         
 ft29.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 48, in test_treatment_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 46, in test_treatment_section
+    actual_text = self.project_writer.write_treatment.as_text(section_from_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+    item_str = self.list_type_writer.as_text(item)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 824, in as_text
+    inp += TreatmentWriter.field_format.format(treatment.node,
+AttributeError: 'Section' object has no attribute 'node'
 
 
         </pre>
@@ -2624,38 +2354,15 @@ NameError: global name 'Project' is not defined
 <tr class='errorClass'>
     <td>test_pollutants.SimplePollutantTest: Test POLLUTANTS section</td>
     <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>2</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c30',2)">Detail</a></td>
 </tr>
 
-<tr id='ft30.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_pollutant: Test one pollutant</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.1')" >
-        error</a>
-
-    <div id='div_ft30.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 25, in test_one_pollutant
-    self.my_options.set_text(test_text)
-AttributeError: 'Pollutant' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_pollutant: Test one pollutant</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft30.2' class='none'>
@@ -2674,9 +2381,13 @@ AttributeError: 'Pollutant' object has no attribute 'set_text'
         <pre>
         
 ft30.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 41, in test_pollutant_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 38, in test_pollutant_section
+    actual_text = self.project_writer.write_pollutants.as_text(section_from_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+    item_str = self.list_type_writer.as_text(item)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 222, in as_text
+    return PollutantWriter.field_format.format(pollutant.name,
+AttributeError: 'Section' object has no attribute 'name'
 
 
         </pre>
@@ -2708,38 +2419,15 @@ NameError: global name 'Project' is not defined
 <tr class='errorClass'>
     <td>test_washoff.SimpleWashoffTest: Test WASHOFF section</td>
     <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>2</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c32',2)">Detail</a></td>
 </tr>
 
-<tr id='ft32.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_one_washoff: Test all options</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft32.1')" >
-        error</a>
-
-    <div id='div_ft32.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft32.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft32.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_washoff.py", line 22, in test_one_washoff
-    self.my_options.set_text(test_text)
-AttributeError: 'Washoff' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt32.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_washoff: Test all options</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft32.2' class='none'>
@@ -2759,8 +2447,12 @@ AttributeError: 'Washoff' object has no attribute 'set_text'
         
 ft32.2: Traceback (most recent call last):
   File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_washoff.py", line 39, in test_washoff_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+    actual_text = self.project_writer.write_washoff.as_text(section_from_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+    item_str = self.list_type_writer.as_text(item)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 207, in as_text
+    return WashoffWriter.field_format.format(washoff.land_use_name,
+AttributeError: 'Section' object has no attribute 'land_use_name'
 
 
         </pre>
@@ -2886,50 +2578,27 @@ Get:[TITLE]
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='failClass'>
     <td>test_timeseries.SimpleTimeSeriesTest: Test TIMESERIES section</td>
     <td>4</td>
+    <td>2</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
-    <td>4</td>
     <td><a href="javascript:showClassDetail('c35',4)">Detail</a></td>
 </tr>
 
-<tr id='ft35.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_file: Use external file, Created based on SWMM 5.1 manual Page335</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft35.1')" >
-        error</a>
-
-    <div id='div_ft35.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft35.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft35.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 22, in test_file
-    self.my_options.set_text(test_text)
-AttributeError: 'TimeSeries' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt35.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_file: Use external file, Created based on SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft35.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_data: Time series data test, modified from SWMM 5.1 manual Page335</div></td>
+    <td class='failCase'><div class='testcase'>test_data: Time series data test, modified from SWMM 5.1 manual Page335</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft35.2')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft35.2' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -2940,8 +2609,14 @@ AttributeError: 'TimeSeries' object has no attribute 'set_text'
         
 ft35.2: Traceback (most recent call last):
   File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 32, in test_data
-    self.my_options.set_text(test_text)
-AttributeError: 'TimeSeries' object has no attribute 'set_text'
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:TS1 6-15-2001 7:00 0.1 8:00 0.2
+TS1 6-21-2001 4:00 0.2 5:00 0.0
+Get:TS1             	6-15-2001 	7:00      	0.1       
+TS1             	          	8:00      	0.2       
+TS1             	6-21-2001 	4:00      	0.2       
+TS1             	          	5:00      	0.0       
 
 
         </pre>
@@ -2951,41 +2626,18 @@ AttributeError: 'TimeSeries' object has no attribute 'set_text'
     </td>
 </tr>
 
-<tr id='ft35.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_multiple_lines: Test the multi-line input format</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft35.3')" >
-        error</a>
-
-    <div id='div_ft35.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft35.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft35.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 43, in test_multiple_lines
-    self.my_options.set_text(test_text)
-AttributeError: 'TimeSeries' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt35.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_multiple_lines: Test the multi-line input format</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft35.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
+    <td class='failCase'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft35.4')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft35.4' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -2996,8 +2648,42 @@ AttributeError: 'TimeSeries' object has no attribute 'set_text'
         
 ft35.4: Traceback (most recent call last):
   File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 63, in test_timeseries_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+AssertionError: 
+Set:
+
+        [TIMESERIES]
+        ;Rainfall time series with dates specified
+        TS1 6-15-2001 7:00 0.1 8:00 0.2 9:00 0.05 10:00 0
+        TS1 6-21-2001 4:00 0.2 5:00 0 14:00 0.1 15:00 0
+        ;Inflow hydrograph - time relative to start of simulation
+        HY1 0 0 1.25 100 2:30 150 3.0 120 4.5 0
+        HY1 32:10 0 34.0 57 35.33 85 48.67 24 50 0
+        
+Get:
+[TIMESERIES]
+;;Name          	Date      	Time      	Value
+;;--------------	----------	----------	----------
+;Rainfall time series with dates specified
+TS1             	6-15-2001 	7:00      	0.1       
+TS1             	          	8:00      	0.2       
+TS1             	          	9:00      	0.05      
+TS1             	          	10:00     	0         
+TS1             	6-21-2001 	4:00      	0.2       
+TS1             	          	5:00      	0         
+TS1             	          	14:00     	0.1       
+TS1             	          	15:00     	0         
+;Inflow hydrograph - time relative to start of simulation
+HY1             	          	0         	0         
+HY1             	          	1.25      	100       
+HY1             	          	2:30      	150       
+HY1             	          	3.0       	120       
+HY1             	          	4.5       	0         
+HY1             	          	32:10     	0         
+HY1             	          	34.0      	57        
+HY1             	          	35.33     	85        
+HY1             	          	48.67     	24        
+HY1             	          	50        	0         
 
 
         </pre>
@@ -3007,162 +2693,47 @@ NameError: global name 'Project' is not defined
     </td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='failClass'>
     <td>test_patterns.SimplePatternTest: Test PATTERNS section</td>
     <td>6</td>
+    <td>5</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
-    <td>6</td>
     <td><a href="javascript:showClassDetail('c36',6)">Detail</a></td>
 </tr>
 
-<tr id='ft36.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_hourly: Test Pattern: Hourly total 24 per year</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.1')" >
-        error</a>
-
-    <div id='div_ft36.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 57, in test_hourly
-    self.my_options.set_text(test_text)
-AttributeError: 'Pattern' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_hourly: Test Pattern: Hourly total 24 per year</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft36.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_daily: Test Pattern: Daily total 7 per week</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.2')" >
-        error</a>
-
-    <div id='div_ft36.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 23, in test_daily
-    self.my_options.set_text(test_text)
-AttributeError: 'Pattern' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_daily: Test Pattern: Daily total 7 per week</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft36.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_monthly: Test Pattern: Monthly total 12 per year</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.3')" >
-        error</a>
-
-    <div id='div_ft36.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 37, in test_monthly
-    self.my_options.set_text(test_text)
-AttributeError: 'Pattern' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_monthly: Test Pattern: Monthly total 12 per year</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft36.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_weekly: Test Pattern: Weekend total 24 per day</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.4')" >
-        error</a>
-
-    <div id='div_ft36.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.4: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 76, in test_weekly
-    self.my_options.set_text(test_text)
-AttributeError: 'Pattern' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_weekly: Test Pattern: Weekend total 24 per day</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft36.5' class='none'>
-    <td class='errorCase'><div class='testcase'>test_design: Test Pattern: Design pattern, no flag</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.5')" >
-        error</a>
-
-    <div id='div_ft36.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.5: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 97, in test_design
-    self.my_options.set_text(test_text)
-AttributeError: 'Pattern' object has no attribute 'set_text'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_design: Test Pattern: Design pattern, no flag</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft36.6' class='none'>
-    <td class='errorCase'><div class='testcase'>test_pattern_section: test PATTERNS section</div></td>
+    <td class='failCase'><div class='testcase'>test_pattern_section: test PATTERNS section</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.6')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft36.6' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -3172,9 +2743,23 @@ AttributeError: 'Pattern' object has no attribute 'set_text'
         <pre>
         
 ft36.6: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 115, in test_pattern_section
-    from_text = Project()
-NameError: global name 'Project' is not defined
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 133, in test_pattern_section
+    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+AssertionError: 
+Set:
+[PATTERNS]
+;ID              	Multipliers
+;Demand Pattern
+1               	1.0         	1.2         	1.4         	1.6         	1.4         	1.2
+1               	1.0         	0.8         	0.6         	0.4         	0.6         	0.8
+
+Get:
+[PATTERNS]
+;;Name          	Type      	Multipliers
+;;--------------	----------	-----------
+;Demand Pattern
+ 1               MONTHLY   	1.0  	1.2  	1.4  	1.6  	1.4  	1.2  
+ 1                         	1.0  	0.8  	0.6  	0.4  	0.6  	0.8  
 
 
         </pre>
@@ -3251,9 +2836,9 @@ xw09/01/2016: match_omit should omit upper and lower cases
 <tr id='total_row'>
     <td>Total</td>
     <td>127</td>
-    <td>44</td>
-    <td>12</td>
     <td>71</td>
+    <td>20</td>
+    <td>36</td>
     <td>&nbsp;</td>
 </tr>
 </table>

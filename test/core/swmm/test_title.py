@@ -31,7 +31,8 @@ class SimpleTitleTest(unittest.TestCase):
         test_text = "[TITLE]"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
-        assert match(actual_text, test_text)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_one_row_wt_return(self):
         """One-row title wt ending carriage return"""

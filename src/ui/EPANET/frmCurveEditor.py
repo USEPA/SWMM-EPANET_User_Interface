@@ -8,7 +8,7 @@ from core.epanet.curves import CurveType
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, edit_these=[]):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
@@ -18,9 +18,14 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
-        self.set_from(main_form.project, '1')
-        self.selected_curve_name = '1'
+        self.selected_curve_name = ''
         self._main_form = main_form
+        if main_form and main_form.project:
+            if edit_these:
+                if isinstance(edit_these, list):
+                    self.set_from(main_form.project, edit_these[0])
+                else:
+                    self.set_from(main_form.project, edit_these)
 
     def set_from(self, project, selected_curve_name):
         section = project.find_section("CURVES")

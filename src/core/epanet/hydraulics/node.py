@@ -104,7 +104,7 @@ class Reservoir(Section):
 
 #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",                '', "Name",            '',    '',   '', "User-assigned name of reservior"),
+        ("name",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
         ('',                  '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
         ('',                  '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
         ('',                  '', "Description",     '',    '',   '', "Optional comment or description"),
@@ -131,7 +131,7 @@ class Tank(Section):
 
 #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("id",              '', "Name",            '',    '',   '', "User-assigned name of tank"),
+        ("name",            '', "Name",            '',    '',   '', "User-assigned name of tank"),
         ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
         ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
         ('',                '', "Description",     '',    '',   '', "Optional comment or description"),

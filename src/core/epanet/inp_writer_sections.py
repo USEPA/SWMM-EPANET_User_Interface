@@ -362,17 +362,17 @@ class EnergyOptionsWriter(SectionWriter):
 
     @staticmethod
     def as_text(energy_options):
-        if energy_options.global_efficiency == "75" \
-           and energy_options.global_price == "0.0" \
-           and energy_options.global_pattern == '' \
-           and energy_options.demand_charge == "0.0" \
-           and len(energy_options.pumps) == 0:
-            return ''  # This section has nothing different from defaults, return blank
-        else:
-            txt = [SectionWriter.as_text(energy_options)]
-            for pump_energy in energy_options.pumps:      # Add text for each pump energy
-                txt.append(pump_energy.as_text())
-            return '\n'.join(txt)
+        # if energy_options.global_efficiency == "75" \
+        #    and energy_options.global_price == "0.0" \
+        #    and energy_options.global_pattern == '' \
+        #    and energy_options.demand_charge == "0.0" \
+        #    and len(energy_options.pumps) == 0:
+        #     return ''  # This section has nothing different from defaults, return blank
+        # else:
+        txt = [SectionWriter.as_text(energy_options)]
+        for pump_energy in energy_options.pumps:      # Add text for each pump energy
+            txt.append(pump_energy.as_text())
+        return '\n'.join(txt)
 
 
 class PumpEnergyWriter(SectionWriter):

@@ -36,7 +36,7 @@ class SimpleEnergyTest(unittest.TestCase):
     def test_writer(self):
         """Test EnergyOptionsWriter"""
         my_energy = energy.EnergyOptions()
-        assert len(EnergyOptionsWriter.as_text(my_energy)) == 0
+        assert match(EnergyOptionsWriter.as_text(my_energy), SimpleEnergyTest.TEST_TEXTS[2][0])
 
         my_energy.global_efficiency = "87.6"
         my_energy.global_price = "1.23"

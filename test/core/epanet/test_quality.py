@@ -1,6 +1,6 @@
 import unittest
-from core.epanet.inp_reader_sections import QualityReader
-from core.epanet.inp_writer_sections import QualityWriter
+from core.epanet.inp_reader_sections import QualityOptionsReader
+from core.epanet.inp_writer_sections import QualityOptionsWriter
 from core.epanet.options import quality
 from test.core.section_match import match
 
@@ -23,7 +23,7 @@ class SimpleQualityTest(unittest.TestCase):
         expected_text = " Quality            	DummyChemical mg/L\n" + \
                         " Diffusivity         	1.0\n" + \
                         " Tolerance           	0.01\n"
-        actual_text = QualityWriter.as_text(my_quality)
+        actual_text = QualityOptionsWriter.as_text(my_quality)
         msg = '\nSet:'+expected_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, expected_text), msg)
 
@@ -37,7 +37,7 @@ class SimpleQualityTest(unittest.TestCase):
                         " Diffusivity         	2.0\n" + \
                         " Tolerance           	0.02\n"
 
-        actual_text = QualityWriter.as_text(my_quality)
+        actual_text = QualityOptionsWriter.as_text(my_quality)
         msg = '\nSet:'+expected_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, expected_text), msg)
 
@@ -45,8 +45,8 @@ class SimpleQualityTest(unittest.TestCase):
          test_text = " Quality            	DummyChemical mg/L\n" \
                      " Diffusivity         	1.0\n" \
                      " Tolerance           	0.01\n"
-         my_quality = QualityReader.read(test_text)
-         actual_text = QualityWriter.as_text(my_quality)
+         my_quality = QualityOptionsReader.read(test_text)
+         actual_text = QualityOptionsWriter.as_text(my_quality)
          msg = '\nSet:' + test_text + '\nGet:' + actual_text
          self.assertTrue(match(actual_text, test_text), msg)
 

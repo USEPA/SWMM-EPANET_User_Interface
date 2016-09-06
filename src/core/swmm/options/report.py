@@ -49,7 +49,7 @@ class Report(Section):
         self.links = ["ALL"]
         """List of links whose results are to be reported, or ALL or NONE"""
 
-        self.lids = ["ALL"]
+        self.lids = []
         """List of lid specifications whose results are to be reported.
         Includes LID control name, subcatchment id and file name."""
 

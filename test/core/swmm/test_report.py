@@ -21,6 +21,8 @@ class SimpleReportTest(unittest.TestCase):
                     " CONTROLS           	NO"
         my_report = ReportReader.read(test_text)
         actual_text = ReportWriter.as_text(my_report)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
         assert my_report.input == False     # Individual inputs:
         assert my_report.continuity == True
         assert my_report.flow_stats == True
@@ -30,8 +32,6 @@ class SimpleReportTest(unittest.TestCase):
         assert my_report.links == ['NONE']
         assert my_report.lids == Report.EMPTY_LIST
         assert my_report.lids == ['NONE']
-        msg = '\nSet:'+test_text+'\nGet:'+actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_more(self):
         """Test Report options regarding subcatchments, nodes, links and LID lists"""
@@ -48,6 +48,8 @@ class SimpleReportTest(unittest.TestCase):
                      "LID L2 S1 L2SUB1.txt"
         my_report = ReportReader.read(test_text)
         actual_text = ReportWriter.as_text(my_report)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
         assert my_report.input == False
         assert my_report.continuity == False
         assert my_report.flow_stats == False
@@ -56,8 +58,6 @@ class SimpleReportTest(unittest.TestCase):
         assert my_report.nodes == ['J1']
         assert my_report.links == ['C1','C2']
         assert my_report.lids == ['L1', 'S1', 'L1SUB1.txt', 'L2', 'S1', 'L2SUB1.txt']
-        msg = '\nSet:'+test_text+'\nGet:'+actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
         # assert self.my_options.matches(test_text)
         #match() did not pass because
         #input has two lines for LID

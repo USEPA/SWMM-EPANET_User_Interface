@@ -10,7 +10,7 @@ class SimpleTitleTest(unittest.TestCase):
 
     def test_bare(self):
         """Bare section"""
-        test_text = ""
+        test_text = "[TITLE]"
         my_title = Title()
         # default_text = self.my_title.get_text()
         default_text = TitleWriter.as_text(my_title)

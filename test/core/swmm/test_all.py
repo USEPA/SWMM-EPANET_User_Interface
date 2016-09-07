@@ -77,7 +77,7 @@ from test_patterns import SimplePatternTest
 from test_timeseries import SimpleTimeSeriesTest
 
 # Mislaneous
-from test_energy import SimpleEnergyTest
+# from test_energy import SimpleEnergyTest
 from test_project import ProjectTest
 from test_title import SimpleTitleTest
 

@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-02 12:38:55</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.005000</p>
-<p class='attribute'><strong>Status:</strong> Pass 16 Failure 4 Error 5</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-07 16:45:37</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.010000</p>
+<p class='attribute'><strong>Status:</strong> Pass 20 Failure 2 Error 3</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -221,45 +221,18 @@ function showOutput(id, name) {
     <td>View</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_title.SimpleTitleTest: Test Title section</td>
     <td>5</td>
-    <td>4</td>
-    <td>1</td>
+    <td>5</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c1',5)">Detail</a></td>
 </tr>
 
-<tr id='ft1.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_bare: Bare section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.1')" >
-        fail</a>
-
-    <div id='div_ft1.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft1.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_title.py", line 18, in test_bare
-    self.assertTrue(match(default_text, test_text), msg)
-AssertionError: 
-Set:
-Get:[TITLE]
-
-
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt1.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bare: Bare section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt1.2' class='hiddenRow'>
@@ -307,11 +280,11 @@ Get:[TITLE]
         <pre>
         
 ft2.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_options.py", line 80, in test_get
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_options.py", line 80, in test_get
     actual_text = OptionsWriter.as_text(my_HydraulicsOptions)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 436, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 436, in as_text
     text_list.append(HydraulicsOptionsWriter.as_text(options.hydraulics))
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 406, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 406, in as_text
     if hydraulics_options.unbalanced == Unbalanced.STOP:
 AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
 
@@ -358,11 +331,11 @@ AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
         <pre>
         
 ft3.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 35, in test_page
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 35, in test_page
     actual_text = ReportOptionsWriter.as_text(my_report)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
     txt = SectionWriter.as_text(report_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
     if isinstance(section.value, basestring) and len(section.value) &gt; 0:
 AttributeError: 'NoneType' object has no attribute 'value'
 
@@ -390,11 +363,11 @@ AttributeError: 'NoneType' object has no attribute 'value'
         <pre>
         
 ft3.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 55, in test_all
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 55, in test_all
     actual_text = ReportOptionsWriter.as_text(my_report)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
     txt = SectionWriter.as_text(report_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
     if isinstance(section.value, basestring) and len(section.value) &gt; 0:
 AttributeError: 'NoneType' object has no attribute 'value'
 
@@ -431,7 +404,7 @@ AttributeError: 'NoneType' object has no attribute 'value'
         <pre>
         
 ft4.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 34, in test_pattern
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 36, in test_pattern
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:
@@ -467,7 +440,7 @@ Get:
         <pre>
         
 ft4.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 50, in test_patterns
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 52, in test_patterns
     self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 AssertionError: 
 Set:
@@ -514,48 +487,18 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_energy.SimpleEnergyTest: Test Energy section</td>
     <td>2</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c6',2)">Detail</a></td>
 </tr>
 
-<tr id='ft6.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_reader_writer: Test EnergyOptionsReader by comparing attributes values</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft6.1')" >
-        fail</a>
-
-    <div id='div_ft6.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft6.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft6.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_energy.py", line 34, in test_reader_writer
-    self.assertTrue(match(actual_text, test_text[0]), msg)
-AssertionError: 
-Set:
-[ENERGY]
- Global Efficiency  	75
- Global Price       	0.0
- Demand Charge      	0.0
-Get:
-
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt6.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_reader_writer: Test EnergyOptionsReader by comparing attributes values</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt6.2' class='hiddenRow'>
@@ -577,73 +520,23 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>test_quality.SimpleQualityTest: Test Quality section</td>
     <td>2</td>
-    <td>0</td>
-    <td>0</td>
     <td>2</td>
+    <td>0</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c8',2)">Detail</a></td>
 </tr>
 
-<tr id='ft8.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_get: Test get_text of quality sections</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft8.1')" >
-        error</a>
-
-    <div id='div_ft8.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft8.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft8.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_quality.py", line 26, in test_get
-    actual_text = QualityWriter.as_text(my_quality)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 245, in as_text
-    return QualityWriter.field_format.format(quality.name, quality.initial_quality)
-AttributeError: 'QualityOptions' object has no attribute 'name'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt8.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_get: Test get_text of quality sections</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft8.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_setget</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft8.2')" >
-        error</a>
-
-    <div id='div_ft8.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft8.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft8.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_quality.py", line 48, in test_setget
-    my_quality = QualityReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_reader_sections.py", line 285, in read
-    (quality.name, quality.initial_quality) = new_text.split()
-ValueError: too many values to unpack
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt8.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_setget</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -706,9 +599,9 @@ ValueError: too many values to unpack
 <tr id='total_row'>
     <td>Total</td>
     <td>25</td>
-    <td>16</td>
-    <td>4</td>
-    <td>5</td>
+    <td>20</td>
+    <td>2</td>
+    <td>3</td>
     <td>&nbsp;</td>
 </tr>
 </table>

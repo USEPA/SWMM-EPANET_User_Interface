@@ -12,9 +12,11 @@ class SimplePatternTest(unittest.TestCase):
     """Test one pattern"""
 
     TEST_TEXTS = ["P1\t1.2\t1.4\t1.6\t1.8\t2.0\n" \
-                    "P1\t2.2\t2.4\t2.6\t2.8\t3.0\n" \
-                    "P1\t3.2\t3.4\t3.6\t3.8\t4.0",
-                  ";test", "pattern", "XXX", "1.0", "1.1", "1.2", "1.3"]
+                  "P1\t2.2\t2.4\t2.6\t2.8\t3.0\n" \
+                  "P1\t3.2\t3.4\t3.6\t3.8\t4.0",
+                  "P1\t1.2\t1.4\t1.6\t1.8\t2.0\t2.1\n" \
+                  "P1\t2.2\t2.4\t2.6\t2.8\t3.0\t3.1\n" \
+                  "P1\t3.2\t3.4\t3.6\t3.8\t4.0\t4.1"]
 
     def setUp(self):
         """"""

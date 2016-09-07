@@ -2,8 +2,8 @@ import unittest
 from core.swmm.swmm_project import SwmmProject
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from core.swmm.inp_reader_sections import *
-from core.swmm.inp_writer_sections import *
+from core.swmm.inp_reader_sections import GeneralReader
+from core.swmm.inp_writer_sections import GeneralWriter
 from test.core.section_match import match, match_omit
 from core.swmm.options.files import Files
 
@@ -14,61 +14,70 @@ class SimpleFilesTest(unittest.TestCase):
     def test_default(self):
         """Test default"""
         #20160407xw: if default, all nones, therefore no text
-        self.my_options = Files()
-        name = self.my_options.SECTION_NAME
+        my_options = Files()
+        name = my_options.SECTION_NAME
         assert name == "[FILES]"
-        actual_text = self.my_options.get_text()
+        actual_text = GeneralWriter.as_text(my_options)
         assert actual_text == ""
 
     def test_space_delimited(self):
         """normal space delimited keyword and parameter"""
-        self.my_options = Files()
-        TEST_TEXT = "[FILES]\n"\
+        test_text = "[FILES]\n"\
                     ";;Interfacing Files\n"\
                     "USE RAINFALL use_rainfall.txt"
-        self.my_options.set_text(TEST_TEXT)
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
+
         assert self.my_options.use_rainfall == "use_rainfall.txt"
         assert self.my_options.save_rainfall is None
         assert self.my_options.save_outflows is None
-        assert self.my_options.matches(TEST_TEXT)
 
     def test_more_space(self):
         """Test more spaces beyond [:19]"""
-        self.my_options = Files()
-        TEST_TEXT = "[FILES]\n"\
+        test_text = "[FILES]\n"\
                     ";;Interfacing Files\n"\
                     "SAVE OUTFLOWS                   save_outflows.txt"
-        self.my_options.set_text(TEST_TEXT)
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
         assert self.my_options.use_rainfall is None
         assert self.my_options.save_outflows == "save_outflows.txt"
-        assert self.my_options.matches(TEST_TEXT)
+        assert self.my_options.matches(test_text)
 
     def test_space_in_filename(self):
         """Test space in file name """
-        self.my_options = Files()
-        TEST_TEXT = "[FILES]\n"\
+        test_text = "[FILES]\n"\
                     ";;Interfacing Files\n"\
                     "SAVE OUTFLOWS                   save outflows.txt"
-        self.my_options.set_text(TEST_TEXT)
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
+
         assert self.my_options.use_rainfall is None
         assert self.my_options.save_outflows == "save outflows.txt"  # ---Space in file name
-        assert self.my_options.matches(TEST_TEXT)
 
     def test_filename_with_path(self):
         """Test filename with path"""
-        self.my_options = Files()
-        TEST_TEXT = "[FILES]\n"\
+        test_text = "[FILES]\n"\
                     ";;Interfacing Files\n"\
                     "SAVE OUTFLOWS   .\My Documents\save_outflows.txt"
-        self.my_options.set_text(TEST_TEXT)
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
+
         assert self.my_options.use_rainfall is None
         assert self.my_options.save_outflows == ".\My Documents\save_outflows.txt"
-        assert self.my_options.matches(TEST_TEXT)
+
 
     def test_all_options(self):
         """Test all options of FILE section"""
-        self.my_options = Files()
-        test_all_opts = """
+        my_options = Files()
+        test_text = """
 [FILES]
 ;;Interfacing Files
 USE RAINFALL rainfall_u.txt
@@ -79,39 +88,43 @@ SAVE HOTSTART hotstart_s.txt
 USE INFLOWS inflows_u.txt
 SAVE OUTFLOWS outflows_s.txt
 """
-        self.my_options.set_text(test_all_opts)
-        assert self.my_options.use_rainfall == "rainfall_u.txt"
-        assert self.my_options.save_rainfall is None
-        assert self.my_options.use_runoff == "runoff_u.txt"
-        assert self.my_options.save_runoff is None
-        assert self.my_options.use_hotstart == "hotstart_u.txt"
-        assert self.my_options.save_hotstart == "hotstart_s.txt"
-        assert self.my_options.use_rdii == "rdii_u.txt"
-        assert self.my_options.save_rdii is None
-        assert self.my_options.use_inflows == "inflows_u.txt"
-        assert self.my_options.save_outflows == "outflows_s.txt"
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
-        assert self.my_options.matches(test_all_opts)
-        actual_text = self.my_options.get_text()
-        self.my_options.set_text(actual_text)
-        assert self.my_options.matches(test_all_opts)
+        assert my_options.use_rainfall == "rainfall_u.txt"
+        assert my_options.save_rainfall is None
+        assert my_options.use_runoff == "runoff_u.txt"
+        assert my_options.save_runoff is None
+        assert my_options.use_hotstart == "hotstart_u.txt"
+        assert my_options.save_hotstart == "hotstart_s.txt"
+        assert my_options.use_rdii == "rdii_u.txt"
+        assert my_options.save_rdii is None
+        assert my_options.use_inflows == "inflows_u.txt"
+        assert my_options.save_outflows == "outflows_s.txt"
 
     def test_interface_files(self):
         """Test FILES options using the Section class"""
-        self.my_options = Files()
-        name = self.my_options.SECTION_NAME
+        my_options = Files()
+        name = my_options.SECTION_NAME
         assert name == "[FILES]"
-
-        actual_text = self.my_options.get_text()
+        actual_text = GeneralWriter.as_text(my_options)
 
         # Expect blank section when there are no contents for the section
         assert actual_text == ''
 
-        self.my_options.save_outflows = "save_outflows.txt"
-
-        expected_text = self.my_options.SECTION_NAME + '\n' + self.my_options.comment
+        my_options.save_outflows = "save_outflows.txt"
+        expected_text = my_options.SECTION_NAME + '\n' + my_options.comment
         expected_text += "\nSAVE OUTFLOWS \tsave_outflows.txt"
 
-        actual_text = self.my_options.get_text()
-        assert match_omit(actual_text, expected_text, " \t-")
+        my_options = GeneralReader.read(expected_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:'+expected_text+'\nGet:'+actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
+def main():
+    unittest.main()
+
+if __name__ == "__main__":
+    main()

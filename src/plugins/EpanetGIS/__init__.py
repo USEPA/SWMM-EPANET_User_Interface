@@ -12,7 +12,11 @@ try:
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
                "Import from GIS": 2}
-    file_filter = "GeoJSON (*.json);;Shapefile (*.shp);;All files (*.*)"
+    file_filter = "GeoJSON (*.json);;" \
+                  "Shapefile (*.shp);;" \
+                  "Comma-separated text (*.csv);;" \
+                  "File Geodatabase (*.gdb);;" \
+                  "All files (*.*)"
 
     def run(session=None, choice=None):
         print("run " + str(choice))

@@ -1,5 +1,8 @@
 import unittest
 from core.swmm.options.general import General, FlowRouting, FlowUnits
+from core.swmm.inp_reader_sections import GeneralReader
+from core.swmm.inp_writer_sections import GeneralWriter
+from test.core.section_match import match
 
 class OptionsGeneralTest(unittest.TestCase):
     """Test OPTIONS section
@@ -7,8 +10,8 @@ class OptionsGeneralTest(unittest.TestCase):
      This primarily tests General, but also tests Dates, TimeSteps, and DynamicWave since those are set from General.
     """
 
-    TEST_TEXT = (
-        ("""[OPTIONS]
+    TEST_TEXT = [
+        ["""[OPTIONS]
  FLOW_UNITS            \tCFS
  INFILTRATION          \tHORTON
  FLOW_ROUTING          \tKW
@@ -51,8 +54,8 @@ class OptionsGeneralTest(unittest.TestCase):
          "0",
          "0",
          "5",
-         True),
-        ("""[OPTIONS]
+         True],
+        ["""[OPTIONS]
  FLOW_UNITS            \tMGD
  INFILTRATION          \tGREEN_AMPT
  FLOW_ROUTING          \tDYNWAVE
@@ -95,12 +98,12 @@ class OptionsGeneralTest(unittest.TestCase):
          "1",
          "2",
          "4",
-         False)
-    )
+         False]
+    ]
 
     def test_all_opts(self):
         """Test all default values specified in 5.1"""
-        test_all_ops = r"""[OPTIONS]
+        test_text = r"""[OPTIONS]
 FLOW_UNITS CFS
 INFILTRATION HORTON
 FLOW_ROUTING KINWAVE
@@ -141,61 +144,60 @@ HEAD_TOLERANCE 0.005
 THREADS 1
 TEMPDIR .\temp"""
 
-        self.options = General()
-        # Set_text
-        self.options.set_text(test_all_ops)
+        my_options = GeneralReader.read(test_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, test_text), msg)
 
         # Assert attributes
-        assert self.options.flow_units == FlowUnits.CFS
-        assert self.options.flow_routing == FlowRouting.KINWAVE
-        assert self.options.ignore_snowmelt == False
-        assert self.options.ignore_groundwater == False
-        assert self.options.ignore_rdii == False
-        assert self.options.dates.start_date == '1/1/2002'
-        assert self.options.dates.start_time == '0:00:00'
-        assert float(self.options.time_steps.system_flow_tolerance) == 5.0
-        assert float(self.options.time_steps.lateral_inflow_tolerance) == 5.0
-        assert self.options.temp_dir == r'.\temp'
-
-        # Get_text
-        actual_text = self.options.get_text()
+        assert my_options.flow_units == FlowUnits.CFS
+        assert my_options.flow_routing == FlowRouting.KINWAVE
+        assert my_options.ignore_snowmelt == False
+        assert my_options.ignore_groundwater == False
+        assert my_options.ignore_rdii == False
+        assert my_options.dates.start_date == '1/1/2002'
+        assert my_options.dates.start_time == '0:00:00'
+        assert float(my_options.time_steps.system_flow_tolerance) == 5.0
+        assert float(my_options.time_steps.lateral_inflow_tolerance) == 5.0
+        assert my_options.temp_dir == r'.\temp'
 
         # Set_text again
-        self.options.set_text(actual_text)
-        assert self.options.flow_units == FlowUnits.CFS
-        assert self.options.flow_routing == FlowRouting.KINWAVE
-        assert self.options.ignore_snowmelt == False
-        assert self.options.ignore_rdii == False
-        assert self.options.dates.start_date == '1/1/2002'
-        assert self.options.dates.start_time == '0:00:00'
-        assert self.options.matches(test_all_ops), 'incorrect title block'
+        my_options2 = GeneralReader.read(actual_text)
+        assert my_options2.flow_units == FlowUnits.CFS
+        assert my_options2.flow_routing == FlowRouting.KINWAVE
+        assert my_options2.ignore_snowmelt == False
+        assert my_options2.ignore_rdii == False
+        assert my_options2.dates.start_date == '1/1/2002'
+        assert my_options2.dates.start_time == '0:00:00'
+        actual_text2 = GeneralWriter.as_text(my_options2)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text2
+        self.assertTrue(match(actual_text2, test_text), msg)
 
     def test_current_text(self):
         """Test setting from the current text array"""
-        self.options = General()
         for current_text in self.TEST_TEXT:
-            self.options.set_text(current_text[0])
-            assert self.options.flow_units == current_text[1]
-            assert self.options.infiltration == current_text[2]
-            assert self.options.flow_routing == current_text[3]
-            assert self.options.dates.start_date == current_text[4]
-            assert self.options.dates.start_time == current_text[5]
-            assert self.options.dates.report_start_date == current_text[6]
-            assert self.options.dates.report_start_time == current_text[7]
-            assert self.options.dates.end_date == current_text[8]
-            assert self.options.dates.end_time == current_text[9]
-            assert int(self.options.dates.dry_days) == int(current_text[10])
-            assert self.options.time_steps.wet_step == current_text[11]
-            assert self.options.time_steps.dry_step == current_text[12]
-            assert self.options.time_steps.routing_step == current_text[13]
-            assert self.options.time_steps.report_step == current_text[14]
-            assert self.options.allow_ponding == current_text[15]
-            assert self.options.dynamic_wave.inertial_damping.name == current_text[16]
-            assert float(self.options.dynamic_wave.variable_step) == float(current_text[17])
-            assert int(self.options.dynamic_wave.lengthening_step) == int(current_text[18])
-            assert float(self.options.dynamic_wave.min_surface_area) == float(current_text[19])
-            assert int(self.options.compatibility) == int(current_text[20])
-            assert self.options.ignore_groundwater == current_text[21]
+            my_options = GeneralReader.read(current_text[0])
+            assert my_options.flow_units == current_text[1]
+            assert my_options.infiltration == current_text[2]
+            assert my_options.flow_routing == current_text[3]
+            assert my_options.dates.start_date == current_text[4]
+            assert my_options.dates.start_time == current_text[5]
+            assert my_options.dates.report_start_date == current_text[6]
+            assert my_options.dates.report_start_time == current_text[7]
+            assert my_options.dates.end_date == current_text[8]
+            assert my_options.dates.end_time == current_text[9]
+            assert int(my_options.dates.dry_days) == int(current_text[10])
+            assert my_options.time_steps.wet_step == current_text[11]
+            assert my_options.time_steps.dry_step == current_text[12]
+            assert my_options.time_steps.routing_step == current_text[13]
+            assert my_options.time_steps.report_step == current_text[14]
+            assert my_options.allow_ponding == current_text[15]
+            assert my_options.dynamic_wave.inertial_damping.name == current_text[16]
+            assert float(my_options.dynamic_wave.variable_step) == float(current_text[17])
+            assert int(my_options.dynamic_wave.lengthening_step) == int(current_text[18])
+            assert float(my_options.dynamic_wave.min_surface_area) == float(current_text[19])
+            assert int(my_options.compatibility) == int(current_text[20])
+            assert my_options.ignore_groundwater == current_text[21]
 
         expected_text = "[OPTIONS]\n"\
                         " IGNORE_GROUNDWATER 	NO\n"\
@@ -241,9 +243,10 @@ TEMPDIR .\temp"""
                         " THREADS            	1\n"\
                         " MINIMUM_STEP       	0.5"
 
-        self.options.set_text(expected_text)
-        actual_text = self.options.get_text()
-        assert self.options.matches(expected_text)
+        my_options = GeneralReader.read(expected_text)
+        actual_text = GeneralWriter.as_text(my_options)
+        msg = '\nSet:' + expected_text + '\nGet:' + actual_text
+        self.assertTrue(match(actual_text, expected_text), msg)
 
 def main():
     unittest.main()

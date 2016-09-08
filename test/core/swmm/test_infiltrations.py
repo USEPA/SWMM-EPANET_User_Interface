@@ -9,6 +9,7 @@ from core.swmm.hydrology.subcatchment import HortonInfiltration, GreenAmptInfilt
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
 from test.core.section_match import match, match_omit
+from core.swmm.swmm_project import SwmmProject
 
 class InfiltrationTest(unittest.TestCase):
     """Test INFILTRATION section"""
@@ -43,62 +44,114 @@ class InfiltrationTest(unittest.TestCase):
         self.assertTrue(match(actual_text, test_text), msg)
 
     def test_horton_infiltration_section(self):
-        """Test INFILTRATION section Horton type"""
-        source_text = r"""
-[INFILTRATION]
-;;Subcatchment     MaxRate    MinRate    Decay      DryTime    MaxInfil
-;;-----------------------------------------------------------------------
-  1                0.35       0.25       4.14       0.50
-  2                0.7        0.3        4.14       0.50
-  3                0.7        0.3        4.14       0.50
-  4                0.7        0.3        4.14       0.50
-  5                0.7        0.3        4.14       0.50
-  6                0.7        0.3        4.14       0.50
-  7                0.7        0.3        4.14       0.50
-  8                0.7        0.3        4.14       0.50
-        """
-        section_from_text = self.project_reader.read_infiltration.read(source_text)
-        actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        """Test INFILTRATION section Horton type, tested reader only, not writer"""
+        source_text = "[INFILTRATION]\n" \
+                      ";;Subcatchment     MaxRate    MinRate    Decay      DryTime\n" \
+                      ";;-----------------------------------------------------------------------\n" \
+                      "  1                0.35       0.25       4.14       0.50\n" \
+                      "  2                0.7        0.3        4.14       0.50\n" \
+                      "  3                0.7        0.3        4.14       0.50\n" \
+                      "  4                0.7        0.3        4.14       0.50\n" \
+                      "  5                0.7        0.3        4.14       0.50\n" \
+                      "  6                0.7        0.3        4.14       0.50\n" \
+                      "  7                0.7        0.3        4.14       0.50\n" \
+                      "  8                0.7        0.3        4.14       0.50"
+        section_name = "[INFILTRATION]"
+        my_project = SwmmProject()
+        my_project.options.infiltration = "HORTON"
+        self.project_reader.read_section(my_project, section_name, source_text)
+        text_rows = source_text.split("\n")
+        i = 0
+        for t in text_rows:
+            if t.lstrip()[0] == "[" or t.lstrip()[0] == ";":
+                pass
+            else:
+                itm = my_project.infiltration.value[i]
+                i += 1
+                assert isinstance(itm, HortonInfiltration)
+                columns = t.split()
+                assert itm.subcatchment == columns[0]
+                assert itm.max_rate == columns[1]
+                assert itm.min_rate == columns[2]
+                assert itm.decay == columns [3]
+                assert itm.dry_time == columns[4]
+         #      assert itm.max_volume == columns[5]  #MaxInfil
+        # actual_text = self.project_writer.as_text(my_project)
+        # msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        # self.assertTrue(match(actual_text, source_text), msg)
 
     def test_greenampt_infiltration_section(self):
-        """Test INFILTRATION section Example 4a Green Ampt type"""
-        source_text ="""[INFILTRATION]
-;;Subcatchment   Suction    Ksat       IMD
-;;-------------- ---------- ---------- ----------
-S1               3.5        0.2        0.2
-S2               3.5        0.2        0.2
-S3               3.5        0.2        0.2
-S4               3.5        0.2        0.2
-S5               3.5        0.2        0.2
-S6               3.5        0.2        0.2
-Swale3           3.5        0.2        0.2
-Swale4           3.5        0.2        0.2
-Swale6           3.5        0.2        0.2       """
-        section_from_text = self.project_reader.read_infiltration.read(source_text)
-        actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        """Test INFILTRATION section Example 4a Green Ampt type, tested reader only, not writer"""
+        source_text ="[INFILTRATION]\n" \
+                     ";;Subcatchment   Suction    Ksat       IMD\n" \
+                     ";;-------------- ---------- ---------- ----------\n" \
+                     "S1               3.5        0.2        0.2\n" \
+                     "S2               3.5        0.2        0.2\n" \
+                     "S3               3.5        0.2        0.2\n" \
+                     "S4               3.5        0.2        0.2\n" \
+                     "S5               3.5        0.2        0.2\n" \
+                     "S6               3.5        0.2        0.2\n" \
+                     "Swale3           3.5        0.2        0.2\n" \
+                     "Swale4           3.5        0.2        0.2\n" \
+                     "Swale6           3.5        0.2        0.2"
+        section_name = "[INFILTRATION]"
+        my_project = SwmmProject()
+        my_project.options.infiltration = "GREEN"
+        self.project_reader.read_section(my_project, section_name, source_text)
+        text_rows = source_text.split("\n")
+        i = 0
+        for t in text_rows:
+            if t.lstrip()[0] == "[" or t.lstrip()[0] == ";":
+                pass
+            else:
+                itm = my_project.infiltration.value[i]
+                i += 1
+                assert isinstance(itm, GreenAmptInfiltration)
+                columns = t.split()
+                assert itm.subcatchment == columns[0]
+                assert itm.suction == columns[1]
+                assert itm.hydraulic_conductivity == columns[2]
+                assert itm.initial_moisture_deficit == columns[3]
+        # actual_text = self.project_writer.as_text(my_project)
+        # msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        # self.assertTrue(match(actual_text, source_text), msg)
 
     def test_curvenumber_infiltration_section(self):
-        """Test INFILTRATION section curve_number type"""
-        source_text = """[INFILTRATION]
-        ;;Subcatchment   CurveNo    Ksat       DryTime
-        ;;-------------- ---------- ---------- ----------
-        S1               3.5        0.2        2
-        S2               3.5        0.2        2
-        S3               3.5        0.2        2
-        S4               3.5        0.2        2
-        S5               3.5        0.2        2
-        S6               3.5        0.2        2
-        Swale3           3.5        0.2        2
-        Swale4           3.5        0.2        2
-        Swale6           3.5        0.2        2       """
-        section_from_text = self.project_reader.read_infiltration.read(source_text)
-        actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        """Test INFILTRATION section curve_number type,tested reader only, not writer"""
+        source_text = "[INFILTRATION]\n" \
+                      "        ;;Subcatchment   CurveNo    Ksat       DryTime\n" \
+                      "        ;;-------------- ---------- ---------- ----------\n" \
+                      " S1               3.5        0.2        2\n" \
+                      "        S2               3.5        0.2        2\n" \
+                      "        S3               3.5        0.2        2\n" \
+                      "        S4               3.5        0.2        2\n" \
+                      "        S5               3.5        0.2        2\n" \
+                      "        S6               3.5        0.2        2\n" \
+                      "        Swale3           3.5        0.2        2\n" \
+                      "        Swale4           3.5        0.2        2\n" \
+                      "        Swale6           3.5        0.2        2"
+        section_name = "[INFILTRATION]"
+        my_project = SwmmProject()
+        my_project.options.infiltration = "CURVE"
+        self.project_reader.read_section(my_project, section_name, source_text)
+        text_rows = source_text.split("\n")
+        i = 0
+        for t in text_rows:
+            if t.lstrip()[0] == "[" or t.lstrip()[0] == ";":
+                pass
+            else:
+                itm = my_project.infiltration.value[i]
+                i += 1
+                assert isinstance(itm, CurveNumberInfiltration)
+                columns = t.split()
+                msg = "xw: CurveInfiltrationReader seems to have problem"
+                self.assertTrue(itm.subcatchment == columns[0],msg)
+                assert itm.curve_number == columns[1]
+                assert itm.hydraulic_conductivity == columns[2]
+                assert itm.dry_days == columns[3]
+        # actual_text = self.project_writer.as_text(my_project)
+        # msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        # self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

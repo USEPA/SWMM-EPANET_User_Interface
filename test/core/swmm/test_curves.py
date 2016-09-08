@@ -4,7 +4,7 @@ from core.swmm.inp_writer_sections import CurveWriter
 from core.swmm.curves import Curve, CurveType
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit
+from test.core.section_match import match, match_omit, match_omit_nocase
 
 
 class SimpleCurveTest(unittest.TestCase):
@@ -50,7 +50,7 @@ class SimpleCurveTest(unittest.TestCase):
         actual_text = self.project_writer.write_curves.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
         msg += "\nxw09/01/2016: match_omit should omit upper and lower cases"
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match_omit_nocase(actual_text, source_text, " \t-;\n"), msg)
 
 def main():
     unittest.main()

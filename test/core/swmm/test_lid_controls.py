@@ -66,6 +66,7 @@ PorousPave       DRAINMAT   1          0.4        0.01
         """Test LID parameters from Example 4a, examined according to SWMM 5.1 manual"""
         source_text = r"""
 [LID_CONTROLS]
+;
 GreenRoof        BC
 GreenRoof        SURFACE    0.0        0.0        0.1        1.0        5
 GreenRoof        SOIL       3          0.5        0.2        0.1        0.5        10.0       3.5
@@ -99,7 +100,8 @@ Swale            SURFACE    36         0.0        0.24       1.0        5"""
         section_from_text = self.project_reader.read_lid_controls.read(source_text)
         actual_text = self.project_writer.write_lid_controls.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        # self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

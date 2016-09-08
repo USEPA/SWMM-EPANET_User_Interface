@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-07 19:08:21</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.080000</p>
-<p class='attribute'><strong>Status:</strong> Pass 89 Failure 22 Error 29</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-08 10:24:27</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.073000</p>
+<p class='attribute'><strong>Status:</strong> Pass 93 Failure 21 Error 26</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -1122,11 +1122,11 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_lid_controls.SimpleLIDControlTest: Test LID_CONTROLS section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c14',3)">Detail</a></td>
 </tr>
@@ -1141,94 +1141,9 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft14.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_example4a: Test LID parameters from Example 4a, examined according to SWMM 5.1 manual</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft14.3')" >
-        fail</a>
-
-    <div id='div_ft14.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft14.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft14.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_lid_controls.py", line 103, in test_example4a
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
-AssertionError: 
-Set:
-
-[LID_CONTROLS]
-;
-GreenRoof        BC
-GreenRoof        SURFACE    0.0        0.0        0.1        1.0        5
-GreenRoof        SOIL       3          0.5        0.2        0.1        0.5        10.0       3.5
-GreenRoof        STORAGE    1          0.75       0          0
-GreenRoof        DRAIN      1          0.5        0          6
-
-PorousPave       PP
-PorousPave       SURFACE    0.0        0.0        0.02       2          5
-PorousPave       PAVEMENT   6          0.15       0          100        0
-PorousPave       STORAGE    12         0.75       0.2        0
-PorousPave       DRAIN      0          0.5        0          6
-
-Planters         BC
-Planters         SURFACE    6          0.0        0.0        0.0        5
-Planters         SOIL       12         0.5        0.2        0.1        0.5        10.0       3.5
-Planters         STORAGE    12         0.5        0.2        0
-Planters         DRAIN      0          1          0.5        6
-
-InfilTrench      IT
-InfilTrench      SURFACE    0.0        0.0        0.24       0.4        5
-InfilTrench      STORAGE    36         0.40       0.2        0
-InfilTrench      DRAIN      0          0.5        0          6
-
-RainBarrels      RB
-RainBarrels      STORAGE    48         1          0          0
-RainBarrels      DRAIN      1          0.5        0          6
-
-Swale            VS
-Swale            SURFACE    36         0.0        0.24       1.0        5
-Get:
-[LID_CONTROLS]
-;;Name          	Type/Layer	Parameters
-;;--------------	----------	----------
-;
-GreenRoof	BC
-GreenRoof	SURFACE	0.0	0.0	0.1	1.0	5
-GreenRoof	SOIL	3	0.5	0.2	0.1	0.5	10.0	3.5
-GreenRoof	STORAGE	1	0.75	0	0
-GreenRoof	DRAIN	1	0.5	0	6
-PorousPave	PP
-PorousPave	SURFACE	0.0	0.0	0.02	2	5
-PorousPave	PAVEMENT	6	0.15	0	100	0
-PorousPave	STORAGE	12	0.75	0.2	0
-PorousPave	DRAIN	0	0.5	0	6
-Planters	BC
-Planters	SURFACE	6	0.0	0.0	0.0	5
-Planters	SOIL	12	0.5	0.2	0.1	0.5	10.0	3.5
-Planters	STORAGE	12	0.5	0.2	0
-Planters	DRAIN	0	1	0.5	6
-InfilTrench	IT
-InfilTrench	SURFACE	0.0	0.0	0.24	0.4	5
-InfilTrench	STORAGE	36	0.40	0.2	0
-InfilTrench	DRAIN	0	0.5	0	6
-RainBarrels	RB
-RainBarrels	STORAGE	48	1	0	0
-RainBarrels	DRAIN	1	0.5	0	6
-Swale	VS
-Swale	SURFACE	36	0.0	0.24	1.0	5
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt14.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_example4a: Test LID parameters from Example 4a, examined according to SWMM 5.1 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1250,11 +1165,11 @@ Swale	SURFACE	36	0.0	0.24	1.0	5
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_snowpack.SimpleSnowPackTest: Test snowpack section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c16',3)">Detail</a></td>
 </tr>
@@ -1269,60 +1184,9 @@ Swale	SURFACE	36	0.0	0.24	1.0	5
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft16.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_snowpacks_section: Test SNOWPACKS section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft16.3')" >
-        fail</a>
-
-    <div id='div_ft16.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft16.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft16.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_snowpack.py", line 69, in test_snowpacks_section
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
-AssertionError: 
-Set:
-
-[SNOWPACKS]
-;;Name           Surface    Parameters
-;;-------------- ---------- ----------
-sno              PLOWABLE   0.001      0.001      32.0       0.10       0.00       0.00       0.0
-sno              IMPERVIOUS 0.001      0.001      32.0       0.10       0.00       0.00       0.00
-sno              PERVIOUS   0.001      0.001      32.0       0.10       0.00       0.00       0.00
-sno              REMOVAL    1.0        0.0        0.0        0.0        0.0        0.0
-s                PLOWABLE   0.001      0.001      32.0       0.10       0.00       0.00       0.0
-s                IMPERVIOUS 0.001      0.001      32.0       0.10       0.00       0.00       0.00
-s                PERVIOUS   0.001      0.001      32.0       0.10       0.00       0.00       0.00
-s                REMOVAL    1.0        0.0        0.0        0.0        0.0        0.0        w
-        
-Get:
-[SNOWPACKS]
-;;Name          	Surface   	Parameters
-;;--------------	----------	----------
-;;Name           Surface    Parameters
-;;-------------- ---------- ----------
-sno	PLOWABLE	0.001	0.001	32.0	0.10	0.00	0.00	0.0
-sno	IMPERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
-sno	PERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
-sno	REMOVAL	1.0	0.0	0.0	0.0	0.0	0.0	
-s	PLOWABLE	0.001	0.001	32.0	0.10	0.00	0.00	0.0
-s	IMPERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
-s	PERVIOUS	0.001	0.001	32.0	0.10	0.00	0.00	0.00
-s	REMOVAL	1.0	0.0	0.0	0.0	0.0	0.0	w
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt16.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_snowpacks_section: Test SNOWPACKS section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
@@ -1378,12 +1242,12 @@ Should detected error and not read/write
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='failClass'>
     <td>test_infiltrations.InfiltrationTest: Test INFILTRATION section</td>
     <td>6</td>
-    <td>3</td>
+    <td>5</td>
+    <td>1</td>
     <td>0</td>
-    <td>3</td>
     <td><a href="javascript:showClassDetail('c18',6)">Detail</a></td>
 </tr>
 
@@ -1402,69 +1266,23 @@ Should detected error and not read/write
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft18.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_horton_infiltration_section: Test INFILTRATION section Horton type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.4')" >
-        error</a>
-
-    <div id='div_ft18.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft18.4: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 61, in test_horton_infiltration_section
-    actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-AttributeError: 'ProjectWriter' object has no attribute 'write_infiltration'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt18.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_horton_infiltration_section: Test INFILTRATION section Horton type, tested reader only, not writer</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft18.5' class='none'>
-    <td class='errorCase'><div class='testcase'>test_greenampt_infiltration_section: Test INFILTRATION section Example 4a Green Ampt type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.5')" >
-        error</a>
-
-    <div id='div_ft18.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft18.5: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 80, in test_greenampt_infiltration_section
-    actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-AttributeError: 'ProjectWriter' object has no attribute 'write_infiltration'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt18.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_greenampt_infiltration_section: Test INFILTRATION section Example 4a Green Ampt type, tested reader only, not writer</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft18.6' class='none'>
-    <td class='errorCase'><div class='testcase'>test_curvenumber_infiltration_section: Test INFILTRATION section curve_number type</div></td>
+    <td class='failCase'><div class='testcase'>test_curvenumber_infiltration_section: Test INFILTRATION section curve_number type,tested reader only, not writer</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
     <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.6')" >
-        error</a>
+        fail</a>
 
     <div id='div_ft18.6' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
@@ -1474,9 +1292,9 @@ AttributeError: 'ProjectWriter' object has no attribute 'write_infiltration'
         <pre>
         
 ft18.6: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 99, in test_curvenumber_infiltration_section
-    actual_text = self.project_writer.write_infiltration.as_text(section_from_text)
-AttributeError: 'ProjectWriter' object has no attribute 'write_infiltration'
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 148, in test_curvenumber_infiltration_section
+    self.assertTrue(itm.subcatchment == columns[0],msg)
+AssertionError: xw: CurveInfiltrationReader seems to have problem
 
 
         </pre>
@@ -2951,9 +2769,9 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>140</td>
-    <td>89</td>
-    <td>22</td>
-    <td>29</td>
+    <td>93</td>
+    <td>21</td>
+    <td>26</td>
     <td>&nbsp;</td>
 </tr>
 </table>

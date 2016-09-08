@@ -100,7 +100,8 @@ Swale            SURFACE    36         0.0        0.24       1.0        5"""
         section_from_text = self.project_reader.read_lid_controls.read(source_text)
         actual_text = self.project_writer.write_lid_controls.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        # self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

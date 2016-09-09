@@ -2,8 +2,8 @@ import unittest
 from core.swmm.swmm_project import SwmmProject
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from core.swmm.inp_reader_sections import GeneralReader
-from core.swmm.inp_writer_sections import GeneralWriter
+from core.swmm.inp_reader_sections import GeneralReader, SectionReader
+from core.swmm.inp_writer_sections import GeneralWriter, SectionWriter
 from test.core.section_match import match, match_omit
 from core.swmm.options.files import Files
 
@@ -25,7 +25,7 @@ class SimpleFilesTest(unittest.TestCase):
         test_text = "[FILES]\n"\
                     ";;Interfacing Files\n"\
                     "USE RAINFALL use_rainfall.txt"
-        my_options = GeneralReader.read(test_text)
+        my_options = SectionReader.read(test_text)
         actual_text = GeneralWriter.as_text(my_options)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, test_text), msg)

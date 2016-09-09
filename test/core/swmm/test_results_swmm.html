@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-08 10:24:27</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.073000</p>
-<p class='attribute'><strong>Status:</strong> Pass 93 Failure 21 Error 26</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-08 17:25:45</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.080000</p>
+<p class='attribute'><strong>Status:</strong> Pass 97 Failure 16 Error 26</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -221,44 +221,18 @@ function showOutput(id, name) {
     <td>View</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_backdrop.SimpleBackdropTest: Test BACKDROP section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c1',3)">Detail</a></td>
 </tr>
 
-<tr id='ft1.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_bare: Test bare section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.1')" >
-        fail</a>
-
-    <div id='div_ft1.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft1.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_backdrop.py", line 17, in test_bare
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-Get:[BACKDROP]
- DIMENSIONS       	             0.0	             0.0	             0.0	             0.0
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt1.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bare: Test bare section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt1.2' class='hiddenRow'>
@@ -325,12 +299,8 @@ Get:[BACKDROP]
         
 ft4.1: Traceback (most recent call last):
   File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 28, in test_space_delimited
-    my_options = GeneralReader.read(test_text)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
-    line = SectionReader.set_comment_check_section(general, line)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
-    raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
-ValueError: Cannot set [OPTIONS] from: [FILES]
+    my_options = SectionReader.read(test_text)
+TypeError: unbound method read() must be called with SectionReader instance as first argument (got str instance instead)
 
 
         </pre>
@@ -1189,13 +1159,13 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_subcatchments.SimpleSubcatchmentTest: Test SUBCATCHMENTS section</td>
-    <td>4</td>
     <td>3</td>
-    <td>1</td>
+    <td>3</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c17',4)">Detail</a></td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c17',3)">Detail</a></td>
 </tr>
 
 <tr id='pt17.1' class='hiddenRow'>
@@ -1208,36 +1178,7 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft17.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_missing: Test one set of subcatchment parameters missing last two parameters Slope and Clength</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft17.3')" >
-        fail</a>
-
-    <div id='div_ft17.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft17.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft17.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 63, in test_missing
-    self.assertTrue(find_error, msg)
-AssertionError: 
-Should detected error and not read/write
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
-</tr>
-
-<tr id='pt17.4' class='hiddenRow'>
+<tr id='pt17.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_subcatchments: Test SUBCATCHMENTS section from Example 1</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
@@ -1342,43 +1283,18 @@ AssertionError: xw: CurveInfiltrationReader seems to have problem
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_coverages.SimpleCoverageTest: Test COVERAGES section</td>
     <td>3</td>
-    <td>1</td>
-    <td>2</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c21',3)">Detail</a></td>
 </tr>
 
-<tr id='ft21.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.1')" >
-        fail</a>
-
-    <div id='div_ft21.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 24, in test_coverage
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:S2      Residential_1    27
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt21.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt21.2' class='hiddenRow'>
@@ -1386,87 +1302,23 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft21.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_coverages: Test aquifer parameters in Example 5</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.3')" >
-        fail</a>
-
-    <div id='div_ft21.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 56, in test_coverages
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-        [COVERAGES]
-        ;;Subcatchment   Land Use         Percent
-        ;;-------------- ---------------- ----------
-        S1               Residential_1    100
-        S2               Residential_1    27
-        S2               Residential_2    73
-        S3               Residential_1    27
-        S3               Residential_2    32
-        S4               Residential_1    9
-        S4               Residential_2    30
-        S4               Commercial       26
-        S5               Commercial       98
-        S6               Commercial       100
-        
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt21.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_coverages: Test aquifer parameters in Example 5</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='errorClass'>
     <td>test_loadings.SimpleLoadingTest: Test LOADINGS section</td>
     <td>2</td>
-    <td>0</td>
     <td>1</td>
+    <td>0</td>
     <td>1</td>
     <td><a href="javascript:showClassDetail('c22',2)">Detail</a></td>
 </tr>
 
-<tr id='ft22.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.1')" >
-        fail</a>
-
-    <div id='div_ft22.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 23, in test_one_loading
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:SB1   TSS         0.1
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft22.2' class='none'>
@@ -1486,7 +1338,7 @@ Get:
         
 ft22.2: Traceback (most recent call last):
   File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 33, in test_loading_section
-    section_from_text = self.project_reader.read_loadings.read(source_text)
+    my_options = InitialLoadingsReader.read(source_text)
   File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1432, in read
     new_loading.set_text(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
 AttributeError: 'InitialLoading' object has no attribute 'set_text'
@@ -2768,9 +2620,9 @@ Get:
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>140</td>
-    <td>93</td>
-    <td>21</td>
+    <td>139</td>
+    <td>97</td>
+    <td>16</td>
     <td>26</td>
     <td>&nbsp;</td>
 </tr>

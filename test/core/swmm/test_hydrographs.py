@@ -43,8 +43,7 @@ class SimpleHydrographsTest(unittest.TestCase):
         section_from_text = self.project_reader.read_hydrographs.read(source_text)
         actual_text = self.project_writer.write_hydrographs.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        msg += "\nxw09/01/2016: Difference in first comment line Month vs. Rain Gage/Month"
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
         assert len(section_from_text.value) == 1
 

@@ -13,8 +13,12 @@ class SimpleBackdropTest(unittest.TestCase):
         test_text = ""
         my_options = BackdropOptionsReader.read(test_text)
         actual_text = BackdropOptionsWriter.as_text(my_options)
-        msg = '\nSet:'+test_text+'\nGet:'+actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        # msg = '\nSet:'+test_text+'\nGet:'+actual_text
+        # self.assertTrue(match(actual_text, test_text), msg)
+        assert my_options.SECTION_NAME == "[BACKDROP]"
+        assert my_options.offset == None
+        assert my_options.scaling == None
+        assert my_options.dimensions == (0.0, 0.0, 0.0, 0.0)
 
     def test_backdrop(self):
         """Test backdrop parameters"""

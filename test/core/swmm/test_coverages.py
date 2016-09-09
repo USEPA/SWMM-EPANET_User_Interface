@@ -1,8 +1,8 @@
 import unittest
 from core.swmm.hydrology.subcatchment import Coverage
 from core.swmm.hydrology.subcatchment import Coverages
-from core.swmm.inp_reader_sections import CoverageReader
-from core.swmm.inp_writer_sections import CoveragesWriter
+from core.swmm.inp_reader_sections import CoverageReader, CoveragesReader
+from core.swmm.inp_writer_sections import CoverageWriter, CoveragesWriter
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
 from test.core.section_match import match, match_omit
@@ -19,7 +19,7 @@ class SimpleCoverageTest(unittest.TestCase):
         assert my_options.subcatchment_name == 'S2'
         assert my_options.land_use_name == 'Residential_1'
         assert my_options.percent_subcatchment_area == '27'
-        actual_text = CoveragesWriter.as_text(my_options)
+        actual_text = CoverageWriter.as_text(my_options)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, test_text), msg)
 
@@ -50,7 +50,7 @@ class SimpleCoverageTest(unittest.TestCase):
         S5               Commercial       98
         S6               Commercial       100
         """
-        my_options = CoverageReader.read(test_text)
+        my_options = CoveragesReader.read(test_text)
         actual_text = CoveragesWriter.as_text(my_options)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, test_text), msg)

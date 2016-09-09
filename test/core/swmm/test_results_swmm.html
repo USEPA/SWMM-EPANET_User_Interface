@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-09 11:16:00</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.055000</p>
-<p class='attribute'><strong>Status:</strong> Pass 94 Failure 20 Error 26</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-09 15:27:21</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.052000</p>
+<p class='attribute'><strong>Status:</strong> Pass 99 Failure 15 Error 26</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -1894,11 +1894,11 @@ AttributeError: 'Section' object has no attribute 'name'
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_dividers.SimpleDividerTest: Test DIVIDER section</td>
     <td>5</td>
-    <td>3</td>
-    <td>2</td>
+    <td>5</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c30',5)">Detail</a></td>
 </tr>
@@ -1908,35 +1908,9 @@ AttributeError: 'Section' object has no attribute 'name'
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft30.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_cutoff_divider: Test divider: CUTOFF created according to Manual</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.2')" >
-        fail</a>
-
-    <div id='div_ft30.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dividers.py", line 46, in test_cutoff_divider
-    self.assertTrue(match_omit(actual_text, test_text, " \t-;\n"), msg)
-AssertionError: 
-Set:NODE10   0      LK1    OVERFLOW   1       2      3     4     5
-Get:NODE10          	0         	LK1             	OVERFLOW  	1         	2         	3         	4         
-xw09/01/2016: missing one number for cutoff divider
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_cutoff_divider: Test divider: CUTOFF created according to Manual</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt30.3' class='hiddenRow'>
@@ -1949,44 +1923,9 @@ xw09/01/2016: missing one number for cutoff divider
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft30.5' class='none'>
-    <td class='failCase'><div class='testcase'>test_dividers: Test DIVIDERS section from Example-1b</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.5')" >
-        fail</a>
-
-    <div id='div_ft30.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.5: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dividers.py", line 78, in test_dividers
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
-AssertionError: 
-Set:
-[DIVIDERS]
-;;Name           Elevation  Diverted Link    Type       Parameters
-;;-------------- ---------- ---------------- ---------- ----------
-10               0          *                CUTOFF     0          0          0
-NODE10   0      LK1    WEIR   0.5   2   0.7    2    0     0
-Get:
-[DIVIDERS]
-;;Name           Elevation  Diverted Link    Type       Parameters
-;;-------------- ---------- ---------------- ---------- ----------
-10              	0         	*               	CUTOFF    	0.0       	0         	0         	          	          
-NODE10          	0         	LK1             	WEIR      	0.5       	2         	0.7       	2         	0         	0         	          
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_dividers: Test DIVIDERS section from Example-1b</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='errorClass'>
@@ -2442,44 +2381,18 @@ AttributeError: 'Section' object has no attribute 'name'
     </td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_title.SimpleTitleTest: Test TITLE section</td>
     <td>6</td>
-    <td>5</td>
-    <td>1</td>
+    <td>6</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c39',6)">Detail</a></td>
 </tr>
 
-<tr id='ft39.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_bare: Bare section read/write</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft39.1')" >
-        fail</a>
-
-    <div id='div_ft39.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft39.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft39.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_title.py", line 19, in test_bare
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-Get:[TITLE]
-
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt39.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bare: Bare section read/write</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt39.2' class='hiddenRow'>
@@ -2507,11 +2420,11 @@ Get:[TITLE]
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_timeseries.SimpleTimeSeriesTest: Test TIMESERIES section</td>
     <td>4</td>
-    <td>2</td>
-    <td>2</td>
+    <td>4</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c40',4)">Detail</a></td>
 </tr>
@@ -2521,38 +2434,9 @@ Get:[TITLE]
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft40.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_data: Time series data test, modified from SWMM 5.1 manual Page335</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft40.2')" >
-        fail</a>
-
-    <div id='div_ft40.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft40.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft40.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 32, in test_data
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:TS1 6-15-2001 7:00 0.1 8:00 0.2
-TS1 6-21-2001 4:00 0.2 5:00 0.0
-Get:TS1             	6-15-2001 	7:00      	0.1       
-TS1             	          	8:00      	0.2       
-TS1             	6-21-2001 	4:00      	0.2       
-TS1             	          	5:00      	0.0       
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt40.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_data: Time series data test, modified from SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt40.3' class='hiddenRow'>
@@ -2560,66 +2444,9 @@ TS1             	          	5:00      	0.0
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft40.4' class='none'>
-    <td class='failCase'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft40.4')" >
-        fail</a>
-
-    <div id='div_ft40.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft40.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft40.4: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 63, in test_timeseries_section
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
-AssertionError: 
-Set:
-
-        [TIMESERIES]
-        ;Rainfall time series with dates specified
-        TS1 6-15-2001 7:00 0.1 8:00 0.2 9:00 0.05 10:00 0
-        TS1 6-21-2001 4:00 0.2 5:00 0 14:00 0.1 15:00 0
-        ;Inflow hydrograph - time relative to start of simulation
-        HY1 0 0 1.25 100 2:30 150 3.0 120 4.5 0
-        HY1 32:10 0 34.0 57 35.33 85 48.67 24 50 0
-        
-Get:
-[TIMESERIES]
-;;Name          	Date      	Time      	Value
-;;--------------	----------	----------	----------
-;Rainfall time series with dates specified
-TS1             	6-15-2001 	7:00      	0.1       
-TS1             	          	8:00      	0.2       
-TS1             	          	9:00      	0.05      
-TS1             	          	10:00     	0         
-TS1             	6-21-2001 	4:00      	0.2       
-TS1             	          	5:00      	0         
-TS1             	          	14:00     	0.1       
-TS1             	          	15:00     	0         
-;Inflow hydrograph - time relative to start of simulation
-HY1             	          	0         	0         
-HY1             	          	1.25      	100       
-HY1             	          	2:30      	150       
-HY1             	          	3.0       	120       
-HY1             	          	4.5       	0         
-HY1             	          	32:10     	0         
-HY1             	          	34.0      	57        
-HY1             	          	35.33     	85        
-HY1             	          	48.67     	24        
-HY1             	          	50        	0         
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt40.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
@@ -2725,8 +2552,8 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>140</td>
-    <td>94</td>
-    <td>20</td>
+    <td>99</td>
+    <td>15</td>
     <td>26</td>
     <td>&nbsp;</td>
 </tr>

@@ -12,7 +12,7 @@ class SimpleTitleTest(unittest.TestCase):
         """Bare section read/write"""
         my_title = Title()
         default_text = TitleWriter.as_text(my_title)
-        test_text = ""
+        test_text = "[TITLE]"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text

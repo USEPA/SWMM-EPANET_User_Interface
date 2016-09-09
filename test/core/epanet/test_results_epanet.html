@@ -189,8 +189,8 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-07 16:45:37</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.010000</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-09 11:40:03</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.022000</p>
 <p class='attribute'><strong>Status:</strong> Pass 20 Failure 2 Error 3</p>
 
 <p class='description'>Unit test results</p>
@@ -280,11 +280,11 @@ function showOutput(id, name) {
         <pre>
         
 ft2.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_options.py", line 80, in test_get
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_options.py", line 80, in test_get
     actual_text = OptionsWriter.as_text(my_HydraulicsOptions)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 436, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 436, in as_text
     text_list.append(HydraulicsOptionsWriter.as_text(options.hydraulics))
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 406, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 406, in as_text
     if hydraulics_options.unbalanced == Unbalanced.STOP:
 AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
 
@@ -331,11 +331,11 @@ AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
         <pre>
         
 ft3.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 35, in test_page
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 35, in test_page
     actual_text = ReportOptionsWriter.as_text(my_report)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
     txt = SectionWriter.as_text(report_options)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
     if isinstance(section.value, basestring) and len(section.value) &gt; 0:
 AttributeError: 'NoneType' object has no attribute 'value'
 
@@ -363,11 +363,11 @@ AttributeError: 'NoneType' object has no attribute 'value'
         <pre>
         
 ft3.3: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 55, in test_all
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 55, in test_all
     actual_text = ReportOptionsWriter.as_text(my_report)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
     txt = SectionWriter.as_text(report_options)
-  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
     if isinstance(section.value, basestring) and len(section.value) &gt; 0:
 AttributeError: 'NoneType' object has no attribute 'value'
 
@@ -404,7 +404,7 @@ AttributeError: 'NoneType' object has no attribute 'value'
         <pre>
         
 ft4.1: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 36, in test_pattern
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 36, in test_pattern
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:
@@ -440,7 +440,7 @@ Get:
         <pre>
         
 ft4.2: Traceback (most recent call last):
-  File "C:\work\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 52, in test_patterns
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 52, in test_patterns
     self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 AssertionError: 
 Set:

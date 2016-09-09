@@ -119,9 +119,9 @@ class InfiltrationTest(unittest.TestCase):
     def test_curvenumber_infiltration_section(self):
         """Test INFILTRATION section curve_number type,tested reader only, not writer"""
         source_text = "[INFILTRATION]\n" \
-                      "        ;;Subcatchment   CurveNo    Ksat       DryTime\n" \
-                      "        ;;-------------- ---------- ---------- ----------\n" \
-                      " S1               3.5        0.2        2\n" \
+                      " ;;Subcatchment   CurveNo    Ksat       DryTime\n" \
+                      " ;;-------------- ---------- ---------- ----------\n" \
+                      "        S1               3.5        0.2        2\n" \
                       "        S2               3.5        0.2        2\n" \
                       "        S3               3.5        0.2        2\n" \
                       "        S4               3.5        0.2        2\n" \
@@ -144,8 +144,7 @@ class InfiltrationTest(unittest.TestCase):
                 i += 1
                 assert isinstance(itm, CurveNumberInfiltration)
                 columns = t.split()
-                msg = "xw: CurveInfiltrationReader seems to have problem"
-                self.assertTrue(itm.subcatchment == columns[0],msg)
+                assert itm.subcatchment == columns[0]
                 assert itm.curve_number == columns[1]
                 assert itm.hydraulic_conductivity == columns[2]
                 assert itm.dry_days == columns[3]

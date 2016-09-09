@@ -39,9 +39,16 @@ junctions_gis_attributes = [
 
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
-    if extension.lower() == ".shp":
+    extension = extension.lower()
+    if extension == ".shp":
         driver_name = "ESRI Shapefile"
         one_file = False
+    elif extension == ".csv":
+        driver_name = "CSV"
+        one_file = False
+    elif extension == ".gdb":
+        driver_name = "FileGDB"
+        one_file = True
     else:
         driver_name = "GeoJson"
         one_file = True

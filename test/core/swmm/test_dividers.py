@@ -37,13 +37,12 @@ class SimpleDividerTest(unittest.TestCase):
          Name Elev DivLink CUTOFF Qmin (Ymax Y0 Ysur Apond)
          """
         # test_text = "NODE10   0      LK1    OVERFLOW   0       0      0     0     0"
-        test_text = "NODE10   0      LK1    OVERFLOW   1       2      3     4     5"
+        test_text = "NODE10   0      LK1    CUTOFF   1       2      3     4     5"
         my_options = DividerReader.read(test_text)
         actual_text = DividerWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        msg += "\nxw09/01/2016: missing one number for cutoff divider"
         # self.assertTrue(match(actual_text, test_text), msg)
-        self.assertTrue(match_omit(actual_text, test_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_tabular_divider(self):
         """Test divider: TABULAR created according to Manual
@@ -75,7 +74,7 @@ class SimpleDividerTest(unittest.TestCase):
         section_from_text = self.project_reader.read_dividers.read(source_text)
         actual_text = self.project_writer.write_dividers.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

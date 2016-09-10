@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-09 15:27:21</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.052000</p>
-<p class='attribute'><strong>Status:</strong> Pass 99 Failure 15 Error 26</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-09 21:40:52</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.070000</p>
+<p class='attribute'><strong>Status:</strong> Pass 103 Failure 10 Error 26</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -221,44 +221,18 @@ function showOutput(id, name) {
     <td>View</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_backdrop.SimpleBackdropTest: Test BACKDROP section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c1',3)">Detail</a></td>
 </tr>
 
-<tr id='ft1.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_bare: Test bare section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.1')" >
-        fail</a>
-
-    <div id='div_ft1.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft1.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_backdrop.py", line 17, in test_bare
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-Get:[BACKDROP]
- DIMENSIONS       	             0.0	             0.0	             0.0	             0.0
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt1.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_bare: Test bare section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt1.2' class='hiddenRow'>
@@ -324,13 +298,9 @@ Get:[BACKDROP]
         <pre>
         
 ft4.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 28, in test_space_delimited
-    my_options = GeneralReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
-    line = SectionReader.set_comment_check_section(general, line)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
-    raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
-ValueError: Cannot set [OPTIONS] from: [FILES]
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 28, in test_space_delimited
+    my_options = SectionReader.read(test_text)
+TypeError: unbound method read() must be called with SectionReader instance as first argument (got str instance instead)
 
 
         </pre>
@@ -356,11 +326,11 @@ ValueError: Cannot set [OPTIONS] from: [FILES]
         <pre>
         
 ft4.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 42, in test_more_space
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 42, in test_more_space
     my_options = GeneralReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
     line = SectionReader.set_comment_check_section(general, line)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
     raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
 ValueError: Cannot set [OPTIONS] from: [FILES]
 
@@ -388,11 +358,11 @@ ValueError: Cannot set [OPTIONS] from: [FILES]
         <pre>
         
 ft4.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 55, in test_space_in_filename
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 55, in test_space_in_filename
     my_options = GeneralReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
     line = SectionReader.set_comment_check_section(general, line)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
     raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
 ValueError: Cannot set [OPTIONS] from: [FILES]
 
@@ -420,11 +390,11 @@ ValueError: Cannot set [OPTIONS] from: [FILES]
         <pre>
         
 ft4.4: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 68, in test_filename_with_path
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 68, in test_filename_with_path
     my_options = GeneralReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
     line = SectionReader.set_comment_check_section(general, line)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
     raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
 ValueError: Cannot set [OPTIONS] from: [FILES]
 
@@ -452,11 +422,11 @@ ValueError: Cannot set [OPTIONS] from: [FILES]
         <pre>
         
 ft4.5: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 91, in test_all_options
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 91, in test_all_options
     my_options = GeneralReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1639, in read
     line = SectionReader.set_comment_check_section(general, line)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py", line 121, in set_comment_check_section
     raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())
 ValueError: Cannot set [OPTIONS] from: [FILES]
 
@@ -484,9 +454,9 @@ ValueError: Cannot set [OPTIONS] from: [FILES]
         <pre>
         
 ft4.6: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 112, in test_interface_files
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_files.py", line 112, in test_interface_files
     actual_text = GeneralWriter.as_text(my_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 1199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 1199, in as_text
     if general.dates is not None:  # Add the values stored in Dates class
 AttributeError: 'Files' object has no attribute 'dates'
 
@@ -542,9 +512,9 @@ AttributeError: 'Files' object has no attribute 'dates'
         <pre>
         
 ft6.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_options_interfacefiles.py", line 18, in runTest
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_options_interfacefiles.py", line 18, in runTest
     actual_text = GeneralWriter.as_text(my_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 1199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 1199, in as_text
     if general.dates is not None:  # Add the values stored in Dates class
 AttributeError: 'Files' object has no attribute 'dates'
 
@@ -600,7 +570,7 @@ AttributeError: 'Files' object has no attribute 'dates'
         <pre>
         
 ft8.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_report.py", line 25, in test_reader_writer
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_report.py", line 25, in test_reader_writer
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:[REPORT]
@@ -647,7 +617,7 @@ Get:[REPORT]
         <pre>
         
 ft8.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_report.py", line 52, in test_more
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_report.py", line 52, in test_more
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:[REPORT]
@@ -784,9 +754,9 @@ Get:[REPORT]
         
 ft11.2: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 31, in test_timeseries
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 31, in test_timeseries
     my_options = TemperatureReader.read(test_time_series)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -815,9 +785,9 @@ AttributeError: ArealDepletion instance has no attribute 'set_text'
         
 ft11.3: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 45, in test_file
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 45, in test_file
     my_options = TemperatureReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -846,9 +816,9 @@ AttributeError: ArealDepletion instance has no attribute 'set_text'
         
 ft11.4: [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 61, in test_file_wt_date
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 61, in test_file_wt_date
     my_options = TemperatureReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -878,9 +848,9 @@ AttributeError: ArealDepletion instance has no attribute 'set_text'
 ft11.5: [TEMPERATURE] skipping input line:  WINDSPEED MONTHLY   1.0    1.0    3.0    2.0    2.0    2.0    2.0    2.0    2.0    2.0    1.0    0.0
 [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 79, in test_windspeed_monthly
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 79, in test_windspeed_monthly
     my_options = TemperatureReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -910,9 +880,9 @@ AttributeError: ArealDepletion instance has no attribute 'set_text'
 ft11.6: [TEMPERATURE] skipping input line: WINDSPEED FILE
 [TEMPERATURE] skipping input line:  SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 95, in test_windspeed_file_wt_temperature
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 95, in test_windspeed_file_wt_temperature
     my_options = TemperatureReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -967,9 +937,9 @@ pt11.7: [TEMPERATURE] skipping input line:         WINDSPEED FILE
 ft11.8: [TEMPERATURE] skipping input line:         WINDSPEED FILE
 [TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 134, in test_snowmelt
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 134, in test_snowmelt
     my_options = TemperatureReader.read(test_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 360, in read
     temperature.areal_depletion.set_text(areal_depletion_text)
 AttributeError: ArealDepletion instance has no attribute 'set_text'
 
@@ -1025,9 +995,9 @@ pt11.9: [TEMPERATURE] skipping input line:         WINDSPEED FILE
 ft11.10: [TEMPERATURE] skipping input line:         WINDSPEED FILE
 [TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 171, in test_snowmelt_wo_adc
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 171, in test_snowmelt_wo_adc
     actual_text = TemperatureWriter.as_text(my_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 290, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 290, in as_text
     text_list.append(temperature.wind_speed.as_text())
 AttributeError: WindSpeed instance has no attribute 'as_text'
 
@@ -1056,7 +1026,7 @@ AttributeError: WindSpeed instance has no attribute 'as_text'
         
 ft11.11: [TEMPERATURE] skipping input line:         SNOWMELT 2 0.5 0.6 0.0 50 0
 Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 187, in test_snowmelt_wo_temperature
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 187, in test_snowmelt_wo_temperature
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:
@@ -1189,13 +1159,13 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_subcatchments.SimpleSubcatchmentTest: Test SUBCATCHMENTS section</td>
-    <td>4</td>
     <td>3</td>
-    <td>1</td>
+    <td>3</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c17',4)">Detail</a></td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c17',3)">Detail</a></td>
 </tr>
 
 <tr id='pt17.1' class='hiddenRow'>
@@ -1208,36 +1178,7 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft17.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_missing: Test one set of subcatchment parameters missing last two parameters Slope and Clength</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft17.3')" >
-        fail</a>
-
-    <div id='div_ft17.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft17.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft17.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_subcatchments.py", line 63, in test_missing
-    self.assertTrue(find_error, msg)
-AssertionError: 
-Should detected error and not read/write
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
-</tr>
-
-<tr id='pt17.4' class='hiddenRow'>
+<tr id='pt17.3' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_subcatchments: Test SUBCATCHMENTS section from Example 1</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
@@ -1292,9 +1233,9 @@ Should detected error and not read/write
         <pre>
         
 ft18.6: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 148, in test_curvenumber_infiltration_section
-    self.assertTrue(itm.subcatchment == columns[0],msg)
-AssertionError: xw: CurveInfiltrationReader seems to have problem
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_infiltrations.py", line 147, in test_curvenumber_infiltration_section
+    assert itm.subcatchment == columns[0]
+AssertionError
 
 
         </pre>
@@ -1342,43 +1283,18 @@ AssertionError: xw: CurveInfiltrationReader seems to have problem
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_coverages.SimpleCoverageTest: Test COVERAGES section</td>
     <td>3</td>
-    <td>1</td>
-    <td>2</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c21',3)">Detail</a></td>
 </tr>
 
-<tr id='ft21.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.1')" >
-        fail</a>
-
-    <div id='div_ft21.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 24, in test_coverage
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:S2      Residential_1    27
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt21.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_coverage: Test one set of Coverage parameters from Example 5</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt21.2' class='hiddenRow'>
@@ -1386,87 +1302,23 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft21.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_coverages: Test aquifer parameters in Example 5</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.3')" >
-        fail</a>
-
-    <div id='div_ft21.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_coverages.py", line 56, in test_coverages
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-        [COVERAGES]
-        ;;Subcatchment   Land Use         Percent
-        ;;-------------- ---------------- ----------
-        S1               Residential_1    100
-        S2               Residential_1    27
-        S2               Residential_2    73
-        S3               Residential_1    27
-        S3               Residential_2    32
-        S4               Residential_1    9
-        S4               Residential_2    30
-        S4               Commercial       26
-        S5               Commercial       98
-        S6               Commercial       100
-        
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt21.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_coverages: Test aquifer parameters in Example 5</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='errorClass'>
     <td>test_loadings.SimpleLoadingTest: Test LOADINGS section</td>
     <td>2</td>
-    <td>0</td>
     <td>1</td>
+    <td>0</td>
     <td>1</td>
     <td><a href="javascript:showClassDetail('c22',2)">Detail</a></td>
 </tr>
 
-<tr id='ft22.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft22.1')" >
-        fail</a>
-
-    <div id='div_ft22.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft22.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft22.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 23, in test_one_loading
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:SB1   TSS         0.1
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt22.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_one_loading: Test all options of one Loading</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft22.2' class='none'>
@@ -1485,9 +1337,9 @@ Get:
         <pre>
         
 ft22.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 33, in test_loading_section
-    section_from_text = self.project_reader.read_loadings.read(source_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1432, in read
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_loadings.py", line 33, in test_loading_section
+    my_options = InitialLoadingsReader.read(source_text)
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py", line 1432, in read
     new_loading.set_text(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
 AttributeError: 'InitialLoading' object has no attribute 'set_text'
 
@@ -1548,8 +1400,8 @@ AttributeError: 'InitialLoading' object has no attribute 'set_text'
         <pre>
         
 ft24.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_conduits.py", line 59, in test_conduit_section
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_conduits.py", line 59, in test_conduit_section
+    self.assertTrue(match(actual_text, source_text), msg)
 AssertionError: 
 Set:[CONDUITS]
  ;;               Inlet            Outlet                      Manning    Inlet      Outlet     Init.      Max.
@@ -1671,11 +1523,11 @@ P8              	J10             	J11             	144.50    	0.016     	0      
         <pre>
         
 ft25.7: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 96, in test_xsections_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 96, in test_xsections_section
     actual_text = self.project_writer.write_xsections.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 554, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 554, in as_text
     if cross_section.shape == CrossSectionShape.CUSTOM:
 AttributeError: 'Section' object has no attribute 'shape'
 
@@ -1712,7 +1564,7 @@ AttributeError: 'Section' object has no attribute 'shape'
         <pre>
         
 ft26.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_xsection.py", line 34, in runTest
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_xsection.py", line 34, in runTest
     my_copy = project_reader.read_xsections(section_text)
 TypeError: 'SectionReaderAsList' object is not callable
 
@@ -1754,7 +1606,7 @@ TypeError: 'SectionReaderAsList' object is not callable
         <pre>
         
 ft27.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 44, in test_transects
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 44, in test_transects
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:[TRANSECTS]
@@ -1797,7 +1649,7 @@ Get:[TRANSECTS]
         <pre>
         
 ft27.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 61, in test_transect_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_transects.py", line 61, in test_transect_section
     self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
 AssertionError: 
 Set:
@@ -1859,11 +1711,11 @@ Get:
         <pre>
         
 ft28.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 59, in test_junctions
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 59, in test_junctions
     actual_text = self.project_writer.write_junctions.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 648, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 648, in as_text
     return JunctionWriter.field_format.format(junction.name, junction.elevation,
 AttributeError: 'Section' object has no attribute 'name'
 
@@ -1953,7 +1805,7 @@ AttributeError: 'Section' object has no attribute 'name'
         <pre>
         
 ft31.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 24, in test_flow_type
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 24, in test_flow_type
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:NODE2  FLOW  N2FLOW 
@@ -1983,7 +1835,7 @@ Get:NODE2           	FLOW            	N2FLOW          	FLOW    	1.0     	1.0    
         <pre>
         
 ft31.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 42, in test_mass_type
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 42, in test_mass_type
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:NODE65 BOD N65BOD MASS 126
@@ -2018,11 +1870,11 @@ Get:NODE65          	BOD             	N65BOD          	MASS    	126     	1.0    
         <pre>
         
 ft31.4: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 81, in test_inflows_flow
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 81, in test_inflows_flow
     actual_text = self.project_writer.write_inflows.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 747, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 747, in as_text
     if direct_inflow.constituent.upper() == "FLOW":
 AttributeError: 'Section' object has no attribute 'constituent'
 
@@ -2050,11 +1902,11 @@ AttributeError: 'Section' object has no attribute 'constituent'
         <pre>
         
 ft31.5: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 129, in test_inflows_flowts
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 129, in test_inflows_flowts
     actual_text = self.project_writer.write_inflows.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 747, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 747, in as_text
     if direct_inflow.constituent.upper() == "FLOW":
 AttributeError: 'Section' object has no attribute 'constituent'
 
@@ -2101,11 +1953,11 @@ AttributeError: 'Section' object has no attribute 'constituent'
         <pre>
         
 ft32.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dwf.py", line 73, in test_dwf_section_example3
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_dwf.py", line 73, in test_dwf_section_example3
     actual_text = self.project_writer.write_dwf.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 774, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 774, in as_text
     dry_weather_inflow.average) + '\t' + '\t'.join(dry_weather_inflow.time_patterns)
 AttributeError: 'Section' object has no attribute 'node'
 
@@ -2152,11 +2004,11 @@ AttributeError: 'Section' object has no attribute 'node'
         <pre>
         
 ft33.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_RDII.py", line 37, in test_rdii_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_RDII.py", line 37, in test_rdii_section
     actual_text = self.project_writer.write_rdii.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 788, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 788, in as_text
     inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
 AttributeError: 'Section' object has no attribute 'node'
 
@@ -2203,11 +2055,11 @@ AttributeError: 'Section' object has no attribute 'node'
         <pre>
         
 ft34.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 46, in test_treatment_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 46, in test_treatment_section
     actual_text = self.project_writer.write_treatment.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 824, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 824, in as_text
     inp += TreatmentWriter.field_format.format(treatment.node,
 AttributeError: 'Section' object has no attribute 'node'
 
@@ -2249,11 +2101,11 @@ AttributeError: 'Section' object has no attribute 'node'
         <pre>
         
 ft35.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 38, in test_pollutant_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 38, in test_pollutant_section
     actual_text = self.project_writer.write_pollutants.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 222, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 222, in as_text
     return PollutantWriter.field_format.format(pollutant.name,
 AttributeError: 'Section' object has no attribute 'name'
 
@@ -2314,11 +2166,11 @@ AttributeError: 'Section' object has no attribute 'name'
         <pre>
         
 ft37.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_washoff.py", line 39, in test_washoff_section
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_washoff.py", line 39, in test_washoff_section
     actual_text = self.project_writer.write_washoff.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 207, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 207, in as_text
     return WashoffWriter.field_format.format(washoff.land_use_name,
 AttributeError: 'Section' object has no attribute 'land_use_name'
 
@@ -2365,11 +2217,11 @@ AttributeError: 'Section' object has no attribute 'land_use_name'
         <pre>
         
 ft38.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_landuses.py", line 46, in test_landuses
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_landuses.py", line 46, in test_landuses
     actual_text = self.project_writer.write_landuses.as_text(section_from_text)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 199, in as_text
     item_str = self.list_type_writer.as_text(item)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 168, in as_text
+  File "C:\work\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py", line 168, in as_text
     inp += LanduseWriter.field_format.format(landuse.name,
 AttributeError: 'Section' object has no attribute 'name'
 
@@ -2499,8 +2351,8 @@ AttributeError: 'Section' object has no attribute 'name'
         <pre>
         
 ft41.6: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 133, in test_pattern_section
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+  File "C:\work\SWMM-EPANET_User_Interface\test\core\swmm\test_patterns.py", line 133, in test_pattern_section
+    self.assertTrue(match(actual_text, source_text), msg)
 AssertionError: 
 Set:
 [PATTERNS]
@@ -2551,9 +2403,9 @@ Get:
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>140</td>
-    <td>99</td>
-    <td>15</td>
+    <td>139</td>
+    <td>103</td>
+    <td>10</td>
     <td>26</td>
     <td>&nbsp;</td>
 </tr>

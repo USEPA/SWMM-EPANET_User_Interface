@@ -452,6 +452,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if self.map_widget:
             self.map_widget.saveVectorLayers(os.path.dirname(file_name))
 
+    def find_external(self, lib_name):
+        filename = os.path.join(self.assembly_path, lib_name)
+        if not os.path.exists(filename):
+            pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            filename = os.path.join(pp, "Externals", lib_name)
+        if not os.path.exists(filename):
+            pp = os.path.dirname(os.path.dirname(self.assembly_path))
+            filename = os.path.join(pp, "Externals", self.model.lower(), "model", lib_name)
+        if not os.path.exists(filename):
+            filename = QtGui.QFileDialog.getOpenFileName(self,
+                                                         'Locate ' + self.model + ' Library',
+                                                         '/', '(*{0})'.format(os.path.splitext(lib_name)[1]))
+        return filename
+
     def save_project_as(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
         directory = gui_settings.value("ProjectDir", "")

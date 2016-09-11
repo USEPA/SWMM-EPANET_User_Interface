@@ -20,6 +20,7 @@ except AttributeError:
 
 process_events = QtGui.QApplication.processEvents
 
+
 class ObjectTreeView(QtGui.QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
         QtGui.QTreeWidget.__init__(self, parent)

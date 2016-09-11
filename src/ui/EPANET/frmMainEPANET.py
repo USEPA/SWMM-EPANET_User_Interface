@@ -571,20 +571,6 @@ class frmMainEPANET(frmMain):
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
-    def find_external(self, lib_name):
-        filename = os.path.join(self.assembly_path, lib_name)
-        if not os.path.exists(filename):
-            pp = os.path.dirname(os.path.dirname(self.assembly_path))
-            filename = os.path.join(pp, "Externals", lib_name)
-        if not os.path.exists(filename):
-            pp = os.path.dirname(os.path.dirname(self.assembly_path))
-            filename = os.path.join(pp, "Externals", "epanet", "model", lib_name)
-        if not os.path.exists(filename):
-            filename = QFileDialog.getOpenFileName(self,
-                                                          'Locate ' + self.model + ' Library',
-                                                          '/', '(*{0})'.format(os.path.splitext(lib_name)[1]))
-        return filename
-
     def help_topics(self):
         self.helper.show_help()
 

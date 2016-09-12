@@ -96,7 +96,7 @@ class pyswmm():
     def _error(self):
         """Print the error text the corresponds to the error code returned"""
         if not self.errcode: return
-        errtxt = self.SWMMlibobj.swmmgeterror(self.errcode)
+        errtxt = self.swmmgeterror(self.errcode)
         sys.stdout.write(errtxt+"\n")
         if self.errcode >= 100:
             self.Errflag = True
@@ -219,6 +219,9 @@ class pyswmm():
          * text of error/warning message
         
         """
+        # Is this the new method: self.SWMMlibobj.error_getMsg
+        return "SWMM Error code " + str(self.errcode)
+        # TODO: update call below to work with current SWMM library or get messages another way
         sErrmsg = create_string_buffer(256)
         self.errcode = self.SWMMlibobj.swmmgeterror(iErrcode, byref(sErrmsg), 256)
         self._error()

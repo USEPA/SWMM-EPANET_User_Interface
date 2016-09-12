@@ -2,7 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from enum import Enum
 from ui.frmRunSimulationDesigner import Ui_frmRunSimulation
-from ui.model_utility import process_events
+from ui.model_utility import process_events, transl8
 
 
 class RunStatus(Enum):
@@ -19,40 +19,42 @@ class RunStatus(Enum):
     rsInit = 10
     rsComputing = 11
     rsCompiling = 12
+    rsHydraulics = 13
+    rsWQ = 14
 
 
 class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
 
     SHORT_TERM_LIMIT = 20  # Simulations running fewer days than this will have time of day displayed while running
+    context = "RunSimulation"
+    TXT_STATUS_COMPUTING =    transl8(context, "Computing...")
+    TXT_STATUS_WRONGVERSION = transl8(context, "Wrong version of simulator.")
+    TXT_STATUS_FAILED =       transl8(context, "Run was unsuccessful due to system error.")
+    TXT_STATUS_ERROR =        transl8(context, "Run was unsuccessful. See Status Report for reasons.")
+    TXT_STATUS_WARNING =      transl8(context, "Warning messages were generated. See Status Report for details.")
+    TXT_STATUS_SUCCESS =      transl8(context, "Run was successful.")
+    TXT_STATUS_SHUTDOWN =     transl8(context, "Simulator performed an illegal operation and was shut down.")
+    # TXT_STATUS_STOPPED =    transl8(context, "Run was successful but was stopped before completion.")
+    TXT_STATUS_IMPORT_ERROR = transl8(context, "Import Error")
+    TXT_STATUS_CANCELLED =    transl8(context, "Run cancelled by user.")
+    TXT_STATUS_NONE =         transl8(context, "Unable to run simulator.")
+    TXT_STATUS_INIT =         transl8(context, "Initializing")
+    TXT_STATUS_COMPILING =    transl8(context, "Compiling network data...")
 
-    TXT_STATUS_COMPUTING = 'Computing...'
-    TXT_STATUS_WRONGVERSION = 'Wrong version of simulator.'
-    TXT_STATUS_FAILED = 'Run was unsuccessful due to system error.'
-    TXT_STATUS_ERROR = 'Run was unsuccessful. See Status Report for reasons.'
-    TXT_STATUS_WARNING = 'Warning messages were generated. See Status Report for details.'
-    TXT_STATUS_SUCCESS = 'Run was successful.'
-    TXT_STATUS_SHUTDOWN = 'Simulator performed an illegal operation and was shut down.'
-    TXT_STATUS_STOPPED = 'Run was successful but was stopped before completion.'
-    TXT_STATUS_IMPORT_ERROR = "Import Error"
-    TXT_STATUS_CANCELLED = 'Run cancelled by user.'
-    TXT_STATUS_NONE = 'Unable to run simulator.'
-    TXT_STATUS_INIT = 'Initializing'
-    TXT_STATUS_COMPILING = 'Compiling network data...'
+    TXT_REORDERING  =         transl8(context, "Re-ordering network nodes...")
+    TXT_SOLVING_HYD =         transl8(context, "Solving hydraulics")
+    TXT_SAVING_HYD  =         transl8(context, "Saving hydraulics")
+    TXT_SOLVING_WQ  =         transl8(context, "Solving quality")
 
-    TXT_REORDERING  = 'Re-ordering network nodes...'
-    TXT_SOLVING_HYD = 'Solving hydraulics'
-    TXT_SAVING_HYD  = 'Saving hydraulics'
-    TXT_SOLVING_WQ  = 'Solving quality'
+    TXT_COMPLETE =            transl8(context, " complete")
+    TXT_SAVING =              transl8(context, "Saving project data...")
+    TXT_READING =             transl8(context, "Reading project data..")
+    TXT_CHECKING =            transl8(context, "Checking project data...")
+    TXT_CONTINUITY_ERROR =    transl8(context, "Continuity Error")
 
-    TXT_COMPLETE = ' complete'
-    TXT_SAVING = 'Saving project data...'
-    TXT_READING = 'Reading project data..'
-    TXT_CHECKING = 'Checking project data...'
-    TXT_CONTINUITY_ERROR = 'Continuity Error'
-
-    TXT_SURF_RUNOFF = 'Surface Runoff:'
-    TXT_FLOW_ROUTING = 'Flow Routing:'
-    TXT_QUAL_ROUTING = 'Quality Routing:'
+    TXT_SURF_RUNOFF  =        transl8(context, "Surface Runoff:")
+    TXT_FLOW_ROUTING =        transl8(context, "Flow Routing:")
+    TXT_QUAL_ROUTING =        transl8(context, "Quality Routing:")
 
     StatusLabelDict = {
         RunStatus.rsSuccess:      TXT_STATUS_SUCCESS,
@@ -67,7 +69,9 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
         RunStatus.rsNone:         TXT_STATUS_NONE,
         RunStatus.rsInit:         TXT_STATUS_INIT,
         RunStatus.rsComputing:    TXT_STATUS_COMPUTING,
-        RunStatus.rsCompiling:    TXT_STATUS_COMPILING
+        RunStatus.rsCompiling:    TXT_STATUS_COMPILING,
+        RunStatus.rsHydraulics:   TXT_SOLVING_HYD,
+        RunStatus.rsWQ:           TXT_SOLVING_WQ
     }
 
     def __init__(self, main_form=None):

@@ -12,10 +12,10 @@ except AttributeError:
 
 try:
     transl8_encoding = QtGui.QApplication.UnicodeUTF8
-    def transl8(context, text, disambig):
+    def transl8(context, text, disambig=None):
         return QtGui.QApplication.translate(context, text, disambig, transl8_encoding)
 except AttributeError:
-    def transl8(context, text, disambig):
+    def transl8(context, text, disambig=None):
         return QtGui.QApplication.translate(context, text, disambig)
 
 process_events = QtGui.QApplication.processEvents

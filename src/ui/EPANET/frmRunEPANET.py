@@ -39,7 +39,6 @@ class frmRunEPANET(frmRunSimulation):
         self.cmdMinimize.setVisible(False)
         self.cmdOK.setVisible(False)
         self.gbxContinuity.setVisible(False)
-        self._total_days = 0  # total model time period duration, set while running
 
         #  Initialize placement and status of images on the ResultsPage
         self.lblIconSuccessful.Visible = False
@@ -54,7 +53,7 @@ class frmRunEPANET(frmRunSimulation):
         self.fraRunning.setVisible(True)
         self.fraFinished.setVisible(False)
         self.fraBottom.setVisible(True)
-        self.set_status_text(self.TXT_STATUS_COMPILING)
+        self.set_status(RunStatus.rsCompiling)
         self.cmdStop.setVisible(True)
         self.cmdMinimize.setVisible(True)
         self.cmdOK.setVisible(False)
@@ -105,7 +104,7 @@ class frmRunEPANET(frmRunSimulation):
             if self.run_status != RunStatus.rsCancelled:
                 self.set_status(RunStatus.rsSuccess)
         except Exception as e:  # Close solver if an exception occurs
-            self.set_status_text(self.TXT_STATUS_ERROR)
+            self.set_status(RunStatus.rsError)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
             QtGui.QMessageBox.information(None, "EPANET", msg, QtGui.QMessageBox.Ok)
@@ -286,31 +285,15 @@ class frmRunEPANET(frmRunSimulation):
     #     raise
     #   end
     # end
-    #
-    #
+
     def DisplayRunStatus(self):
         # Display final status of simulation run
+        # //----------------------------------------------
+        # begin
+        # // Retrieve final run status
+        #   if not (RunStatus in [rsCancelled, rsShutdown]) then
+        #   begin
+        #     if GetFileSize(TempReportFile) <= 0 then RunStatus := rsFailed
+        #     else RunStatus := Uoutput.CheckRunStatus(TempOutputFile)
+        #   end
         self.set_status_text(self.StatusLabelDict[self.run_status])
-    # //----------------------------------------------
-    # begin
-    # // Retrieve final run status
-    #   if not (RunStatus in [rsCancelled, rsShutdown]) then
-    #   begin
-    #     if GetFileSize(TempReportFile) <= 0 then RunStatus := rsFailed
-    #     else RunStatus := Uoutput.CheckRunStatus(TempOutputFile)
-    #   end
-    #
-    # // Display run status message
-    #   case RunStatus of
-    #     rsShutdown:     StatusLabel.Caption := TXT_STATUS_SHUTDOWN
-    #     rsNone:         StatusLabel.Caption := TXT_STATUS_NONE
-    #     rsWrongVersion: StatusLabel.Caption := TXT_STATUS_WRONGVERSION
-    #     rsFailed:       StatusLabel.Caption := TXT_STATUS_FAILED
-    #     rsError:        StatusLabel.Caption := TXT_STATUS_ERROR
-    #     rsWarning:      StatusLabel.Caption := TXT_STATUS_WARNING
-    #     rsSuccess:      StatusLabel.Caption := TXT_STATUS_SUCCESS
-    #     rsCancelled:    StatusLabel.Caption := TXT_STATUS_CANCELLED
-    #   end
-    # end
-    #
-    # end.

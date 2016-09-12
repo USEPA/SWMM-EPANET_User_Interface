@@ -83,6 +83,7 @@ from core.swmm.patterns import Pattern
 from core.swmm.labels import Label
 
 from Externals.swmm.outputapi import SMOutputWrapper
+from frmRunSWMM import frmRunSWMM
 
 
 class frmMainSWMM(frmMain):
@@ -955,28 +956,23 @@ class frmMainSWMM(frmMain):
             if os.path.exists(self.model_path):
                 try:
                     from Externals.swmm.model.swmm5 import pyswmm
-                    swmm_object = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
-                    swmm_object.swmmExec()
-                    print(swmm_object.swmm_getVersion())
-                    print(swmm_object.swmm_getMassBalErr())
+                    model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunSWMM(model_api, self.project, self)
+                    self._forms.append(frmRun)
+                    if not use_existing:
+                        # Read this project so we can refer to it while running
+                        frmRun.progressBar.setVisible(False)
+                        frmRun.lblTime.setVisible(False)
+                        frmRun.fraTime.setVisible(False)
+                        frmRun.fraBottom.setVisible(False)
+                        frmRun.showNormal()
+                        frmRun.set_status_text("Reading " + file_name)
 
-                    # model_api = pyepanet.ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
-                    # frmRun = frmRunEPANET(model_api, self.project, self)
-                    # self._forms.append(frmRun)
-                    # if not use_existing:
-                    #     # Read this project so we can refer to it while running
-                    #     frmRun.progressBar.setVisible(False)
-                    #     frmRun.lblTime.setVisible(False)
-                    #     frmRun.fraTime.setVisible(False)
-                    #     frmRun.fraBottom.setVisible(False)
-                    #     frmRun.showNormal()
-                    #     frmRun.set_status_text("Reading " + file_name)
-                    #
-                    #     self.project = Project()
-                    #     self.project.read_file(file_name)
-                    #     frmRun.project = self.project
-                    #
-                    # frmRun.Execute()
+                        self.project = Project()
+                        self.project.read_file(file_name)
+                        frmRun.project = self.project
+
+                    frmRun.Execute()
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))

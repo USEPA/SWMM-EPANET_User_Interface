@@ -1,8 +1,10 @@
 import os
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+import Externals.swmm.model.swmm5 as pyswmm
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
+from ui.model_utility import process_events
 
 
 class frmRunSWMM(frmRunSimulation):
@@ -14,8 +16,10 @@ class frmRunSWMM(frmRunSimulation):
 
     TXT_SWMM5 = 'SWMM 5.1 - '
 
-    def __init__(self, parent=None):
-        frmRunSimulation.__init__(self, parent)
+    def __init__(self, model_api, project, main_form):
+        frmRunSimulation.__init__(self, main_form)
+        self.model_api = model_api
+        self.project = project
 
         #  Initialize display of continuity errors
         self.ErrRunoff = 0.0          # Runoff continuity error
@@ -27,8 +31,14 @@ class frmRunSWMM(frmRunSimulation):
         self.txtSurface.setText('')
         self.txtFlow.setText('')
         self.txtQuality.setText('')
-        self.fraFinished.setText('')
+        # self.fraFinished.setText('')
         self.fraFinished.setVisible(False)
+        self.fraRunning.setVisible(True)
+        self.fraFinished.setVisible(False)
+        self.StatusLabel.Caption = self.TXT_STATUS_INIT
+        self.cmdStop.setVisible(False)
+        self.cmdMinimize.setVisible(False)
+        self.cmdOK.setVisible(False)
         self.gbxContinuity.setVisible(False)
         self.last_displayed_days = -1  # Old elapsed number of days
 
@@ -39,51 +49,22 @@ class frmRunSWMM(frmRunSimulation):
         # self.lblIconError.Top  = self.lblIconSuccessful.Top
 
         #  Make the ProgressPage be the active page
-        #Notebook1.PageIndex = 0
+        # Notebook1.PageIndex = 0
 
-    def Execute(self, temp_dir, main_form):
-        """ Run a simulation.
-            var
-            OldDir: String
-            AppTitle: String
-        """
-        #  Change the current directory to the application's temporary directory
-        old_dir = os.curdir()
-        os.chdir(temp_dir)
-
-        #  Update the form's display
-        #Update
-
-        #  Save the title Windows' uses for the application
-        app_title = main_form.getText()
-
-        #  Run the simulation
-        self.RunSimulation()
-
-        #  Restore the application's title
-        main_form.setText(app_title)
-
-        #  Change back to the original directory
-        os.chdir(old_dir)
-
-        #  Display the run's status on the ResultsPage of the form
-        self.DisplayRunStatus()
-        #Notebook1.PageIndex = 1
-
-    def RunSimulation(self):
+    def Execute(self):
         """
             Call into the SWMM DLL engine to perform a simulation.
+        """
+        """ TODO?
             The input, report, and binary output files required by the SWMM
             engine have already been created in Fmain.pas' RunSimulation
             procedure through a call to CreateTempFiles.
-            var
-                Err: Integer                        #  error code (0 = no error)
-                S: TStringlist                      #  stringlist used for input data
-                Duration: double                    #  simulation duration in days
-                ElapsedTime: double                 #  elapsed simulation time in days
-                OldTime, NewTime: TDateTime         #  system times for progress meter
-                InpFile, RptFile, OutFile: AnsiString  #  Ansi string versions of file names
         """
+        self.fraRunning.setVisible(True)
+        self.fraFinished.setVisible(False)
+        self.fraBottom.setVisible(True)
+        self.set_status(RunStatus.rsCompiling)
+
 
         # #  Save the current project input data to a temporary file
         self.set_status_text(self.TXT_SAVING)
@@ -97,6 +78,9 @@ class frmRunSWMM(frmRunSimulation):
         #
         # # Have the SWMM solver read the input data file
         self.set_status_text(self.TXT_READING)
+        self.cmdStop.setVisible(True)
+        self.cmdMinimize.setVisible(True)
+        self.cmdOK.setVisible(False)
         # self.ProgressLabel.Refresh
         # InpFile = AnsiString(TempInputFile)
         # RptFile = AnsiString(TempReportFile)
@@ -112,34 +96,88 @@ class frmRunSWMM(frmRunSimulation):
         # # If there are no initialization errors, then...
         # if Err == 0:
         #     #  Get the simulation duration in days
-        self.last_displayed_days = -1
-        self.total_days = self.compute_total_days()
-        #
-        #  Gray-out the Hrs:Min display for long-term simulations
-        if self.total_days >= self.SHORT_TERM_LIMIT:
-            self.txtHrsMin.setVisible(False)
-            # Panel2.Font.Color = clGrayText
-            # DaysPanel.Caption = '0'
-            # HoursPanel.setText('')
+        self.showNormal()
+        self.set_status(RunStatus.rsCompiling)
 
-        self.set_status_text(self.TXT_COMPUTING)
-        #
-        #     #  Step through each time period until there is no more time left,
-        #     #  an error occurs, or the user stops the run
-        #     OldTime = Time
-        #     repeat
-        #     Application.ProcessMessages
-        #     Err = swmm_step(ElapsedTime)
-        #     NewTime = Time
-        #     if MilliSecondsBetween(NewTime, OldTime) > 100:
-        #         UpdateProgressDisplay(ElapsedTime, self.total_days)
-        #     OldTime = NewTime
-        #     until(ElapsedTime==0) or (Err > 0) or (self.run_status == RunStatus.rsStopped)
-        #   # End the simulation and retrieve mass balance errors
-        #   swmm_end()
-        #   swmm_getMassBalErr(self.ErrRunoff, self.ErrFlow, self.ErrQual)
-        # # Close the SWMM solver
-        # swmm_close
+        try:
+            self._last_displayed_days = -1
+            total_days = self.compute_total_days()
+            if total_days:  # If we could compute a number of simulation days, prepare progress and date/time controls
+                self.progressBar.setVisible(True)
+                self.lblTime.setVisible(True)
+                self.fraTime.setVisible(True)
+
+                if total_days >= self.SHORT_TERM_LIMIT:
+                    self.lblHrsMin.setVisible(False)
+                    self.txtHrsMin.setVisible(False)
+                else:  # Prepare the elapsed time display for shorter simulations
+                    self.lblHrsMin.setVisible(True)
+                    self.txtHrsMin.setVisible(True)
+                    self.txtHrsMin.setText("00:00")
+            else:  # No computed number of simulation days, so hide progress and date/time controls
+                self.progressBar.setVisible(False)
+                self.lblTime.setVisible(False)
+                self.fraTime.setVisible(False)
+
+            self.set_status(RunStatus.rsComputing)
+
+            # print(self.model_api.swmm_getVersion())
+
+            self.model_api.swmm_run()
+
+            if self.model_api.Errflag:
+                print("\n\n... SWMM completed. There are errors.\n")
+                self.set_status(RunStatus.rsError)
+            elif self.model_api.Warnflag:
+                print("\n\n... SWMM completed. There are warnings.\n")
+                self.set_status(RunStatus.rsWarning)
+            else:
+                print("\n\n... SWMM completed.\n")
+                self.set_status(RunStatus.rsSuccess)
+
+            # print(self.model_api.swmm_getMassBalErr())
+
+            #
+            #     #  Step through each time period until there is no more time left,
+            #     #  an error occurs, or the user stops the run
+            #     OldTime = Time
+            #     repeat
+            #     Application.ProcessMessages
+            #     Err = swmm_step(ElapsedTime)
+            #     NewTime = Time
+            #     if MilliSecondsBetween(NewTime, OldTime) > 100:
+            #         UpdateProgressDisplay(ElapsedTime, self.total_days)
+            #     OldTime = NewTime
+            #     until(ElapsedTime==0) or (Err > 0) or (self.run_status == RunStatus.rsStopped)
+            #   # End the simulation and retrieve mass balance errors
+            #   swmm_end()
+            #   swmm_getMassBalErr(self.ErrRunoff, self.ErrFlow, self.ErrQual)
+            # # Close the SWMM solver
+            # swmm_close
+        except Exception as e:  # Close solver if an exception occurs
+            self.set_status(RunStatus.rsError)
+            msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
+            print(msg)
+            QtGui.QMessageBox.information(None, "EPANET", msg, QtGui.QMessageBox.Ok)
+            self.set_status(RunStatus.rsShutdown)
+        finally:
+            try:
+                self.lblSuccessful.setText(self.StatusLabel.text())
+                self.fraRunning.setVisible(False)
+                self.gbxContinuity.setVisible(False)
+                self.fraFinished.setVisible(True)
+                self.cmdStop.setVisible(False)
+                self.cmdMinimize.setVisible(False)
+                self.cmdOK.setVisible(True)
+                self.update()
+                process_events()
+            except:  # Ignore exception closing model object
+                pass
+            try:
+                # self.model_api.swmm_report()
+                self.model_api.swmm_close()
+            except:  # Ignore exception closing model object
+                pass
 
     def compute_total_days(self):
         #  Compute the simulation duration in days from the Project's simulation options.
@@ -148,7 +186,7 @@ class frmRunSWMM(frmRunSimulation):
                                          self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M")
             start_date = datetime.strptime(self._main_form.project.options.dates.start_date + ' ' +
                                            self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M")
-            return (end_date - start_date).days
+            return (end_date - start_date).days + 1
         except:
             return 0.0
 

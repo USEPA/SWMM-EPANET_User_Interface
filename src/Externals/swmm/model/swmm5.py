@@ -78,12 +78,13 @@ class pyswmm():
             if change_into:
                 os.chdir(change_into)
                 swmm_lib_full_path = swmm_lib_full_path[len(change_into) + 1:]
-            if 'darwin' in sys.platform:
-                from ctypes import cdll
-                self.SWMMlibobj = cdll.LoadLibrary(swmm_lib_full_path)
-            elif 'win' in sys.platform:
+            if 'win' in sys.platform:
                 from ctypes import windll
                 self.SWMMlibobj = windll.LoadLibrary(swmm_lib_full_path)
+            else:
+                from ctypes import cdll
+                self.SWMMlibobj = cdll.LoadLibrary(swmm_lib_full_path)
+
             if change_into:
                 os.chdir(save_dir)
         else:

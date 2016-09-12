@@ -1,4 +1,5 @@
 import os
+import traceback
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import Externals.swmm.model.swmm5 as pyswmm
@@ -40,7 +41,6 @@ class frmRunSWMM(frmRunSimulation):
         self.cmdMinimize.setVisible(False)
         self.cmdOK.setVisible(False)
         self.gbxContinuity.setVisible(False)
-        self.last_displayed_days = -1  # Old elapsed number of days
 
         #  Initialize placement and status of images on the ResultsPage
         self.lblIconSuccessful.Visible = False
@@ -100,7 +100,6 @@ class frmRunSWMM(frmRunSimulation):
         self.set_status(RunStatus.rsCompiling)
 
         try:
-            self._last_displayed_days = -1
             total_days = self.compute_total_days()
             if total_days:  # If we could compute a number of simulation days, prepare progress and date/time controls
                 self.progressBar.setVisible(True)
@@ -116,28 +115,30 @@ class frmRunSWMM(frmRunSimulation):
                     self.txtHrsMin.setText("00:00")
             else:  # No computed number of simulation days, so hide progress and date/time controls
                 self.progressBar.setVisible(False)
-                self.lblTime.setVisible(False)
-                self.fraTime.setVisible(False)
+                # self.lblTime.setVisible(False)
+                # self.fraTime.setVisible(False)
 
             self.set_status(RunStatus.rsComputing)
 
             # print(self.model_api.swmm_getVersion())
-
             self.model_api.swmm_run()
 
-            if self.model_api.Errflag:
-                print("\n\n... SWMM completed. There are errors.\n")
-                self.set_status(RunStatus.rsError)
-            elif self.model_api.Warnflag:
-                print("\n\n... SWMM completed. There are warnings.\n")
-                self.set_status(RunStatus.rsWarning)
-            else:
-                print("\n\n... SWMM completed.\n")
-                self.set_status(RunStatus.rsSuccess)
+            # self.model_api.swmm_start()
+            # date_updated = datetime.now()
+            # while self.run_status == RunStatus.rsComputing and self.model_api.errcode == 0:
+            #     elapsed_days = self.model_api.swmm_step()
+            #     if elapsed_days > 0:
+            #         if total_days:
+            #             date_now = datetime.now()
+            #             if (date_now - date_updated).microseconds > 100000:
+            #                 self.update_progress_days(elapsed_days, total_days)
+            #                 self.update_progress_bar(elapsed_days, total_days)
+            #                 process_events()
+            #                 date_updated = date_now
+            #     else:
+            #         self.model_api.swmm_end()
+            #         break
 
-            # print(self.model_api.swmm_getMassBalErr())
-
-            #
             #     #  Step through each time period until there is no more time left,
             #     #  an error occurs, or the user stops the run
             #     OldTime = Time
@@ -152,8 +153,19 @@ class frmRunSWMM(frmRunSimulation):
             #   # End the simulation and retrieve mass balance errors
             #   swmm_end()
             #   swmm_getMassBalErr(self.ErrRunoff, self.ErrFlow, self.ErrQual)
-            # # Close the SWMM solver
-            # swmm_close
+
+            self.ErrRunoff, self.ErrFlow, self.ErrQual = self.model_api.swmm_getMassBalErr()
+
+            if self.model_api.Errflag:
+                print("\n\n... SWMM completed. There are errors.\n")
+                self.set_status(RunStatus.rsError)
+            elif self.model_api.Warnflag:
+                print("\n\n... SWMM completed. There are warnings.\n")
+                self.set_status(RunStatus.rsWarning)
+            else:
+                print("\n\n... SWMM completed.\n")
+                self.set_status(RunStatus.rsSuccess)
+
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())

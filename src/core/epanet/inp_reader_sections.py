@@ -636,7 +636,7 @@ class ReportOptionsReader(SectionReader):
                 if attr_name:  # Set fields from metadata
                     try:
                         report_options.setattr_keep_type(attr_name, attr_value)
-                        return
+                        #xw09/13/2016 return
                     except:
                         print("Section report could not set " + attr_name)
                 else:

@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-09 11:40:03</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.022000</p>
-<p class='attribute'><strong>Status:</strong> Pass 20 Failure 2 Error 3</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-09-13 17:31:25</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.004000</p>
+<p class='attribute'><strong>Status:</strong> Pass 24 Failure 1</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -255,45 +255,18 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>test_options.SimpleOptionsTest: Test Options section</td>
     <td>2</td>
-    <td>1</td>
+    <td>2</td>
     <td>0</td>
-    <td>1</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c2',2)">Detail</a></td>
 </tr>
 
-<tr id='ft2.1' class='none'>
-    <td class='errorCase'><div class='testcase'>test_get: Test get_text using matches</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft2.1')" >
-        error</a>
-
-    <div id='div_ft2.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft2.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft2.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_options.py", line 80, in test_get
-    actual_text = OptionsWriter.as_text(my_HydraulicsOptions)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 436, in as_text
-    text_list.append(HydraulicsOptionsWriter.as_text(options.hydraulics))
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 406, in as_text
-    if hydraulics_options.unbalanced == Unbalanced.STOP:
-AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt2.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_get: Test get_text using matches</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt2.2' class='hiddenRow'>
@@ -301,12 +274,12 @@ AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>test_report.SimpleReportTest: Test Report section</td>
     <td>3</td>
-    <td>1</td>
+    <td>3</td>
     <td>0</td>
-    <td>2</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c3',3)">Detail</a></td>
 </tr>
 
@@ -315,113 +288,28 @@ AttributeError: 'Hydraulics' object has no attribute 'unbalanced'
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft3.2' class='none'>
-    <td class='errorCase'><div class='testcase'>test_page: Test simple report options with small variation in page setup</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft3.2')" >
-        error</a>
-
-    <div id='div_ft3.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft3.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft3.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 35, in test_page
-    actual_text = ReportOptionsWriter.as_text(my_report)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
-    txt = SectionWriter.as_text(report_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
-    if isinstance(section.value, basestring) and len(section.value) &gt; 0:
-AttributeError: 'NoneType' object has no attribute 'value'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt3.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_page: Test simple report options with small variation in page setup</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft3.3' class='none'>
-    <td class='errorCase'><div class='testcase'>test_all: Test all report options based on manual P162</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft3.3')" >
-        error</a>
-
-    <div id='div_ft3.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft3.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft3.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_report.py", line 55, in test_all
-    actual_text = ReportOptionsWriter.as_text(my_report)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py", line 498, in as_text
-    txt = SectionWriter.as_text(report_options)
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py", line 78, in as_text
-    if isinstance(section.value, basestring) and len(section.value) &gt; 0:
-AttributeError: 'NoneType' object has no attribute 'value'
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt3.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_all: Test all report options based on manual P162</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
     <td>test_patterns.SimplePatternTest: Test one pattern</td>
     <td>2</td>
-    <td>0</td>
-    <td>2</td>
+    <td>1</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c4',2)">Detail</a></td>
 </tr>
 
-<tr id='ft4.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_pattern: Test one pattern based on EPANET2 manual</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft4.1')" >
-        fail</a>
-
-    <div id='div_ft4.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft4.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft4.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 36, in test_pattern
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-P1	1.2	1.4	1.6	1.8	2.0
-P1	2.2	2.4	2.6	2.8	3.0
-P1	3.2	3.4	3.6	3.8	4.0
-Get:
- P1              	1.2         	1.4         	1.6         	1.8         	2.0         	2.2         
- P1              	2.4         	2.6         	2.8         	3.0         	3.2         	3.4         
- P1              	3.6         	3.8         	4.0         
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt4.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pattern: Test one pattern based on EPANET2 manual</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='ft4.2' class='none'>
@@ -440,8 +328,8 @@ Get:
         <pre>
         
 ft4.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 52, in test_patterns
-    self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 59, in test_patterns
+    self.assertTrue(match(actual_text, source_text), msg)
 AssertionError: 
 Set:
 [PATTERNS]
@@ -452,13 +340,14 @@ Set:
  2	2.0	2.2	2.4	2.6	2.4	2.2
  2	2.0	2.8	2.6	2.4	2.6	2.8
 Get:
-[CONDUITS]
-;ID	Multipliers
+[PATTERNS]
+;;Name          	Type      	Multipliers
+;;--------------	----------	-----------
 ;Demand Pattern
-1               	1.0             	1.2             	1.4       	1.6       	1.4       	1.2       	0.0       	          	
-1               	1.0             	0.8             	0.6       	0.4       	0.6       	0.8       	0.0       	          	
-2               	2.0             	2.2             	2.4       	2.6       	2.4       	2.2       	0.0       	          	
-2               	2.0             	2.8             	2.6       	2.4       	2.6       	2.8       	0.0       	          	
+ 1               MONTHLY   	1.0  	1.2  	1.4  	1.6  	1.4  	1.2  
+ 1                         	1.0  	0.8  	0.6  	0.4  	0.6  	0.8  
+ 2               MONTHLY   	2.0  	2.2  	2.4  	2.6  	2.4  	2.2  
+ 2                         	2.0  	2.8  	2.6  	2.4  	2.6  	2.8  
 
 
         </pre>
@@ -599,9 +488,9 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>25</td>
-    <td>20</td>
-    <td>2</td>
-    <td>3</td>
+    <td>24</td>
+    <td>1</td>
+    <td>0</td>
     <td>&nbsp;</td>
 </tr>
 </table>

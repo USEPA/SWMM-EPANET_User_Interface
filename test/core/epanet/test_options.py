@@ -16,41 +16,33 @@ class SimpleOptionsTest(unittest.TestCase):
         # Create options instance
         my_options = Options()
 
-        # Create hydraulic options instance
-        my_HydraulicsOptions = hydraulics.HydraulicsOptions()
 
         # Set data attributes
-        my_HydraulicsOptions.flow_units = hydraulics.FlowUnits.CFS
-        my_HydraulicsOptions.head_loss = hydraulics.HeadLoss.H_W
-        my_HydraulicsOptions.specific_gravity = 1.0
-        my_HydraulicsOptions.relative_viscosity = 1.0
-        my_HydraulicsOptions.maximum_trials = 40
-        my_HydraulicsOptions.accuracy = 0.001
-        my_HydraulicsOptions.unbalanced = hydraulics.Unbalanced.STOP
-        my_HydraulicsOptions.unbalanced_continue = 10
-        my_HydraulicsOptions.default_pattern = "1"
-        my_HydraulicsOptions.demand_multiplier = 1.1
-        my_HydraulicsOptions.emitter_exponent = 0.5
-        my_HydraulicsOptions.check_frequency = 2
-        my_HydraulicsOptions.max_check = 10
-        my_HydraulicsOptions.damp_limit = 0.0
-
-        # Create map options instance
-        my_MapOptions = map.MapOptions()
+        my_options.hydraulics.flow_units = hydraulics.FlowUnits.CFS
+        my_options.hydraulics.head_loss = hydraulics.HeadLoss.H_W
+        my_options.hydraulics.specific_gravity = 1.0
+        my_options.hydraulics.relative_viscosity = 1.0
+        my_options.hydraulics.maximum_trials = 40
+        my_options.hydraulics.accuracy = 0.001
+        my_options.hydraulics.unbalanced = hydraulics.Unbalanced.STOP
+        my_options.hydraulics.unbalanced_continue = 10
+        my_options.hydraulics.default_pattern = "1"
+        my_options.hydraulics.demand_multiplier = 1.1
+        my_options.hydraulics.emitter_exponent = 0.5
+        my_options.hydraulics.check_frequency = 2
+        my_options.hydraulics.max_check = 10
+        my_options.hydraulics.damp_limit = 0.0
 
         # Set data attributes
-        my_MapOptions.map = ""
-
-        # Create quality options instance
-        my_quality = quality.QualityOptions()
+        my_options.map = ""
 
         # Set data attributes
-        my_quality.quality = quality.QualityAnalysisType.CHEMICAL
-        my_quality.chemical_name = "DummyChemical"
-        my_quality.mass_units = "mg/L"
-        my_quality.diffusivity = 1.0
-        my_quality.trace_node = ""
-        my_quality.tolerance = 0.01
+        my_options.quality.quality = quality.QualityAnalysisType.CHEMICAL
+        my_options.quality.chemical_name = "DummyChemical"
+        my_options.quality.mass_units = "mg/L"
+        my_options.quality.diffusivity = 1.0
+        my_options.quality.trace_node = ""
+        my_options.quality.tolerance = 0.01
 
         # Assert section name
         name = my_options.hydraulics.SECTION_NAME
@@ -63,7 +55,8 @@ class SimpleOptionsTest(unittest.TestCase):
         # assert self.my_HydraulicsOptions.get_text() == "[OPTIONS]", 'incorrect options block'
 
         # Use matches method to test hydraulic and quality options
-        expected_text = " Unbalanced         	STOP\n"\
+        expected_text = " [OPTIONS]\n" \
+                        " Unbalanced         	STOP\n"\
                         " MAXCHECK           	10\n"\
                         " Emitter Exponent   	0.5\n"\
                         " Trials             	40\n"\
@@ -75,15 +68,12 @@ class SimpleOptionsTest(unittest.TestCase):
                         " Pattern            	1\n"\
                         " Units              	CFS\n"\
                         " Accuracy           	0.001\n"\
-                        " Headloss           	H-W"
+                        " Headloss           	H-W\n" \
+                        " Quality            	DummyChemical mg/L\n" \
+                        " Diffusivity         	1.0\n" \
+                        " Tolerance           	0.01"
 
-        actual_text = OptionsWriter.as_text(my_HydraulicsOptions)
-        msg = '\nSet:\n' + expected_text + '\nGet:\n' + actual_text
-        self.assertTrue(match(actual_text, expected_text), msg)
-
-        # Use matches method to test map options
-        expected_text = ""
-        actual_text = OptionsWriter.as_text(my_MapOptions)
+        actual_text = OptionsWriter.as_text(my_options)
         msg = '\nSet:\n' + expected_text + '\nGet:\n' + actual_text
         self.assertTrue(match(actual_text, expected_text), msg)
 

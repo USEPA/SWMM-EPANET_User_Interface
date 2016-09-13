@@ -258,7 +258,7 @@ class TimeSeriesReader(SectionReader):
                 if len(fields) > 1:
                     if time_series.name:
                         if time_series.name != fields[0]:
-                            raise ValueError("TimeSeries.set_text: Different Timeseries names " +
+                            raise ValueError("TimeSeriesReader.read: Different Timeseries names " +
                                              time_series.name + ', ' + fields[0])
                     else:
                         time_series.name = fields[0]
@@ -291,7 +291,10 @@ class TimeSeriesReader(SectionReader):
                                 state = needs_date
 
                         if (len(time_series.dates) != len(time_series.times)) or (len(time_series.times) != len(time_series.values)):
-                            raise ValueError("TimeSeries.set_text: Different lengths:" "\nDates = " + str(len(time_series.dates)) + "\nTimes = " + str(len(time_series.times)) + "\nValues = " + str(len(time_series.values)))
+                            raise ValueError("TimeSeriesReader.read: Different lengths:" "\nDates = " +
+                                             str(len(time_series.dates)) +
+                                             "\nTimes = " + str(len(time_series.times)) +
+                                             "\nValues = " + str(len(time_series.values)))
             except Exception as ex:
                 raise ValueError("Could not set timeseries from line: " + line + '\n' + str(ex))
         return time_series
@@ -344,11 +347,9 @@ class TemperatureReader(SectionReader):
                             temperature.filename = ' '.join(fields[1:])
                         temperature.source = TemperatureSource.FILE
                     elif fields[0].upper() == WindSpeed.SECTION_NAME:
-                        temperature.wind_speed = WindSpeed()
-                        temperature.wind_speed.set_text(line)
+                        temperature.wind_speed = WindSpeedReader.read(line)
                     elif fields[0].upper() == SnowMelt.SECTION_NAME:
-                        temperature.snow_melt = SnowMelt()
-                        temperature.snow_melt.set_text(line)
+                        temperature.snow_melt = SnowMeltReader.read(line)
                     elif fields[0].upper() == ArealDepletion.SECTION_NAME:
                         if areal_depletion_text:
                             areal_depletion_text += '\n'
@@ -356,8 +357,7 @@ class TemperatureReader(SectionReader):
             except:
                 print(temperature.SECTION_NAME + " skipping input line: " + line)
         if areal_depletion_text:
-            temperature.areal_depletion = ArealDepletion()
-            temperature.areal_depletion.set_text(areal_depletion_text)
+            temperature.areal_depletion = ArealDepletionReader.read(areal_depletion_text)
         return temperature
 
 
@@ -1117,16 +1117,16 @@ class LIDControlReader(SectionReader):
                 fields = line.split()
                 if len(fields) == 2:
                     if lid_control.name:
-                        raise ValueError("LIDControl.set_text: LID name already set: " +
+                        raise ValueError("LIDControlReader.read: LID name already set: " +
                                          lid_control.name + ", then found 2-element line: " + line)
                     lid_control.name = fields[0]
                     try:
                         lid_control.lid_type = LIDType[fields[1].upper()]
                     except:
-                        raise ValueError("LIDControl.set_text: Unknown LID type in second field: " + line)
+                        raise ValueError("LIDControlReader.read: Unknown LID type in second field: " + line)
                 elif len(fields) > 2:
                     if fields[0] != lid_control.name:
-                        raise ValueError("LIDControl.set_text: LID name: {} != {}".format(fields[0], lid_control.name))
+                        raise ValueError("LIDControlReader.read: LID name: {} != {}".format(fields[0], lid_control.name))
                     check_type = fields[1].upper()
                     found_type = False
                     for field_names in LIDControl.LineTypes:
@@ -1137,7 +1137,7 @@ class LIDControlReader(SectionReader):
                                 lid_control.setattr_keep_type(field_name, field_value)
                             continue
                     if not found_type:
-                        raise ValueError("LIDControl.set_text: Unknown line: " + line)
+                        raise ValueError("LIDControlReader.read: Unknown line: " + line)
         return lid_control
 
 
@@ -1193,7 +1193,7 @@ class SnowPackReader(SectionReader):
                     if not snow_pack.name:                      # If we have not found a name yet, use the first one we find
                         snow_pack.name = fields[0]
                     elif fields[0] != snow_pack.name:           # If we find a different name, complain
-                        raise ValueError("SnowPack.set_text: name: " + fields[0] + " != " + snow_pack.name)
+                        raise ValueError("SnowPackReader.read: name: " + fields[0] + " != " + snow_pack.name)
                     check_type = fields[1].upper()
                     found_type = False
                     for field_names in snow_pack.LineTypes:
@@ -1204,7 +1204,7 @@ class SnowPackReader(SectionReader):
                                 snow_pack.setattr_keep_type(field_name, field_value)
                             continue
                     if not found_type:
-                        raise ValueError("SnowPack.set_text: Unknown line: " + line)
+                        raise ValueError("SnowPackReader.read: Unknown line: " + line)
         return snow_pack
 
 
@@ -1428,8 +1428,7 @@ class InitialLoadingsReader(SectionReader):
             if len(fields) > 2:
                 subcatchment = fields[0]
                 for index in range(1, len(fields) - 1, 2):
-                    new_loading = InitialLoading()
-                    new_loading.set_text(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
+                    new_loading = InitialLoadingReader.read(subcatchment + ' ' + fields[index] + ' ' + fields[index+1])
                     initial_loadings.value.append(new_loading)
         return initial_loadings
 
@@ -1563,8 +1562,8 @@ class UnitHydrographReader(SectionReader):
             if line:
                 fields = line.split()
                 if unit_hydrograph.name and unit_hydrograph.name != "Unnamed" and unit_hydrograph.name != fields[0]:
-                    raise ValueError("UnitHydrograph.set_text: name: " + fields[0] + " != " + unit_hydrograph.name + "\n"
-                                     "in line: " + line)
+                    raise ValueError("UnitHydrographReader.read: name: " + fields[0] + " != " +
+                                     unit_hydrograph.name + "\nin line: " + line)
                 if len(fields) == 2:
                     (unit_hydrograph.name, unit_hydrograph.rain_gage_name) = fields
                 elif len(fields) > 5:
@@ -1581,7 +1580,7 @@ class UnitHydrographReader(SectionReader):
                     if len(fields) > 8:
                         entry.initial_abstraction_amount = fields[8]
                 else:
-                    print("UnitHydrograph.set_text skipped: " + line)
+                    print("UnitHydrographReader.read skipped: " + line)
             if entry:
                 unit_hydrograph.value.append(entry)
         return unit_hydrograph

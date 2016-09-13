@@ -28,20 +28,18 @@ class SimpleTransectTest(unittest.TestCase):
     def test_transects(self):
         """Test transects:Example-7-final inp
         # -- Output does not match input, only one transect was kept and GRs gets combined"""
-        test_text = r"""[TRANSECTS]
-        NC 0.015    0.015    0.015
-        X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0
-        GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20
-        GR 0.5      20       1.3      40
-
-        NC 0.016    0.016    0.016
-        X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0
-        GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0
-        """
-        my_options = TransectsReader.read(test_text)
-        actual_text = TransectsWriter.as_text(my_options)
-        msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        source_text = "[TRANSECTS]\n" \
+                      "NC 0.015    0.015    0.015\n" \
+                      "X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0\n" \
+                      "GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20\n" \
+                      "GR 0.5      20       1.3      40\n" \
+                      "NC 0.016    0.016    0.016\n" \
+                      "X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0\n" \
+                      "GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0"
+        section_from_text = self.project_reader.read_transects.read(source_text)
+        actual_text = self.project_writer.write_transects.as_text(section_from_text)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match(actual_text, source_text), msg)
 
     def test_transect_section(self):
         """Test transects: using Project
@@ -58,7 +56,7 @@ class SimpleTransectTest(unittest.TestCase):
         section_from_text = self.project_reader.read_transects.read(source_text)
         actual_text = self.project_writer.write_transects.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

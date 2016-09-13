@@ -20,6 +20,8 @@ class XsectionTest(unittest.TestCase):
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
         inp_filename = "CrossSectionAllShapes.inp"
+        with open(inp_filename,"r") as f:
+            source_text = f.read()
 
         project_reader = ProjectReader()
         project_writer = ProjectWriter()
@@ -28,12 +30,13 @@ class XsectionTest(unittest.TestCase):
         my_xsections = my_project.xsections
 
         assert len(my_xsections.value) == 26
+        actual_text = project_writer.write_xsections.as_text(my_xsections)
+        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
+        self.assertTrue(match(actual_text, source_text), msg)
 
-        section_text = project_writer.write_xsections.as_text(my_xsections)
-
-        my_copy = project_reader.read_xsections(section_text)
-        copy_text = project_writer.write_xsections.as_text(my_copy)  # my_copy.set_text(my_xsections.get_text())
-        assert match(section_text, copy_text)
+        # my_copy = project_reader.read_xsections(section_text)
+        # copy_text = project_writer.write_xsections.as_text(my_copy)  # my_copy.set_text(my_xsections.get_text())
+        # assert match(section_text, copy_text)
 
         for index in range(1, 25):  # Purposely not checking last line: second CUSTOM test
             assert my_xsections.value[index].link == str(index)
@@ -194,7 +197,8 @@ class XsectionTest(unittest.TestCase):
         assert cur_section.barrels == "11"
 
         cur_section = my_xsections.value[23]
-        assert cur_section.transect == "Tran1"
+        # assert cur_section.transect == "Tran1"
+        assert cur_section.geometry1 == "Tran1"
 
         cur_section = my_xsections.value[24]
         assert cur_section.geometry1 == "2.833"

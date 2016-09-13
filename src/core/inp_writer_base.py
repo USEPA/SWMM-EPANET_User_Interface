@@ -178,10 +178,10 @@ class SectionWriterAsList(SectionWriter):
                 section (Section): section of input sequence that contains a list of items in its value attribute
         """
         if section.value or (section.comment and (not hasattr(section, "DEFAULT_COMMENT") or
-                                                      section.comment != section.DEFAULT_COMMENT)):
+                                                      section.comment != section.DEFAULT_COMMENT)): #xw09/13/2016 no section.DEFAULT_COMMENT
             text_list = []
             if hasattr(section, "SECTION_NAME") and section.SECTION_NAME and section.SECTION_NAME != "Comment":
-                text_list.append(section.SECTION_NAME)
+                text_list.append(section.SECTION_NAME)  #xw9/13/2016 Not sure what intened to do, it might have been section.value.SECTION_NAME
             elif hasattr(self, "SECTION_NAME") and self.SECTION_NAME and self.SECTION_NAME != "Comment":
                 text_list.append(self.SECTION_NAME)
             if section.comment:
@@ -196,7 +196,10 @@ class SectionWriterAsList(SectionWriter):
                         if isinstance(item, basestring):
                             item_str = item
                         else:
-                            item_str = self.list_type_writer.as_text(item)
+                            if hasattr(item, "SECTION_NAME") and item.SECTION_NAME == "Comment":  #xw9/13/2016
+                                item_str = item.value
+                            else:
+                                item_str = self.list_type_writer.as_text(item)
                         if item_str is not None:
                             # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank
                             # if item_str.strip() or isinstance(item, basestring) or

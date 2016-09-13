@@ -227,7 +227,8 @@ class SectionReaderAsList(SectionReader):
             section.value = []
 
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
-            if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
+            #xw 09/13/2016 if line.startswith(';') or not line.strip():  # if row starts with semicolon or is blank, add as a comment
+            if line.lstrip().startswith(';') or not line.strip():  # remove leading space, xw fixed
                 if section.value:  # If we have already added items to this section, add comment as a Section
                     comment = Section()
                     comment.SECTION_NAME = "Comment"

@@ -38,7 +38,7 @@ SB1                TSS         0.1      Lead         0.01
         # section_from_text = self.project_reader.read_loadings.read(source_text)
         # actual_text = self.project_writer.write_loadings.as_text(section_from_text)
         # msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        # self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        # self.assertTrue(match(actual_text, source_text), msg)
         #
         # project_section = section_from_text
         #

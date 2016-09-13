@@ -29,7 +29,7 @@ class SimpleDemandsTest(unittest.TestCase):
         section_from_text = self.project_reader.read_demands.read(source_text)
         actual_text = self.project_writer.write_demands.as_text(section_from_text)
         msg = '\nSet:' + source_text + '\nGet:' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
         project_demands = section_from_text
         assert project_demands.value[0].junction_name == "JUNCTION-0"

@@ -28,7 +28,7 @@ class SimpleSourcesTest(unittest.TestCase):
         my_source = SourceReader.read(source_text)
         actual_text = SourceWriter.as_text(my_source)
         msg = '\nSet:' + source_text + '\nGet:' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
     def test_section(self):
         """Test set_text and get_text"""
@@ -36,7 +36,7 @@ class SimpleSourcesTest(unittest.TestCase):
         project_sources = self.project_reader.read_sources.read(source_text)
         actual_text = self.project_writer.write_sources.as_text(project_sources)
         msg = '\nSet:' + source_text + '\nGet:' + actual_text
-        self.assertTrue(match_omit(actual_text, source_text, " \t-;\n"), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
         assert project_sources.value[0].name == "JUNCTION-9090"
         assert project_sources.value[0].source_type == SourceType.CONCEN

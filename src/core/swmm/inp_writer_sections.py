@@ -287,9 +287,9 @@ class TemperatureWriter(SectionWriter):
         elif temperature.source == TemperatureSource.FILE and temperature.filename:
             text_list.append(field_start + temperature.filename + '\t' + temperature.start_date)
 
-        text_list.append(temperature.wind_speed.as_text())
-        text_list.append(temperature.snow_melt.as_text())
-        text_list.append(temperature.areal_depletion.as_text())
+        text_list.append(temperature.wind_speed.as_text())  #xw9/13/2016 bug here, not fixed
+        text_list.append(temperature.snow_melt.as_text())   #xw bug here
+        text_list.append(temperature.areal_depletion.as_text())   #xw bug here
         return '\n'.join(text_list)
 
 

@@ -287,9 +287,9 @@ class TemperatureWriter(SectionWriter):
         elif temperature.source == TemperatureSource.FILE and temperature.filename:
             text_list.append(field_start + temperature.filename + '\t' + temperature.start_date)
 
-        text_list.append(temperature.wind_speed.as_text())  #xw9/13/2016 bug here, not fixed
-        text_list.append(temperature.snow_melt.as_text())   #xw bug here
-        text_list.append(temperature.areal_depletion.as_text())   #xw bug here
+        text_list.append(WindSpeedWriter.as_text(temperature.wind_speed))  #xw9/13/2016 bug here, not fixed
+        text_list.append(SnowMeltWriter.as_text(temperature.snow_melt))   #xw bug here
+        text_list.append(ArealDepletionWriter.as_text(temperature.areal_depletion))   #xw bug here
         return '\n'.join(text_list)
 
 
@@ -1101,7 +1101,7 @@ class InitialLoadingsWriter(SectionWriter):
             #     else:
             #         lines.append(';' + initial_loadings.comment.replace('\n', '\n;'))
             for loading in initial_loadings.value:
-                lines.append(loading.as_text())
+                lines.append(InitialLoadingWriter.as_text(loading))
         return '\n'.join(lines)
 
 

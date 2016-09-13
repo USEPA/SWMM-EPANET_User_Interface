@@ -371,7 +371,7 @@ class EnergyOptionsWriter(SectionWriter):
         # else:
         txt = [SectionWriter.as_text(energy_options)]
         for pump_energy in energy_options.pumps:      # Add text for each pump energy
-            txt.append(pump_energy.as_text())
+            txt.append(PumpEnergyWriter.as_text(pump_energy))
         return '\n'.join(txt)
 
 

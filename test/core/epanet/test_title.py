@@ -17,7 +17,6 @@ class SimpleTitleTest(unittest.TestCase):
         msg = '\nSet:'+test_text+'\nGet:'+default_text
         self.assertTrue(match(default_text, test_text), msg)
 
-        # self.my_title.set_text(test_text)
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         # assert actual_text == test_text

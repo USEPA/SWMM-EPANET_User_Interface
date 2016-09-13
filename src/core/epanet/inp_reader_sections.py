@@ -443,7 +443,7 @@ class EnergyOptionsReader(SectionReader):
                 fields = line.split()
                 if len(fields) > 1:
                     if fields[0].upper() == "PUMP":
-                        energy_options.pumps.append(PumpEnergy(line))
+                        energy_options.pumps.append(PumpEnergyReader.read(line))
                     else:
                         SectionReader.set_text_line(energy_options, line)
             except:

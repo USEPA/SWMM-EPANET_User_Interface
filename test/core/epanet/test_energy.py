@@ -70,14 +70,14 @@ class SimpleEnergyTest(unittest.TestCase):
     #         assert my_energy.demand_charge == test_text[3]
     #
     #     my_energy = energy.EnergyOptions()
-    #     assert len(EnergyOptionsWriter.as_text()) == 0
+    #     assert len(EnergyOptionsWriter.as_text(my_energy)) == 0
     #
     #     my_energy.global_efficiency = "87.6"
     #     my_energy.global_price = "1.23"
     #     my_energy.demand_charge = "2.34"
     #
     #     my_energy2 = energy.EnergyOptions()
-    #     EnergyOptionsReader.read(EnergyOptionsWriter.as_text())
+    #     EnergyOptionsReader.read(EnergyOptionsWriter.as_text(my_energy2))
     #
     #     assert my_energy2.matches(my_energy)
     #     assert my_energy2.global_efficiency == "87.6"

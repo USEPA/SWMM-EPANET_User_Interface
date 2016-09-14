@@ -1,11 +1,13 @@
-import hydraulics.node
-#import hydraulics.link #maybe in the future there will be data for links as well
+from core.project_base import ProjectBase, Section, SectionAsList
+#import hydraulics.node
+#import hydraulics.link
 from enum import Enum
 import sys
 import csv
 import pandas as pd
+import os.path
 
-class CalibrationType(Enum):
+class ECalibrationType(Enum):
     """Type of Calibration"""
     DEMAND = 1
     HEAD = 2
@@ -15,28 +17,38 @@ class CalibrationType(Enum):
     VELOCITY = 6
     NONE = 7
 
-class CalibrationFileStatus(Enum):
+class ECalibrationFileStatus(Enum):
     NeedToRead = 1
     ReadToCompletion = 2
     FileNotExists = 3
     ReadIncomplete = 4
 
-class Calibration:
+class Calibration(Section):
     header_char = ';'
     delimiter_char = '\t'
 
     def __init__(self, afilename):
-        self.type = CalibrationType.NONE
+        Section.__init__(self)
+        self.name = ''
+        """???just an identifier???"""
+        self.etype = ECalibrationType.NONE
+        """category of calibration data"""
         self.filename = afilename
-        self.nodes = {}
+        """calibration data file name"""
+        self.hobjects = {}
+        """object-calibration data collection"""
         self.quality = None
+        """calibration data chemical collection"""
         self.headers = None
-        self.status = CalibrationFileStatus.NeedToRead
+        """calibration data file header line collection"""
+        self.status = ECalibrationFileStatus.NeedToRead
+        """calibration data file access status"""
+        self.read_data()
 
     def read_data(self):
-        import os.path
         if not os.path.exists(self.filename):
-            self.status = CalibrationFileStatus.FileNotExists
+            self.hobjects.clear()
+            self.status = ECalibrationFileStatus.FileNotExists
             return
         try:
             if self.headers == None:
@@ -59,19 +71,32 @@ class Calibration:
 
                 times = None
                 values = None
+                id_prev = '-999999'
                 for id, time, value in reader:
-                    if len(id) > 0:
-                        if not id in self.nodes.keys():
-                            times = []
-                            values = []
-                            self.nodes[id] = pd.Series(values, index=times)
-                    times.append(time)
-                    values.append(value)
-            self.status = CalibrationFileStatus.ReadToCompletion
+                    if len(id.strip()) > 0:
+                        if not id.strip() in self.hobjects.keys():
+                            self.hobjects[id.strip()] = None #pd.Series(values, index=times)
+                            if id.strip() != id_prev:
+                                if id_prev == '-999999':
+                                    times = []
+                                    values = []
+                                elif len(times) > 0:
+                                    self.hobjects[id_prev] = pd.Series(values, index=times)
+                                    times = []
+                                    values = []
+                                id_prev = id.strip()
+                    times.append(float(time))
+                    values.append(float(value))
+                #set up the last hobject calibration data
+                self.hobjects[id_prev] = pd.Series(values, index=times)
+                del times
+                del values
+
+            self.status = ECalibrationFileStatus.ReadToCompletion
             pass
         except IOError:
             #print 'cannot open', self.filename
-            self.status = CalibrationFileStatus.ReadIncomplete
+            self.status = ECalibrationFileStatus.ReadIncomplete
             pass
         else:
             #print self.filename, 'has', len(f.readlines()), 'lines'

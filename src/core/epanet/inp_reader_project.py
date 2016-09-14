@@ -50,7 +50,7 @@ class ProjectReader(InputFileReader):
         # [MIXING]
         # self.read_options = MapOptions,
         self.read_options = OptionsReader()
-        # self.read_times = TimesOptionsReader()
+        self.read_times = TimesOptionsReader()
         self.read_report = ReportOptionsReader()
         self.read_coordinates = SectionReaderAsList("[COORDINATES]", CoordinateReader)
         self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)

@@ -62,14 +62,14 @@ class ReportOptions(Section):
         """determines if a table reporting average energy usage and cost for each pump is provided"""
         """don't write by default"""
 
-        # self.nodes = []
+        self.nodes = []
         """identifies which nodes will be reported on. List individual IDs or use NONE or ALL"""
 
-        # self.links = []
+        self.links = []
         """identifies which links will be reported on. List individual IDs or use NONE or ALL"""
 
         self.parameters = []            # list of strings
-        """used to identify which nodes, links, and quantities are reported on"""
+        """used to identify which quantities are reported on"""
         """don't write if blank"""
 
     @property

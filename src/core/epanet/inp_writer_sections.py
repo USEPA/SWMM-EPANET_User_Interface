@@ -497,6 +497,10 @@ class ReportOptionsWriter(SectionWriter):
     def as_text(report_options):
         txt = SectionWriter.as_text(report_options)
         try:
+            if report_options.nodes:
+                txt += '\nNODES ' + ' '.join(report_options.nodes)
+            if report_options.links:
+                txt += '\nLINKS ' + ' '.join(report_options.nodes)
             if report_options.parameters:
                 txt += '\n' + '\n'.join(report_options.parameters)
         except:

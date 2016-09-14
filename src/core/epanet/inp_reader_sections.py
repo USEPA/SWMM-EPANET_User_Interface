@@ -44,6 +44,7 @@ from core.epanet.options.quality import QualityOptions
 from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import StatusWrite
 from core.epanet.options.report import ReportOptions
+from core.epanet.options.times import TimesOptions
 from core.inp_reader_base import SectionReader
 
 
@@ -282,7 +283,7 @@ class QualityReader(SectionReader):
     @staticmethod
     def read(new_text):
         quality = Quality()
-        (quality.name, quality.initial_quality) = new_text.split()
+        (quality.name, quality.initial_quality) = new_text.split(1)
         return quality
 
 
@@ -524,6 +525,22 @@ class OptionsReader(SectionReader):
         return options
 
 
+class TimesOptionsReader(SectionReader):
+    """Read model duration, time step, etc."""
+
+    SECTION_NAME = "[TIMES]"
+
+    @staticmethod
+    def read(new_text):
+        times_options = TimesOptions()
+        for line in new_text.splitlines():
+            try:
+                SectionReader.set_text_line(times_options, line)
+            except:
+                print("TimesOptionsReader skipping input line: " + line)
+        return times_options
+
+
 class QualityOptionsReader(SectionReader):
     """EPANET Quality Options"""
 
@@ -593,52 +610,52 @@ class ReportOptionsReader(SectionReader):
     """Report Options"""
 
     SECTION_NAME = "[REPORT]"
-
-    # @staticmethod
-    # def read(new_text):
-    #     """Read this section from the text representation"""
-    #     Section.set_text(report_options, new_text)  # Initialize, and set values using metadata
-    #     # Custom code to set nodes and links since they may be split across lines
-    #     report_options.nodes = []
-    #     report_options.links = []
-    #     for line in new_text.splitlines():
-    #         (attr_name, attr_value) = new_text.split(None, 1)
-    #         attr_name = attr_name.upper()
-    #         if attr_name == "NODES":
-    #             report_options.nodes.extend(attr_value.split())
-    #         elif attr_name == "LINKS":
-    #             report_options.links.extend(attr_value.split())
-    #         elif attr_name in ()
-    #         elif attr_name == "STATUS":
-    #             report_options.status = attr_value
-    #         elif attr_name == "SUMMARY":
-    #             report_options.setattr_keep_type("summary", attr_value)
-    #         elif attr_name == "PAGESIZE" or attr_name == "PAGE":
-    #             report_options.pagesize = attr_value
-    #         elif attr_name == "ENERGY":
-    #             report_options.setattr_keep_type("energy", attr_value)
-    #         else:
-    #             report_options.parameters.extend(line)
-    #    return report_options
+    section_type = ReportOptions
 
     @staticmethod
     def read(new_text):
-        """Set this section from text.
-            Args:
-                line (str): One line of text formatted as input file.
-        """
+        """Read this section from the text representation"""
         report_options = ReportOptions()
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(report_options, line)
-            if line.strip():
-                # Set fields from metadata
-                (attr_name, attr_value) = SectionReader.get_attr_name_value(report_options, line)
-                if attr_name:  # Set fields from metadata
-                    try:
-                        report_options.setattr_keep_type(attr_name, attr_value)
-                        #xw09/13/2016 return
-                    except:
-                        print("Section report could not set " + attr_name)
-                else:
-                    report_options.parameters.append(line)
+            (attr_name, attr_value) = new_text.split(None, 1)
+            attr_name = attr_name.upper()
+            if attr_name == "NODES":
+                report_options.nodes.extend(attr_value.split())
+            elif attr_name == "LINKS":
+                report_options.links.extend(attr_value.split())
+            elif attr_name == "STATUS":
+                report_options.setattr_keep_type("status", attr_value)
+            elif attr_name == "FILE":
+                report_options.file = attr_value
+            elif attr_name == "SUMMARY":
+                report_options.setattr_keep_type("summary", attr_value)
+            elif attr_name == "PAGESIZE" or attr_name == "PAGE":
+                report_options.pagesize = attr_value
+            elif attr_name == "ENERGY":
+                report_options.setattr_keep_type("energy", attr_value)
+            else:
+                report_options.parameters.extend(line)
         return report_options
+
+    # @staticmethod
+    # def read(new_text):
+    #     """Set this section from text.
+    #         Args:
+    #             line (str): One line of text formatted as input file.
+    #     """
+    #     report_options = ReportOptions()
+    #     for line in new_text.splitlines():
+    #         line = SectionReader.set_comment_check_section(report_options, line)
+    #         if line.strip():
+    #             # Set fields from metadata
+    #             (attr_name, attr_value) = SectionReader.get_attr_name_value(report_options, line)
+    #             if attr_name:  # Set fields from metadata
+    #                 try:
+    #                     report_options.setattr_keep_type(attr_name, attr_value)
+    #                     #xw09/13/2016 return
+    #                 except:
+    #                     print("Section report could not set " + attr_name)
+    #             else:
+    #                 report_options.parameters.append(line)
+    #     return report_options

@@ -71,9 +71,8 @@ class ProjectWriter(InputFileWriterBase):
                                                  ";Node           \tType          \tStrength    \tPattern\n"
                                                  ";---------------\t--------------\t------------\t-------")
         # [MIXING]
-        # self.write_options = MapOptions,
         self.write_options = OptionsWriter()
-        # self.write_times = TimesOptionsWriter()
+        self.write_times = SectionWriter()
         self.write_report = ReportOptionsWriter()
         self.write_coordinates = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
                                                      ";Node            \tX-Coord   \tY-Coord")

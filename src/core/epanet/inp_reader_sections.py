@@ -21,7 +21,6 @@ from core.epanet.hydraulics.link import Status
 from core.epanet.hydraulics.node import SourceType
 from core.epanet.hydraulics.node import MixingModel
 from core.epanet.hydraulics.node import Coordinate
-from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
 from core.epanet.hydraulics.node import Tank
@@ -46,12 +45,11 @@ from core.epanet.options.report import StatusWrite
 from core.epanet.options.report import ReportOptions
 from core.epanet.options.times import TimesOptions
 from core.inp_reader_base import SectionReader
-
+from core.indexed_list import IndexedList
 
 
 class CurveReader(SectionReader):
     """Defines a data curve of X,Y points"""
-
 
     @staticmethod
     def read(new_text):
@@ -267,24 +265,51 @@ class StatusReader(SectionReader):
         return status
 
 
-class CoordinateReader(SectionReader):
+class CoordinatesReader(SectionReader):
+    """Read initial water quality at each node into project."""
 
     @staticmethod
-    def read(new_text):
-        coordinate = Coordinate()
-        (coordinate.name, coordinate.x, coordinate.y) = new_text.split()
-        return coordinate
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[COORDINATES]"
+        project.coordinates.value = IndexedList([], ['name'])
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            fields = line.split(None, 2)
+            if len(fields) > 2:
+                found = False
+                coordinate = Coordinate()
+                (coordinate.name, coordinate.x, coordinate.y) = fields
+                project.coordinates.value.append(coordinate)
+                for nodes in (project.junctions.value, project.reservoirs.value, project.tanks.value):
+                    for node in nodes:
+                        if node.name == coordinate.name:
+                            node.x = coordinate.x
+                            node.y = coordinate.y
+                            found = True
+                            break
+                if not found:
+                    print "Node not found in model for coordinate " + coordinate.name
 
 
 class QualityReader(SectionReader):
-    """Initial water quality at a node."""
-
+    """Read initial water quality at each node into project."""
 
     @staticmethod
-    def read(new_text):
-        quality = Quality()
-        (quality.name, quality.initial_quality) = new_text.split(1)
-        return quality
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[QUALITY]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            fields = line.split(None, 1)
+            if len(fields) > 1:
+                node_name = fields[0]
+                initial_quality = fields[1]
+                for nodes in (project.junctions.value, project.reservoirs.value, project.tanks.value):
+                    for node in nodes:
+                        if node.name == node_name:
+                            node.setattr_keep_type("initial_quality", initial_quality)
+                            break
 
 
 class JunctionReader(SectionReader):
@@ -659,3 +684,35 @@ class ReportOptionsReader(SectionReader):
     #             else:
     #                 report_options.parameters.append(line)
     #     return report_options
+
+
+class TagsReader(SectionReader):
+    """Read tag information from text into project objects that have tags"""
+
+    @staticmethod
+    def read(new_text, project):
+        section_map = {"NODE": [project.junctions.value, project.reservoirs.value,
+                                project.tanks.value, project.sources.value],
+                       "LINK": [project.pipes.value, project.pumps.value, project.valves.value]}
+        disposable_tags = Section()
+        disposable_tags.SECTION_NAME = "[TAGS]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_tags, line)
+            fields = line.split()
+            if len(fields) > 2:
+                object_type_name = fields[0].upper()
+                object_name = fields[1].upper()
+                tag = ' '.join(fields[2:])
+                sections = section_map[object_type_name]
+                found = False
+                for section in sections:
+                    for candidate in section:
+                        if candidate.name.upper() == object_name:
+                            candidate.tag = tag
+                            found = True
+                            # print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
+                            break
+                    if found:
+                        break
+                if not found:
+                    print "Tag not applied: " + line

@@ -81,3 +81,4 @@ class ProjectWriter(InputFileWriterBase):
         self.write_labels = SectionWriterAsList("[LABELS]", LabelWriter,
                                                 ";X-Coord        \tY-Coord         \tLabel & Anchor Node")
         self.write_backdrop = BackdropOptionsWriter()
+        self.write_tags = TagsWriter()

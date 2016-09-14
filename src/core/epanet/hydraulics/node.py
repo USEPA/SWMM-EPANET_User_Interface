@@ -22,23 +22,26 @@ class MixingModel(Enum):
     LIFO = 4
 
 
-# class Node(Coordinates):
-#     """A node in an EPANET model"""
-#     def __init__(self, x, y):
-#         Coordinates.__init__(self, x, y)
-#
-#         self.name = "Unnamed"
-#         """Node Name"""
-#
+class Node(Section, Coordinate):
+    """A node in an EPANET model"""
+    def __init__(self):
+        Coordinate.__init__(self)
+        Section.__init__(self)
+        # self.name, inherited from Coordinate
+        """Unique name or number identifying this node"""
+
+        # self.x, self.y, inherited from Coordinate
+        """Node location for mapping"""
+
 #         self.description = ""
 #         """Optional description of the Node"""
-#
-#         self.tag = ""
-#         """Optional label used to categorize or classify the Node"""
-#
-#         self.initial_quality = 0.0
-#         """"""
-#
+
+        self.tag = ""
+        """Optional label used to categorize or classify the Node"""
+
+        self.initial_quality = 0.0
+        """concentration for chemicals, hours for water age, or percent for source tracing"""
+
 #         self.source_quality = Source()
 #         """defines characteristics of water quality source"""
 #
@@ -46,31 +49,17 @@ class MixingModel(Enum):
 #         """Indicates whether reporting is desired at this node"""
 
 
-class Quality(Section):
-    """Initial water quality at a node."""
-
-
-    def __init__(self):
-        Section.__init__(self)
-
-        self.name = ''
-        """node identifier/name this applies to"""
-
-        self.initial_quality = '0.0'
-        """concentration for chemicals, hours for water age, or percent for source tracing"""
-
-class Junction(Section):
+class Junction(Node):
     """Junction properties"""
-
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
-        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
-        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
-        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
-        ('elevation',       '', "Elevation",       '',   '',   '', "Elevation of junction"),
+        ("name",                '', "Name",            '',   '',   '', "User-assigned name of junction"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
+        ('',                    '', "Description",     '',   '',   '', "Optional comment or description"),
+        ('tag',                 '', "Tag",             '',   '',   '', "Optional category or classification"),
+        ('elevation',           '', "Elevation",       '',   '',   '', "Elevation of junction"),
         ('base_demand_flow',    '', 'Base Demand',       '',  '',   '', "Base demand flow, characteristic of all demands at this node"),
         ('demand_pattern_name', '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
         ('demand_categories',   '', 'Demand Categories', '',  '',   '', "Number of demand categories, click to edit"),
@@ -79,9 +68,7 @@ class Junction(Section):
         ('source_quality',      '', 'Source Quality',    '',  '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self):
-        Section.__init__(self)
-        self.name = ''
-        """node identifier/name"""
+        Node.__init__(self)
 
         self.elevation = ''
         """elevation of junction"""
@@ -98,26 +85,24 @@ class Junction(Section):
             the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which
             defaults to 0.5 and can be set in OPTIONS section."""
 
-class Reservoir(Section):
+
+class Reservoir(Node):
     """Reservoir properties"""
 
-
-#    attribute, input_name, label,         default, english, metric, hint
+    #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
-        ('',                  '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
-        ('',                  '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
+        ('x',                 '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
+        ('y',                 '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
         ('',                  '', "Description",     '',    '',   '', "Optional comment or description"),
-        ('',                  '', "Tag",             '',    '',   '', "Optional category or classification"),
+        ('tag',               '', "Tag",             '',    '',   '', "Optional category or classification"),
         ('total_head',        '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
         ('head_pattern_name', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
         ('initial_quality',   '', 'Initial Quality', '',    '',   '', "Water quality level at the reservior at the start of the simulation period"),
         ('source_quality',    '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self):
-        Section.__init__(self)
-        self.name = ''
-        """node identifier/name"""
+        Node.__init__(self)
 
         self.total_head = "0.0"
         """Head is the hydraulic head (elevation + pressure head) of water in the reservoir"""
@@ -125,17 +110,17 @@ class Reservoir(Section):
         self.head_pattern_name = ''
         """head pattern can be used to make the reservoir head vary with time"""
 
-class Tank(Section):
+
+class Tank(Node):
     """Tank properties"""
 
-
-#    attribute, input_name, label,         default, english, metric, hint
+    #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",            '', "Name",            '',    '',   '', "User-assigned name of tank"),
-        ('',                '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
-        ('',                '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
+        ('x',               '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
+        ('y',               '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
         ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',    '',   '', "Optional category or classification"),
+        ('tag',             '', "Tag",             '',    '',   '', "Optional category or classification"),
         ('elevation',       '', "Elevation",       '0.0', '',   '', "Elevation of tank"),
         ('initial_level',   '', "Initial Level",   '0.0', '',   '', "Height of the water surface above the bottom elevation of the tank at the start of the simulation."),
         ('minimum_level',   '', "Minimum Level",   '0.0', '',   '', "Minimum height in feet (meters) of the water surface above the bottom elevation that will be maintained."),
@@ -150,9 +135,7 @@ class Tank(Section):
         ('source_quality',  '', 'Source Quality',  '',    '',   '', "Quality of any water entering the network at this location, click to edit")))
 
     def __init__(self):
-        Section.__init__(self)
-        self.name = ''
-        """node identifier/name"""
+        Node.__init__(self)
 
         self.elevation = "0.0"
         """Bottom elevation, ft (m)"""
@@ -177,9 +160,9 @@ class Tank(Section):
 
         # refer to [REACTIONS] section for reaction coefficient
 
+
 class Mixing(Section):
     """Mixing model and volume fraction of a Tank"""
-
 
     def __init__(self):
         Section.__init__(self)
@@ -196,28 +179,25 @@ class Mixing(Section):
         self.mixing_fraction = "0.0"
         """fraction of the total tank volume devoted to the inlet/outlet compartment"""
 
-class Source(Section):
+
+class Source(Node):
     """Defines locations of water quality sources"""
 
-
     def __init__(self):
-        Section.__init__(self)
-
-        self.name = ''
-        """node identifier/name"""
+        Node.__init__(self)
 
         self.source_type = SourceType.CONCEN # TRATION
         """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
 
-        self.baseline_strength = '0.0'                  # real, but stored as string
+        self.baseline_strength = '0.0'                  # real, stored as string
         """Baseline source strength"""
 
-        self.pattern_name = ""                            # string
+        self.pattern_name = ""                          # string
         """Time pattern ID (optional)"""
+
 
 class Demand(Section):
     """Define multiple water demands at junction nodes"""
-
 
     def __init__(self):
         Section.__init__(self)
@@ -225,12 +205,11 @@ class Demand(Section):
         self.junction_name = ''
         """Junction this demand applies to"""
 
-        self.base_demand = "0.0"       # real, stored as string
+        self.base_demand = "0.0"     # real, stored as string
         """Base demand (flow units)"""
 
         self.demand_pattern = ''     # string
         """Demand pattern ID (optional)"""
 
-        self.category = ''          # string
+        self.category = ''           # string
         """Name of demand category preceded by a semicolon (optional)"""
-

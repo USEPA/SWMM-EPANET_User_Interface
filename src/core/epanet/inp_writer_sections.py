@@ -20,7 +20,6 @@ from core.epanet.hydraulics.link import Status
 from core.epanet.hydraulics.node import SourceType
 from core.epanet.hydraulics.node import MixingModel
 from core.coordinate import Coordinate
-from core.epanet.hydraulics.node import Quality
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
 from core.epanet.hydraulics.node import Tank
@@ -522,3 +521,30 @@ class ReportOptionsWriter(SectionWriter):
     #     if report_options.nodes:
     #         txt += '\n' + ReportOptionsWriter.field_format.format("Nodes", ' '.join()
     #     return '\n'.join(txt)
+
+
+class TagsWriter(SectionWriter):
+    """Write tags to a string"""
+
+    SECTION_NAME = "[TAGS]"
+
+    field_format = "{:10}{:16}\t{:16}"
+
+    @staticmethod
+    def as_text(project):
+        text_list = [TagsWriter.SECTION_NAME]
+        section_map = {"NODE": [project.junctions.value, project.reservoirs.value,
+                                project.tanks.value, project.sources.value],
+                       "LINK": [project.pipes.value, project.pumps.value, project.valves.value]}
+        for object_type_name, sections in section_map.items():
+            for section in sections:
+                for item in section:
+                    if hasattr(item, "tag") and item.tag:
+                        name = "Unknown"
+                        if hasattr(item, "name") and item.name:
+                            name = item.name
+                        text_list.append(TagsWriter.field_format.format(object_type_name, item.name, item.tag))
+        if len(text_list) > 1:
+            return '\n'.join(text_list)
+        else:
+            return ''

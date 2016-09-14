@@ -43,8 +43,6 @@ class ProjectReader(InputFileReader):
         self.read_controls = SectionReaderAsList("[CONTROLS]", ControlReader)
         self.read_rules = SectionReaderAsList("[RULES]", SectionReader)
         self.read_demands = SectionReaderAsList("[DEMANDS]", DemandReader)
-
-        self.read_quality = SectionReaderAsList("[QUALITY]", QualityReader)
         self.read_reactions = ReactionsReader()
         self.read_sources = SectionReaderAsList("[SOURCES]", SourceReader)
         # [MIXING]
@@ -56,3 +54,33 @@ class ProjectReader(InputFileReader):
         self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)
         self.read_labels = SectionReaderAsList("[LABELS]", LabelReader)
         self.read_backdrop = BackdropOptionsReader()
+
+        # temporary storage for sections that need to be read after other sections
+        self.defer_quality = None
+        self.defer_coordinates = None
+        self.defer_tags = None
+
+
+    def read_section(self, project, section_name, section_text):
+        section_name_upper = section_name.upper()
+        if section_name_upper == "[QUALITY]":
+            self.defer_quality = section_text
+            return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[COORDINATES]":
+            self.defer_coordinates = section_text
+            return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[TAGS]":
+            self.defer_tags = section_text
+            return  # Skip read_section, defer until finished_reading is called.
+        InputFileReader.read_section(self, project, section_name, section_text)
+
+    def finished_reading(self, project):
+        if self.defer_quality:
+            QualityReader.read(self.defer_quality, project)
+            self.defer_quality = None
+        if self.defer_coordinates:
+            CoordinatesReader.read(self.defer_coordinates, project)
+            self.defer_coordinates = None
+        if self.defer_tags:
+            TagsReader.read(self.defer_tags, project)
+            self.defer_tags = None

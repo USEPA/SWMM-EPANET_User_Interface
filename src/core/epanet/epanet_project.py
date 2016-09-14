@@ -21,6 +21,7 @@ from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
+import core.epanet.calibration as Cali
 
 try:
     unicode = unicode
@@ -74,5 +75,6 @@ class EpanetProject(ProjectBase):
         self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         self.backdrop = BackdropOptions()
+        self.calibrations = SectionAsList("[CALIBRATIONS]") # (list of Calibration)
 
         ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]

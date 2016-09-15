@@ -265,6 +265,15 @@ class StatusReader(SectionReader):
         return status
 
 
+class CoordinateReader(SectionReader):
+
+    @staticmethod
+    def read(new_text):
+        coordinate = Coordinate()
+        (coordinate.name, coordinate.x, coordinate.y) = new_text.split()
+        return coordinate
+
+
 class CoordinatesReader(SectionReader):
     """Read initial water quality at each node into project."""
 

@@ -43,8 +43,9 @@ class EnergyOptions(Section):
 class PumpEnergy(Section):
     """Parameters used to compute pumping energy and cost for a particular pump"""
 
-
     def __init__(self):
+        Section.__init__(self)
+
         self.name = ''
         """Identifier of pump"""
 

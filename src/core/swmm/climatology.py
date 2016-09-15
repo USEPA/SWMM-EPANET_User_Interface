@@ -145,6 +145,7 @@ class Adjustments(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.temperature = []
         """monthly temperature adjustments as plus or minus degrees F (degrees C)"""
 

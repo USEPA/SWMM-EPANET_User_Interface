@@ -246,6 +246,7 @@ class Groundwater(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.subcatchment = ''
         """Subcatchment name"""
 
@@ -305,8 +306,8 @@ class LIDUsage(Section):
     """Specifies how an LID control will be deployed in a subcatchment"""
 
     def __init__(self):
-
         Section.__init__(self)
+
         self.subcatchment_name = ''
         """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
 
@@ -373,6 +374,7 @@ class InitialLoading(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.subcatchment_name = ''
         """Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs"""
 

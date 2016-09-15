@@ -102,6 +102,7 @@ class Buildup(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.land_use_name = ""
         """land use name"""
 
@@ -150,6 +151,7 @@ class Washoff(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.land_use_name = ""
         """land use name"""
 
@@ -203,6 +205,7 @@ class Pollutant(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.name = ''
         """str: Name assigned to the pollutant"""
 

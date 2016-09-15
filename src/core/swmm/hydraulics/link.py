@@ -9,6 +9,7 @@ class Link(Section):
 
     def __init__(self):
         Section.__init__(self)
+
         self.name = "Unnamed"
         """Link Identifier/Name"""
 

@@ -13,6 +13,8 @@ class ControlType(Enum):
 class Control(Section):
     """A simple control that modifies a link based on a single condition"""
     def __init__(self):
+        Section.__init__(self)
+
         self.name = ""		# string
         """Name of link modified by this control"""
 

@@ -7,6 +7,8 @@ class Controls(Section):
     """ Store section as string because that is how UI wants it. TODO: expand this class if parsing is needed. """
     def __init__(self):
         """Initialize or reset section"""
+        Section.__init__(self)
+
         self.value = ""
         """Current value of the item as it appears in an InputFile"""
 

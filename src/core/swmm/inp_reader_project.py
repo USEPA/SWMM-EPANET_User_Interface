@@ -53,7 +53,9 @@ class ProjectReader(InputFileReader):
         self.read_title = TitleReader()               # TITLE         project title
         self.read_options = GeneralReader()           # OPTIONS       analysis options
         self.read_report = ReportReader()             # REPORT        output reporting instructions
-        # self.read_files = FilesReader()             # FILES         interface file options
+        self.read_files = SectionReader()             # FILES         interface file options
+        self.read_files.SECTION_NAME = "[FILES]"
+        self.read_files.section_type = Files
         self.read_backdrop = BackdropOptionsReader()  # BACKDROP      bounding rectangle and file name of backdrop image
         self.read_map = MapOptionsReader()            # MAP           map's bounding rectangle and units
         self.read_raingages = SectionReaderAsList("[RAINGAGES]", RainGageReader)

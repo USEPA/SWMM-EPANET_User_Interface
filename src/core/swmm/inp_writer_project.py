@@ -53,7 +53,9 @@ class ProjectWriter(InputFileWriterBase):
         self.write_title = TitleWriter()               # TITLE         project title
         self.write_options = GeneralWriter()           # OPTIONS       analysis options
         self.write_report = ReportWriter()             # REPORT        output reporting instructions
-        # self.write_files = FilesWriter()             # FILES         interface file options
+        self.write_files = SectionWriter()             # FILES         interface file options
+        self.write_files.SECTION_NAME = "[FILES]"
+        self.write_files.section_type = Files
         self.write_backdrop = BackdropOptionsWriter()  # BACKDROP      bounding rectangle and file name of backdrop image
         self.write_map = MapOptionsWriter()            # MAP           map's bounding rectangle and units
         self.write_raingages = SectionWriterAsList("[RAINGAGES]", RainGageWriter,

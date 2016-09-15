@@ -266,16 +266,19 @@ class StatusReader(SectionReader):
 
 
 class CoordinateReader(SectionReader):
-
     @staticmethod
     def read(new_text):
         coordinate = Coordinate()
-        (coordinate.name, coordinate.x, coordinate.y) = new_text.split()
-        return coordinate
+        fields = new_text.split()
+        if len(fields) > 2:
+            coordinate.name, coordinate.x, coordinate.y = fields[0:3]
+            return coordinate
+        else:
+            return None
 
 
 class CoordinatesReader(SectionReader):
-    """Read initial water quality at each node into project."""
+    """Read coordinates of nodes into node objects."""
 
     @staticmethod
     def read(new_text, project):
@@ -284,21 +287,21 @@ class CoordinatesReader(SectionReader):
         project.coordinates.value = IndexedList([], ['name'])
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
-            fields = line.split(None, 2)
-            if len(fields) > 2:
+            coordinate = CoordinateReader.read(line)
+            if coordinate:
                 found = False
-                coordinate = Coordinate()
-                (coordinate.name, coordinate.x, coordinate.y) = fields
-                project.coordinates.value.append(coordinate)
-                for nodes in (project.junctions.value, project.reservoirs.value, project.tanks.value):
-                    for node in nodes:
-                        if node.name == coordinate.name:
-                            node.x = coordinate.x
-                            node.y = coordinate.y
-                            found = True
-                            break
+                for node_group in project.nodes_groups():
+                    if node_group and node_group.value:
+                        for node in node_group.value:
+                            if node.name == coordinate.name:
+                                node.x = coordinate.x
+                                node.y = coordinate.y
+                                found = True
+                                project.coordinates.value.append(node)
+                                break
                 if not found:
                     print "Node not found in model for coordinate " + coordinate.name
+                    project.coordinates.value.append(coordinate)
 
 
 class QualityReader(SectionReader):

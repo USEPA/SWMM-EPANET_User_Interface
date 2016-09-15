@@ -937,7 +937,6 @@ class frmMainSWMM(frmMain):
             file_name = self.project.file_name
 
         if os.path.exists(file_name):
-
             prefix, extension = os.path.splitext(file_name)
             self.status_file_name = prefix + self.status_suffix
             self.output_filename = prefix + '.out'

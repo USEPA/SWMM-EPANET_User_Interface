@@ -70,16 +70,46 @@ from core.swmm.quality import Washoff
 from core.swmm.quality import WashoffFunction
 from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
+from core.indexed_list import IndexedList
+
+
+class CoordinateReader(SectionReader):
+    @staticmethod
+    def read(new_text):
+        coordinate = Coordinate()
+        fields = new_text.split()
+        if len(fields) > 2:
+            coordinate.name, coordinate.x, coordinate.y = fields[0:3]
+            return coordinate
+        else:
+            return None
 
 
 class CoordinatesReader(SectionReader):
+    """Read coordinates of nodes into node objects."""
+
     @staticmethod
-    def read(new_text):
-        coordinates = Coordinate()
-        fields = new_text.split()
-        if len(fields) > 2:
-            coordinates.name, coordinates.x, coordinates.y = fields[0:3]
-        return coordinates
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[COORDINATES]"
+        project.coordinates.value = IndexedList([], ['name'])
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            coordinate = CoordinateReader.read(line)
+            if coordinate:
+                found = False
+                for node_group in project.nodes_groups():
+                    if node_group and node_group.value:
+                        for node in node_group.value:
+                            if node.name == coordinate.name:
+                                node.x = coordinate.x
+                                node.y = coordinate.y
+                                found = True
+                                project.coordinates.value.append(node)
+                                break
+                if not found:
+                    print "Node not found in model for coordinate " + coordinate.name
+                    project.coordinates.value.append(coordinate)
 
 
 class LabelReader(SectionReader):

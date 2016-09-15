@@ -78,3 +78,6 @@ class EpanetProject(ProjectBase):
         self.calibrations = SectionAsList("[CALIBRATIONS]") # (list of Calibration)
 
         ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]
+
+    def nodes_groups(self):
+        return [self.junctions, self.reservoirs, self.tanks]

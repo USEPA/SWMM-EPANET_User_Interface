@@ -120,9 +120,10 @@ class frmRunSWMM(frmRunSimulation):
 
             self.set_status(RunStatus.rsComputing)
 
-            # print(self.model_api.swmm_getVersion())
+            print("Running SWMM " + str(self.model_api.swmm_getVersion()))
             self.model_api.swmm_run()
 
+            # self.model_api.swmm_open()
             # self.model_api.swmm_start()
             # date_updated = datetime.now()
             # while self.run_status == RunStatus.rsComputing and self.model_api.errcode == 0:
@@ -157,20 +158,20 @@ class frmRunSWMM(frmRunSimulation):
             self.ErrRunoff, self.ErrFlow, self.ErrQual = self.model_api.swmm_getMassBalErr()
 
             if self.model_api.Errflag:
-                print("\n\n... SWMM completed. There are errors.\n")
+                print("\n\nSWMM completed. There are errors.\n")
                 self.set_status(RunStatus.rsError)
             elif self.model_api.Warnflag:
-                print("\n\n... SWMM completed. There are warnings.\n")
+                print("\n\nSWMM completed. There are warnings.\n")
                 self.set_status(RunStatus.rsWarning)
             else:
-                print("\n\n... SWMM completed.\n")
+                print("\n\nSWMM completed.\n")
                 self.set_status(RunStatus.rsSuccess)
 
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
-            QtGui.QMessageBox.information(None, "EPANET", msg, QtGui.QMessageBox.Ok)
+            QtGui.QMessageBox.information(None, "SWMM", msg, QtGui.QMessageBox.Ok)
             self.set_status(RunStatus.rsShutdown)
         finally:
             try:

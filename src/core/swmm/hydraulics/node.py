@@ -5,18 +5,19 @@ from core.project_base import Section
 from core.metadata import Metadata
 
 
-class Node(Section):
+class Node(Section, Coordinate):
     """A node in a SWMM model (base class of Junction, Outfall, Divider, and Storage)"""
     def __init__(self):
-        self.name = ''
+        Coordinate.__init__(self)
+        # self.name, inherited from Coordinate
         """Unique name or number identifying this node"""
 #
-#         self.centroid = Coordinates(0.0, 0.0)
-#         """Coordinates of Node location (x, y)"""
-#
-#         self.description = ''
-#         """Optional description of the Node"""
-#
+        # self.x, self.y, inherited from Coordinate
+        """Node location for mapping"""
+
+        # self.description = ''
+        """Optional description of the Node"""
+
         self.tag = ''
         """Optional label used to categorize or classify this Node"""
 #
@@ -42,10 +43,10 @@ class Junction(Node):
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
-        ('',                '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
-        ('',                '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
+        ('x',               '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
+        ('y',               '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
         ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
-        ('',                '', "Tag",             '',   '',   '', "Optional category or classification"),
+        ('tag',             '', "Tag",             '',   '',   '', "Optional category or classification"),
         ('',                '', "Inflows",         'NO', '',   '',
          "Click to specify any external inflows received at the junction"),
         ('.treatment(node_name)',                '', "Treatment",       'NO', '',   '',
@@ -130,12 +131,12 @@ class Outfall(Node):
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                '', "Name",            '',   '',   '',  "User-assigned name of outfall"),
-        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of outfall on study area map"),
-        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of outfall on study area map"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of outfall on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of outfall on study area map"),
         ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the outfall"),
-        ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
+        ('.treatment(name)',    '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of outfall's invert"),
         ("tide_gate",           '', "Tide Gate",       '0',  '',   '',  "True if outfall contains a tide gate to prevent backflow"),
         ("route_to",            '', "Route To",        '0',  '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
@@ -211,10 +212,10 @@ class Divider(Junction):
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                '', "Name",            '',   '',   '',  "User-assigned name of divider"),
-        # ('',                  '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
-        # ('',                  '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
         # ('',                  '', "Description",     '',   '',   '',  "Optional comment or description"),
-        # ('',                  '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
         # ('',                  '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
         # ('.treatment(node_name)', '', "Treatment",   'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of divider's invert"),
@@ -268,10 +269,10 @@ class StorageUnit(Junction):
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                '', "Name",            '',   '',   '',  "User-assigned name of storage unit"),
-        ('',                    '', "X-Coordinate",    '',   '',   '',  "X coordinate of storage unit on study area map"),
-        ('',                    '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of storage unit on study area map"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of storage unit on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of storage unit on study area map"),
         ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('',                    '', "Tag",             '',   '',   '',  "Optional category or classification"),
+        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the storage unit"),
         ('.treatment(node_name)', '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the storage unit"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation at the bottom of the storage unit"),

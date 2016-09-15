@@ -126,4 +126,10 @@ class SectionAsList(Section):
             self.DEFAULT_COMMENT = section_comment
         Section.__init__(self)
 
+    def find_item(self, aName):
+        for obj in self.value:
+            if aName.upper() in obj.name.upper():
+                return obj
+        return None
+
 # class SectionAsListGroupByID(SectionAsListOf):

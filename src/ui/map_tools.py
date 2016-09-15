@@ -176,10 +176,17 @@ try:
             # Receivers = as in the above example 'Receivers' is a list of results
             for coordinate_pair in coordinates:
                 # add a feature
-                feature = QgsFeature()
-                feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
-                feature.setAttributes([coordinate_pair.name])
-                features.append(feature)
+                try:
+                    feature = QgsFeature()
+                    feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x),
+                                                                       float(coordinate_pair.y))))
+                    feature.setAttributes([coordinate_pair.name])
+                    features.append(feature)
+                except Exception as ex:
+                    if len(str(coordinate_pair.x)) > 0 and len(str(coordinate_pair.y)) > 0:
+                        print "Did not add coordinate '" + coordinate_pair.name + "' (" +\
+                              str(coordinate_pair.x) + ", " +\
+                              str(coordinate_pair.y) + ") to map: " + str(ex)
 
             # changes are only possible when editing the layer
             layer.startEditing()
@@ -274,7 +281,7 @@ try:
             self.canvas.setLayerSet(self.layers)
             return layer
 
-        def addPolygons(self, polygons, layer_name):
+        def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             if len(polygons) < 1:
                 return None
             layer = QgsVectorLayer("Polygon", layer_name, "memory")
@@ -283,7 +290,8 @@ try:
             # changes are only possible when editing the layer
             layer.startEditing()
             # add fields
-            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                    QgsField("color", QtCore.QVariant.String)])
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
@@ -295,7 +303,7 @@ try:
                         # add a feature
                         feature = QgsFeature()
                         feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                        feature.setAttributes([poly_name])
+                        feature.setAttributes([poly_name, "0"])
                         features.append(feature)
                         poly_points = []
                     poly_name = coordinate_pair.name
@@ -313,6 +321,20 @@ try:
             layer.commitChanges()
             layer.updateExtents()
             # layerCtr = len(self.layers)
+
+            # create our three land use categories using a Python dictionary with a field value as the key, color name, and label
+            legend = {"0": (poly_color, "Subcatchment")} #, "1": ("darkcyan", "Water"), "2": ("green", "Land")}
+
+            # build our categorized renderer items
+            categories = []
+            for kind, (color, label) in legend.items():
+                sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+                sym.setColor(QColor(color))
+                category = QgsRendererCategoryV2(kind, sym, label)
+                categories.append(category)
+            renderer = QgsCategorizedSymbolRendererV2("color", categories)
+            layer.setRendererV2(renderer)
+
             QgsMapLayerRegistry.instance().addMapLayer(layer)
             self.layers.append(QgsMapCanvasLayer(layer))
             self.canvas.setLayerSet(self.layers)

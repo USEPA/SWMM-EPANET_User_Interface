@@ -586,7 +586,11 @@ class frmMainEPANET(frmMain):
             try:
                 QgsMapLayerRegistry.instance().removeAllMapLayers()
                 EmbedMap.layers = self.canvas.layers()
-                self.map_widget.addCoordinates(self.project.coordinates.value, "Nodes")
+                for node_group in self.project.nodes_groups():
+                    if node_group and node_group.value:
+                        self.map_widget.addCoordinates(node_group.value, node_group.SECTION_NAME)
+
+                # self.map_widget.addCoordinates(self.project.coordinates.value, "Nodes")
                 self.map_widget.addCoordinates(self.project.labels.value, "Labels")
                 self.map_widget.addLinks(self.project.coordinates.value,
                                          self.project.pumps.value, "Pumps", "name", QColor('red'), 1)

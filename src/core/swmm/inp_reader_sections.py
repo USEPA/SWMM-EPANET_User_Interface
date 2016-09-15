@@ -1526,12 +1526,10 @@ class TagsReader(SectionReader):
 
     @staticmethod
     def read(new_text, project):
-        section_map = {"GAGE": [project.raingages.value],
-                       "SUBCATCH": [project.subcatchments.value],
-                       "NODE": [project.junctions.value, project.outfalls.value,
-                                project.dividers.value, project.storage.value],
-                       "LINK": [project.conduits.value, project.pumps.value, project.orifices.value,
-                                project.weirs.value, project.outlets.value]}
+        section_map = {"GAGE":     [project.raingages],
+                       "SUBCATCH": [project.subcatchments],
+                       "NODE":      project.nodes_groups(),
+                       "LINK":      project.links_groups()}
         disposable_tags = Section()
         disposable_tags.SECTION_NAME = "[TAGS]"
         for line in new_text.splitlines():
@@ -1544,7 +1542,7 @@ class TagsReader(SectionReader):
                 sections = section_map[object_type_name]
                 found = False
                 for section in sections:
-                    for candidate in section:
+                    for candidate in section.value:
                         if candidate.name.upper() == object_name:
                             candidate.tag = tag
                             found = True

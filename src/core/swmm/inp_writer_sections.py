@@ -1255,15 +1255,13 @@ class TagsWriter(SectionWriter):
     @staticmethod
     def as_text(project):
         text_list = [TagsWriter.SECTION_NAME]
-        section_map = {"Gage      ": [project.raingages.value],
-                       "Subcatch  ": [project.subcatchments.value],
-                       "Node      ": [project.junctions.value, project.outfalls.value,
-                                      project.dividers.value, project.storage.value],
-                       "Link      ": [project.conduits.value, project.pumps.value, project.orifices.value,
-                                      project.weirs.value, project.outlets.value]}
+        section_map = {"Gage      ": [project.raingages],
+                       "Subcatch  ": [project.subcatchments],
+                       "Node      ":  project.nodes_groups(),
+                       "Link      ":  project.links_groups()}
         for object_type_name, sections in section_map.items():
             for section in sections:
-                for item in section:
+                for item in section.value:
                     if hasattr(item, "tag") and item.tag:
                         name = "Unknown"
                         if hasattr(item, "name") and item.name:

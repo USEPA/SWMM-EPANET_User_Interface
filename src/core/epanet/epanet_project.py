@@ -80,4 +80,7 @@ class EpanetProject(ProjectBase):
         ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]
 
     def nodes_groups(self):
-        return [self.junctions, self.reservoirs, self.tanks]
+        return [self.junctions, self.reservoirs, self.tanks, self.sources]
+
+    def links_groups(self):
+        return [self.pipes, self.pumps, self.valves]

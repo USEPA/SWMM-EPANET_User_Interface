@@ -533,12 +533,11 @@ class TagsWriter(SectionWriter):
     @staticmethod
     def as_text(project):
         text_list = [TagsWriter.SECTION_NAME]
-        section_map = {"NODE": [project.junctions.value, project.reservoirs.value,
-                                project.tanks.value, project.sources.value],
-                       "LINK": [project.pipes.value, project.pumps.value, project.valves.value]}
+        section_map = {"NODE": project.nodes_groups(),
+                       "LINK": project.links_groups()}
         for object_type_name, sections in section_map.items():
             for section in sections:
-                for item in section:
+                for item in section.value:
                     if hasattr(item, "tag") and item.tag:
                         name = "Unknown"
                         if hasattr(item, "name") and item.name:

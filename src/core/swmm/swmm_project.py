@@ -177,4 +177,7 @@ class SwmmProject(ProjectBase):
         ProjectBase.add_section(self, section_name, section_text)
 
     def nodes_groups(self):
-        return [self.junctions, self.outfalls, self.dividers, self.storage, self.raingages]
+        return [self.junctions, self.outfalls, self.dividers, self.storage]
+
+    def links_groups(self):
+        return [self.conduits, self.pumps, self.orifices, self.weirs, self.outlets]

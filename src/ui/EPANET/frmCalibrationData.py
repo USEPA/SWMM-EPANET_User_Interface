@@ -21,6 +21,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         self._main_form = main_form
 
     def set_from(self, project):
+        self.model = "EPANET"
         self.calibrations = project.calibrations
         for lcali in self.calibrations.value:
             #lcali = pcali.Calibration() #debug only
@@ -58,7 +59,9 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
             pass
 
     def toolButton_Clicked(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Calibration File", '',
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("CaliDir", "")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Calibration File", directory,
                                                       "Data files (*.DAT);;All files (*.*)")
         if file_name:
             #self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QtGui.QTableWidgetItem(QtGui.QLineEdit(file_name).text()))
@@ -72,6 +75,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         if self.calibrations == None:
             return
 
+        gui_settings = QtCore.QSettings(self.model, "GUI")
         rowHeader = ""
         litem = None
         lcali = None
@@ -116,7 +120,11 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
             lcali.etype = ltype
             lcali.name = ltype.name
 
+            if os.path.exists(lcali.filename):
+                gui_settings.setValue("CaliDir", os.path.dirname(lcali.filename))
+                gui_settings.sync()
             pass
+        del gui_settings
         self.close()
 
     def cmdCancel_Clicked(self):

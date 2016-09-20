@@ -25,7 +25,7 @@ class frmControls(QtGui.QMainWindow, Ui_frmControls):
         # section = core.epanet.project.Control()
         self.control_type = control_type
         section = project.find_section(control_type)
-        self.txtControls.setPlainText(str(section.value))
+        self.txtControls.setPlainText(section.value)
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section(self.control_type)

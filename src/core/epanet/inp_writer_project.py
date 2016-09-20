@@ -57,8 +57,8 @@ class ProjectWriter(InputFileWriterBase):
                                                 ";----------------\t------------\t-------")
         self.write_energy = EnergyOptionsWriter()
         self.write_status = SectionWriterAsList("[STATUS]", StatusWriter, ";ID             \tStatus/Setting")
-        self.write_controls = SectionWriterAsList("[CONTROLS]", ControlWriter, None)
-        self.write_rules = SectionWriterAsList("[RULES]", SectionWriter, None)
+        self.write_controls = ControlWriter()
+        self.write_rules = RuleWriter()
         self.write_demands = SectionWriterAsList("[DEMANDS]", DemandWriter,
                                                  ";ID             \tDemand   \tPattern   \tCategory\n"
                                                  ";---------------\t---------\t----------\t--------")

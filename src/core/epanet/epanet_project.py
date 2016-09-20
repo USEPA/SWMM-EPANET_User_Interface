@@ -1,6 +1,7 @@
 from core.project_base import ProjectBase, Section, SectionAsList
 from core.epanet.curves import Curve
 from core.epanet.hydraulics.control import Control
+from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
@@ -59,8 +60,8 @@ class EpanetProject(ProjectBase):
         self.curves = SectionAsList("[CURVES]")  # (list of Curve)
         self.energy = EnergyOptions()
         self.status = SectionAsList("[STATUS]")  # (list of Status)
-        self.controls = SectionAsList("[CONTROLS]")  # (list of Control)
-        self.rules = SectionAsList("[RULES]")  # (list of basestring)
+        self.controls = Control()
+        self.rules = Rule()
         self.demands = SectionAsList("[DEMANDS]")  # (list of Demand)
 
         self.quality = SectionAsList("[QUALITY]")  # (list of Quality)

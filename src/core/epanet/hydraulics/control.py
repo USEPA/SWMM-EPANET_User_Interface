@@ -12,27 +12,53 @@ class ControlType(Enum):
 
 class Control(Section):
     """A simple control that modifies a link based on a single condition"""
+
+    SECTION_NAME = "[CONTROLS]"
+
+    """ Store section as string because that is how UI wants it. TODO: expand this class if parsing is needed. """
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ""		# string
-        """Name of link modified by this control"""
+        self.value = ""
+        """Current value of the item as it appears in an InputFile"""
 
-        self.status = ""	    # string
-        """OPEN or CLOSED, a pump speed setting, or a control valve setting"""
+        self.comment = ""
+        """A user-specified header and/or comment about the section"""
 
-        self.node_name = ""		# string
-        """a node ID label"""
+        # self.name = ""		# string
+        # """Name of link modified by this control"""
+        #
+        # self.status = ""	    # string
+        # """OPEN or CLOSED, a pump speed setting, or a control valve setting"""
+        #
+        # self.node_name = ""		# string
+        # """a node ID label"""
+        #
+        # self.value = 0.0		# real
+        # """a pressure for a junction or a water level for a tank"""
+        #
+        # self.time = ""			# string
+        # """a time since the start of the simulation in decimal hours or in hours:minutes format"""
+        #
+        # self.clocktime = ""     # string
+        # """time of day (hour or hour:minute) AM/PM)"""
+        #
+        # self.control_type = ControlType.ABOVE
+        # """Simple controls are used to change link status or settings based on tank water level, junction pressure,
+        #     time into the simulation or time of day"""
 
-        self.value = 0.0		# real
-        """a pressure for a junction or a water level for a tank"""
 
-        self.time = ""			# string
-        """a time since the start of the simulation in decimal hours or in hours:minutes format"""
+class Rule(Section):
+    """A simple control that modifies a link based on a single condition"""
 
-        self.clocktime = ""     # string
-        """time of day (hour or hour:minute) AM/PM)"""
+    SECTION_NAME = "[RULES]"
 
-        self.control_type = ControlType.ABOVE
-        """Simple controls are used to change link status or settings based on tank water level, junction pressure,
-            time into the simulation or time of day"""
+    """ Store section as string because that is how UI wants it. TODO: expand this class if parsing is needed. """
+    def __init__(self):
+        Section.__init__(self)
+
+        self.value = ""
+        """Current value of the item as it appears in an InputFile"""
+
+        self.comment = ""
+        """A user-specified header and/or comment about the section"""

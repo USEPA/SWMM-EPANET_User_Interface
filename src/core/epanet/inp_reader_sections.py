@@ -10,6 +10,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.hydraulics.control import ControlType
 from core.epanet.hydraulics.control import Control
+from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
@@ -135,27 +136,56 @@ class TitleReader(SectionReader):
         return title
 
 
-class ControlReader():
-    """Defines simple controls that modify links based on a single condition"""
+class RuleReader():
+    """Defines rule-based controls that modify links based on a combination of conditions"""
+    SECTION_NAME = "[RULES]"
+
     @staticmethod
     def read(new_text):
-        control = Control()
-        fields = new_text.split()
-        control.name, control.status = fields[1], fields[2]
-        type_str = fields[4].upper()
-        if type_str == "NODE":
-            control.node_name = fields[5]
-            control.control_type = ControlType[fields[6].upper()]
-            control.value = fields[7]
-        elif type_str == "TIME":
-            control.control_type = ControlType.TIME
-            control.time = fields[5]
-        elif type_str == "CLOCKTIME":
-            control.control_type = ControlType.CLOCKTIME
-            control.clocktime = ' '.join(fields[5:])
-        else:
-            raise NameError("Unable to parse Control: " + new_text)
-        return control
+        rules = Rule()
+        lines = new_text.replace(RuleReader.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            first_line = lines[0]
+            if first_line[0] <> ' ':
+                lines[0] = ' ' + lines[0]
+            rules.value = '\n'.join(lines[0:])
+        return rules
+
+
+class ControlReader():
+    """Defines simple controls that modify links based on a single condition"""
+    SECTION_NAME = "[CONTROLS]"
+
+    @staticmethod
+    def read(new_text):
+        controls = Control()
+        lines = new_text.replace(ControlReader.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            first_line = lines[0]
+            if first_line[0] <> ' ':
+                lines[0] = ' ' + lines[0]
+            controls.value = '\n'.join(lines[0:])
+        return controls
+
+    # @staticmethod
+    # def read(new_text):
+    #     control = Control()
+    #     fields = new_text.split()
+    #     control.name, control.status = fields[1], fields[2]
+    #     type_str = fields[4].upper()
+    #     if type_str == "NODE":
+    #         control.node_name = fields[5]
+    #         control.control_type = ControlType[fields[6].upper()]
+    #         control.value = fields[7]
+    #     elif type_str == "TIME":
+    #         control.control_type = ControlType.TIME
+    #         control.time = fields[5]
+    #     elif type_str == "CLOCKTIME":
+    #         control.control_type = ControlType.CLOCKTIME
+    #         control.clocktime = ' '.join(fields[5:])
+    #     else:
+    #         raise NameError("Unable to parse Control: " + new_text)
+    #     return control
 
 
 class LinkReader(SectionReader):

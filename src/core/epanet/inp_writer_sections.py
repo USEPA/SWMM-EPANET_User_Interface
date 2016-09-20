@@ -9,6 +9,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.hydraulics.control import ControlType
 from core.epanet.hydraulics.control import Control
+from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
@@ -108,20 +109,33 @@ class TitleWriter(SectionWriter):
         return Title.SECTION_NAME + '\n' + title.title + '\n' + title.notes
 
 
-class ControlWriter():
+class RuleWriter(SectionWriter):
+    """Defines rule-based controls that modify links based on a combination of conditions"""
+    SECTION_NAME = "[RULES]"
+
+    @staticmethod
+    def as_text(rule):
+        """format contents of this item for writing to file"""
+        return Rule.SECTION_NAME + '\n' + rule.value
+
+
+class ControlWriter(SectionWriter):
     """Defines simple controls that modify links based on a single condition"""
+    SECTION_NAME = "[CONTROLS]"
+
     @staticmethod
     def as_text(control):
         """format contents of this item for writing to file"""
-        if control.name:
-            prefix = " LINK " + control.name + ' ' + control.status
-            if control.control_type == ControlType.ABOVE or control.control_type == ControlType.BELOW:
-                return prefix + " IF NODE " + control.node_name + ' ' + control.control_type.name + ' ' + str(control.value)
-            elif control.control_type == ControlType.TIME and len(control.time) > 0:
-                return prefix + " AT TIME " + control.time
-            elif control.control_type == ControlType.CLOCKTIME and len(control.clocktime) > 0:
-                return prefix + " AT CLOCKTIME " + control.clocktime
-        return ''
+        # if control.name:
+        #     prefix = " LINK " + control.name + ' ' + control.status
+        #     if control.control_type == ControlType.ABOVE or control.control_type == ControlType.BELOW:
+        #         return prefix + " IF NODE " + control.node_name + ' ' + control.control_type.name + ' ' + str(control.value)
+        #     elif control.control_type == ControlType.TIME and len(control.time) > 0:
+        #         return prefix + " AT TIME " + control.time
+        #     elif control.control_type == ControlType.CLOCKTIME and len(control.clocktime) > 0:
+        #         return prefix + " AT CLOCKTIME " + control.clocktime
+        # return ''
+        return Control.SECTION_NAME + '\n' + control.value
 
 
 class LinkWriter(SectionWriter):

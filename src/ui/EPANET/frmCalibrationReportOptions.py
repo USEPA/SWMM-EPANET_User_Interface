@@ -63,35 +63,43 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         #if not self.loaded:
         #    return
         lselText = self.comboBox.currentText().upper()
+        lcali = self.calibrations.find_item(lselText)
         if lselText in pcali.ECalibrationType.DEMAND.name:
             self.currentECaliType = pcali.ECalibrationType.DEMAND
-            self.set_items(False)
+            self.set_items(False, lcali)
         elif lselText in pcali.ECalibrationType.HEAD.name:
             self.currentECaliType = pcali.ECalibrationType.HEAD
-            self.set_items(False)
+            self.set_items(False, lcali)
         elif lselText in pcali.ECalibrationType.PRESSURE.name:
             self.currentECaliType = pcali.ECalibrationType.PRESSURE
-            self.set_items(False)
+            self.set_items(False, lcali)
         elif lselText in pcali.ECalibrationType.QUALITY.name:
             self.currentECaliType = pcali.ECalibrationType.QUALITY
-            self.set_items(False)
+            self.set_items(False, lcali)
         elif lselText in pcali.ECalibrationType.FLOW.name:
             self.currentECaliType = pcali.ECalibrationType.FLOW
-            self.set_items(True)
+            self.set_items(True, lcali)
         elif lselText in pcali.ECalibrationType.VELOCITY.name:
             self.currentECaliType = pcali.ECalibrationType.VELOCITY
-            self.set_items(True)
+            self.set_items(True, lcali)
         pass
 
-    def set_items(self, is_flow):
+    def set_items(self, is_flow, aCali):
         self.listWidget.clear()
         # this list needs to contain all nodes that have calibration data, just poplating with all junctions for now.
+        #aCali = pcali.Calibration('') #debug only
         if is_flow:
-            for i in range(0, len(self.project.pipes.value)):
-                self.listWidget.addItem(self.project.pipes.value[i].name)
+            self.gbxMeasured.setTitle('Measured in Links:')
+            if aCali is not None:
+                for i in range(0, len(self.project.pipes.value)):
+                    if self.project.pipes.value[i].name in aCali.hobjects:
+                        self.listWidget.addItem(self.project.pipes.value[i].name)
         else:
-            for i in range(0, len(self.project.junctions.value)):
-                self.listWidget.addItem(self.project.junctions.value[i].name)
+            self.gbxMeasured.setTitle('Measured at Nodes:')
+            if aCali is not None:
+                for i in range(0, len(self.project.junctions.value)):
+                    if self.project.junctions.value[i].name in aCali.hobjects:
+                        self.listWidget.addItem(self.project.junctions.value[i].name)
 
     def cmdOK_Clicked(self):
         selected_name = ''

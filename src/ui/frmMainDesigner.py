@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Thu Sep 22 14:41:05 2016
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -138,6 +139,28 @@ class Ui_frmMain(object):
         self.tabProjMap.addTab(self.tabProject, _fromUtf8(""))
         self.tabMap = QtGui.QWidget()
         self.tabMap.setObjectName(_fromUtf8("tabMap"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.tabMap)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.lblMapSubcatchments = QtGui.QLabel(self.tabMap)
+        self.lblMapSubcatchments.setObjectName(_fromUtf8("lblMapSubcatchments"))
+        self.verticalLayout_2.addWidget(self.lblMapSubcatchments)
+        self.cboMapSubcatchments = QtGui.QComboBox(self.tabMap)
+        self.cboMapSubcatchments.setObjectName(_fromUtf8("cboMapSubcatchments"))
+        self.verticalLayout_2.addWidget(self.cboMapSubcatchments)
+        self.lblMapNodes = QtGui.QLabel(self.tabMap)
+        self.lblMapNodes.setObjectName(_fromUtf8("lblMapNodes"))
+        self.verticalLayout_2.addWidget(self.lblMapNodes)
+        self.cboMapNodes = QtGui.QComboBox(self.tabMap)
+        self.cboMapNodes.setObjectName(_fromUtf8("cboMapNodes"))
+        self.verticalLayout_2.addWidget(self.cboMapNodes)
+        self.lblMapLinks = QtGui.QLabel(self.tabMap)
+        self.lblMapLinks.setObjectName(_fromUtf8("lblMapLinks"))
+        self.verticalLayout_2.addWidget(self.lblMapLinks)
+        self.cboMapLinks = QtGui.QComboBox(self.tabMap)
+        self.cboMapLinks.setObjectName(_fromUtf8("cboMapLinks"))
+        self.verticalLayout_2.addWidget(self.cboMapLinks)
+        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem1)
         self.tabProjMap.addTab(self.tabMap, _fromUtf8(""))
         self.tabGIS = QtGui.QWidget()
         self.tabGIS.setObjectName(_fromUtf8("tabGIS"))
@@ -467,6 +490,9 @@ class Ui_frmMain(object):
         self.toolBar_Map.setWindowTitle(_translate("frmMain", "toolBar_2", None))
         self.toolBar_Standard.setWindowTitle(_translate("frmMain", "toolBar_3", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabProject), _translate("frmMain", "Project", None))
+        self.lblMapSubcatchments.setText(_translate("frmMain", "Subcatchments", None))
+        self.lblMapNodes.setText(_translate("frmMain", "Nodes", None))
+        self.lblMapLinks.setText(_translate("frmMain", "Links", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabMap), _translate("frmMain", "Map", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabGIS), _translate("frmMain", "GIS", None))
         self.actionStdNewProject.setText(_translate("frmMain", "New", None))

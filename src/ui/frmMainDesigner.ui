@@ -339,6 +339,51 @@
         <attribute name="title">
          <string>Map</string>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="lblMapSubcatchments">
+           <property name="text">
+            <string>Subcatchments</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboMapSubcatchments"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblMapNodes">
+           <property name="text">
+            <string>Nodes</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboMapNodes"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblMapLinks">
+           <property name="text">
+            <string>Links</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboMapLinks"/>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="tabGIS">
         <attribute name="title">

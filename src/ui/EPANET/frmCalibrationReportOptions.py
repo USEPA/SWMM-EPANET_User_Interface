@@ -18,8 +18,8 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"), \
                                self.comboBox_selChanged)
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL("itemSelectionChanged(QString)"), \
-                               self.listWidget_selChanged)
+        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), \
+                               self.listWidget_clicked)
         self.project = project
         # limit what shows up in the combo box to only those with calibration data
         self.comboBox.addItems(['Demand','Head','Pressure','Quality','Flow','Velocity'])
@@ -44,20 +44,26 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
                 break
         pass
 
-    def listWidget_selChanged(self):
+    def listWidget_clicked(self, item):
         if not self.loaded:
             return
+        #w = QtGui.QWidget()
+        #QtGui.QMessageBox.information(w, "Message", "clicked")
         if self.currentECaliType == pcali.ECalibrationType.DEMAND or \
            self.currentECaliType == pcali.ECalibrationType.HEAD or \
            self.currentECaliType == pcali.ECalibrationType.QUALITY or \
            self.currentECaliType == pcali.ECalibrationType.PRESSURE:
             # save selected nodes
             del self.selected_nodes[:]
-            self.selected_nodes.append(self.listWidget.selectedItems())
+            for sitm in self.listWidget.selectedItems():
+                self.selected_nodes.append(sitm.text())
+            #self.selected_nodes.append(self.listWidget.selectedItems())
         else:
             # save selected pipes
             del self.selected_pipes[:]
-            self.selected_pipes.append(self.listWidget.selectedItems())
+            for sitm in self.listWidget.selectedItems():
+                self.selected_pipes.append(sitm.text())
+            #self.selected_pipes.append(self.listWidget.selectedItems())
 
     def comboBox_selChanged(self):
         #if not self.loaded:
@@ -86,7 +92,6 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
 
     def set_items(self, is_flow, aCali):
         self.listWidget.clear()
-        # this list needs to contain all nodes that have calibration data, just poplating with all junctions for now.
         #aCali = pcali.Calibration('') #debug only
         if is_flow:
             self.gbxMeasured.setTitle('Measured in Links:')

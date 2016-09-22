@@ -24,7 +24,6 @@ from core.coordinate import Coordinate
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
 from core.epanet.hydraulics.node import Tank
-from core.epanet.hydraulics.node import Mixing
 from core.epanet.hydraulics.node import Source
 from core.epanet.hydraulics.node import Demand
 from core.epanet.options.backdrop import BackdropUnits
@@ -247,17 +246,6 @@ class CoordinateWriter(SectionWriter):
         return inp
 
 
-class QualityWriter(SectionWriter):
-    """Initial water quality at a node."""
-
-    field_format = "{:16}\t{}"
-
-    @staticmethod
-    def as_text(quality):
-        """format contents of this item for writing to file"""
-        return QualityWriter.field_format.format(quality.name, quality.initial_quality)
-
-
 class JunctionWriter(SectionWriter):
     """Junction properties"""
 
@@ -299,12 +287,12 @@ class MixingWriter(SectionWriter):
     field_format = "{:16}\t{:12}\t{:12}\t{}"
 
     @staticmethod
-    def as_text(mixing):
+    def as_text(tank):
         """format contents of this item for writing to file"""
-        return MixingWriter.field_format.format(mixing.name,
-                                        mixing.mixing_model.name.replace("TWO_", "2"),
-                                        mixing.mixing_fraction,
-                                        mixing.comment)
+        return MixingWriter.field_format.format(tank.name,
+                                        tank.mixing_model.name.replace("TWO_", "2"),
+                                        tank.mixing_fraction,
+                                        tank.comment)
 
 
 class SourceWriter(SectionWriter):
@@ -484,6 +472,30 @@ class QualityOptionsWriter(SectionWriter):
         txt += QualityOptionsWriter.field_format.format("Diffusivity", str(quality_options.diffusivity))
         txt += QualityOptionsWriter.field_format.format("Tolerance", str(quality_options.tolerance))
         return txt
+
+
+class QualityWriter(SectionWriter):
+    """Write initial quality to a string"""
+    SECTION_NAME = "[QUALITY]"
+    field_format = "{:16}\t{}"
+
+    @staticmethod
+    def as_text(project):
+        text_list = []
+        for section in project.nodes_groups():
+            for item in section.value:
+                if hasattr(item, "initial_quality") and item.initial_quality:
+                    name = "Unknown"
+                    if hasattr(item, "name") and item.name:
+                        name = item.name
+                    text_list.append(QualityWriter.field_format.format(name, item.initial_quality))
+        if len(text_list) > 0:
+            return QualityWriter.SECTION_NAME + '\n' + \
+                ";Node           \tInitQuality\n" + \
+                ";---------------\t-----------\n" + \
+                '\n'.join(text_list)
+        else:
+            return ''
 
 
 class ReactionsWriter(SectionWriter):

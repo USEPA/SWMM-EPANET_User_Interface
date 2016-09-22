@@ -31,7 +31,7 @@ class ProjectReader(InputFileReader):
         self.read_junctions = SectionReaderAsList("[JUNCTIONS]", JunctionReader)
         self.read_reservoirs = SectionReaderAsList("[RESERVOIRS]", ReservoirReader)
         self.read_tanks = SectionReaderAsList("[TANKS]", TankReader)
-        self.read_mixing = SectionReaderAsList("[MIXING]", MixingReader)
+        # self.read_mixing = SectionReaderAsList("[MIXING]", MixingReader)
         self.read_pipes = SectionReaderAsList("[PIPES]", PipeReader)
         self.read_pumps = SectionReaderAsList("[PUMPS]", PumpReader)
         self.read_valves = SectionReaderAsList("[VALVES]", ValveReader)
@@ -59,6 +59,7 @@ class ProjectReader(InputFileReader):
         self.defer_quality = None
         self.defer_coordinates = None
         self.defer_tags = None
+        self.defer_mixing = None
 
 
     def read_section(self, project, section_name, section_text):
@@ -72,6 +73,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[MIXING]":
+            self.defer_mixing = section_text
+            return  # Skip read_section, defer until finished_reading is called.
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -84,3 +88,6 @@ class ProjectReader(InputFileReader):
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
+        if self.defer_mixing:
+            MixingReader.read(self.defer_mixing, project)
+            self.defer_mixing = None

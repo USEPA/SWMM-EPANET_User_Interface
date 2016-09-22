@@ -158,17 +158,6 @@ class Tank(Node):
         self.volume_curve = ''
         """If a volume curve is supplied the diameter value can be any non-zero number"""
 
-        # refer to [REACTIONS] section for reaction coefficient
-
-
-class Mixing(Section):
-    """Mixing model and volume fraction of a Tank"""
-
-    def __init__(self):
-        Section.__init__(self)
-        self.name = ''
-        """node identifier/name"""
-
         self.mixing_model = MixingModel.MIXED
         """Mixing models include:
             Completely Mixed (MIXED)
@@ -178,6 +167,27 @@ class Mixing(Section):
 
         self.mixing_fraction = "0.0"
         """fraction of the total tank volume devoted to the inlet/outlet compartment"""
+
+        # refer to [REACTIONS] section for reaction coefficient
+
+
+# class Mixing(Section):
+#     """Mixing model and volume fraction of a Tank"""
+#
+#     def __init__(self):
+#         Section.__init__(self)
+#         self.name = ''
+#         """node identifier/name"""
+#
+#         self.mixing_model = MixingModel.MIXED
+#         """Mixing models include:
+#             Completely Mixed (MIXED)
+#             Two-Compartment Mixing (2COMP)
+#             Plug Flow (FIFO)
+#             Stacked Plug Flow (LIFO)"""
+#
+#         self.mixing_fraction = "0.0"
+#         """fraction of the total tank volume devoted to the inlet/outlet compartment"""
 
 
 class Source(Node):

@@ -25,7 +25,6 @@ from core.epanet.hydraulics.node import Coordinate
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
 from core.epanet.hydraulics.node import Tank
-from core.epanet.hydraulics.node import Mixing
 from core.epanet.hydraulics.node import Source
 from core.epanet.hydraulics.node import Demand
 from core.epanet.options.backdrop import BackdropUnits
@@ -420,19 +419,25 @@ class TankReader(SectionReader):
 class MixingReader(SectionReader):
     """Mixing model and volume fraction of a Tank"""
 
-
     @staticmethod
-    def read(new_text):
-        mixing = Mixing()
-        new_text = SectionReader.set_comment_check_section(mixing, new_text)
-        fields = new_text.split()
-        if len(fields) > 0:
-            mixing.name = fields[0]
-        if len(fields) > 1:
-            mixing.mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
-        if len(fields) > 2:
-            mixing.mixing_fraction = fields[2]
-        return mixing
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[MIXING]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            fields = line.split(None, 1)
+            if len(fields) > 1:
+                node_name = fields[0]
+                mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
+                if len(fields) > 2:
+                    mixing_fraction = fields[2]
+                for nodes in (project.tanks.value):
+                    for node in nodes:
+                        if node.name == node_name:
+                            node.setattr_keep_type("mixing_model", mixing_model)
+                            if len(fields) > 2:
+                                node.setattr_keep_type("mixing_fraction", mixing_fraction)
+                            break
 
 
 class SourceReader(SectionReader):
@@ -683,26 +688,28 @@ class ReportOptionsReader(SectionReader):
     def read(new_text):
         """Read this section from the text representation"""
         report_options = ReportOptions()
-        for line in new_text.splitlines():
+        lines = new_text.splitlines()
+        for line in lines:
             line = SectionReader.set_comment_check_section(report_options, line)
-            (attr_name, attr_value) = new_text.split(None, 1)
-            attr_name = attr_name.upper()
-            if attr_name == "NODES":
-                report_options.nodes.extend(attr_value.split())
-            elif attr_name == "LINKS":
-                report_options.links.extend(attr_value.split())
-            elif attr_name == "STATUS":
-                report_options.setattr_keep_type("status", attr_value)
-            elif attr_name == "FILE":
-                report_options.file = attr_value
-            elif attr_name == "SUMMARY":
-                report_options.setattr_keep_type("summary", attr_value)
-            elif attr_name == "PAGESIZE" or attr_name == "PAGE":
-                report_options.pagesize = attr_value
-            elif attr_name == "ENERGY":
-                report_options.setattr_keep_type("energy", attr_value)
-            else:
-                report_options.parameters.extend(line)
+            if line:
+                (attr_name, attr_value) = line.split(None, 1)
+                attr_name = attr_name.upper()
+                if attr_name == "NODES":
+                    report_options.nodes.extend(attr_value.split())
+                elif attr_name == "LINKS":
+                    report_options.links.extend(attr_value.split())
+                elif attr_name == "STATUS":
+                    report_options.setattr_keep_type("status", attr_value)
+                elif attr_name == "FILE":
+                    report_options.file = attr_value
+                elif attr_name == "SUMMARY":
+                    report_options.setattr_keep_type("summary", attr_value)
+                elif attr_name == "PAGESIZE" or attr_name == "PAGE":
+                    report_options.pagesize = attr_value
+                elif attr_name == "ENERGY":
+                    report_options.setattr_keep_type("energy", attr_value)
+                else:
+                    report_options.parameters.extend(line)
         return report_options
 
     # @staticmethod

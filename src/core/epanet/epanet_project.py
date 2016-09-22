@@ -10,7 +10,7 @@ from core.epanet.hydraulics.node import Coordinate
 from core.epanet.hydraulics.node import Demand
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir
-from core.epanet.hydraulics.node import Tank, Mixing
+from core.epanet.hydraulics.node import Tank
 from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
 from core.epanet.options.options import Options
@@ -50,8 +50,6 @@ class EpanetProject(ProjectBase):
         self.junctions = SectionAsList("[JUNCTIONS]")  # (list of Junction)
         self.reservoirs = SectionAsList("[RESERVOIRS]")  # (list of Reservoir)
         self.tanks = SectionAsList("[TANKS]")  # (list of Tank)
-
-        self.mixing = SectionAsList("[MIXING]")  # (list of Mixing)
         self.pipes = SectionAsList("[PIPES]")  # (list of Pipe)
         self.pumps = SectionAsList("[PUMPS]")  # (list of Pump)
         self.valves = SectionAsList("[VALVES]")  # (list of Valve)
@@ -63,11 +61,8 @@ class EpanetProject(ProjectBase):
         self.controls = Control()
         self.rules = Rule()
         self.demands = SectionAsList("[DEMANDS]")  # (list of Demand)
-
-        self.quality = SectionAsList("[QUALITY]")  # (list of Quality)
         self.reactions = Reactions()
         self.sources = SectionAsList("[SOURCES]")  # (list of Source)
-        # [MIXING]
         # self.options = MapOptions,
         self.options = Options()
         self.times = TimesOptions()

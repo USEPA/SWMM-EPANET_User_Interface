@@ -1,4 +1,4 @@
-from core.inp_writer_base import InputFileWriterBase, SectionWriterAsList
+from core.inp_writer_base import InputFileWriterBase, SectionWriterAsList, SectionAsList
 from core.epanet.options.times import TimesOptions
 from core.epanet.patterns import Pattern
 from core.epanet.title import Title
@@ -70,7 +70,6 @@ class ProjectWriter(InputFileWriterBase):
         self.write_sources = SectionWriterAsList("[SOURCES]", SourceWriter,
                                                  ";Node           \tType          \tStrength    \tPattern\n"
                                                  ";---------------\t--------------\t------------\t-------")
-        # [MIXING]
         self.write_options = OptionsWriter()
         self.write_times = SectionWriter()
         self.write_report = ReportOptionsWriter()
@@ -82,3 +81,23 @@ class ProjectWriter(InputFileWriterBase):
                                                 ";X-Coord        \tY-Coord         \tLabel & Anchor Node")
         self.write_backdrop = BackdropOptionsWriter()
         self.write_tags = TagsWriter()
+
+    def as_text(self, project):
+
+        inp = InputFileWriterBase.as_text(self, project)
+
+        quality_text = QualityWriter.as_text(project)
+        if quality_text:
+            inp += '\n' + quality_text + '\n'
+
+        tags_text = self.write_tags.as_text(project)
+        if tags_text:
+            inp += '\n' + tags_text + '\n'
+
+        mixing = SectionAsList('[MIXING]')
+        mixing.value = project.tanks.value
+        mixing_text = self.write_mixing.as_text(mixing)
+        if mixing_text:
+            inp += '\n' + mixing_text + '\n'
+
+        return inp

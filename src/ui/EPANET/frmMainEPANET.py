@@ -220,7 +220,9 @@ class frmMainEPANET(frmMain):
 
     def report_calibration(self):
         if self.output:
-            self._frmCalibrationReportOptions = frmCalibrationReportOptions(self, self.project)
+            self._frmCalibrationReportOptions = frmCalibrationReportOptions(self,
+                                                                            self.project,
+                                                                            self.output)
             self._frmCalibrationReportOptions.show()
         else:
             QMessageBox.information(None, self.model,

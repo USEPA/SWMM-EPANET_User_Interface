@@ -23,9 +23,21 @@ class ECalibrationFileStatus(Enum):
     FileNotExists = 3
     ReadIncomplete = 4
 
+class CalibrationDataset:
+    def __init__(self):
+        self.id = ''
+        self.dataset = None
+        self.is_selected = False
+
 class Calibration(Section):
     header_char = ';'
     delimiter_char = '\t'
+
+    DefMeasError = 5
+    FLOWTOL = 0.005
+    MISSING = -1.0e10
+    METERSperFOOT = 0.3048
+    FEETperMETER = 3.281
 
     def __init__(self, afilename):
         Section.__init__(self)
@@ -36,7 +48,7 @@ class Calibration(Section):
         self.filename = afilename
         """calibration data file name"""
         self.hobjects = {}
-        """object-calibration data collection"""
+        """object-calibration dataset collection"""
         self.quality = None
         """calibration data chemical collection"""
         self.headers = None
@@ -81,14 +93,20 @@ class Calibration(Section):
                                     times = []
                                     values = []
                                 elif len(times) > 0:
-                                    self.hobjects[id_prev] = pd.Series(values, index=times)
+                                    self.hobjects[id_prev] = CalibrationDataset()
+                                    with self.hobjects[id_prev] as new_dataset:
+                                        new_dataset.id = id_prev
+                                        new_dataset.dataset = pd.Series(values, index=times)
                                     times = []
                                     values = []
                                 id_prev = id.strip()
                     times.append(float(time))
                     values.append(float(value))
                 #set up the last hobject calibration data
-                self.hobjects[id_prev] = pd.Series(values, index=times)
+                self.hobjects[id_prev] = CalibrationDataset()
+                with self.hobjects[id_prev] as new_dataset:
+                    new_dataset.id = id_prev
+                    new_dataset.dataset = pd.Series(values, index=times)
                 del times
                 del values
 

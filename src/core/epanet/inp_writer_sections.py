@@ -295,6 +295,22 @@ class MixingWriter(SectionWriter):
                                         tank.comment)
 
 
+class EmittersWriter(SectionWriter):
+    """Emitter coefficients for junctions"""
+
+    field_format = "{:16}\t{:12}\t{}"
+
+    @staticmethod
+    def as_text(junction):
+        """format contents of this item for writing to file"""
+        if len(junction.emitter_coefficient) > 0:
+            return EmittersWriter.field_format.format(junction.name,
+                                            junction.emitter_coefficient,
+                                            junction.comment)
+        else:
+            return None
+
+
 class SourceWriter(SectionWriter):
     """Defines locations of water quality sources"""
 

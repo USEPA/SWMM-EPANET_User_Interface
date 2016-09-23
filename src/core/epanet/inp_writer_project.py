@@ -32,6 +32,10 @@ class ProjectWriter(InputFileWriterBase):
         self.write_junctions = SectionWriterAsList("[JUNCTIONS]", JunctionWriter,
                                                    ";ID             \tElev  \tDemand\tPattern\n"
                                                    ";---------------\t------\t------\t-------")
+        self.write_emitters = SectionWriterAsList("[EMITTERS]", EmittersWriter,
+                                                ";Junction       \tCoefficient\n"
+                                                ";---------------\t------------")
+
         self.write_reservoirs = SectionWriterAsList("[RESERVOIRS]", ReservoirWriter,
                                                     ";ID             \tHead        \tPattern\n"
                                                     ";---------------\t------------\t-------")
@@ -48,7 +52,6 @@ class ProjectWriter(InputFileWriterBase):
                                                ";ID             \tNode1           \tNode2           \tParameters")
         self.write_valves = SectionWriterAsList("[VALVES]", ValveWriter,
             ";ID              \tNode1           \tNode2           \tDiameter    \tType\tSetting     \tMinorLoss   ")
-        # self.write_emitters = [(Junction, "emitter_coefficient")]
         self.write_patterns = SectionWriterAsList("[PATTERNS]", PatternWriter,
                                                   ";ID              \tMultipliers\n"
                                                   ";----------------\t-----------")
@@ -99,5 +102,11 @@ class ProjectWriter(InputFileWriterBase):
         mixing_text = self.write_mixing.as_text(mixing)
         if mixing_text:
             inp += '\n' + mixing_text + '\n'
+
+        emitters = SectionAsList('[EMITTERS]')
+        emitters.value = project.junctions.value
+        emitters_text = self.write_emitters.as_text(emitters)
+        if emitters_text:
+            inp += '\n' + emitters_text + '\n'
 
         return inp

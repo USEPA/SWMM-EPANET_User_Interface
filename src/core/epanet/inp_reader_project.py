@@ -31,11 +31,9 @@ class ProjectReader(InputFileReader):
         self.read_junctions = SectionReaderAsList("[JUNCTIONS]", JunctionReader)
         self.read_reservoirs = SectionReaderAsList("[RESERVOIRS]", ReservoirReader)
         self.read_tanks = SectionReaderAsList("[TANKS]", TankReader)
-        # self.read_mixing = SectionReaderAsList("[MIXING]", MixingReader)
         self.read_pipes = SectionReaderAsList("[PIPES]", PipeReader)
         self.read_pumps = SectionReaderAsList("[PUMPS]", PumpReader)
         self.read_valves = SectionReaderAsList("[VALVES]", ValveReader)
-        # self.read_emitters = [(Junction, "emitter_coefficient")]
         self.read_patterns = SectionReaderAsListGroupByID("[PATTERNS]", PatternReader)
         self.read_curves = SectionReaderAsListGroupByID("[CURVES]", CurveReader)
         self.read_energy = EnergyOptionsReader()
@@ -45,7 +43,6 @@ class ProjectReader(InputFileReader):
         self.read_demands = SectionReaderAsList("[DEMANDS]", DemandReader)
         self.read_reactions = ReactionsReader()
         self.read_sources = SectionReaderAsList("[SOURCES]", SourceReader)
-        # [MIXING]
         # self.read_options = MapOptions,
         self.read_options = OptionsReader()
         self.read_times = TimesOptionsReader()
@@ -60,6 +57,7 @@ class ProjectReader(InputFileReader):
         self.defer_coordinates = None
         self.defer_tags = None
         self.defer_mixing = None
+        self.defer_emitters = None
 
 
     def read_section(self, project, section_name, section_text):
@@ -76,7 +74,11 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[MIXING]":
             self.defer_mixing = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[EMITTERS]":
+            self.defer_emitters = section_text
+            return  # Skip read_section, defer until finished_reading is called.
         InputFileReader.read_section(self, project, section_name, section_text)
+
 
     def finished_reading(self, project):
         if self.defer_quality:
@@ -91,3 +93,5 @@ class ProjectReader(InputFileReader):
         if self.defer_mixing:
             MixingReader.read(self.defer_mixing, project)
             self.defer_mixing = None
+        if self.defer_emitters:
+            EmittersReader.read(self.defer_emitters, project)

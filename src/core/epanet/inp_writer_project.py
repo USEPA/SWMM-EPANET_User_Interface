@@ -109,4 +109,6 @@ class ProjectWriter(InputFileWriterBase):
         if emitters_text:
             inp += '\n' + emitters_text + '\n'
 
+        inp += '\n' + '[END]' + '\n'
+
         return inp

@@ -352,7 +352,7 @@ class BackdropOptionsWriter(SectionWriter):
 
     @staticmethod
     def as_text(backdrop_options):
-        if backdrop_options.file:
+        if backdrop_options:
             text_list = [BackdropOptions.SECTION_NAME]
             if backdrop_options.dimensions:
                 text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",

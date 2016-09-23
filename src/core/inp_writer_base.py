@@ -36,7 +36,7 @@ class InputFileWriterBase(object):
                     writer = SectionWriterAsList(section.SECTION_NAME, SectionWriter(), None)
                 try:
                     section_text = writer.as_text(section).rstrip('\n')
-                    if section_text:                               # Skip adding blank sections
+                    if section_text and section_text <> '[END]':                    # Skip adding blank sections
                         section_text_list.append(section_text)
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))

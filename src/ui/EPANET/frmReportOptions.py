@@ -58,6 +58,9 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         frmReportOptions.set_combo(self.cboSummary, section.summary)
         frmReportOptions.set_combo(self.cboEnergy, section.energy)
 
+        self.gbxLink.setVisible(False)
+        self.gbxNode.setVisible(False)
+        self.setMaximumHeight(189)
         # if parameter = "Elevation"
         # self.cbxNode1
         # self.cboNode1 = section.parameters

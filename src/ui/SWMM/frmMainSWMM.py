@@ -85,6 +85,8 @@ from core.swmm.labels import Label
 from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
 
+import Externals.swmm.outputapi.SMOutputWrapper as SMO
+
 
 class frmMainSWMM(frmMain):
     """Main form for SWMM user interface, based on frmMain which is shared with EPANET."""
@@ -315,6 +317,39 @@ class frmMainSWMM(frmMain):
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About SWMM", None))
         self.menuHelp.addAction(self.Help_About_Menu)
         QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+
+        self.add_map_constituents()
+        self.cboMapSubcatchments.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+        self.cboMapNodes.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+        self.cboMapLinks.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+
+    def add_map_constituents(self):
+        self.cboMapSubcatchments.clear()
+        self.cboMapSubcatchments.addItems(['None','Area','Width','Slope','Imperviousness','LID Usage'])
+        self.cboMapNodes.clear()
+        self.cboMapNodes.addItems(['None','Invert'])
+        self.cboMapLinks.clear()
+        self.cboMapLinks.addItems(['None','Max. Depth','Roughness','Slope'])
+        if self.get_output():
+            # Add object type labels to map combos if there are any of each type in output
+            object_type = SMO.swmm_output_get_object_type('Subcatchments')
+            if object_type:
+                attribute_names = [attribute.name for attribute in object_type.attributes]
+                for item in attribute_names:
+                    self.cboMapSubcatchments.addItem(item)
+            object_type = SMO.swmm_output_get_object_type('Nodes')
+            if object_type:
+                attribute_names = [attribute.name for attribute in object_type.attributes]
+                for item in attribute_names:
+                    self.cboMapNodes.addItem(item)
+            object_type = SMO.swmm_output_get_object_type('Links')
+            if object_type:
+                attribute_names = [attribute.name for attribute in object_type.attributes]
+                for item in attribute_names:
+                    self.cboMapLinks.addItem(item)
+
+    def cboMap_currentIndexChanged(self):
+        pass
 
     def get_output(self):
         if not self.output:
@@ -972,6 +1007,7 @@ class frmMainSWMM(frmMain):
                         frmRun.project = self.project
 
                     frmRun.Execute()
+                    self.add_map_constituents()
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
@@ -1003,6 +1039,7 @@ class frmMainSWMM(frmMain):
                 # running the Exe
                 status = StatusMonitor0(exe_path, args, self, model='SWMM')
                 status.show()
+                self.add_map_constituents()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 

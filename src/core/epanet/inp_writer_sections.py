@@ -295,6 +295,22 @@ class MixingWriter(SectionWriter):
                                         tank.comment)
 
 
+class EmittersWriter(SectionWriter):
+    """Emitter coefficients for junctions"""
+
+    field_format = "{:16}\t{:12}\t{}"
+
+    @staticmethod
+    def as_text(junction):
+        """format contents of this item for writing to file"""
+        if len(junction.emitter_coefficient) > 0:
+            return EmittersWriter.field_format.format(junction.name,
+                                            junction.emitter_coefficient,
+                                            junction.comment)
+        else:
+            return None
+
+
 class SourceWriter(SectionWriter):
     """Defines locations of water quality sources"""
 
@@ -336,7 +352,7 @@ class BackdropOptionsWriter(SectionWriter):
 
     @staticmethod
     def as_text(backdrop_options):
-        if backdrop_options.file:
+        if backdrop_options:
             text_list = [BackdropOptions.SECTION_NAME]
             if backdrop_options.dimensions:
                 text_list.append(" {:17}\t{:16}\t{:16}\t{:16}\t{:16}".format("DIMENSIONS",

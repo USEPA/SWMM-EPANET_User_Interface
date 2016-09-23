@@ -58,6 +58,8 @@ from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
 
+import Externals.epanet.outputapi.ENOutputWrapper as ENO
+
 
 class frmMainEPANET(frmMain):
     """Main form for EPANET user interface, based on frmMain which is shared with SWMM."""
@@ -192,6 +194,33 @@ class frmMainEPANET(frmMain):
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About EPANET", None))
         self.menuHelp.addAction(self.Help_About_Menu)
         QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+
+        self.cboMapSubcatchments.setVisible(False)
+        self.lblMapSubcatchments.setVisible(False)
+        self.add_map_constituents()
+        self.cboMapNodes.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+        self.cboMapLinks.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+
+    def add_map_constituents(self):
+        self.cboMapNodes.clear()
+        self.cboMapNodes.addItems(['None','Elevation','Base Demand','Initial Quality'])
+        self.cboMapLinks.clear()
+        self.cboMapLinks.addItems(['None','Length','Diameter','Roughness','Bulk Coeff.','Wall Coeff.'])
+        if self.output:
+            # Add object type labels to map combos if there are any of each type in output
+            object_type = ENO.swmm_output_get_object_type('Nodes')
+            if object_type:
+                attribute_names = [attribute.name for attribute in object_type.attributes]
+                for item in attribute_names:
+                    self.cboMapNodes.addItem(item)
+            object_type = ENO.swmm_output_get_object_type('Links')
+            if object_type:
+                attribute_names = [attribute.name for attribute in object_type.attributes]
+                for item in attribute_names:
+                    self.cboMapLinks.addItem(item)
+
+    def cboMap_currentIndexChanged(self):
+        pass
 
     def report_status(self):
         print "report_status"
@@ -519,6 +548,7 @@ class frmMainEPANET(frmMain):
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     self.report_status()
+                    self.add_map_constituents()
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
                         return

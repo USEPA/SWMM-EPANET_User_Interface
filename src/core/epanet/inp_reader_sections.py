@@ -425,7 +425,7 @@ class MixingReader(SectionReader):
         disposable_section.SECTION_NAME = "[MIXING]"
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
-            fields = line.split(None, 1)
+            fields = line.split(None)
             if len(fields) > 1:
                 node_name = fields[0]
                 mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
@@ -438,6 +438,25 @@ class MixingReader(SectionReader):
                             if len(fields) > 2:
                                 node.setattr_keep_type("mixing_fraction", mixing_fraction)
                             break
+
+
+class EmittersReader(SectionReader):
+    """Emitters and associated coefficient for junctions"""
+
+    @staticmethod
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[EMITTERS]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            fields = line.split(None)
+            if len(fields) > 1:
+                node_name = fields[0]
+                emitter_coefficient = fields[1]
+                for node in project.junctions.value:
+                    if node.name == node_name:
+                        node.setattr_keep_type("emitter_coefficient", emitter_coefficient)
+                        break
 
 
 class SourceReader(SectionReader):

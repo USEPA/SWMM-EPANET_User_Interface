@@ -83,6 +83,7 @@ class Calibration(Section):
 
                 times = None
                 values = None
+                simvals = None
                 id_prev = '-999999'
                 for id, time, value in reader:
                     if len(id.strip()) > 0:
@@ -92,21 +93,25 @@ class Calibration(Section):
                                 if id_prev == '-999999':
                                     times = []
                                     values = []
+                                    simvals = []
                                 elif len(times) > 0:
+                                    obs = pd.Series(values, index=times)
+                                    sim = pd.Series(simvals, index=times)
                                     self.hobjects[id_prev] = CalibrationDataset()
-                                    with self.hobjects[id_prev] as new_dataset:
-                                        new_dataset.id = id_prev
-                                        new_dataset.dataset = pd.Series(values, index=times)
+                                    self.hobjects[id_prev].id = id_prev
+                                    # new_dataset.dataset = pd.Series(values, index=times)
+                                    self.hobjects[id_prev].dataset = pd.DataFrame({'Obs': obs, 'Sim': sim})
                                     times = []
                                     values = []
+                                    simvals = []
                                 id_prev = id.strip()
                     times.append(float(time))
                     values.append(float(value))
+                    simvals.append(float('NaN'))
                 #set up the last hobject calibration data
                 self.hobjects[id_prev] = CalibrationDataset()
-                with self.hobjects[id_prev] as new_dataset:
-                    new_dataset.id = id_prev
-                    new_dataset.dataset = pd.Series(values, index=times)
+                self.hobjects[id_prev].id = id_prev
+                self.hobjects[id_prev].dataset = pd.Series(values, index=times)
                 del times
                 del values
 

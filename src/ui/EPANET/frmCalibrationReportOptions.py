@@ -72,13 +72,13 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
     def select_cali_data(self, aECaliType, aSelectedIDs):
         if self.calibrations is None:
             return
-        for lcali in self.calibrations:
+        for lcali in self.calibrations.value:
             if lcali.etype == aECaliType:
-                for ldataset in lcali.hobjects:
-                    if ldataset.id in aSelectedIDs:
-                        ldataset.is_selected = True
+                for ldsid in lcali.hobjects:
+                    if ldsid in aSelectedIDs:
+                        lcali.hobjects[ldsid].is_selected = True
                     else:
-                        ldataset.is_selected = False
+                        lcali.hobjects[ldsid].is_selected = False
 
     def comboBox_selChanged(self):
         #if not self.loaded:

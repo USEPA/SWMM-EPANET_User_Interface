@@ -14,11 +14,11 @@ for US EPA
 """
 
 from ctypes import *
-
+import time, datetime
 import Externals.epanet.outputapi.outputapi as _lib
+
 # ctypes utility variable created once to avoid overhead of creating every time needed
 _cint = c_int()
-
 
 class ENR_categoryBase:
     """ This class is not used directly, it is as a base class with shared code for ENR_node_type and ENR_link_type.
@@ -201,7 +201,7 @@ class ENR_categoryBase:
             ENR_attribute object whose name == attribute_name, or None if no attribute's name matches exactly.
         """
         for attribute in cls.Attributes:
-            if attribute.name == attribute_name:
+            if attribute.name.upper() == attribute_name.upper():
                 return attribute
         return None
 
@@ -320,6 +320,8 @@ class OutputObject(object):
         print("ENR opened {} Version {}".format(output_file_name, str(file_version)))
         self._measure_new_out_value_series()
         self._get_units()
+        self.dates = []
+        self.times = []
         self._get_times()
         self.nodes = ENR_node_type.read_all(self)
         self.links = ENR_link_type.read_all(self)
@@ -339,7 +341,7 @@ class OutputObject(object):
             if items:
                 # Check the first item to make sure its type label matches
                 for item in items.values():
-                    if item.type_label == object_type_label:
+                    if item.TypeLabel.upper() == object_type_label.upper():
                         return items
                     else:  # these are not the items we want, skip to next items
                         break
@@ -440,7 +442,19 @@ class OutputObject(object):
         self.reportStart = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStart)
         self.reportStep  = self._call_int(_lib.ENR_getTimes, _lib.ENR_reportStep)
         self.simDuration = self._call_int(_lib.ENR_getTimes, _lib.ENR_simDuration)
+        #ToDo: num_periods is one more than specified ?!
         self.num_periods = self._call_int(_lib.ENR_getTimes, _lib.ENR_numPeriods)
+
+        #let's save the time step series once as all constituents share this time series
+        #x_values = []
+        # hack #2, +1 is to end in the ending moment of a time step
+        # this is called only once so as to be applied to all constituents' time series
+        for time_index in range(0, self.num_periods):
+            elapsed_hours = self.elapsed_hours_at_index(time_index)
+            #self.dates.append(self.reportStart + datetime.timedelta(hours=elapsed_hours))
+            self.times.append(elapsed_hours)
+
+        pass
 
     def get_pump_energy_usage_statistics(self):
         """ Read pump energy usage statistics for all pumps.
@@ -519,6 +533,26 @@ class OutputObject(object):
     #     total_hours = self.elapsed_hours_at_index(report_time_index)
     #     report_date = self.StartDate + datetime.timedelta(hours=total_hours)
     #     return report_date.strftime("%Y-%m-%d %H:%M")
+
+    def get_time_series(self, type_label, object_id, attribute_name):
+        # ToDo: need to debug get_series about not reading the first zero entry
+        try:
+            import pandas as pd
+            item = None
+            if "SYSTEM" in type_label.upper():
+                item = self.system.items()[0][1]  # SwmmOutputSystem
+            else:
+                item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment, Link, Node
+
+            attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute
+            #ToDo: this is a hack here, due to num_periods is off by 1 too many
+            y_values = item.get_series(self, attribute, 0, self.num_periods - 1)
+
+            # now make a time series data frame
+            #return pd.Series(y_values, index=self.dates)
+            return pd.Series(y_values, index=self.times)
+        except Exception as ex:
+            print str(ex)
 
 
 class PumpEnergy:

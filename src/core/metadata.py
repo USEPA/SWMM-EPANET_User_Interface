@@ -83,6 +83,12 @@ class Metadata(list):
                 return meta_item
         return Metadata.empty_meta_item
 
+    def meta_item_of_label(self, label):
+        for meta_item in self:
+            if meta_item.label == label:
+                return meta_item
+        return Metadata.empty_meta_item
+
     def label_of(self, attribute):
         return self.meta_item_of(attribute).label
 

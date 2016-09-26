@@ -59,5 +59,9 @@
     <file>icons/std_project_tstable0.png</file>
     <file>icons/plugin.png</file>
     <file>icons/std_project_viewoption.png</file>
+    <file>icons/back.png</file>
+    <file>icons/forward.png</file>
+    <file>icons/pause.png</file>
+    <file>icons/play.png</file>
   </qresource>
 </RCC>

@@ -24,6 +24,9 @@ INIT_MODULE = "__init__"
 
 
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
+
+    signalTimeChanged = QtCore.pyqtSignal()
+
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
         self.setupUi(self)
@@ -119,7 +122,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.canvas:
             print("QGIS libraries not found, Not creating map\n")
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
+
+        self.time_index = 0
+        self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+
         self.onLoad()
+
+    def currentTimeChanged(self, slider_val):
+        self.time_index = slider_val
+        self.signalTimeChanged.emit()
 
     def setQgsMapTool(self):
         self.map_widget.setZoomInMode()
@@ -253,7 +264,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     elif create_menu and not self.sender().isChecked():
                         self.remove_plugin_menu(lplugin)
                         return
-                    lplugin.run(self)
+                    if hasattr(lplugin, "run"):
+                        lplugin.run(self)
+                    elif hasattr(lplugin, "classFactory"):
+                        plugin_object = lplugin.classFactory(self)
+                        plugin_object.initGui()
                 return
 
     def add_plugin_menu(self, plugin):

@@ -246,6 +246,9 @@ class frmMainSWMM(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+        if self.map_widget:  # initialize empty model map layers, ready to have model elements added
+            self.model_layers = ModelLayers(self.map_widget)
+
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
@@ -318,43 +321,67 @@ class frmMainSWMM(frmMain):
         self.menuHelp.addAction(self.Help_About_Menu)
         QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
 
-        self.add_map_constituents()
-        self.cboMapSubcatchments.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
-        self.cboMapNodes.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
-        self.cboMapLinks.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+        self.nodes_layers = []
+        self.raingage_layer = None
+        self.labels_layer = None
+        self.subcatchments_layer = None
 
-    def add_map_constituents(self):
+        self.set_thematic_controls()
+        self.cboMapSubcatchments.currentIndexChanged.connect(self.update_thematic_map)
+        self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
+        self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
+
+        self.signalTimeChanged.connect(self.update_thematic_map)
+
+    def set_thematic_controls(self):
+        self.allow_thematic_update = False
         self.cboMapSubcatchments.clear()
-        self.cboMapSubcatchments.addItems(['None','Area','Width','Slope','Imperviousness','LID Usage'])
+        self.cboMapSubcatchments.addItems(['None', 'Area', 'Width', '% Slope', '% Imperv', 'LID Controls'])
         self.cboMapNodes.clear()
-        self.cboMapNodes.addItems(['None','Invert'])
+        self.cboMapNodes.addItems(['None', 'Invert El.'])
         self.cboMapLinks.clear()
-        self.cboMapLinks.addItems(['None','Max. Depth','Roughness','Slope'])
+        self.cboMapLinks.addItems(['None', 'Max. Depth', 'Roughness', 'Slope'])
         if self.get_output():
             # Add object type labels to map combos if there are any of each type in output
-            object_type = SMO.swmm_output_get_object_type('Subcatchments')
-            if object_type:
-                attribute_names = [attribute.name for attribute in object_type.attributes]
-                for item in attribute_names:
-                    self.cboMapSubcatchments.addItem(item)
-            object_type = SMO.swmm_output_get_object_type('Nodes')
-            if object_type:
-                attribute_names = [attribute.name for attribute in object_type.attributes]
-                for item in attribute_names:
-                    self.cboMapNodes.addItem(item)
-            object_type = SMO.swmm_output_get_object_type('Links')
-            if object_type:
-                attribute_names = [attribute.name for attribute in object_type.attributes]
-                for item in attribute_names:
-                    self.cboMapLinks.addItem(item)
+            for attribute in SMO.SwmmOutputSubcatchment.attributes:
+                self.cboMapSubcatchments.addItem(attribute.name)
+            for attribute in SMO.SwmmOutputNode.attributes:
+                self.cboMapNodes.addItem(attribute.name)
+            for attribute in SMO.SwmmOutputLink.attributes:
+                self.cboMapLinks.addItem(attribute.name)
+        self.allow_thematic_update = True
+        self.update_thematic_map()
 
-    def cboMap_currentIndexChanged(self):
-        pass
+    def update_thematic_map(self):
+        if not self.allow_thematic_update:
+            return
+        if self.subcatchments_layer and self.subcatchments_layer.isValid():
+            setting = self.cboMapSubcatchments.currentText()
+            meta_item = Subcatchment.metadata.meta_item_of_label(setting)
+            attribute = meta_item.attribute
+            color_by = {}
+            if attribute:
+                for subcatchment in self.project.subcatchments.value:
+                    color_by[subcatchment.name] = float(getattr(subcatchment, attribute, 0))
+            elif self.output:
+                attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(setting)
+                if attribute:
+                    values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    index = 0
+                    for subcatchment in self.output.subcatchments.values():
+                        color_by[subcatchment.name] = values[index]
+                        index += 1
+            if color_by:
+                self.map_widget.applyGraduatedSymbologyStandardMode(self.subcatchments_layer, color_by)
+            else:
+                self.map_widget.set_default_polygon_renderer(self.subcatchments_layer)
+            self.subcatchments_layer.triggerRepaint()
 
     def get_output(self):
         if not self.output:
             if os.path.isfile(self.output_filename):
                 self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
+                self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
         return self.output
 
     def report_status(self):
@@ -978,43 +1005,43 @@ class frmMainSWMM(frmMain):
             if self.output:
                 self.output.close()
                 self.output = None
-            if not os.path.exists(self.model_path):
-                if 'darwin' in sys.platform:
-                    lib_name = 'libswmm.dylib'
-                elif 'win' in sys.platform:
-                    lib_name = 'swmm5_x64.dll'
-                else:  # Linux
-                    lib_name = 'libswmm_amd64.so'
-                self.model_path = self.find_external(lib_name)
-
-            if os.path.exists(self.model_path):
-                try:
-                    from Externals.swmm.model.swmm5 import pyswmm
-                    model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
-                    frmRun = frmRunSWMM(model_api, self.project, self)
-                    self._forms.append(frmRun)
-                    if not use_existing:
-                        # Read this project so we can refer to it while running
-                        frmRun.progressBar.setVisible(False)
-                        frmRun.lblTime.setVisible(False)
-                        frmRun.fraTime.setVisible(False)
-                        frmRun.fraBottom.setVisible(False)
-                        frmRun.showNormal()
-                        frmRun.set_status_text("Reading " + file_name)
-
-                        self.project = Project()
-                        self.project.read_file(file_name)
-                        frmRun.project = self.project
-
-                    frmRun.Execute()
-                    self.add_map_constituents()
-                    return
-                except Exception as e1:
-                    print(str(e1) + '\n' + str(traceback.print_exc()))
-                    QMessageBox.information(None, self.model,
-                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
-                                                self.model_path, str(e1), str(traceback.print_exc())),
-                                            QMessageBox.Ok)
+            # if not os.path.exists(self.model_path):
+            #     if 'darwin' in sys.platform:
+            #         lib_name = 'libswmm.dylib'
+            #     elif 'win' in sys.platform:
+            #         lib_name = 'swmm5_x64.dll'
+            #     else:  # Linux
+            #         lib_name = 'libswmm_amd64.so'
+            #     self.model_path = self.find_external(lib_name)
+            #
+            # if os.path.exists(self.model_path):
+            #     try:
+            #         from Externals.swmm.model.swmm5 import pyswmm
+            #         model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
+            #         frmRun = frmRunSWMM(model_api, self.project, self)
+            #         self._forms.append(frmRun)
+            #         if not use_existing:
+            #             # Read this project so we can refer to it while running
+            #             frmRun.progressBar.setVisible(False)
+            #             frmRun.lblTime.setVisible(False)
+            #             frmRun.fraTime.setVisible(False)
+            #             frmRun.fraBottom.setVisible(False)
+            #             frmRun.showNormal()
+            #             frmRun.set_status_text("Reading " + file_name)
+            #
+            #             self.project = Project()
+            #             self.project.read_file(file_name)
+            #             frmRun.project = self.project
+            #
+            #         frmRun.Execute()
+            #         self.add_map_constituents()
+            #         return
+            #     except Exception as e1:
+            #         print(str(e1) + '\n' + str(traceback.print_exc()))
+            #         QMessageBox.information(None, self.model,
+            #                                 "Error running model with library:\n {0}\n{1}\n{2}".format(
+            #                                     self.model_path, str(e1), str(traceback.print_exc())),
+            #                                 QMessageBox.Ok)
                 # finally:
                 #     try:
                 #         if model_api and model_api.isOpen():
@@ -1039,7 +1066,7 @@ class frmMainSWMM(frmMain):
                 # running the Exe
                 status = StatusMonitor0(exe_path, args, self, model='SWMM')
                 status.show()
-                self.add_map_constituents()
+                self.set_thematic_controls()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
@@ -1053,31 +1080,72 @@ class frmMainSWMM(frmMain):
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
+        if self.time_widget:
+            if self.project.options.dates.start_date == self.project.options.dates.end_date:
+                self.labelStartTime.setText(self.project.options.dates.start_time)
+                self.labelEndTime.setText(self.project.options.dates.end_time)
+            else:
+                self.labelStartTime.setText(self.project.options.dates.start_date)
+                self.labelEndTime.setText(self.project.options.dates.end_date)
         if self.map_widget:
             try:
-                from qgis.core import QgsMapLayerRegistry
-                from ui.map_tools import EmbedMap
-                QgsMapLayerRegistry.instance().removeAllMapLayers()
-                EmbedMap.layers = self.canvas.layers()
-                for node_group in self.project.nodes_groups():
-                    if node_group and node_group.value:
-                        self.map_widget.addCoordinates(node_group.value, node_group.SECTION_NAME)
-                self.map_widget.addCoordinates(self.project.symbols.value, "Rain Gages")
-                self.map_widget.addCoordinates(self.project.labels.value, "Labels")
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.pumps.value, "Pumps", "name", QColor('red'), 1)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.outlets.value, "Outlets", "name", QColor('pink'), 2)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
-                self.map_widget.addPolygons(self.project.polygons.value, "Subcatchments")
+                self.model_layers.create_layers_from_project(self.project, self.canvas)
                 self.map_widget.zoomfull()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
+
+
+class ModelLayers:
+    def __init__(self, map_widget):
+        self.map_widget = map_widget
+        self.junctions = map_widget.addCoordinates(None, "Junctions")
+        self.outfalls = map_widget.addCoordinates(None, "Outfalls")
+        self.dividers = map_widget.addCoordinates(None, "Dividers")
+        self.storage = map_widget.addCoordinates(None, "Storage")
+        self.raingages = map_widget.addCoordinates(None, "Rain Gages")
+        self.labels = map_widget.addCoordinates(None, "Labels")
+        self.pumps = map_widget.addLinks(None, None, "Pumps", "name", QColor('red'), 1)
+        self.orifices = map_widget.addLinks(None, None, "Orifices", "name", QColor('green'), 1.5)
+        self.outlets = map_widget.addLinks(None, None, "Outlets", "name", QColor('pink'), 2)
+        self.weirs = map_widget.addLinks(None, None, "Weirs", "name", QColor('orange'), 2.5)
+        self.conduits = map_widget.addLinks(None, None, "Conduits", "name", QColor('gray'), 3.5)
+        self.subcatchments = map_widget.addPolygons(None, "Subcatchments")
+        self.set_lists()
+
+    def set_lists(self):
+        self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
+        self.all_layers = [self.raingages, self.labels, self.pumps, self.orifices,
+                           self.outlets, self.weirs, self.conduits, self.subcatchments]
+        self.all_layers.extend(self.nodes_layers)
+
+    def create_layers_from_project(self, project, canvas):
+        self.project = project
+        map_widget = self.map_widget
+
+        # First remove old ModelLayers already on the map
+        from qgis.core import QgsMapLayerRegistry
+        layer_names = []
+        for layer in self.all_layers:
+            layer_names.append(layer.name())
+        QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
+        from ui.map_tools import EmbedMap
+        EmbedMap.layers = canvas.layers()
+
+        # Add new layers containing objects from this project
+        self.junctions = map_widget.addCoordinates(project.junctions.value, "Junctions")
+        self.outfalls = map_widget.addCoordinates(project.outfalls.value, "Outfalls")
+        self.dividers = map_widget.addCoordinates(project.dividers.value, "Dividers")
+        self.storage = map_widget.addCoordinates(project.storage.value, "Storage")
+        self.raingages = map_widget.addCoordinates(project.symbols.value, "Rain Gages")
+        self.labels = map_widget.addCoordinates(project.labels.value, "Labels")
+        coord = project.coordinates.value
+        self.pumps = map_widget.addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
+        self.orifices = map_widget.addLinks(coord, project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
+        self.outlets = map_widget.addLinks(coord, project.outlets.value, "Outlets", "name", QColor('pink'), 2)
+        self.weirs = map_widget.addLinks(coord, project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
+        self.conduits = map_widget.addLinks(coord, project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
+        self.subcatchments = map_widget.addPolygons(project.polygons.value, "Subcatchments")
+        self.set_lists()
 
 
 if __name__ == '__main__':

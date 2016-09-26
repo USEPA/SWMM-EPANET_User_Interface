@@ -63,15 +63,15 @@ class ProjectReader(InputFileReader):
         self.read_hydrographs = SectionReaderAsListGroupByID("[HYDROGRAPHS]", UnitHydrographReader)
         # unit hydrograph data used to construct RDII inflows
 
-        self.read_evaporation = EvaporationReader()        # EVAPORATION   evaporation data
-        self.read_temperature = TemperatureReader()        # TEMPERATURE   air temperature and snow melt data
-        self.read_adjustments = AdjustmentsReader()        # ADJUSTMENTS   monthly climate adjustments
+        self.read_evaporation = EvaporationReader()   # EVAPORATION   evaporation data
+        self.read_temperature = TemperatureReader()   # TEMPERATURE   air temperature and snow melt data
+        self.read_adjustments = AdjustmentsReader()   # ADJUSTMENTS   monthly climate adjustments
         self.read_subcatchments = SectionReaderAsList("[SUBCATCHMENTS]", SubcatchmentReader)
         # basic subcatchment information
 
         self.read_infiltration = SectionReaderAsList("[INFILTRATION]", None)
         # This is set to SectionReaderAsListOf HortonInfiltration or GreenAmptInfiltration or CurveNumberInfiltration
-        # below in add_section based on subcatchment infiltration parameters
+        # below in read_section based on subcatchment infiltration parameters
 
         self.read_lid_controls = SectionReaderAsListGroupByID("[LID_CONTROLS]", LIDControlReader)
         # low impact development control information

@@ -164,8 +164,6 @@ try:
             pass
 
         def addCoordinates(self, coordinates, layer_name):
-            if len(coordinates) < 1:
-                return None
             layer = QgsVectorLayer("Point", layer_name, "memory")
             provider = layer.dataProvider()
 
@@ -173,36 +171,37 @@ try:
             provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
             features = []
-            # Receivers = as in the above example 'Receivers' is a list of results
-            for coordinate_pair in coordinates:
-                # add a feature
-                try:
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x),
-                                                                       float(coordinate_pair.y))))
-                    feature.setAttributes([coordinate_pair.name])
-                    features.append(feature)
-                except Exception as ex:
-                    if len(str(coordinate_pair.x)) > 0 and len(str(coordinate_pair.y)) > 0:
-                        print "Did not add coordinate '" + coordinate_pair.name + "' (" +\
-                              str(coordinate_pair.x) + ", " +\
-                              str(coordinate_pair.y) + ") to map: " + str(ex)
+            if coordinates:
+                for coordinate_pair in coordinates:
+                    # add a feature
+                    try:
+                        feature = QgsFeature()
+                        feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x),
+                                                                           float(coordinate_pair.y))))
+                        feature.setAttributes([coordinate_pair.name])
+                        features.append(feature)
+                    except Exception as ex:
+                        if len(str(coordinate_pair.x)) > 0 and len(str(coordinate_pair.y)) > 0:
+                            print "Did not add coordinate '" + coordinate_pair.name + "' (" +\
+                                  str(coordinate_pair.x) + ", " +\
+                                  str(coordinate_pair.y) + ") to map: " + str(ex)
 
-            # changes are only possible when editing the layer
-            layer.startEditing()
-            provider.addFeatures(features)
-            layer.commitChanges()
-            layer.updateExtents()
+            if features:
+                # changes are only possible when editing the layer
+                layer.startEditing()
+                provider.addFeatures(features)
+                layer.commitChanges()
+                layer.updateExtents()
 
             # create a new symbol layer with default properties
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
             symbol_layer.setColor(QColor(130, 180, 255, 255))
 
             # Label the coordinates if there are not too many of them
-            if len(coordinates) > 100:
+            if coordinates and len(coordinates) > 100:
                 symbol_layer.setSize(2.0)
             else:
-                if hasattr(coordinates[0], "size"):
+                if coordinates and hasattr(coordinates[0], "size"):
                     size = coordinates[0].size
                     symbol_layer.setSize(10.0)
                     symbol_layer.setOutlineColor(QColor('transparent'))
@@ -227,14 +226,12 @@ try:
             return layer
 
         def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black'), link_width=1):
-            if len(links) < 1:
-                return None
             layer = QgsVectorLayer("LineString", layer_name, "memory")
             provider = layer.dataProvider()
 
             symbol_layer = QgsSimpleLineSymbolLayerV2()
             symbol_layer.setColor(link_color)
-            if len(coordinates) <= 100 and link_width > 1:
+            if link_width > 1 and (coordinates is None or len(coordinates) <= 100):
                 symbol_layer.setWidth(link_width)
 
             # markerLayer = markerMeta.createSymbolLayer({'width': '0.26',
@@ -250,27 +247,28 @@ try:
             provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
 
             features = []
-            # Receivers = as in the above example 'Receivers' is a list of results
-            for link in links:
-                try:
-                    inlet_coord = coordinates[link.inlet_node]
-                    outlet_coord = coordinates[link.outlet_node]
-                    if inlet_coord and outlet_coord:
-                        # add a feature
-                        feature = QgsFeature()
-                        feature.setGeometry(QgsGeometry.fromPolyline([
-                            QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
-                            QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
-                        feature.setAttributes([getattr(link, link_attr, '')])
-                        features.append(feature)
-                except Exception as exLink:
-                    print "Skipping link " + link.name + ": " + str(exLink)
+            if links:
+                for link in links:
+                    try:
+                        inlet_coord = coordinates[link.inlet_node]
+                        outlet_coord = coordinates[link.outlet_node]
+                        if inlet_coord and outlet_coord:
+                            # add a feature
+                            feature = QgsFeature()
+                            feature.setGeometry(QgsGeometry.fromPolyline([
+                                QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+                                QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+                            feature.setAttributes([getattr(link, link_attr, '')])
+                            features.append(feature)
+                    except Exception as exLink:
+                        print "Skipping link " + link.name + ": " + str(exLink)
 
-            # changes are only possible when editing the layer
-            layer.startEditing()
-            provider.addFeatures(features)
-            layer.commitChanges()
-            layer.updateExtents()
+            if features:
+                # changes are only possible when editing the layer
+                layer.startEditing()
+                provider.addFeatures(features)
+                layer.commitChanges()
+                layer.updateExtents()
             # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
             #     {'width': '0.26', 'color': '0,0,0'})
             # layer.rendererV2().symbols()[0].appendSymbolLayer(sl)
@@ -282,8 +280,6 @@ try:
             return layer
 
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
-            if len(polygons) < 1:
-                return None
             layer = QgsVectorLayer("Polygon", layer_name, "memory")
             provider = layer.dataProvider()
 
@@ -291,39 +287,49 @@ try:
             layer.startEditing()
             # add fields
             provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                    QgsField("color", QtCore.QVariant.String)])
+                                    QgsField("color", QtCore.QVariant.Double)])
 
             features = []
             # Receivers = as in the above example 'Receivers' is a list of results
             poly_name = None
             poly_points = []
-            for coordinate_pair in polygons:
-                if coordinate_pair.name != poly_name:
-                    if poly_points:
-                        # add a feature
-                        feature = QgsFeature()
-                        feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                        feature.setAttributes([poly_name, "0"])
-                        features.append(feature)
-                        poly_points = []
-                    poly_name = coordinate_pair.name
-                poly_points.append(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y)))
+            if polygons:
+                for coordinate_pair in polygons:
+                    if coordinate_pair.name != poly_name:
+                        if poly_points:
+                            # add a feature
+                            feature = QgsFeature()
+                            feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
+                            feature.setAttributes([poly_name, 0.0])
+                            features.append(feature)
+                            poly_points = []
+                        poly_name = coordinate_pair.name
+                    poly_points.append(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y)))
 
             if poly_points:
                 # add a feature
                 feature = QgsFeature()
                 feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                feature.setAttributes([poly_name])
+                feature.setAttributes([poly_name, 0.0])
                 features.append(feature)
 
-            layer.startEditing()
-            provider.addFeatures(features)
-            layer.commitChanges()
-            layer.updateExtents()
+            if features:
+                layer.startEditing()
+                provider.addFeatures(features)
+                layer.commitChanges()
+                layer.updateExtents()
             # layerCtr = len(self.layers)
 
-            # create our three land use categories using a Python dictionary with a field value as the key, color name, and label
-            legend = {"0": (poly_color, "Subcatchment")} #, "1": ("darkcyan", "Water"), "2": ("green", "Land")}
+            self.set_default_polygon_renderer(layer, poly_color)
+
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            self.layers.append(QgsMapCanvasLayer(layer))
+            self.canvas.setLayerSet(self.layers)
+            return layer
+
+        @staticmethod
+        def set_default_polygon_renderer(layer, poly_color='lightgreen'):
+            legend = {0.0: (poly_color, "Subcatchment")} #, "1": ("darkcyan", "Water"), "2": ("green", "Land")}
 
             # build our categorized renderer items
             categories = []
@@ -332,13 +338,64 @@ try:
                 sym.setColor(QColor(color))
                 category = QgsRendererCategoryV2(kind, sym, label)
                 categories.append(category)
-            renderer = QgsCategorizedSymbolRendererV2("color", categories)
-            layer.setRendererV2(renderer)
+            layer.setRendererV2(QgsCategorizedSymbolRendererV2("color", categories))
 
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
-            self.layers.append(QgsMapCanvasLayer(layer))
-            self.canvas.setLayerSet(self.layers)
-            return layer
+        @staticmethod
+        def validatedDefaultSymbol(geometryType):
+            symbol = QgsSymbolV2.defaultSymbol(geometryType)
+            if symbol is None:
+                if geometryType == QGis.Point:
+                    symbol = QgsMarkerSymbolV2()
+                elif geometryType == QGis.Line:
+                    symbol = QgsLineSymbolV2()
+                elif geometryType == QGis.Polygon:
+                    symbol = QgsFillSymbolV2()
+            return symbol
+
+        @staticmethod
+        def applyGraduatedSymbologyStandardMode(layer, color_by):
+            provider = layer.dataProvider()
+            layer.startEditing()
+            min = None
+            max = None
+            for feature in provider.getFeatures():
+                try:
+                    feature_name = feature[0]
+                    val = color_by[feature_name]
+                    layer.changeAttributeValue(feature.id(), 1, val, True)
+                    # feature[1] = val
+                    if min is None or val < min:
+                        min = val
+                    if max is None or val > max:
+                        max = val
+                except Exception as ex:
+                    print str(ex)
+                    layer.changeAttributeValue(feature.id(), 1, 0.0, True)
+            layer.commitChanges()
+
+            # colorRamp = (('1/5', min, (min + max) / 5, '#0000ff'), \
+            #              ('2/5', (min + max) * 1 / 5, (min + max) * 2 / 5, '#00ffff'), \
+            #              ('3/5', (min + max) * 2 / 5, (min + max) * 3 / 5, '#00ff00'), \
+            #              ('4/5', (min + max) * 3 / 5, (min + max) * 4 / 5, '#ffff00'), \
+            #              ('5/5', (min + max) * 4 / 5, max, '#ff0000'))
+            # ranges = []
+            # for label, lower, upper, color in colorRamp:
+            #     symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
+            #     symbol.setColor(QtGui.QColor(color))
+            #     rng = QgsRendererRangeV2(lower, upper, symbol, label)
+            #     ranges.append(rng)
+            # renderer = QgsGraduatedSymbolRendererV2("color", ranges)
+            # layer.setRendererV2(renderer)
+            # return
+
+            symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
+            colorRamp = QgsVectorGradientColorRampV2.create(
+                {'color1': '155,155,0,255', 'color2': '0,0,255,255',
+                 'stops': '0.25;255,255,0,255:0.50;0,255,0,255:0.75;0,255,255,255'})
+            renderer = QgsGraduatedSymbolRendererV2.createRenderer(layer, "color", 5,
+                                                                   QgsGraduatedSymbolRendererV2.Quantile, symbol, colorRamp)
+            # renderer.setSizeScaleField("LABELRANK")
+            layer.setRendererV2(renderer)
 
         def addVectorLayer(self, filename):
             layer_count = len(self.layers)

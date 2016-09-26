@@ -48,6 +48,7 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
     def cmdOK_Clicked(self):
         hydraulics_options = self._main_form.project.options.hydraulics
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
+        ui.convenience.set_combo(self._main_form.cbFlowUnits, 'Flow Units: ' + hydraulics_options.flow_units.name)
         head_loss_underscore = self.cboHeadloss.currentText().replace('-', '_')
         hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]
         hydraulics_options.accuracy = float(self.txtAccuracy.text())

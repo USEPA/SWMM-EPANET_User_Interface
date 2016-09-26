@@ -59,6 +59,7 @@ from Externals.epanet.outputapi import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
 
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
+import ui.convenience
 
 
 class frmMainEPANET(frmMain):
@@ -195,6 +196,13 @@ class frmMainEPANET(frmMain):
         self.menuHelp.addAction(self.Help_About_Menu)
         QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
 
+        self.cbFlowUnits.clear()
+        self.cbFlowUnits.addItems(['Flow Units: CFS','Flow Units: GPM','Flow Units: MGD','Flow Units: IMGD',
+                                   'Flow Units: AFD','Flow Units: LPS','Flow Units: LPM','Flow Units: MLD',
+                                   'Flow Units: CMH','Flow Units: CMD'])
+        self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
+        self.cbOffset.setVisible(False)
+
         self.cboMapSubcatchments.setVisible(False)
         self.lblMapSubcatchments.setVisible(False)
         self.add_map_constituents()
@@ -221,6 +229,10 @@ class frmMainEPANET(frmMain):
 
     def cboMap_currentIndexChanged(self):
         pass
+
+    def cbFlowUnits_currentIndexChanged(self):
+        import core.epanet.options.hydraulics
+        self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
 
     def report_status(self):
         print "report_status"
@@ -613,6 +625,8 @@ class frmMainEPANET(frmMain):
     def open_project_quiet(self, file_name, gui_settings, directory):
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
         try:
+            ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
+
             from qgis.core import QgsMapLayerRegistry
             from ui.map_tools import EmbedMap, SaveAsGis
             try:

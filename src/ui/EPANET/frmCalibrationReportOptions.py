@@ -110,7 +110,7 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
     def set_items(self, aCali):
         self.listWidget.clear()
         #aCali = pcali.Calibration('') #debug only
-        if self.isFlow:
+        if aCali.is_flow:
             self.gbxMeasured.setTitle('Measured in Links:')
             if aCali is not None:
                 for i in range(0, len(self.project.pipes.value)):

@@ -80,6 +80,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         litem = None
         lcali = None
         ltype = pcali.ECalibrationType.NONE
+        lis_flow = None
         for lrow in xrange(0, self.tableWidget.rowCount()):
             litem = self.tableWidget.item(lrow, 0)
             if litem == None:
@@ -87,16 +88,22 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
             rowHeader = self.tableWidget.verticalHeaderItem(lrow).text()
             if "DEMAND" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.DEMAND
+                lis_flow = False
             elif "HEAD" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.HEAD
+                lis_flow = False
             elif "PRESSURE" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.PRESSURE
+                lis_flow = False
             elif "QUALITY" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.QUALITY
+                lis_flow = False
             elif "FLOW" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.FLOW
+                lis_flow = True
             elif "VELOCITY" in rowHeader.upper():
                 ltype = pcali.ECalibrationType.VELOCITY
+                lis_flow = True
 
             #lcali = self.calibrations.value[ltype]
             lcali = self.calibrations.find_item(ltype.name)
@@ -119,6 +126,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
                     lcali.read_data()
             lcali.etype = ltype
             lcali.name = ltype.name
+            lcali.is_flow = lis_flow
 
             if os.path.exists(lcali.filename):
                 gui_settings.setValue("CaliDir", os.path.dirname(lcali.filename))

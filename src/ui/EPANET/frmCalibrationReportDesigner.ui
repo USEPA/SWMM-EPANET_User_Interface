@@ -32,7 +32,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabStatistics">
           <attribute name="title">
@@ -54,11 +54,6 @@
           <attribute name="title">
            <string>Correlation Plot</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QWidget" name="widgetPlot" native="true"/>
-           </item>
-          </layout>
          </widget>
          <widget class="QWidget" name="tabMean">
           <attribute name="title">

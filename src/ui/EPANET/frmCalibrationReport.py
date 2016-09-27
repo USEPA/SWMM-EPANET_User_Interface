@@ -3,6 +3,7 @@ import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
 import numpy as np
 from ui.EPANET.frmCalibrationReportDesigner import Ui_frmCalibrationReport
@@ -34,10 +35,12 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
         self.calitype = aECaliType
         self.cali = None
 
-        self.UpdateErrorStats()
+        self.update_error_stats()
         self.txtStatistics.setReadOnly(True)
         self.display_location_network_stats()
-        self.DisplayPlots()
+        self.display_correlationplot()
+        self.display_barplot()
+        self.tabWidget.setCurrentIndex(0)
 
         #
         # # mean comparisons tab
@@ -45,7 +48,7 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
         # self.setParent(self._main_form)
         # self.widgetMean = mean_plot
 
-    def UpdateErrorStats(self):
+    def update_error_stats(self):
         lcali = None
         for lcali in self.project.calibrations.value:
             if lcali.etype == self.calitype:
@@ -115,11 +118,11 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
             pass
         pass
 
-    def DisplayPlots(self):
+    def display_correlationplot(self):
         # correlation plot tab
         #self.setParent(self._main_form)
         if self.cali is not None:
-            correlation_plot = MyPlot(self.tabCorrelation,
+            correlation_plot = CorrelationPlot(self.tabCorrelation,
                                       width=6,
                                       height=2,
                                       dpi=100)
@@ -131,11 +134,25 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
             #self.widgetPlot = correlation_plot
         pass
 
+    def display_barplot(self):
+        # Bar plot tab
+        #self.setParent(self._main_form)
+        if self.cali is not None:
+            bar_plot = BarPlot(self.tabMean,
+                                      width=6,
+                                      height=2,
+                                      dpi=100)
+            bar_plot.setData(self.cali)
+            layout = QtGui.QVBoxLayout(self.tabMean)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.addWidget(bar_plot)
+            self.tabCorrelation.setLayout(layout)
+        pass
+
     def cmdCancel_Clicked(self):
         self.close()
 
-class MyPlot(FigureCanvas):
-
+class BasePlot(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         fig.subplots_adjust(bottom=0.2)
@@ -149,6 +166,27 @@ class MyPlot(FigureCanvas):
                                    QtGui.QSizePolicy.Expanding,
                                    QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
+
+    def setTitle(self, aTitle):
+        if self.axes is not None:
+            self.axes.set_title(aTitle)
+        pass
+
+    def setXlabel(self, aLabel):
+        if self.axes is not None:
+            self.axes.set_xlabel(aLabel, fontsize=10)
+        # self.ax = plt.AxesSubplot() #debug only
+        pass
+
+    def setYlabel(self, aLabel):
+        if self.axes is not None:
+            self.axes.set_ylabel(aLabel)
+        pass
+
+class CorrelationPlot(BasePlot):
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        BasePlot.__init__(self, main_form, width, height, dpi)
+        pass
 
     def setData(self, aData):
         #aData = pcali.Calibration()
@@ -200,18 +238,58 @@ class MyPlot(FigureCanvas):
             dict_colors[ids[i]] = colors[i]
         return dict_colors
 
-    def setTitle(self, aTitle):
-        if self.axes is not None:
-            self.axes.set_title(aTitle)
+class BarPlot(BasePlot):
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        BasePlot.__init__(self, main_form, width, height, dpi)
         pass
 
-    def setXlabel(self, aLabel):
-        if self.axes is not None:
-            self.axes.set_xlabel(aLabel, fontsize=10)
-        # self.ax = plt.AxesSubplot() #debug only
+    def setData(self, aData):
+        #aData = pcali.Calibration()
+        N = 0
+        obs_means = []
+        sim_means = []
+        obj_ids = []
+        for oid in aData.hobjects:
+            ldataset = aData.hobjects[oid]
+            #ldataset = pcali.CalibrationDataset() #dev only
+            if ldataset.is_selected and not ldataset.need_to_calculate_stats:
+                N += 1
+                obj_ids.append(ldataset.id)
+                obs_means.append(ldataset.mean_obs)
+                sim_means.append(ldataset.mean_sim)
+
+        ind = 0
+        wid = 0.0
+        if N == 0:
+            return
+        else:
+            ind = np.arange(N)
+            wid = 0.35
+
+        bar_sim = self.axes.bar(ind, sim_means, wid, color='r')
+        bar_obs = self.axes.bar(ind + wid, obs_means, wid, color='g')
+
+        fontP = FontProperties()
+        fontP.set_size('small')
+        self.axes.legend((bar_sim[0], bar_obs[0]), ('Computed', 'Observed'),
+                         prop=fontP,
+                         loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=2)
+
+        self.axes.set_xticks(ind + wid)
+        self.axes.set_xticklabels(obj_ids)
+
+        self.setTitle('Comparison of Mean Values for %s' % aData.name)
+        self.setXlabel('Location')
+        #self.setYlabel('')
+
+        self.autolabel(bar_sim)
+        self.autolabel(bar_obs)
         pass
 
-    def setYlabel(self, aLabel):
-        if self.axes is not None:
-            self.axes.set_ylabel(aLabel)
-        pass
+    def autolabel(self, rects):
+        # attach some text labels
+        for rect in rects:
+            height = rect.get_height()
+            self.axes.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                    '%.2f' % height,
+                    ha='center', va='bottom')

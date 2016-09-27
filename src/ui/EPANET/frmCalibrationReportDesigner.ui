@@ -32,7 +32,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tabStatistics">
           <attribute name="title">
@@ -59,11 +59,6 @@
           <attribute name="title">
            <string>Mean Comparisons</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QWidget" name="widgetMean" native="true"/>
-           </item>
-          </layout>
          </widget>
         </widget>
        </item>

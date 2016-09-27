@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmCalibrationReportDesigner.ui'
 #
-# Created: Tue Sep 27 01:04:33 2016
+# Created: Tue Sep 27 12:34:24 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,11 +58,6 @@ class Ui_frmCalibrationReport(object):
         self.tabWidget.addTab(self.tabCorrelation, _fromUtf8(""))
         self.tabMean = QtGui.QWidget()
         self.tabMean.setObjectName(_fromUtf8("tabMean"))
-        self.horizontalLayout_4 = QtGui.QHBoxLayout(self.tabMean)
-        self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
-        self.widgetMean = QtGui.QWidget(self.tabMean)
-        self.widgetMean.setObjectName(_fromUtf8("widgetMean"))
-        self.horizontalLayout_4.addWidget(self.widgetMean)
         self.tabWidget.addTab(self.tabMean, _fromUtf8(""))
         self.horizontalLayout_3.addWidget(self.tabWidget)
         self.verticalLayout_8.addWidget(self.fraTop)
@@ -81,7 +76,7 @@ class Ui_frmCalibrationReport(object):
         frmCalibrationReport.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(frmCalibrationReport)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(frmCalibrationReport)
 
     def retranslateUi(self, frmCalibrationReport):

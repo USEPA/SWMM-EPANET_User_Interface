@@ -42,12 +42,6 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
         self.display_barplot()
         self.tabWidget.setCurrentIndex(0)
 
-        #
-        # # mean comparisons tab
-        # mean_plot = MyPlot(self.widgetMean, width=6, height=2, dpi=100)
-        # self.setParent(self._main_form)
-        # self.widgetMean = mean_plot
-
     def update_error_stats(self):
         lcali = None
         for lcali in self.project.calibrations.value:

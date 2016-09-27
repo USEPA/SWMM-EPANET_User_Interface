@@ -527,7 +527,7 @@ class Ui_frmMain(object):
         self.toolBar_Standard.addSeparator()
 
         self.retranslateUi(frmMain)
-        self.tabProjMap.setCurrentIndex(1)
+        self.tabProjMap.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmMain)
 
     def retranslateUi(self, frmMain):

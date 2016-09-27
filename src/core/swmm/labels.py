@@ -10,8 +10,8 @@ class Label(Section, Coordinate):
     #    attribute,     input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                '', "Text",            '',       '', '',  "Text of the label"),
-        ('',                    '', "X-Coordinate",    '',       '', '',  "X coordinate of upper left corner of the label on the map"),
-        ('',                    '', "Y-Coordinate",    '',       '', '',  "Y coordinate of upper left corner of the label on the map"),
+        ('x',                   '', "X-Coordinate",    '',       '', '',  "X coordinate of upper left corner of the label on the map"),
+        ('y',                   '', "Y-Coordinate",    '',       '', '',  "Y coordinate of upper left corner of the label on the map"),
         ("anchor_name",         '', "Anchor Node",     "",       '', '',  "Name of a node or subcatchment to which the label is anchored when map is zoomed (optional)"),
         ("font",                '', "Font",            "",       '', '',  "The label's font"),
         ("size",                '', "Size",            "10.0",   '', '',  "The label's font size"),

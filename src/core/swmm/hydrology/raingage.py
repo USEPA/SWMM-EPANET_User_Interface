@@ -34,8 +34,8 @@ class RainGage(Section):
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                    '', "Name",                  "",       '', '', "User-assigned name of rain gage"),
-        ("centroid.X",              '', "X-Coordinate",          "",       '', '', "X coordinate of rain gage on study area map"),
-        ("centroid.Y",              '', "Y-Coordinate",          "",       '', '', "Y coordinate of rain gage on study area map"),
+        ("x",                       '', "X-Coordinate",          "",       '', '', "X coordinate of rain gage on study area map"),
+        ("y",                       '', "Y-Coordinate",          "",       '', '', "Y coordinate of rain gage on study area map"),
         ("description",             '', "Description",           "",       '', '', "Optional comment or description"),
         ("tag",                     '', "Tag",                   "",       '', '', "Optional category or classification"),
         ("rain_format",             '', "Rain Format",           "",       '', '', "Type of rainfall data recorded at rain gage"),

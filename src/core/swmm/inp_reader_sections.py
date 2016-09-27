@@ -110,6 +110,13 @@ class CoordinatesReader(SectionReader):
                 if not found:
                     print "Node not found in model for coordinate " + coordinate.name
                     project.coordinates.value.append(coordinate)
+        for symbol in project.symbols.value:   # also map symbols to raingages
+            for node in project.raingages.value:
+                if node.name == symbol.name:
+                    node.coordinates = symbol
+                    node.x = symbol.x
+                    node.y = symbol.y
+                    break
 
 
 class LabelReader(SectionReader):

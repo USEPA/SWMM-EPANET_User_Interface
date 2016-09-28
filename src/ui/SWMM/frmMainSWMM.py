@@ -86,6 +86,7 @@ from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import ui.convenience
 
 
 class frmMainSWMM(frmMain):
@@ -331,7 +332,18 @@ class frmMainSWMM(frmMain):
         self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
         self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
 
+        self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
+        self.cbOffset.currentIndexChanged.connect(self.cbOffset_currentIndexChanged)
+
         self.signalTimeChanged.connect(self.update_thematic_map)
+
+    def cbFlowUnits_currentIndexChanged(self):
+        import core.swmm.options
+        self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
+
+    def cbOffset_currentIndexChanged(self):
+        import core.swmm.options
+        self.project.options.link_offsets = core.swmm.options.general.LinkOffsets[self.cbOffset.currentText()[9:].upper()]
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -1080,6 +1092,9 @@ class frmMainSWMM(frmMain):
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
+        ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.flow_units.name)
+        ui.convenience.set_combo(self.cbOffset, 'Offsets: ' + self.project.options.link_offsets.name)
+
         if self.time_widget:
             if self.project.options.dates.start_date == self.project.options.dates.end_date:
                 self.labelStartTime.setText(self.project.options.dates.start_time)

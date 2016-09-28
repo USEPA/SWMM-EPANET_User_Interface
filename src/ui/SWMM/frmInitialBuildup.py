@@ -14,6 +14,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/initialbuildupeditor.htm"
+        self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -22,8 +23,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
         self.lblNotes.setText("Enter initial buildup of pollutants on Subcatchment " + subcatchment_name)
         self.tblGeneric.setColumnCount(1)
         local_column_list = []
-        units = 1
-        if units == 1:
+        if self.units < 4:
             local_column_list.append('Initial Buildup (lbs/ac)')
         else:
             local_column_list.append('Initial Buildup (kg/ha)')

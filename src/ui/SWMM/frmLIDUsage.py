@@ -11,6 +11,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/lidusageeditor.htm"
+        self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         self._main_form = main_form
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -152,8 +153,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
                     self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/8LID.png"))
 
     def calculate_area(self):
-        units = 1
-        if units == 1:
+        if self.units < 4:
             conversion_factor = 43560.0
         else:
             conversion_factor = 10000.0

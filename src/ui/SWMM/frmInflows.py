@@ -15,6 +15,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/directinfloweditor.htm"
+        self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
@@ -324,9 +325,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
             self.lblNotes.setText("Leave the Unit Hydrograph Group field blank to remove any RDII inflow at this node.")
             self.help_topic = "swmm/src/src/rdiiinfloweditor.htm"
 
-        units = 1
-
-        if units == 1:
+        if self.units < 4:
             self.lblSewershed.setText('Sewershed Area (acres)')
         else:
             self.lblSewershed.setText('Sewershed Area (hectares)')

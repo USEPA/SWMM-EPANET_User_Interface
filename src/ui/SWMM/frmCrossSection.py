@@ -14,6 +14,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
     def __init__(self, main_form=None):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/cross_sectioneditordialog.htm"
+        self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
@@ -302,8 +303,6 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         if cur:
             current_selection = str(cur.text())
 
-        units = 1
-
         self.lblSpin.setVisible(True)
         self.sbxNumber.setVisible(True)
         self.lblText1.setVisible(True)
@@ -315,7 +314,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.txt3.setVisible(True)
         self.txt4.setVisible(True)
         self.lblDimensions.setVisible(True)
-        if units == 1:
+        if self.units < 4:
             self.lblDimensions.setText('Dimensions are feet unless otherwise stated.')
         else:
             self.lblDimensions.setText('Dimensions are meters unless otherwise stated.')
@@ -413,7 +412,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
                 self.lblFootnote.setText('*Hazen-Williams C-factor')
             if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
-                if units == 1:
+                if self.units < 4:
                     self.lblFootnote.setText('*Darcy-Weisbach roughness height (inches)')
                 else:
                     self.lblFootnote.setText('*Darcy-Weisbach roughness height (mm)')
@@ -444,7 +443,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.cboCombo.setVisible(True)
             self.cboCombo.clear()
             self.cboCombo.addItem('Custom')
-            if units == 1:
+            if self.units < 4:
                 self.lblCombo.setText('Standard Sizes (inches)')
                 for index in range(0,self.ellipse_major_axis_in.__len__()):
                     self.cboCombo.addItem(str(self.ellipse_minor_axis_in[index]) + ' x ' + str(self.ellipse_major_axis_in[index]))
@@ -463,7 +462,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.cboCombo.setVisible(True)
             self.cboCombo.clear()
             self.cboCombo.addItem('Custom')
-            if units == 1:
+            if self.units < 4:
                 self.lblCombo.setText('Standard Sizes (inches)')
                 for index in range(0,self.ellipse_major_axis_in.__len__()):
                     self.cboCombo.addItem(str(self.ellipse_major_axis_in[index]) + ' x ' + str(self.ellipse_minor_axis_in[index]))
@@ -482,7 +481,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.cboCombo.setVisible(True)
             self.cboCombo.clear()
             self.cboCombo.addItem('Custom')
-            if units == 1:
+            if self.units < 4:
                 self.lblCombo.setText('Standard Sizes (inches)')
                 for index in range(0,self.arch_type.__len__()):
                     self.cboCombo.addItem(str(self.arch_type[index]) + ' ' + str(self.arch_height_in[index] + ' x '
@@ -618,8 +617,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         if cur:
             current_selection = str(cur.text())
 
-        units = 1
-        if units == 1:
+        if self.units < 4:
             factor = 12
         else:
             factor = 39.3701

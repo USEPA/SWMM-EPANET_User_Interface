@@ -1111,14 +1111,18 @@ class frmMainSWMM(frmMain):
 
 
 class ModelLayers:
+    """
+    This class creates and manages the map layers that are directly linked to model elements.
+    Layer names must match the text in the tree control for the corresponding model section.
+    """
     def __init__(self, map_widget):
         self.map_widget = map_widget
         self.junctions = map_widget.addCoordinates(None, "Junctions")
         self.outfalls = map_widget.addCoordinates(None, "Outfalls")
         self.dividers = map_widget.addCoordinates(None, "Dividers")
-        self.storage = map_widget.addCoordinates(None, "Storage")
+        self.storage = map_widget.addCoordinates(None, "Storage Units")
         self.raingages = map_widget.addCoordinates(None, "Rain Gages")
-        self.labels = map_widget.addCoordinates(None, "Labels")
+        self.labels = map_widget.addCoordinates(None, "Map Labels")
         self.pumps = map_widget.addLinks(None, None, "Pumps", "name", QColor('red'), 1)
         self.orifices = map_widget.addLinks(None, None, "Orifices", "name", QColor('green'), 1.5)
         self.outlets = map_widget.addLinks(None, None, "Outlets", "name", QColor('pink'), 2)

@@ -425,6 +425,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if object_id is None:
             self.listViewObjects.clearSelection()
         else:
+            try:
+                tree_node = self.obj_tree.find_tree_item(layer.name())
+                self.obj_tree.setCurrentItem(tree_node)
+            except:
+                print("Did not find layer in tree")
             for i in range(self.listViewObjects.count()):
                 item = self.listViewObjects.item(i)
                 if item.text() == object_id:

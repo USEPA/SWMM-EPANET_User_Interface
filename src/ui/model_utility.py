@@ -52,6 +52,19 @@ class ObjectTreeView(QtGui.QTreeWidget):
         item.setData(column, QtCore.Qt.UserRole, data)
         return item
 
+    def find_tree_item(self, text, root=None):
+        if root is None:
+            root = self.invisibleRootItem()
+        for index in range(root.childCount()):
+            node = root.child(index)
+            if node.text(0) == text:
+                return node
+            else:
+                found = self.find_tree_item(text, node)
+                if found:
+                    return found
+        return None
+
 
 class ObjectListView(QtGui.QListWidget):
     def __init__(self, parent=None, **kwargs):

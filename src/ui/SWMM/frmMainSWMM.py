@@ -10,7 +10,7 @@ from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
 from ui.help import HelpHandler
-from ui.frmMain import frmMain
+from ui.frmMain import frmMain, ModelLayers
 from ui.SWMM.frmDates import frmDates
 from ui.SWMM.frmDynamicWave import frmDynamicWave
 from ui.SWMM.frmMapBackdropOptions import frmMapBackdropOptions
@@ -248,7 +248,7 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
         if self.map_widget:  # initialize empty model map layers, ready to have model elements added
-            self.model_layers = ModelLayers(self.map_widget)
+            self.model_layers = ModelLayersSWMM(self.map_widget)
 
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.helper = HelpHandler(self)
@@ -1104,31 +1104,33 @@ class frmMainSWMM(frmMain):
                 self.labelEndTime.setText(self.project.options.dates.end_date)
         if self.map_widget:
             try:
-                self.model_layers.create_layers_from_project(self.project, self.canvas)
+                self.model_layers.create_layers_from_project(self.project)
                 self.map_widget.zoomfull()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
 
 
-class ModelLayers:
+class ModelLayersSWMM(ModelLayers):
     """
-    This class creates and manages the map layers that are directly linked to model elements.
+    This class creates and manages the map layers that are directly linked to SWMM model elements.
     Layer names must match the text in the tree control for the corresponding model section.
     """
     def __init__(self, map_widget):
-        self.map_widget = map_widget
-        self.junctions = map_widget.addCoordinates(None, "Junctions")
-        self.outfalls = map_widget.addCoordinates(None, "Outfalls")
-        self.dividers = map_widget.addCoordinates(None, "Dividers")
-        self.storage = map_widget.addCoordinates(None, "Storage Units")
-        self.raingages = map_widget.addCoordinates(None, "Rain Gages")
-        self.labels = map_widget.addCoordinates(None, "Map Labels")
-        self.pumps = map_widget.addLinks(None, None, "Pumps", "name", QColor('red'), 1)
-        self.orifices = map_widget.addLinks(None, None, "Orifices", "name", QColor('green'), 1.5)
-        self.outlets = map_widget.addLinks(None, None, "Outlets", "name", QColor('pink'), 2)
-        self.weirs = map_widget.addLinks(None, None, "Weirs", "name", QColor('orange'), 2.5)
-        self.conduits = map_widget.addLinks(None, None, "Conduits", "name", QColor('gray'), 3.5)
-        self.subcatchments = map_widget.addPolygons(None, "Subcatchments")
+        ModelLayers.__init__(self, map_widget)
+        addCoordinates = self.map_widget.addCoordinates
+        addLinks = self.map_widget.addLinks
+        self.junctions = addCoordinates(None, "Junctions")
+        self.outfalls = addCoordinates(None, "Outfalls")
+        self.dividers = addCoordinates(None, "Dividers")
+        self.storage = addCoordinates(None, "Storage Units")
+        self.raingages = addCoordinates(None, "Rain Gages")
+        self.labels = addCoordinates(None, "Map Labels")
+        self.pumps = addLinks(None, None, "Pumps", "name", QColor('red'), 1)
+        self.orifices = addLinks(None, None, "Orifices", "name", QColor('green'), 1.5)
+        self.outlets = addLinks(None, None, "Outlets", "name", QColor('pink'), 2)
+        self.weirs = addLinks(None, None, "Weirs", "name", QColor('orange'), 2.5)
+        self.conduits = addLinks(None, None, "Conduits", "name", QColor('gray'), 3.5)
+        self.subcatchments = self.map_widget.addPolygons(None, "Subcatchments")
         self.set_lists()
 
     def set_lists(self):
@@ -1137,33 +1139,25 @@ class ModelLayers:
                            self.outlets, self.weirs, self.conduits, self.subcatchments]
         self.all_layers.extend(self.nodes_layers)
 
-    def create_layers_from_project(self, project, canvas):
-        self.project = project
-        map_widget = self.map_widget
-
-        # First remove old ModelLayers already on the map
-        from qgis.core import QgsMapLayerRegistry
-        layer_names = []
-        for layer in self.all_layers:
-            layer_names.append(layer.name())
-        QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
-        from ui.map_tools import EmbedMap
-        EmbedMap.layers = canvas.layers()
+    def create_layers_from_project(self, project):
+        ModelLayers.create_layers_from_project(self, project)
+        addCoordinates = self.map_widget.addCoordinates
+        addLinks = self.map_widget.addLinks
 
         # Add new layers containing objects from this project
-        self.junctions = map_widget.addCoordinates(project.junctions.value, "Junctions")
-        self.outfalls = map_widget.addCoordinates(project.outfalls.value, "Outfalls")
-        self.dividers = map_widget.addCoordinates(project.dividers.value, "Dividers")
-        self.storage = map_widget.addCoordinates(project.storage.value, "Storage")
-        self.raingages = map_widget.addCoordinates(project.symbols.value, "Rain Gages")
-        self.labels = map_widget.addCoordinates(project.labels.value, "Labels")
+        self.junctions = addCoordinates(project.junctions.value, "Junctions")
+        self.outfalls = addCoordinates(project.outfalls.value, "Outfalls")
+        self.dividers = addCoordinates(project.dividers.value, "Dividers")
+        self.storage = addCoordinates(project.storage.value, "Storage Units")
+        self.raingages = addCoordinates(project.symbols.value, "Rain Gages")
+        self.labels = addCoordinates(project.labels.value, "Map Labels")
         coord = project.coordinates.value
-        self.pumps = map_widget.addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
-        self.orifices = map_widget.addLinks(coord, project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
-        self.outlets = map_widget.addLinks(coord, project.outlets.value, "Outlets", "name", QColor('pink'), 2)
-        self.weirs = map_widget.addLinks(coord, project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
-        self.conduits = map_widget.addLinks(coord, project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
-        self.subcatchments = map_widget.addPolygons(project.polygons.value, "Subcatchments")
+        self.pumps = addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
+        self.orifices = addLinks(coord, project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
+        self.outlets = addLinks(coord, project.outlets.value, "Outlets", "name", QColor('pink'), 2)
+        self.weirs = addLinks(coord, project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
+        self.conduits = addLinks(coord, project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
+        self.subcatchments = self.map_widget.addPolygons(project.polygons.value, "Subcatchments")
         self.set_lists()
 
 

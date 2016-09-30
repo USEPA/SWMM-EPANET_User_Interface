@@ -425,11 +425,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if object_id is None:
             self.listViewObjects.clearSelection()
         else:
-            try:
-                tree_node = self.obj_tree.find_tree_item(layer.name())
-                self.obj_tree.setCurrentItem(tree_node)
-            except:
-                print("Did not find layer in tree")
+            if layer:
+                try:
+                    layer_name = layer.name()
+                    already_selected_item = self.obj_tree.currentItem()
+                    if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                        tree_node = self.obj_tree.find_tree_item(layer_name)
+                        if tree_node:
+                            self.obj_tree.setCurrentItem(tree_node)
+                except Exception as ex:
+                    print("Did not find layer in tree:\n" + str(ex))
             for i in range(self.listViewObjects.count()):
                 item = self.listViewObjects.item(i)
                 if item.text() == object_id:
@@ -582,6 +587,30 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
         self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+
+
+class ModelLayers:
+    """
+    This is a base class for creating and managing the map layers that are directly linked to model elements.
+    Model-specific inheritors contain the model-specific set of layers.
+    """
+    def __init__(self, map_widget):
+        self.map_widget = map_widget
+
+    def set_lists(self):
+        self.nodes_layers = []
+        self.all_layers = []
+
+    def create_layers_from_project(self, project):
+        self.project = project
+        # First remove old ModelLayers already on the map
+        from qgis.core import QgsMapLayerRegistry
+        layer_names = []
+        for layer in self.all_layers:
+            layer_names.append(layer.name())
+        QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
+        from ui.map_tools import EmbedMap
+        EmbedMap.layers = self.map_widget.canvas.layers()
 
 
 def print_process_id():

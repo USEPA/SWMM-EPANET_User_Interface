@@ -384,7 +384,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def list_item_clicked(self):
         # on double click of an item in the 'bottom left' list
-        if not self.project or not self.get_editor:
+        if not self.project or not hasattr(self, "get_editor"):
             return
         if len(self.listViewObjects.selectedItems()) == 0:
             return
@@ -421,7 +421,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def sort_object(self):
         self.listViewObjects.sortItems()
 
-    def select_id(self, object_id):
+    def select_id(self, layer, object_id):
         if object_id is None:
             self.listViewObjects.clearSelection()
         else:
@@ -429,6 +429,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 item = self.listViewObjects.item(i)
                 if item.text() == object_id:
                     self.listViewObjects.setItemSelected(item, True)
+                    self.listViewObjects.scrollToItem(item)
 
     def new_project(self):
         self.project = self.project_type()

@@ -611,7 +611,11 @@ try:
             self.main_form = main_form
             QgsMapToolEmitPoint.__init__(self, self.canvas)
             self.layer_spatial_indexes = []
-            for lyr in self.canvas.layers():
+            if hasattr(self.main_form, "model_layers"):
+                model_layers = self.main_form.model_layers.all_layers
+            else:
+                model_layers = self.canvas.layers()
+            for lyr in model_layers:
                 try:
                     provider = lyr.dataProvider()
                     # TODO: check whether provider is vector and has ID field
@@ -652,7 +656,7 @@ try:
         def canvasPressEvent(self, e):
             try:
                 if not (e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)):
-                    self.main_form.select_id(None)
+                    self.main_form.select_id(None, None)
                     for (lyr, pts, ids) in self.layer_spatial_indexes:
                         lyr.removeSelection()
 
@@ -664,7 +668,7 @@ try:
                         nearest_feature = next(iterator)
                         if nearest_feature:
                             nearest_layer.select(nearest_feature_id)
-                            self.main_form.select_id(nearest_feature.attributes()[0])
+                            self.main_form.select_id(nearest_layer, nearest_feature.attributes()[0])
                             return
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())

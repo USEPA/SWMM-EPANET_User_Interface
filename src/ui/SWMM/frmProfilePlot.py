@@ -57,7 +57,7 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
             for link_group in self.project.links_groups():
                 if link_group and link_group.value:
                     for link in link_group.value:
-                        if link.inlet_node == current_node:
+                        if link.inlet_node == current_node and current_node <> end_node:
                             self.lstData.addItem(link.name)
                             current_node = link.outlet_node
 
@@ -103,6 +103,8 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
 
         # Input file Hydraulic Data
         # Conduit ID,  US Node, DS,    Len, Diameter, US offset, DS offset
+        start_node = ''
+        end_node = ''
         LKsToPlotData = {}
         for link_id in LKsToPlot:
             for link_group in self.project.links_groups():
@@ -114,7 +116,20 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
                             for cross_section in self.project.xsections.value:
                                 if cross_section.link == link_id:
                                     diameter = cross_section.geometry1
-                            LKsToPlotData[link_id] = [nodes,link.length,diameter,link.inlet_offset,link.outlet_offset]
+                            length = 10
+                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                                length = float(link.length) - 2*mhrad
+                            inlet_offset = 10
+                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                                inlet_offset = link.inlet_offset
+                            outlet_offset = 10
+                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                                outlet_offset = link.outlet_offset
+                            LKsToPlotData[link_id] = [nodes,length,diameter,inlet_offset,outlet_offset]
+                            # this is also a convenient place to record the start and end nodes for use in the title
+                            if len(start_node) == 0:
+                                start_node = link.inlet_node
+                            end_node = link.outlet_node
 
         NodeInverts = {}
         NodeDepths = {}
@@ -283,8 +298,10 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         tex = ax.text(min(min(pltxspans),min(pltxspansAppendix))+20,min(INVELspan), '')
         plt.xlabel("Distance (ft)")
         plt.ylabel("Elevation (ft)")
+        fig.canvas.set_window_title('Profile - Node ' + start_node + ' - ' + end_node)
 
-        ax.legend([line, line2],['HGL f(t)','PEAK HGL'], loc = 4)
+        # ax.legend([line, line2],['HGL f(t)','PEAK HGL'], loc = 4)
+        ax.legend([line],['HGL f(t)'], loc = 4)
 
 
         # MH PLOTS boxes
@@ -416,13 +433,13 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
                 liney2.set_data(pltxspansAppendix,HGL_dataAppendix)
 
             # PEAK HGL
-            global HGL_max
-            HGL_max = np.vstack((HGL_max,HGL_data))
-            line2.set_data(pltxspans,HGL_max.max(0))
-            if ApLnks > 0:
-                global HGL_maxy2
-                HGL_maxy2 = np.vstack((HGL_maxy2,HGL_dataAppendix))
-                line2y2.set_data(pltxspansAppendix,HGL_maxy2.max(0))
+            # global HGL_max
+            # HGL_max = np.vstack((HGL_max,HGL_data))
+            # line2.set_data(pltxspans,HGL_max.max(0))
+            #  if ApLnks > 0:
+            #    global HGL_maxy2
+            #    HGL_maxy2 = np.vstack((HGL_maxy2,HGL_dataAppendix))
+            #    line2y2.set_data(pltxspansAppendix,HGL_maxy2.max(0))
 
             # Interval Text Note
             tex.set_text("Interval " + str(t))

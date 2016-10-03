@@ -446,7 +446,7 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
             return line,tex
 
 
-        ani = animation.FuncAnimation(fig, run, data_gen, save_count = NPeriods ,blit=True)
+        ani = animation.FuncAnimation(fig, run, data_gen, save_count = NPeriods ,blit=False)
 
         if fig_output == 1:
             plt.show()

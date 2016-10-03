@@ -10,7 +10,7 @@ from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
-from ui.frmMain import frmMain
+from ui.frmMain import frmMain, ModelLayers
 from ui.EPANET.frmEnergyOptions import frmEnergyOptions
 from ui.EPANET.frmHydraulicsOptions import frmHydraulicsOptions
 from ui.EPANET.frmMapBackdropOptions import frmMapBackdropOptions
@@ -128,6 +128,8 @@ class frmMainEPANET(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+        if self.map_widget:  # initialize empty model map layers, ready to have model elements added
+            self.model_layers = ModelLayersEPANET(self.map_widget)
 
         HelpHandler.init_class(os.path.join(self.assembly_path, "epanet.qhc"))
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
@@ -624,31 +626,58 @@ class frmMainEPANET(frmMain):
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
-        try:
-            ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
+        ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
 
-            from qgis.core import QgsMapLayerRegistry
-            from ui.map_tools import EmbedMap, SaveAsGis
+        if self.map_widget:
             try:
-                QgsMapLayerRegistry.instance().removeAllMapLayers()
-                EmbedMap.layers = self.canvas.layers()
-                for node_group in self.project.nodes_groups():
-                    if node_group and node_group.value:
-                        self.map_widget.addCoordinates(node_group.value, node_group.SECTION_NAME)
-
-                # self.map_widget.addCoordinates(self.project.coordinates.value, "Nodes")
-                self.map_widget.addCoordinates(self.project.labels.value, "Labels")
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.pumps.value, "Pumps", "name", QColor('red'), 1)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.valves.value, "Valves", "name", QColor('green'), 2)
-                self.map_widget.addLinks(self.project.coordinates.value,
-                                         self.project.pipes.value, "Pipes", "name", QColor('gray'), 3)
+                self.model_layers.create_layers_from_project(self.project)
                 self.map_widget.zoomfull()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
-        except:
-            pass  # QGIS not loaded, skip building map
+
+
+class ModelLayersEPANET(ModelLayers):
+    """
+    This class creates and manages the map layers that are directly linked to SWMM model elements.
+    Layer names must match the text in the tree control for the corresponding model section.
+    """
+    def __init__(self, map_widget):
+        ModelLayers.__init__(self, map_widget)
+        addCoordinates = self.map_widget.addCoordinates
+        addLinks = self.map_widget.addLinks
+        self.junctions = addCoordinates(None, "Junctions")
+        self.reservoirs = addCoordinates(None, "Reservoirs")
+        self.tanks = addCoordinates(None, "Tanks")
+        self.sources = addCoordinates(None, "Sources")
+        self.labels = addCoordinates(None, "Labels")
+        self.pumps = addLinks(None, None, "Pumps", "name", QColor('red'), 1)
+        self.valves = addLinks(None, None, "Valves", "name", QColor('green'), 2)
+        self.pipes = addLinks(None, None, "Pipes", "name", QColor('gray'), 3)
+        self.set_lists()
+
+    def set_lists(self):
+        self.nodes_layers = [self.junctions, self.reservoirs, self.tanks, self.sources]
+        self.all_layers = [self.labels, self.pumps, self.valves, self.pipes]
+        self.all_layers.extend(self.nodes_layers)
+
+    def create_layers_from_project(self, project):
+        ModelLayers.create_layers_from_project(self, project)
+        addCoordinates = self.map_widget.addCoordinates
+        addLinks = self.map_widget.addLinks
+
+        # Add new layers containing objects from this project
+        self.junctions = addCoordinates(project.junctions.value, "Junctions")
+        self.reservoirs = addCoordinates(project.reservoirs.value, "Reservoirs")
+        self.tanks = addCoordinates(project.tanks.value, "Tanks")
+        self.sources = addCoordinates(project.sources.value, "Sources")
+        self.labels = addCoordinates(project.labels.value, "Labels")
+
+        coord = project.coordinates.value
+        self.pumps = addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
+        self.valves = addLinks(coord, project.valves.value, "Valves", "name", QColor('green'), 2)
+        self.pipes = addLinks(coord, project.pipes.value, "Pipes", "name", QColor('gray'), 3)
+        self.set_lists()
+
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

@@ -76,9 +76,9 @@ class Section(object):
         if hasattr(self, "DEFAULT_COMMENT"):
             self.comment = self.DEFAULT_COMMENT
 
-    def __str__(self):
-        """Override default method to return string representation"""
-        return str(self.value)  #TODO: inp_writer.get_section_text(self)
+    # def __str__(self):
+    #    """Override default method to return string representation"""
+    #    return str(self.value)  #TODO: inp_writer.get_section_text(self)
 
     def setattr_keep_type(self, attr_name, attr_value):
         """ Set attribute attr_name = attr_value.

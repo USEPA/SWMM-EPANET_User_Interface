@@ -5,6 +5,8 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
+from Externals.undo import stack, undoable
+
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
 from ui.help import HelpHandler
@@ -127,6 +129,39 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
 
         self.onLoad()
+        self.undo_stack = stack()
+
+    @undoable
+    def add_item(self, new_item, section_name):
+        section = self.project.find_section(section_name)
+        if len(section.value) == 0:
+            section.value = list(new_item)
+        else:
+            section.value.append(new_item)
+        self.list_objects()  # Refresh the list of items on the form
+        if hasattr(self, "model_layers"):
+            self.model_layers.create_layers_from_project(self.project)
+        yield "Add " + str(new_item)
+        # Undo section
+        section.value.remove(new_item)
+        self.list_objects()
+        if hasattr(self, "model_layers"):
+            self.model_layers.create_layers_from_project(self.project)
+
+    @undoable
+    def delete_item(self, item, section_name):
+        section = self.project.find_section(section_name)
+        section.value.remove(item)
+
+        self.list_objects()
+        if hasattr(self, "model_layers"):
+            self.model_layers.create_layers_from_project(self.project)
+        yield "Remove " + str(item)
+        # Undo section
+        section.value.append(item)
+        self.list_objects()
+        if hasattr(self, "model_layers"):
+            self.model_layers.create_layers_from_project(self.project)
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
@@ -137,9 +172,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.setZoomOutMode()
         self.map_widget.setPanMode()
         self.map_widget.setSelectMode()
-
-    def map_pan(self):
-        self.map_widget.setPanMode()
 
     def zoomfull(self):
         self.map_widget.zoomfull()
@@ -596,8 +628,6 @@ class ModelLayers:
     """
     def __init__(self, map_widget):
         self.map_widget = map_widget
-
-    def set_lists(self):
         self.nodes_layers = []
         self.all_layers = []
 

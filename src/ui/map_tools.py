@@ -225,6 +225,13 @@ try:
             self.canvas.setLayerSet(self.layers)
             return layer
 
+        @staticmethod
+        def set_default_point_renderer(layer):
+            sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+            sym.setColor(QColor(130, 180, 255, 255))
+            sym.setSize(8.0)
+            layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
+
         def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black'), link_width=1):
             layer = QgsVectorLayer("LineString", layer_name, "memory")
             provider = layer.dataProvider()
@@ -279,6 +286,13 @@ try:
             self.canvas.setLayerSet(self.layers)
             return layer
 
+        @staticmethod
+        def set_default_line_renderer(layer):
+            sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+            sym.setColor(QColor('gray'))
+            sym.setWidth(3.5)
+            layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
+
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             layer = QgsVectorLayer("Polygon", layer_name, "memory")
             provider = layer.dataProvider()
@@ -329,16 +343,9 @@ try:
 
         @staticmethod
         def set_default_polygon_renderer(layer, poly_color='lightgreen'):
-            legend = {0.0: (poly_color, "Subcatchment")} #, "1": ("darkcyan", "Water"), "2": ("green", "Land")}
-
-            # build our categorized renderer items
-            categories = []
-            for kind, (color, label) in legend.items():
-                sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
-                sym.setColor(QColor(color))
-                category = QgsRendererCategoryV2(kind, sym, label)
-                categories.append(category)
-            layer.setRendererV2(QgsCategorizedSymbolRendererV2("color", categories))
+            sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+            sym.setColor(QColor(poly_color))
+            layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         @staticmethod
         def validatedDefaultSymbol(geometryType):
@@ -389,12 +396,15 @@ try:
             # return
 
             symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
+            if layer.geometryType() == 0:
+                symbol.setSize(8.0)
             colorRamp = QgsVectorGradientColorRampV2.create(
                 {'color1': '155,155,0,255', 'color2': '0,0,255,255',
                  'stops': '0.25;255,255,0,255:0.50;0,255,0,255:0.75;0,255,255,255'})
             renderer = QgsGraduatedSymbolRendererV2.createRenderer(layer, "color", 5,
-                                                                   QgsGraduatedSymbolRendererV2.Quantile, symbol, colorRamp)
+                                                                     QgsGraduatedSymbolRendererV2.Quantile, symbol, colorRamp)
             # renderer.setSizeScaleField("LABELRANK")
+            # layer.setRendererV2(QgsSingleSymbolRendererV2(symbol))
             layer.setRendererV2(renderer)
 
         def addVectorLayer(self, filename):

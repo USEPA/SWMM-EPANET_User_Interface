@@ -393,6 +393,7 @@ class frmMainSWMM(frmMain):
     def update_thematic_map(self):
         if not self.allow_thematic_update:
             return
+
         if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
             setting = self.cboMapSubcatchments.currentText()
             meta_item = Subcatchment.metadata.meta_item_of_label(setting)
@@ -414,6 +415,60 @@ class frmMainSWMM(frmMain):
             else:
                 self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
             self.model_layers.subcatchments.triggerRepaint()
+
+        if self.model_layers.nodes_layers:
+            setting = self.cboMapNodes.currentText()
+            meta_item = Junction.metadata.meta_item_of_label(setting)
+            attribute = meta_item.attribute
+            color_by = {}
+            if attribute:  # Found an attribute of the node class to color by
+                for layer_type in self.model_layers.nodes_layers:
+                    if layer_type.isValid():
+                        for junction in self.project.junctions.value:
+                            color_by[junction.name] = float(getattr(junction, attribute, 0))
+                        for outfall in self.project.outfalls.value:
+                            color_by[outfall.name] = float(getattr(outfall, attribute, 0))
+                        for divider in self.project.dividers.value:
+                            color_by[divider.name] = float(getattr(divider, attribute, 0))
+                        for storage in self.project.storage.value:
+                            color_by[storage.name] = float(getattr(storage, attribute, 0))
+            elif self.output:  # Look for attribute to color by in the output
+                attribute = SMO.SwmmOutputNode.get_attribute_by_name(setting)
+                if attribute:
+                    values = SMO.SwmmOutputNode.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    index = 0
+                    for node in self.output.nodes.values():
+                        color_by[node.name] = values[index]
+                        index += 1
+            for layer_type in self.model_layers.nodes_layers:
+                if layer_type.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by)
+                    else:
+                        self.map_widget.set_default_point_renderer(layer_type)
+                    layer_type.triggerRepaint()
+
+        if self.model_layers.conduits and self.model_layers.conduits.isValid():
+            setting = self.cboMapLinks.currentText()
+            meta_item = Conduit.metadata.meta_item_of_label(setting)
+            attribute = meta_item.attribute
+            color_by = {}
+            if attribute:  # Found an attribute of the conduit class to color by
+                for conduit in self.project.conduits.value:
+                    color_by[conduit.name] = float(getattr(conduit, attribute, 0))
+            elif self.output:  # Look for attribute to color by in the output
+                attribute = SMO.SwmmOutputLink.get_attribute_by_name(setting)
+                if attribute:
+                    values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    index = 0
+                    for conduit in self.output.conduits.values():
+                        color_by[conduit.name] = values[index]
+                        index += 1
+            if color_by:
+                self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.conduits, color_by)
+            else:
+                self.map_widget.set_default_line_renderer(self.model_layers.conduits)
+            self.model_layers.conduits.triggerRepaint()
 
     def get_output(self):
         if not self.output:

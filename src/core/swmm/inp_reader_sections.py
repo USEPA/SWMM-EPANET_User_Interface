@@ -92,7 +92,6 @@ class CoordinatesReader(SectionReader):
     def read(new_text, project):
         disposable_section = Section()
         disposable_section.SECTION_NAME = "[COORDINATES]"
-        project.coordinates.value = IndexedList([], ['name'])
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
             coordinate = CoordinateReader.read(line)
@@ -100,23 +99,35 @@ class CoordinatesReader(SectionReader):
                 found = False
                 for node_group in project.nodes_groups():
                     if node_group and node_group.value:
-                        for node in node_group.value:
-                            if node.name == coordinate.name:
-                                node.x = coordinate.x
-                                node.y = coordinate.y
-                                found = True
-                                project.coordinates.value.append(node)
-                                break
+                        try:
+                            node = node_group.value[coordinate.name]
+                            node.x = coordinate.x
+                            node.y = coordinate.y
+                            found = True
+                        except:  # Did not find in this group, move on to the next one
+                            pass
                 if not found:
-                    print "Node not found in model for coordinate " + coordinate.name
-                    project.coordinates.value.append(coordinate)
-        for symbol in project.symbols.value:   # also map symbols to raingages
-            for node in project.raingages.value:
-                if node.name == symbol.name:
-                    node.coordinates = symbol
-                    node.x = symbol.x
-                    node.y = symbol.y
-                    break
+                    print("Node not found in model for coordinate " + coordinate.name)
+
+
+class SymbolsReader(SectionReader):
+    """Read coordinates of rain gages"""
+
+    @staticmethod
+    def read(new_text, project):
+        if project.raingages and project.raingages.value:
+            disposable_section = Section()
+            disposable_section.SECTION_NAME = "[SYMBOLS]"
+            for line in new_text.splitlines():
+                line = SectionReader.set_comment_check_section(disposable_section, line)
+                coordinate = CoordinateReader.read(line)
+                if coordinate:
+                    try:
+                        node = project.raingages.value[coordinate.name]
+                        node.x = coordinate.x
+                        node.y = coordinate.y
+                    except Exception as ex:
+                        print("Rain gage not found in model for symbol " + coordinate.name)
 
 
 class LabelReader(SectionReader):

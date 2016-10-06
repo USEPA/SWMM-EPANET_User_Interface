@@ -417,21 +417,7 @@ class frmMainEPANET(frmMain):
         return frm
 
     def get_editor_with_selected_items(self, edit_name, selected_items):
-        frm = None
-
-        # the following items will respond to a click on a node form, not the tree diagram
-        if edit_name == 'Labels':
-            edit_these = []
-            if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
-                    if isinstance(self.project.labels.value, list):
-                        for value in self.project.labels.value:
-                            if value.name in selected_items:
-                                edit_these.append(value)
-            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
-        else:  # General-purpose case finds most editors from tree information
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items, selected_items)
-        return frm
+        return self.make_editor_from_tree(edit_name, self.tree_top_items, selected_items)
 
     def get_object_list(self, category):
         section = self.project.find_section(category)
@@ -672,10 +658,10 @@ class ModelLayersEPANET(ModelLayers):
         self.sources = addCoordinates(project.sources.value, "Sources")
         self.labels = addCoordinates(project.labels.value, "Labels")
 
-        coord = project.coordinates.value
-        self.pumps = addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
-        self.valves = addLinks(coord, project.valves.value, "Valves", "name", QColor('green'), 2)
-        self.pipes = addLinks(coord, project.pipes.value, "Pipes", "name", QColor('gray'), 3)
+        coordinates = project.all_coordinates()
+        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", "name", QColor('red'), 1)
+        self.valves = addLinks(coordinates, project.valves.value, "Valves", "name", QColor('green'), 2)
+        self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", "name", QColor('gray'), 3)
         self.set_lists()
 
 

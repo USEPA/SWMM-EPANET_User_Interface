@@ -1271,3 +1271,35 @@ class TagsWriter(SectionWriter):
             return '\n'.join(text_list)
         else:
             return ''
+
+
+# class CoordinatesWriter(SectionWriter):
+#     """Write [COORDINATES] section to a string"""
+#     SECTION_NAME = "[COORDINATES]"
+#
+#     @staticmethod
+#     def as_text(project):
+#         text_list = []
+#         for item in project.all_coordinates():
+#             text_list.append(CoordinateWriter.as_text(item))
+#         if len(text_list) > 0:
+#             return CoordinatesWriter.SECTION_NAME + '\n' + \
+#                 ";Node            \tX-Coord   \tY-Coord\n" + \
+#                 '\n'.join(text_list)
+#         else:
+#             return ''
+
+
+# class SymbolsWriter(SectionWriter):
+#     """Write [SYMBOLS] section containing raingage locations"""
+#     @staticmethod
+#     def as_text(project):
+#         text_list = []
+#         for item in project.raingages.value:
+#             text_list.append(CoordinateWriter.as_text(item))
+#         if len(text_list) > 0:
+#             return "[SYMBOLS]\n" + \
+#                 ";Gage            \tX-Coord   \tY-Coord\n" + \
+#                 '\n'.join(text_list)
+#         else:
+#             return ''

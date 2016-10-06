@@ -233,37 +233,6 @@ class frmMainSWMM(frmMain):
                            tree_curves_StorageCurves,
                            tree_curves_TidalCurves)
 
-    tree_types = [
-        [tree_hydrology_Subcatchments[0], Subcatchment, "subcatchments"],
-        [tree_hydrology_RainGages[0], RainGage, "raingages"],
-        [tree_hydrology_Aquifers[0], Aquifer, "aquifers"],
-        [tree_hydrology_SnowPacks[0], SnowPack, "snowpacks"],
-        [tree_hydrology_UnitHydrographs[0], UnitHydrograph, "hydrographs"],
-        [tree_hydrology_LIDControls[0], LIDControl, "lid_controls"],
-        [tree_nodes_Junctions[0], Junction, "junctions"],
-        [tree_nodes_Outfalls[0], Outfall, "outfalls"],
-        [tree_nodes_Dividers[0], Divider, "dividers"],
-        [tree_nodes_StorageUnits[0], StorageUnit, "storage"],
-        [tree_links_Conduits[0], Conduit, "conduits"],
-        [tree_links_Pumps[0], Pump, "pumps"],
-        [tree_links_Orifices[0], Orifice, "orifices"],
-        [tree_links_Weirs[0], Weir, "weirs"],
-        [tree_links_Outlets[0], Outlet, "outlets"],
-        [tree_hydraulics_Transects[0], Transect, "transects"],
-        [tree_quality_Pollutants[0], Pollutant, "pollutants"],
-        [tree_quality_LandUses[0], Landuse, "landuses"],
-        [tree_curves_ControlCurves[0], Curve, "curves"],
-        [tree_curves_DiversionCurves[0], Curve, "curves"],
-        [tree_curves_PumpCurves[0], Curve, "curves"],
-        [tree_curves_RatingCurves[0], Curve, "curves"],
-        [tree_curves_ShapeCurves[0], Curve, "curves"],
-        [tree_curves_StorageCurves[0], Curve, "curves"],
-        [tree_curves_TidalCurves[0], Curve, "curves"],
-        [tree_TimeSeries[0], TimeSeries, "timeseries"],
-        [tree_TimePatterns[0], Pattern, "patterns"],
-        [tree_MapLabels[0], Label, "labels"]
-    ]
-
     def __init__(self, q_application):
         frmMain.__init__(self, q_application)
         self.model = "SWMM"
@@ -278,6 +247,62 @@ class frmMainSWMM(frmMain):
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         self.on_load(tree_top_item_list=self.tree_top_items)
+        self.tree_types = {
+            self.tree_hydrology_Subcatchments[0]: Subcatchment,
+            self.tree_hydrology_RainGages[0]: RainGage,
+            self.tree_hydrology_Aquifers[0]: Aquifer,
+            self.tree_hydrology_SnowPacks[0]: SnowPack,
+            self.tree_hydrology_UnitHydrographs[0]: UnitHydrograph,
+            self.tree_hydrology_LIDControls[0]: LIDControl,
+            self.tree_nodes_Junctions[0]: Junction,
+            self.tree_nodes_Outfalls[0]: Outfall,
+            self.tree_nodes_Dividers[0]: Divider,
+            self.tree_nodes_StorageUnits[0]: StorageUnit,
+            self.tree_links_Conduits[0]: Conduit,
+            self.tree_links_Pumps[0]: Pump,
+            self.tree_links_Orifices[0]: Orifice,
+            self.tree_links_Weirs[0]: Weir,
+            self.tree_links_Outlets[0]: Outlet,
+            self.tree_hydraulics_Transects[0]: Transect,
+            self.tree_quality_Pollutants[0]: Pollutant,
+            self.tree_quality_LandUses[0]: Landuse,
+            self.tree_curves_ControlCurves[0]: Curve,
+            self.tree_curves_DiversionCurves[0]: Curve,
+            self.tree_curves_PumpCurves[0]: Curve,
+            self.tree_curves_RatingCurves[0]: Curve,
+            self.tree_curves_ShapeCurves[0]: Curve,
+            self.tree_curves_StorageCurves[0]: Curve,
+            self.tree_curves_TidalCurves[0]: Curve,
+            self.tree_TimeSeries[0]: TimeSeries,
+            self.tree_TimePatterns[0]: Pattern,
+            self.tree_MapLabels[0]: Label
+        }
+
+        self.section_types = {
+            Subcatchment: "subcatchments",
+            RainGage: "raingages",
+            Aquifer: "aquifers",
+            SnowPack: "snowpacks",
+            UnitHydrograph: "hydrographs",
+            LIDControl: "lid_controls",
+            Junction: "junctions",
+            Outfall: "outfalls",
+            Divider: "dividers",
+            StorageUnit: "storage",
+            Conduit: "conduits",
+            Pump: "pumps",
+            Orifice: "orifices",
+            Weir: "weirs",
+            Outlet: "outlets",
+            Transect: "transects",
+            Pollutant: "pollutants",
+            Landuse: "landuses",
+            Curve: "curves",
+            TimeSeries: "timeseries",
+            Pattern: "patterns",
+            Label: "labels"
+        }
+
         if self.map_widget:  # initialize empty model map layers, ready to have model elements added
             self.model_layers = ModelLayersSWMM(self.map_widget)
 
@@ -620,32 +645,6 @@ class frmMainSWMM(frmMain):
 
         return frm
 
-    def get_editor_with_selected_items(self, edit_name, selected_items):
-        frm = None
-        # First handle special cases where forms need more than simply being created
-
-        if edit_name == "Pollutants":
-            edit_these = []
-            if self.project and self.project.pollutants:
-                if not isinstance(self.project.pollutants.value, basestring):
-                    if isinstance(self.project.pollutants.value, list):
-                        for value in self.project.pollutants.value:
-                            if value.name in selected_items:
-                                edit_these.append(value)
-            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
-        elif edit_name == 'Map Labels':
-            edit_these = []
-            if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
-                    if isinstance(self.project.labels.value, list):
-                        for value in self.project.labels.value:
-                            if value.name in selected_items:
-                                edit_these.append(value)
-            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
-        else:  # General-purpose case finds most editors from tree information
-            frm = self.make_editor_from_tree(edit_name, self.tree_top_items, selected_items)
-        return frm
-
     def get_object_list(self, category):
         ids = []
         if category == self.tree_curves_ControlCurves[0]:
@@ -692,154 +691,75 @@ class frmMainSWMM(frmMain):
                 ids = None
         return ids
 
-    def add_object_clicked(self, section_name):
-        new_item = None
-        for typ in self.tree_types:
-            if typ[0] == section_name:
-                new_item = typ[1]()
-                new_item.name = "New"
-                break
+    def add_object_clicked(self, tree_text):
+        item_type = self.tree_types[tree_text]
+        new_item = item_type()
+        new_item.name = "New"
+        if tree_text == self.tree_links_Orifices[0]:
+            # need to add corresponding cross section
+            new_xsection = CrossSection()
+            new_xsection.name = new_item.name
+            if len(self.project.xsections.value) == 0:
+                edit_these = [new_xsection]
+                self.project.xsections.value = edit_these
+            else:
+                self.project.xsections.value.append(new_xsection)
+        elif tree_text == self.tree_curves_DiversionCurves[0]:
+            new_item.curve_type = CurveType.DIVERSION
+        elif tree_text == self.tree_curves_PumpCurves[0]:
+            new_item.curve_type = CurveType.PUMP1
+        elif tree_text == self.tree_curves_RatingCurves[0]:
+            new_item.curve_type = CurveType.RATING
+        elif tree_text == self.tree_curves_ShapeCurves[0]:
+            new_item.curve_type = CurveType.SHAPE
+        elif tree_text == self.tree_curves_StorageCurves[0]:
+            new_item.curve_type = CurveType.STORAGE
+        elif tree_text == self.tree_curves_TidalCurves[0]:
+            new_item.curve_type = CurveType.TIDAL
 
-        if new_item:
-            if section_name == self.tree_links_Orifices[0]:
-                # need to add corresponding cross section
-                new_xsection = CrossSection()
-                new_xsection.name = new_item.name
-                if len(self.project.xsections.value) == 0:
-                    edit_these = [new_xsection]
-                    self.project.xsections.value = edit_these
-                else:
-                    self.project.xsections.value.append(new_xsection)
-            elif section_name == self.tree_curves_DiversionCurves[0]:
-                new_item.curve_type = CurveType.DIVERSION
-            elif section_name == self.tree_curves_PumpCurves[0]:
-                new_item.curve_type = CurveType.PUMP1
-            elif section_name == self.tree_curves_RatingCurves[0]:
-                new_item.curve_type = CurveType.RATING
-            elif section_name == self.tree_curves_ShapeCurves[0]:
-                new_item.curve_type = CurveType.SHAPE
-            elif section_name == self.tree_curves_StorageCurves[0]:
-                new_item.curve_type = CurveType.STORAGE
-            elif section_name == self.tree_curves_TidalCurves[0]:
-                new_item.curve_type = CurveType.TIDAL
-            self.add_item(new_item, section_name)
-            self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, new_item.name))
+        self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
-    def delete_object_clicked(self, section_name, item_name):
-        if section_name == self.tree_hydrology_Subcatchments[0]:
-            for value in self.project.subcatchments.value:
-                if value.name == item_name:
-                    self.project.subcatchments.value.remove(value)
-        elif section_name == self.tree_hydrology_RainGages[0]:
-            for value in self.project.subcatchments.value:
-                if value.name == item_name:
-                    self.project.raingages.value.remove(value)
-        elif section_name == self.tree_hydrology_Aquifers[0]:
-            for value in self.project.aquifers.value:
-                if value.name == item_name:
-                    self.project.aquifers.value.remove(value)
-        elif section_name == self.tree_hydrology_SnowPacks[0]:
-            for value in self.project.snowpacks.value:
-                if value.name == item_name:
-                    self.project.snowpacks.value.remove(value)
-        elif section_name == self.tree_hydrology_UnitHydrographs[0]:
-            for value in self.project.hydrographs.value:
-                if value.name == item_name:
-                    self.project.hydrographs.value.remove(value)
-        elif section_name == self.tree_hydrology_LIDControls[0]:
-            for value in self.project.lid_controls.value:
-                if value.name == item_name:
-                    self.project.lid_controls.value.remove(value)
-        elif section_name == self.tree_nodes_Junctions[0]:
-            for value in self.project.junctions.value:
-                if value.name == item_name:
-                    self.project.junctions.value.remove(value)
-        elif section_name == self.tree_nodes_Outfalls[0]:
-            for value in self.project.outfalls.value:
-                if value.name == item_name:
-                    self.project.outfalls.value.remove(value)
-        elif section_name == self.tree_nodes_Dividers[0]:
-            for value in self.project.dividers.value:
-                if value.name == item_name:
-                    self.project.dividers.value.remove(value)
-        elif section_name == self.tree_nodes_StorageUnits[0]:
-            for value in self.project.storage.value:
-                if value.name == item_name:
-                    self.project.storage.value.remove(value)
-        elif section_name == self.tree_links_Conduits[0]:
-            for value in self.project.conduits.value:
-                if value.name == item_name:
-                    self.project.conduits.value.remove(value)
-        elif section_name == self.tree_links_Pumps[0]:
-            for value in self.project.pumps.value:
-                if value.name == item_name:
-                    self.project.pumps.value.remove(value)
-        elif section_name == self.tree_links_Orifices[0]:
-            for value in self.project.orifices.value:
-                if value.name == item_name:
-                    self.project.orifices.value.remove(value)
-        elif section_name == self.tree_links_Weirs[0]:
-            for value in self.project.weirs.value:
-                if value.name == item_name:
-                    self.project.weirs.value.remove(value)
-        elif section_name == self.tree_links_Outlets[0]:
-            for value in self.project.outlets.value:
-                if value.name == item_name:
-                    self.project.outlets.value.remove(value)
-        elif section_name == self.tree_hydraulics_Transects[0]:
-            for value in self.project.transects.value:
-                if value.name == item_name:
-                    self.project.transects.value.remove(value)
-        elif section_name == self.tree_quality_Pollutants[0]:
-           for value in self.project.pollutants.value:
-                if value.name == item_name:
-                    self.project.pollutants.value.remove(value)
-        elif section_name == self.tree_quality_LandUses[0]:
-            for value in self.project.landuses.value:
-                if value.land_use_name == item_name:
-                    self.project.landuses.value.remove(value)
-        elif section_name == self.tree_curves_ControlCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.CONTROL:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_DiversionCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.DIVERSION:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_PumpCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and \
-                        (value.curve_type == CurveType.PUMP1 or value.curve_type == CurveType.PUMP2
-                         or value.curve_type == CurveType.PUMP3 or value.curve_type == CurveType.PUMP4):
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_RatingCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.RATING:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_ShapeCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.SHAPE:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_StorageCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.STORAGE:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_curves_TidalCurves[0]:
-            for value in self.project.curves.value:
-                if value.name == item_name and value.curve_type == CurveType.TIDAL:
-                    self.project.curves.value.remove(value)
-        elif section_name == self.tree_TimeSeries[0]:
-            for value in self.project.timeseries.value:
-                if value.name == item_name:
-                    self.project.timeseries.value.remove(value)
-        elif section_name == self.tree_TimePatterns[0]:
-            for value in self.project.patterns.value:
-                if value.name == item_name:
-                    self.project.patterns.value.remove(value)
-        elif section_name == self.tree_MapLabels[0]:
-            for value in self.project.labels.value:
-                if value.name == item_name:
-                    self.project.labels.value.remove(value)
+    def delete_object_clicked(self, tree_text, item_name):
+        item_type = self.tree_types[tree_text]
+        section_field_name = self.section_types[item_type]
+
+        if hasattr(self.project, section_field_name):
+            section = getattr(self.project, section_field_name)
+        else:
+            raise Exception("Section not found in project: " + section_field_name)
+        item = section.value[item_name]
+        self.delete_item(item, section)
+
+        # if section_name == self.tree_curves_ControlCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.CONTROL:
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_DiversionCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.DIVERSION:
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_PumpCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and \
+        #                 (value.curve_type == CurveType.PUMP1 or value.curve_type == CurveType.PUMP2
+        #                  or value.curve_type == CurveType.PUMP3 or value.curve_type == CurveType.PUMP4):
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_RatingCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.RATING:
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_ShapeCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.SHAPE:
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_StorageCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.STORAGE:
+        #             self.project.curves.value.remove(value)
+        # elif section_name == self.tree_curves_TidalCurves[0]:
+        #     for value in self.project.curves.value:
+        #         if value.name == item_name and value.curve_type == CurveType.TIDAL:
+        #             self.project.curves.value.remove(value)
 
     def run_simulation(self):
         self.output = None
@@ -994,14 +914,14 @@ class ModelLayersSWMM(ModelLayers):
         self.outfalls = addCoordinates(project.outfalls.value, "Outfalls")
         self.dividers = addCoordinates(project.dividers.value, "Dividers")
         self.storage = addCoordinates(project.storage.value, "Storage Units")
-        self.raingages = addCoordinates(project.symbols.value, "Rain Gages")
+        self.raingages = addCoordinates(project.raingages.value, "Rain Gages")
         self.labels = addCoordinates(project.labels.value, "Map Labels")
-        coord = project.coordinates.value
-        self.pumps = addLinks(coord, project.pumps.value, "Pumps", "name", QColor('red'), 1)
-        self.orifices = addLinks(coord, project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
-        self.outlets = addLinks(coord, project.outlets.value, "Outlets", "name", QColor('pink'), 2)
-        self.weirs = addLinks(coord, project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
-        self.conduits = addLinks(coord, project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
+        coordinates = project.all_coordinates()
+        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", "name", QColor('red'), 1)
+        self.orifices = addLinks(coordinates, project.orifices.value, "Orifices", "name", QColor('green'), 1.5)
+        self.outlets = addLinks(coordinates, project.outlets.value, "Outlets", "name", QColor('pink'), 2)
+        self.weirs = addLinks(coordinates, project.weirs.value, "Weirs", "name", QColor('orange'), 2.5)
+        self.conduits = addLinks(coordinates, project.conduits.value, "Conduits", "name", QColor('gray'), 3.5)
         self.subcatchments = self.map_widget.addPolygons(project.polygons.value, "Subcatchments")
         self.set_lists()
 

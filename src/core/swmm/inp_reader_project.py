@@ -174,12 +174,10 @@ class ProjectReader(InputFileReader):
         self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)
         # X, Y coordinates for intermediate points on links between nodes
 
-        self.read_symbols = SectionReaderAsList("[SYMBOLS]", CoordinateReader)
-        # X, Y coordinates for rain gages
-
         # temporary storage for sections that need to be read after other sections
         self.defer_subareas = None
         self.defer_coordinates = None
+        self.defer_symbols = None
         self.defer_tags = None
         self.defer_losses = None
 
@@ -199,6 +197,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[COORDINATES]":
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[SYMBOLS]":
+            self.defer_symbols = section_text
+            return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
@@ -214,6 +215,9 @@ class ProjectReader(InputFileReader):
         if self.defer_coordinates:
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
+        if self.defer_symbols:
+            SymbolsReader.read(self.defer_symbols, project)
+            self.defer_symbols = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None

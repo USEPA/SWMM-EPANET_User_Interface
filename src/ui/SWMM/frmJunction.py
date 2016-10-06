@@ -20,6 +20,7 @@ class frmJunction(frmGenericPropertyEditor):
         self.project = main_form.project
         self.refresh_column = -1
         self.project_section = self.project.junctions
+        self.new_item = None
         if self.project_section and \
                 isinstance(self.project_section.value, list) and \
                 len(self.project_section.value) > 0 and \
@@ -27,7 +28,6 @@ class frmJunction(frmGenericPropertyEditor):
 
             if edit_these:  # Edit only specified item(s) in section
                 if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
 
@@ -106,9 +106,12 @@ class frmJunction(frmGenericPropertyEditor):
         return local_show
 
     def cmdOK_Clicked(self):
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            self.project.junctions.value.append(self.new_item)
         self.backend.apply_edits()
+        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
+            self._main_form.add_item(self.new_item)
+        else:
+            pass
+            # TODO: self._main_form.edited_? or move this logic into backend.apply_edits
         self.close()
 
     def cmdCancel_Clicked(self):

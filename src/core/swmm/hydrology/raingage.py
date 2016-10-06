@@ -28,7 +28,7 @@ class RainFileUnits(Enum):
     MM = 2
 
 
-class RainGage(Section):
+class RainGage(Section, Coordinate):
     """A rain gage, including reference to location and time-series data"""
 
     #    attribute,         input_name, label,         default, english, metric, hint
@@ -50,12 +50,6 @@ class RainGage(Section):
 
     def __init__(self):
         Section.__init__(self)
-
-        self.name = ''
-        """User-assigned rain gage name"""
-
-        self.coordinates = None  # Coordinates(None, None)
-        """Location of gage; If not set, gage will not appear on the map."""
 
         self.description = None
         """Optional description of the gage"""

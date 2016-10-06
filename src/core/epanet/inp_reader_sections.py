@@ -313,7 +313,6 @@ class CoordinatesReader(SectionReader):
     def read(new_text, project):
         disposable_section = Section()
         disposable_section.SECTION_NAME = "[COORDINATES]"
-        project.coordinates.value = IndexedList([], ['name'])
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
             coordinate = CoordinateReader.read(line)
@@ -326,11 +325,9 @@ class CoordinatesReader(SectionReader):
                                 node.x = coordinate.x
                                 node.y = coordinate.y
                                 found = True
-                                project.coordinates.value.append(node)
                                 break
                 if not found:
                     print "Node not found in model for coordinate " + coordinate.name
-                    project.coordinates.value.append(coordinate)
 
 
 class QualityReader(SectionReader):

@@ -236,17 +236,9 @@ class ProjectWriter(InputFileWriterBase):
                                                   ";Subcatchment    \tX-Coord   \tY-Coord")
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.write_coordinates = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
-                                                     ";Node            \tX-Coord   \tY-Coord")
-        # X, Y coordinates for nodes
-
         self.write_vertices = SectionWriterAsList("[VERTICES]", CoordinateWriter,
                                                   ";Link            \tX-Coord   \tY-Coord")
-        # self.write_vertices = [Section] # VERTICES # X,Y coordinates for each interior vertex of polyline links
-        self.write_symbols = SectionWriterAsList("[SYMBOLS]", CoordinateWriter,
-                                                 ";Gage            \tX-Coord   \tY-Coord")
-        # X, Y coordinates for rain gages
-        #  X,Y coordinates of the bounding rectangle and file name of the backdrop image.
+        # VERTICES # X,Y coordinates for each interior vertex of polyline links
 
         self.write_tags = TagsWriter()
         # [TAGS]
@@ -272,7 +264,7 @@ class ProjectWriter(InputFileWriterBase):
 
         inp = InputFileWriterBase.as_text(self, project)
 
-        subareas = SectionAsList("[SUBAREAS]")  # (list of Subcatchment)
+        subareas = SectionAsList("[SUBAREAS]")
         subareas.value = project.subcatchments.value
         subareas_text = self.write_subareas.as_text(subareas)
         if subareas_text:
@@ -281,6 +273,22 @@ class ProjectWriter(InputFileWriterBase):
         tags_text = self.write_tags.as_text(project)
         if tags_text:
             inp += '\n' + tags_text + '\n'
+
+        symbols = SectionAsList("[SYMBOLS]")
+        symbols.value = project.raingages.value
+        symbols_writer = SectionWriterAsList("[SYMBOLS]", CoordinateWriter,
+                                             ";Gage            \tX-Coord   \tY-Coord")
+        symbols_text = symbols_writer.as_text(symbols)
+        if symbols_text:
+            inp += '\n' + symbols_text + '\n'
+
+        coordinates = SectionAsList("[COORDINATES]")
+        coordinates.value = project.all_coordinates()
+        coordinates_writer = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
+                                                 ";Node            \tX-Coord   \tY-Coord")
+        coordinates_text = coordinates_writer.as_text(coordinates)
+        if coordinates_text:
+            inp += '\n' + coordinates_text + '\n'
 
         losses = SectionAsList("[LOSSES]")  # (list of Conduit)
         losses.value = project.conduits.value

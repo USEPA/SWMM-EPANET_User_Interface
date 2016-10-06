@@ -23,6 +23,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.epanet.vertex import Vertex
 import core.epanet.calibration as Cali
+from core.indexed_list import IndexedList
 
 try:
     unicode = unicode
@@ -67,7 +68,6 @@ class EpanetProject(ProjectBase):
         self.options = Options()
         self.times = TimesOptions()
         self.report = ReportOptions()
-        self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
         self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         self.backdrop = BackdropOptions()
@@ -77,6 +77,14 @@ class EpanetProject(ProjectBase):
 
     def nodes_groups(self):
         return [self.junctions, self.reservoirs, self.tanks, self.sources]
+
+    def all_coordinates(self):
+        all = IndexedList([], ['name'])
+        sections = [self.raingages]
+        sections.extend(self.nodes_groups())
+        for section in sections:
+            all.extend(section.value)
+        return all
 
     def links_groups(self):
         return [self.pipes, self.pumps, self.valves]

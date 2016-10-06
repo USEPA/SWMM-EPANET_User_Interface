@@ -215,17 +215,26 @@ class SectionReaderAsList(SectionReader):
         if default_comment:
             self.DEFAULT_COMMENT = default_comment
 
-    def read(self, new_text):
+    def _init_section(self):
         section = self.section_type()
         # Set new section's SECTION_NAME if it has not already been set
         if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
             section.SECTION_NAME = self.SECTION_NAME
 
-        if section.SECTION_NAME in ["[COORDINATES]"]:
+        # TODO: figure out best way to tell whether this section can be indexed by name. For now we hard code names:
+        index_these = ["[COORDINATES]", "[POLYGONS]", "[VERTICES]", "[SYMBOLS]", "[RAINGAGES]", "[SUBCATCHMENTS]",
+                       "[HYDROGRAPHS]", "[LID_CONTROLS]", "[AQUIFERS]", "[SNOWPACKS]",
+                       "[JUNCTIONS]", "[OUTFALLS]", "[DIVIDERS]", "[STORAGE]",
+                       "[CONDUITS]", "[PUMPS]", "[ORIFICES]", "[WEIRS]", "[LANDUSES]", "[POLLUTANTS]",
+                       "[PATTERNS]", "[CURVES]", "[TIMESERIES]", "[LABELS]"]
+        if hasattr(section, "SECTION_NAME") and section.SECTION_NAME in index_these:
             section.value = IndexedList([], ['name'])
         else:
             section.value = []
+        return section
 
+    def read(self, new_text):
+        section = self._init_section()
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():
@@ -237,15 +246,22 @@ class SectionReaderAsList(SectionReader):
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
                     self.set_comment_check_section(section, line)
             else:
-                try:
-                    if self.list_type_reader:
-                        make_one = self.list_type_reader.read(line)
-                    else:
-                        make_one = line
-                    section.value.append(make_one)
-                except Exception as e:
-                    print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+                self.read_item(section, line)
         return section
+
+    def read_item(self, section, text):
+        try:
+            if self.list_type_reader:
+                make_one = self.list_type_reader.read(text)
+                if len(section.value) == 0:
+                    if hasattr(make_one, "name"):
+                        section.value = IndexedList([], ['name'])
+            else:
+                make_one = text
+
+            section.value.append(make_one)
+        except Exception as e:
+            print("Could not create object from: " + text + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 
 
 class SectionReaderAsListGroupByID(SectionReaderAsList):
@@ -266,11 +282,7 @@ class SectionReaderAsListGroupByID(SectionReaderAsList):
             Returns:
                 new self.section_type with value attribute populated from items in new_text.
         """
-        section = self.section_type()
-        # Set new section's SECTION_NAME if it has not already been set
-        if not hasattr(section, "SECTION_NAME") and hasattr(self, "SECTION_NAME") and self.SECTION_NAME:
-            section.SECTION_NAME = self.SECTION_NAME
-        section.value = []
+        section = self._init_section()
         lines = new_text.splitlines()
         self.set_comment_check_section(section, lines[0])  # Check first line against section name
         next_index = 1
@@ -300,10 +312,7 @@ class SectionReaderAsListGroupByID(SectionReaderAsList):
         for line in lines[next_index:]:
             if line.startswith(';'):  # Found a comment, must be the start of a new item
                 if len(item_name) > 0:
-                    if hasattr(self, "list_type_reader"):
-                        section.value.append(self.list_type_reader.read(item_text))
-                    else:
-                        section.value.append(item_text)
+                    self.read_item(section, item_text)
                     item_text = ''
                 elif item_text:
                     item_text += '\n'
@@ -315,23 +324,12 @@ class SectionReaderAsListGroupByID(SectionReaderAsList):
                     new_item_name = id_split[0].strip()
                     if len(item_name) > 0:  # If we already read an ID that has not been saved to value yet
                         if new_item_name != item_name:  # If this item is not the same one we are already reading
-                            try:  # then save the one we have been reading since we have read it all
-                                if hasattr(self, "list_type_reader"):
-                                    section.value.append(self.list_type_reader.read(item_text))
-                                else:
-                                    section.value.append(item_text)
-                            except Exception as ex:
-                                raise Exception("Read from string:{}\n{}\n{}".format(item_text,
-                                                                                     str(ex),
-                                                                                     str(traceback.print_exc())))
+                            self.read_item(section, item_text)
                             item_text = ''  # clear the buffer after using it to create/append an item
                     item_name = new_item_name
                     if item_text:
                         item_text += '\n'
                     item_text += line
         if item_text:
-            if hasattr(self, "list_type_reader"):
-                section.value.append(self.list_type_reader.read(item_text))
-            else:
-                section.value.append(item_text)
+            self.read_item(section, item_text)
         return section

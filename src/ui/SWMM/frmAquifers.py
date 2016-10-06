@@ -14,7 +14,6 @@ class frmAquifers(frmGenericPropertyEditor):
     def __init__(self, main_form, edit_these=[]):
         self.help_topic = "swmm/src/src/aquifereditordialog.htm"
         self._main_form = main_form
-        self.new_item = None
         self.project = main_form.project
         self.project_section = self.project.aquifers
         if self.project_section and isinstance(self.project_section.value, list) and \
@@ -36,7 +35,7 @@ class frmAquifers(frmGenericPropertyEditor):
             # self.new_item.name = "1"
             edit_these.append(self.new_item)
         else:
-            self.new_item = False
+            self.new_item = None
 
         frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
@@ -56,12 +55,9 @@ class frmAquifers(frmGenericPropertyEditor):
             self.tblGeneric.setCellWidget(13, column, combobox)
 
     def cmdOK_Clicked(self):
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            if self.project_section and isinstance(self.project_section.value, list):
-                self.project_section.value.append(self.new_item)
-            else:
-                print("Unable to add new item to project: section is not a list: " + self.SECTION_NAME)
         self.backend.apply_edits()
+        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
+            self.main_form.add_item(self.new_item)
         self.close()
 
     def cmdCancel_Clicked(self):

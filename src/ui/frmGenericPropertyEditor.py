@@ -16,7 +16,6 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self._main_form.list_objects()
         self.close()
 
     def cmdCancel_Clicked(self):

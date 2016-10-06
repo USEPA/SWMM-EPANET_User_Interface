@@ -25,6 +25,7 @@ from core.swmm.patterns import Pattern
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
+from core.indexed_list import IndexedList
 
 try:
     unicode = unicode
@@ -162,22 +163,19 @@ class SwmmProject(ProjectBase):
         self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.coordinates = SectionAsList("[COORDINATES]")  # (list of Coordinate)
-        # X, Y coordinates for nodes
-
         self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
         # X,Y coordinates for each interior vertex of polyline links
 
-        self.symbols = SectionAsList("[SYMBOLS]")    # (list of Coordinate)
-        # X,Y coordinates for rain gages
-
         ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
-
-    def add_section(self, section_name, section_text):
-        ProjectBase.add_section(self, section_name, section_text)
 
     def nodes_groups(self):
         return [self.junctions, self.outfalls, self.dividers, self.storage]
+
+    def all_coordinates(self):
+        all = IndexedList([], ['name'])
+        for section in self.nodes_groups():
+            all.extend(section.value)
+        return all
 
     def links_groups(self):
         return [self.conduits, self.pumps, self.orifices, self.weirs, self.outlets]

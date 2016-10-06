@@ -2,7 +2,7 @@ import os
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
-from core.coordinate import Coordinate
+from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.link import Pipe, Pump, Valve
 
 """Export (save) model elements as GIS data or Import (read) model elements from existing GIS data."""
@@ -40,6 +40,7 @@ junctions_gis_attributes = [
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
     extension = extension.lower()
+    layer_options = ''
     if extension == ".shp":
         driver_name = "ESRI Shapefile"
         one_file = False
@@ -49,11 +50,12 @@ def export_to_gis(session, file_name):
     elif extension == ".gdb":
         driver_name = "FileGDB"
         one_file = True
+        layer_options = 'GEOMETRY=AS_XYZ'
     else:
         driver_name = "GeoJson"
         one_file = True
         extension = ".json"
-    coordinates = session.project.coordinates.value
+    coordinates = session.project.all_coordinates()
     vertices = session.project.vertices.value
 
     layer_count = 0
@@ -73,7 +75,9 @@ def export_to_gis(session, file_name):
         layer_count += 1
         if not one_file:
             layer_file_name = path_file + "_pipes" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
+                                                    driver_name,
+                                                    layerOptions=layer_options)
             print("saved " + layer_file_name)
 
     # Export Pumps
@@ -234,7 +238,7 @@ def import_from_gis(session, file_name):
             return
 
     result = import_links(session.project, section.value, file_name, pipe_model_attributes, pipe_gis_attributes, Pipe)
-    session.map_widget.addLinks(session.project.coordinates.value,
+    session.map_widget.addLinks(session.project.all_coordinates(),
                                 section.value, "Pipes", "name", QtGui.QColor('gray'))
 
     session.map_widget.zoomfull()
@@ -255,14 +259,13 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
     Notes:
         model_attributes and gis_attributes must be aligned with each other.
         Each value found by gis_attribute is assigned to the model_attribute in the same position in its array.
-
-         Special model_attribute names "inlet_node" and "outlet_node" are set in project.coordinates section.
+        If model_attribute is "inlet_node" or "outlet_node" these are added to project.junctions.
     """
     count = 0
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
-            coordinates = project.coordinates.value
+            coordinates = project.all_coordinates()
             for feature in layer.getFeatures():
                 geom = feature.geometry()
                 if geom.type() == QGis.Line:
@@ -280,17 +283,13 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
                             index = len(line) - 1
                         if index >= 0:
                             try:     # Remove this coordinate if it already exists
-                                existing_coord = project.coordinates.value[attr_value]
-                                if existing_coord:
-                                    project.coordinates.remove(existing_coord)
-                            except:  # do not already have this coordinate, do not need to remove it
-                                pass
-
-                            new_coord = Coordinate()
-                            new_coord.name = attr_value
-                            new_coord.x = line[index].x()
-                            new_coord.y = line[index].y()
-                            coordinates.append(new_coord)
+                                this_coord = coordinates[attr_value]
+                            except:  # do not already have this coordinate, create it
+                                this_coord = Junction()
+                                this_coord.name = attr_value
+                                project.junctions.value.append(this_coord)
+                            this_coord.x = line[index].x()
+                            this_coord.y = line[index].y()
                     links.append(model_item)
                     count += 1
     except Exception as ex:

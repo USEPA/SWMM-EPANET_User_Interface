@@ -5,10 +5,10 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
-from Externals.undo import stack, undoable
 
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
+from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.help import HelpHandler
 from ui.model_utility import *
 from PyQt4 import QtCore, QtGui
@@ -113,6 +113,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
                             QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
                             QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
+                            QtCore.QObject.connect(self.actionObjAddGage, QtCore.SIGNAL('triggered()'), self.map_add_gage)
+
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
                     msg = "Did not load QGIS from " + qgis_home + ": " + str(e1) + '\n' # + str(traceback.print_exc())
@@ -129,39 +131,92 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
 
         self.onLoad()
-        self.undo_stack = stack()
+        self.undo_stack = QUndoStack(self)
+        # self.undo_view = QUndoView(self.undo_stack)
 
-    @undoable
-    def add_item(self, new_item, section_name):
-        section = self.project.find_section(section_name)
-        if len(section.value) == 0:
-            section.value = list(new_item)
-        else:
-            section.value.append(new_item)
-        self.list_objects()  # Refresh the list of items on the form
-        if hasattr(self, "model_layers"):
-            self.model_layers.create_layers_from_project(self.project)
-        yield "Add " + str(new_item)
-        # Undo section
-        section.value.remove(new_item)
-        self.list_objects()
-        if hasattr(self, "model_layers"):
-            self.model_layers.create_layers_from_project(self.project)
+        self.action_undo = QtGui.QAction(self)
+        self.action_undo.setObjectName("actionUndo")
+        self.action_undo.setText(transl8("frmMain", "Undo", None) )
+        self.action_undo.setToolTip(transl8("frmMain", "Undo the most recent edit", None) )
+        self.menuEdit.addAction(self.action_undo)
+        QtCore.QObject.connect(self.action_undo, QtCore.SIGNAL('triggered()'), self.undo)
 
-    @undoable
-    def delete_item(self, item, section_name):
-        section = self.project.find_section(section_name)
-        section.value.remove(item)
+        self.action_redo = QtGui.QAction(self)
+        self.action_redo.setObjectName("actionRedo")
+        self.action_redo.setText(transl8("frmMain", "Redo", None) )
+        self.action_redo.setToolTip(transl8("frmMain", "Redo the most recent Undo", None) )
+        self.menuEdit.addAction(self.action_redo)
+        QtCore.QObject.connect(self.action_redo, QtCore.SIGNAL('triggered()'), self.redo)
 
-        self.list_objects()
-        if hasattr(self, "model_layers"):
-            self.model_layers.create_layers_from_project(self.project)
-        yield "Remove " + str(item)
-        # Undo section
-        section.value.append(item)
-        self.list_objects()
-        if hasattr(self, "model_layers"):
-            self.model_layers.create_layers_from_project(self.project)
+    def undo(self):
+        self.undo_stack.undo()
+
+    def redo(self):
+        self.undo_stack.redo()
+
+    class _AddItem(QtGui.QUndoCommand):
+        """Private class that adds an item to the model and the map. Accessed via add_item method."""
+        def __init__(self, session, item):
+            QtGui.QUndoCommand.__init__(self, "Add " + str(item))
+            self.session = session
+            self.item = item
+            section_field_name = session.section_types[type(item)]
+            if hasattr(session.project, section_field_name):
+                self.section = getattr(session.project, section_field_name)
+            else:
+                raise Exception("Section not found in project: " + section_field_name)
+
+        def redo(self):
+            if len(self.section.value) == 0 and not isinstance(self.section, list):
+                self.section.value = list(self.item)
+            else:
+                self.section.value.append(self.item)
+            # self.session.list_objects()  # Refresh the list of items on the form
+            list_item = self.session.listViewObjects.addItem(self.item.name)
+            self.session.listViewObjects.scrollToItem(list_item)
+            if hasattr(self.session, "model_layers"):
+                self.session.map_widget.clearSelectableObjects()
+                self.session.model_layers.create_layers_from_project(self.session.project)
+
+        def undo(self):
+            self.section.value.remove(self.item)
+            self.session.list_objects()  # Refresh the list of items on the form
+            # self.session.listViewObjects.takeItem(len(self.section.value))
+            if hasattr(self.session, "model_layers"):
+                self.session.map_widget.clearSelectableObjects()
+                self.session.model_layers.create_layers_from_project(self.session.project)
+
+    def add_item(self, new_item):
+        self.undo_stack.push(self._AddItem(self, new_item))
+
+    class _DeleteItem(QtGui.QUndoCommand):
+        """Private class that adds an item to the model and the map. Accessed via add_item method."""
+        def __init__(self, session, item):
+            QtGui.QUndoCommand.__init__(self, "Delete " + str(item))
+            self.session = session
+            self.item = item
+            section_field_name = session.section_types[type(item)]
+            if hasattr(session.project, section_field_name):
+                self.section = getattr(session.project, section_field_name)
+            else:
+                raise Exception("Section not found in project: " + section_field_name)
+
+        def redo(self):
+            self.section.value.remove(self.item)
+            self.list_objects()  # Refresh the list of items on the form
+            if hasattr(self, "model_layers"):
+                self.session.map_widget.clearSelectableObjects()
+                self.model_layers.create_layers_from_project(self.session.project)
+
+        def undo(self):
+            self.section.value.append(self.item)
+            self.session.list_objects()  # Refresh the list of items on the form
+            if hasattr(self.session, "model_layers"):
+                self.session.map_widget.clearSelectableObjects()
+                self.session.model_layers.create_layers_from_project(self.session.project)
+
+    def delete_item(self, item):
+        self.undo_stack.push(self._DeleteItem(self, item))
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
@@ -178,6 +233,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def map_addfeature(self):
         self.map_widget.setAddFeatureMode()
+
+    def map_add_gage(self):
+        self.map_widget.setAddGageMode()
 
     def onGeometryAdded(self):
         print 'Geometry Added'
@@ -372,27 +430,56 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
 
-    def make_editor_from_tree(self, search_for, tree_list, selected_items=[]):
-        for tree_item in tree_list:
-            if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
-                if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
-                    args = [self]
-                    if len(tree_item) > 2:
-                        # We recommend this is a list, but if not, try to treat it as a single argument
-                        if isinstance(tree_item[2], basestring) or not isinstance(tree_item[2], list):
-                            args.append(str(tree_item[2]))
-                        else:  # tree_item[2] is a list that is not a string
-                            args.extend(tree_item[2])
-                    if selected_items:
-                        args.append(selected_items)
-                    edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
-                    edit_form.helper = HelpHandler(edit_form)
-                    return edit_form
-                return None
-            if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
-                edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items)
-                if edit_form:
-                    return edit_form
+    def make_editor_from_tree(self, search_for, tree_list, selected_items=[], new_item=None):
+        edit_form = None
+        # If selected_items is not a list, it is a new item to be edited and is only added if user presses OK.
+        if new_item:
+            selected_items = [new_item]  # Turn this one item into a list
+
+        # First handle special cases
+        section = None
+        if search_for == "Pollutants":
+            if self.project:
+                section = self.project.pollutants
+        elif search_for == "Map Labels" or search_for == "Labels":
+            if self.project:
+                section = self.project.labels
+
+        if section:
+            if new_item:
+                edit_these = [new_item]
+            else:  # add selected items to edit_these
+                edit_these = []
+                if not isinstance(section.value, basestring):
+                    if isinstance(section.value, list):
+                        for value in section.value:
+                            if value.name in selected_items:
+                                edit_these.append(value)
+            edit_form = frmGenericPropertyEditor(self, edit_these, self.model + ' ' + search_for + " Editor")
+        else:
+            for tree_item in tree_list:
+                if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
+                    if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
+                        args = [self]
+                        if len(tree_item) > 2:
+                            # We recommend this is a list, but if not, try to treat it as a single argument
+                            if isinstance(tree_item[2], basestring) or not isinstance(tree_item[2], list):
+                                args.append(str(tree_item[2]))
+                            else:  # tree_item[2] is a list that is not a string
+                                args.extend(tree_item[2])
+                        if selected_items:
+                            args.append(selected_items)
+                        edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                        edit_form.helper = HelpHandler(edit_form)
+                        break
+                    return None
+                if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
+                    edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items)
+                    if edit_form:
+                        break
+        if edit_form:
+            edit_form.new_item = new_item
+        return edit_form
 
     def edit_options(self, itm, column):
         if not self.project or not self.get_editor:
@@ -421,7 +508,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if len(self.listViewObjects.selectedItems()) == 0:
             return
         selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
-        self.show_edit_window(self.get_editor_with_selected_items(self.tree_section, selected))
+        self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
 
     def edit_object(self):
         self.list_item_clicked()
@@ -430,7 +517,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.project or not self.get_editor:
             return
         self.add_object_clicked(self.tree_section)
-        self.list_objects()
 
     def delete_object(self):
         if not self.project or not self.get_editor:
@@ -438,7 +524,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         for item in self.listViewObjects.selectedIndexes():
             selected_text = str(item.data())
             self.delete_object_clicked(self.tree_section, selected_text)
-            self.list_objects()
 
     def moveup_object(self):
         currentRow = self.listViewObjects.currentRow()

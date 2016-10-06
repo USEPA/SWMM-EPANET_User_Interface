@@ -168,7 +168,8 @@ try:
             provider = layer.dataProvider()
 
             # add fields
-            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                    QgsField("color", QtCore.QVariant.Double)])
 
             features = []
             if coordinates:
@@ -178,7 +179,7 @@ try:
                         feature = QgsFeature()
                         feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x),
                                                                            float(coordinate_pair.y))))
-                        feature.setAttributes([coordinate_pair.name])
+                        feature.setAttributes([coordinate_pair.name, 0.0])
                         features.append(feature)
                     except Exception as ex:
                         if len(str(coordinate_pair.x)) > 0 and len(str(coordinate_pair.y)) > 0:
@@ -251,7 +252,8 @@ try:
             layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
 
             # add fields
-            provider.addAttributes([QgsField("name", QtCore.QVariant.String)])
+            provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                    QgsField("color", QtCore.QVariant.Double)])
 
             features = []
             if links:
@@ -265,7 +267,7 @@ try:
                             feature.setGeometry(QgsGeometry.fromPolyline([
                                 QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
                                 QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
-                            feature.setAttributes([getattr(link, link_attr, '')])
+                            feature.setAttributes([getattr(link, link_attr, ''), 0.0])
                             features.append(feature)
                     except Exception as exLink:
                         print "Skipping link " + link.name + ": " + str(exLink)
@@ -398,6 +400,8 @@ try:
             symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
             if layer.geometryType() == 0:
                 symbol.setSize(8.0)
+            elif layer.geometryType() == 1:
+                symbol.setWidth(3.5)
             colorRamp = QgsVectorGradientColorRampV2.create(
                 {'color1': '155,155,0,255', 'color2': '0,0,255,255',
                  'stops': '0.25;255,255,0,255:0.50;0,255,0,255:0.75;0,255,255,255'})

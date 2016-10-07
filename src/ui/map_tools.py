@@ -418,6 +418,8 @@ try:
             self.model.setFlag(QgsLayerTreeModel.AllowNodeReorder)
             self.model.setFlag(QgsLayerTreeModel.AllowNodeRename)
             self.model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
+            self.model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
+            self.model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
             self.model.setFlag(QgsLayerTreeModel.ShowLegend)
             self.view = QgsLayerTreeView()
             self.view.setModel(self.model)

@@ -694,7 +694,7 @@ class frmMainSWMM(frmMain):
     def add_object_clicked(self, tree_text):
         item_type = self.tree_types[tree_text]
         new_item = item_type()
-        new_item.name = "New"
+        new_item.name = self.new_item_name(item_type)
         if tree_text == self.tree_links_Orifices[0]:
             # need to add corresponding cross section
             new_xsection = CrossSection()

@@ -19,6 +19,7 @@ from frmMainDesigner import Ui_frmMain
 #import py_compile
 import imp
 import traceback
+from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
@@ -165,18 +166,27 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.section = getattr(session.project, section_field_name)
             else:
                 raise Exception("Section not found in project: " + section_field_name)
+            if session.map_widget and hasattr(self.session, "model_layers")\
+                                  and hasattr(session.model_layers, section_field_name):
+                self.layer = getattr(self.session.model_layers, section_field_name)
+            else:
+                self.layer = None
 
         def redo(self):
+            if self.item.name == '' or self.item.name in self.section.value:
+                self.item.name = self.session.new_item_name(type(self.item))
             if len(self.section.value) == 0 and not isinstance(self.section, list):
-                self.section.value = list(self.item)
-            else:
-                self.section.value.append(self.item)
+                self.section.value = IndexedList([], ['name'])
+            self.section.value.append(self.item)
             # self.session.list_objects()  # Refresh the list of items on the form
             list_item = self.session.listViewObjects.addItem(self.item.name)
             self.session.listViewObjects.scrollToItem(list_item)
-            if hasattr(self.session, "model_layers"):
-                self.session.map_widget.clearSelectableObjects()
-                self.session.model_layers.create_layers_from_project(self.session.project)
+            if self.layer:
+                self.layer.addFeature(self.session.map_widget.point_feature_from_item(self.item))
+                self.layer.updateExtents()
+
+                # self.session.map_widget.clearSelectableObjects()
+                # self.session.model_layers.create_layers_from_project(self.session.project)
 
         def undo(self):
             self.section.value.remove(self.item)
@@ -217,6 +227,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def delete_item(self, item):
         self.undo_stack.push(self._DeleteItem(self, item))
+
+    def new_item_name(self, item_type):
+        section = getattr(self.project, self.section_types[item_type])
+        number = 1
+        while str(number) in section.value:
+            number += 1
+        return str(number)
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val

@@ -126,18 +126,8 @@ try:
                 self.layer_spatial_indexes = []
 
         def setAddGageMode(self):
-            if self.session.actionAdd_Feature.isChecked():
-                if self.qgisNewFeatureTool is None:
-                    if self.layers and len(self.layers) > 0:
-                        self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
-                                                              self.session.onGeometryAdded,
-                                                              CaptureTool.CAPTURE_POLYGON)
-                        self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
-                if self.qgisNewFeatureTool:
-                    self.canvas.setMapTool(self.qgisNewFeatureTool)
-            else:
-                self.canvas.unsetMapTool(self.qgisNewFeatureTool)
-
+            self.session.setCursor(Qt.CrossCursor)
+            self.add_point_layer = self.session.model_layers.raingages
 
         def setAddFeatureMode(self):
             # Temporarily hijacked to test properties editor
@@ -183,6 +173,14 @@ try:
             self.session.btnCoord.setText('x,y: {:.4f}, {:.4f}'.format(pm.x(), pm.y()))
             pass
 
+        @staticmethod
+        def point_feature_from_item(item):
+            feature = QgsFeature()
+            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(item.x),
+                                                               float(item.y))))
+            feature.setAttributes([item.name, 0.0])
+            return feature
+
         def addCoordinates(self, coordinates, layer_name):
             layer = QgsVectorLayer("Point", layer_name, "memory")
             provider = layer.dataProvider()
@@ -196,11 +194,7 @@ try:
                 for coordinate_pair in coordinates:
                     # add a feature
                     try:
-                        feature = QgsFeature()
-                        feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x),
-                                                                           float(coordinate_pair.y))))
-                        feature.setAttributes([coordinate_pair.name, 0.0])
-                        features.append(feature)
+                        features.append(self.point_feature_from_item(coordinate_pair))
                     except Exception as ex:
                         if len(str(coordinate_pair.x)) > 0 and len(str(coordinate_pair.y)) > 0:
                             print "Did not add coordinate '" + coordinate_pair.name + "' (" +\
@@ -639,14 +633,31 @@ try:
                 self.layer.updateExtents()
                 self.onGeometryAdded()
 
-    class SelectMapTool(QgsMapToolEmitPoint):
-        def __init__(self, canvas, main_form):
+
+    class AddPointTool(QgsMapTool):
+        def __init__(self, canvas, layer, object_type, session):
+            QgsMapTool.__init__(self, canvas)
             self.canvas = canvas
-            self.main_form = main_form
+            self.layer = layer
+            self.object_type = object_type
+            self.session = session
+            self.setCursor(Qt.CrossCursor)
+
+        def canvasReleaseEvent(self, event):
+            point = self.toLayerCoordinates(self.layer, event.pos())
+            new_object = self.object_type()
+            new_object.x = point.x
+            new_object.y = point.y
+            self.session.add_item(new_object)
+
+    class SelectMapTool(QgsMapToolEmitPoint):
+        def __init__(self, canvas, session):
+            self.canvas = canvas
+            self.session = session
             QgsMapToolEmitPoint.__init__(self, self.canvas)
             self.layer_spatial_indexes = []
-            if hasattr(self.main_form, "model_layers"):
-                model_layers = self.main_form.model_layers.all_layers
+            if hasattr(self.session, "model_layers"):
+                model_layers = self.session.model_layers.all_layers
             else:
                 model_layers = self.canvas.layers()
             for lyr in model_layers:
@@ -691,7 +702,7 @@ try:
         def canvasPressEvent(self, e):
             try:
                 if not (e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)):
-                    self.main_form.select_id(None, None)
+                    self.session.select_id(None, None)
                     for (lyr, pts, ids) in self.layer_spatial_indexes:
                         lyr.removeSelection()
 
@@ -703,7 +714,7 @@ try:
                         nearest_feature = next(iterator)
                         if nearest_feature:
                             nearest_layer.select(nearest_feature_id)
-                            self.main_form.select_id(nearest_layer, nearest_feature.attributes()[0])
+                            self.session.select_id(nearest_layer, nearest_feature.attributes()[0])
                             return
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())

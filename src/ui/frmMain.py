@@ -200,7 +200,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.undo_stack.push(self._AddItem(self, new_item))
 
     class _DeleteItem(QtGui.QUndoCommand):
-        """Private class that adds an item to the model and the map. Accessed via add_item method."""
+        """Private class that removes an item from the model and the map. Accessed via delete_item method."""
         def __init__(self, session, item):
             QtGui.QUndoCommand.__init__(self, "Delete " + str(item))
             self.session = session
@@ -212,14 +212,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 raise Exception("Section not found in project: " + section_field_name)
 
         def redo(self):
+            self.item_index = self.section.value.index(self.item)
             self.section.value.remove(self.item)
-            self.list_objects()  # Refresh the list of items on the form
+            self.session.list_objects()  # Refresh the list of items on the form
             if hasattr(self, "model_layers"):
                 self.session.map_widget.clearSelectableObjects()
                 self.model_layers.create_layers_from_project(self.session.project)
 
         def undo(self):
-            self.section.value.append(self.item)
+            self.section.value.insert(self.item_index, self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             if hasattr(self.session, "model_layers"):
                 self.session.map_widget.clearSelectableObjects()
@@ -536,9 +537,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def delete_object(self):
         if not self.project or not self.get_editor:
             return
+        self.undo_stack.beginMacro("Delete selected items")  # Keep deletion as one undo action instead of one per item
         for item in self.listViewObjects.selectedIndexes():
             selected_text = str(item.data())
             self.delete_object_clicked(self.tree_section, selected_text)
+        self.undo_stack.endMacro()
 
     def moveup_object(self):
         currentRow = self.listViewObjects.currentRow()

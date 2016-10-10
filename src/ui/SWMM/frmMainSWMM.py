@@ -725,7 +725,7 @@ class frmMainSWMM(frmMain):
         else:
             raise Exception("Section not found in project: " + section_field_name)
         item = section.value[item_name]
-        self.delete_item(item, section)
+        self.delete_item(item)
 
         # if section_name == self.tree_curves_ControlCurves[0]:
         #     for value in self.project.curves.value:

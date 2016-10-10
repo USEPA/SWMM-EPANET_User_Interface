@@ -11,7 +11,6 @@ try:
         """ Main GUI Widget for map display inside vertical layout """
         def __init__(self, mapCanvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
-            self.main_form = main_form
             #define QMapControl here
             #qmap = QMapControl()
             #layout.addWidget(qmap)
@@ -58,6 +57,7 @@ try:
             self.zoomOutTool.setAction(self.session.actionZoom_out)
 
             self.selectTool = None
+            self.addPointTool = None
 
             self.qgisNewFeatureTool = None
 
@@ -112,7 +112,7 @@ try:
             if self.session.actionMapSelectObj.isChecked():
                 if self.selectTool is None:
                     if self.layers and len(self.layers) > 0:
-                        self.selectTool = SelectMapTool(self.canvas, self.main_form)
+                        self.selectTool = SelectMapTool(self.canvas, self.session)
                         self.selectTool.setAction(self.session.actionMapSelectObj)
                 if self.selectTool:
                     self.canvas.setMapTool(self.selectTool)
@@ -125,9 +125,22 @@ try:
                 self.selectTool = None
                 self.layer_spatial_indexes = []
 
+
+        def setAddPointMode(self, action_obj, section_name):
+            if self.session.actionObjAddGage.isChecked():
+                QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
+                layer = getattr(self.session.model_layers, section_name)
+                for obj_type, name in self.session.section_types.iteritems():
+                    if name == "raingages":
+                        self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
+                        self.addPointTool.setAction(self.session.actionObjAddGage)
+                        self.canvas.setMapTool(self.addPointTool)
+            else:
+                QApplication.restoreOverrideCursor()
+                self.canvas.unsetMapTool(self.addPointTool)
+
         def setAddGageMode(self):
-            self.session.setCursor(Qt.CrossCursor)
-            self.add_point_layer = self.session.model_layers.raingages
+            self.setAddPointMode(self.session.actionObjAddGage, "raingages")
 
         def setAddFeatureMode(self):
             # Temporarily hijacked to test properties editor

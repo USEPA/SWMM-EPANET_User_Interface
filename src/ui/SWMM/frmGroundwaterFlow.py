@@ -10,7 +10,7 @@ from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
 
 
 class frmGroundwaterFlow(QtGui.QMainWindow, Ui_frmGroundwaterFlow):
-    def __init__(self, main_form, edit_these, title):
+    def __init__(self, main_form, edit_these, new_item, title):
         QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/groundwaterfloweditordialog.htm"
@@ -21,7 +21,7 @@ class frmGroundwaterFlow(QtGui.QMainWindow, Ui_frmGroundwaterFlow):
         self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, main_form, edit_these)
+        self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, main_form, edit_these, new_item)
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for aquifers, show available aquifers

@@ -23,9 +23,7 @@ class frmRainGages(frmGenericPropertyEditor):
 
             if edit_these:  # Edit only specified item(s) in section
                 if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_names = edit_these
-                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
-                    edit_these = edit_objects
+                    edit_these = [item for item in self.project_section.value if item.name in edit_these]
 
             else:  # Edit all items in section
                 edit_these = []
@@ -34,9 +32,8 @@ class frmRainGages(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
-            # for timeseries, show available timeseries
-            timeseries_section = self.project.find_section("TIMESERIES")
-            timeseries_list = timeseries_section.value[0:]
+            # show current and available timeseries in combo box
+            timeseries_list = self.project.timeseries.value
             combobox = QtGui.QComboBox()
             combobox.addItem('*')
             selected_index = 0

@@ -49,8 +49,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.local_pollutant_list.append('FLOW')
         self.local_pollutant_units = []
         self.local_pollutant_units.append(self.project.options.flow_units.name)
-        pollutants_section = self.project.find_section("POLLUTANTS")
-        for value in pollutants_section.value:
+        for value in self.project.pollutants.value:
             self.local_pollutant_list.append(value.name)
             self.local_pollutant_units.append(ConcentrationUnitLabels[value.units.value])
         self.local_timeseries_list = []

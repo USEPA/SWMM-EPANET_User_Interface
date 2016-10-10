@@ -14,39 +14,18 @@ class frmJunction(frmGenericPropertyEditor):
     SECTION_NAME = "[JUNCTIONS]"
     SECTION_TYPE = Junction
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/junctionproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
         self.refresh_column = -1
-        self.project_section = self.project.junctions
-        self.new_item = None
-        if self.project_section and \
-                isinstance(self.project_section.value, list) and \
-                len(self.project_section.value) > 0 and \
-                isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-            if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
-                    edit_these = edit_objects
-
-            else:  # Edit all items in section
-                edit_these = []
-                edit_these.extend(self.project_section.value)
-
-        self.set_from(self.project, edit_these)
-        self.installEventFilter(self)
-
-    def set_from(self, project, edit_these):
-        self.project = project
-
-        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these, "SWMM Junction Editor")
+        frmGenericPropertyEditor.__init__(self, self._main_form, self.project.junctions,
+                                          edit_these, new_item, "SWMM Junction Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # also set special text plus button cells
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
+        self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
@@ -107,11 +86,6 @@ class frmJunction(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            self._main_form.add_item(self.new_item)
-        else:
-            pass
-            # TODO: self._main_form.edited_? or move this logic into backend.apply_edits
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -603,10 +603,9 @@ class frmMainSWMM(frmMain):
                         edit_these.extend(self.project.pollutants.value)
                 if len(edit_these) == 0:
                     new_item = Pollutant()
-                    new_item.name = "NewPollutant"
+                    new_item.name = self.new_item_name(Pollutant)
                     edit_these.append(new_item)
-                    self.project.pollutants.value = edit_these
-            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Pollutant Editor")
+            frm = frmGenericPropertyEditor(self, edit_these, new_item, "SWMM Pollutant Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/pollutanteditordialog.htm"
         elif edit_name == self.tree_MapLabels[0]:
@@ -617,10 +616,9 @@ class frmMainSWMM(frmMain):
                         edit_these.extend(self.project.labels.value)
                 if len(edit_these) == 0:
                     new_item = Label()
-                    new_item.name = "NewLabel"
+                    new_item.name = self.new_item_name(Label)
                     edit_these.append(new_item)
-                    self.project.labels.value = edit_these
-            frm = frmGenericPropertyEditor(self, edit_these, "SWMM Map Label Editor")
+            frm = frmGenericPropertyEditor(self, edit_these, new_item, "SWMM Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/maplabeleditordialog.htm"
         elif edit_name in [item[0] for item in self.tree_items_using_name]:
@@ -642,7 +640,6 @@ class frmMainSWMM(frmMain):
             return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
-
         return frm
 
     def get_object_list(self, category):

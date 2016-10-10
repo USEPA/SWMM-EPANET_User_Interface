@@ -449,9 +449,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def make_editor_from_tree(self, search_for, tree_list, selected_items=[], new_item=None):
         edit_form = None
-        # If selected_items is not a list, it is a new item to be edited and is only added if user presses OK.
-        if new_item:
-            selected_items = [new_item]  # Turn this one item into a list
+        # If new_item is specified, it is a new item to be edited and is only added if user presses OK.
 
         # First handle special cases
         section = None

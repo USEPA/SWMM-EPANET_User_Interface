@@ -11,7 +11,7 @@ class frmOrifices(frmGenericPropertyEditor):
     SECTION_NAME = "[ORIFICES]"
     SECTION_TYPE = Orifice
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/orificeproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -32,7 +32,7 @@ class frmOrifices(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false

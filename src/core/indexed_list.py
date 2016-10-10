@@ -68,7 +68,7 @@ class IndexedList(list):
         return list.__contains__(self, item)
 
     def __getslice__(self, i, j):
-        return IndexedList(list.__getslice__(self, i, j))
+        return IndexedList(list.__getslice__(self, i, j), self._attrs)
 
     def __setitem__(self, ind, new_obj):
         try:

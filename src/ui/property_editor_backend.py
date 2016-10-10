@@ -5,19 +5,17 @@ import ui.convenience
 
 
 class PropertyEditorBackend:
-    def __init__(self, table, hint_label, main_form, edit_these):
+    def __init__(self, table, hint_label, main_form, edit_these, new_item):
         self.table = table
         self.hint_label = hint_label
         self._main_form = main_form
         if self.hint_label:
             table.currentCellChanged.connect(self.table_currentCellChanged)
-        if edit_these:
-            self.edit_these = edit_these
-            self.meta = edit_these[0].metadata
-        self.set_from(main_form.project, edit_these)
+        self.set_from(edit_these, new_item)
 
-    def set_from(self, project, edit_these):
+    def set_from(self, edit_these, new_item):
         self.edit_these = edit_these
+        self.new_item = new_item
         if edit_these:
             self.meta = edit_these[0].metadata
             self.table.horizontalHeader().hide()
@@ -60,36 +58,39 @@ class PropertyEditorBackend:
                     if label:
                         for meta_item in self.meta:
                             if meta_item.label == label:
-                                old_value = self.meta.value(meta_item, edit_this)
                                 new_value = None
-                                if isinstance(old_value, bool):
-                                    checkbox = self.table.cellWidget(row, column)
-                                    if isinstance(checkbox, QtGui.QCheckBox):
-                                        new_value = checkbox.isChecked()
-                                if isinstance(old_value, Enum):
-                                    combobox = self.table.cellWidget(row, column)
-                                    if isinstance(combobox, QtGui.QComboBox):
-                                        try:
-                                            new_value = type(old_value)[combobox.currentText()]
-                                        except Exception as ex:
-                                            print("Could not interpret " + str(combobox.currentText()) +
-                                                  " as Enum " + str(type(old_value)))
+                                widget = self.table.cellWidget(row, column)
+                                if widget:
+                                    if isinstance(widget, QtGui.QCheckBox):
+                                        new_value = widget.isChecked()
+                                    elif isinstance(widget, QtGui.QComboBox):
+                                        default_value = self.meta.value(meta_item, edit_this)
+                                        if isinstance(default_value, Enum):
+                                            try:
+                                                new_value = type(default_value)[widget.currentText()]
+                                            except Exception as ex:
+                                                print("Could not interpret " + str(widget.currentText()) +
+                                                      " as Enum " + str(type(default_value)))
+                                        else:
+                                            new_value = widget.currentText()
                                 else:
-                                    if self.table.cellWidget(row, column):
-                                        # this is something besides a basic cell, assume a non-enum combo
-                                        if isinstance(self.table.cellWidget(row, column), QtGui.QComboBox):
-                                            combobox = self.table.cellWidget(row, column)
-                                            new_value = combobox.currentText()
-                                    else:
-                                        widget = self.table.item(row, column)
-                                        if widget:
-                                            new_value = widget.text()
+                                    widget = self.table.item(row, column)
+                                    if widget:
+                                        new_value = widget.text()
                                 if new_value is not None:
                                     try:
-                                        setattr(edit_this, meta_item.attribute, new_value)
+                                        old_value = getattr(edit_this, meta_item.attribute)
+                                        if new_value != old_value:
+                                            # TODO: make undoable edit
+                                            setattr(edit_this, meta_item.attribute, new_value)
                                     except Exception as ex:
                                         print("Could not set " + str(meta_item.attribute) + " to " + str(new_value))
             column += 1
+        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
+            self._main_form.add_item(self.new_item)
+        else:
+            pass
+            # TODO: self._main_form.edited_?
 
     def table_currentCellChanged(self):
         row = self.table.currentRow()

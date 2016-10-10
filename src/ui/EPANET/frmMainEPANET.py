@@ -392,7 +392,7 @@ class frmMainEPANET(frmMain):
                     self.project.labels.value = edit_these
                 else:
                     self.new_item = False
-            frm = frmGenericPropertyEditor(self, edit_these, "EPANET Map Label Editor")
+            frm = frmGenericPropertyEditor(self, edit_these, new_item, "EPANET Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"
         elif edit_name == 'Patterns' or edit_name == 'Curves':

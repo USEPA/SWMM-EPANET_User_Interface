@@ -9,31 +9,15 @@ from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 
 class frmReservior(frmGenericPropertyEditor):
 
-    SECTION_NAME = "[RESERVOIRS]"
+    # SECTION_NAME = "[RESERVOIRS]"
     SECTION_TYPE = Reservoir
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "epanet/src/src/reservoirproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
         self.refresh_column = -1
         self.project_section = self.project.reservoirs
-        if self.project_section and \
-                isinstance(self.project_section.value, list) and \
-                len(self.project_section.value) > 0 and \
-                isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-            if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_names = edit_these
-                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
-                    edit_these = edit_objects
-
-            else:  # Edit all items in section
-                edit_these = []
-                edit_these.extend(self.project_section.value)
-
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Reservoir Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, edit_these, new_item, "EPANET Reservoir Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns
@@ -69,11 +53,12 @@ class frmReservior(frmGenericPropertyEditor):
     def set_quality_cell(self, column):
         # text plus button for source quality editor
         tb = TextPlusButton(self)
-        section = self.project.find_section('SOURCES')
-        sources_list = section.value[0:]
-        for source in sources_list:
-            if source.name == str(self.tblGeneric.item(0, column).text()):
-                tb.textbox.setText(str(source.baseline_strength))
+        name = str(self.tblGeneric.item(0, column).text())
+        try:
+            source = self.project_section.value[name]
+            tb.textbox.setText(str(source.baseline_strength))
+        except:
+            pass
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_quality(column))

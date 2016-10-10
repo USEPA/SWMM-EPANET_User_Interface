@@ -11,7 +11,7 @@ class frmAquifers(frmGenericPropertyEditor):
     SECTION_NAME = "[AQUIFERS]"
     SECTION_TYPE = Aquifer
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/aquifereditordialog.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -37,7 +37,7 @@ class frmAquifers(frmGenericPropertyEditor):
         else:
             self.new_item = None
 
-        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these, new_item,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
@@ -56,8 +56,6 @@ class frmAquifers(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            self.main_form.add_item(self.new_item)
         self.close()
 
     def cmdCancel_Clicked(self):

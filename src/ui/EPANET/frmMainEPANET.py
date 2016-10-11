@@ -205,29 +205,101 @@ class frmMainEPANET(frmMain):
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.setVisible(False)
 
+        self.map_widget.applyLegend()
+        self.map_widget.LegendDock.setVisible(False)
         self.cboMapSubcatchments.setVisible(False)
         self.lblMapSubcatchments.setVisible(False)
-        self.add_map_constituents()
-        self.cboMapNodes.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
-        self.cboMapLinks.currentIndexChanged.connect(self.cboMap_currentIndexChanged)
+        self.set_thematic_controls()
+        self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
+        self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
 
-    def add_map_constituents(self):
+    def set_thematic_controls(self):
+        self.allow_thematic_update = False
         self.cboMapNodes.clear()
         self.cboMapNodes.addItems(['None','Elevation','Base Demand','Initial Quality'])
         self.cboMapLinks.clear()
         self.cboMapLinks.addItems(['None','Length','Diameter','Roughness','Bulk Coeff.','Wall Coeff.'])
         if self.output:
             # Add object type labels to map combos if there are any of each type in output
-            object_type = ENO.swmm_output_get_object_type('Nodes')
+            object_type = ENO.ENR_node_type
             if object_type:
-                attribute_names = [attribute.name for attribute in object_type.attributes]
+                attribute_names = [attribute.name for attribute in object_type.Attributes]
                 for item in attribute_names:
                     self.cboMapNodes.addItem(item)
-            object_type = ENO.swmm_output_get_object_type('Links')
+            object_type = ENO.ENR_link_type
             if object_type:
-                attribute_names = [attribute.name for attribute in object_type.attributes]
+                attribute_names = [attribute.name for attribute in object_type.Attributes]
                 for item in attribute_names:
                     self.cboMapLinks.addItem(item)
+        self.allow_thematic_update = True
+        self.update_thematic_map()
+
+    def update_thematic_map(self):
+        if not self.allow_thematic_update:
+            return
+
+        if self.model_layers.nodes_layers:
+            setting = self.cboMapNodes.currentText()
+            attribute = None
+            setting_index = self.cboMapNodes.currentIndex()
+            if setting_index < 4:
+                meta_item = Junction.metadata.meta_item_of_label(setting)
+                attribute = meta_item.attribute
+            color_by = {}
+            if attribute:  # Found an attribute of the node class to color by
+                for junction in self.project.junctions.value:
+                    color_by[junction.name] = float(getattr(junction, attribute, 0))
+                for tank in self.project.tanks.value:
+                    color_by[tank.name] = float(getattr(tank, attribute, 0))
+            elif self.output:  # Look for attribute to color by in the output
+                pass
+                attribute = ENO.ENR_node_type.get_attribute_by_name(setting)
+                if attribute:
+                    values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    index = 0
+                    for node in self.output.nodes.values():
+                        color_by[node.name] = values[index]
+                        index += 1
+            for layer_type in self.model_layers.nodes_layers:
+                if layer_type.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by)
+                        self.map_widget.LegendDock.setVisible(True)
+                    else:
+                        self.map_widget.set_default_point_renderer(layer_type)
+                    layer_type.triggerRepaint()
+
+        if self.model_layers.pipes and self.model_layers.pipes.isValid():
+            setting = self.cboMapLinks.currentText()
+            attribute = None
+            setting_index = self.cboMapLinks.currentIndex()
+            if setting_index < 6:
+                meta_item = Pipe.metadata.meta_item_of_label(setting)
+                attribute = meta_item.attribute
+            color_by = {}
+            if attribute:  # Found an attribute of the pipe class to color by
+                for pipe in self.project.pipes.value:
+                    if attribute == 'max_depth':
+                        pass
+        #                 for value in self.project.xsections.value:
+        #                     if value.link == conduit.name:
+        #                         color_by[conduit.name] = float(value.geometry1)
+                    else:
+                        color_by[pipe.name] = float(getattr(pipe, attribute, 0))
+            elif self.output:  # Look for attribute to color by in the output
+                attribute = ENO.ENR_link_type.get_attribute_by_name(setting)
+                if attribute:
+                    values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    index = 0
+                    for link in self.output.links.values():
+                        color_by[link.name] = values[index]
+                        index += 1
+            if color_by:
+                self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.pipes, color_by)
+                self.map_widget.LegendDock.setVisible(True)
+            else:
+                self.map_widget.set_default_line_renderer(self.model_layers.pipes)
+            self.model_layers.pipes.triggerRepaint()
 
     def cboMap_currentIndexChanged(self):
         pass
@@ -548,9 +620,9 @@ class frmMainEPANET(frmMain):
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     self.report_status()
-                    self.add_map_constituents()
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                        self.set_thematic_controls()
                         return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))

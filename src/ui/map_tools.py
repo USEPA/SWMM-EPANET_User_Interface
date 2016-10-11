@@ -439,6 +439,26 @@ try:
             # layer.setRendererV2(QgsSingleSymbolRendererV2(symbol))
             layer.setRendererV2(renderer)
 
+        def applyLegend(self):
+            self.root = QgsProject.instance().layerTreeRoot()
+            # self.bridge = QgsLayerTreeMapCanvasBridge(self.root, self.canvas)
+            self.model = QgsLayerTreeModel(self.root)
+            self.model.setFlag(QgsLayerTreeModel.AllowNodeReorder)
+            self.model.setFlag(QgsLayerTreeModel.AllowNodeRename)
+            self.model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
+            self.model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
+            self.model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
+            self.model.setFlag(QgsLayerTreeModel.ShowLegend)
+            self.view = QgsLayerTreeView()
+            self.view.setModel(self.model)
+
+            self.LegendDock = QDockWidget( "Layers", self )
+            self.LegendDock.setObjectName( "layers" )
+            # self.LegendDock.setAllowedAreas( Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea )
+            self.LegendDock.setWidget( self.view )
+            self.LegendDock.setContentsMargins ( 9, 9, 9, 9 )
+            # self.addDockWidget( Qt.LeftDockWidgetArea, self.LegendDock )
+
         def addVectorLayer(self, filename):
             layer_count = len(self.layers)
             #if filename.lower().endswith('.shp'):

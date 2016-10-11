@@ -452,8 +452,8 @@ try:
             self.view = QgsLayerTreeView()
             self.view.setModel(self.model)
 
-            self.LegendDock = QDockWidget( "Layers", self )
-            self.LegendDock.setObjectName( "layers" )
+            self.LegendDock = QDockWidget( "Legend", self )
+            self.LegendDock.setObjectName( "legend" )
             # self.LegendDock.setAllowedAreas( Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea )
             self.LegendDock.setWidget( self.view )
             self.LegendDock.setContentsMargins ( 9, 9, 9, 9 )

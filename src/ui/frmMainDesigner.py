@@ -349,6 +349,7 @@ class Ui_frmMain(object):
         self.actionMapSelectObj.setIcon(icon11)
         self.actionMapSelectObj.setObjectName(_fromUtf8("actionMapSelectObj"))
         self.actionObjAddGage = QtGui.QAction(frmMain)
+        self.actionObjAddGage.setCheckable(True)
         icon12 = QtGui.QIcon()
         icon12.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/obj_gage.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionObjAddGage.setIcon(icon12)

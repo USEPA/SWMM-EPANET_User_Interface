@@ -12,9 +12,9 @@ from core.graph import SWMM as graphSWMM
 class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
     MAGIC = "TSGRAPHSPEC:"
 
-    def __init__(self, main_form):
-        self._main_form = main_form
-        QtGui.QMainWindow.__init__(self, main_form)
+    def __init__(self, session):
+        self.session = session
+        QtGui.QMainWindow.__init__(self, session)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/timeseriesplotdialog.htm"
         self.setupUi(self)
@@ -72,7 +72,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             self.cboStart.setCurrentIndex(self.cboEnd.currentIndex())
 
     def btnAdd_Clicked(self):
-        self._frmTimeSeriesSelection = frmTimeSeriesSelection(self._main_form)
+        self._frmTimeSeriesSelection = frmTimeSeriesSelection(self.session)
         self._frmTimeSeriesSelection.set_from(self.project, self.output, self.add)
         self._frmTimeSeriesSelection.show()
 
@@ -100,7 +100,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         # cb.setText(self.get_text(), mode=cb.Clipboard)
 
     def save_script(self):
-        gui_settings = QtCore.QSettings(self._main_form.model, "GUI")
+        gui_settings = QtCore.QSettings(self.session.model, "GUI")
         directory = gui_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Script As...", directory,
                                                             "Python Files (*.py);;All files (*.*)")
@@ -152,7 +152,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     self.lstData.addItem(line)
 
     def save_file(self):
-        gui_settings = QtCore.QSettings(self._main_form.model, "GUI")
+        gui_settings = QtCore.QSettings(self.session.model, "GUI")
         directory = gui_settings.value("PlotSpecDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Specification As...", directory,
                                                            "Time Series Plot (*.tsplt);;All files (*.*)")
@@ -170,7 +170,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                 print("Error writing {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def load_file(self):
-        gui_settings = QtCore.QSettings(self._main_form.model, "GUI")
+        gui_settings = QtCore.QSettings(self.session.model, "GUI")
         directory = gui_settings.value("PlotSpecDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Time Series Plot Specification...", directory,
                                                             "Time Series Plot (*.tsplt);;All files (*.*)")

@@ -14,13 +14,11 @@ class frmJunction(frmGenericPropertyEditor):
     SECTION_NAME = "[JUNCTIONS]"
     SECTION_TYPE = Junction
 
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, session, edit_these, new_item):
+        frmGenericPropertyEditor.__init__(self, session, session.project.junctions,
+                                          edit_these, new_item, "SWMM Junction Editor")
         self.help_topic = "swmm/src/src/junctionproperties.htm"
         self.refresh_column = -1
-
-        frmGenericPropertyEditor.__init__(self, self._main_form, self.project.junctions,
-                                          edit_these, new_item, "SWMM Junction Editor")
-
         for column in range(0, self.tblGeneric.columnCount()):
             # also set special text plus button cells
             self.set_inflow_cell(column)

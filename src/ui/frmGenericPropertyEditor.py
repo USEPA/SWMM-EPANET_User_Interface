@@ -5,15 +5,15 @@ from property_editor_backend import PropertyEditorBackend
 
 
 class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
-    def __init__(self, main_form, project_section, edit_these, new_item, title):
-        QtGui.QMainWindow.__init__(self, main_form)
+    def __init__(self, session, project_section, edit_these, new_item, title):
+        QtGui.QMainWindow.__init__(self, session)
         self.setupUi(self)
         self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
 
-        self._main_form = main_form
-        self.project = main_form.project
+        self.session = session
+        self.project = session.project
         self.project_section = project_section
         if new_item:
             edit_these = [new_item]
@@ -31,9 +31,8 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
             else:  # Edit all items in section
                 edit_these = []
                 edit_these.extend(self.project_section.value)
-
-        self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, main_form, edit_these, new_item)
-        self._main_form = main_form
+        self.edit_these = edit_these
+        self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, session, edit_these, new_item)
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()

@@ -50,6 +50,7 @@ class RainGage(Section, Coordinate):
 
     def __init__(self):
         Section.__init__(self)
+        Coordinate.__init__(self)
 
         self.description = None
         """Optional description of the gage"""

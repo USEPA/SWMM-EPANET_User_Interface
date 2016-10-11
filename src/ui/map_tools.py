@@ -125,11 +125,12 @@ try:
                 self.selectTool = None
                 self.layer_spatial_indexes = []
 
-
-        def setAddPointMode(self, action_obj, section_name):
-            if self.session.actionObjAddGage.isChecked():
-                QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
-                layer = getattr(self.session.model_layers, section_name)
+        def setAddPointMode(self, action_obj, layer_name):
+            """Start interactively adding points to point layer layer_name using tool button action_obj"""
+            if action_obj.isChecked():
+                # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
+                layer = getattr(self.session.model_layers, layer_name)
+                self.session.select_id(layer, None)
                 for obj_type, name in self.session.section_types.iteritems():
                     if name == "raingages":
                         self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
@@ -654,13 +655,13 @@ try:
             self.layer = layer
             self.object_type = object_type
             self.session = session
-            self.setCursor(Qt.CrossCursor)
+            # self.setCursor(Qt.CrossCursor)
 
         def canvasReleaseEvent(self, event):
             point = self.toLayerCoordinates(self.layer, event.pos())
             new_object = self.object_type()
-            new_object.x = point.x
-            new_object.y = point.y
+            new_object.x = point.x()
+            new_object.y = point.y()
             self.session.add_item(new_object)
 
     class SelectMapTool(QgsMapToolEmitPoint):

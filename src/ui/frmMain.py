@@ -114,7 +114,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
                             QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
                             QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
-                            QtCore.QObject.connect(self.actionObjAddGage, QtCore.SIGNAL('triggered()'), self.map_add_gage)
+                            QtCore.QObject.connect(self.actionObjAddGage, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
 
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -138,7 +138,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_undo = QtGui.QAction(self)
         self.action_undo.setObjectName("actionUndo")
         self.action_undo.setText(transl8("frmMain", "Undo", None) )
-        self.action_undo.setToolTip(transl8("frmMain", "Undo the most recent edit", None) )
+        self.action_undo.setToolTip(transl8("frmMain", "Undo the most recent edit", None))
+        self.action_undo.setShortcut(QKeySequence("Ctrl+Z"))
         self.menuEdit.addAction(self.action_undo)
         QtCore.QObject.connect(self.action_undo, QtCore.SIGNAL('triggered()'), self.undo)
 
@@ -146,6 +147,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.setObjectName("actionRedo")
         self.action_redo.setText(transl8("frmMain", "Redo", None) )
         self.action_redo.setToolTip(transl8("frmMain", "Redo the most recent Undo", None) )
+        self.action_redo.setShortcut(QKeySequence("Ctrl+Y"))
         self.menuEdit.addAction(self.action_redo)
         QtCore.QObject.connect(self.action_redo, QtCore.SIGNAL('triggered()'), self.redo)
 
@@ -161,11 +163,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             QtGui.QUndoCommand.__init__(self, "Add " + str(item))
             self.session = session
             self.item = item
+            self.added_id = None
             section_field_name = session.section_types[type(item)]
-            if hasattr(session.project, section_field_name):
-                self.section = getattr(session.project, section_field_name)
-            else:
+            if not hasattr(session.project, section_field_name):
                 raise Exception("Section not found in project: " + section_field_name)
+            self.section = getattr(session.project, section_field_name)
             if session.map_widget and hasattr(self.session, "model_layers")\
                                   and hasattr(session.model_layers, section_field_name):
                 self.layer = getattr(self.session.model_layers, section_field_name)
@@ -182,19 +184,32 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             list_item = self.session.listViewObjects.addItem(self.item.name)
             self.session.listViewObjects.scrollToItem(list_item)
             if self.layer:
-                self.layer.addFeature(self.session.map_widget.point_feature_from_item(self.item))
-                self.layer.updateExtents()
-
-                # self.session.map_widget.clearSelectableObjects()
+                self.session.map_widget.clearSelectableObjects()
+                self.layer.startEditing()
+                added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                if added[0]:
+                    self.added_id = added[1][0].id()
+                    self.layer.updateExtents()
+                    self.layer.commitChanges()
+                    self.session.map_widget.canvas.refresh()
+                else:
+                    self.added_id = None
+                    self.layer.rollBack()
                 # self.session.model_layers.create_layers_from_project(self.session.project)
+                # self.session.select_id(self.layer, self.item.name)
 
         def undo(self):
             self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             # self.session.listViewObjects.takeItem(len(self.section.value))
-            if hasattr(self.session, "model_layers"):
+            if not self.added_id is None:
                 self.session.map_widget.clearSelectableObjects()
-                self.session.model_layers.create_layers_from_project(self.session.project)
+                self.layer.startEditing()
+                self.layer.dataProvider().deleteFeatures([self.added_id])
+                self.layer.commitChanges()
+                self.layer.updateExtents()
+                self.session.map_widget.canvas.refresh()
+                # self.session.model_layers.create_layers_from_project(self.session.project)
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
@@ -245,15 +260,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.setZoomOutMode()
         self.map_widget.setPanMode()
         self.map_widget.setSelectMode()
+        self.map_widget.setAddGageMode()
 
     def zoomfull(self):
         self.map_widget.zoomfull()
 
     def map_addfeature(self):
         self.map_widget.setAddFeatureMode()
-
-    def map_add_gage(self):
-        self.map_widget.setAddGageMode()
 
     def onGeometryAdded(self):
         print 'Geometry Added'
@@ -483,14 +496,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 args.append(str(tree_item[2]))
                             else:  # tree_item[2] is a list that is not a string
                                 args.extend(tree_item[2])
-                        if selected_items:
-                            args.append(selected_items)
+                        #if selected_items:
+                        args.append(selected_items)
+                        args.append(new_item)
                         edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
                         edit_form.helper = HelpHandler(edit_form)
                         break
                     return None
                 if len(tree_item) > 0 and type(tree_item[1]) is list:  # find whether there is a match in this sub-tree
-                    edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items)
+                    edit_form = self.make_editor_from_tree(search_for, tree_item[1], selected_items, new_item)
                     if edit_form:
                         break
         if edit_form:
@@ -557,19 +571,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.listViewObjects.sortItems()
 
     def select_id(self, layer, object_id):
+        if layer:
+            try:
+                layer_name = layer.name()
+                already_selected_item = self.obj_tree.currentItem()
+                if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                    tree_node = self.obj_tree.find_tree_item(layer_name)
+                    if tree_node:
+                        self.obj_tree.setCurrentItem(tree_node)
+            except Exception as ex:
+                print("Did not find layer in tree:\n" + str(ex))
         if object_id is None:
             self.listViewObjects.clearSelection()
         else:
-            if layer:
-                try:
-                    layer_name = layer.name()
-                    already_selected_item = self.obj_tree.currentItem()
-                    if already_selected_item is None or already_selected_item.text(0) != layer_name:
-                        tree_node = self.obj_tree.find_tree_item(layer_name)
-                        if tree_node:
-                            self.obj_tree.setCurrentItem(tree_node)
-                except Exception as ex:
-                    print("Did not find layer in tree:\n" + str(ex))
             for i in range(self.listViewObjects.count()):
                 item = self.listViewObjects.item(i)
                 if item.text() == object_id:

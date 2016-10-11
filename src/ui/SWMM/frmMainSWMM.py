@@ -886,9 +886,9 @@ class frmMainSWMM(frmMain):
                 args.append(self.status_file_name)
                 args.append(self.output_filename)
                 # running the Exe
-                status = StatusMonitor0(exe_path, args, self, model='SWMM')
-                status.show()
-                self.set_thematic_controls()
+                self.status_monitor = StatusMonitor0(exe_path, args, self, model='SWMM')
+                self.status_monitor.butt.clicked.connect(self.set_thematic_controls)
+                self.status_monitor.show()
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
@@ -945,9 +945,10 @@ class ModelLayersSWMM(ModelLayers):
 
     def set_lists(self):
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
-        self.all_layers = [self.raingages, self.labels, self.pumps, self.orifices,
-                           self.outlets, self.weirs, self.conduits, self.subcatchments]
+        self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
+        self.all_layers = [self.raingages, self.labels, self.subcatchments]
         self.all_layers.extend(self.nodes_layers)
+        self.all_layers.extend(self.links_layers)
 
     def create_layers_from_project(self, project):
         ModelLayers.create_layers_from_project(self, project)

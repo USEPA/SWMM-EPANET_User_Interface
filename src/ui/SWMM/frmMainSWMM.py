@@ -736,7 +736,7 @@ class frmMainSWMM(frmMain):
                 ids = None
         return ids
 
-    def add_object_clicked(self, tree_text):
+    def add_object(self, tree_text):
         item_type = self.tree_types[tree_text]
         new_item = item_type()
         new_item.name = self.new_item_name(item_type)
@@ -764,7 +764,7 @@ class frmMainSWMM(frmMain):
 
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
-    def delete_object_clicked(self, tree_text, item_name):
+    def delete_named_object(self, tree_text, item_name):
         item_type = self.tree_types[tree_text]
         section_field_name = self.section_types[item_type]
 
@@ -922,10 +922,10 @@ class frmMainSWMM(frmMain):
 
 class ModelLayersSWMM(ModelLayers):
     """
-    This class creates and manages the map layers that are directly linked to SWMM model elements.
-    Layer names must match the text in the tree control for the corresponding model section.
+    Create and manage the map layers that are directly linked to SWMM model elements.
     """
     def __init__(self, map_widget):
+        """Initialize empty map layers"""
         ModelLayers.__init__(self, map_widget)
         addCoordinates = self.map_widget.addCoordinates
         addLinks = self.map_widget.addLinks
@@ -944,6 +944,7 @@ class ModelLayersSWMM(ModelLayers):
         self.set_lists()
 
     def set_lists(self):
+        """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
         self.all_layers = [self.raingages, self.labels, self.subcatchments]
@@ -951,6 +952,7 @@ class ModelLayersSWMM(ModelLayers):
         self.all_layers.extend(self.links_layers)
 
     def create_layers_from_project(self, project):
+        """Create QGIS map layers and populate them with features representing model objects"""
         ModelLayers.create_layers_from_project(self, project)
         addCoordinates = self.map_widget.addCoordinates
         addLinks = self.map_widget.addLinks

@@ -9,17 +9,12 @@ try:
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
-        def __init__(self, mapCanvas, session, main_form=None, **kwargs):
+        def __init__(self, canvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
-            #define QMapControl here
-            #qmap = QMapControl()
-            #layout.addWidget(qmap)
-            #self.layers = [] #kwargs['layers']
-            self.canvas = mapCanvas  #QgsMapCanvas()
-            self.layers = mapCanvas.layers()
+            self.canvas = canvas  # QgsMapCanvas()
             self.canvas.setMouseTracking(True)
             self.canvas.useImageToRender(False)
-            #canvas.setCanvasColor(QtGui.QColor.white)
+            # self.canvas.setCanvasColor(QtGui.QColor.white)
 
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
@@ -40,12 +35,6 @@ try:
             self.canvas.show()
 
             self.session = session
-
-            self.canvas.setLayerSet(self.layers)
-            #self.canvas.setExtent(layerbm.extent())
-
-            #self.panTool = PanTool(self.canvas)
-            #self.panTool.setAction(self.session.actionPan)
 
             self.panTool = QgsMapToolPan(self.canvas)
             self.panTool.setAction(self.session.actionPan)
@@ -111,7 +100,7 @@ try:
         def setSelectMode(self):
             if self.session.actionMapSelectObj.isChecked():
                 if self.selectTool is None:
-                    if self.layers and len(self.layers) > 0:
+                    if self.canvas.layers():
                         self.selectTool = SelectMapTool(self.canvas, self.session)
                         self.selectTool.setAction(self.session.actionMapSelectObj)
                 if self.selectTool:
@@ -120,17 +109,21 @@ try:
                 self.canvas.unsetMapTool(self.selectTool)
 
         def clearSelectableObjects(self):
-            self.canvas.unsetMapTool(self.selectTool)
-            if self.selectTool:
-                self.selectTool = None
-                self.layer_spatial_indexes = []
+            self.layer_spatial_indexes = []
+            for layer in self.canvas.layers():
+                if isinstance(layer, QgsVectorLayer):
+                    layer.removeSelection()
+
+        def find_feature(self, layer, feature_name):
+            for feature in layer.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'" + feature_name + "'"))):
+                return feature
 
         def setAddPointMode(self, action_obj, layer_name):
             """Start interactively adding points to point layer layer_name using tool button action_obj"""
             if action_obj.isChecked():
                 # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
                 layer = getattr(self.session.model_layers, layer_name)
-                self.session.select_id(layer, None)
+                self.session.select_named_items(layer, None)
                 for obj_type, name in self.session.section_types.iteritems():
                     if name == "raingages":
                         self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
@@ -144,7 +137,9 @@ try:
             self.setAddPointMode(self.session.actionObjAddGage, "raingages")
 
         def setAddFeatureMode(self):
-            # Temporarily hijacked to test properties editor
+            """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
+
+            # Test of activating QGIS properties editor, does not belong in this method
             # layer = self.canvas.layers()[0]
             # self.layer_properties_widget = QgsLayerPropertiesWidget(
             #         layer.rendererV2().symbol().symbolLayers()[0],
@@ -154,7 +149,7 @@ try:
             # self.layer_properties_widget.show()
             if self.session.actionAdd_Feature.isChecked():
                 if self.qgisNewFeatureTool is None:
-                    if self.layers and len(self.layers) > 0:
+                    if self.canvas.layers():
                         self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
                                                               self.session.onGeometryAdded,
                                                               CaptureTool.CAPTURE_POLYGON)
@@ -248,10 +243,7 @@ try:
 
             # replace the default symbol layer with the new symbol layer
             layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
-
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
-            self.layers.append(QgsMapCanvasLayer(layer))
-            self.canvas.setLayerSet(self.layers)
+            self.add_layer(layer)
             return layer
 
         @staticmethod
@@ -309,12 +301,25 @@ try:
             # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
             #     {'width': '0.26', 'color': '0,0,0'})
             # layer.rendererV2().symbols()[0].appendSymbolLayer(sl)
-            # layerCtr = len(self.layers)
-            # layerCtr = len(self.layers)
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
-            self.layers.append(QgsMapCanvasLayer(layer))
-            self.canvas.setLayerSet(self.layers)
+            self.add_layer(layer)
             return layer
+
+        def add_layer(self, layer):
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            layers = self.canvas.layers()
+            layers.append(layer)
+            self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in layers])
+            self.set_extent(self.canvas.fullExtent())
+
+        def remove_layers(self, remove_layers):
+            layer_names = []
+            canvas_layers = self.canvas.layers()
+            for layer in remove_layers:
+                layer_names.append(layer.name())
+                canvas_layers.remove(layer)
+            QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
+            self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in canvas_layers])
+            self.set_extent(self.canvas.fullExtent())
 
         @staticmethod
         def set_default_line_renderer(layer):
@@ -362,13 +367,9 @@ try:
                 provider.addFeatures(features)
                 layer.commitChanges()
                 layer.updateExtents()
-            # layerCtr = len(self.layers)
 
             self.set_default_polygon_renderer(layer, poly_color)
-
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
-            self.layers.append(QgsMapCanvasLayer(layer))
-            self.canvas.setLayerSet(self.layers)
+            self.add_layer(layer)
             return layer
 
         @staticmethod
@@ -460,19 +461,14 @@ try:
             # self.addDockWidget( Qt.LeftDockWidgetArea, self.LegendDock )
 
         def addVectorLayer(self, filename):
-            layer_count = len(self.layers)
+            layers = self.canvas.layers()
+            layer_count = len(layers)
             #if filename.lower().endswith('.shp'):
             layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
             #elif filename.lower().endswith('.json'):
             #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
             if layer:
-                QgsMapLayerRegistry.instance().addMapLayer(layer)
-                self.layers.append(QgsMapCanvasLayer(layer))
-                self.canvas.setLayerSet(self.layers)
-                if layer_count == 0:
-                    self.set_extent(layer.extent())
-                else:
-                    self.set_extent(self.canvas.extent())
+                self.add_layer(layer)
 
         def set_extent(self, extent):
             buffered_extent = extent.buffer(extent.height() / 20)
@@ -481,23 +477,16 @@ try:
 
         def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:
-                    layerCtr = len(self.layers)
-                    layer=QgsRasterLayer(filename, "layer_r_" + str(layerCtr))
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    self.layers.append(QgsMapCanvasLayer(layer))
-                    self.canvas.setLayerSet(self.layers)
-                    if layerCtr ==0:
-                        self.set_extent(layer.extent())
-                    else:
-                        self.set_extent(self.canvas.extent())
-
-        # def select(self):
-        #    print(self.layers(0).name)
-        #    print('TODO: implement Select feature on Map')
+                layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
+                self.add_layer(layer)
 
         def saveVectorLayers(self, folder):
             layer_index = 0
-            for map_layer in self.layers:
+            if hasattr(self.session, "model_layers"):
+                model_layers = self.session.model_layers.all_layers
+            else:
+                model_layers = self.canvas.layers()
+            for map_layer in model_layers:
                 try:
                     vector_layer = map_layer.layer()
                     layer_index += 1
@@ -696,59 +685,66 @@ try:
                 model_layers = self.canvas.layers()
             for lyr in model_layers:
                 try:
-                    provider = lyr.dataProvider()
-                    # TODO: check whether provider is vector and has ID field
-                    feat = QgsFeature()
-                    feats = provider.getFeatures()  # get all features in layer
-                    # insert features to index
-                    spatial_index = []  # QgsSpatialIndex()
-                    ids = []
-                    found = False
-                    while feats.nextFeature(feat):
-                        geometry = feat.geometry()
-                        if geometry.wkbType() == QGis.WKBLineString:
-                            line = geometry.asPolyline()
-                            spatial_index.append(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2))
-                            ids.append(feat.id())
-                            found = True
-                        elif geometry.wkbType() == QGis.WKBPolygon:
-                            # TODO: does selecting work on the polygon layer itself or do we make a point layer?
-                            # name = feat.attribute("name")
-                            # line = geometry.asPolyline()
-                            # feat = QgsFeature()
-                            # feat.setGeometry(
-                            #     QgsGeometry.fromPoint(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2)))
-                            # feat.setAttributes([name])
-                            # spatial_index.append(feat)
-                            # ids.append(feat.id())
-                            # found = True
-                            pass
-                        elif geometry.wkbType() == QGis.WKBPoint:
-                            spatial_index.append(geometry.asPoint())
-                            ids.append(feat.id())
-                            found = True
-                            pass
-                    if found:
-                        self.layer_spatial_indexes.append((lyr, spatial_index, ids))
+                    if isinstance(lyr, QgsVectorLayer):
+                        provider = lyr.dataProvider()
+                        feat = QgsFeature()
+                        feats = provider.getFeatures()  # get all features in layer
+                        # insert features to index
+                        spatial_index = []  # QgsSpatialIndex()
+                        ids = []
+                        found = False
+                        while feats.nextFeature(feat):
+                            geometry = feat.geometry()
+                            if geometry.wkbType() == QGis.WKBLineString:
+                                line = geometry.asPolyline()
+                                spatial_index.append(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2))
+                                ids.append(feat.id())
+                                found = True
+                            elif geometry.wkbType() == QGis.WKBPolygon:
+                                # TODO: does selecting work on the polygon layer itself or do we make a point layer?
+                                # name = feat.attribute("name")
+                                # line = geometry.asPolyline()
+                                # feat = QgsFeature()
+                                # feat.setGeometry(
+                                #     QgsGeometry.fromPoint(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2)))
+                                # feat.setAttributes([name])
+                                # spatial_index.append(feat)
+                                # ids.append(feat.id())
+                                # found = True
+                                pass
+                            elif geometry.wkbType() == QGis.WKBPoint:
+                                spatial_index.append(geometry.asPoint())
+                                ids.append(feat.id())
+                                found = True
+                                pass
+                        if found:
+                            self.layer_spatial_indexes.append((lyr, spatial_index, ids))
                 except Exception as e:
                     print str(e)
 
         def canvasPressEvent(self, e):
             try:
-                if not (e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)):
-                    self.session.select_id(None, None)
-                    for (lyr, pts, ids) in self.layer_spatial_indexes:
-                        lyr.removeSelection()
-
+                selected_names = []
                 nearest_layer, nearest_feature_id = self.nearest_feature(self.toMapCoordinates(e.pos()))
+
+                # Clear selection on other layers (and on this layer if not extending the selection with Ctrl or Shift)
+                extending = e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
+                for layer in self.canvas.layers():
+                    if isinstance(layer, QgsVectorLayer):
+                        if layer != nearest_layer or not extending:
+                            layer.removeSelection()
+                        else:
+                            # TODO: enumerate selected items in this layer, add them to selected_names
+                            pass
 
                 if nearest_layer:
                     iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_id))
                     if iterator:
                         nearest_feature = next(iterator)
                         if nearest_feature:
-                            nearest_layer.select(nearest_feature_id)
-                            self.session.select_id(nearest_layer, nearest_feature.attributes()[0])
+                            # nearest_layer.select(nearest_feature_id)
+                            selected_names.append(nearest_feature.attributes()[0])
+                            self.session.select_named_items(nearest_layer, selected_names)
                             return
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())

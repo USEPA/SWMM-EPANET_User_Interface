@@ -5,6 +5,7 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 from cStringIO import StringIO
 from embed_ipython_new import EmbedIPython
+from threading import Lock
 
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
@@ -34,7 +35,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtGui.QMainWindow.__init__(self, None)
         self.setupUi(self)
         self.q_application = q_application
-        self.layers = []
         self._forms = []
         """List of editor windows used during this session, kept here so they are not automatically closed."""
         self.model = "Not Set"
@@ -65,6 +65,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # Map attributes will be set below if possible or will remain None to indicate map is not present.
         self.canvas = None
         self.map_widget = None
+        self.selecting = Lock()
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
@@ -100,12 +101,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
                         self.canvas.setMouseTracking(True)
-                        self.map_widget = EmbedMap(session=self, mapCanvas=self.canvas, main_form=self)
+                        self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
                         if self.map_win:
-                            self.map_win.setGeometry(0, 0, 600, 400)
                             self.map_win.setWindowTitle('Study Area Map')
-                            self.map_win.show()
+                            self.map_win.showMaximized()
                             QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
                             QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
                             QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
@@ -191,12 +191,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.added_id = added[1][0].id()
                     self.layer.updateExtents()
                     self.layer.commitChanges()
+                    self.layer.triggerRepaint()
                     self.session.map_widget.canvas.refresh()
                 else:
                     self.added_id = None
                     self.layer.rollBack()
-                # self.session.model_layers.create_layers_from_project(self.session.project)
-                # self.session.select_id(self.layer, self.item.name)
 
         def undo(self):
             self.section.value.remove(self.item)
@@ -208,8 +207,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.dataProvider().deleteFeatures([self.added_id])
                 self.layer.commitChanges()
                 self.layer.updateExtents()
+                self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
-                # self.session.model_layers.create_layers_from_project(self.session.project)
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
@@ -225,21 +224,38 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.section = getattr(session.project, section_field_name)
             else:
                 raise Exception("Section not found in project: " + section_field_name)
+            if session.map_widget and hasattr(self.session, "model_layers") \
+                    and hasattr(session.model_layers, section_field_name):
+                self.layer = getattr(self.session.model_layers, section_field_name)
+            else:
+                self.layer = None
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
             self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
-            if hasattr(self, "model_layers"):
+            if self.layer:
                 self.session.map_widget.clearSelectableObjects()
-                self.model_layers.create_layers_from_project(self.session.project)
+                self.delete_feature = self.session.map_widget.find_feature(self.layer, self.item.name)
+                if self.delete_feature:
+                    self.layer.startEditing()
+                    self.layer.dataProvider().deleteFeatures([self.delete_feature.id()])
+                    self.layer.commitChanges()
+                    self.layer.updateExtents()
+                    self.layer.triggerRepaint()
+                    self.session.map_widget.canvas.refresh()
 
         def undo(self):
             self.section.value.insert(self.item_index, self.item)
             self.session.list_objects()  # Refresh the list of items on the form
-            if hasattr(self.session, "model_layers"):
+            if self.layer and self.delete_feature:
                 self.session.map_widget.clearSelectableObjects()
-                self.session.model_layers.create_layers_from_project(self.session.project)
+                self.layer.startEditing()
+                self.layer.dataProvider().addFeatures([self.delete_feature])
+                self.layer.commitChanges()
+                self.layer.updateExtents()
+                self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
 
     def delete_item(self, item):
         self.undo_stack.push(self._DeleteItem(self, item))
@@ -316,10 +332,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
         # self.obj_tree.itemClicked.connect(self.list_objects)
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
-        self.listViewObjects.doubleClicked.connect(self.list_item_clicked)
+        self.listViewObjects.doubleClicked.connect(self.list_item_double_clicked)
+        self.listViewObjects.itemSelectionChanged.connect(self.list_selection_changed)
 
-        self.btnObjAdd.clicked.connect(self.add_object)
-        self.btnObjDelete.clicked.connect(self.delete_object)
+        self.btnObjAdd.clicked.connect(self.add_object_clicked)
+        self.btnObjDelete.clicked.connect(self.delete_object_clicked)
         self.btnObjProperty.clicked.connect(self.edit_object)
         self.btnObjMoveUp.clicked.connect(self.moveup_object)
         self.btnObjMoveDown.clicked.connect(self.movedown_object)
@@ -531,7 +548,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     print "Editor Closing: " + str(event)
             #     # self._forms.remove(event.)
 
-    def list_item_clicked(self):
+    def list_selection_changed(self):
+        try:
+            section_field_name = self.section_types[self.tree_types[self.tree_section]]
+            layer = getattr(self.model_layers, section_field_name)
+            self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
+        except Exception as ex:
+            print("List selection changed, but could not select on map:\n" + str(ex))
+
+    def list_item_double_clicked(self):
         # on double click of an item in the 'bottom left' list
         if not self.project or not hasattr(self, "get_editor"):
             return
@@ -541,21 +566,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
 
     def edit_object(self):
-        self.list_item_clicked()
+        self.list_item_double_clicked()
 
-    def add_object(self):
-        if not self.project or not self.get_editor:
-            return
-        self.add_object_clicked(self.tree_section)
+    def add_object_clicked(self):
+        if self.project and self.get_editor:
+            self.add_object(self.tree_section)
 
-    def delete_object(self):
-        if not self.project or not self.get_editor:
-            return
-        self.undo_stack.beginMacro("Delete selected items")  # Keep deletion as one undo action instead of one per item
-        for item in self.listViewObjects.selectedIndexes():
-            selected_text = str(item.data())
-            self.delete_object_clicked(self.tree_section, selected_text)
-        self.undo_stack.endMacro()
+    def delete_object_clicked(self):
+        if self.project and self.get_editor:
+            self.undo_stack.beginMacro("Delete selected items")  # Keep deletion as one undo action instead of one per item
+            selected_names = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+            for item_name in selected_names:
+                self.delete_named_object(self.tree_section, item_name)
+            self.undo_stack.endMacro()
 
     def moveup_object(self):
         currentRow = self.listViewObjects.currentRow()
@@ -570,25 +593,35 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def sort_object(self):
         self.listViewObjects.sortItems()
 
-    def select_id(self, layer, object_id):
-        if layer:
-            try:
-                layer_name = layer.name()
-                already_selected_item = self.obj_tree.currentItem()
-                if already_selected_item is None or already_selected_item.text(0) != layer_name:
-                    tree_node = self.obj_tree.find_tree_item(layer_name)
-                    if tree_node:
-                        self.obj_tree.setCurrentItem(tree_node)
-            except Exception as ex:
-                print("Did not find layer in tree:\n" + str(ex))
-        if object_id is None:
-            self.listViewObjects.clearSelection()
-        else:
-            for i in range(self.listViewObjects.count()):
-                item = self.listViewObjects.item(i)
-                if item.text() == object_id:
-                    self.listViewObjects.setItemSelected(item, True)
-                    self.listViewObjects.scrollToItem(item)
+    def select_named_items(self, layer, selected_list):
+        if self.selecting.acquire(False):
+            if selected_list:
+                if layer:
+                    try:
+                        for object_name in selected_list:
+                            feature = self.map_widget.find_feature(layer, object_name)
+                            if feature:
+                                layer.select(feature.id())
+
+                        layer_name = layer.name()
+                        already_selected_item = self.obj_tree.currentItem()
+                        if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                            tree_node = self.obj_tree.find_tree_item(layer_name)
+                            if tree_node:
+                                self.obj_tree.setCurrentItem(tree_node)
+                    except Exception as ex:
+                        print("Did not find layer in tree:\n" + str(ex))
+                for i in range(self.listViewObjects.count()):
+                    item = self.listViewObjects.item(i)
+                    if item.text() in selected_list:
+                        self.listViewObjects.setItemSelected(item, True)
+                        self.listViewObjects.scrollToItem(item)
+                    else:
+                        self.listViewObjects.setItemSelected(item, False)
+            else:
+                self.listViewObjects.clearSelection()
+                self.map_widget.clearSelectableObjects()
+            self.selecting.release()
 
     def new_project(self):
         self.project = self.project_type()
@@ -751,13 +784,7 @@ class ModelLayers:
     def create_layers_from_project(self, project):
         self.project = project
         # First remove old ModelLayers already on the map
-        from qgis.core import QgsMapLayerRegistry
-        layer_names = []
-        for layer in self.all_layers:
-            layer_names.append(layer.name())
-        QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
-        from ui.map_tools import EmbedMap
-        EmbedMap.layers = self.map_widget.canvas.layers()
+        self.map_widget.remove_layers(self.all_layers)
 
 
 def print_process_id():

@@ -332,12 +332,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
         # self.obj_tree.itemClicked.connect(self.list_objects)
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
-        self.listViewObjects.doubleClicked.connect(self.list_item_double_clicked)
+        self.listViewObjects.doubleClicked.connect(self.edit_selected_objects)
         self.listViewObjects.itemSelectionChanged.connect(self.list_selection_changed)
 
         self.btnObjAdd.clicked.connect(self.add_object_clicked)
         self.btnObjDelete.clicked.connect(self.delete_object_clicked)
-        self.btnObjProperty.clicked.connect(self.edit_object)
+        self.btnObjProperty.clicked.connect(self.edit_selected_objects)
         self.btnObjMoveUp.clicked.connect(self.moveup_object)
         self.btnObjMoveDown.clicked.connect(self.movedown_object)
         self.btnObjSort.clicked.connect(self.sort_object)
@@ -558,7 +558,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if msg and msg != "''":
                 print("List selection changed, but could not select on map:\n" + msg)
 
-    def list_item_double_clicked(self):
+    def edit_selected_objects(self):
         # on double click of an item in the 'bottom left' list
         if not self.project or not hasattr(self, "get_editor"):
             return
@@ -566,9 +566,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             return
         selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
-
-    def edit_object(self):
-        self.list_item_double_clicked()
 
     def add_object_clicked(self):
         if self.project and self.get_editor:

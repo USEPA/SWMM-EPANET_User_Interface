@@ -731,7 +731,7 @@ try:
         def canvasPressEvent(self, e):
             try:
                 selected_names = []
-                nearest_layer, nearest_feature_id = self.nearest_feature(self.toMapCoordinates(e.pos()))
+                nearest_layer, nearest_feature_name = self.nearest_feature(self.toMapCoordinates(e.pos()))
 
                 # Clear selection on other layers (and on this layer if not extending the selection with Ctrl or Shift)
                 extending = e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
@@ -745,7 +745,7 @@ try:
                                 selected_names.append(feat.attributes()[0])
 
                 if nearest_layer:
-                    iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_id))
+                    iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_name))
                     if iterator:
                         nearest_feature = next(iterator)
                         if nearest_feature:
@@ -774,6 +774,10 @@ try:
                 except Exception as e1:
                     print str(e1)
             return nearest_layer, nearest_pt_id
+
+        def canvasDoubleClickEvent(self, e):
+            self.session.edit_selected_objects()
+
 
     class SaveAsGis:
         @staticmethod

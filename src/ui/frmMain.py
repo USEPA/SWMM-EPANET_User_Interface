@@ -781,12 +781,29 @@ class ModelLayers:
     def __init__(self, map_widget):
         self.map_widget = map_widget
         self.nodes_layers = []
+        self.links_layers = []
         self.all_layers = []
 
     def create_layers_from_project(self, project):
         self.project = project
         # First remove old ModelLayers already on the map
         self.map_widget.remove_layers(self.all_layers)
+
+    def all_node_features(self):
+        features = []
+        for layer in self.nodes_layers:
+            if layer and layer.isValid():
+                for feature in layer.getFeatures():
+                    features.append(feature)
+        return features
+
+    def all_link_features(self):
+        features = []
+        for layer in self.links_layers:
+            if layer and layer.isValid():
+                for feature in layer.getFeatures():
+                    features.append(feature)
+        return features
 
 
 def print_process_id():

@@ -554,7 +554,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             layer = getattr(self.model_layers, section_field_name)
             self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
         except Exception as ex:
-            print("List selection changed, but could not select on map:\n" + str(ex))
+            msg = str(ex)
+            if msg and msg != "''":
+                print("List selection changed, but could not select on map:\n" + msg)
 
     def list_item_double_clicked(self):
         # on double click of an item in the 'bottom left' list
@@ -595,33 +597,33 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def select_named_items(self, layer, selected_list):
         if self.selecting.acquire(False):
-            if selected_list:
-                if layer:
-                    try:
-                        for object_name in selected_list:
-                            feature = self.map_widget.find_feature(layer, object_name)
-                            if feature:
-                                layer.select(feature.id())
+            try:
+                if selected_list:
+                    if layer:
+                        try:
+                            qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
+                            layer.setSelectedFeatures(qgis_ids)
 
-                        layer_name = layer.name()
-                        already_selected_item = self.obj_tree.currentItem()
-                        if already_selected_item is None or already_selected_item.text(0) != layer_name:
-                            tree_node = self.obj_tree.find_tree_item(layer_name)
-                            if tree_node:
-                                self.obj_tree.setCurrentItem(tree_node)
-                    except Exception as ex:
-                        print("Did not find layer in tree:\n" + str(ex))
-                for i in range(self.listViewObjects.count()):
-                    item = self.listViewObjects.item(i)
-                    if item.text() in selected_list:
-                        self.listViewObjects.setItemSelected(item, True)
-                        self.listViewObjects.scrollToItem(item)
-                    else:
-                        self.listViewObjects.setItemSelected(item, False)
-            else:
-                self.listViewObjects.clearSelection()
-                self.map_widget.clearSelectableObjects()
-            self.selecting.release()
+                            layer_name = layer.name()
+                            already_selected_item = self.obj_tree.currentItem()
+                            if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                                tree_node = self.obj_tree.find_tree_item(layer_name)
+                                if tree_node:
+                                    self.obj_tree.setCurrentItem(tree_node)
+                        except Exception as ex:
+                            print("Did not find layer in tree:\n" + str(ex))
+                    for i in range(self.listViewObjects.count()):
+                        item = self.listViewObjects.item(i)
+                        if item.text() in selected_list:
+                            self.listViewObjects.setItemSelected(item, True)
+                            self.listViewObjects.scrollToItem(item)
+                        else:
+                            self.listViewObjects.setItemSelected(item, False)
+                else:
+                    self.listViewObjects.clearSelection()
+                    self.map_widget.clearSelectableObjects()
+            finally:  # Make sure lock is released even if there is an exception
+                self.selecting.release()
 
     def new_project(self):
         self.project = self.project_type()

@@ -701,7 +701,13 @@ try:
                                 ids.append(feat.id())
                                 found = True
                             elif geometry.wkbType() == QGis.WKBPolygon:
-                                # TODO: does selecting work on the polygon layer itself or do we make a point layer?
+                                # Select subbasin by clicking closest to center of its bounding box
+                                box = geometry.boundingBox()
+                                spatial_index.append(QgsPoint((box.xMinimum() + box.xMaximum())/2,
+                                                              (box.yMinimum() + box.yMaximum())/2))
+                                ids.append(feat.id())
+                                found = True
+
                                 # name = feat.attribute("name")
                                 # line = geometry.asPolyline()
                                 # feat = QgsFeature()
@@ -734,8 +740,9 @@ try:
                         if layer != nearest_layer or not extending:
                             layer.removeSelection()
                         else:
-                            # TODO: enumerate selected items in this layer, add them to selected_names
-                            pass
+                            # add names of already-selected features to selected_names
+                            for feat in layer.selectedFeatures():
+                                selected_names.append(feat.attributes()[0])
 
                 if nearest_layer:
                     iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_id))

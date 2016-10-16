@@ -677,7 +677,12 @@ try:
         def __init__(self, canvas, session):
             self.canvas = canvas
             self.session = session
+            self.start_drag_position = None
+            self.tempRubberBand = None
             QgsMapToolEmitPoint.__init__(self, self.canvas)
+            self.build_spatial_index()
+
+        def build_spatial_index(self):
             self.layer_spatial_indexes = []
             if hasattr(self.session, "model_layers"):
                 model_layers = self.session.model_layers.all_layers
@@ -687,77 +692,109 @@ try:
                 try:
                     if isinstance(lyr, QgsVectorLayer):
                         provider = lyr.dataProvider()
-                        feat = QgsFeature()
-                        feats = provider.getFeatures()  # get all features in layer
                         # insert features to index
                         spatial_index = []  # QgsSpatialIndex()
                         ids = []
                         found = False
-                        while feats.nextFeature(feat):
-                            geometry = feat.geometry()
-                            if geometry.wkbType() == QGis.WKBLineString:
-                                line = geometry.asPolyline()
-                                spatial_index.append(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2))
+                        for feat in provider.getFeatures():
+                            pt = self.make_center_point(feat.geometry())
+                            if pt:
+                                spatial_index.append(pt)
                                 ids.append(feat.id())
                                 found = True
-                            elif geometry.wkbType() == QGis.WKBPolygon:
-                                # Select subbasin by clicking closest to center of its bounding box
-                                box = geometry.boundingBox()
-                                spatial_index.append(QgsPoint((box.xMinimum() + box.xMaximum())/2,
-                                                              (box.yMinimum() + box.yMaximum())/2))
-                                ids.append(feat.id())
-                                found = True
-
-                                # name = feat.attribute("name")
-                                # line = geometry.asPolyline()
-                                # feat = QgsFeature()
-                                # feat.setGeometry(
-                                #     QgsGeometry.fromPoint(QgsPoint((line[0].x() + line[-1].x())/2, (line[0].y() + line[-1].y())/2)))
-                                # feat.setAttributes([name])
-                                # spatial_index.append(feat)
-                                # ids.append(feat.id())
-                                # found = True
-                                pass
-                            elif geometry.wkbType() == QGis.WKBPoint:
-                                spatial_index.append(geometry.asPoint())
-                                ids.append(feat.id())
-                                found = True
-                                pass
                         if found:
                             self.layer_spatial_indexes.append((lyr, spatial_index, ids))
                 except Exception as e:
                     print str(e)
 
-        def canvasPressEvent(self, e):
+        def make_center_point(self, geometry):
+            pt = None
+            if geometry.wkbType() == QGis.WKBLineString:
+                line = geometry.asPolyline()
+                pt = QgsPoint((line[0].x() + line[-1].x()) / 2, (line[0].y() + line[-1].y()) / 2)
+            elif geometry.wkbType() == QGis.WKBPolygon:
+                # Select subbasin by clicking closest to center of its bounding box
+                box = geometry.boundingBox()
+                pt = QgsPoint((box.xMinimum() + box.xMaximum()) / 2,
+                              (box.yMinimum() + box.yMaximum()) / 2)
+            elif geometry.wkbType() == QGis.WKBPoint:
+                pt = geometry.asPoint()
+            return pt
+
+        def start_drag(self, mouse_event):
+            self.start_drag_position = mouse_event.pos()
+            color = QColor("red")
+            color.setAlphaF(0.78)
+
+            self.tempRubberBand = QgsRubberBand(self.canvas, QGis.Line)
+            self.tempRubberBand.setWidth(2)
+            self.tempRubberBand.setColor(color)
+            self.tempRubberBand.setLineStyle(QtCore.Qt.DotLine)
+            self.tempRubberBand.addPoint(self.toMapCoordinates(mouse_event.pos()))
+            self.tempRubberBand.show()
+
+        def end_drag(self):
+            self.start_drag_position = None
+            if self.tempRubberBand:
+                self.canvas.scene().removeItem(self.tempRubberBand)
+                self.tempRubberBand = None
+
+        def canvasMoveEvent(self, mouse_event):
+            if self.tempRubberBand:
+                self.tempRubberBand.movePoint(self.toMapCoordinates(mouse_event.pos()))
+
+        def canvasReleaseEvent(self, mouse_event):
+            if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
+                self.session.move_named_items(self.nearest_layer,
+                                              self.toMapCoordinates(mouse_event.pos()) -
+                                              self.toMapCoordinates(self.start_drag_position))
+                self.build_spatial_index()
+            self.end_drag()
+
+        def keyPressEvent(self, event):
+            if self.tempRubberBand and event.key() == QtCore.Qt.Key_Escape:
+                self.end_drag()
+                event.ignore()
+
+        def canvasPressEvent(self, mouse_event):
             try:
-                selected_names = []
-                nearest_layer, nearest_feature_name = self.nearest_feature(self.toMapCoordinates(e.pos()))
+                extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
 
-                # Clear selection on other layers (and on this layer if not extending the selection with Ctrl or Shift)
-                extending = e.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
-                for layer in self.canvas.layers():
-                    if isinstance(layer, QgsVectorLayer):
-                        if layer != nearest_layer or not extending:
-                            layer.removeSelection()
-                        else:
-                            # add names of already-selected features to selected_names
-                            for feat in layer.selectedFeatures():
-                                selected_names.append(feat.attributes()[0])
+                self.selected_names = []
+                map_point = self.toMapCoordinates(mouse_event.pos())
+                self.nearest_layer, nearest_feature = self.find_nearest_feature(map_point)
+                if nearest_feature:
+                    nearest_feature_name = nearest_feature.attributes()[0]
+                else:
+                    nearest_feature_name = None
 
-                if nearest_layer:
-                    iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_name))
-                    if iterator:
-                        nearest_feature = next(iterator)
-                        if nearest_feature:
-                            # nearest_layer.select(nearest_feature_id)
-                            selected_names.append(nearest_feature.attributes()[0])
-                            self.session.select_named_items(nearest_layer, selected_names)
-                            return
+                previously_selected = []
+                for feat in self.nearest_layer.selectedFeatures():
+                    previously_selected.append(feat.attributes()[0])
+
+                if not extending and nearest_feature_name and nearest_feature_name in previously_selected:
+                    # Clicking an already-selected item starts moving all selected items
+                    self.start_drag(mouse_event)
+                else:
+                    # Clear selection on other layers and on this layer if not extending the selection with Ctrl or Shift
+                    for layer in self.canvas.layers():
+                        if isinstance(layer, QgsVectorLayer):
+                            if layer == self.nearest_layer and extending:
+                                # add names of already-selected features to selected_names
+                                self.selected_names.extend(previously_selected)
+                            else:
+                                layer.removeSelection()
+
+                    if self.nearest_layer:
+                        if nearest_feature_name not in self.selected_names:
+                            self.selected_names.append(nearest_feature_name)
+                        self.session.select_named_items(self.nearest_layer, self.selected_names)
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())
 
-        def nearest_feature(self, map_point):
+        def find_nearest_feature(self, map_point):
             nearest_layer = None
+            nearest_feature = None
             nearest_pt_id = -1
             nearest_distance = float("inf")
             for (lyr, points, ids) in self.layer_spatial_indexes:
@@ -773,7 +810,13 @@ try:
 
                 except Exception as e1:
                     print str(e1)
-            return nearest_layer, nearest_pt_id
+
+            if nearest_layer:
+                iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_pt_id))
+                if iterator:
+                    nearest_feature = next(iterator)
+
+            return nearest_layer, nearest_feature
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()

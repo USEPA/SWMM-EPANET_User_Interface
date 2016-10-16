@@ -559,7 +559,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 print("List selection changed, but could not select on map:\n" + msg)
 
     def edit_selected_objects(self):
-        # on double click of an item in the 'bottom left' list
+        # Called on double click of an item in the 'bottom left' list or on the map
         if not self.project or not hasattr(self, "get_editor"):
             return
         if len(self.listViewObjects.selectedItems()) == 0:
@@ -621,6 +621,32 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.map_widget.clearSelectableObjects()
             finally:  # Make sure lock is released even if there is an exception
                 self.selecting.release()
+
+    def move_selected_items(self, layer, move_distance):
+        print("Move " + str(move_distance))
+        if layer:
+            from qgis.core import QgsGeometry, QGis
+            layer.startEditing()
+            all_nodes = self.project.all_coordinates()
+            if hasattr(self.project, "raingages"):
+                all_nodes.extend(self.project.raingages.value)
+            for feature in layer.selectedFeatures():
+                geometry = feature.geometry()
+                if geometry.wkbType() == QGis.WKBPoint:
+                    point = geometry.asPoint()
+                    new_point = point + move_distance
+                    layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                    name = feature.attributes()[0]
+                    node = all_nodes[name]
+                    if node:
+                        node.x = new_point.x()
+                        node.y = new_point.y()
+
+            layer.updateExtents()
+            layer.commitChanges()
+            layer.triggerRepaint()
+            self.map_widget.canvas.refresh()
+            # TODO: also update affected links when a node has been edited
 
     def new_project(self):
         self.project = self.project_type()

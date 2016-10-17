@@ -45,6 +45,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
         self.populate_plugins_menu()
+        self.time_widget.setVisible(False)
         QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.new_project)
         QtCore.QObject.connect(self.actionStdNewProject, QtCore.SIGNAL('triggered()'), self.new_project)
         QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.open_project)
@@ -58,6 +59,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
         QtCore.QObject.connect(self.actionStdProjCalibration_Data, QtCore.SIGNAL('triggered()'), self.calibration_data)
+        self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
+        if hasattr(self, "actionSave_Map_As_Image"):
+            self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -150,6 +154,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.setShortcut(QKeySequence("Ctrl+Y"))
         self.menuEdit.addAction(self.action_redo)
         QtCore.QObject.connect(self.action_redo, QtCore.SIGNAL('triggered()'), self.redo)
+
+    def tabProjMapChanged(self, index):
+        if index == 1:
+            self.time_widget.setVisible(True)
+        else:
+            self.time_widget.setVisible(False)
+
+    def saveMapAsImage(self):
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("ProjectDir", "")
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Map As...", directory,
+                                                            "PNG Files (*.png);;All files (*.*)")
+        if file_name:
+            self.canvas.saveAsImage(file_name)
 
     def undo(self):
         self.undo_stack.undo()
@@ -284,8 +302,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 all_nodes = self.session.project.all_coordinates()
                 all_links = self.session.project.all_links()
                 moved_coordinates = IndexedList([], ['name'])
-                if hasattr(self.session.project, "raingages"):
-                    all_nodes.extend(self.session.project.raingages.value)
+                for section_field_name in ["labels", "raingages"]:
+                    if hasattr(self.session.project, section_field_name):
+                        all_nodes.extend(getattr(self.session.project, section_field_name).value)
                 if undo:
                     dx = -self.dx
                     dy = -self.dy
@@ -639,21 +658,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             edit_form = frmGenericPropertyEditor(self, edit_these, self.model + ' ' + search_for + " Editor")
         else:
             for tree_item in tree_list:
+                # tree_item is a list: ["name in tree control", editor_form_type, [optional editor form arguments]]
                 if search_for == tree_item[0]:  # If we found a matching tree item, return its editor
                     if len(tree_item) > 0 and tree_item[1] and not (type(tree_item[1]) is list):
                         args = [self]
                         if len(tree_item) > 2:
-                            # We recommend this is a list, but if not, try to treat it as a single argument
+                            # Get arguments for editor creation from tree_item
+                            # Usually this is a list, but if not, try to treat it as a single argument
                             if isinstance(tree_item[2], basestring) or not isinstance(tree_item[2], list):
                                 args.append(str(tree_item[2]))
                             else:  # tree_item[2] is a list that is not a string
                                 args.extend(tree_item[2])
-                        #if selected_items:
                         args.append(selected_items)
                         args.append(new_item)
                         try:
-                            edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
-                        except:
+                            edit_form = tree_item[1](*args)
+                        except:  # Try without selected_items and new_item for editors that do not want them
                             args = args[0:-2]
                             edit_form = tree_item[1](*args)
                         edit_form.helper = HelpHandler(edit_form)

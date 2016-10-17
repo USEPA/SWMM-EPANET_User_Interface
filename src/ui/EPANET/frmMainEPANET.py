@@ -664,9 +664,9 @@ class ModelLayersEPANET(ModelLayers):
         self.tanks = addCoordinates(None, "Tanks")
         self.sources = addCoordinates(None, "Sources")
         self.labels = addCoordinates(None, "Labels")
-        self.pumps = addLinks(None, None, "Pumps", "name", QColor('red'), 1)
-        self.valves = addLinks(None, None, "Valves", "name", QColor('green'), 2)
-        self.pipes = addLinks(None, None, "Pipes", "name", QColor('gray'), 3)
+        self.pumps = addLinks(None, None, "Pumps", QColor('red'), 1)
+        self.valves = addLinks(None, None, "Valves", QColor('green'), 2)
+        self.pipes = addLinks(None, None, "Pipes", QColor('gray'), 3)
         self.set_lists()
 
     def set_lists(self):
@@ -689,9 +689,9 @@ class ModelLayersEPANET(ModelLayers):
         self.labels = addCoordinates(project.labels.value, "Labels")
 
         coordinates = project.all_coordinates()
-        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", "name", QColor('red'), 1)
-        self.valves = addLinks(coordinates, project.valves.value, "Valves", "name", QColor('green'), 2)
-        self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", "name", QColor('gray'), 3)
+        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
+        self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
+        self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
         self.set_lists()
 
 

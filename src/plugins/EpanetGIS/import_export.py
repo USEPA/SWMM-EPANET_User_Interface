@@ -239,7 +239,7 @@ def import_from_gis(session, file_name):
 
     result = import_links(session.project, section.value, file_name, pipe_model_attributes, pipe_gis_attributes, Pipe)
     session.map_widget.addLinks(session.project.all_coordinates(),
-                                section.value, "Pipes", "name", QtGui.QColor('gray'))
+                                section.value, "Pipes", QtGui.QColor('gray'))
 
     session.map_widget.zoomfull()
     return result

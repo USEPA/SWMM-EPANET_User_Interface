@@ -190,6 +190,15 @@ try:
             feature.setAttributes([item.name, 0.0])
             return feature
 
+        @staticmethod
+        def line_feature_from_item(item, inlet_coord, outlet_coord):
+            feature = QgsFeature()
+            feature.setGeometry(QgsGeometry.fromPolyline([
+                QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+                QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+            feature.setAttributes([item.name, 0.0])
+            return feature
+
         def addCoordinates(self, coordinates, layer_name):
             layer = QgsVectorLayer("Point", layer_name, "memory")
             provider = layer.dataProvider()
@@ -253,7 +262,7 @@ try:
             sym.setSize(8.0)
             layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
-        def addLinks(self, coordinates, links, layer_name, link_attr, link_color=QColor('black'), link_width=1):
+        def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             layer = QgsVectorLayer("LineString", layer_name, "memory")
             provider = layer.dataProvider()
 
@@ -282,13 +291,7 @@ try:
                         inlet_coord = coordinates[link.inlet_node]
                         outlet_coord = coordinates[link.outlet_node]
                         if inlet_coord and outlet_coord:
-                            # add a feature
-                            feature = QgsFeature()
-                            feature.setGeometry(QgsGeometry.fromPolyline([
-                                QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
-                                QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
-                            feature.setAttributes([getattr(link, link_attr, ''), 0.0])
-                            features.append(feature)
+                            features.append(self.line_feature_from_item(link, inlet_coord, outlet_coord))
                     except Exception as exLink:
                         print "Skipping link " + link.name + ": " + str(exLink)
 
@@ -748,7 +751,6 @@ try:
                 self.session.move_selected_items(self.nearest_layer,
                                                  self.toMapCoordinates(mouse_event.pos()) -
                                                  self.toMapCoordinates(self.start_drag_position))
-                self.build_spatial_index()
             self.end_drag()
 
         def keyPressEvent(self, event):

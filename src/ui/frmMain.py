@@ -268,6 +268,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.layer = layer
             self.move_distance = move_distance
             self.map_features = [feature for feature in layer.selectedFeatures()]
+            self.moved_links = []
 
         def redo(self):
             self.move(False)
@@ -277,43 +278,86 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         def move(self, undo):
             from qgis.core import QgsGeometry, QGis, QgsPoint
-            self.layer.startEditing()
-            all_nodes = self.session.project.all_coordinates()
-            all_links = self.session.project.all_links()
-            if hasattr(self.session.project, "raingages"):
-                all_nodes.extend(self.session.project.raingages.value)
-            for feature in self.map_features:
-                name = feature.attributes()[0]
-                geometry = feature.geometry()
-                if geometry.wkbType() == QGis.WKBPoint:
-                    point = geometry.asPoint()
-                    if undo:
-                        new_point = point
-                    else:
-                        new_point = QgsPoint(point.x() + self.move_distance.x(),
-                                             point.y() + self.move_distance.y())
-                    self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
-                    node = all_nodes[name]
-                    if node:
-                        node.x = new_point.x()
-                        node.y = new_point.y()
+            try:
+                self.layer.startEditing()
+                all_nodes = self.session.project.all_coordinates()
+                all_links = self.session.project.all_links()
+                if hasattr(self.session.project, "raingages"):
+                    all_nodes.extend(self.session.project.raingages.value)
+                if not undo:
+                    self.moved_links = []
+                    moved_coordinates = IndexedList([], ['name'])
+                for feature in self.map_features:
+                    name = feature.attributes()[0]
+                    geometry = feature.geometry()
+                    if geometry.wkbType() == QGis.WKBPoint:
+                        point = geometry.asPoint()
+                        if undo:
+                            new_point = point
+                        else:
+                            new_point = QgsPoint(point.x() + self.move_distance.x(),
+                                                 point.y() + self.move_distance.y())
+                        self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                        node = all_nodes[name]
+                        if node:
+                            node.x = new_point.x()
+                            node.y = new_point.y()
+                            if not undo:
+                                moved_coordinates.append(node)
 
-                    # Update affected links when a node has been edited
-                    for link in all_links:
-                        if link.inlet_node == name:
-                            print("TODO: update inlet of link " + link.name)
-                        if link.outlet_node == name:
-                            print("TODO: update outlet of link " + link.name)
+                    elif geometry.wkbType() == QGis.WKBPolygon:
+                        print("TODO: allow moving polygons")
+                    elif geometry.wkbType() == QGis.WKBLineString:
+                        print("TODO: allow moving links?")
 
-                elif geometry.wkbType() == QGis.WKBPolygon:
-                    print("TODO: allow moving polygons")
-                elif geometry.wkbType() == QGis.WKBLineString:
-                    print("TODO: allow moving links?")
+                if undo:
+                    for link, link_layer, feature in self.moved_links:
+                        link_layer.startEditing()
+                        link_layer.changeGeometry(feature.id(), feature.geometry())
+                        link_layer.commitChanges()
+                        link_layer.updateExtents()
+                        link_layer.triggerRepaint()
+                        # TODO: undo any edits to vertices in project data structure?
+                    self.moved_links = []
+                else:
+                    self.update_affected_links(undo, moved_coordinates, all_links)
 
-            self.layer.commitChanges()
-            self.layer.updateExtents()
-            self.layer.triggerRepaint()
-            self.session.map_widget.canvas.refresh()
+                self.layer.commitChanges()
+                self.layer.updateExtents()
+                self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+            except Exception as ex:
+                print("_MoveSelectedItems: " + str(ex))
+            try:
+                self.session.map_widget.selectTool.build_spatial_index()
+            except:
+                pass
+
+        def update_affected_links(self, undo, moved_coordinates, all_links):
+            from qgis.core import QgsGeometry, QgsPoint
+            # Update affected links when an inlet or outlet node has been edited
+            for link in all_links:
+                if link.inlet_node in moved_coordinates or link.outlet_node in moved_coordinates:
+                    section_field_name = self.session.section_types[type(link)]
+                    if self.session.map_widget and hasattr(self.session, "model_layers") \
+                            and hasattr(self.session.model_layers, section_field_name):
+                        link_layer = getattr(self.session.model_layers, section_field_name)
+                        feature = self.session.map_widget.find_feature(link_layer, link.name)
+                        self.moved_links.append([link, link_layer, feature])
+
+                        link_points = feature.geometry().asPolyline()
+                        if link.inlet_node in moved_coordinates:
+                            coord = moved_coordinates[link.inlet_node]
+                            link_points[0] = QgsPoint(coord.x, coord.y)
+                        if link.outlet_node in moved_coordinates:
+                            coord = moved_coordinates[link.outlet_node]
+                            link_points[-1] = QgsPoint(coord.x, coord.y)
+                        print("Update link " + link.name)
+                        link_layer.startEditing()
+                        link_layer.changeGeometry(feature.id(), QgsGeometry.fromPolyline(link_points))
+                        link_layer.commitChanges()
+                        link_layer.updateExtents()
+                        link_layer.triggerRepaint()
 
     def move_selected_items(self, layer, move_distance):
         if layer:

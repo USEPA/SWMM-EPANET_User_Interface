@@ -13,36 +13,13 @@ class frmAquifers(frmGenericPropertyEditor):
 
     def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/aquifereditordialog.htm"
-        self._main_form = main_form
-        self.project = main_form.project
-        self.project_section = self.project.aquifers
-        if self.project_section and isinstance(self.project_section.value, list) and \
-            len(self.project_section.value) > 0 and \
-            isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-            if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_names = edit_these
-                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
-                    edit_these = edit_objects
-
-            else:  # Edit all items in section
-                edit_these = []
-                edit_these.extend(self.project_section.value)
-
-        if len(edit_these) == 0:
-            self.new_item = self.SECTION_TYPE()
-            # self.new_item.name = "1"
-            edit_these.append(self.new_item)
-        else:
-            self.new_item = None
-
-        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these, new_item,
+        frmGenericPropertyEditor.__init__(self, main_form, main_form.project.aquifers, edit_these, new_item,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for patterns, show available patterns
-            pattern_section = self.project.find_section("PATTERNS")
+            pattern_section = main_form.project.patterns
             pattern_list = pattern_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')

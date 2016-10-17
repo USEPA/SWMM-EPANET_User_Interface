@@ -83,6 +83,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilt(column))
+        self.tblGeneric.setItem(18, column, QtGui.QTableWidgetItem(''))
         self.tblGeneric.setCellWidget(18, column, tb)
 
     def set_groundwater_cell(self, column):
@@ -151,28 +152,35 @@ class frmSubcatchments(frmGenericPropertyEditor):
             edit_these = []
             groundwater_section = self.project.groundwater
             if isinstance(groundwater_section.value, list):
+                if len(groundwater_section.value) > 0:
+                    for item in groundwater_section.value:
+                        if item.subcatchment == str(self.tblGeneric.item(0,column).text()):
+                            edit_these.append(item)
                 if len(groundwater_section.value) == 0:
                     new_item = Groundwater()
                     groundwater_section.value.append(new_item)
-                edit_these.extend(groundwater_section.value)
+                    edit_these.append(new_item)
             else:
                 new_item = Groundwater()
                 groundwater_section.value = []
                 groundwater_section.value.append(new_item)
-                edit_these.extend(groundwater_section.value)
+                edit_these.append(new_item)
             editor = frmGroundwaterFlow(self, edit_these, None, "SWMM Groundwater Flow Editor")
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
         return local_show
 
-    # TODO: Set infiltration parameters based on infilt type
     def make_show_infilt(self, column):
         def local_show():
             edit_these = []
             infiltration_section = self.project.find_section('INFILTRATION')
             if isinstance(infiltration_section.value, list):
-                if len(infiltration_section.value) == 0:
+                if len(infiltration_section.value) > 0:
+                    for item in infiltration_section.value:
+                        if item.subcatchment == str(self.tblGeneric.item(0,column).text()):
+                            edit_these.append(item)
+                if len(edit_these) == 0:
                     option_section = self.project.find_section('OPTIONS')
                     new_item = HortonInfiltration()
                     if option_section.infiltration == "HORTON":
@@ -186,7 +194,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                     elif option_section.infiltration == "CURVE_NUMBER":
                         new_item = CurveNumberInfiltration()
                     infiltration_section.value.append(new_item)
-                edit_these.extend(infiltration_section.value)
+                    edit_these.append(new_item)
             editor = frmInfiltration(self, edit_these, None, "SWMM Infiltration Editor")
             editor.show()
         return local_show

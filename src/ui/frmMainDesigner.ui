@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>832</width>
-    <height>603</height>
+    <height>644</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SWMM 5.1</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="swmm.qrc">
     <normaloff>:/icons/icon_swmm.png</normaloff>:/icons/icon_swmm.png</iconset>
   </property>
   <property name="dockOptions">
@@ -159,6 +159,7 @@
     <addaction name="actionStdRecent_Project"/>
     <addaction name="actionStdSaveMenu"/>
     <addaction name="actionStdSave_As"/>
+    <addaction name="actionSave_Map_As_Image"/>
     <addaction name="separator"/>
     <addaction name="menuImport"/>
     <addaction name="menuExport"/>
@@ -255,6 +256,19 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionObjAddGage"/>
+   <addaction name="actionObjAddSub"/>
+   <addaction name="actionObjAddJunc"/>
+   <addaction name="actionObjAddOutfall"/>
+   <addaction name="actionObjAddDivider"/>
+   <addaction name="actionObjAddStorage"/>
+   <addaction name="actionObjAddTank"/>
+   <addaction name="actionObjAddConduit"/>
+   <addaction name="actionObjAddPump"/>
+   <addaction name="actionObjAddOrifice"/>
+   <addaction name="actionObjAddWeir"/>
+   <addaction name="actionObjAddOutlet"/>
+   <addaction name="actionObjAddValve"/>
+   <addaction name="actionObjAddLabel"/>
   </widget>
   <widget class="QToolBar" name="toolBar_Map">
    <property name="windowTitle">
@@ -274,6 +288,11 @@
    <addaction name="actionPan"/>
    <addaction name="actionAdd_Feature"/>
    <addaction name="actionMapSelectObj"/>
+   <addaction name="actionMapSelectRegion"/>
+   <addaction name="actionMapFindObj"/>
+   <addaction name="actionMapQuery"/>
+   <addaction name="separator"/>
+   <addaction name="actionMapOption"/>
   </widget>
   <widget class="QToolBar" name="toolBar_Standard">
    <property name="windowTitle">
@@ -294,9 +313,16 @@
    <addaction name="actionStdNewProject"/>
    <addaction name="actionStdOpenProj"/>
    <addaction name="actionStdSave"/>
+   <addaction name="actionStdPrint"/>
    <addaction name="separator"/>
    <addaction name="actionStdRun_Simulation"/>
    <addaction name="separator"/>
+   <addaction name="actionProjStatus"/>
+   <addaction name="actionProjPlotProfile"/>
+   <addaction name="actionProjPlotTimeseries"/>
+   <addaction name="actionProjPlotScatter"/>
+   <addaction name="actionProjTableTimeseries"/>
+   <addaction name="actionProjTableStatistics"/>
   </widget>
   <widget class="QDockWidget" name="dockw_tab">
    <property name="sizePolicy">
@@ -328,7 +354,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tabProject">
         <attribute name="title">
@@ -418,7 +444,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -444,7 +470,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -470,7 +496,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -496,7 +522,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -522,7 +548,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -548,7 +574,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">
@@ -590,155 +616,163 @@
     <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButtonBack">
-         <property name="minimumSize">
-          <size>
-           <width>12</width>
-           <height>12</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>12</width>
-           <height>12</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>12</width>
-           <height>12</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="3">
-        <widget class="QSlider" name="horizontalTimeSlider">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>12</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="pushButtonForward">
-         <property name="maximumSize">
-          <size>
-           <width>12</width>
-           <height>12</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/forward.png</normaloff>icons/forward.png</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButtonPlay">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>18</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>icons/play.png</normaloff>icons/play.png</iconset>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="labelStartTime">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>not set</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="labelEndTime">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>not set</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButtonBack">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>12</horstretch>
+         <verstretch>12</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="swmm.qrc">
+         <normaloff>:/icons/back.png</normaloff>:/icons/back.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="3">
+      <widget class="QSlider" name="horizontalTimeSlider">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QPushButton" name="pushButtonForward">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>12</horstretch>
+         <verstretch>12</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="swmm.qrc">
+         <normaloff>:/icons/forward.png</normaloff>:/icons/forward.png</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButtonPlay">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="swmm.qrc">
+         <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelStartTime">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>not set</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>689</width>
+         <height>13</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="labelEndTime">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>not set</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -773,6 +807,9 @@
    </property>
   </action>
   <action name="actionObjAddGage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normalon>:/icons/obj_gage.png</normalon>
@@ -1019,6 +1056,11 @@
    </property>
   </action>
   <action name="actionStdPrint">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_printwindow.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Print</string>
    </property>
@@ -1143,9 +1185,355 @@
     <string>Show properties</string>
    </property>
   </action>
+  <action name="actionSave_Map_As_Image">
+   <property name="text">
+    <string>Save Map As Image...</string>
+   </property>
+  </action>
+  <action name="actionObjAddSub">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_subcatchment.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddSub</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a subcatchment</string>
+   </property>
+  </action>
+  <action name="actionObjAddJunc">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_node_junction.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddJunc</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a junction node</string>
+   </property>
+  </action>
+  <action name="actionObjAddOutfall">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_node_outfall.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddOutfall</string>
+   </property>
+   <property name="toolTip">
+    <string>Add an outfall node</string>
+   </property>
+  </action>
+  <action name="actionObjAddDivider">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_node_divider.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddDivider</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a flow divider node</string>
+   </property>
+  </action>
+  <action name="actionObjAddStorage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_node_storage.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddStorage</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a storage node</string>
+   </property>
+  </action>
+  <action name="actionObjAddConduit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_conduit.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddConduit</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a conduit link</string>
+   </property>
+  </action>
+  <action name="actionObjAddPump">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_pump.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddPump</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a pump link</string>
+   </property>
+  </action>
+  <action name="actionObjAddOrifice">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_orifice.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddOrifice</string>
+   </property>
+   <property name="toolTip">
+    <string>Add an orifice link</string>
+   </property>
+  </action>
+  <action name="actionObjAddWeir">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_weir.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddWeir</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a weir link</string>
+   </property>
+  </action>
+  <action name="actionObjAddOutlet">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_outlet.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddOutlet</string>
+   </property>
+   <property name="toolTip">
+    <string>Add an outlet link</string>
+   </property>
+  </action>
+  <action name="actionObjAddLabel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_maplabel.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddLabel</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a map label</string>
+   </property>
+  </action>
+  <action name="actionObjAddTank">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_node_tank.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddTank</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a tank node</string>
+   </property>
+  </action>
+  <action name="actionObjAddValve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/obj_link_valve.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ObjAddValve</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a valve link</string>
+   </property>
+  </action>
+  <action name="actionMapSelectRegion">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_selectregion.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>MapSelectRegion</string>
+   </property>
+   <property name="toolTip">
+    <string>Select region</string>
+   </property>
+  </action>
+  <action name="actionMapFindObj">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_findobjectinmap.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>MapFindObj</string>
+   </property>
+   <property name="toolTip">
+    <string>Find an object on map</string>
+   </property>
+  </action>
+  <action name="actionMapQuery">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_findobjectbyrules.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>MapQuery</string>
+   </property>
+   <property name="toolTip">
+    <string>Find object via query</string>
+   </property>
+  </action>
+  <action name="actionProjPlotProfile">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_profileplot.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjPlotProfile</string>
+   </property>
+   <property name="toolTip">
+    <string>Plot profile</string>
+   </property>
+  </action>
+  <action name="actionProjPlotTimeseries">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_tsplot.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjPlotTimeseries</string>
+   </property>
+   <property name="toolTip">
+    <string>Plot time series</string>
+   </property>
+  </action>
+  <action name="actionProjPlotScatter">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_scatterplot.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjPlotScatter</string>
+   </property>
+   <property name="toolTip">
+    <string>Scatter plot</string>
+   </property>
+  </action>
+  <action name="actionProjTableTimeseries">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_tstable.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjTableTimeseries</string>
+   </property>
+   <property name="toolTip">
+    <string>Create time series table</string>
+   </property>
+  </action>
+  <action name="actionProjTableStatistics">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_statisticreport.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjTableStatistics</string>
+   </property>
+   <property name="toolTip">
+    <string>Create statistic report</string>
+   </property>
+  </action>
+  <action name="actionMapOption">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_viewoption.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>MapOption</string>
+   </property>
+   <property name="toolTip">
+    <string>Map options</string>
+   </property>
+  </action>
+  <action name="actionProjStatus">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/std_project_statusreport.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>ProjStatus</string>
+   </property>
+   <property name="toolTip">
+    <string>Project status report</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../TimeManager/resources.qrc"/>
+  <include location="swmm.qrc"/>
  </resources>
  <connections/>
 </ui>

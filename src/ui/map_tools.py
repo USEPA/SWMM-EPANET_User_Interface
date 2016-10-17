@@ -748,9 +748,11 @@ try:
 
         def canvasReleaseEvent(self, mouse_event):
             if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
+                event_pt = self.toMapCoordinates(mouse_event.pos())
+                start_pt = self.toMapCoordinates(self.start_drag_position)
                 self.session.move_selected_items(self.nearest_layer,
-                                                 self.toMapCoordinates(mouse_event.pos()) -
-                                                 self.toMapCoordinates(self.start_drag_position))
+                                                 event_pt.x() - start_pt.x(),
+                                                 event_pt.y() - start_pt.y())
             self.end_drag()
 
         def keyPressEvent(self, event):

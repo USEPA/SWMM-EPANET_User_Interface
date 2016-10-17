@@ -262,11 +262,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     class _MoveSelectedItems(QtGui.QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
-        def __init__(self, session, layer, move_distance):
-            QtGui.QUndoCommand.__init__(self, "Move " + str(move_distance))
+        def __init__(self, session, layer, dx, dy):
+            QtGui.QUndoCommand.__init__(self, "Move " + str(dx) + ", " + str(dy))
             self.session = session
             self.layer = layer
-            self.move_distance = move_distance
+            self.dx = dx
+            self.dy = dy
             self.map_features = [feature for feature in layer.selectedFeatures()]
             self.moved_links = []
 
@@ -286,11 +287,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if hasattr(self.session.project, "raingages"):
                     all_nodes.extend(self.session.project.raingages.value)
                 if undo:
-                    dx = -self.move_distance.x()
-                    dy = -self.move_distance.y()
+                    dx = -self.dx
+                    dy = -self.dy
                 else:
-                    dx = self.move_distance.x()
-                    dy = self.move_distance.y()
+                    dx = self.dx
+                    dy = self.dy
                     self.moved_links = []
                 for feature in self.map_features:
                     name = feature.attributes()[0]
@@ -390,9 +391,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         link_layer.updateExtents()
                         link_layer.triggerRepaint()
 
-    def move_selected_items(self, layer, move_distance):
+    def move_selected_items(self, layer, dx, dy):
         if layer:
-            self.undo_stack.push(self._MoveSelectedItems(self, layer, move_distance))
+            self.undo_stack.push(self._MoveSelectedItems(self, layer, dx, dy))
 
     def new_item_name(self, item_type):
         section = getattr(self.project, self.section_types[item_type])

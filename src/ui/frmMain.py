@@ -260,6 +260,65 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def delete_item(self, item):
         self.undo_stack.push(self._DeleteItem(self, item))
 
+    class _MoveSelectedItems(QtGui.QUndoCommand):
+        """Private class that removes an item from the model and the map. Accessed via delete_item method."""
+        def __init__(self, session, layer, move_distance):
+            QtGui.QUndoCommand.__init__(self, "Move " + str(move_distance))
+            self.session = session
+            self.layer = layer
+            self.move_distance = move_distance
+            self.map_features = [feature for feature in layer.selectedFeatures()]
+
+        def redo(self):
+            self.move(False)
+
+        def undo(self):
+            self.move(True)
+
+        def move(self, undo):
+            from qgis.core import QgsGeometry, QGis, QgsPoint
+            self.layer.startEditing()
+            all_nodes = self.session.project.all_coordinates()
+            all_links = self.session.project.all_links()
+            if hasattr(self.session.project, "raingages"):
+                all_nodes.extend(self.session.project.raingages.value)
+            for feature in self.map_features:
+                name = feature.attributes()[0]
+                geometry = feature.geometry()
+                if geometry.wkbType() == QGis.WKBPoint:
+                    point = geometry.asPoint()
+                    if undo:
+                        new_point = point
+                    else:
+                        new_point = QgsPoint(point.x() + self.move_distance.x(),
+                                             point.y() + self.move_distance.y())
+                    self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                    node = all_nodes[name]
+                    if node:
+                        node.x = new_point.x()
+                        node.y = new_point.y()
+
+                    # Update affected links when a node has been edited
+                    for link in all_links:
+                        if link.inlet_node == name:
+                            print("TODO: update inlet of link " + link.name)
+                        if link.outlet_node == name:
+                            print("TODO: update outlet of link " + link.name)
+
+                elif geometry.wkbType() == QGis.WKBPolygon:
+                    print("TODO: allow moving polygons")
+                elif geometry.wkbType() == QGis.WKBLineString:
+                    print("TODO: allow moving links?")
+
+            self.layer.commitChanges()
+            self.layer.updateExtents()
+            self.layer.triggerRepaint()
+            self.session.map_widget.canvas.refresh()
+
+    def move_selected_items(self, layer, move_distance):
+        if layer:
+            self.undo_stack.push(self._MoveSelectedItems(self, layer, move_distance))
+
     def new_item_name(self, item_type):
         section = getattr(self.project, self.section_types[item_type])
         number = 1
@@ -621,32 +680,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.map_widget.clearSelectableObjects()
             finally:  # Make sure lock is released even if there is an exception
                 self.selecting.release()
-
-    def move_selected_items(self, layer, move_distance):
-        print("Move " + str(move_distance))
-        if layer:
-            from qgis.core import QgsGeometry, QGis
-            layer.startEditing()
-            all_nodes = self.project.all_coordinates()
-            if hasattr(self.project, "raingages"):
-                all_nodes.extend(self.project.raingages.value)
-            for feature in layer.selectedFeatures():
-                geometry = feature.geometry()
-                if geometry.wkbType() == QGis.WKBPoint:
-                    point = geometry.asPoint()
-                    new_point = point + move_distance
-                    layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
-                    name = feature.attributes()[0]
-                    node = all_nodes[name]
-                    if node:
-                        node.x = new_point.x()
-                        node.y = new_point.y()
-
-            layer.updateExtents()
-            layer.commitChanges()
-            layer.triggerRepaint()
-            self.map_widget.canvas.refresh()
-            # TODO: also update affected links when a node has been edited
 
     def new_project(self):
         self.project = self.project_type()

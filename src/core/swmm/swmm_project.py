@@ -25,7 +25,6 @@ from core.swmm.patterns import Pattern
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
-from core.indexed_list import IndexedList
 
 try:
     unicode = unicode
@@ -170,12 +169,6 @@ class SwmmProject(ProjectBase):
 
     def nodes_groups(self):
         return [self.junctions, self.outfalls, self.dividers, self.storage]
-
-    def all_coordinates(self):
-        all = IndexedList([], ['name'])
-        for section in self.nodes_groups():
-            all.extend(section.value)
-        return all
 
     def links_groups(self):
         return [self.conduits, self.pumps, self.orifices, self.weirs, self.outlets]

@@ -1,6 +1,7 @@
 import inspect
 import traceback
 from enum import Enum
+from core.indexed_list import IndexedList
 
 
 class ProjectBase(object):
@@ -54,6 +55,18 @@ class ProjectBase(object):
         Returns (str) lowercase name with underscores instead of spaces and without square brackets.
         """
         return name.lower().replace(' ', '_').replace('[', '').replace(']', '')
+
+    def all_coordinates(self):
+        lst_all = IndexedList([], ['name'])
+        for section in self.nodes_groups():
+            lst_all.extend(section.value)
+        return lst_all
+
+    def all_links(self):
+        lst_all = IndexedList([], ['name'])
+        for section in self.links_groups():
+            lst_all.extend(section.value)
+        return lst_all
 
 
 class Section(object):

@@ -745,9 +745,9 @@ try:
 
         def canvasReleaseEvent(self, mouse_event):
             if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
-                self.session.move_named_items(self.nearest_layer,
-                                              self.toMapCoordinates(mouse_event.pos()) -
-                                              self.toMapCoordinates(self.start_drag_position))
+                self.session.move_selected_items(self.nearest_layer,
+                                                 self.toMapCoordinates(mouse_event.pos()) -
+                                                 self.toMapCoordinates(self.start_drag_position))
                 self.build_spatial_index()
             self.end_drag()
 

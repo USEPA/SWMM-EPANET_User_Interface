@@ -78,13 +78,5 @@ class EpanetProject(ProjectBase):
     def nodes_groups(self):
         return [self.junctions, self.reservoirs, self.tanks, self.sources]
 
-    def all_coordinates(self):
-        all = IndexedList([], ['name'])
-        sections = [self.raingages]
-        sections.extend(self.nodes_groups())
-        for section in sections:
-            all.extend(section.value)
-        return all
-
     def links_groups(self):
         return [self.pipes, self.pumps, self.valves]

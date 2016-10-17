@@ -282,11 +282,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.startEditing()
                 all_nodes = self.session.project.all_coordinates()
                 all_links = self.session.project.all_links()
+                moved_coordinates = IndexedList([], ['name'])
                 if hasattr(self.session.project, "raingages"):
                     all_nodes.extend(self.session.project.raingages.value)
-                if not undo:
+                if undo:
+                    dx = -self.move_distance.x()
+                    dy = -self.move_distance.y()
+                else:
+                    dx = self.move_distance.x()
+                    dy = self.move_distance.y()
                     self.moved_links = []
-                    moved_coordinates = IndexedList([], ['name'])
                 for feature in self.map_features:
                     name = feature.attributes()[0]
                     geometry = feature.geometry()
@@ -295,8 +300,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if undo:
                             new_point = point
                         else:
-                            new_point = QgsPoint(point.x() + self.move_distance.x(),
-                                                 point.y() + self.move_distance.y())
+                            new_point = QgsPoint(point.x() + dx, point.y() + dy)
                         self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
                         node = all_nodes[name]
                         if node:
@@ -311,14 +315,31 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         else:
                             new_pts = []
                             for pt in geometry.asPolygon()[0]:
-                                new_pts.append(QgsPoint(pt.x() + self.move_distance.x(),
-                                                        pt.y() + self.move_distance.y()))
+                                new_pts.append(QgsPoint(pt.x() + dx, pt.y() + dy))
                             new_geom = QgsGeometry.fromPolygon([new_pts])
                         self.layer.changeGeometry(feature.id(), new_geom)
 
                     elif geometry.wkbType() == QGis.WKBLineString:
-                        print("TODO: allow moving links?")
-
+                        link = all_links[name]
+                        if link:
+                            for node_name in [link.inlet_node, link.outlet_node]:
+                                if node_name not in moved_coordinates and node_name in all_nodes:
+                                    node = all_nodes[node_name]
+                                    node.x = float(node.x) + dx
+                                    node.y = float(node.y) + dy
+                                    section_field_name = self.session.section_types[type(node)]
+                                    try:
+                                        node_layer = getattr(self.session.model_layers, section_field_name)
+                                        node_layer.startEditing()
+                                        feature = self.session.map_widget.find_feature(node_layer, node.name)
+                                        node_layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(QgsPoint(node.x, node.y)))
+                                        node_layer.commitChanges()
+                                        node_layer.updateExtents()
+                                        node_layer.triggerRepaint()
+                                    except Exception as ex1:
+                                        print("Skipping GIS move of node " + node_name + " for link: " + name + ": " +\
+                                              str(ex1) + '\n' + str(traceback.print_exc()))
+                                    moved_coordinates.append(node)
                 if undo:
                     for link, link_layer, feature in self.moved_links:
                         link_layer.startEditing()
@@ -329,7 +350,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         # TODO: undo any edits to vertices in project data structure?
                     self.moved_links = []
                 else:
-                    self.update_affected_links(undo, moved_coordinates, all_links)
+                    if moved_coordinates:
+                        self.update_affected_links(undo, moved_coordinates, all_links)
 
                 self.layer.commitChanges()
                 self.layer.updateExtents()

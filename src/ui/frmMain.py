@@ -46,22 +46,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.plugins = self.get_plugins()
         self.populate_plugins_menu()
         self.time_widget.setVisible(False)
-        QtCore.QObject.connect(self.actionStdNewProjectMenu, QtCore.SIGNAL('triggered()'), self.new_project)
-        QtCore.QObject.connect(self.actionStdNewProject, QtCore.SIGNAL('triggered()'), self.new_project)
-        QtCore.QObject.connect(self.actionStdOpenProjMenu, QtCore.SIGNAL('triggered()'), self.open_project)
-        QtCore.QObject.connect(self.actionStdOpenProj, QtCore.SIGNAL('triggered()'), self.open_project)
-        QtCore.QObject.connect(self.actionStdExit, QtCore.SIGNAL('triggered()'), self.action_exit)
-        QtCore.QObject.connect(self.actionIPython, QtCore.SIGNAL('triggered()'), self.script_ipython)
-        QtCore.QObject.connect(self.actionExec, QtCore.SIGNAL('triggered()'), self.script_exec)
-        QtCore.QObject.connect(self.actionStdSave, QtCore.SIGNAL('triggered()'), self.save_project)
-        QtCore.QObject.connect(self.actionStdSaveMenu, QtCore.SIGNAL('triggered()'), self.save_project)
-        QtCore.QObject.connect(self.actionStdSave_As, QtCore.SIGNAL('triggered()'), self.save_project_as)
-        QtCore.QObject.connect(self.actionStdRun_Simulation, QtCore.SIGNAL('triggered()'), self.run_simulation)
-        QtCore.QObject.connect(self.actionRun_SimulationMenu, QtCore.SIGNAL('triggered()'), self.run_simulation)
-        QtCore.QObject.connect(self.actionStdProjCalibration_Data, QtCore.SIGNAL('triggered()'), self.calibration_data)
+        self.actionStdNewProjectMenu.triggered.connect(self.new_project)
+        self.actionStdNewProject.triggered.connect(self.new_project)
+        self.actionStdOpenProjMenu.triggered.connect(self.open_project)
+        self.actionStdOpenProj.triggered.connect(self.open_project)
+        self.actionStdExit.triggered.connect(self.action_exit)
+        self.actionIPython.triggered.connect(self.script_ipython)
+        self.actionExec.triggered.connect(self.script_exec)
+        self.actionStdSave.triggered.connect(self.save_project)
+        self.actionStdSaveMenu.triggered.connect(self.save_project)
+        self.actionStdSave_As.triggered.connect(self.save_project_as)
+        self.actionStdRun_Simulation.triggered.connect(self.run_simulation)
+        self.actionRun_SimulationMenu.triggered.connect(self.run_simulation)
+        self.actionStdProjCalibration_Data.triggered.connect(self.calibration_data)
         self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
-        if hasattr(self, "actionSave_Map_As_Image"):
-            self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
+        self.actionStdPrint.triggered.connect(self.saveMapAsImage)
+        self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -119,6 +119,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
                             QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
                             QtCore.QObject.connect(self.actionObjAddGage, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionObjAddJunc, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionObjAddLabel, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionObjAddOutfall, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionObjAddStorage, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            QtCore.QObject.connect(self.actionObjAddTank, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
 
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -782,9 +787,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.selecting.release()
 
     def new_project(self):
-        self.project = self.project_type()
-        self.setWindowTitle(self.model + " - New")
-        self.project.file_name = "New.inp"
+        self.open_project_quiet(None, None, None)
 
     def open_project(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
@@ -796,19 +799,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         self.project = self.project_type()
-        try:
-            project_reader = self.project_reader_type()
-            project_reader.read_file(self.project, file_name)
-            path_only, file_only = os.path.split(file_name)
-            self.setWindowTitle(self.model + " - " + file_only)
-            if path_only != directory:
-                gui_settings.setValue("ProjectDir", path_only)
-                gui_settings.sync()
-                del gui_settings
-        except Exception as ex:
-            print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
-            self.project = ProjectBase()
-            self.setWindowTitle(self.model)
+        if file_name:
+            try:
+                project_reader = self.project_reader_type()
+                project_reader.read_file(self.project, file_name)
+                path_only, file_only = os.path.split(file_name)
+                self.setWindowTitle(self.model + " - " + file_only)
+                if path_only != directory:
+                    gui_settings.setValue("ProjectDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except Exception as ex:
+                print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
+                self.project = ProjectBase()
+                self.setWindowTitle(self.model)
+        else:
+            self.project.file_name = "New.inp"
+            self.setWindowTitle(self.model + " - New")
 
     def save_project(self, file_name=None):
         if not file_name:

@@ -129,6 +129,15 @@ try:
                         self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
                         self.addPointTool.setAction(self.session.actionObjAddGage)
                         self.canvas.setMapTool(self.addPointTool)
+
+            # TODO: also check action_obj for which one is active
+            # actionObjAddGage
+            # actionObjAddJunc
+            # actionObjAddLabel
+            # actionObjAddOutfall
+            # actionObjAddStorage
+            # actionObjAddTank
+
             else:
                 QApplication.restoreOverrideCursor()
                 self.canvas.unsetMapTool(self.addPointTool)

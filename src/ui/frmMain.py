@@ -302,8 +302,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 all_nodes = self.session.project.all_coordinates()
                 all_links = self.session.project.all_links()
                 moved_coordinates = IndexedList([], ['name'])
-                if hasattr(self.session.project, "raingages"):
-                    all_nodes.extend(self.session.project.raingages.value)
+                for section_field_name in ["labels", "raingages"]:
+                    if hasattr(self.session.project, section_field_name):
+                        all_nodes.extend(getattr(self.session.project, section_field_name).value)
                 if undo:
                     dx = -self.dx
                     dy = -self.dy

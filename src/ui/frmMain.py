@@ -651,7 +651,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         #if selected_items:
                         args.append(selected_items)
                         args.append(new_item)
-                        edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                        try:
+                            edit_form = tree_item[1](*args)  # Create editor with first argument self, other args from tree_item
+                        except:
+                            args = args[0:-2]
+                            edit_form = tree_item[1](*args)
                         edit_form.helper = HelpHandler(edit_form)
                         break
                     return None

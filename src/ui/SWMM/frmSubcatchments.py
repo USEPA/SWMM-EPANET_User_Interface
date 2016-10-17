@@ -160,7 +160,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 groundwater_section.value = []
                 groundwater_section.value.append(new_item)
                 edit_these.extend(groundwater_section.value)
-            editor = frmGroundwaterFlow(self, edit_these, "SWMM Groundwater Flow Editor")
+            editor = frmGroundwaterFlow(self, edit_these, None, "SWMM Groundwater Flow Editor")
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -187,7 +187,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                         new_item = CurveNumberInfiltration()
                     infiltration_section.value.append(new_item)
                 edit_these.extend(infiltration_section.value)
-            editor = frmInfiltration(self, edit_these, "SWMM Infiltration Editor")
+            editor = frmInfiltration(self, edit_these, None, "SWMM Infiltration Editor")
             editor.show()
         return local_show
 

@@ -306,7 +306,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 moved_coordinates.append(node)
 
                     elif geometry.wkbType() == QGis.WKBPolygon:
-                        print("TODO: allow moving polygons")
+                        if undo:
+                            new_geom = geometry
+                        else:
+                            new_pts = []
+                            for pt in geometry.asPolygon()[0]:
+                                new_pts.append(QgsPoint(pt.x() + self.move_distance.x(),
+                                                        pt.y() + self.move_distance.y()))
+                            new_geom = QgsGeometry.fromPolygon([new_pts])
+                        self.layer.changeGeometry(feature.id(), new_geom)
+
                     elif geometry.wkbType() == QGis.WKBLineString:
                         print("TODO: allow moving links?")
 
@@ -327,7 +336,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
             except Exception as ex:
-                print("_MoveSelectedItems: " + str(ex))
+                print("_MoveSelectedItems: " + str(ex) + '\n' + str(traceback.print_exc()))
             try:
                 self.session.map_widget.selectTool.build_spatial_index()
             except:

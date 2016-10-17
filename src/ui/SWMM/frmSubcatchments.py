@@ -24,8 +24,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1
-        self.project_section = self.project.find_section(self.SECTION_NAME)
-        self.project_section = self.project.find_section(self.SECTION_NAME)
+        self.project_section = self.project.subcatchments
         if self.project_section and \
                 isinstance(self.project_section.value, list) and \
                 len(self.project_section.value) > 0 and \
@@ -41,7 +40,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for snowpacks, show available snowpacks

@@ -20,7 +20,7 @@ class frmGenericPropertyEditor(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         elif self.project_section and \
                 isinstance(self.project_section.value, list) and \
                 len(self.project_section.value) > 0 and \
-                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+                (not hasattr(self, "SECTION_TYPE") or isinstance(self.project_section.value[0], self.SECTION_TYPE)):
 
             if edit_these:  # Edit only specified item(s) in section
                 if isinstance(edit_these[0], basestring):  # Translate list from names to objects

@@ -84,7 +84,7 @@ class PropertyEditorBackend:
                                             # TODO: make undoable edit
                                             setattr(edit_this, meta_item.attribute, new_value)
                                     except Exception as ex:
-                                        print("Could not set " + str(meta_item.attribute) + " to " + str(new_value))
+                                        print("Could not set " + str(meta_item.label) + " to " + str(new_value))
             column += 1
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)

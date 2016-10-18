@@ -687,7 +687,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         for value in section.value:
                             if value.name in selected_items:
                                 edit_these.append(value)
-            edit_form = frmGenericPropertyEditor(self, edit_these, self.model + ' ' + search_for + " Editor")
+            edit_form = frmGenericPropertyEditor(self, section, edit_these, new_item, self.model + ' ' + search_for + " Editor")
         else:
             for tree_item in tree_list:
                 # tree_item is a list: ["name in tree control", editor_form_type, [optional editor form arguments]]

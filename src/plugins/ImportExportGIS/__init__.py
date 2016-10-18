@@ -5,10 +5,10 @@ try:
     from PyQt4.QtGui import QMessageBox
     from core.coordinate import Coordinate
     from core.epanet.hydraulics.link import Pipe
-    import plugins.EpanetGIS.import_export
+    import plugins.ImportExportGIS.import_export as import_export
     import os
 
-    plugin_name = "EpanetGIS"
+    plugin_name = "ImportExportGIS"
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
                "Import from GIS": 2}
@@ -24,7 +24,7 @@ try:
             result = "Project is not open"
         else:
             try:
-                gui_settings = QtCore.QSettings("EPANET", "GUI")
+                gui_settings = QtCore.QSettings(session.model, "GUI")
                 directory = gui_settings.value("GISPath", os.path.dirname(session.project.file_name))
 
                 if choice == 1:
@@ -43,9 +43,9 @@ try:
                         gui_settings.sync()
 
                     if choice == 1:
-                        result = plugins.EpanetGIS.import_export.export_to_gis(session, file_name)
+                        result = import_export.export_to_gis(session, file_name)
                     elif choice == 2:
-                        result = plugins.EpanetGIS.import_export.import_from_gis(session, file_name)
+                        result = import_export.import_from_gis(session, file_name)
                 else:
                     result = "Selected operation not yet implemented."
                 del gui_settings

@@ -1,7 +1,7 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
-from core.swmm.hydraulics.node import DirectInflow, DirectInflowType, RDIInflow
+from core.swmm.hydraulics.node import DirectInflow, DirectInflowType, RDIInflow, DryWeatherInflow
 from core.swmm.quality import ConcentrationUnitLabels
 from ui.SWMM.frmInflowsDesigner import Ui_frmInflows
 from ui.SWMM.frmTimeseries import frmTimeseries
@@ -270,7 +270,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
             if not found:
                 # have to add this dry inflow to the list
-                new_inflow = self._main_form.project.DryWeatherInflow()
+                new_inflow = DryWeatherInflow()
                 new_inflow.node = self.node_name
                 new_inflow.constituent = pollutant
                 new_inflow.average = self.local_average_list[index]

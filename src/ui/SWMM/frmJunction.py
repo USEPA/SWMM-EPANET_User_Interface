@@ -18,6 +18,7 @@ class frmJunction(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, session, session.project.junctions,
                                           edit_these, new_item, "SWMM Junction Editor")
         self.help_topic = "swmm/src/src/junctionproperties.htm"
+        self.session = session
         self.refresh_column = -1
         for column in range(0, self.tblGeneric.columnCount()):
             # also set special text plus button cells
@@ -68,7 +69,7 @@ class frmJunction(frmGenericPropertyEditor):
 
     def make_show_inflows(self, column):
         def local_show():
-            editor = frmInflows(self._main_form, str(self.tblGeneric.item(0, column).text()))
+            editor = frmInflows(self.session, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -76,7 +77,7 @@ class frmJunction(frmGenericPropertyEditor):
 
     def make_show_treatments(self, column):
         def local_show():
-            editor = frmTreatment(self._main_form, str(self.tblGeneric.item(0, column).text()))
+            editor = frmTreatment(self.session, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column

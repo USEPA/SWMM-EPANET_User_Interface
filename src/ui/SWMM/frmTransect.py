@@ -59,7 +59,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
         self.editing_item.overbank_left = self.txtLeftSta.text()
         self.editing_item.overbank_right = self.txtRightSta.text()
         self.editing_item.stations = []
-        for row in range(self.tblself.editing_item.rowCount()):
+        for row in range(self.tblTransect.rowCount()):
             if self.tblTransect.item(row,1):
                 x = self.tblTransect.item(row,1).text()
                 if len(x) > 0:
@@ -68,7 +68,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
                         if len(y) > 0:
                             self.editing_item.stations.append((x,y))
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
-            self.main_form.add_item(self.new_item)
+            self._main_form.add_item(self.new_item)
         else:
             pass
             # TODO: self._main_form.edited_?

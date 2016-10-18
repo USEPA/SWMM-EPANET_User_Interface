@@ -15,7 +15,7 @@ class frmDividers(frmGenericPropertyEditor):
     SECTION_NAME = "[DIVIDERS]"
     SECTION_TYPE = Divider
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/dividerproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -36,7 +36,7 @@ class frmDividers(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Dividers Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item, "SWMM Dividers Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for curves, show available curves

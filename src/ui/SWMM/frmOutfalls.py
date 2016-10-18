@@ -15,7 +15,7 @@ class frmOutfalls(frmGenericPropertyEditor):
     SECTION_NAME = "[OUTFALLS]"
     SECTION_TYPE = Outfall
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/outfallproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -36,7 +36,7 @@ class frmOutfalls(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM Outfalls Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item, "SWMM Outfalls Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for tide gate, show true/false

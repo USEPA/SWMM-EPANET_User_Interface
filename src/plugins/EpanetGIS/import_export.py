@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
@@ -36,6 +37,11 @@ junctions_model_attributes = [
 junctions_gis_attributes = [
     "element_type", "id", "elevation", "base_demand_flow", "demand_pattern"]
 
+labels_model_attributes = [
+    "element_type", "name", "anchor_name", "meter_type", "meter_name", "font", "size", "bold", "italic"]
+labels_gis_attributes = [
+    "element_type", "id", "anchor_name", "meter_type", "meter_name", "font", "size", "bold", "italic"]
+
 
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
@@ -63,7 +69,7 @@ def export_to_gis(session, file_name):
 
     all_gis_attributes = pipe_gis_attributes
     if one_file:  # if putting all types in one file, need all attributes to include ones from all layers
-        for attributes in (pumps_gis_attributes, valves_gis_attributes, junctions_gis_attributes):
+        for attributes in (pumps_gis_attributes, valves_gis_attributes, junctions_gis_attributes, labels_gis_attributes):
             for attribute in attributes:
                 if attribute and attribute not in all_gis_attributes:
                     all_gis_attributes.append(attribute)
@@ -112,12 +118,26 @@ def export_to_gis(session, file_name):
         layer = None
         all_gis_attributes = junctions_gis_attributes
 
-    layer = make_points_layer(coordinates, session.project.junctions.value,
+    layer = make_points_layer(session.project.junctions.value,
                               junctions_model_attributes, junctions_gis_attributes, all_gis_attributes, layer)
     if layer:
         layer_count += 1
         if not one_file:
             layer_file_name = path_file + "_junctions" + extension
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
+            print("saved " + layer_file_name)
+
+    # Export Labels
+    if not one_file:
+        layer = None
+        all_gis_attributes = labels_gis_attributes
+
+    layer = make_points_layer(session.project.labels.value,
+                              labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer)
+    if layer:
+        layer_count += 1
+        if not one_file:
+            layer_file_name = path_file + "_labels" + extension
             QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
             print("saved " + layer_file_name)
 
@@ -181,26 +201,35 @@ def gis_values_from_model(model_object, model_attributes, gis_attributes, all_gi
                 if model_attribute == "element_type":
                     values.append(type(model_object).__name__)
                 else:
-                    values.append(getattr(model_object, model_attribute, ''))
+                    attr_value = getattr(model_object, model_attribute, '')
+                    if isinstance(attr_value, Enum):
+                        attr_value = attr_value.name.replace('_', '-')
+                    if isinstance(attr_value, bool):
+                        if attr_value:
+                            attr_value = "YES"
+                        else:
+                            attr_value = "NO"
+                    if isinstance(attr_value, list):
+                        attr_value = ' '.join(attr_value)
+                    values.append(attr_value)
             except:
                 values.append(None)
     return values
 
 
-def make_points_layer(coordinates, model_points, model_attributes, gis_attributes, all_gis_attributes, layer):
+def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []
     # Receivers = as in the above example 'Receivers' is a list of results
     for model_point in model_points:
         try:
-            coordinate_pair = coordinates[model_point.name]
             # add a feature
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y))))
+            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(model_point.x), float(model_point.y))))
             values = gis_values_from_model(model_point, model_attributes, gis_attributes, all_gis_attributes)
             feature.setAttributes(values)
             features.append(feature)
-        except Exception as exLink:
-            print "Skipping point " + model_point.name + ": " + str(exLink)
+        except Exception as exPoint:
+            print "Skipping point " + model_point.name + ": " + str(exPoint)
 
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)

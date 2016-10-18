@@ -234,7 +234,6 @@ class frmMainSWMM(frmMain):
                            tree_curves_TidalCurves)
 
     def __init__(self, q_application):
-        frmMain.__init__(self, q_application)
         self.model = "SWMM"
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
@@ -246,6 +245,7 @@ class frmMainSWMM(frmMain):
         self.project_writer_type = ProjectWriter
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
+        frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
         self.tree_types = {
             self.tree_hydrology_Subcatchments[0]: Subcatchment,

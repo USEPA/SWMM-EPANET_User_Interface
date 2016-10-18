@@ -37,9 +37,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.q_application = q_application
         self._forms = []
         """List of editor windows used during this session, kept here so they are not automatically closed."""
-        self.model = "Not Set"
-        self.project_type = ProjectBase
-        self.project = None
+
+        # Make sure all required properties have already been set by subclass
+        for prop_name in ["model", "project_type", "project"]:
+            if not hasattr(self, prop_name):
+                # set these here just so auto-completion recognizes them as fields of this class
+                self.model = "Not Set"
+                self.project_type = ProjectBase
+                self.project = None
+                raise Exception(prop_name + " must be set by subclass before calling frmMain.__init__")
         self.obj_tree = None
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
@@ -110,20 +116,29 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
-                            QtCore.QObject.connect(self.actionAdd_Vector, QtCore.SIGNAL('triggered()'), self.map_addvector)
-                            QtCore.QObject.connect(self.actionAdd_Raster, QtCore.SIGNAL('triggered()'), self.map_addraster)
-                            QtCore.QObject.connect(self.actionPan, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionMapSelectObj, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionZoom_in, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionZoom_out, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionZoom_full, QtCore.SIGNAL('triggered()'), self.zoomfull)
-                            QtCore.QObject.connect(self.actionAdd_Feature, QtCore.SIGNAL('triggered()'), self.map_addfeature)
-                            QtCore.QObject.connect(self.actionObjAddGage, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionObjAddJunc, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionObjAddLabel, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionObjAddOutfall, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionObjAddStorage, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
-                            QtCore.QObject.connect(self.actionObjAddTank, QtCore.SIGNAL('triggered()'), self.setQgsMapTool)
+                            self.actionAdd_Vector.triggered.connect(self.map_addvector)
+                            self.actionAdd_Raster.triggered.connect(self.map_addraster)
+                            self.actionPan.triggered.connect(self.setQgsMapTool)
+                            self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
+                            self.actionZoom_in.triggered.connect(self.setQgsMapTool)
+                            self.actionZoom_out.triggered.connect(self.setQgsMapTool)
+                            self.actionZoom_full.triggered.connect(self.zoomfull)
+                            self.actionAdd_Feature.triggered.connect(self.map_addfeature)
+
+                            self.add_point_tools = [[self.actionObjAddGage, "raingages"],
+                                                    [self.actionObjAddJunc, "junctions"],
+                                                    [self.actionObjAddLabel, "labels"],
+                                                    [self.actionObjAddOutfall, "outfalls"],
+                                                    [self.actionObjAddDivider, "dividers"],
+                                                    [self.actionObjAddStorage, "storage"],
+                                                    [self.actionObjAddTank, "tanks"]]
+
+                            for act, name in self.add_point_tools:
+                                if hasattr(self.project, name):
+                                    act.setVisible(True)
+                                    act.triggered.connect(self.setQgsMapTool)
+                                else:
+                                    act.setVisible(False)
 
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -150,7 +165,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_undo.setToolTip(transl8("frmMain", "Undo the most recent edit", None))
         self.action_undo.setShortcut(QKeySequence("Ctrl+Z"))
         self.menuEdit.addAction(self.action_undo)
-        QtCore.QObject.connect(self.action_undo, QtCore.SIGNAL('triggered()'), self.undo)
+        self.action_undo.triggered.connect(self.undo)
 
         self.action_redo = QtGui.QAction(self)
         self.action_redo.setObjectName("actionRedo")
@@ -158,7 +173,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.setToolTip(transl8("frmMain", "Redo the most recent Undo", None) )
         self.action_redo.setShortcut(QKeySequence("Ctrl+Y"))
         self.menuEdit.addAction(self.action_redo)
-        QtCore.QObject.connect(self.action_redo, QtCore.SIGNAL('triggered()'), self.redo)
+        self.action_redo.triggered.connect(self.redo)
 
     def tabProjMapChanged(self, index):
         if index == 1:
@@ -420,10 +435,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.undo_stack.push(self._MoveSelectedItems(self, layer, dx, dy))
 
     def new_item_name(self, item_type):
+        """ Generate a name for a new item.
+            Start with a default of the number of items already in this section plus one (converted to a string).
+            Next, search all sections and increase the number as needed if something already has that name. """
         section = getattr(self.project, self.section_types[item_type])
-        number = 1
-        while str(number) in section.value:
+        number = len(section.value)
+        found = True
+        while found:
             number += 1
+            new_name = str(number)
+            found = False
+            for obj_type, section_name in self.section_types.iteritems():
+                section = getattr(self.project, section_name)
+                if new_name in section.value:
+                    found = True
+                    break
         return str(number)
 
     def currentTimeChanged(self, slider_val):
@@ -435,14 +461,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.setZoomOutMode()
         self.map_widget.setPanMode()
         self.map_widget.setSelectMode()
-        for act, name in [(self.actionObjAddGage, "raingages"),
-                          (self.actionObjAddJunc, "junctions")
-                          (self.actionObjAddLabel, "labels")
-                          (self.actionObjAddOutfall, "outfalls")
-                          (self.actionObjAddStorage, "storage")
-                          (self.actionObjAddTank, "tanks")]:
-            if act.isVisible:
-                self.map_widget.setAddPointMode(act, name)
+        for act, name in self.add_point_tools:
+            self.map_widget.setAddPointMode(act, name)
 
     def zoomfull(self):
         self.map_widget.zoomfull()
@@ -531,7 +551,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 lnew_action = QtGui.QAction(p['name'], menu)
                 lnew_action.setCheckable(True)
                 menu.addAction(lnew_action)
-                QtCore.QObject.connect(lnew_action, QtCore.SIGNAL('triggered()'), self.run_tier1_plugin)
+                lnew_action.triggered.connect(self.run_tier1_plugin)
 
     def get_plugins(self):
         found_plugins = []
@@ -584,7 +604,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             new_action.setData(plugin.plugin_name + '|' + m)
             new_action.setCheckable(False)
             # new_action.triggered.connect(self.run_plugin_custom)
-            QtCore.QObject.connect(new_action, QtCore.SIGNAL('triggered()'), self.run_plugin_custom)
+            new_action.triggered.connect(self.run_plugin_custom)
             new_custom_menu.addAction(new_action)
 
     def find_plugin_main_menu(self, plugin):
@@ -766,20 +786,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def select_named_items(self, layer, selected_list):
         if self.selecting.acquire(False):
             try:
-                if selected_list:
-                    if layer:
-                        try:
+                if layer:
+                    try:
+                        layer_name = layer.name()
+                        already_selected_item = self.obj_tree.currentItem()
+                        if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                            tree_node = self.obj_tree.find_tree_item(layer_name)
+                            if tree_node:
+                                self.obj_tree.setCurrentItem(tree_node)
+
+                        if selected_list:
                             qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
                             layer.setSelectedFeatures(qgis_ids)
 
-                            layer_name = layer.name()
-                            already_selected_item = self.obj_tree.currentItem()
-                            if already_selected_item is None or already_selected_item.text(0) != layer_name:
-                                tree_node = self.obj_tree.find_tree_item(layer_name)
-                                if tree_node:
-                                    self.obj_tree.setCurrentItem(tree_node)
-                        except Exception as ex:
-                            print("Did not find layer in tree:\n" + str(ex))
+                    except Exception as ex:
+                        print("Did not find layer in tree:\n" + str(ex))
+
+                if selected_list:
                     for i in range(self.listViewObjects.count()):
                         item = self.listViewObjects.item(i)
                         if item.text() in selected_list:

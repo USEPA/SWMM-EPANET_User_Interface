@@ -126,12 +126,18 @@ try:
                 self.session.select_named_items(layer, None)
                 for obj_type, name in self.session.section_types.iteritems():
                     if name == layer_name:
-                        self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
+                        if self.addPointTool:
+                            QApplication.restoreOverrideCursor()
+                            self.canvas.unsetMapTool(self.addPointTool)
+
+                        self.addPointTool = AddPointTool(self.canvas, layer, layer_name, obj_type, self.session)
                         self.addPointTool.setAction(action_obj)
                         self.canvas.setMapTool(self.addPointTool)
-            else:
+
+            elif self.addPointTool and self.addPointTool.layer_name == layer_name:
                 QApplication.restoreOverrideCursor()
                 self.canvas.unsetMapTool(self.addPointTool)
+                self.addPointTool = None
 
         def setAddFeatureMode(self):
             """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
@@ -658,10 +664,11 @@ try:
 
 
     class AddPointTool(QgsMapTool):
-        def __init__(self, canvas, layer, object_type, session):
+        def __init__(self, canvas, layer, layer_name, object_type, session):
             QgsMapTool.__init__(self, canvas)
             self.canvas = canvas
             self.layer = layer
+            self.layer_name = layer_name
             self.object_type = object_type
             self.session = session
             # self.setCursor(Qt.CrossCursor)

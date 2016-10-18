@@ -115,7 +115,6 @@ class frmMainEPANET(frmMain):
                       tree_Controls]
 
     def __init__(self, q_application):
-        frmMain.__init__(self, q_application)
         self.model = "EPANET"
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
@@ -127,6 +126,7 @@ class frmMainEPANET(frmMain):
         self.project_writer_type = ProjectWriter
         self.project = Project()
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
+        frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
         self.tree_types = {
             self.tree_Patterns[0]: Pattern,

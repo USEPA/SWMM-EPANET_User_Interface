@@ -10,7 +10,7 @@ class frmOutlets(frmGenericPropertyEditor):
     SECTION_NAME = "[OUTLETS]"
     SECTION_TYPE = Outlet
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/outletproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -31,17 +31,18 @@ class frmOutlets(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item,
+                                          "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
             combobox = QtGui.QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
-            if edit_these[column].flap_gate == 'True':
-                combobox.setCurrentIndex(0)
-            else:
-                combobox.setCurrentIndex(1)
+            combobox.setCurrentIndex(1)
+            if len(edit_these) > 0:
+                if edit_these[column].flap_gate == 'True' or edit_these[column].flap_gate == True:
+                    combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(6, column, combobox)
             # tabular curve name
             curves_section = self.project.find_section("CURVES")
@@ -52,8 +53,9 @@ class frmOutlets(frmGenericPropertyEditor):
             for value in curves_list:
                 if value.curve_type == CurveType.RATING:
                     combobox.addItem(value.name)
-                    if edit_these[column].rating_curve == value.name:
-                        selected_index = int(combobox.count())-1
+                    if len(edit_these) > 0:
+                        if edit_these[column].rating_curve == value.name:
+                            selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(10, column, combobox)
 

@@ -11,7 +11,7 @@ class frmConduits(frmGenericPropertyEditor):
     SECTION_NAME = "[CONDUITS]"
     SECTION_TYPE = Conduit
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/conduitproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -32,7 +32,7 @@ class frmConduits(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
@@ -40,10 +40,10 @@ class frmConduits(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
-            # if edit_these[column].flap_gate == 'True':
-            #    combobox.setCurrentIndex(0)
-            # else:
             combobox.setCurrentIndex(1)
+            if len(edit_these) > 0:
+                if edit_these[column].flap_gate == 'True' or edit_these[column].flap_gate == True:
+                    combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(17, column, combobox)
             # also set special text plus button cells
             self.set_cross_section_cell(column)

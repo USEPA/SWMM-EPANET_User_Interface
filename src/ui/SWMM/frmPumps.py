@@ -11,7 +11,7 @@ class frmPumps(frmGenericPropertyEditor):
     SECTION_NAME = "[PUMPS]"
     SECTION_TYPE = Pump
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         self.help_topic = "swmm/src/src/pumpproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
@@ -32,27 +32,7 @@ class frmPumps(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        self.set_from(self.project, edit_these)
-
-    def set_from(self, project, edit_these):
-        self.project = project
-        self.project_section = self.project.pumps
-
-        if self.project_section and isinstance(self.project_section.value, list) and \
-                        len(self.project_section.value) > 0 and \
-                isinstance(self.project_section.value[0], self.SECTION_TYPE):
-
-            if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
-                    edit_names = edit_these
-                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
-                    edit_these = edit_objects
-
-            else:  # Edit all items in section
-                edit_these = []
-                edit_these.extend(self.project_section.value)
-
-        frmGenericPropertyEditor.__init__(self, self._main_form, edit_these,
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
@@ -65,18 +45,19 @@ class frmPumps(frmGenericPropertyEditor):
             for curve in curves_list:
                 if curve.curve_type in [CurveType.PUMP1, CurveType.PUMP2, CurveType.PUMP3, CurveType.PUMP4]:
                     combobox.addItem(curve.name)
-                    if edit_these[column].pump_curve == curve.name:
-                        selected_index = int(combobox.count())-1
+                    if len(edit_these) > 0:
+                        if edit_these[column].pump_curve == curve.name:
+                            selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(5, column, combobox)
             # for initial status, show on/off
             combobox = QtGui.QComboBox()
             combobox.addItem('OFF')
             combobox.addItem('ON')
-            if edit_these[column].initial_status == 'ON':
-                combobox.setCurrentIndex(1)
-            else:
-                combobox.setCurrentIndex(0)
+            combobox.setCurrentIndex(0)
+            if len(edit_these) > 0:
+                if edit_these[column].initial_status == 'ON':
+                    combobox.setCurrentIndex(1)
             self.tblGeneric.setCellWidget(6, column, combobox)
 
         self.installEventFilter(self)

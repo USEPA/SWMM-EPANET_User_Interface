@@ -26,7 +26,7 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
 
     def set_from(self, transect):
         if not isinstance(transect, Transect):
-            transect = self.section[transect]
+            transect = self.section.value[transect]
         if isinstance(transect, Transect):
             self.editing_item = transect
             self.txtName.setText(transect.name)

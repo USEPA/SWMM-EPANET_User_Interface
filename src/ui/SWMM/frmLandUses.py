@@ -53,7 +53,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
 
     def set_from(self, land_use):
         if not isinstance(land_use, Landuse):
-            land_use = self.section[land_use]
+            land_use = self.section.value[land_use]
         if isinstance(land_use, Landuse):
             # this is the land_use we want to edit
             self.editing_item = land_use

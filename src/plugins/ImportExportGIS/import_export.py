@@ -3,7 +3,9 @@ from enum import Enum
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
-from core.epanet.hydraulics.node import Junction
+from core.epanet.hydraulics.node import Junction as EpanetJunction
+from core.swmm.hydraulics.node import Junction as SwmmJunction
+from core.swmm.hydraulics.link import Conduit
 from core.epanet.hydraulics.link import Pipe, Pump, Valve
 
 """Export (save) model elements as GIS data or Import (read) model elements from existing GIS data."""
@@ -330,7 +332,19 @@ def import_from_gis(session, file_name):
     project = session.project
     num_existing_junctions = len(project.junctions.value)
 
-    section = project.pipes
+    if session.model == "EPANET":
+        section = project.pipes
+        link_type = Pipe
+        model_attributes = pipe_model_attributes
+        gis_attributes = pipe_gis_attributes
+        junction_type = EpanetJunction
+    else:
+        section = project.conduits
+        link_type = Conduit
+        model_attributes = conduit_model_attributes
+        gis_attributes = conduit_gis_attributes
+        junction_type = SwmmJunction
+
     if len(section.value) > 0:
         msg = QMessageBox()
         msg.setText("Discard " + str(len(section.value)) + " links already in model before import?")
@@ -345,20 +359,25 @@ def import_from_gis(session, file_name):
         elif choice == QMessageBox.Cancel:
             return
 
-    result = import_links(project, section.value, file_name, pipe_model_attributes, pipe_gis_attributes, Pipe)
+    result = import_links(project, section.value, file_name, model_attributes, gis_attributes, link_type, junction_type)
     if len(project.junctions.value) > num_existing_junctions:
         session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
-    session.model_layers.pipes = session.map_widget.addLinks(project.all_coordinates(),
-                                                             section.value, "Pipes", QtGui.QColor('gray'), 3)
+
+    if session.model == "EPANET":
+        session.model_layers.pipes = session.map_widget.addLinks(project.all_coordinates(),
+                                                                 section.value, "Pipes", QtGui.QColor('gray'), 3)
+    else:
+        session.model_layers.conduits = session.map_widget.addLinks(project.all_coordinates(),
+                                                                    section.value, "Conduits", QtGui.QColor('gray'), 3.5)
+    session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return result
 
 
-def import_links(project, links, file_name, model_attributes, gis_attributes, model_type, type_field='', type_value=''):
+def import_links(project, links, file_name, model_attributes, gis_attributes, model_type, junction_type):
     """ Read GIS vector layer in file_name into links list.
     Args:
-        project: EPANET project to import into, used for access to its coordinates attribute
-                 which is updated with the newly imported values.
+        project: SWMM or EPANET project to import into, used for access to its all_coordinates method and junctions
         links: list of project objects which non-geographic properties are imported into.
         file_name: GIS file to read.
         model_attributes: attribute names of the model objects in "links" list.
@@ -394,7 +413,7 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
                             try:     # Remove this coordinate if it already exists
                                 this_coord = coordinates[attr_value]
                             except:  # do not already have this coordinate, create it
-                                this_coord = Junction()
+                                this_coord = junction_type()
                                 this_coord.name = attr_value
                                 project.junctions.value.append(this_coord)
                                 coordinates.append(this_coord)

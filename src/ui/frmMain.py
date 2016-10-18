@@ -435,7 +435,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.setZoomOutMode()
         self.map_widget.setPanMode()
         self.map_widget.setSelectMode()
-        self.map_widget.setAddGageMode()
+        for act, name in [(self.actionObjAddGage, "raingages"),
+                          (self.actionObjAddJunc, "junctions")
+                          (self.actionObjAddLabel, "labels")
+                          (self.actionObjAddOutfall, "outfalls")
+                          (self.actionObjAddStorage, "storage")
+                          (self.actionObjAddTank, "tanks")]:
+            if act.isVisible:
+                self.map_widget.setAddPointMode(act, name)
 
     def zoomfull(self):
         self.map_widget.zoomfull()

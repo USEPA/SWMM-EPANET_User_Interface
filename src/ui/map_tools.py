@@ -125,25 +125,13 @@ try:
                 layer = getattr(self.session.model_layers, layer_name)
                 self.session.select_named_items(layer, None)
                 for obj_type, name in self.session.section_types.iteritems():
-                    if name == "raingages":
+                    if name == layer_name:
                         self.addPointTool = AddPointTool(self.canvas, layer, obj_type, self.session)
-                        self.addPointTool.setAction(self.session.actionObjAddGage)
+                        self.addPointTool.setAction(action_obj)
                         self.canvas.setMapTool(self.addPointTool)
-
-            # TODO: also check action_obj for which one is active
-            # actionObjAddGage
-            # actionObjAddJunc
-            # actionObjAddLabel
-            # actionObjAddOutfall
-            # actionObjAddStorage
-            # actionObjAddTank
-
             else:
                 QApplication.restoreOverrideCursor()
                 self.canvas.unsetMapTool(self.addPointTool)
-
-        def setAddGageMode(self):
-            self.setAddPointMode(self.session.actionObjAddGage, "raingages")
 
         def setAddFeatureMode(self):
             """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""

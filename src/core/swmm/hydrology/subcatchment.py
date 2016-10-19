@@ -1,5 +1,5 @@
 from enum import Enum
-from core.coordinate import Coordinate
+from core.coordinate import Coordinate, Polygon
 from core.project_base import Section
 from core.metadata import Metadata
 from core.swmm.hydrology.raingage import RainGage
@@ -15,7 +15,7 @@ class Routing(Enum):
     OUTLET = 3
 
 
-class Subcatchment(Section):
+class Subcatchment(Section, Polygon):
     """Subcatchment geometry, location, parameters, and time-series data"""
 
 
@@ -50,16 +50,11 @@ class Subcatchment(Section):
 
     def __init__(self):
         Section.__init__(self)
-
-        self.name = "NewSubcatchment"
-        """str: Unique user-assigned Subcatchment name."""
+        Polygon.__init__(self)
 
         self.centroid = Coordinate()
         """Coordinates: Subcatchment's centroid on the Study Area Map.
             If not set, the subcatchment will not appear on the map."""
-
-        self.polygon_vertices = []
-        """List[Coordinates]:the Subcatchment's polygon."""
 
         self.description = ''
         """str: Optional description of the Subcatchment."""

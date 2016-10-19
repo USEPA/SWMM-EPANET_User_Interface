@@ -1752,7 +1752,7 @@ class ReportReader(SectionReader):
                 if attr_name in Report.LISTS:
                     attr_value = attr_value.split()
                     existing_value = getattr(report, attr_name, Report.EMPTY_LIST)
-                    if existing_value != Report.EMPTY_LIST:  # include values already set on other lines
+                    if existing_value != Report.EMPTY_LIST and existing_value != Report.ALL_LIST:  # include values already set on other lines
                         attr_value = existing_value + attr_value
                 report.setattr_keep_type(attr_name, attr_value)
         return report

@@ -24,6 +24,7 @@ class Report(Section):
     LISTS = ("subcatchments", "nodes", "links", "lids")
 
     EMPTY_LIST = ["NONE"]
+    ALL_LIST = ["ALL"]
 
     def __init__(self):
         Section.__init__(self)

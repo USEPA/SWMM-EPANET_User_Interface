@@ -28,8 +28,7 @@ class SimpleReportTest(unittest.TestCase):
         assert my_report.subcatchments == ['NONE']
         assert my_report.nodes == ['NONE']
         assert my_report.links == ['NONE']
-        assert my_report.lids == Report.EMPTY_LIST
-        assert my_report.lids == ['NONE']
+        assert my_report.lids == []
         actual_text = ReportWriter.as_text(my_report)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
         self.assertTrue(match(actual_text, test_text), msg)

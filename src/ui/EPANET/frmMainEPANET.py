@@ -717,6 +717,14 @@ class ModelLayersEPANET(ModelLayers):
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)
+
+    'try out internationalization'
+    from ui.settings import internationalization
+    lang_setting = internationalization()
+    lang_setting.set_language()
+    if lang_setting.ui_language != "English":
+        application.installTranslator(lang_setting.ui_mTranslator)
+
     main_form = frmMainEPANET(application)
     main_form.show()
     sys.exit(application.exec_())

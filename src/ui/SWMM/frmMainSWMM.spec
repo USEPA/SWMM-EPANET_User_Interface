@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['frmMainSWMM.py'],
-             pathex=['C:\\Users\\Mark\\Anaconda2\\Lib\\site-packages\\PyQt4', 'C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\SWMM'],
+             pathex=['C:\\OSGeo4W64\apps\Python27\\Lib\\site-packages\\PyQt4', 'C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\SWMM'],
              binaries=None,
              datas=None,
              hiddenimports=[],

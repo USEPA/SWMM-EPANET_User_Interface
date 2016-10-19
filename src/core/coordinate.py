@@ -12,9 +12,34 @@ class Coordinate:
         self.y = ''
         """Y-Coordinate; North-South dimension"""
 
+
+class Link:
+    """A link between nodes in a model"""
+
+    def __init__(self):
+        self.name = ""
+        """Link Name/Identifier"""
+
+        self.description = ''
+        """Optional description of the Link"""
+
+        self.tag = ''
+        """Optional label used to categorize or classify the Link"""
+
+        self.inlet_node = ''
+        """Name of node on the inlet end of the Link"""
+
+        self.outlet_node = ''
+        """Name of node on the outlet end of the Link"""
+
+        self.vertices = []
+        """Intermediate vertices between inlet_node and outlet_node along the length of the link"""
+
+
 class Polygon:
     def __init__(self):
         self.name = ''
+        """Name/Identifier"""
 
         self.vertices = []
-        """List[Coordinates]:the Subcatchment's polygon."""
+        """Coordinates of each vertex of this polygon"""

@@ -125,24 +125,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_in.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
+                            self.actionAdd_Feature.setCheckable(False)
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
-                            self.actionObjAddSub.triggered.connect(self.setQgsMapTool)
 
-
-                            self.actionGroup_Obj.addAction(self.actionObjAddGage)
-                            self.actionGroup_Obj.addAction(self.actionObjAddSub)
-                            self.actionGroup_Obj.addAction(self.actionObjAddConduit)
-                            self.actionGroup_Obj.addAction(self.actionObjAddDivider)
-                            self.actionGroup_Obj.addAction(self.actionObjAddJunc)
-                            self.actionGroup_Obj.addAction(self.actionObjAddLabel)
-                            self.actionGroup_Obj.addAction(self.actionObjAddOrifice)
-                            self.actionGroup_Obj.addAction(self.actionObjAddOutfall)
-                            self.actionGroup_Obj.addAction(self.actionObjAddOutlet)
-                            self.actionGroup_Obj.addAction(self.actionObjAddPump)
-                            self.actionGroup_Obj.addAction(self.actionObjAddStorage)
-                            self.actionGroup_Obj.addAction(self.actionObjAddTank)
-                            self.actionGroup_Obj.addAction(self.actionObjAddValve)
-                            self.actionGroup_Obj.addAction(self.actionObjAddWeir)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddGage)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddSub)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddConduit)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddDivider)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddJunc)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddLabel)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddOrifice)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddOutfall)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddOutlet)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddPump)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddStorage)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddTank)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddValve)
+                            # self.actionGroup_Obj.addAction(self.actionObjAddWeir)
 
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -161,22 +160,31 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 [self.actionObjAddOutfall, "outfalls"],
                                 [self.actionObjAddDivider, "dividers"],
                                 [self.actionObjAddStorage, "storage"],
+                                [self.actionObjAddStorage, "reservoirs"],
                                 [self.actionObjAddTank, "tanks"]]
 
         self.add_link_tools = [[self.actionObjAddConduit, "conduits"],
+                               [self.actionObjAddConduit, "pipes"],
                                [self.actionObjAddOrifice, "orifices"],
                                [self.actionObjAddOutlet, "outlets"],
                                [self.actionObjAddPump, "pumps"],
                                [self.actionObjAddValve, "valves"],
                                [self.actionObjAddWeir, "weirs"]]
 
-        for tools in [self.add_point_tools, self.add_link_tools]:
-            for act, name in tools:
+        self.add_polygon_tools = [[self.actionObjAddSub, "subcatchments"]]
+
+        for tools in [self.add_point_tools, self.add_link_tools, self.add_polygon_tools]:
+            tool_index = 0
+            while tool_index < len(tools):
+                tool = tools[tool_index]
+                act, name = tool
                 if self.canvas and hasattr(self.project, name):
                     act.setVisible(True)
                     act.triggered.connect(self.setQgsMapTool)
+                    tool_index += 1
                 else:
                     act.setVisible(False)
+                    tools.remove(tool)
 
         self.time_index = 0
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
@@ -269,7 +277,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             # self.session.listViewObjects.takeItem(len(self.section.value))
-            if not self.added_id is None:
+            if self.added_id is not None:
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
                 self.layer.dataProvider().deleteFeatures([self.added_id])
@@ -488,7 +496,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def setQgsMapTool(self):
         if self.canvas:
-            from map_tools import AddPointTool, AddLinkTool
+            from map_tools import AddPointTool, AddLinkTool, CaptureTool
             self.map_widget.setZoomInMode()
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
@@ -496,8 +504,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:
-                self.map_widget.setAddObjectMode(act, name, AddLinkTool)
-            self.map_widget.setAddPolygonMode(self.actionObjAddSub, "subcatchments")
+                self.map_widget.setAddObjectMode(act, name, CaptureTool)
+            for act, name in self.add_polygon_tools:
+                self.map_widget.setAddObjectMode(act, name, CaptureTool)
 
     def zoomfull(self):
         self.map_widget.zoomfull()
@@ -774,10 +783,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             #     print "Editor Closing: " + str(event)
             #     # self._forms.remove(event.)
 
+    def current_map_layer(self):
+        try:
+            return getattr(self.model_layers, self.section_types[self.tree_types[self.tree_section]])
+        except:
+            pass
+        return None
+
     def list_selection_changed(self):
         try:
-            section_field_name = self.section_types[self.tree_types[self.tree_section]]
-            layer = getattr(self.model_layers, section_field_name)
+            layer = self.current_map_layer()
             self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
         except Exception as ex:
             msg = str(ex)

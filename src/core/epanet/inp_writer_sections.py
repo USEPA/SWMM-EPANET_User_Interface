@@ -13,7 +13,6 @@ from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
-from core.epanet.hydraulics.link import Link
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
@@ -137,21 +136,21 @@ class ControlWriter(SectionWriter):
         return Control.SECTION_NAME + '\n' + control.value
 
 
-class LinkWriter(SectionWriter):
-    """A link in an EPANET model"""
+# class LinkWriter(SectionWriter):
+#     """A link in an EPANET model"""
+#
+#     field_format = "{:16}\t{:16}\t{:16}"
+#
+#     @staticmethod
+#     def as_text(link):
+#         """format contents of this item for writing to file"""
+#         if len(link.name) > 0:
+#             return LinkWriter.field_format.format(link.name, link.inlet_node, link.outlet_node)  # link.description
+#         elif link.comment:
+#             return link.comment
 
-    field_format = "{:16}\t{:16}\t{:16}"
 
-    @staticmethod
-    def as_text(link):
-        """format contents of this item for writing to file"""
-        if len(link.name) > 0:
-            return LinkWriter.field_format.format(link.name, link.inlet_node, link.outlet_node)  # link.description
-        elif link.comment:
-            return link.comment
-
-
-class PipeWriter(Link):
+class PipeWriter():
     """A Pipe link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:12}\t{:12}\t{:12}\t{:6}\t{}"
@@ -166,7 +165,7 @@ class PipeWriter(Link):
             return pipe.comment
 
 
-class PumpWriter(Link):
+class PumpWriter():
     """A Pump link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}"
@@ -193,7 +192,7 @@ class PumpWriter(Link):
             return pump.comment
 
 
-class ValveWriter(Link):
+class ValveWriter():
     """A valve link in an EPANET model"""
 
     field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:4}\t{:12}\t{:12}\t{}"

@@ -18,7 +18,6 @@ from core.swmm.hydraulics.control import Controls
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
-from core.swmm.hydraulics.link import Link
 from core.swmm.hydraulics.link import Orifice
 from core.swmm.hydraulics.link import Weir
 from core.swmm.hydraulics.link import Outlet, OutletCurveType
@@ -538,8 +537,8 @@ class AdjustmentsReader(SectionReader):
         return adjustments
 
 
-class ConduitReader(Link):
-    """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
+class ConduitReader:
+    """Read a conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
     @staticmethod
     def read(new_text):
@@ -567,8 +566,8 @@ class ConduitReader(Link):
         return conduit
 
 
-class PumpReader(Link):
-    """A pump link in a SWMM model"""
+class PumpReader:
+    """Read a pump link in a SWMM model"""
 
     @staticmethod
     def read(new_text):
@@ -592,7 +591,8 @@ class PumpReader(Link):
         return pump
 
 
-class OrificeReader(Link):
+class OrificeReader:
+
     @staticmethod
     def read(new_text):
         """Read properties from text.
@@ -619,7 +619,7 @@ class OrificeReader(Link):
         return orifice
 
 
-class WeirReader(Link):
+class WeirReader:
     @staticmethod
     def read(new_text):
         """Read properties from text.
@@ -651,7 +651,7 @@ class WeirReader(Link):
         return weir
 
 
-class OutletReader(Link):
+class OutletReader():
     @staticmethod
     def read(new_text):
         """Read properties from text.

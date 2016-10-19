@@ -47,6 +47,7 @@ try:
 
             self.selectTool = None
             self.addObjectTool = None
+            self.addPolygonTool = None
 
             self.qgisNewFeatureTool = None
 
@@ -138,6 +139,32 @@ try:
                 QApplication.restoreOverrideCursor()
                 self.canvas.unsetMapTool(self.addObjectTool)
                 self.addObjectTool = None
+
+        def setAddPolygonMode(self, action_obj, layer_name):
+            """Start interactively adding polygon to polygon layer layer_name using tool button action_obj"""
+            if action_obj.isChecked():
+                # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
+                layer = getattr(self.session.model_layers, layer_name)
+                self.session.select_named_items(layer, None)
+                for obj_type, name in self.session.section_types.iteritems():
+                    if name == layer_name:
+                        if self.addPolygonTool:
+                            QApplication.restoreOverrideCursor()
+                            self.canvas.unsetMapTool(self.addPolygonTool)
+
+                        #self.addPolygonTool = CaptureTool(self.canvas, layer,
+                        #                                 self.session.onGeometryAdded,
+                        #                                 CaptureTool.CAPTURE_POLYGON)
+                        self.addPolygonTool = CaptureTool(self.canvas, layer, layer_name, obj_type, self.session)
+                        if self.addPolygonTool:
+                            self.addPolygonTool.setAction(action_obj)
+                            self.canvas.setMapTool(self.addPolygonTool)
+                            break
+
+            elif self.addPolygonTool and self.addPolygonTool.layer_name == layer_name:
+                QApplication.restoreOverrideCursor()
+                self.canvas.unsetMapTool(self.addPolygonTool)
+                self.addPolygonTool = None
 
         def setAddFeatureMode(self):
             """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
@@ -528,16 +555,25 @@ try:
         CAPTURE_LINE    = 1
         CAPTURE_POLYGON = 2
 
-        def __init__(self, canvas, layer, onGeometryAdded, captureMode):
+        #def __init__(self, canvas, layer, onGeometryAdded, captureMode):
+        def __init__(self, canvas, layer, layer_name, object_type, session):
             QgsMapTool.__init__(self, canvas)
             self.canvas          = canvas
             self.layer           = layer
-            self.onGeometryAdded = onGeometryAdded
-            self.captureMode     = captureMode
+            self.layer_name = layer_name
+            self.object_type = object_type
+            self.session = session
+            #self.onGeometryAdded = onGeometryAdded
+            #self.captureMode     = captureMode
             self.rubberBand      = None
             self.tempRubberBand  = None
             self.capturedPoints  = []
             self.capturing       = False
+            if 'subcatchment' in layer_name.lower():
+                self.captureMode     = CaptureTool.CAPTURE_POLYGON
+            else:
+                self.captureMode     = CaptureTool.CAPTURE_LINE
+
             self.setCursor(QtCore.Qt.CrossCursor)
 
         def canvasReleaseEvent(self, event):
@@ -665,8 +701,9 @@ try:
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.onGeometryAdded()
-
-
+                new_object = self.object_type()
+                new_object.coords = layerCoords
+                self.session.add_item(new_object)
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             CaptureTool.__init__(self, canvas, layer, session.onGeometryAdded, CaptureTool.CAPTURE_LINE)

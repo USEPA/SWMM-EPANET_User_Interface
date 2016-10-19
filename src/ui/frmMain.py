@@ -68,6 +68,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
+        self.actionGroup_Obj = QActionGroup(self)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -124,6 +125,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
+                            self.actionObjAddSub.triggered.connect(self.setQgsMapTool)
+
+
+                            self.actionGroup_Obj.addAction(self.actionObjAddGage)
+                            self.actionGroup_Obj.addAction(self.actionObjAddSub)
+                            self.actionGroup_Obj.addAction(self.actionObjAddConduit)
+                            self.actionGroup_Obj.addAction(self.actionObjAddDivider)
+                            self.actionGroup_Obj.addAction(self.actionObjAddJunc)
+                            self.actionGroup_Obj.addAction(self.actionObjAddLabel)
+                            self.actionGroup_Obj.addAction(self.actionObjAddOrifice)
+                            self.actionGroup_Obj.addAction(self.actionObjAddOutfall)
+                            self.actionGroup_Obj.addAction(self.actionObjAddOutlet)
+                            self.actionGroup_Obj.addAction(self.actionObjAddPump)
+                            self.actionGroup_Obj.addAction(self.actionObjAddStorage)
+                            self.actionGroup_Obj.addAction(self.actionObjAddTank)
+                            self.actionGroup_Obj.addAction(self.actionObjAddValve)
+                            self.actionGroup_Obj.addAction(self.actionObjAddWeir)
 
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -474,6 +492,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:
                 self.map_widget.setAddObjectMode(act, name, AddLinkTool)
+            self.map_widget.setAddPolygonMode(self.actionObjAddSub, "subcatchments")
 
     def zoomfull(self):
         self.map_widget.zoomfull()

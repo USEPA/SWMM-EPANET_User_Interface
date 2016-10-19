@@ -237,6 +237,8 @@ class frmMainEPANET(frmMain):
         self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
         self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
 
+        self.signalTimeChanged.connect(self.update_thematic_map)
+
     def set_thematic_controls(self):
         self.allow_thematic_update = False
         self.cboMapNodes.clear()
@@ -662,6 +664,9 @@ class frmMainEPANET(frmMain):
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
         ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
 
+        if self.time_widget:
+            self.labelStartTime.setText('0:00')
+            self.labelEndTime.setText(self.project.times.duration)
         if self.map_widget:
             try:
                 self.model_layers.create_layers_from_project(self.project)

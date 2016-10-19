@@ -5,6 +5,7 @@ from core.epanet.curves import Curve
 from core.epanet.vertex import Vertex
 from core.epanet.patterns import Pattern
 from core.metadata import Metadata
+from core.coordinate import Link
 
 
 class PumpType(Enum):
@@ -29,29 +30,12 @@ class FixedStatus(Enum):
     CLOSED = 2
 
 
-class Link(Section):
+class EpanetLink(Section, Link):
     """A link in an EPANET model"""
 
     def __init__(self):
         Section.__init__(self)
-
-        self.name = "Unnamed"
-        """Link Identifier/Name"""
-
-        self.inlet_node = ''
-        """Node on the inlet end of the Link"""
-
-        self.outlet_node = ''
-        """Node on the outlet end of the Link"""
-
-        self.description = ''
-        """Optional description of the Link"""
-
-        self.tag = ''
-        """Optional label used to categorize or classify the Link"""
-
-        self.vertices = []  # list of Vertex
-        """Coordinates of interior vertex points """
+        Link.__init__(self)
 
         self.report_flag = ''
         """Flag indicating whether an output report is desired for this link"""
@@ -61,7 +45,7 @@ class Link(Section):
         """initial status of a pipe, pump, or valve; can be a speed setting for a pump"""
 
 
-class Pipe(Link):
+class Pipe(EpanetLink):
     """A Pipe link in an EPANET model"""
 
     #    attribute,           input_name, label,         default, english, metric, hint
@@ -81,7 +65,7 @@ class Pipe(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        EpanetLink.__init__(self)
 
         self.length = "0.0"
         """pipe length"""
@@ -103,7 +87,7 @@ class Pipe(Link):
         # self.wall_reaction_coefficient = "0.0"
         """wall reaction coefficient for this pipe"""
 
-class Pump(Link):
+class Pump(EpanetLink):
     """A Pump link in an EPANET model"""
 
     #    attribute,  input_name, label,         default, english, metric, hint
@@ -124,7 +108,7 @@ class Pump(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        EpanetLink.__init__(self)
 
         self.type = PumpType.POWER
         """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
@@ -144,7 +128,7 @@ class Pump(Link):
         # TODO: access pump-specific energy parameters in options/energy
 
 
-class Valve(Link):
+class Valve(EpanetLink):
     """A valve link in an EPANET model"""
 
 #    attribute,         input_name, label,         default, english, metric, hint
@@ -162,7 +146,7 @@ class Valve(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        EpanetLink.__init__(self)
 
         self.diameter = "0.0"
         """valve diameter"""

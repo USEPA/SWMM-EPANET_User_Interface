@@ -3,6 +3,7 @@ try:
     from qgis.gui import *
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import *
+    from core.coordinate import Coordinate, Polygon
     import traceback
     import math
     import os
@@ -140,34 +141,15 @@ try:
                 self.canvas.unsetMapTool(self.addObjectTool)
                 self.addObjectTool = None
 
-        def setAddPolygonMode(self, action_obj, layer_name):
-            """Start interactively adding polygon to polygon layer layer_name using tool button action_obj"""
-            if action_obj.isChecked():
-                # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
-                layer = getattr(self.session.model_layers, layer_name)
-                self.session.select_named_items(layer, None)
-                for obj_type, name in self.session.section_types.iteritems():
-                    if name == layer_name:
-                        if self.addPolygonTool:
-                            QApplication.restoreOverrideCursor()
-                            self.canvas.unsetMapTool(self.addPolygonTool)
-
-                        #self.addPolygonTool = CaptureTool(self.canvas, layer,
-                        #                                 self.session.onGeometryAdded,
-                        #                                 CaptureTool.CAPTURE_POLYGON)
-                        self.addPolygonTool = CaptureTool(self.canvas, layer, layer_name, obj_type, self.session)
-                        if self.addPolygonTool:
-                            self.addPolygonTool.setAction(action_obj)
-                            self.canvas.setMapTool(self.addPolygonTool)
-                            break
-
-            elif self.addPolygonTool and self.addPolygonTool.layer_name == layer_name:
-                QApplication.restoreOverrideCursor()
-                self.canvas.unsetMapTool(self.addPolygonTool)
-                self.addPolygonTool = None
-
         def setAddFeatureMode(self):
-            """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
+            layer = self.session.current_map_layer()
+            if layer:
+                from qgis.core import QgsStyleV2
+                from qgis.gui import QgsRendererV2PropertiesDialog
+                from qgis.utils import iface
+                renderer_v2_properties = QgsRendererV2PropertiesDialog(layer, QgsStyleV2.defaultStyle(), True)
+                renderer_v2_properties.show()
+                self.session._forms.append(renderer_v2_properties)
 
             # Test of activating QGIS properties editor, does not belong in this method
             # layer = self.canvas.layers()[0]
@@ -177,17 +159,19 @@ try:
             #         layer)
             # self.layer_properties_widget.setMapCanvas(self.canvas)
             # self.layer_properties_widget.show()
-            if self.session.actionAdd_Feature.isChecked():
-                if self.qgisNewFeatureTool is None:
-                    if self.canvas.layers():
-                        self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
-                                                              self.session.onGeometryAdded,
-                                                              CaptureTool.CAPTURE_POLYGON)
-                        self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
-                if self.qgisNewFeatureTool:
-                    self.canvas.setMapTool(self.qgisNewFeatureTool)
-            else:
-                self.canvas.unsetMapTool(self.qgisNewFeatureTool)
+
+            # """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
+            # if self.session.actionAdd_Feature.isChecked():
+            #     if self.qgisNewFeatureTool is None:
+            #         if self.canvas.layers():
+            #             self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
+            #                                                   self.session.onGeometryAdded,
+            #                                                   CaptureTool.CAPTURE_POLYGON)
+            #             self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
+            #     if self.qgisNewFeatureTool:
+            #         self.canvas.setMapTool(self.qgisNewFeatureTool)
+            # else:
+            #     self.canvas.unsetMapTool(self.qgisNewFeatureTool)
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
@@ -563,7 +547,6 @@ try:
         CAPTURE_LINE    = 1
         CAPTURE_POLYGON = 2
 
-        #def __init__(self, canvas, layer, onGeometryAdded, captureMode):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             QgsMapTool.__init__(self, canvas)
             self.canvas          = canvas
@@ -571,16 +554,14 @@ try:
             self.layer_name = layer_name
             self.object_type = object_type
             self.session = session
-            #self.onGeometryAdded = onGeometryAdded
-            #self.captureMode     = captureMode
             self.rubberBand      = None
             self.tempRubberBand  = None
             self.capturedPoints  = []
             self.capturing       = False
-            if 'subcatchment' in layer_name.lower():
-                self.captureMode     = CaptureTool.CAPTURE_POLYGON
+            if issubclass(object_type, Polygon):
+                self.captureMode = CaptureTool.CAPTURE_POLYGON
             else:
-                self.captureMode     = CaptureTool.CAPTURE_LINE
+                self.captureMode = CaptureTool.CAPTURE_LINE
 
             self.setCursor(QtCore.Qt.CrossCursor)
 

@@ -26,7 +26,6 @@ from core.swmm.climatology import WindSpeed
 from core.swmm.climatology import SnowMelt
 from core.swmm.climatology import ArealDepletion
 from core.swmm.climatology import Adjustments
-from core.swmm.hydraulics.link import Link
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import OrificeType

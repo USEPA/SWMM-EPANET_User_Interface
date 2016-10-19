@@ -2,38 +2,21 @@ import traceback
 from enum import Enum
 from core.project_base import Section
 from core.metadata import Metadata
+from core.coordinate import Link
 
 
-class Link(Section):
+class SwmmLink(Section, Link):
     """A link in a SWMM model"""
 
     def __init__(self):
         Section.__init__(self)
-
-        self.name = "Unnamed"
-        """Link Identifier/Name"""
-
-        self.description = ''
-        """Optional description of the Link"""
-
-        self.tag = ''
-        """Optional label used to categorize or classify the Link"""
-
-        self.inlet_node = ''
-        """Node on the inlet end of the Link"""
-
-        self.outlet_node = ''
-        """Node on the outlet end of the Link"""
-
-        self.vertices = []
-        """Intermediate vertices between inlet_node and outlet_node along the length of the link"""
+        Link.__init__(self)
 
 
-class Conduit(Link):
+class Conduit(SwmmLink):
     """A conduit link (pipe or channel) in a SWMM model drainage system that conveys water from one node to another."""
 
-
-#    attribute,         input_name, label,         default, english, metric, hint
+    #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                    '', "Name",            "",       '', '', "User-assigned name of the conduit"),
         ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the conduit"),
@@ -57,7 +40,7 @@ class Conduit(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        SwmmLink.__init__(self)
 
         self.length = "0.0"
         """Conduit length (feet or meters)."""
@@ -98,7 +81,7 @@ class Conduit(Link):
         self.seepage = 0.0
         """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
 
-class Pump(Link):
+class Pump(SwmmLink):
     """A pump link in a SWMM model"""
 
 
@@ -116,7 +99,7 @@ class Pump(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        SwmmLink.__init__(self)
 
         self.pump_curve = ""
         """str: Associated pump curve"""
@@ -135,7 +118,7 @@ class OrificeType(Enum):
     BOTTOM = 2
 
 
-class Orifice(Link):
+class Orifice(SwmmLink):
     """An orifice link in a SWMM model"""
 
 #    attribute,         input_name, label,         default, english, metric, hint
@@ -156,7 +139,7 @@ class Orifice(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        SwmmLink.__init__(self)
         self.type = OrificeType.SIDE
         """OrificeType: Type of orifice"""
 
@@ -189,7 +172,7 @@ class RoadSurfaceType(Enum):
     GRAVEL = 2
 
 
-class Weir(Link):
+class Weir(SwmmLink):
     """A weir link in a SWMM model"""
 
 #    attribute,         input_name, label,         default, english, metric, hint
@@ -214,7 +197,7 @@ class Weir(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        SwmmLink.__init__(self)
         self.type = WeirType.TRANSVERSE
         """Type of weir"""
 
@@ -250,7 +233,7 @@ class OutletCurveType(Enum):
     FUNCTIONAL_HEAD = 4
 
 
-class Outlet(Link):
+class Outlet(SwmmLink):
     """An outlet link in a SWMM model"""
 
 #    attribute,         input_name, label,         default, english, metric, hint
@@ -269,7 +252,7 @@ class Outlet(Link):
     ))
 
     def __init__(self):
-        Link.__init__(self)
+        SwmmLink.__init__(self)
         self.inlet_offset = 0.0
         """float: Depth of outlet above inlet node invert"""
 

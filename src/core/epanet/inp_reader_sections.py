@@ -14,7 +14,6 @@ from core.epanet.hydraulics.control import Rule
 from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
-from core.epanet.hydraulics.link import Link
 from core.epanet.hydraulics.link import Pipe
 from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
@@ -187,24 +186,23 @@ class ControlReader():
     #     return control
 
 
-class LinkReader(SectionReader):
-    """A link in an EPANET model"""
+# class LinkReader(SectionReader):
+#     """Read a link in an EPANET model"""
+#
+#     @staticmethod
+#     def read(new_text):
+#         link = Link()
+#         new_text = SectionReader.set_comment_check_section(link, new_text)
+#         fields = new_text.split(None, 3)
+#         if len(fields) > 2:
+#             (link.name, link.inlet_node, link.outlet_node) = fields[0:3]
+#             if len(fields) > 3:
+#                 link.description = fields[3]
+#         return link
 
 
-    @staticmethod
-    def read(new_text):
-        link = Link()
-        new_text = SectionReader.set_comment_check_section(link, new_text)
-        fields = new_text.split(None, 3)
-        if len(fields) > 2:
-            (link.name, link.inlet_node, link.outlet_node) = fields[0:3]
-            if len(fields) > 3:
-                link.description = fields[3]
-        return link
-
-
-class PipeReader(Link):
-    """A Pipe link in an EPANET model"""
+class PipeReader():
+    """Read a Pipe link in an EPANET model"""
 
     @staticmethod
     def read(new_text):
@@ -227,8 +225,8 @@ class PipeReader(Link):
         return pipe
 
 
-class PumpReader(Link):
-    """A Pump link in an EPANET model"""
+class PumpReader():
+    """Read a Pump link in an EPANET model"""
 
     @staticmethod
     def read(new_text):
@@ -252,8 +250,8 @@ class PumpReader(Link):
         return pump
 
 
-class ValveReader(Link):
-    """A valve link in an EPANET model"""
+class ValveReader():
+    """Read a valve link in an EPANET model"""
 
     @staticmethod
     def read(new_text):
@@ -282,7 +280,6 @@ class StatusReader(SectionReader):
         Pumps can have a status of OPEN, CLOSED, or a speed.
     """
 
-
     @staticmethod
     def read(new_text):
         status = Status()
@@ -294,7 +291,8 @@ class StatusReader(SectionReader):
         return status
 
 
-class CoordinateReader(SectionReader):
+class CoordinateReader():
+
     @staticmethod
     def read(new_text):
         coordinate = Coordinate()

@@ -270,6 +270,8 @@ class frmMainEPANET(frmMain):
                 meta_item = Junction.metadata.meta_item_of_label(setting)
                 attribute = meta_item.attribute
             color_by = {}
+            min = None
+            max = None
             if attribute:  # Found an attribute of the node class to color by
                 for junction in self.project.junctions.value:
                     color_by[junction.name] = float(getattr(junction, attribute, 0))
@@ -280,6 +282,14 @@ class frmMainEPANET(frmMain):
                 attribute = ENO.ENR_node_type.get_attribute_by_name(setting)
                 if attribute:
                     values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    # also get min and max values over entire run
+                    for time_increment in range(0,self.output.num_periods-1):
+                        temp_values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
+                        for temp_value in temp_values:
+                            if min is None or temp_value < min:
+                                min = temp_value
+                            if max is None or temp_value > max:
+                                max = temp_value
                     index = 0
                     for node in self.output.nodes.values():
                         color_by[node.name] = values[index]
@@ -287,7 +297,7 @@ class frmMainEPANET(frmMain):
             for layer_type in self.model_layers.nodes_layers:
                 if layer_type.isValid():
                     if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by)
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by, min, max)
                         self.map_widget.LegendDock.setVisible(True)
                     else:
                         self.map_widget.set_default_point_renderer(layer_type)
@@ -301,6 +311,8 @@ class frmMainEPANET(frmMain):
                 meta_item = Pipe.metadata.meta_item_of_label(setting)
                 attribute = meta_item.attribute
             color_by = {}
+            min = None
+            max = None
             if attribute:  # Found an attribute of the pipe class to color by
                 for pipe in self.project.pipes.value:
                     if attribute == 'max_depth':
@@ -314,12 +326,20 @@ class frmMainEPANET(frmMain):
                 attribute = ENO.ENR_link_type.get_attribute_by_name(setting)
                 if attribute:
                     values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                    # also get min and max values over entire run
+                    for time_increment in range(0,self.output.num_periods-1):
+                        temp_values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
+                        for temp_value in temp_values:
+                            if min is None or temp_value < min:
+                                min = temp_value
+                            if max is None or temp_value > max:
+                                max = temp_value
                     index = 0
                     for link in self.output.links.values():
                         color_by[link.name] = values[index]
                         index += 1
             if color_by:
-                self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.pipes, color_by)
+                self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.pipes, color_by, min, max)
                 self.map_widget.LegendDock.setVisible(True)
             else:
                 self.map_widget.set_default_line_renderer(self.model_layers.pipes)

@@ -56,6 +56,10 @@ junctions_model_attributes_swmm = [
 junctions_gis_attributes_swmm = [
     "element_type", "id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 
+generic_model_attributes = [
+    "element_type", "name"]
+generic_gis_attributes = [
+    "element_type", "id"]
 
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
@@ -97,77 +101,55 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
                     all_gis_attributes.append(attribute)
 
     # Export Pipes
-    layer = make_links_layer(coordinates, vertices, session.project.pipes.value,
-                             pipe_model_attributes, pipe_gis_attributes, all_gis_attributes, layer)
+    layer = export_links_layer(session.project.pipes.value, pipe_model_attributes, pipe_gis_attributes,
+                               all_gis_attributes, layer, one_file, path_file + "_pipes" + extension,
+                               driver_name, layer_options, coordinates, vertices)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_pipes" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
-                                                    driver_name,
-                                                    layerOptions=layer_options)
-            print("saved " + layer_file_name)
 
     # Export Pumps
-    if not one_file:
-        layer = None
-        all_gis_attributes = pumps_gis_attributes
-
-    layer = make_links_layer(coordinates, vertices, session.project.pumps.value,
-                             pumps_model_attributes, pumps_gis_attributes, all_gis_attributes, layer)
+    layer = export_links_layer(session.project.pumps.value, pumps_model_attributes, pumps_gis_attributes,
+                               all_gis_attributes, layer, one_file, path_file + "_pumps" + extension,
+                               driver_name, layer_options, coordinates, vertices)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_pumps" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
 
     # Export Valves
-    if not one_file:
-        layer = None
-        all_gis_attributes = valves_gis_attributes
-    layer = make_links_layer(coordinates, vertices, session.project.valves.value,
-                             valves_model_attributes, valves_gis_attributes, all_gis_attributes, layer)
+    layer = export_links_layer(session.project.valves.value, valves_model_attributes, valves_gis_attributes,
+                               all_gis_attributes, layer, one_file, path_file + "_valves" + extension,
+                               driver_name, layer_options, coordinates, vertices)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_valves" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
 
     # Export Junctions
-    if not one_file:
-        layer = None
-        all_gis_attributes = junctions_gis_attributes
-
-    layer = make_points_layer(session.project.junctions.value,
-                              junctions_model_attributes, junctions_gis_attributes, all_gis_attributes, layer)
+    layer = export_points_layer(session.project.junctions.value,
+                                junctions_model_attributes, junctions_gis_attributes, all_gis_attributes, layer, one_file,
+                                path_file + "_junctions" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_junctions" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
 
     # Export Labels
-    if not one_file:
-        layer = None
-        all_gis_attributes = labels_gis_attributes
-
-    layer = make_points_layer(session.project.labels.value,
-                              labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer)
+    layer = export_points_layer(session.project.labels.value,
+                                labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer, one_file,
+                                path_file + "_labels" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_labels" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
+
+    for section in [session.project.reservoirs, session.project.tanks, session.project.sources]:
+        if len(section.value) > 0:
+            layer = export_points_layer(section.value,
+                                        generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+                                        path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
+                                        + extension, driver_name, layer_options)
+            if layer:
+                layer_count += 1
 
     if one_file:
         QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
         print("saved " + file_name)
 
     return "Exported " + str(layer_count) + " layers to GIS"
+
 
 def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, layer_options, one_file,
                        coordinates, vertices):
@@ -176,56 +158,87 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
 
     all_gis_attributes = conduit_gis_attributes
     if one_file:  # if putting all types in one file, need all attributes to include ones from all layers
-        for attributes in (pumps_gis_attributes, valves_gis_attributes, junctions_gis_attributes, labels_gis_attributes):
+        for attributes in (conduit_gis_attributes, junctions_gis_attributes_swmm, labels_gis_attributes):
             for attribute in attributes:
                 if attribute and attribute not in all_gis_attributes:
                     all_gis_attributes.append(attribute)
 
     # Export conduits
-    layer = make_links_layer(coordinates, vertices, session.project.conduits.value,
-                             conduit_model_attributes, conduit_gis_attributes, all_gis_attributes, layer)
+    layer = export_links_layer(session.project.conduits.value, conduit_model_attributes, conduit_gis_attributes,
+                               all_gis_attributes, layer, one_file, path_file + "_conduits" + extension,
+                               driver_name, layer_options, coordinates, vertices)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_conduits" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
-                                                    driver_name,
-                                                    layerOptions=layer_options)
-            print("saved " + layer_file_name)
 
     # Export Junctions
-    if not one_file:
-        layer = None
-        all_gis_attributes = junctions_gis_attributes_swmm
-
-    layer = make_points_layer(session.project.junctions.value,
-                              junctions_model_attributes_swmm, junctions_gis_attributes_swmm, all_gis_attributes, layer)
+    layer = export_points_layer(session.project.junctions.value,
+                                junctions_model_attributes_swmm, junctions_gis_attributes_swmm, all_gis_attributes, layer, one_file,
+                                path_file + "_junctions" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_junctions" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
 
     # Export Labels
-    if not one_file:
-        layer = None
-        all_gis_attributes = labels_gis_attributes
-
-    layer = make_points_layer(session.project.labels.value,
-                              labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer)
+    layer = export_points_layer(session.project.labels.value,
+                                labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer, one_file,
+                                path_file + "_labels" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
-        if not one_file:
-            layer_file_name = path_file + "_labels" + extension
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(), driver_name)
-            print("saved " + layer_file_name)
+
+    for section in [session.project.raingages, session.project.outfalls,
+                    session.project.dividers, session.project.storage]:
+        if len(section.value) > 0:
+            layer = export_points_layer(section.value,
+                                        generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+                                        path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
+                                        + extension, driver_name, layer_options)
+            if layer:
+                layer_count += 1
+
+    for section in [session.project.pumps, session.project.orifices, session.project.weirs, session.project.outlets]:
+        if len(section.value) > 0:
+            layer = export_links_layer(section.value,
+                                       generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+                                       path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
+                                       + extension, driver_name, layer_options, coordinates, vertices)
+            if layer:
+                layer_count += 1
 
     if one_file:
-        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
+        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name,
+                                                layerOptions=layer_options)
         print("saved " + file_name)
 
     return "Exported " + str(layer_count) + " layers to GIS"
+
+
+def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer,
+                        one_file, layer_file_name, driver_name, layer_options):
+    if not one_file:
+        layer = None
+        all_gis_attributes = gis_attributes
+
+    layer = make_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer)
+    if layer:
+        if not one_file:
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
+                                                    driver_name, layerOptions=layer_options)
+            print("saved " + layer_file_name)
+        return layer
+    return None
+
+
+def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer,
+                        one_file, layer_file_name, driver_name, layer_options, coordinates, vertices):
+    layer = make_links_layer(coordinates, vertices, model_links,
+                             model_attributes, gis_attributes, all_gis_attributes, layer)
+    if layer:
+        if not one_file:
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
+                                                    driver_name, layerOptions=layer_options)
+            print("saved " + layer_file_name)
+        return layer
+    return None
+
 
 def make_gis_fields(gis_attributes):
     # create GIS fields

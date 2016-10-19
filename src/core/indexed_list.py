@@ -54,7 +54,10 @@ class IndexedList(list):
         except KeyError:
             if isinstance(ind, str):
                 raise
-            return list.__getitem__(self, ind)
+            try:
+                return list.__getitem__(self, ind)
+            except Exception as ex:
+                raise Exception("Could not find key/index '" + str(ind) + "' in IndexedList: " + str(ex))
 
     def get(self, key, default=None):
         try:

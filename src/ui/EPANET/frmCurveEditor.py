@@ -4,11 +4,12 @@ import core.epanet.curves
 from ui.EPANET.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.epanet.curves import CurveType
+from core.epanet.curves import Curve
 # from PyQt4.QtGui import *
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
-    def __init__(self, main_form=None, edit_these=[]):
+    def __init__(self, main_form, edit_these, new_item):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
@@ -20,51 +21,53 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         self.selected_curve_name = ''
         self._main_form = main_form
-        if main_form and main_form.project:
-            if edit_these:
-                if isinstance(edit_these, list):
-                    self.set_from(main_form.project, edit_these[0])
-                else:
-                    self.set_from(main_form.project, edit_these)
+        self.project = main_form.project
+        self.section = self.project.curves
+        self.new_item = new_item
+        if new_item:
+            self.set_from(new_item)
+        elif edit_these:
+            if isinstance(edit_these, list):  # edit first curve if given a list
+                self.set_from(edit_these[0])
+            else:
+                self.set_from(edit_these)
 
-    def set_from(self, project, selected_curve_name):
-        section = project.find_section("CURVES")
-        self.selected_curve_name = selected_curve_name
-        curve_list = section.value[0:]
-        # assume we want to edit the first one
-        for curve in curve_list:
-            if curve.name == selected_curve_name:
-                self.txtCurveName.setText(str(curve.name))
-                self.txtDescription.setText(str(curve.description))
-                ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
-                point_count = -1
-                for point in curve.curve_xy:
-                    point_count += 1
-                    led = QtGui.QLineEdit(str(point[0]))
-                    self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(point[1]))
-                    self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
-                self.lblEquation.setText("Equation: ")
+    def set_from(self, curve):
+        if not isinstance(curve, Curve):
+            curve = self.section.value[curve]
+        if isinstance(curve, Curve):
+            self.editing_item = curve
+        self.txtCurveName.setText(str(curve.name))
+        self.txtDescription.setText(str(curve.description))
+        ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
+        point_count = -1
+        for point in curve.curve_xy:
+            point_count += 1
+            led = QtGui.QLineEdit(str(point[0]))
+            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
+            led = QtGui.QLineEdit(str(point[1]))
+            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+        self.lblEquation.setText("Equation: ")
 
     def cmdOK_Clicked(self):
         # TODO: Check for duplicate curve name
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
-        section = self._main_form.project.find_section("CURVES")
-        curve_list = section.value[0:]
-        for curve in curve_list:
-            if curve.name == self.selected_curve_name:
-                curve.name = self.txtCurveName.text()
-                curve.description = self.txtDescription.text()
-                curve.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
-                curve.curve_xy = []
-                for row in range(self.tblMult.rowCount()):
-                    if self.tblMult.item(row,0) and self.tblMult.item(row,1):
-                        x = self.tblMult.item(row, 0).text()
-                        y = self.tblMult.item(row, 1).text()
-                        if len(x) > 0 and len(y) > 0:
-                            curve.curve_xy.append((x, y))
-        self._main_form.list_objects()
+        self.editing_item.name = self.txtCurveName.text()
+        self.editing_item.description = self.txtDescription.text()
+        self.editing_item.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
+        self.editing_item.curve_xy = []
+        for row in range(self.tblMult.rowCount()):
+            if self.tblMult.item(row,0) and self.tblMult.item(row,1):
+                x = self.tblMult.item(row, 0).text()
+                y = self.tblMult.item(row, 1).text()
+                if len(x) > 0 and len(y) > 0:
+                    self.editing_item.curve_xy.append((x, y))
+        if self.new_item:  # We are editing a newly created item and it needs to be added to the project
+            self._main_form.add_item(self.new_item)
+        else:
+            pass
+            # TODO: self._main_form.edited_?
         self.close()
 
     def cmdCancel_Clicked(self):

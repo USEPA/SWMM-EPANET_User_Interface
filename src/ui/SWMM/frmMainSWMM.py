@@ -749,6 +749,8 @@ class frmMainSWMM(frmMain):
                 self.project.xsections.value = edit_these
             else:
                 self.project.xsections.value.append(new_xsection)
+        elif tree_text == self.tree_curves_ControlCurves[0]:
+            new_item.curve_type = CurveType.CONTROL
         elif tree_text == self.tree_curves_DiversionCurves[0]:
             new_item.curve_type = CurveType.DIVERSION
         elif tree_text == self.tree_curves_PumpCurves[0]:

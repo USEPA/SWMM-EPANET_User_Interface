@@ -46,7 +46,7 @@ try:
             self.zoomOutTool.setAction(self.session.actionZoom_out)
 
             self.selectTool = None
-            self.addPointTool = None
+            self.addObjectTool = None
 
             self.qgisNewFeatureTool = None
 
@@ -118,7 +118,7 @@ try:
             for feature in layer.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'" + feature_name + "'"))):
                 return feature
 
-        def setAddPointMode(self, action_obj, layer_name):
+        def setAddObjectMode(self, action_obj, layer_name, tool_type):
             """Start interactively adding points to point layer layer_name using tool button action_obj"""
             if action_obj.isChecked():
                 # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
@@ -126,18 +126,18 @@ try:
                 self.session.select_named_items(layer, None)
                 for obj_type, name in self.session.section_types.iteritems():
                     if name == layer_name:
-                        if self.addPointTool:
+                        if self.addObjectTool:
                             QApplication.restoreOverrideCursor()
-                            self.canvas.unsetMapTool(self.addPointTool)
+                            self.canvas.unsetMapTool(self.addObjectTool)
 
-                        self.addPointTool = AddPointTool(self.canvas, layer, layer_name, obj_type, self.session)
-                        self.addPointTool.setAction(action_obj)
-                        self.canvas.setMapTool(self.addPointTool)
+                        self.addObjectTool = tool_type(self.canvas, layer, layer_name, obj_type, self.session)
+                        self.addObjectTool.setAction(action_obj)
+                        self.canvas.setMapTool(self.addObjectTool)
 
-            elif self.addPointTool and self.addPointTool.layer_name == layer_name:
+            elif self.addObjectTool and self.addObjectTool.layer_name == layer_name:
                 QApplication.restoreOverrideCursor()
-                self.canvas.unsetMapTool(self.addPointTool)
-                self.addPointTool = None
+                self.canvas.unsetMapTool(self.addObjectTool)
+                self.addObjectTool = None
 
         def setAddFeatureMode(self):
             """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
@@ -667,6 +667,14 @@ try:
                 self.onGeometryAdded()
 
 
+    class AddLinkTool(CaptureTool):
+        def __init__(self, canvas, layer, layer_name, object_type, session):
+            CaptureTool.__init__(self, canvas, layer, session.onGeometryAdded, CaptureTool.CAPTURE_LINE)
+            self.layer_name = layer_name
+            self.object_type = object_type
+            self.session = session
+
+
     class AddPointTool(QgsMapTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             QgsMapTool.__init__(self, canvas)
@@ -684,7 +692,11 @@ try:
             new_object.y = point.y()
             self.session.add_item(new_object)
 
+
     class SelectMapTool(QgsMapToolEmitPoint):
+        """ Select an object by clicking it.
+            Add another of the same type to the selection with ctrl-click.
+            Move selected objects by dragging. Esc to cancel drag."""
         def __init__(self, canvas, session):
             self.canvas = canvas
             self.session = session
@@ -832,6 +844,50 @@ try:
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()
+
+
+    class MoveVerticesTool(SelectMapTool):
+        """ Move the internal vertices of links or subcatchments. Not yet functional. """
+        def __init__(self, canvas, session):
+            SelectMapTool.__init__(self, canvas, session)
+
+        def build_spatial_index(self):
+            self.layer_spatial_indexes = []
+            if hasattr(self.session, "model_layers"):
+                model_layers = self.session.model_layers.all_layers
+            else:
+                model_layers = self.canvas.layers()
+            for lyr in model_layers:
+                try:
+                    if isinstance(lyr, QgsVectorLayer):
+                        provider = lyr.dataProvider()
+                        # insert features to index
+                        spatial_index = []  # QgsSpatialIndex()
+                        ids = []
+                        pt_indexes = []
+                        found = False
+                        for feat in provider.getFeatures():
+                            geometry = feat.geometry()
+                            feat_id = feat.id()
+                            points = None
+                            if geometry.wkbType() == QGis.WKBLineString:
+                                points = geometry.asPolyline()
+                            elif geometry.wkbType() == QGis.WKBPolygon:
+                                # Select subbasin by clicking closest to center of its bounding box
+                                box = geometry.boundingBox()
+                                pt = QgsPoint((box.xMinimum() + box.xMaximum()) / 2,
+                                              (box.yMinimum() + box.yMaximum()) / 2)
+
+                            if points:
+                                for index in range(1, len(points) - 2):  # skip first and last point which are nodes
+                                    spatial_index.append(points[index])
+                                    ids.append(feat_id)
+                                    pt_indexes.append(index)
+                                found = True
+                        if found:
+                            self.layer_spatial_indexes.append((lyr, spatial_index, ids, pt_indexes))
+                except Exception as e:
+                    print str(e)
 
 
     class SaveAsGis:

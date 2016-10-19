@@ -125,32 +125,39 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_full.triggered.connect(self.zoomfull)
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
 
-                            self.add_point_tools = [[self.actionObjAddGage, "raingages"],
-                                                    [self.actionObjAddJunc, "junctions"],
-                                                    [self.actionObjAddLabel, "labels"],
-                                                    [self.actionObjAddOutfall, "outfalls"],
-                                                    [self.actionObjAddDivider, "dividers"],
-                                                    [self.actionObjAddStorage, "storage"],
-                                                    [self.actionObjAddTank, "tanks"]]
-
-                            for act, name in self.add_point_tools:
-                                if hasattr(self.project, name):
-                                    act.setVisible(True)
-                                    act.triggered.connect(self.setQgsMapTool)
-                                else:
-                                    act.setVisible(False)
-
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
                     msg = "Did not load QGIS from " + qgis_home + ": " + str(e1) + '\n' # + str(traceback.print_exc())
                     print(msg)
                     # QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
-
         except Exception as eImport:
             self.canvas = None
         if not self.canvas:
             print("QGIS libraries not found, Not creating map\n")
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
+
+        self.add_point_tools = [[self.actionObjAddGage, "raingages"],
+                                [self.actionObjAddJunc, "junctions"],
+                                [self.actionObjAddLabel, "labels"],
+                                [self.actionObjAddOutfall, "outfalls"],
+                                [self.actionObjAddDivider, "dividers"],
+                                [self.actionObjAddStorage, "storage"],
+                                [self.actionObjAddTank, "tanks"]]
+
+        self.add_link_tools = [[self.actionObjAddConduit, "conduits"],
+                               [self.actionObjAddOrifice, "orifices"],
+                               [self.actionObjAddOutlet, "outlets"],
+                               [self.actionObjAddPump, "pumps"],
+                               [self.actionObjAddValve, "valves"],
+                               [self.actionObjAddWeir, "weirs"]]
+
+        for tools in [self.add_point_tools, self.add_link_tools]:
+            for act, name in tools:
+                if self.canvas and hasattr(self.project, name):
+                    act.setVisible(True)
+                    act.triggered.connect(self.setQgsMapTool)
+                else:
+                    act.setVisible(False)
 
         self.time_index = 0
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
@@ -457,12 +464,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.signalTimeChanged.emit()
 
     def setQgsMapTool(self):
-        self.map_widget.setZoomInMode()
-        self.map_widget.setZoomOutMode()
-        self.map_widget.setPanMode()
-        self.map_widget.setSelectMode()
-        for act, name in self.add_point_tools:
-            self.map_widget.setAddPointMode(act, name)
+        if self.canvas:
+            from map_tools import AddPointTool, AddLinkTool
+            self.map_widget.setZoomInMode()
+            self.map_widget.setZoomOutMode()
+            self.map_widget.setPanMode()
+            self.map_widget.setSelectMode()
+            for act, name in self.add_point_tools:
+                self.map_widget.setAddObjectMode(act, name, AddPointTool)
+            for act, name in self.add_link_tools:
+                self.map_widget.setAddObjectMode(act, name, AddLinkTool)
 
     def zoomfull(self):
         self.map_widget.zoomfull()

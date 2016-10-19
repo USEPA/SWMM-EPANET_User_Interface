@@ -13,10 +13,10 @@ class frmJunction(frmGenericPropertyEditor):
     SECTION_NAME = "[JUNCTIONS]"
     SECTION_TYPE = Junction
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/junctionproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
+        self.session = session
+        self.project = session.project
         self.refresh_column = -1
         self.project_section = self.project.junctions
         if self.project_section and \
@@ -34,7 +34,8 @@ class frmJunction(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Junction Editor")
+        frmGenericPropertyEditor.__init__(self, session, session.project.junctions,
+                                          edit_these, new_item, "SWMM Junction Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns
@@ -49,13 +50,6 @@ class frmJunction(frmGenericPropertyEditor):
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(7, column, combobox)
-            # set coordinates
-            coordinate_section = self.project.find_section("COORDINATES")
-            if coordinate_section.value[edit_these[column].name]:
-                value = coordinate_section.value[edit_these[column].name].x
-                self.tblGeneric.setItem(1, column, QtGui.QTableWidgetItem(value))
-                value = coordinate_section.value[edit_these[column].name].y
-                self.tblGeneric.setItem(2, column, QtGui.QTableWidgetItem(value))
             # also set special text plus button cells
             self.set_demand_cell(column)
             self.set_quality_cell(column)

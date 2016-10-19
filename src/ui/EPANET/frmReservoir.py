@@ -9,15 +9,32 @@ from ui.EPANET.frmSourcesQuality import frmSourcesQuality
 
 class frmReservior(frmGenericPropertyEditor):
 
-    # SECTION_NAME = "[RESERVOIRS]"
+    SECTION_NAME = "[RESERVOIRS]"
     SECTION_TYPE = Reservoir
 
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/reservoirproperties.htm"
+        self.session = session
+        self.project = session.project
         self.refresh_column = -1
         self.project_section = self.project.reservoirs
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, new_item, "EPANET Reservoir Editor")
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        frmGenericPropertyEditor.__init__(self, session, session.project.reservoirs,
+                                          edit_these, new_item, "EPANET Reservoir Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns
@@ -32,12 +49,12 @@ class frmReservior(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(6, column, combobox)
             # set coordinates
-            coordinate_section = self.project.find_section("COORDINATES")
-            if coordinate_section.value[edit_these[column].name]:
-                value = coordinate_section.value[edit_these[column].name].x
-                self.tblGeneric.setItem(1, column, QtGui.QTableWidgetItem(value))
-                value = coordinate_section.value[edit_these[column].name].y
-                self.tblGeneric.setItem(2, column, QtGui.QTableWidgetItem(value))
+            # coordinate_section = self.project.find_section("COORDINATES")
+            # if coordinate_section.value[edit_these[column].name]:
+            #     value = coordinate_section.value[edit_these[column].name].x
+            #     self.tblGeneric.setItem(1, column, QtGui.QTableWidgetItem(value))
+            #     value = coordinate_section.value[edit_these[column].name].y
+            #     self.tblGeneric.setItem(2, column, QtGui.QTableWidgetItem(value))
             # also set special text plus button cells
             self.set_quality_cell(column)
 

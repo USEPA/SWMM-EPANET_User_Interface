@@ -9,10 +9,10 @@ class frmValve(frmGenericPropertyEditor):
     SECTION_NAME = "[VALVES]"
     SECTION_TYPE = Valve
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/valveproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
+        self._main_form = session
+        self.project = session.project
         self.refresh_column = -1
 
         self.project_section = self.project.valves
@@ -31,7 +31,8 @@ class frmValve(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Valve Editor")
+        frmGenericPropertyEditor.__init__(self, session, session.project.valves,
+                                          edit_these, new_item, "EPANET Valve Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # Valves can have a status of NONE, OPEN, CLOSED

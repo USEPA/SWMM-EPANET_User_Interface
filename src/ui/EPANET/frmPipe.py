@@ -9,10 +9,10 @@ class frmPipe(frmGenericPropertyEditor):
     SECTION_NAME = "[PIPES]"
     SECTION_TYPE = Pipe
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/pipeproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
+        self._main_form = session
+        self.project = session.project
         self.refresh_column = -1
         self.project_section = self.project.pipes
         if self.project_section and \
@@ -30,7 +30,8 @@ class frmPipe(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Pipe Editor")
+        frmGenericPropertyEditor.__init__(self, session, session.project.pipes,
+                                          edit_these, new_item, "EPANET Pipe Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # Pipes can have a status of OPEN, CLOSED, or CV.

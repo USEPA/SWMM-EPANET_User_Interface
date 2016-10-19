@@ -9,10 +9,10 @@ class frmPump(frmGenericPropertyEditor):
     SECTION_NAME = "[PUMPS]"
     SECTION_TYPE = Pump
 
-    def __init__(self, main_form,  edit_these=[]):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/pumpproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
+        self._main_form = session
+        self.project = session.project
         self.refresh_column = -1
         self.project_section = self.project.pumps
         if self.project_section and \
@@ -30,7 +30,8 @@ class frmPump(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Pump Editor")
+        frmGenericPropertyEditor.__init__(self, session, session.project.pumps,
+                                          edit_these, new_item, "EPANET Pump Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # pump curve

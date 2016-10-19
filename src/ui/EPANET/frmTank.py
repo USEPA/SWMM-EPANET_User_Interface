@@ -12,10 +12,10 @@ class frmTank(frmGenericPropertyEditor):
     SECTION_NAME = "[TANKS]"
     SECTION_TYPE = Tank
 
-    def __init__(self, main_form, edit_these=[]):
+    def __init__(self, session, edit_these, new_item):
         self.help_topic = "epanet/src/src/tankproperties.htm"
-        self._main_form = main_form
-        self.project = main_form.project
+        self.session = session
+        self.project = session.project
         self.refresh_column = -1
         self.project_section = self.project.tanks
         if self.project_section and \
@@ -33,7 +33,8 @@ class frmTank(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, edit_these, "EPANET Tank Editor")
+        frmGenericPropertyEditor.__init__(self, session, session.project.tanks,
+                                          edit_these, new_item, "EPANET Tank Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for curve, show available curves

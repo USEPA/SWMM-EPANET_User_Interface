@@ -12,4 +12,9 @@ class Coordinate:
         self.y = ''
         """Y-Coordinate; North-South dimension"""
 
+class Polygon:
+    def __init__(self):
+        self.name = ''
 
+        self.vertices = []
+        """List[Coordinates]:the Subcatchment's polygon."""

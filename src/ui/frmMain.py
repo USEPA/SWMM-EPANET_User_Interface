@@ -22,6 +22,7 @@ import imp
 import traceback
 from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
+from core.coordinate import Coordinate, Polygon
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -249,7 +250,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if self.layer:
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
-                added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                if isinstance(self.item, Coordinate):
+                    added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                elif isinstance(self.item, Polygon):
+                    added = self.layer.dataProvider().addFeatures([self.session.map_widget.polygon_feature_from_item(self.item)])
+
                 if added[0]:
                     self.added_id = added[1][0].id()
                     self.layer.updateExtents()

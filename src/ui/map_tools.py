@@ -229,6 +229,14 @@ try:
             feature.setAttributes([item.name, 0.0])
             return feature
 
+        @staticmethod
+        def polygon_feature_from_item(item):
+            geometry = QgsGeometry.fromPolygon([item.vertices])
+            feature = QgsFeature()
+            feature.setGeometry(geometry)
+            feature.setAttributes([item.name, 0.0])
+            return feature
+
         def addCoordinates(self, coordinates, layer_name):
             layer = QgsVectorLayer("Point", layer_name, "memory")
             provider = layer.dataProvider()
@@ -688,29 +696,21 @@ try:
             return points
 
         def geometryCaptured(self, layerCoords):
-            if self.captureMode == CaptureTool.CAPTURE_LINE:
-                geometry = QgsGeometry.fromPolyline(layerCoords)
-            elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                geometry = QgsGeometry.fromPolygon([layerCoords])
+            #self.onGeometryAdded()
+            new_object = self.object_type()
+            new_object.vertices = layerCoords
+            self.session.add_item(new_object)
+            #if self.captureMode == CaptureTool.CAPTURE_LINE:
+            #    geometry = QgsGeometry.fromPolyline(layerCoords)
+            #elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
+            #    geometry = QgsGeometry.fromPolygon([layerCoords])
 
-            if geometry:
-                feature = QgsFeature()
-                feature.setGeometry(geometry)
-                self.layer.startEditing()
-                self.layer.addFeature(feature)
-                self.layer.commitChanges()
-                self.layer.updateExtents()
-                self.onGeometryAdded()
-                new_object = self.object_type()
-                new_object.coords = layerCoords
-                self.session.add_item(new_object)
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             CaptureTool.__init__(self, canvas, layer, session.onGeometryAdded, CaptureTool.CAPTURE_LINE)
             self.layer_name = layer_name
             self.object_type = object_type
             self.session = session
-
 
     class AddPointTool(QgsMapTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
@@ -728,7 +728,6 @@ try:
             new_object.x = point.x()
             new_object.y = point.y()
             self.session.add_item(new_object)
-
 
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.

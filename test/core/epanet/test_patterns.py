@@ -3,8 +3,8 @@ from core.epanet import patterns
 from core.epanet.inp_reader_sections import PatternReader
 from core.epanet.inp_writer_sections import PatternWriter
 from core.epanet.inp_reader_project import InputFileReader
-from core.swmm.inp_reader_project import ProjectReader
-from core.swmm.inp_writer_project import ProjectWriter
+from core.epanet.inp_reader_project import ProjectReader
+from core.epanet.inp_writer_project import ProjectWriter
 from test.core.section_match import match, match_omit
 
 
@@ -59,37 +59,37 @@ class SimplePatternTest(unittest.TestCase):
         self.assertTrue(match(actual_text, source_text), msg)
 
         pattern_list = section_from_text
-        assert len(pattern_list) == 2
-        assert int(pattern_list[0].name) == 1
-        assert int(pattern_list[1].name) == 2
+        assert len(pattern_list.value) == 2
+        assert int(pattern_list.value[0].name) == 1
+        assert int(pattern_list.value[1].name) == 2
 
-        assert float(pattern_list[0].multipliers[0]) == 1.0
-        assert float(pattern_list[0].multipliers[1]) == 1.2
-        assert float(pattern_list[0].multipliers[2]) == 1.4
-        assert float(pattern_list[0].multipliers[3]) == 1.6
-        assert float(pattern_list[0].multipliers[4]) == 1.4
-        assert float(pattern_list[0].multipliers[5]) == 1.2
+        assert float(pattern_list.value[0].multipliers[0]) == 1.0
+        assert float(pattern_list.value[0].multipliers[1]) == 1.2
+        assert float(pattern_list.value[0].multipliers[2]) == 1.4
+        assert float(pattern_list.value[0].multipliers[3]) == 1.6
+        assert float(pattern_list.value[0].multipliers[4]) == 1.4
+        assert float(pattern_list.value[0].multipliers[5]) == 1.2
 
-        assert float(pattern_list[0].multipliers[6]) == 1.0
-        assert float(pattern_list[0].multipliers[7]) == 0.8
-        assert float(pattern_list[0].multipliers[8]) == 0.6
-        assert float(pattern_list[0].multipliers[9]) == 0.4
-        assert float(pattern_list[0].multipliers[10]) == 0.6
-        assert float(pattern_list[0].multipliers[11]) == 0.8
+        assert float(pattern_list.value[0].multipliers[6]) == 1.0
+        assert float(pattern_list.value[0].multipliers[7]) == 0.8
+        assert float(pattern_list.value[0].multipliers[8]) == 0.6
+        assert float(pattern_list.value[0].multipliers[9]) == 0.4
+        assert float(pattern_list.value[0].multipliers[10]) == 0.6
+        assert float(pattern_list.value[0].multipliers[11]) == 0.8
 
-        assert float(pattern_list[1].multipliers[0]) == 2.0
-        assert float(pattern_list[1].multipliers[1]) == 2.2
-        assert float(pattern_list[1].multipliers[2]) == 2.4
-        assert float(pattern_list[1].multipliers[3]) == 2.6
-        assert float(pattern_list[1].multipliers[4]) == 2.4
-        assert float(pattern_list[1].multipliers[5]) == 2.2
+        assert float(pattern_list.value[1].multipliers[0]) == 2.0
+        assert float(pattern_list.value[1].multipliers[1]) == 2.2
+        assert float(pattern_list.value[1].multipliers[2]) == 2.4
+        assert float(pattern_list.value[1].multipliers[3]) == 2.6
+        assert float(pattern_list.value[1].multipliers[4]) == 2.4
+        assert float(pattern_list.value[1].multipliers[5]) == 2.2
 
-        assert float(pattern_list[1].multipliers[6]) == 2.0
-        assert float(pattern_list[1].multipliers[7]) == 2.8
-        assert float(pattern_list[1].multipliers[8]) == 2.6
-        assert float(pattern_list[1].multipliers[9]) == 2.4
-        assert float(pattern_list[1].multipliers[10]) == 2.6
-        assert float(pattern_list[1].multipliers[11]) == 2.8
+        assert float(pattern_list.value[1].multipliers[6]) == 2.0
+        assert float(pattern_list.value[1].multipliers[7]) == 2.8
+        assert float(pattern_list.value[1].multipliers[8]) == 2.6
+        assert float(pattern_list.value[1].multipliers[9]) == 2.4
+        assert float(pattern_list.value[1].multipliers[10]) == 2.6
+        assert float(pattern_list.value[1].multipliers[11]) == 2.8
 
 def main():
     unittest.main()

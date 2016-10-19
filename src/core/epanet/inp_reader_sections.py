@@ -725,7 +725,7 @@ class ReportOptionsReader(SectionReader):
                 elif attr_name == "ENERGY":
                     report_options.setattr_keep_type("energy", attr_value)
                 else:
-                    report_options.parameters.extend(line)
+                    report_options.parameters.append(line)
         return report_options
 
     # @staticmethod

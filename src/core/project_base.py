@@ -68,6 +68,18 @@ class ProjectBase(object):
             lst_all.extend(section.value)
         return lst_all
 
+    def all_vertices(self, set_names=False):
+        """ Return a list of Coordinate objects, one for each internal vertices of all links.
+            If set_names is True, also set the name of each vertex to match its link. """
+        lst_all = []
+        for section in self.links_groups():
+            for link in section.value:
+                if set_names:
+                    for vertex in link.vertices:
+                        vertex.name = link.name
+                lst_all.extend(link.vertices)
+        return lst_all
+
 
 class Section(object):
     """Any section or sub-section or value in an input sequence"""

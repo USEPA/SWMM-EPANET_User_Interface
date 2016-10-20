@@ -22,7 +22,7 @@ import imp
 import traceback
 from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
-from core.coordinate import Coordinate, Polygon
+from core.coordinate import Coordinate, Link, Polygon
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -173,18 +173,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         self.add_polygon_tools = [[self.actionObjAddSub, "subcatchments"]]
 
+        # First pass through all possible tools, hide and remove the ones this model does not use
         for tools in [self.add_point_tools, self.add_link_tools, self.add_polygon_tools]:
             tool_index = 0
             while tool_index < len(tools):
                 tool = tools[tool_index]
                 act, name = tool
                 if self.canvas and hasattr(self.project, name):
-                    act.setVisible(True)
-                    act.triggered.connect(self.setQgsMapTool)
                     tool_index += 1
                 else:
                     act.setVisible(False)
                     tools.remove(tool)
+
+        # Second pass through only tools that will be used, show them and connect them to setQgsMapTool
+        for tools in [self.add_point_tools, self.add_link_tools, self.add_polygon_tools]:
+            for act, name in tools:
+                act.setVisible(True)
+                act.triggered.connect(self.setQgsMapTool)
 
         self.time_index = 0
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
@@ -240,11 +245,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if not hasattr(session.project, section_field_name):
                 raise Exception("Section not found in project: " + section_field_name)
             self.section = getattr(session.project, section_field_name)
-            if session.map_widget and hasattr(self.session, "model_layers")\
-                                  and hasattr(session.model_layers, section_field_name):
-                self.layer = getattr(self.session.model_layers, section_field_name)
-            else:
-                self.layer = None
+            self.layer = self.session.model_layers.layer_by_name(section_field_name)
 
         def redo(self):
             if self.item.name == '' or self.item.name in self.section.value:
@@ -260,6 +261,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.startEditing()
                 if isinstance(self.item, Coordinate):
                     added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                elif isinstance(self.item, Link):
+                    added = self.layer.dataProvider().addFeatures([
+                        self.session.map_widget.line_feature_from_item(self.item,
+                                                                       self.session.project.all_coordinates())])
                 elif isinstance(self.item, Polygon):
                     added = self.layer.dataProvider().addFeatures([self.session.map_widget.polygon_feature_from_item(self.item)])
 
@@ -300,11 +305,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.section = getattr(session.project, section_field_name)
             else:
                 raise Exception("Section not found in project: " + section_field_name)
-            if session.map_widget and hasattr(self.session, "model_layers") \
-                    and hasattr(session.model_layers, section_field_name):
-                self.layer = getattr(self.session.model_layers, section_field_name)
-            else:
-                self.layer = None
+            self.layer = self.session.model_layers.layer_by_name(section_field_name)
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
@@ -429,7 +430,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.moved_links = []
                 else:
                     if moved_coordinates:
-                        self.update_affected_links(undo, moved_coordinates, all_links)
+                        self.update_affected_links(moved_coordinates, all_links, dx, dy)
 
                 self.layer.commitChanges()
                 self.layer.updateExtents()
@@ -442,23 +443,29 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except:
                 pass
 
-        def update_affected_links(self, undo, moved_coordinates, all_links):
+        def update_affected_links(self, moved_coordinates, all_links, dx, dy):
             from qgis.core import QgsGeometry, QgsPoint
             # Update affected links when an inlet or outlet node has been edited
             for link in all_links:
-                if link.inlet_node in moved_coordinates or link.outlet_node in moved_coordinates:
+                move_inlet = link.inlet_node in moved_coordinates
+                move_outlet = link.outlet_node in moved_coordinates
+                if move_inlet or move_outlet:
                     section_field_name = self.session.section_types[type(link)]
-                    if self.session.map_widget and hasattr(self.session, "model_layers") \
-                            and hasattr(self.session.model_layers, section_field_name):
-                        link_layer = getattr(self.session.model_layers, section_field_name)
+                    link_layer = self.session.model_layers.layer_by_name(section_field_name)
+                    if link_layer:
                         feature = self.session.map_widget.find_feature(link_layer, link.name)
                         self.moved_links.append([link, link_layer, feature])
 
                         link_points = feature.geometry().asPolyline()
-                        if link.inlet_node in moved_coordinates:
+                        if move_inlet and move_outlet:
+                            for vertex in link.vertices:
+                                vertex.x += dx
+                                vertex.y += dy
+                            link_points = [QgsPoint(pt.x() + dx, pt.y() + dy) for pt in link_points]
+                        elif move_inlet:
                             coord = moved_coordinates[link.inlet_node]
                             link_points[0] = QgsPoint(coord.x, coord.y)
-                        if link.outlet_node in moved_coordinates:
+                        else:  # move_outlet:
                             coord = moved_coordinates[link.outlet_node]
                             link_points[-1] = QgsPoint(coord.x, coord.y)
                         print("Update link " + link.name)
@@ -504,7 +511,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:
-                self.map_widget.setAddObjectMode(act, name, CaptureTool)
+                self.map_widget.setAddObjectMode(act, name, AddLinkTool)
             for act, name in self.add_polygon_tools:
                 self.map_widget.setAddObjectMode(act, name, CaptureTool)
 
@@ -1047,6 +1054,12 @@ class ModelLayers:
                 for feature in layer.getFeatures():
                     features.append(feature)
         return features
+
+    def layer_by_name(self, layer_name):
+        try:
+            return getattr(self, layer_name)
+        except:
+            return None
 
 
 def print_process_id():

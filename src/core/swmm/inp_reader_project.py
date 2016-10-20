@@ -168,18 +168,13 @@ class ProjectReader(InputFileReader):
         self.read_polygons = SectionReaderAsList("[POLYGONS]", CoordinateReader)
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.read_coordinates = SectionReaderAsList("[COORDINATES]", CoordinateReader)
-        # X, Y coordinates for nodes
-
-        self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)
-        # X, Y coordinates for intermediate points on links between nodes
-
         # temporary storage for sections that need to be read after other sections
         self.defer_subareas = None
         self.defer_coordinates = None
         self.defer_symbols = None
         self.defer_tags = None
         self.defer_losses = None
+        self.defer_vertices = None
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
@@ -206,6 +201,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[LOSSES]":
             self.defer_losses = section_text
             return
+        elif section_name_upper == "[VERTICES]":
+            self.defer_vertices = section_text
+            return
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -224,4 +222,8 @@ class ProjectReader(InputFileReader):
         if self.defer_losses:
             LossesReader.read(self.defer_losses, project)
             self.defer_losses = None
+        if self.defer_vertices:
+            VerticesReader.read(self.defer_vertices, project)
+            self.defer_vertices = None
+
 

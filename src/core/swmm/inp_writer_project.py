@@ -236,10 +236,6 @@ class ProjectWriter(InputFileWriterBase):
                                                   ";Subcatchment    \tX-Coord   \tY-Coord")
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.write_vertices = SectionWriterAsList("[VERTICES]", CoordinateWriter,
-                                                  ";Link            \tX-Coord   \tY-Coord")
-        # VERTICES # X,Y coordinates for each interior vertex of polyline links
-
         self.write_tags = TagsWriter()
         # [TAGS]
 
@@ -289,6 +285,14 @@ class ProjectWriter(InputFileWriterBase):
         coordinates_text = coordinates_writer.as_text(coordinates)
         if coordinates_text:
             inp += '\n' + coordinates_text + '\n'
+
+        vertices = SectionAsList("[VERTICES]")
+        vertices.value = project.all_vertices(True)
+        vertices_writer = SectionWriterAsList("[VERTICES]", CoordinateWriter,
+                                              ";Link            \tX-Coord   \tY-Coord")
+        vertices_text = vertices_writer.as_text(vertices)
+        if vertices_text:
+            inp += '\n' + vertices_text + '\n'
 
         losses = SectionAsList("[LOSSES]")  # (list of Conduit)
         losses.value = project.conduits.value

@@ -205,17 +205,22 @@ try:
             return feature
 
         @staticmethod
-        def line_feature_from_item(item, inlet_coord, outlet_coord):
+        def line_feature_from_item(item, project_coordinates):
+            link_coordinates = []
+            link_coordinates.append(project_coordinates[item.inlet_node])
+            link_coordinates.extend(item.vertices)
+            link_coordinates.append(project_coordinates[item.outlet_node])
+
+            link_points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPolyline([
-                QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
-                QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+            feature.setGeometry(QgsGeometry.fromPolyline(link_points))
             feature.setAttributes([item.name, 0.0])
             return feature
 
         @staticmethod
         def polygon_feature_from_item(item):
-            geometry = QgsGeometry.fromPolygon([item.vertices])
+            pts = [QgsPoint(float(coord.x), float(coord.y)) for coord in item.vertices]
+            geometry = QgsGeometry.fromPolygon([pts])
             feature = QgsFeature()
             feature.setGeometry(geometry)
             feature.setAttributes([item.name, 0.0])
@@ -310,10 +315,7 @@ try:
             if links:
                 for link in links:
                     try:
-                        inlet_coord = coordinates[link.inlet_node]
-                        outlet_coord = coordinates[link.outlet_node]
-                        if inlet_coord and outlet_coord:
-                            features.append(self.line_feature_from_item(link, inlet_coord, outlet_coord))
+                        features.append(self.line_feature_from_item(link, coordinates))
                     except Exception as exLink:
                         print "Skipping link " + link.name + ": " + str(exLink)
 
@@ -511,11 +513,7 @@ try:
 
         def saveVectorLayers(self, folder):
             layer_index = 0
-            if hasattr(self.session, "model_layers"):
-                model_layers = self.session.model_layers.all_layers
-            else:
-                model_layers = self.canvas.layers()
-            for map_layer in model_layers:
+            for map_layer in self.session.model_layers.all_layers:
                 try:
                     vector_layer = map_layer.layer()
                     layer_index += 1
@@ -564,6 +562,9 @@ try:
                 self.captureMode = CaptureTool.CAPTURE_LINE
 
             self.setCursor(QtCore.Qt.CrossCursor)
+            self.inlet_node = None
+            self.outlet_node = None
+
 
         def canvasReleaseEvent(self, event):
             if event.button() == QtCore.Qt.LeftButton:
@@ -571,31 +572,25 @@ try:
                     self.startCapturing()
                 self.addVertex(event.pos())
             elif event.button() == QtCore.Qt.RightButton:
-                points = self.getCapturedGeometry()
-                self.stopCapturing()
-                if points:
-                    self.geometryCaptured(points)
+                self.geometryCaptured()
 
         def canvasMoveEvent(self, event):
             if self.tempRubberBand and self.capturing:
-                mapPt,layerPt = self.transformCoordinates(event.pos())
-                self.tempRubberBand.movePoint(mapPt)
+                self.tempRubberBand.movePoint(self.toMapCoordinates(event.pos()))
 
         def keyPressEvent(self, event):
-            if event.key() == QtCore.Qt.Key_Backspace or \
-               event.key() == QtCore.Qt.Key_Delete:
+            key = event.key()
+            if key in [QtCore.Qt.Key_Backspace, QtCore.Qt.Key_Delete]:
                 self.removeLastVertex()
                 event.ignore()
-            if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
-                points = self.getCapturedGeometry()
+            elif key in [QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter]:
+                self.geometryCaptured()
+            elif key == QtCore.Qt.Key_Escape:
                 self.stopCapturing()
-                if points:
-                    self.geometryCaptured(points)
-
-        def transformCoordinates(self, canvasPt):
-            return self.toMapCoordinates(canvasPt), self.toLayerCoordinates(self.layer, canvasPt)
 
         def startCapturing(self):
+            self.inlet_node = None
+            self.outlet_node = None
             color = QColor("red")
             color.setAlphaF(0.78)
 
@@ -610,6 +605,7 @@ try:
             self.tempRubberBand.setLineStyle(QtCore.Qt.DotLine)
             self.tempRubberBand.show()
             self.capturing = True
+
 
         def bandType(self):
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
@@ -629,7 +625,8 @@ try:
             self.canvas.refresh()
 
         def addVertex(self, canvasPoint):
-            mapPt,layerPt = self.transformCoordinates(canvasPoint)
+            mapPt = self.toMapCoordinates(canvasPoint)
+            layerPt = self.toLayerCoordinates(self.layer, canvasPoint)
 
             self.rubberBand.addPoint(mapPt)
             self.capturedPoints.append(layerPt)
@@ -637,6 +634,7 @@ try:
             self.tempRubberBand.reset(self.bandType())
             if self.captureMode == CaptureTool.CAPTURE_LINE:
                 self.tempRubberBand.addPoint(mapPt)
+
             elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 firstPoint = self.rubberBand.getPoint(0, 0)
                 self.tempRubberBand.addPoint(firstPoint)
@@ -664,34 +662,127 @@ try:
 
             del self.capturedPoints[-1]
 
-        def getCapturedGeometry(self):
+        def geometryCaptured(self):
             points = self.capturedPoints
             if self.captureMode == CaptureTool.CAPTURE_LINE:
                 if len(points) < 2:
-                    return None
+                    points = None
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 if len(points) < 3:
-                    return None
+                    points = None
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 points.append(points[0]) # Close polygon.
-            return points
 
-        def geometryCaptured(self, layerCoords):
-            #self.onGeometryAdded()
-            new_object = self.object_type()
-            new_object.vertices = layerCoords
-            self.session.add_item(new_object)
-            #if self.captureMode == CaptureTool.CAPTURE_LINE:
-            #    geometry = QgsGeometry.fromPolyline(layerCoords)
-            #elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
-            #    geometry = QgsGeometry.fromPolygon([layerCoords])
+            self.stopCapturing()
+
+            if points or self.inlet_node and self.outlet_node:
+                new_object = self.object_type()
+                new_object.vertices = []
+                if self.inlet_node is not None and self.outlet_node is not None:
+                    new_object.inlet_node = self.inlet_node
+                    new_object.outlet_node = self.outlet_node
+                    self.inlet_node = None
+                    self.outlet_node = None
+                    points = points[1:-1]
+
+                for pt in points:
+                    new_coord = Coordinate()
+                    new_coord.x = pt.x()
+                    new_coord.y = pt.y()
+                    new_object.vertices.append(new_coord)
+
+                self.session.add_item(new_object)
+                #if self.captureMode == CaptureTool.CAPTURE_LINE:
+                #    geometry = QgsGeometry.fromPolyline(layerCoords)
+                #elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
+                #    geometry = QgsGeometry.fromPolygon([layerCoords])
+
 
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
-            CaptureTool.__init__(self, canvas, layer, session.onGeometryAdded, CaptureTool.CAPTURE_LINE)
-            self.layer_name = layer_name
-            self.object_type = object_type
-            self.session = session
+            CaptureTool.__init__(self, canvas, layer, layer_name, object_type, session)
+            self.build_spatial_index()
+
+        def build_spatial_index(self):
+            """ Build self.layer_spatial_indexes as cache of node locations eligible to be endpoints of a new link """
+            self.layer_spatial_indexes = []
+            for lyr in self.session.model_layers.nodes_layers:
+                try:
+                    if isinstance(lyr, QgsVectorLayer):
+                        provider = lyr.dataProvider()
+                        map_points = []
+                        canvas_points = []
+                        ids = []
+                        for feat in provider.getFeatures():
+                            pt = feat.geometry().asPoint()
+                            map_points.append(pt)
+                            canvas_points.append(self.toCanvasCoordinates(pt))
+                            ids.append(feat.id())
+                        if map_points:
+                            self.layer_spatial_indexes.append((lyr, map_points, canvas_points, ids))
+                except Exception as e:
+                    print str(e)
+
+        def find_nearest_feature(self, canvas_point):
+            nearest_layer = None
+            nearest_feature = None
+            nearest_canvas_point = None
+            nearest_map_point = None
+            nearest_pt_id = -1
+            nearest_distance = float("inf")
+            for (lyr, map_points, canvas_points, ids) in self.layer_spatial_indexes:
+                try:
+                    pt_index = 0
+                    for pt in canvas_points:
+                        distance = (canvas_point.x() - pt.x()) ** 2 + (canvas_point.y() - pt.y()) ** 2
+                        if distance < nearest_distance:
+                            nearest_layer = lyr
+                            nearest_canvas_point = canvas_point
+                            nearest_map_point = map_points[pt_index]
+                            nearest_pt_id = ids[pt_index]
+                            nearest_distance = distance
+                            # print(str(math.sqrt(nearest_distance)))
+                        pt_index += 1
+
+                except Exception as e1:
+                    print str(e1)
+
+            if nearest_layer:
+                iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_pt_id))
+                if iterator:
+                    nearest_feature = next(iterator)
+
+            return nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, math.sqrt(nearest_distance)
+
+        def addVertex(self, canvas_point):
+            nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, nearest_distance =\
+                self.find_nearest_feature(canvas_point)
+            # print("Found nearest distance " + str(nearest_distance))
+            if nearest_feature:
+                nearest_feature_name = nearest_feature.attributes()[0]
+                if len(self.capturedPoints) == 0:
+                    self.inlet_node = nearest_feature_name
+                    canvas_point = nearest_canvas_point
+                    map_point = nearest_map_point
+                elif nearest_distance < 15:
+                    self.outlet_node = nearest_feature_name
+                    canvas_point = nearest_canvas_point
+                    map_point = nearest_map_point
+                else:
+                    map_point = self.toMapCoordinates(canvas_point)
+
+            layer_point = self.toLayerCoordinates(self.layer, canvas_point)
+
+            self.rubberBand.addPoint(map_point)
+            self.capturedPoints.append(layer_point)
+            self.tempRubberBand.reset(self.bandType())
+            self.tempRubberBand.addPoint(map_point)
+
+            if self.outlet_node:
+                self.geometryCaptured()
+                self.inlet_node = None
+                self.outlet_node = None
+
 
     class AddPointTool(QgsMapTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
@@ -710,6 +801,7 @@ try:
             new_object.y = point.y()
             self.session.add_item(new_object)
 
+
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.
             Add another of the same type to the selection with ctrl-click.
@@ -724,11 +816,7 @@ try:
 
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
-            if hasattr(self.session, "model_layers"):
-                model_layers = self.session.model_layers.all_layers
-            else:
-                model_layers = self.canvas.layers()
-            for lyr in model_layers:
+            for lyr in self.session.model_layers.all_layers:
                 try:
                     if isinstance(lyr, QgsVectorLayer):
                         provider = lyr.dataProvider()
@@ -743,7 +831,7 @@ try:
                                 ids.append(feat.id())
                                 found = True
                         if found:
-                            self.layer_spatial_indexes.append((lyr, spatial_index, ids))
+                            self.layer_spatial_indexes.append((lyr, spatial_index, ids, None))
                 except Exception as e:
                     print str(e)
 
@@ -803,7 +891,7 @@ try:
 
                 self.selected_names = []
                 map_point = self.toMapCoordinates(mouse_event.pos())
-                self.nearest_layer, nearest_feature = self.find_nearest_feature(map_point)
+                self.nearest_layer, nearest_feature, nearest_vertex = self.find_nearest_feature(map_point)
                 if nearest_feature:
                     nearest_feature_name = nearest_feature.attributes()[0]
                 else:
@@ -837,8 +925,9 @@ try:
             nearest_layer = None
             nearest_feature = None
             nearest_pt_id = -1
+            nearest_vertex = -1
             nearest_distance = float("inf")
-            for (lyr, points, ids) in self.layer_spatial_indexes:
+            for (lyr, points, ids, vertices) in self.layer_spatial_indexes:
                 try:
                     pt_index = 0
                     for pt in points:
@@ -846,6 +935,8 @@ try:
                         if distance < nearest_distance:
                             nearest_layer = lyr
                             nearest_pt_id = ids[pt_index]
+                            if vertices:
+                                nearest_vertex = vertices[pt_index]
                             nearest_distance = distance
                         pt_index += 1
 
@@ -857,7 +948,7 @@ try:
                 if iterator:
                     nearest_feature = next(iterator)
 
-            return nearest_layer, nearest_feature
+            return nearest_layer, nearest_feature, nearest_vertex
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()
@@ -867,39 +958,70 @@ try:
         """ Move the internal vertices of links or subcatchments. Not yet functional. """
         def __init__(self, canvas, session):
             SelectMapTool.__init__(self, canvas, session)
+            self.layer_spatial_indexes = []
+
+        def canvasReleaseEvent(self, mouse_event):
+            if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
+                new_pts = []
+                for pt in geometry.asPolygon()[0]:
+                    new_pts.append(QgsPoint(pt.x() + dx, pt.y() + dy))
+                new_geom = QgsGeometry.fromPolygon([new_pts])
+            self.layer.changeGeometry(feature.id(), new_geom)
+                # event_pt = self.toMapCoordinates(mouse_event.pos())
+                # start_pt = self.toMapCoordinates(self.start_drag_position)
+                # self.session.move_selected_items(self.nearest_layer,
+                #                                  event_pt.x() - start_pt.x(),
+                #                                  event_pt.y() - start_pt.y())
+            self.end_drag()
+
+        def canvasPressEvent(self, mouse_event):
+            try:
+                map_point = self.toMapCoordinates(mouse_event.pos())
+                self.nearest_layer, self.nearest_feature, self.nearest_vertex = self.find_nearest_feature(map_point)
+                if self.nearest_feature:
+                    self.start_drag(mouse_event)
+            except Exception as e2:
+                print str(e2) + '\n' + str(traceback.print_exc())
 
         def build_spatial_index(self):
+            """ Build list of eligivle vertices that could be moved by this tool.
+                List is saved in self.layer_spatial_indexes. """
             self.layer_spatial_indexes = []
-            if hasattr(self.session, "model_layers"):
-                model_layers = self.session.model_layers.all_layers
-            else:
-                model_layers = self.canvas.layers()
+            model_layers = []
+            model_layers.extend(self.session.model_layers.links_layers)
+            try:
+                model_layers.append(self.session.model_layers.subcatchments)
+            except:
+                pass  # Skip, don't have that layer
             for lyr in model_layers:
                 try:
                     if isinstance(lyr, QgsVectorLayer):
                         provider = lyr.dataProvider()
-                        # insert features to index
-                        spatial_index = []  # QgsSpatialIndex()
+                        spatial_index = []
                         ids = []
                         pt_indexes = []
                         found = False
                         for feat in provider.getFeatures():
                             geometry = feat.geometry()
-                            feat_id = feat.id()
                             points = None
-                            if geometry.wkbType() == QGis.WKBLineString:
-                                points = geometry.asPolyline()
-                            elif geometry.wkbType() == QGis.WKBPolygon:
-                                # Select subbasin by clicking closest to center of its bounding box
-                                box = geometry.boundingBox()
-                                pt = QgsPoint((box.xMinimum() + box.xMaximum()) / 2,
-                                              (box.yMinimum() + box.yMaximum()) / 2)
-
+                            try:
+                                if geometry.wkbType() == QGis.WKBLineString:
+                                    points = geometry.asPolyline()[1:-2]  # skip first and last point which are nodes
+                                    index = 1
+                                elif geometry.wkbType() == QGis.WKBPolygon:
+                                    points = geometry.asPolygon()[0]
+                                    index = 0
+                                else:
+                                    break  # if this one is not a type we can use, others in layer are not either
+                            except:
+                                pass
                             if points:
-                                for index in range(1, len(points) - 2):  # skip first and last point which are nodes
-                                    spatial_index.append(points[index])
+                                feat_id = feat.id()
+                                for pt in points:
+                                    spatial_index.append(pt)
                                     ids.append(feat_id)
                                     pt_indexes.append(index)
+                                    index += 1
                                 found = True
                         if found:
                             self.layer_spatial_indexes.append((lyr, spatial_index, ids, pt_indexes))

@@ -19,7 +19,7 @@ class XsectionTest(unittest.TestCase):
 
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
-        inp_filename = "CrossSectionAllShapes.inp"
+        inp_filename = directory + '\\' + "CrossSectionAllShapes.inp"
         with open(inp_filename,"r") as f:
             source_text = f.read()
 

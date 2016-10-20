@@ -76,14 +76,9 @@ class ProjectWriter(InputFileWriterBase):
         self.write_options = OptionsWriter()
         self.write_times = SectionWriter()
         self.write_report = ReportOptionsWriter()
-        self.write_coordinates = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
-                                                     ";Node            \tX-Coord   \tY-Coord")
-        self.write_vertices = SectionWriterAsList("[VERTICES]", CoordinateWriter,
-                                                  ";Link            \tX-Coord   \tY-Coord")
         self.write_labels = SectionWriterAsList("[LABELS]", LabelWriter,
                                                 ";X-Coord        \tY-Coord         \tLabel & Anchor Node")
         self.write_backdrop = BackdropOptionsWriter()
-        self.write_tags = TagsWriter()
 
     def as_text(self, project):
 
@@ -93,7 +88,23 @@ class ProjectWriter(InputFileWriterBase):
         if quality_text:
             inp += '\n' + quality_text + '\n'
 
-        tags_text = self.write_tags.as_text(project)
+        coordinates = SectionAsList("[COORDINATES]")
+        coordinates.value = project.all_nodes()
+        coordinates_writer = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
+                                                 ";Node            \tX-Coord   \tY-Coord")
+        coordinates_text = coordinates_writer.as_text(coordinates)
+        if coordinates_text:
+            inp += '\n' + coordinates_text + '\n'
+
+        vertices = SectionAsList("[VERTICES]")
+        vertices.value = project.all_vertices(True)
+        vertices_writer = SectionWriterAsList("[VERTICES]", CoordinateWriter,
+                                              ";Link            \tX-Coord   \tY-Coord")
+        vertices_text = vertices_writer.as_text(vertices)
+        if vertices_text:
+            inp += '\n' + vertices_text + '\n'
+
+        tags_text = TagsWriter.as_text(project)
         if tags_text:
             inp += '\n' + tags_text + '\n'
 

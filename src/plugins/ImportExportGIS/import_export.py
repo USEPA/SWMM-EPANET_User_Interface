@@ -79,17 +79,16 @@ def export_to_gis(session, file_name):
         driver_name = "GeoJson"
         one_file = True
         extension = ".json"
-    coordinates = session.project.all_coordinates()
-    vertices = session.project.vertices.value
+    coordinates = session.project.all_nodes()
     if session.model == "EPANET":
         return export_epanet_to_gis(session, file_name, path_file, extension, driver_name, layer_options, one_file,
-                                    coordinates, vertices)
+                                    coordinates)
     else:
         return export_swmm_to_gis(session, file_name, path_file, extension, driver_name, layer_options, one_file,
-                                  coordinates, vertices)
+                                  coordinates)
 
 def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, layer_options, one_file,
-                         coordinates, vertices):
+                         coordinates):
     layer_count = 0
     layer = None
 
@@ -103,21 +102,21 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
     # Export Pipes
     layer = export_links_layer(session.project.pipes.value, pipe_model_attributes, pipe_gis_attributes,
                                all_gis_attributes, layer, one_file, path_file + "_pipes" + extension,
-                               driver_name, layer_options, coordinates, vertices)
+                               driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Pumps
     layer = export_links_layer(session.project.pumps.value, pumps_model_attributes, pumps_gis_attributes,
                                all_gis_attributes, layer, one_file, path_file + "_pumps" + extension,
-                               driver_name, layer_options, coordinates, vertices)
+                               driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Valves
     layer = export_links_layer(session.project.valves.value, valves_model_attributes, valves_gis_attributes,
                                all_gis_attributes, layer, one_file, path_file + "_valves" + extension,
-                               driver_name, layer_options, coordinates, vertices)
+                               driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
@@ -152,7 +151,7 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
 
 
 def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, layer_options, one_file,
-                       coordinates, vertices):
+                       coordinates):
     layer_count = 0
     layer = None
 
@@ -166,7 +165,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     # Export conduits
     layer = export_links_layer(session.project.conduits.value, conduit_model_attributes, conduit_gis_attributes,
                                all_gis_attributes, layer, one_file, path_file + "_conduits" + extension,
-                               driver_name, layer_options, coordinates, vertices)
+                               driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
@@ -199,7 +198,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
             layer = export_links_layer(section.value,
                                        generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
                                        path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
-                                       + extension, driver_name, layer_options, coordinates, vertices)
+                                       + extension, driver_name, layer_options, coordinates)
             if layer:
                 layer_count += 1
 
@@ -228,8 +227,8 @@ def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_
 
 
 def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer,
-                        one_file, layer_file_name, driver_name, layer_options, coordinates, vertices):
-    layer = make_links_layer(coordinates, vertices, model_links,
+                        one_file, layer_file_name, driver_name, layer_options, coordinates):
+    layer = make_links_layer(coordinates, model_links,
                              model_attributes, gis_attributes, all_gis_attributes, layer)
     if layer:
         if not one_file:
@@ -249,7 +248,7 @@ def make_gis_fields(gis_attributes):
     return fields
 
 
-def make_links_layer(coordinates, vertices, links, model_attributes, gis_attributes, all_gis_attributes, layer):
+def make_links_layer(coordinates, links, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []
     for link in links:       # For each link, create a GIS feature
         try:
@@ -257,9 +256,8 @@ def make_links_layer(coordinates, vertices, links, model_attributes, gis_attribu
             outlet_coord = coordinates[link.outlet_node]
             feature = QgsFeature()
             points = [QgsPoint(float(inlet_coord.x), float(inlet_coord.y))]
-            for vertex_pair in vertices:  # Add any intermediate points between inlet and outlet
-                if vertex_pair.name == link.name:
-                    points.append(QgsPoint(float(vertex_pair.x), float(vertex_pair.y)))
+            for vertex_pair in link.vertices:  # Add any intermediate points between inlet and outlet
+                points.append(QgsPoint(float(vertex_pair.x), float(vertex_pair.y)))
             points.append(QgsPoint(float(outlet_coord.x), float(outlet_coord.y)))
             feature.setGeometry(QgsGeometry.fromPolyline(points))
 
@@ -377,10 +375,10 @@ def import_from_gis(session, file_name):
         session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
 
     if session.model == "EPANET":
-        session.model_layers.pipes = session.map_widget.addLinks(project.all_coordinates(),
+        session.model_layers.pipes = session.map_widget.addLinks(project.all_nodes(),
                                                                  section.value, "Pipes", QtGui.QColor('gray'), 3)
     else:
-        session.model_layers.conduits = session.map_widget.addLinks(project.all_coordinates(),
+        session.model_layers.conduits = session.map_widget.addLinks(project.all_nodes(),
                                                                     section.value, "Conduits", QtGui.QColor('gray'), 3.5)
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
@@ -406,7 +404,7 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
-            coordinates = project.all_coordinates()
+            coordinates = project.all_nodes()
             for feature in layer.getFeatures():
                 geom = feature.geometry()
                 if geom.type() == QGis.Line:

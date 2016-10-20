@@ -291,17 +291,20 @@ class StatusReader(SectionReader):
         return status
 
 
-class CoordinateReader():
-
+class CoordinateReader(SectionReader):
     @staticmethod
     def read(new_text):
         coordinate = Coordinate()
         fields = new_text.split()
         if len(fields) > 2:
-            coordinate.name, coordinate.x, coordinate.y = fields[0:3]
-            return coordinate
-        else:
-            return None
+            try:
+                coordinate.name = fields[0]
+                coordinate.x = float(fields[1])
+                coordinate.y = float(fields[2])
+                return coordinate
+            except:
+                print("Problem reading coordinate: " + new_text)
+        return None
 
 
 class CoordinatesReader(SectionReader):
@@ -309,23 +312,39 @@ class CoordinatesReader(SectionReader):
 
     @staticmethod
     def read(new_text, project):
+        all_nodes = project.all_nodes()
         disposable_section = Section()
         disposable_section.SECTION_NAME = "[COORDINATES]"
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
             coordinate = CoordinateReader.read(line)
             if coordinate:
-                found = False
-                for node_group in project.nodes_groups():
-                    if node_group and node_group.value:
-                        for node in node_group.value:
-                            if node.name == coordinate.name:
-                                node.x = coordinate.x
-                                node.y = coordinate.y
-                                found = True
-                                break
-                if not found:
-                    print "Node not found in model for coordinate " + coordinate.name
+                try:
+                    node = all_nodes[coordinate.name]
+                    node.x = coordinate.x
+                    node.y = coordinate.y
+                except:
+                    print("Node not found in model for coordinate " + coordinate.name)
+
+
+class VerticesReader(SectionReader):
+    """Read coordinates of intermediate points of links"""
+
+    @staticmethod
+    def read(new_text, project):
+        links = project.all_links()
+        if links:
+            disposable_section = Section()
+            disposable_section.SECTION_NAME = "[VERTICES]"
+            for line in new_text.splitlines():
+                line = SectionReader.set_comment_check_section(disposable_section, line)
+                coordinate = CoordinateReader.read(line)
+                if coordinate:
+                    try:
+                        link = links[coordinate.name]
+                        link.vertices.append(coordinate)
+                    except Exception:
+                        print("Link not found in model for vertex " + coordinate.name)
 
 
 class QualityReader(SectionReader):

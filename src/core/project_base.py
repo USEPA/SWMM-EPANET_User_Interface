@@ -56,7 +56,7 @@ class ProjectBase(object):
         """
         return name.lower().replace(' ', '_').replace('[', '').replace(']', '')
 
-    def all_coordinates(self):
+    def all_nodes(self):
         lst_all = IndexedList([], ['name'])
         for section in self.nodes_groups():
             lst_all.extend(section.value)

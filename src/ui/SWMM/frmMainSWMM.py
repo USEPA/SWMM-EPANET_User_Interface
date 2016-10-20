@@ -996,7 +996,7 @@ class ModelLayersSWMM(ModelLayers):
         self.storage = addCoordinates(project.storage.value, "Storage Units")
         self.raingages = addCoordinates(project.raingages.value, "Rain Gages")
         self.labels = addCoordinates(project.labels.value, "Map Labels")
-        coordinates = project.all_coordinates()
+        coordinates = project.all_nodes()
         self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
         self.orifices = addLinks(coordinates, project.orifices.value, "Orifices", QColor('green'), 1.5)
         self.outlets = addLinks(coordinates, project.outlets.value, "Outlets", QColor('pink'), 2)

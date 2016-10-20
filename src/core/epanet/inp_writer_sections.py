@@ -234,14 +234,17 @@ class StatusWriter(SectionWriter):
 
 
 class CoordinateWriter(SectionWriter):
-    field_format = "{:16}\t{:16}\t{:16}"
+    field_format = "{:16}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
-        inp = CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        inp = CoordinateWriter.field_format.format(coordinate.name, str(coordinate.x), str(coordinate.y))
         if hasattr(coordinate, "comment") and coordinate.comment:
-            inp += "  # " + coordinate.comment
+            inp += "\t"
+            if not coordinate.comment.lstrip().startswith(';'):
+                inp += "; "
+            inp += coordinate.comment
         return inp
 
 

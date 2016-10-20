@@ -88,7 +88,7 @@ class CoordinateWriter(SectionWriter):
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
-        inp = CoordinateWriter.field_format.format(coordinate.name, coordinate.x, coordinate.y)
+        inp = CoordinateWriter.field_format.format(coordinate.name, str(coordinate.x), str(coordinate.y))
         if hasattr(coordinate, "comment") and coordinate.comment:
             inp += "  # " + coordinate.comment
         return inp
@@ -1279,7 +1279,7 @@ class TagsWriter(SectionWriter):
 #     @staticmethod
 #     def as_text(project):
 #         text_list = []
-#         for item in project.all_coordinates():
+#         for item in project.all_nodes():
 #             text_list.append(CoordinateWriter.as_text(item))
 #         if len(text_list) > 0:
 #             return CoordinatesWriter.SECTION_NAME + '\n' + \

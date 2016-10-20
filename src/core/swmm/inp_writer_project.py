@@ -279,7 +279,7 @@ class ProjectWriter(InputFileWriterBase):
             inp += '\n' + symbols_text + '\n'
 
         coordinates = SectionAsList("[COORDINATES]")
-        coordinates.value = project.all_coordinates()
+        coordinates.value = project.all_nodes()
         coordinates_writer = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
                                                  ";Node            \tX-Coord   \tY-Coord")
         coordinates_text = coordinates_writer.as_text(coordinates)

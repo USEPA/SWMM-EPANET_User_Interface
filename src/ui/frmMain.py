@@ -264,7 +264,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 elif isinstance(self.item, Link):
                     added = self.layer.dataProvider().addFeatures([
                         self.session.map_widget.line_feature_from_item(self.item,
-                                                                       self.session.project.all_coordinates())])
+                                                                       self.session.project.all_nodes())])
                 elif isinstance(self.item, Polygon):
                     added = self.layer.dataProvider().addFeatures([self.session.map_widget.polygon_feature_from_item(self.item)])
 
@@ -358,7 +358,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             from qgis.core import QgsGeometry, QGis, QgsPoint
             try:
                 self.layer.startEditing()
-                all_nodes = self.session.project.all_coordinates()
+                all_nodes = self.session.project.all_nodes()
                 all_links = self.session.project.all_links()
                 moved_coordinates = IndexedList([], ['name'])
                 for section_field_name in ["labels", "raingages"]:

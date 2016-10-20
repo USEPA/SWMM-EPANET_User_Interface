@@ -47,18 +47,16 @@ class ProjectReader(InputFileReader):
         self.read_options = OptionsReader()
         self.read_times = TimesOptionsReader()
         self.read_report = ReportOptionsReader()
-        self.read_coordinates = SectionReaderAsList("[COORDINATES]", CoordinateReader)
-        self.read_vertices = SectionReaderAsList("[VERTICES]", CoordinateReader)
         self.read_labels = SectionReaderAsList("[LABELS]", LabelReader)
         self.read_backdrop = BackdropOptionsReader()
 
         # temporary storage for sections that need to be read after other sections
         self.defer_quality = None
         self.defer_coordinates = None
+        self.defer_vertices = None
         self.defer_tags = None
         self.defer_mixing = None
         self.defer_emitters = None
-
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
@@ -68,6 +66,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[COORDINATES]":
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[VERTICES]":
+            self.defer_vertices = section_text
+            return
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
@@ -87,6 +88,9 @@ class ProjectReader(InputFileReader):
         if self.defer_coordinates:
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
+        if self.defer_vertices:
+            VerticesReader.read(self.defer_vertices, project)
+            self.defer_vertices = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None

@@ -162,9 +162,6 @@ class SwmmProject(ProjectBase):
         self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        # self.vertices = SectionAsList("[VERTICES]")  # (list of Coordinate)
-        # X,Y coordinates for each interior vertex of polyline links
-
         ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
     def nodes_groups(self):

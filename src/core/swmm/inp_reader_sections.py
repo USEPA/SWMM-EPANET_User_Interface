@@ -93,23 +93,18 @@ class CoordinatesReader(SectionReader):
 
     @staticmethod
     def read(new_text, project):
+        all_nodes = project.all_nodes()
         disposable_section = Section()
         disposable_section.SECTION_NAME = "[COORDINATES]"
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(disposable_section, line)
             coordinate = CoordinateReader.read(line)
             if coordinate:
-                found = False
-                for node_group in project.nodes_groups():
-                    if node_group and node_group.value:
-                        try:
-                            node = node_group.value[coordinate.name]
-                            node.x = coordinate.x
-                            node.y = coordinate.y
-                            found = True
-                        except:  # Did not find in this group, move on to the next one
-                            pass
-                if not found:
+                try:
+                    node = all_nodes[coordinate.name]
+                    node.x = coordinate.x
+                    node.y = coordinate.y
+                except:
                     print("Node not found in model for coordinate " + coordinate.name)
 
 

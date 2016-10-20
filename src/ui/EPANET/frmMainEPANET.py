@@ -713,7 +713,7 @@ class ModelLayersEPANET(ModelLayers):
         self.sources = addCoordinates(project.sources.value, "Sources")
         self.labels = addCoordinates(project.labels.value, "Labels")
 
-        coordinates = project.all_coordinates()
+        coordinates = project.all_nodes()
         self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
         self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)

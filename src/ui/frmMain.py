@@ -4,8 +4,9 @@ import sip
 for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", "QUrl"]:
     sip.setapi(typ, 2)
 from cStringIO import StringIO
-from embed_ipython_new import EmbedIPython
+# from embed_ipython_new import EmbedIPython
 from threading import Lock
+from PyQt4.Qsci import QsciScintilla
 
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
@@ -36,6 +37,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtGui.QMainWindow.__init__(self, None)
         self.setupUi(self)
         self.q_application = q_application
+        try:
+            print("QsciScintilla.SC_TYPE_STRING:")
+            print(str(QsciScintilla.SC_TYPE_STRING))
+        except Exception as exQsci:
+            print str(exQsci)
         self._forms = []
         """List of editor windows used during this session, kept here so they are not automatically closed."""
 
@@ -142,7 +148,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             # self.actionGroup_Obj.addAction(self.actionObjAddTank)
                             # self.actionGroup_Obj.addAction(self.actionObjAddValve)
                             # self.actionGroup_Obj.addAction(self.actionObjAddWeir)
-
+                            print("Found QGIS " + qgis_home)
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
                     msg = "Did not load QGIS from " + qgis_home + ": " + str(e1) + '\n' # + str(traceback.print_exc())
@@ -685,10 +691,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     return
 
     def script_ipython(self):
-        widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE)
-        ipy_win = self.map.addSubWindow(widget,QtCore.Qt.Widget)
-        if ipy_win:
-            ipy_win.show()
+        pass
+        #widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE)
+        #ipy_win = self.map.addSubWindow(widget,QtCore.Qt.Widget)
+        #if ipy_win:
+        #    ipy_win.show()
 
     def script_exec(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")

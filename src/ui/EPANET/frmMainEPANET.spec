@@ -2,9 +2,11 @@
 
 block_cipher = None
 
+qgis_dev = 'C:\\OSGeo4W64\\apps\\qgis-dev\\'
+site_packages = 'C:\\OSGeo4W64\\apps\\Python27\\Lib\\site-packages\\'
 
 a = Analysis(['frmMainEPANET.py'],
-             pathex=['C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\EPANET'],
+             pathex=[site_packages + 'PyQt4', 'C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\EPANET'],
              binaries=None,
              datas=None,
              hiddenimports=[],
@@ -19,18 +21,37 @@ def add_plugin(plugin_name):
     import os
     plugin_lst = []
     for file in os.listdir('../../plugins/' + plugin_name):
-        if file == "__init__.py":
-            plugin_lst.append(('plugins/' + plugin_name + '/' + file, '../../plugins/' + plugin_name + '/' + file, 'DATA'))
+        # if file == "__init__.py":
+        plugin_lst.append(('plugins/' + plugin_name + '/' + file, '../../plugins/' + plugin_name + '/' + file, 'DATA'))
     return plugin_lst
 
+a.datas += add_plugin('ImportExportGIS')
 a.datas += add_plugin('Summary')
+
+qgis_plugins = qgis_dev + 'plugins\\'
+lst = []
+for file in os.listdir(qgis_plugins):
+    lst.append(('plugins/' + file, qgis_plugins + file, 'DATA'))
+a.datas += lst
+
+resourcesdir = qgis_dev + 'resources\\'
+lst = []
+for file in os.listdir(zoneinfodir):
+    lst.append(('resources/' + file, resourcesdir + file, 'DATA'))
+a.datas += lst
+
+zoneinfodir = site_packages + 'dateutil\\zoneinfo\\'
+lst = []
+for file in os.listdir(zoneinfodir):
+    lst.append(('dateutil/zoneinfo/' + file, zoneinfodir + file, 'DATA'))
+a.datas += lst
 
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='frmMainEPANET',
+          name='EPANET-UI',
           debug=False,
           strip=False,
           upx=True,
@@ -43,4 +64,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='frmMainEPANET')
+               name='EPANET-UI')

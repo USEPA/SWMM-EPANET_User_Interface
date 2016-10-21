@@ -32,8 +32,15 @@ SB1                TSS         0.1      Lead         0.01
         """
         my_options = InitialLoadingsReader.read(source_text)
         actual_text = InitialLoadingsWriter.as_text(my_options)
-        msg = '\nSet:' + source_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, source_text), msg)
+        read_written =  InitialLoadingsReader.read(actual_text)
+        self.assertTrue(len(read_written.value) == 2, "Should have read two initial loadings")
+        self.assertTrue(read_written.value[0].subcatchment_name == "SB1", "First loading subbasin should be SB1")
+        self.assertTrue(read_written.value[0].pollutant_name == "TSS", "First loading pollutant_name should be TSS")
+        self.assertTrue(read_written.value[0].initial_buildup == "0.1", "First loading initial_buildup should be 0.1")
+
+        self.assertTrue(read_written.value[1].subcatchment_name == "SB1", "First loading subbasin should be SB1")
+        self.assertTrue(read_written.value[1].pollutant_name == "Lead", "First loading pollutant_name should be Lead")
+        self.assertTrue(read_written.value[1].initial_buildup == "0.01", "First loading initial_buildup should be 0.01")
 
         # section_from_text = self.project_reader.read_loadings.read(source_text)
         # actual_text = self.project_writer.write_loadings.as_text(section_from_text)

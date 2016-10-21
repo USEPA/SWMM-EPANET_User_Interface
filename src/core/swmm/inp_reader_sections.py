@@ -778,33 +778,47 @@ class TransectsReader(SectionReader):
         transects.value = []
         item_lines = []
         line = ''
-        found_non_comment = False
+        comment = ''
+        n_left, n_right, n_channel = 0, 0, 0
         for line in new_text.splitlines():
+            line = line.lstrip()
             if line.startswith(";;") or line.startswith('['):
                 SectionReader.set_comment_check_section(transects, line)
             elif line.startswith(';'):
-                if found_non_comment:  # This comment must be the start of the next one, so build the previous one
-                    try:
-                        transects.value.append(TransectReader.read('\n'.join(item_lines)))
-                        item_lines = []
-                        found_non_comment = False
-                    except Exception as e:
-                        print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
-                item_lines.append(line)
+                comment = line
             elif not line.strip():  # add blank row as a comment item in transects.value list
                 comment = Section()
                 comment.name = "Comment"
                 comment.value = ''
                 transects.value.append(comment)
             else:
-                item_lines.append(line)
-                found_non_comment = True
-
-        if found_non_comment:  # Found a final one that has not been built yet, build it now
-            try:
-                transects.value.append(TransectReader.read('\n'.join(item_lines)))
-            except Exception as e:
-                print("Could not create object from: " + line + '\n' + str(e) + '\n' + str(traceback.print_exc()))
+                fields = line.split()
+                if len(fields) > 2:
+                    token = fields[0].upper()
+                    if token == "GR":
+                        for elev_index in range(1, len(fields) - 1, 2):
+                            transect.stations.append((fields[elev_index], fields[elev_index + 1]))
+                    elif len(fields) > 3:
+                        if token == "NC":
+                            n_left, n_right, n_channel = fields[1:4]
+                        elif token == "X1":
+                            transect = Transect()
+                            transects.value.append(transect)
+                            transect.comment = comment
+                            comment = ''
+                            transect.n_left = n_left
+                            transect.n_right = n_right
+                            transect.n_channel = n_channel
+                            transect.name = fields[1]
+                            transect.overbank_left = fields[3]
+                            if len(fields) > 4:
+                                transect.overbank_right = fields[4]
+                            if len(fields) > 7:
+                                transect.meander_modifier = fields[7]
+                            if len(fields) > 8:
+                                transect.stations_modifier = fields[8]
+                            if len(fields) > 9:
+                                transect.elevations_modifier = fields[9]
         return transects
 
 

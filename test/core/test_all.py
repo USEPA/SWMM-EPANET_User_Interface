@@ -4,6 +4,7 @@ import unittest
 import test.HTMLTestRunner
 import test.core.epanet.test_all
 import test.core.swmm.test_all
+import coverage
 
 my_suite = unittest.TestSuite()
 my_suite.addTests(test.core.epanet.test_all.my_suite)

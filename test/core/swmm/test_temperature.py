@@ -112,7 +112,7 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
             my_options = TemperatureReader.read(test_text)
             actual_text = TemperatureWriter.as_text(my_options)
             msg = '\nSet:' + test_text + '\nGet:' + actual_text
-            msg = "\nShould detected error and not read/write"
+            msg = "\nRule not enforced: Windspeed file should be the same climate file used for air temperature"
             find_error = False
         except Exception as e:
             msg = "\nSet:" + test_text + '\nGet:' + str(e)
@@ -151,7 +151,7 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
             my_options = TemperatureReader.read(test_text)
             actual_text = TemperatureWriter.as_text(my_options)
             msg = '\nSet:' + test_text + '\nGet:' + actual_text
-            msg = "\nShould detected error and not read/write"
+            msg = "\nRule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one."
             find_error = False
         except Exception as e:
             msg = "\nSet:" + test_text + '\nGet:' + str(e)

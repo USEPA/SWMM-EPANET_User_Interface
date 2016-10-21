@@ -1,4 +1,4 @@
-﻿from traitlets import HasTraits, Int, Unicode
+﻿# from traitlets import HasTraits, Int, Unicode
 from enum import Enum
 from core.coordinate import Coordinate
 from core.project_base import Section

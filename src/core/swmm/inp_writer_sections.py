@@ -581,7 +581,7 @@ class TransectsWriter(SectionWriter):
             else:
                 text_list.append(transects.DEFAULT_COMMENT)
             for item in transects.value:
-                item_str = str(item)
+                item_str = TransectWriter.as_text(item)
                 text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
             return '\n'.join(text_list)
         else:

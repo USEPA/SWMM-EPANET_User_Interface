@@ -229,15 +229,15 @@ class frmMainEPANET(frmMain):
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.setVisible(False)
 
-        self.map_widget.applyLegend()
-        self.map_widget.LegendDock.setVisible(False)
-        self.cboMapSubcatchments.setVisible(False)
-        self.lblMapSubcatchments.setVisible(False)
-        self.set_thematic_controls()
-        self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
-        self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
-
-        self.signalTimeChanged.connect(self.update_thematic_map)
+        if self.map_widget:
+            self.map_widget.applyLegend()
+            self.map_widget.LegendDock.setVisible(False)
+            self.cboMapSubcatchments.setVisible(False)
+            self.lblMapSubcatchments.setVisible(False)
+            self.set_thematic_controls()
+            self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
+            self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
+            self.signalTimeChanged.connect(self.update_thematic_map)
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -261,7 +261,7 @@ class frmMainEPANET(frmMain):
         self.update_thematic_map()
 
     def update_thematic_map(self):
-        if not self.allow_thematic_update:
+        if not self.allow_thematic_update or not self.map_widget:
             return
 
         if self.model_layers.nodes_layers:

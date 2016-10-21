@@ -69,7 +69,7 @@ class ProjectBase(object):
         return lst_all
 
     def all_vertices(self, set_names=False):
-        """ Return a list of Coordinate objects, one for each internal vertices of all links.
+        """ Return a list of Coordinate objects, one for each internal vertex of all links.
             If set_names is True, also set the name of each vertex to match its link. """
         lst_all = []
         for section in self.links_groups():
@@ -78,6 +78,17 @@ class ProjectBase(object):
                     for vertex in link.vertices:
                         vertex.name = link.name
                 lst_all.extend(link.vertices)
+        return lst_all
+
+    def all_polygons(self, set_names=False):
+        """ Return a list of Coordinate objects, one for each internal vertex of all subcatchments.
+            If set_names is True, also set the name of each vertex to match its subcatchment's name. """
+        lst_all = []
+        for subcatchment in self.subcatchments.value:
+            if set_names:
+                for vertex in subcatchment.vertices:
+                    vertex.name = subcatchment.name
+            lst_all.extend(subcatchment.vertices)
         return lst_all
 
 

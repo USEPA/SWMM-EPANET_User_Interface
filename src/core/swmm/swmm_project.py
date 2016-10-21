@@ -159,9 +159,6 @@ class SwmmProject(ProjectBase):
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         # X, Y coordinates and text of labels
 
-        self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
-        # X, Y coordinates for each vertex of subcatchment polygons
-
         ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
 
     def nodes_groups(self):

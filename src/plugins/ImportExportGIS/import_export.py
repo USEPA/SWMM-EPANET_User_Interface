@@ -281,6 +281,7 @@ def make_links_layer(coordinates, links, model_attributes, gis_attributes, all_g
         layer.updateExtents()
     return layer
 
+
 def gis_values_from_model(model_object, model_attributes, gis_attributes, all_gis_attributes):
     values = []
     for gis_attribute in all_gis_attributes:
@@ -372,14 +373,15 @@ def import_from_gis(session, file_name):
 
     result = import_links(project, section.value, file_name, model_attributes, gis_attributes, link_type, junction_type)
     if len(project.junctions.value) > num_existing_junctions:
-        session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
+        session.model_layers.junctions = session.map_widget.add_layer(
+                session.map_widget.build_pt_layer(project.junctions.value, "Junctions"))
 
     if session.model == "EPANET":
-        session.model_layers.pipes = session.map_widget.addLinks(project.all_nodes(),
-                                                                 section.value, "Pipes", QtGui.QColor('gray'), 3)
+        session.model_layers.pipes = session.map_widget.add_layer(session.map_widget.build_link_layer(
+                project.all_nodes(), section.value, "Pipes", QtGui.QColor('gray'), 3))
     else:
-        session.model_layers.conduits = session.map_widget.addLinks(project.all_nodes(),
-                                                                    section.value, "Conduits", QtGui.QColor('gray'), 3.5)
+        session.model_layers.conduits = session.map_widget.add_layer(session.map_widget.build_link_layer(
+                project.all_nodes(), section.value, "Conduits", QtGui.QColor('gray'), 3.5))
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return result

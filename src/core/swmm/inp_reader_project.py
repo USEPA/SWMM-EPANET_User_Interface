@@ -175,6 +175,7 @@ class ProjectReader(InputFileReader):
         self.defer_tags = None
         self.defer_losses = None
         self.defer_vertices = None
+        self.defer_polygons = None
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
@@ -204,6 +205,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[VERTICES]":
             self.defer_vertices = section_text
             return
+        elif section_name_upper == "[POLYGONS]":
+            self.defer_polygons = section_text
+            return
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -225,5 +229,9 @@ class ProjectReader(InputFileReader):
         if self.defer_vertices:
             VerticesReader.read(self.defer_vertices, project)
             self.defer_vertices = None
+        if self.defer_polygons:
+            PolygonsReader.read(self.defer_polygons, project)
+            self.defer_polygons = None
+
 
 

@@ -959,20 +959,22 @@ class ModelLayersSWMM(ModelLayers):
     def __init__(self, map_widget):
         """Initialize empty map layers"""
         ModelLayers.__init__(self, map_widget)
-        addCoordinates = self.map_widget.addCoordinates
-        addLinks = self.map_widget.addLinks
-        self.junctions = addCoordinates(None, "Junctions")
-        self.outfalls = addCoordinates(None, "Outfalls")
-        self.dividers = addCoordinates(None, "Dividers")
-        self.storage = addCoordinates(None, "Storage Units")
-        self.raingages = addCoordinates(None, "Rain Gages")
-        self.labels = addCoordinates(None, "Map Labels")
-        self.pumps = addLinks(None, None, "Pumps", QColor('red'), 1)
-        self.orifices = addLinks(None, None, "Orifices", QColor('green'), 1.5)
-        self.outlets = addLinks(None, None, "Outlets", QColor('pink'), 2)
-        self.weirs = addLinks(None, None, "Weirs", QColor('orange'), 2.5)
-        self.conduits = addLinks(None, None, "Conduits", QColor('gray'), 3.5)
-        self.subcatchments = self.map_widget.addPolygons(None, "Subcatchments")
+        pt_layer = self.map_widget.build_pt_layer
+        build_link_layer = self.map_widget.build_link_layer
+        add_layer = self.map_widget.add_layer
+
+        self.junctions = add_layer(pt_layer(None, "Junctions"))
+        self.outfalls = add_layer(pt_layer(None, "Outfalls"))
+        self.dividers = add_layer(pt_layer(None, "Dividers"))
+        self.storage = add_layer(pt_layer(None, "Storage Units"))
+        self.raingages = add_layer(pt_layer(None, "Rain Gages", QColor("steelblue")))
+        self.labels = add_layer(pt_layer(None, "Map Labels"))
+        self.pumps = add_layer(build_link_layer(None, None, "Pumps", QColor('red'), 1))
+        self.orifices = add_layer(build_link_layer(None, None, "Orifices", QColor('green'), 1.5))
+        self.outlets = add_layer(build_link_layer(None, None, "Outlets", QColor('pink'), 2))
+        self.weirs = add_layer(build_link_layer(None, None, "Weirs", QColor('orange'), 2.5))
+        self.conduits = add_layer(build_link_layer(None, None, "Conduits", QColor('gray'), 3.5))
+        self.subcatchments = add_layer(self.map_widget.build_poly_layer(None, "Subcatchments"))
         self.set_lists()
 
     def set_lists(self):
@@ -986,23 +988,24 @@ class ModelLayersSWMM(ModelLayers):
     def create_layers_from_project(self, project):
         """Create QGIS map layers and populate them with features representing model objects"""
         ModelLayers.create_layers_from_project(self, project)
-        addCoordinates = self.map_widget.addCoordinates
-        addLinks = self.map_widget.addLinks
+        pt_layer = self.map_widget.build_pt_layer
+        link_layer = self.map_widget.build_link_layer
+        add_layer = self.map_widget.add_layer
 
         # Add new layers containing objects from this project
-        self.junctions = addCoordinates(project.junctions.value, "Junctions")
-        self.outfalls = addCoordinates(project.outfalls.value, "Outfalls")
-        self.dividers = addCoordinates(project.dividers.value, "Dividers")
-        self.storage = addCoordinates(project.storage.value, "Storage Units")
-        self.raingages = addCoordinates(project.raingages.value, "Rain Gages")
-        self.labels = addCoordinates(project.labels.value, "Map Labels")
+        self.junctions = add_layer(pt_layer(project.junctions.value, "Junctions"))
+        self.outfalls = add_layer(pt_layer(project.outfalls.value, "Outfalls"))
+        self.dividers = add_layer(pt_layer(project.dividers.value, "Dividers"))
+        self.storage = add_layer(pt_layer(project.storage.value, "Storage Units"))
+        self.raingages = add_layer(pt_layer(project.raingages.value, "Rain Gages"))
+        self.labels = add_layer(pt_layer(project.labels.value, "Map Labels"))
         coordinates = project.all_nodes()
-        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
-        self.orifices = addLinks(coordinates, project.orifices.value, "Orifices", QColor('green'), 1.5)
-        self.outlets = addLinks(coordinates, project.outlets.value, "Outlets", QColor('pink'), 2)
-        self.weirs = addLinks(coordinates, project.weirs.value, "Weirs", QColor('orange'), 2.5)
-        self.conduits = addLinks(coordinates, project.conduits.value, "Conduits", QColor('gray'), 3.5)
-        self.subcatchments = self.map_widget.addPolygons(project.polygons.value, "Subcatchments")
+        self.pumps = add_layer(link_layer(coordinates, project.pumps.value, "Pumps", QColor('red'), 1))
+        self.orifices = add_layer(link_layer(coordinates, project.orifices.value, "Orifices", QColor('green'), 1.5))
+        self.outlets = add_layer(link_layer(coordinates, project.outlets.value, "Outlets", QColor('pink'), 2))
+        self.weirs = add_layer(link_layer(coordinates, project.weirs.value, "Weirs", QColor('orange'), 2.5))
+        self.conduits = add_layer(link_layer(coordinates, project.conduits.value, "Conduits", QColor('gray'), 3.5))
+        self.subcatchments = add_layer(self.map_widget.build_poly_layer(project.subcatchments.value, "Subcatchments"))
         self.set_lists()
 
 

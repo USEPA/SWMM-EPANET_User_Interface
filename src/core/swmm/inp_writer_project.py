@@ -232,10 +232,6 @@ class ProjectWriter(InputFileWriterBase):
                                                 ";;X-Coord         \tY-Coord           \tLabel")
         # X, Y coordinates, text, and font details of labels
 
-        self.write_polygons = SectionWriterAsList("[POLYGONS]", CoordinateWriter,
-                                                  ";Subcatchment    \tX-Coord   \tY-Coord")
-        # X, Y coordinates for each vertex of subcatchment polygons
-
         self.write_tags = TagsWriter()
         # [TAGS]
 
@@ -293,6 +289,14 @@ class ProjectWriter(InputFileWriterBase):
         vertices_text = vertices_writer.as_text(vertices)
         if vertices_text:
             inp += '\n' + vertices_text + '\n'
+
+        polygons = SectionAsList("[POLYGONS]")
+        polygons.value = project.all_polygons(True)
+        polygons_writer = SectionWriterAsList("[POLYGONS]", CoordinateWriter,
+                                              ";Subcatchment    \tX-Coord   \tY-Coord")
+        polygons_text = polygons_writer.as_text(polygons)
+        if polygons_text:
+            inp += '\n' + polygons_text + '\n'
 
         losses = SectionAsList("[LOSSES]")  # (list of Conduit)
         losses.value = project.conduits.value

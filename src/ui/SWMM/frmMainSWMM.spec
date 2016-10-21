@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['frmMainSWMM.py'],
-             pathex=['C:\\OSGeo4W64\apps\Python27\\Lib\\site-packages\\PyQt4', 'C:\\devNotMW\\GitHub\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\SWMM'],
+             pathex=['C:\\OSGeo4W64\apps\Python27\\Lib\\site-packages\\PyQt4', 'C:\\devNotMW\\SWMM-EPANET_User_Interface_dev_ui\\src\\ui\\SWMM'],
              binaries=None,
              datas=None,
              hiddenimports=[],
@@ -19,25 +19,26 @@ def add_plugin(plugin_name):
     import os
     plugin_lst = []
     for file in os.listdir('../../plugins/' + plugin_name):
-        if file == "__init__.py":
-            plugin_lst.append(('plugins/' + plugin_name + '/' + file, '../../plugins/' + plugin_name + '/' + file, 'DATA'))
+        # if file == "__init__.py":
+        plugin_lst.append(('plugins/' + plugin_name + '/' + file, '../../plugins/' + plugin_name + '/' + file, 'DATA'))
     return plugin_lst
 
-a.datas += add_plugin('Summary')
+a.datas += add_plugin('ImportExportGIS')
 
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='frmMainSWMM',
-          debug=False,
+          name='SWMM-UI',
+          debug=True,
           strip=False,
           upx=True,
-          console=False )
+          console=True )
 
-pytop = '/Users/Mark/Anaconda2/'
-pybin = '/Users/Mark/Anaconda2/Library/bin/'
+# pytop = '/Users/Mark/Anaconda2/'
+# pybin = '/Users/Mark/Anaconda2/Library/bin/'
+pybin = '/OSGeo4W64/bin/'
 
 coll = COLLECT(exe,
                a.binaries + [('swmm5.exe', '../../Externals/swmm/model/swmm5.exe', 'BINARY')]
@@ -53,4 +54,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='frmMainSWMM')
+               name='SWMM-UI')

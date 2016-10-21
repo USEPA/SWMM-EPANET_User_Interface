@@ -787,7 +787,7 @@ class TagsReader(SectionReader):
                 sections = section_map[object_type_name]
                 found = False
                 for section in sections:
-                    for candidate in section.values:
+                    for candidate in section.value:
                         if candidate.name.upper() == object_name:
                             candidate.tag = tag
                             found = True

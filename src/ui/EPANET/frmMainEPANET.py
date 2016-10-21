@@ -682,16 +682,18 @@ class ModelLayersEPANET(ModelLayers):
     """
     def __init__(self, map_widget):
         ModelLayers.__init__(self, map_widget)
-        addCoordinates = self.map_widget.addCoordinates
-        addLinks = self.map_widget.addLinks
-        self.junctions = addCoordinates(None, "Junctions")
-        self.reservoirs = addCoordinates(None, "Reservoirs")
-        self.tanks = addCoordinates(None, "Tanks")
-        self.sources = addCoordinates(None, "Sources")
-        self.labels = addCoordinates(None, "Labels")
-        self.pumps = addLinks(None, None, "Pumps", QColor('red'), 1)
-        self.valves = addLinks(None, None, "Valves", QColor('green'), 2)
-        self.pipes = addLinks(None, None, "Pipes", QColor('gray'), 3)
+        build_pt_layer = self.map_widget.build_pt_layer
+        build_link_layer = self.map_widget.build_link_layer
+        add_layer = self.map_widget.add_layer
+
+        self.junctions = add_layer(build_pt_layer(None, "Junctions"))
+        self.reservoirs = add_layer(build_pt_layer(None, "Reservoirs"))
+        self.tanks = add_layer(build_pt_layer(None, "Tanks"))
+        self.sources = add_layer(build_pt_layer(None, "Sources"))
+        self.labels = add_layer(build_pt_layer(None, "Labels", QColor('transparent'), QColor('transparent')))
+        self.pumps = add_layer(build_link_layer(None, None, "Pumps", QColor('red'), 1))
+        self.valves = add_layer(build_link_layer(None, None, "Valves", QColor('green'), 2))
+        self.pipes = add_layer(build_link_layer(None, None, "Pipes", QColor('gray'), 3))
         self.set_lists()
 
     def set_lists(self):
@@ -703,20 +705,21 @@ class ModelLayersEPANET(ModelLayers):
 
     def create_layers_from_project(self, project):
         ModelLayers.create_layers_from_project(self, project)
-        addCoordinates = self.map_widget.addCoordinates
-        addLinks = self.map_widget.addLinks
+        build_pt_layer = self.map_widget.build_pt_layer
+        build_link_layer = self.map_widget.build_link_layer
+        add_layer = self.map_widget.add_layer
 
         # Add new layers containing objects from this project
-        self.junctions = addCoordinates(project.junctions.value, "Junctions")
-        self.reservoirs = addCoordinates(project.reservoirs.value, "Reservoirs")
-        self.tanks = addCoordinates(project.tanks.value, "Tanks")
-        self.sources = addCoordinates(project.sources.value, "Sources")
-        self.labels = addCoordinates(project.labels.value, "Labels")
+        self.junctions = add_layer(build_pt_layer(project.junctions.value, "Junctions"))
+        self.reservoirs = add_layer(build_pt_layer(project.reservoirs.value, "Reservoirs", QColor('blue')))
+        self.tanks = add_layer(build_pt_layer(project.tanks.value, "Tanks", QColor('lightblue')))
+        self.sources = add_layer(build_pt_layer(project.sources.value, "Sources"))
+        self.labels = add_layer(build_pt_layer(project.labels.value, "Labels", QColor('transparent'), QColor('transparent')))
 
         coordinates = project.all_nodes()
-        self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
-        self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
-        self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
+        self.pumps = add_layer(build_link_layer(coordinates, project.pumps.value, "Pumps", QColor('red'), 1))
+        self.valves = add_layer(build_link_layer(coordinates, project.valves.value, "Valves", QColor('green'), 2))
+        self.pipes = add_layer(build_link_layer(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3))
         self.set_lists()
 
 

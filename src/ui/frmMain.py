@@ -75,6 +75,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
+        self.actionStdImportMap.triggered.connect(self.import_from_gis)
+        self.actionStdExportMap.triggered.connect(self.export_to_gis)
+        self.actionStdImportNetwork.setVisible(False)
         self.actionGroup_Obj = QActionGroup(self)
 
         self.setAcceptDrops(True)
@@ -219,6 +222,48 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.setShortcut(QKeySequence("Ctrl+Y"))
         self.menuEdit.addAction(self.action_redo)
         self.action_redo.triggered.connect(self.redo)
+
+    def import_from_gis(self):
+        from plugins.ImportExportGIS import import_export
+
+        file_filter = "GeoJSON (*.json);;" \
+                      "Shapefile (*.shp);;" \
+                      "Comma-separated text (*.csv);;" \
+                      "All files (*.*)"
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("GISPath", os.path.dirname(self.project.file_name))
+
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select GIS file to import",
+                                                      directory, file_filter)
+        if file_name:
+            path_only, file_only = os.path.split(file_name)
+            if path_only != directory:  # Save path as default for next import/export operation
+                gui_settings.setValue("GISPath", path_only)
+                gui_settings.sync()
+
+            import_export.import_from_gis(self, file_name)
+        del gui_settings
+
+    def export_to_gis(self):
+        from plugins.ImportExportGIS import import_export
+
+        file_filter = "GeoJSON (*.json);;" \
+                      "Shapefile (*.shp);;" \
+                      "Comma-separated text (*.csv);;" \
+                      "All files (*.*)"
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("GISPath", os.path.dirname(self.project.file_name))
+
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Export to GIS",
+                                                      directory, file_filter)
+        if file_name:
+            path_only, file_only = os.path.split(file_name)
+            if path_only != directory:  # Save path as default for next import/export operation
+                gui_settings.setValue("GISPath", path_only)
+                gui_settings.sync()
+
+            import_export.export_to_gis(self, file_name)
+        del gui_settings
 
     def tabProjMapChanged(self, index):
         if index == 1:

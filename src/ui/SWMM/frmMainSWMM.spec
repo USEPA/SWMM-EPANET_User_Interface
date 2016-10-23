@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-qgis_dev = 'C:\\OSGeo4W64\\apps\\qgis-dev\\'
+apps_qgis = 'C:\\OSGeo4W64\\apps\\qgis\\'
 site_packages = 'C:\\OSGeo4W64\\apps\\Python27\\Lib\\site-packages\\'
 
 a = Analysis(['frmMainSWMM.py'],
@@ -28,22 +28,22 @@ def add_plugin(plugin_name):
 a.datas += add_plugin('ImportExportGIS')
 a.datas += add_plugin('Summary')
 
-qgis_plugins = qgis_dev + 'plugins\\'
+folder = apps_qgis + 'plugins\\'
 lst = []
-for file in os.listdir(qgis_plugins):
-    lst.append(('plugins/' + file, qgis_plugins + file, 'DATA'))
+for file in os.listdir(folder):
+    lst.append(('plugins/' + file, folder + file, 'DATA'))
 a.datas += lst
 
-resourcesdir = qgis_dev + 'resources\\'
-lst = []
-for file in os.listdir(zoneinfodir):
-    lst.append(('resources/' + file, resourcesdir + file, 'DATA'))
-a.datas += lst
+#folder = apps_qgis + 'resources\\'
+#lst = []
+#for file in os.listdir(folder):
+#    lst.append(('resources/' + file, folder + file, 'DATA'))
+#a.datas += lst
 
-zoneinfodir = site_packages + 'dateutil\\zoneinfo\\'
+folder = site_packages + 'dateutil\\zoneinfo\\'
 lst = []
-for file in os.listdir(zoneinfodir):
-    lst.append(('dateutil/zoneinfo/' + file, zoneinfodir + file, 'DATA'))
+for file in os.listdir(folder):
+    lst.append(('dateutil/zoneinfo/' + file, folder + file, 'DATA'))
 a.datas += lst
 
 pyz = PYZ(a.pure, a.zipped_data,

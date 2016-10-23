@@ -2,10 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SWMM-UI"
-#define MyAppVersion "MTP 2"
+#define MyAppVersion "MTP 3"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/SWMM-EPANET_User_Interface/"
 #define MyAppExeName "frmMainSWMM.exe"
+#define QTplugins "C:\OSGeo4W64\apps\Qt4\plugins"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -23,7 +24,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=SWMM-UI-MTP2
+OutputBaseFilename=SWMM-UI-MTP3
 Compression=lzma
 SolidCompression=yes
 
@@ -34,10 +35,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\frmMainSWMM\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "dist\SWMM-UI\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "swmmimages\*";       DestDir: "{app}\swmmimages"; Flags: ignoreversion recursesubdirs
-Source: "C:\Users\Mark\Anaconda2\Library\plugins\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "C:\Users\Mark\Anaconda2\Library\plugins\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+Source: "{#QTplugins}\sqldrivers\qsqlite4.dll";       DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+Source: "{#QTplugins}\imageformats\*";                DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"

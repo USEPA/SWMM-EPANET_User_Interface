@@ -5,7 +5,7 @@
 #define MyAppVersion "MTP 3"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/SWMM-EPANET_User_Interface/"
-#define MyAppExeName "frmMainSWMM.exe"
+#define MyAppExeName "SWMM-UI.exe"
 #define QTplugins "C:\OSGeo4W64\apps\Qt4\plugins"
 
 [Setup]

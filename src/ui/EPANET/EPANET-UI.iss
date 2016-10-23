@@ -5,10 +5,10 @@
 #define MyAppVersion "MTP 3"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/EPANET-EPANET_User_Interface/"
-#define MyAppExeName "frmMainEPANET.exe"
+#define MyAppExeName "EPANET-UI.exe"
 ;Python folder to install Qt Help Assistant from
 #define pyLibrary "C:\OSGeo4W64" 
-#define QT4 "C:\OSGeo4W64\apps\Qt4"
+#define QTplugins "C:\OSGeo4W64\apps\Qt4\plugins"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -46,8 +46,8 @@ Source: "{#pyLibrary}\bin\assistant.exe";               DestDir: "{app}";       
 Source: "{#pyLibrary}\bin\QtHelp4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
 Source: "{#pyLibrary}\bin\QtCLucene4.dll";              DestDir: "{app}";                      Flags: ignoreversion
 Source: "{#pyLibrary}\bin\phonon4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#QT4}\plugins\sqldrivers\qsqlite4.dll";       DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "{#QT4}\plugins\imageformats\*";                DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+Source: "{#QTplugins}\sqldrivers\qsqlite4.dll";       DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+Source: "{#QTplugins}\imageformats\*";                DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

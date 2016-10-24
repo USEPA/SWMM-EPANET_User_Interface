@@ -165,6 +165,7 @@ class frmMainEPANET(frmMain):
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
         QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionProjStatus.triggered.connect(self.report_status)
 
         self.actionEnergy_ReportMenu = QtGui.QAction(self)
         self.actionEnergy_ReportMenu.setObjectName(from_utf8("actionEnergy_ReportMenu"))
@@ -200,6 +201,9 @@ class frmMainEPANET(frmMain):
         self.actionGraph_ReportMenu.setToolTip(transl8("frmMain", "Display graph selection options", None))
         self.menuReport.addAction(self.actionGraph_ReportMenu)
         QtCore.QObject.connect(self.actionGraph_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_graph)
+        self.actionProjPlotTimeseries.triggered.connect(self.report_graph)
+        self.actionProjPlotScatter.triggered.connect(self.report_graph)
+        self.actionProjPlotProfile.triggered.connect(self.report_graph)
 
         self.actionTable_ReportMenu = QtGui.QAction(self)
         self.actionTable_ReportMenu.setObjectName(from_utf8("actionTable_ReportMenu"))
@@ -207,6 +211,7 @@ class frmMainEPANET(frmMain):
         self.actionTable_ReportMenu.setToolTip(transl8("frmMain", "Display table selection options", None))
         self.menuReport.addAction(self.actionTable_ReportMenu)
         QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
+        self.actionProjTableTimeseries.triggered.connect(self.report_table)
 
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))

@@ -77,8 +77,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
-        self.actionStdImportNetwork.setVisible(False)
-        self.actionGroup_Obj = QActionGroup(self)
+        # self.actionGroup_Obj = QActionGroup(self)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -90,13 +89,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
+            print("Original Path = " + orig_path)
             search_paths = []
-            if os.environ.has_key("QGIS_PREFIX_PATH"):
-                search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
-            if os.environ.has_key("QGIS_HOME"):
-                search_paths.append(os.environ.get("QGIS_HOME"))
+            #if os.environ.has_key("QGIS_PREFIX_PATH"):
+                #search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
+            #if os.environ.has_key("QGIS_HOME"):
+                #search_paths.append(os.environ.get("QGIS_HOME"))
             dirname = INSTALL_DIR
+            package_dir = INSTALL_DIR + "\\dist\\" + self.model + "-UI"
+            if os.path.isdir(package_dir):
+                dirname = package_dir
+                os.environ["QT_PLUGIN_PATH"] = dirname + "\\plugins"
             while dirname:
+                search_paths.append(dirname)
                 search_paths.append(os.path.join(dirname, "qgis"))
                 updir = os.path.dirname(dirname)
                 if not updir or updir == dirname:
@@ -108,13 +113,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                  r"/Applications/QGIS.app/Contents/MacOS"])
             for qgis_home in search_paths:
                 try:
+                    print("Search " + qgis_home)
                     if os.path.isdir(qgis_home):
                         # os.environ["Path"] = r"C:/OSGeo4W64/apps/Python27/Scripts;C:/OSGeo4W64/apps/qgis/bin;C:/OSGeo4W64/bin;" + os.environ["Path"]
                         updir = os.path.dirname(qgis_home)
                         updir2 = os.path.dirname(updir)
-                        os.environ["Path"] = os.path.join(updir, r"/Python27/Scripts;") +\
-                                             os.path.join(qgis_home, "bin;") + \
-                                             os.path.join(updir2, "bin;") + orig_path
+                        os.environ["QGIS"] = qgis_home
+                        os.environ["QGIS_PREFIX_PATH"] = qgis_home
+                        path = orig_path
+                        for add_path in [os.path.join(updir2, "bin"),
+                                         os.path.join(qgis_home, "bin"),
+                                         os.path.join(updir, r"/Python27/Scripts"),
+                                         qgis_home]:
+                            if os.path.isdir(add_path):
+                                path = add_path + ';' + path
+                        os.environ["Path"] = path
+                        print("Try path = " + os.environ["Path"])
                         from qgis.core import QgsApplication
                         from qgis.gui import QgsMapCanvas
                         from map_tools import EmbedMap
@@ -131,35 +145,24 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionAdd_Raster.triggered.connect(self.map_addraster)
                             self.actionPan.triggered.connect(self.setQgsMapTool)
                             self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
+                            self.actionStdSelect_Object.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_in.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
-                            self.actionAdd_Feature.setCheckable(False)
-                            self.actionAdd_Feature.triggered.connect(self.map_addfeature)
+                            #self.actionAdd_Feature.triggered.connect(self.map_addfeature)
+                            self.actionMapOption.triggered.connect(self.map_addfeature)
 
-                            # self.actionGroup_Obj.addAction(self.actionObjAddGage)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddSub)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddConduit)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddDivider)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddJunc)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddLabel)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddOrifice)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddOutfall)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddOutlet)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddPump)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddStorage)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddTank)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddValve)
-                            # self.actionGroup_Obj.addAction(self.actionObjAddWeir)
-                            print("Found QGIS " + qgis_home)
+                            print("Found QGIS in " + qgis_home)
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
-                    msg = "Did not load QGIS from " + qgis_home + ": " + str(e1) + '\n' # + str(traceback.print_exc())
+                    msg = "Did not load QGIS from " + qgis_home + " (" + str(e1) + ")\n" # + str(traceback.print_exc())
                     print(msg)
                     # QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
         except Exception as eImport:
             self.canvas = None
+            print str(eImport) + str(traceback.print_exc())
         if not self.canvas:
+            self.map_widget = None
             print("QGIS libraries not found, Not creating map\n")
             # QMessageBox.information(None, "QGIS libraries not found", "Not creating map\n" + str(eImport), QMessageBox.Ok)
 
@@ -222,6 +225,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.setShortcut(QKeySequence("Ctrl+Y"))
         self.menuEdit.addAction(self.action_redo)
         self.action_redo.triggered.connect(self.redo)
+
+        self.actionStdImportNetwork.setVisible(False)
+        self.actionStdSelect_Region.setEnabled(False)
+        self.actionStdSelect_Vertex.setEnabled(False)
+        self.actionStdSelect_All.setEnabled(False)
+        self.actionAdd_Feature.setCheckable(False)
+        self.actionAdd_Feature.setVisible(False)
+        self.actionMapFindObj.setVisible(False)
+        self.actionMapQuery.setVisible(False)
+        self.menuTools.setVisible(False)
+        self.menuWindow.setVisible(False)
+        self.actionStdPage_Setup.setVisible(False)
+        self.actionStdPrint_Preview.setVisible(False)
+        self.actionStdPrint.setVisible(False)
+        self.actionStdCopy_To.setVisible(False)
+        self.actionStdGroup_Edit.setVisible(False)
+
 
     def import_from_gis(self):
         from plugins.ImportExportGIS import import_export

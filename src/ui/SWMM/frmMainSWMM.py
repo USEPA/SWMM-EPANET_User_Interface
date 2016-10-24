@@ -316,6 +316,7 @@ class frmMainSWMM(frmMain):
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
         QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionProjStatus.triggered.connect(self.report_status)
 
         self.actionSummary_ReportMenu = QtGui.QAction(self)
         self.actionSummary_ReportMenu.setObjectName(from_utf8("actionSummary_ReportMenu"))
@@ -335,6 +336,8 @@ class frmMainSWMM(frmMain):
         self.actionGraph_ProfileMenu.setToolTip(transl8("frmMain", "Display Profile Plot", None))
         submenuGraph.addAction(self.actionGraph_ProfileMenu)
         QtCore.QObject.connect(self.actionGraph_ProfileMenu, QtCore.SIGNAL('triggered()'), self.report_profile)
+        self.actionProjPlotProfile.triggered.connect(self.report_profile)
+
 
         self.actionGraph_TimeSeriesMenu = QtGui.QAction(self)
         self.actionGraph_TimeSeriesMenu.setObjectName(from_utf8("actionGraph_TimeSeriesMenu"))
@@ -342,6 +345,7 @@ class frmMainSWMM(frmMain):
         self.actionGraph_TimeSeriesMenu.setToolTip(transl8("frmMain", "Display Time Series Plot", None))
         submenuGraph.addAction(self.actionGraph_TimeSeriesMenu)
         QtCore.QObject.connect(self.actionGraph_TimeSeriesMenu, QtCore.SIGNAL('triggered()'), self.report_timeseries)
+        self.actionProjPlotTimeseries.triggered.connect(self.report_timeseries)
 
         self.actionGraph_ScatterMenu = QtGui.QAction(self)
         self.actionGraph_ScatterMenu.setObjectName(from_utf8("actionGraph_ScatterMenu"))
@@ -349,6 +353,7 @@ class frmMainSWMM(frmMain):
         self.actionGraph_ScatterMenu.setToolTip(transl8("frmMain", "Display Scatter Plot", None))
         submenuGraph.addAction(self.actionGraph_ScatterMenu)
         QtCore.QObject.connect(self.actionGraph_ScatterMenu, QtCore.SIGNAL('triggered()'), self.report_scatter)
+        self.actionProjPlotScatter.triggered.connect(self.report_scatter)
 
         self.actionTable_VariableMenu = QtGui.QAction(self)
         self.actionTable_VariableMenu.setObjectName(from_utf8("actionTable_VariableMenu"))
@@ -356,6 +361,7 @@ class frmMainSWMM(frmMain):
         self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table", None))
         self.menuReport.addAction(self.actionTable_VariableMenu)
         QtCore.QObject.connect(self.actionTable_VariableMenu, QtCore.SIGNAL('triggered()'), self.report_variable)
+        self.actionProjTableTimeseries.triggered.connect(self.report_variable)
 
         self.actionStatistics_ReportMenu = QtGui.QAction(self)
         self.actionStatistics_ReportMenu.setObjectName(from_utf8("actionStatistics_ReportMenu"))
@@ -363,6 +369,7 @@ class frmMainSWMM(frmMain):
         self.actionStatistics_ReportMenu.setToolTip(transl8("frmMain", "Display Results Statistics", None))
         self.menuReport.addAction(self.actionStatistics_ReportMenu)
         QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
+        self.actionProjTableStatistics.triggered.connect(self.report_statistics)
 
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))

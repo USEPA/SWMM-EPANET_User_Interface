@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/std_project_tstable.png</file>
+    <file>icons/std_project_statisticreport.png</file>
+    <file>icons/std_project_scatterplot.png</file>
+    <file>icons/std_project_tsplot.png</file>
+    <file>icons/obj_link_valve.png</file>
+    <file>icons/obj_node_tank.png</file>
     <file>icons/icon_swmm.png</file>
     <file>icons/obj_add.png</file>
     <file>icons/obj_delete.png</file>
@@ -22,7 +28,6 @@
     <file>icons/map_add_r.png</file>
     <file>icons/map_add_v.png</file>
     <file>icons/map_zoomout.png</file>
-    <file>icons/map_selectvertices.png</file>
     <file>icons/std_project_scatterplot.png</file>
     <file>icons/std_project_statisticreport.png</file>
     <file>icons/std_project_tsplot.png</file>

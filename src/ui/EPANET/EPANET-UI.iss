@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EPANET-UI"
-#define MyAppVersion "MTP 3"
+#define MyAppVersion "MTP 3r2"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/EPANET-EPANET_User_Interface/"
 #define MyAppExeName "EPANET-UI.exe"
@@ -22,11 +22,11 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=EPANET-UI-MTP3
+OutputBaseFilename=EPANET-UI-MTP3r2
 Compression=lzma
 SolidCompression=yes
 
@@ -37,17 +37,17 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\EPANET-UI\*";                             DestDir: "{app}";                      Flags: ignoreversion recursesubdirs
-Source: "epanet.qch";                                   DestDir: "{app}";                      Flags: ignoreversion
-Source: "epanet.qhc";                                   DestDir: "{app}";                      Flags: ignoreversion
+Source: "dist\EPANET-UI\*";                     DestDir: "{app}";                      Flags: ignoreversion recursesubdirs
+Source: "epanet.qch";                           DestDir: "{app}";                      Flags: ignoreversion
+Source: "epanet.qhc";                           DestDir: "{app}";                      Flags: ignoreversion
 
 ;Files needed for Qt Help Assistant to run as our help viewer
-Source: "{#pyLibrary}\bin\assistant.exe";               DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\QtHelp4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\QtCLucene4.dll";              DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\phonon4.dll";                 DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#QTplugins}\sqldrivers\qsqlite4.dll";       DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "{#QTplugins}\imageformats\*";                DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+Source: "{#pyLibrary}\bin\assistant.exe";       DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\QtHelp4.dll";         DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\QtCLucene4.dll";      DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#pyLibrary}\bin\phonon4.dll";         DestDir: "{app}";                      Flags: ignoreversion
+Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

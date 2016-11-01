@@ -570,18 +570,19 @@ class frmMainEPANET(frmMain):
 
     def run_simulation(self):
         # Find input file to run
-        file_name = ''
+        inp_file_name = ''
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
         if use_existing:
-            file_name = self.project.file_name
+            inp_file_name = self.project.file_name
             # TODO: save if needed, decide whether to save to temp location as previous version did.
         else:
             self.open_project()
 
         if self.project:
-            file_name = self.project.file_name
+            inp_file_name = self.project.file_name
 
-        if os.path.exists(file_name):
+        if os.path.exists(inp_file_name):
+            current_directory = os.getcwd()
             if not os.path.exists(self.model_path):
                 if 'darwin' in sys.platform:
                     lib_name = 'libepanet.dylib.dylib'
@@ -592,13 +593,26 @@ class frmMainEPANET(frmMain):
                 self.model_path = self.find_external(lib_name)
             if os.path.exists(self.model_path):
                 try:
-                    prefix, extension = os.path.splitext(file_name)
+                    prefix, extension = os.path.splitext(inp_file_name)
                     self.status_file_name = prefix + self.status_suffix
                     self.output_filename = prefix + '.out'
+                    working_dir = os.path.abspath(os.path.dirname(inp_file_name))
+                    if os.path.isdir(working_dir):
+                        print("Changing into directory containing input file: " + working_dir)
+                        os.chdir(working_dir)
+                    else:
+                        try:
+                            import tempfile
+                            working_dir = tempfile.gettempdir()
+                            print("Changing into temporary directory: " + working_dir)
+                            os.chdir(working_dir)
+                        except Exception as err_temp:
+                            print("Could not change into temporary directory: " + str(err_temp))
+
                     if self.output:
                         self.output.close()
                         self.output = None
-                    model_api = ENepanet(file_name, self.status_file_name, self.output_filename, self.model_path)
+                    model_api = ENepanet(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
                     frmRun.Execute()
@@ -621,6 +635,7 @@ class frmMainEPANET(frmMain):
                                             QMessageBox.Ok)
                 finally:
                     try:
+                        os.chdir(current_directory)
                         if model_api and model_api.isOpen():
                             model_api.ENclose()
                     except:
@@ -655,6 +670,7 @@ class frmMainEPANET(frmMain):
             # args.append(prefix + '.out')
             # status = model_utility.StatusMonitor0(program, args, self, model='EPANET')
             # status.show()
+            # os.chdir(current_directory)
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 

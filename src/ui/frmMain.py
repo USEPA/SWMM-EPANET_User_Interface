@@ -91,10 +91,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             orig_path = os.environ["Path"]
             print("Original Path = " + orig_path)
             search_paths = []
-            #if os.environ.has_key("QGIS_PREFIX_PATH"):
-                #search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
-            #if os.environ.has_key("QGIS_HOME"):
-                #search_paths.append(os.environ.get("QGIS_HOME"))
+            if os.environ.has_key("QGIS_PREFIX_PATH"):
+                search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
+            if os.environ.has_key("QGIS_HOME"):
+                search_paths.append(os.environ.get("QGIS_HOME"))
             dirname = INSTALL_DIR
             package_dir = INSTALL_DIR + "\\dist\\" + self.model + "-UI"
             if os.path.isdir(package_dir):
@@ -115,7 +115,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 try:
                     print("Search " + qgis_home)
                     if os.path.isdir(qgis_home):
-                        # os.environ["Path"] = r"C:/OSGeo4W64/apps/Python27/Scripts;C:/OSGeo4W64/apps/qgis/bin;C:/OSGeo4W64/bin;" + os.environ["Path"]
                         updir = os.path.dirname(qgis_home)
                         updir2 = os.path.dirname(updir)
                         os.environ["QGIS"] = qgis_home

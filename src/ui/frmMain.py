@@ -144,7 +144,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionAdd_Raster.triggered.connect(self.map_addraster)
                             self.actionPan.triggered.connect(self.setQgsMapTool)
                             self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
-                            self.actionStdSelect_Object.triggered.connect(self.setQgsMapTool)
+                            self.actionStdSelect_Object.triggered.connect(self.setQgsMapToolSelect)
                             self.actionZoom_in.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
@@ -570,6 +570,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
         self.signalTimeChanged.emit()
+
+    def setQgsMapToolSelect(self, tool):
+        self.actionMapSelectObj.setChecked(True)
+        self.setQgsMapTool()
 
     def setQgsMapTool(self):
         if self.canvas:

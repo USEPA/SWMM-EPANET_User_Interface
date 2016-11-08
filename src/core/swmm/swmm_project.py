@@ -48,6 +48,8 @@ class SwmmProject(ProjectBase):
     def __init__(self):
         """Define the fields of a SWMM Project by creating an empty placeholder for each section"""
 
+        ProjectBase.__init__(self)
+
         self.title = Title()                    # TITLE         project title
         self.options = General()                # OPTIONS       analysis options
         self.report = Report()                  # REPORT        output reporting instructions
@@ -162,7 +164,53 @@ class SwmmProject(ProjectBase):
         self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        ProjectBase.__init__(self)  # Do this after setting attributes so they will all get added to sections[]
+        self.sections = [
+            self.title,
+            self.options,
+            self.report,
+            self.files,
+            self.backdrop,
+            self.map,
+            self.raingages,
+            self.hydrographs,
+            self.evaporation,
+            self.temperature,
+            self.adjustments,
+            self.subcatchments,
+            self.infiltration,
+            self.lid_controls,
+            self.lid_usage,
+            self.aquifers,
+            self.groundwater,
+            self.snowpacks,
+            self.junctions,
+            self.outfalls,
+            self.dividers,
+            self.storage,
+            self.conduits,
+            self.pumps,
+            self.orifices,
+            self.weirs,
+            self.outlets,
+            self.xsections,
+            self.transects,
+            self.controls,
+            self.landuses,
+            self.buildup,
+            self.washoff,
+            self.pollutants,
+            self.coverages,
+            self.treatment,
+            self.inflows,
+            self.dwf,
+            self.patterns,
+            self.rdii,
+            self.loadings,
+            self.curves,
+            self.timeseries,
+            self.labels,
+            self.polygons]  # Start with a sensible order of sections.
+        self.add_sections_from_attributes()  # Add any sections not added in the line above, should not be any left.
 
     def nodes_groups(self):
         return [self.junctions, self.outfalls, self.dividers, self.storage]

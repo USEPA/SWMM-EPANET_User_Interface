@@ -265,7 +265,7 @@ def make_links_layer(coordinates, links, model_attributes, gis_attributes, all_g
             feature.setAttributes(values)
             features.append(feature)
         except Exception as exLink:
-            print "Skipping link " + link.name + ": " + str(exLink)
+            print("Skipping link " + link.name + ": " + str(exLink))
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)
         if creating_layer:

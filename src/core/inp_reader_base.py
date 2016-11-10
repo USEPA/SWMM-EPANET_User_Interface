@@ -235,17 +235,18 @@ class SectionReaderAsList(SectionReader):
 
     def read(self, new_text):
         section = self._init_section()
+        comment = ''
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():
                 if section.value:  # If we have already added items to this section, add comment as a Section
-                    comment = Section()
-                    comment.SECTION_NAME = "Comment"
-                    comment.value = line
-                    section.value.append(comment)
+                    comment += line
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
                     self.set_comment_check_section(section, line)
             else:
+                if comment:
+                    line = line + ' ' + comment
+                    comment = ''
                 self.read_item(section, line)
         return section
 

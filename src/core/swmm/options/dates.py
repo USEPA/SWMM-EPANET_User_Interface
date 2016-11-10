@@ -51,5 +51,5 @@ class Dates(Section):
         self.sweep_end = "12/31"
         """Day of the year (month/day) when street sweeping operations end"""
 
-        self.dry_days = 0
+        self.dry_days = 0.0
         """Number of days with no rainfall prior to the start of the simulation"""

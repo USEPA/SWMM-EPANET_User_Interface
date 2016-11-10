@@ -548,15 +548,18 @@ class CrossSectionWriter(SectionWriter):
     @staticmethod
     def as_text(cross_section):
         inp = ''
+        shape_name = cross_section.shape
+        if isinstance(shape_name, Enum):
+            shape_name = shape_name.name
         if cross_section.comment:
             inp = cross_section.comment + '\n'
         if cross_section.shape == CrossSectionShape.CUSTOM:
-            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, cross_section.shape.name, cross_section.geometry1, cross_section.curve, cross_section.barrels)
+            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, shape_name, cross_section.geometry1, cross_section.curve, cross_section.barrels)
         # elif cross_section.shape == CrossSectionShape.IRREGULAR:
         #     inp += CrossSectionWriter.field_format_irregular.format(cross_section.link, cross_section.shape.name, cross_section.transect)
         else:
             inp += CrossSectionWriter.field_format_shape.format(cross_section.link,
-                                                                cross_section.shape.name,
+                                                                shape_name,
                                                                 cross_section.geometry1,
                                                                 cross_section.geometry2,
                                                                 cross_section.geometry3,

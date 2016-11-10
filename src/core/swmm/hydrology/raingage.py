@@ -73,8 +73,8 @@ class RainGage(Section, Coordinate):
         """Source of rainfall data; This can be set to a
             TimeSeries or a TimeSeriesFile."""
 
-        self.timeseries = core.swmm.timeseries.TimeSeries()
-        """time series with rainfall data if Data Source selection was TIMESERIES"""
+        self.timeseries = ""
+        """name of time series with rainfall data if Data Source selection was TIMESERIES"""
 
         self.data_file_name = ""
         """Name of external file containing rainfall data"""

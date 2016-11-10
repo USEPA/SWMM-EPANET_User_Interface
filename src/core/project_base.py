@@ -101,10 +101,6 @@ class Section(object):
         if hasattr(self, "DEFAULT_COMMENT"):
             self.comment = self.DEFAULT_COMMENT
 
-    # def __str__(self):
-    #    """Override default method to return string representation"""
-    #    return str(self.value)  #TODO: inp_writer.get_section_text(self)
-
     def setattr_keep_type(self, attr_name, attr_value):
         """ Set attribute attr_name = attr_value.
             If existing value of attr_name is int, float, bool, or Enum,
@@ -125,10 +121,14 @@ class Section(object):
                 setattr(self, attr_name, float(attr_value))
             elif isinstance(old_value, Enum):
                 if not isinstance(attr_value, Enum):
+                    enum_type = type(old_value)
                     try:
-                        attr_value = type(old_value)[attr_value.replace('-', '_')]
+                        attr_value = enum_type[attr_value.replace('-', '_')]
                     except KeyError:
-                        attr_value = type(old_value)[attr_value.upper().replace('-', '_')]
+                        try:
+                            attr_value = enum_type[attr_value.upper().replace('-', '_')]
+                        except KeyError:
+                            print("Did not find value '" + attr_value + "' in valid values for '" + attr_name + "'")
                 setattr(self, attr_name, attr_value)
             elif type(old_value) == bool:
                 if not isinstance(attr_value, bool):
@@ -139,6 +139,7 @@ class Section(object):
         except Exception as e:
             print("Exception setting {}: {}\n{}".format(attr_name, str(e), str(traceback.print_exc())))
             setattr(self, attr_name, attr_value)
+            print(str(attr_name) + " now = " + str(getattr(self, attr_name)))
 
 
 class SectionAsList(Section):

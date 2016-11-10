@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Mon Oct 17 17:23:14 2016
+# Created: Thu Nov 10 10:24:54 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -606,6 +606,12 @@ class Ui_frmMain(object):
         icon46.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/std_project_statusreport.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionProjStatus.setIcon(icon46)
         self.actionProjStatus.setObjectName(_fromUtf8("actionProjStatus"))
+        self.actionMapMeasure = QtGui.QAction(frmMain)
+        self.actionMapMeasure.setCheckable(True)
+        icon47 = QtGui.QIcon()
+        icon47.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/map_measure.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.actionMapMeasure.setIcon(icon47)
+        self.actionMapMeasure.setObjectName(_fromUtf8("actionMapMeasure"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
@@ -676,6 +682,7 @@ class Ui_frmMain(object):
         self.toolBar_Map.addAction(self.actionAdd_Feature)
         self.toolBar_Map.addAction(self.actionMapSelectObj)
         self.toolBar_Map.addAction(self.actionMapSelectRegion)
+        self.toolBar_Map.addAction(self.actionMapMeasure)
         self.toolBar_Map.addAction(self.actionMapFindObj)
         self.toolBar_Map.addAction(self.actionMapQuery)
         self.toolBar_Map.addSeparator()
@@ -862,5 +869,7 @@ class Ui_frmMain(object):
         self.actionMapOption.setToolTip(_translate("frmMain", "Map options", None))
         self.actionProjStatus.setText(_translate("frmMain", "ProjStatus", None))
         self.actionProjStatus.setToolTip(_translate("frmMain", "Project status report", None))
+        self.actionMapMeasure.setText(_translate("frmMain", "MapMeasure", None))
+        self.actionMapMeasure.setToolTip(_translate("frmMain", "Measure distance or area", None))
 
 import swmm_rc

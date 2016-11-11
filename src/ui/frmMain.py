@@ -148,6 +148,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_in.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
+                            self.actionMapMeasure.triggered.connect(self.setQgsMapTool)
                             #self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
 
@@ -582,6 +583,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
             self.map_widget.setSelectMode()
+            self.map_widget.setMeasureMode()
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:

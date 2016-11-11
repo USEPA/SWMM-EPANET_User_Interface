@@ -51,6 +51,7 @@ try:
             self.addPolygonTool = None
 
             self.qgisNewFeatureTool = None
+            self.measureTool = None
 
             QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
 
@@ -109,6 +110,15 @@ try:
                     self.canvas.setMapTool(self.selectTool)
             else:
                 self.canvas.unsetMapTool(self.selectTool)
+
+        def setMeasureMode(self):
+            if self.session.actionMapMeasure.isChecked():
+                if self.measureTool is None:
+                    self.measureTool = CaptureTool(self.canvas, None, None, None, self.session)
+                    self.measureTool.setMeasureMode(True)
+                self.canvas.setMapTool(self.measureTool)
+            else:
+                self.canvas.unsetMapTool(self.measureTool)
 
         def clearSelectableObjects(self):
             self.layer_spatial_indexes = []
@@ -568,7 +578,9 @@ try:
             self.tempRubberBand  = None
             self.capturedPoints  = []
             self.capturing       = False
-            if issubclass(object_type, Polygon):
+            self.length = 0.0
+            self.area = 0.0
+            if object_type is not None and issubclass(object_type, Polygon):
                 self.captureMode = CaptureTool.CAPTURE_POLYGON
             else:
                 self.captureMode = CaptureTool.CAPTURE_LINE
@@ -576,7 +588,10 @@ try:
             self.setCursor(QtCore.Qt.CrossCursor)
             self.inlet_node = None
             self.outlet_node = None
+            self.measuring = False
 
+        def setMeasureMode(self, measuring):
+            self.measuring = measuring
 
         def canvasReleaseEvent(self, event):
             if event.button() == QtCore.Qt.LeftButton:
@@ -604,6 +619,8 @@ try:
             self.inlet_node = None
             self.outlet_node = None
             color = QColor("red")
+            if self.measuring:
+                color = QColor("gray")
             color.setAlphaF(0.78)
 
             self.rubberBand = QgsRubberBand(self.canvas, self.bandType())
@@ -617,7 +634,6 @@ try:
             self.tempRubberBand.setLineStyle(QtCore.Qt.DotLine)
             self.tempRubberBand.show()
             self.capturing = True
-
 
         def bandType(self):
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
@@ -676,6 +692,10 @@ try:
 
         def geometryCaptured(self):
             points = self.capturedPoints
+            if self.measuring:
+                self.measureCaptured(points)
+                return
+
             if self.captureMode == CaptureTool.CAPTURE_LINE:
                 if len(points) < 2:
                     points = None
@@ -704,11 +724,32 @@ try:
                     new_object.vertices.append(new_coord)
 
                 self.session.add_item(new_object)
-                #if self.captureMode == CaptureTool.CAPTURE_LINE:
-                #    geometry = QgsGeometry.fromPolyline(layerCoords)
-                #elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                #    geometry = QgsGeometry.fromPolygon([layerCoords])
 
+        def measureCaptured(self, layerCoords):
+            m = QgsDistanceArea()
+            msgBox = QMessageBox()
+            self.captureMode = CaptureTool.CAPTURE_LINE
+            if len(layerCoords) < 2:
+                return
+            elif len(layerCoords) >= 3:
+                if abs(m.measureLine(layerCoords[len(layerCoords) - 1], layerCoords[0])) < 5:
+                    self.captureMode = CaptureTool.CAPTURE_POLYGON
+
+            if self.captureMode == CaptureTool.CAPTURE_LINE:
+                d = m.measureLine(layerCoords)
+                msgBox.setText("Line Distance: " + str(d))
+            elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
+                geometry = QgsGeometry.fromPolygon([layerCoords])
+                a = m.measureArea(geometry)
+                d = m.measurePerimeter(geometry)
+                msgBox.setText("Perimeter Distance: " + str(d) + '\n' +
+                               "Area: " + str(a))
+
+            msgBox.setWindowTitle("Measure Dimension")
+            msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msgBox.exec_()
+            self.stopCapturing()
+            pass
 
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):

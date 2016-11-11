@@ -24,17 +24,20 @@ class InputFileReader(object):
                 lines_iterator (iterator): Lines of text formatted as input file.
         """
         project.sections = []
+        project.section_order = []
         section_name = ""
         section_whole = []
         for line in lines_iterator:
             if line.lstrip().startswith('['):
                 if section_name:
+                    project.section_order.append(section_name.upper())
                     self.read_section(project, section_name, '\n'.join(section_whole))
                 section_name = line.strip()
                 section_whole = [section_name]
             elif line.strip():
                 section_whole.append(line.rstrip())
         if section_name:
+            project.section_order.append(section_name.upper())
             self.read_section(project, section_name, '\n'.join(section_whole))
         project.add_sections_from_attributes()  # if there are any sections not in the file, add them to list
         self.finished_reading(project)

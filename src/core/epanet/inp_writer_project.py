@@ -81,12 +81,11 @@ class ProjectWriter(InputFileWriterBase):
         self.write_backdrop = BackdropOptionsWriter()
 
     def as_text(self, project):
-
-        inp = InputFileWriterBase.as_text(self, project)
+        derived_sections = {}
 
         quality_text = QualityWriter.as_text(project)
         if quality_text:
-            inp += '\n' + quality_text + '\n'
+            derived_sections[QualityWriter.SECTION_NAME] = quality_text
 
         coordinates = SectionAsList("[COORDINATES]")
         coordinates.value = project.all_nodes()
@@ -94,7 +93,7 @@ class ProjectWriter(InputFileWriterBase):
                                                  ";Node            \tX-Coord   \tY-Coord")
         coordinates_text = coordinates_writer.as_text(coordinates)
         if coordinates_text:
-            inp += '\n' + coordinates_text + '\n'
+            derived_sections[coordinates_writer.SECTION_NAME] = coordinates_text
 
         vertices = SectionAsList("[VERTICES]")
         vertices.value = project.all_vertices(True)
@@ -102,24 +101,25 @@ class ProjectWriter(InputFileWriterBase):
                                               ";Link            \tX-Coord   \tY-Coord")
         vertices_text = vertices_writer.as_text(vertices)
         if vertices_text:
-            inp += '\n' + vertices_text + '\n'
+            derived_sections[vertices_writer.SECTION_NAME] = vertices_text
 
         tags_text = TagsWriter.as_text(project)
         if tags_text:
-            inp += '\n' + tags_text + '\n'
+            derived_sections[TagsWriter.SECTION_NAME] = tags_text
 
         mixing = SectionAsList('[MIXING]')
         mixing.value = project.tanks.value
         mixing_text = self.write_mixing.as_text(mixing)
         if mixing_text:
-            inp += '\n' + mixing_text + '\n'
+            derived_sections[mixing.SECTION_NAME] = mixing_text
 
         emitters = SectionAsList('[EMITTERS]')
         emitters.value = project.junctions.value
         emitters_text = self.write_emitters.as_text(emitters)
         if emitters_text:
-            inp += '\n' + emitters_text + '\n'
+            derived_sections[emitters.SECTION_NAME] = emitters_text
 
+        inp = InputFileWriterBase.as_text(self, project, derived_sections)
         inp += '\n' + '[END]' + '\n'
 
         return inp

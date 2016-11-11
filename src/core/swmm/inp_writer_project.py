@@ -236,9 +236,6 @@ class ProjectWriter(InputFileWriterBase):
                                                   ";Subcatchment    \tX-Coord   \tY-Coord")
         # X, Y coordinates for each vertex of subcatchment polygons
 
-        self.write_tags = TagsWriter()
-        # [TAGS]
-
     def as_text(self, project):
         # Figure out which kind of infiltration will be written for this project
         infiltration = project.options.infiltration.upper()
@@ -258,17 +255,17 @@ class ProjectWriter(InputFileWriterBase):
                 ";;Subcatchment  \tCurveNum  \t          \tDryTime   \n"
                 ";;--------------\t----------\t----------\t----------")
 
-        inp = InputFileWriterBase.as_text(self, project)
+        derived_sections = {}
 
         subareas = SectionAsList("[SUBAREAS]")
         subareas.value = project.subcatchments.value
         subareas_text = self.write_subareas.as_text(subareas)
         if subareas_text:
-            inp += '\n' + subareas_text + '\n'
+            derived_sections[subareas.SECTION_NAME] = subareas_text
 
-        tags_text = self.write_tags.as_text(project)
+        tags_text = TagsWriter.as_text(project)
         if tags_text:
-            inp += '\n' + tags_text + '\n'
+            derived_sections[TagsWriter.SECTION_NAME] = tags_text
 
         symbols = SectionAsList("[SYMBOLS]")
         symbols.value = project.raingages.value
@@ -276,7 +273,7 @@ class ProjectWriter(InputFileWriterBase):
                                              ";Gage            \tX-Coord   \tY-Coord")
         symbols_text = symbols_writer.as_text(symbols)
         if symbols_text:
-            inp += '\n' + symbols_text + '\n'
+            derived_sections[symbols.SECTION_NAME] = symbols_text
 
         coordinates = SectionAsList("[COORDINATES]")
         coordinates.value = project.all_nodes()
@@ -284,7 +281,7 @@ class ProjectWriter(InputFileWriterBase):
                                                  ";Node            \tX-Coord   \tY-Coord")
         coordinates_text = coordinates_writer.as_text(coordinates)
         if coordinates_text:
-            inp += '\n' + coordinates_text + '\n'
+            derived_sections[coordinates.SECTION_NAME] = coordinates_text
 
         vertices = SectionAsList("[VERTICES]")
         vertices.value = project.all_vertices(True)
@@ -292,12 +289,14 @@ class ProjectWriter(InputFileWriterBase):
                                               ";Link            \tX-Coord   \tY-Coord")
         vertices_text = vertices_writer.as_text(vertices)
         if vertices_text:
-            inp += '\n' + vertices_text + '\n'
+            derived_sections[vertices.SECTION_NAME] = vertices_text
 
         losses = SectionAsList("[LOSSES]")  # (list of Conduit)
         losses.value = project.conduits.value
         losses_text = self.write_losses.as_text(losses)
         if losses_text:
-            inp += '\n' + losses_text + '\n'
+            derived_sections[losses.SECTION_NAME] = losses_text
+
+        inp = InputFileWriterBase.as_text(self, project, derived_sections)
 
         return inp

@@ -984,8 +984,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             file_name = self.project.file_name
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
-        if self.map_widget:
-            self.map_widget.saveVectorLayers(os.path.dirname(file_name))
+        #if self.map_widget:
+        #    self.map_widget.saveVectorLayers(os.path.dirname(file_name))
 
     def find_external(self, lib_name):
         filename = os.path.join(self.assembly_path, lib_name)

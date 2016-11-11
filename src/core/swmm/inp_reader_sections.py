@@ -1617,15 +1617,17 @@ class LossesReader(SectionReader):
             fields = line.split()
             if len(fields) > 3:
                 conduit_name = fields[0]
-                for conduit in project.conduits.value:
-                    if conduit.name == conduit_name:
-                        conduit.setattr_keep_type("entry_loss_coefficient", fields[1])
-                        conduit.setattr_keep_type("exit_loss_coefficient", fields[2])
-                        conduit.setattr_keep_type("loss_coefficient", fields[3])
-                        if len(fields) > 4:
-                            conduit.setattr_keep_type("flap_gate", fields[4])
-                        if len(fields) > 5:
-                            conduit.setattr_keep_type("seepage", fields[5])
+                try:
+                    conduit = project.conduits.value[conduit_name]
+                    conduit.setattr_keep_type("entry_loss_coefficient", fields[1])
+                    conduit.setattr_keep_type("exit_loss_coefficient", fields[2])
+                    conduit.setattr_keep_type("loss_coefficient", fields[3])
+                    if len(fields) > 4:
+                        conduit.setattr_keep_type("flap_gate", fields[4])
+                    if len(fields) > 5:
+                        conduit.setattr_keep_type("seepage", fields[5])
+                except:
+                    pass
 
 
 class UnitHydrographReader(SectionReader):

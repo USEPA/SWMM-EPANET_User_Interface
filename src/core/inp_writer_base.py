@@ -13,33 +13,61 @@ class InputFileWriterBase(object):
     """ Base class common to SWMM and EPANET.
         Creates and saves text version of model input file *.inp.
     """
-    def as_text(self, project):
+    def as_text(self, project, derived_sections):
         """
         Text version of project, suitable for saving to *.inp file.
         Args:
             project (ProjectBase): Project data to serialize as text.
-
+            derived_sections (dict): Section names and full text to insert or append to the ones in self.sections
         Returns:
             string containing data from the specified project in *.inp format.
         """
+        if derived_sections:
+            # Make a local copy that we remove items from as we use them
+            derived_sections = derived_sections.copy()
         section_text_list = []
         try:
+            if hasattr(project, "section_order"):
+                section_order = project.section_order
+            else:
+                section_order = None
             for section in project.sections:
                 attr_name = ''
+                section_name = ''
                 if hasattr(section, "SECTION_NAME"):
-                    attr_name = "write_" + project.format_as_attribute_name(section.SECTION_NAME)
+                    section_name = section.SECTION_NAME
+                    attr_name = "write_" + project.format_as_attribute_name(section_name)
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)
                 elif hasattr(section, "value") and isinstance(section.value, basestring):
                     writer = SectionWriter()
                 else:
-                    writer = SectionWriterAsList(section.SECTION_NAME, SectionWriter(), None)
+                    writer = SectionWriterAsList(section_name, SectionWriter(), None)
                 try:
                     section_text = writer.as_text(section).rstrip('\n')
                     if section_text and section_text <> '[END]':                    # Skip adding blank sections
                         section_text_list.append(section_text)
+
+                    # If we have a section order and derived sections to insert,
+                    # insert any derived sections that come directly after this section.
+                    if section_order and section_name and derived_sections:
+                        try:
+                            index = section_order.index(section_name.upper()) + 1
+                            next_section = section_order[index]
+                            while next_section:
+                                next_derived_section = derived_sections.pop(next_section, None)
+                                if next_derived_section:
+                                    section_text_list.append(next_derived_section)
+                                    index += 1
+                                    next_section = section_order[index]
+                                else:
+                                    next_section = None
+                        except:
+                            pass
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
+            for section_text in derived_sections.itervalues():
+                section_text_list.append(section_text)
             return '\n\n'.join(section_text_list) + '\n'
         except Exception as e2:
             return str(e2) + '\n' + str(traceback.print_exc())
@@ -178,10 +206,10 @@ class SectionWriterAsList(SectionWriter):
                 section (Section): section of input sequence that contains a list of items in its value attribute
         """
         if section.value or (section.comment and (not hasattr(section, "DEFAULT_COMMENT") or
-                                                      section.comment != section.DEFAULT_COMMENT)): #xw09/13/2016 no section.DEFAULT_COMMENT
+                                                      section.comment != section.DEFAULT_COMMENT)):
             text_list = []
             if hasattr(section, "SECTION_NAME") and section.SECTION_NAME and section.SECTION_NAME != "Comment":
-                text_list.append(section.SECTION_NAME)  #xw9/13/2016 Not sure what intened to do, it might have been section.value.SECTION_NAME
+                text_list.append(section.SECTION_NAME)
             elif hasattr(self, "SECTION_NAME") and self.SECTION_NAME and self.SECTION_NAME != "Comment":
                 text_list.append(self.SECTION_NAME)
             if section.comment:

@@ -523,18 +523,18 @@ try:
                 layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
                 self.add_layer(layer)
 
-        def saveVectorLayers(self, folder):
-            layer_index = 0
-            for map_layer in self.session.model_layers.all_layers:
-                try:
-                    vector_layer = map_layer.layer()
-                    layer_index += 1
-                    file_name = os.path.join(folder, "layer" + str(layer_index) + ".json")
-
-                    QgsVectorFileWriter.writeAsVectorFormat(vector_layer, file_name, "utf-8", vector_layer.crs(),
-                                                            driverName="GeoJson")
-                except Exception as e:
-                    print str(e)
+        # def saveVectorLayers(self, folder):
+        #     layer_index = 0
+        #     for map_layer in self.session.model_layers.all_layers:
+        #         try:
+        #             vector_layer = map_layer.layer()
+        #             layer_index += 1
+        #             file_name = os.path.join(folder, "layer" + str(layer_index) + ".json")
+        #
+        #             QgsVectorFileWriter.writeAsVectorFormat(vector_layer, file_name, "utf-8", vector_layer.crs(),
+        #                                                     driverName="GeoJson")
+        #         except Exception as e:
+        #             print str(e)
 
     class PanTool(QgsMapTool):
         def __init__(self, mapCanvas):

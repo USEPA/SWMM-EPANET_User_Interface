@@ -448,18 +448,18 @@ class LossWriter(SectionWriter):
     @staticmethod
     def as_text(conduit):
         """format conduit loss information for writing to file"""
-        if conduit.name and (conduit.entry_loss_coefficient
-                             or conduit.exit_loss_coefficient
-                             or conduit.loss_coefficient
-                             or conduit.seepage):
-            return LossWriter.field_format.format(conduit.name,
-                                                  conduit.entry_loss_coefficient,
-                                                  conduit.exit_loss_coefficient,
-                                                  conduit.loss_coefficient,
-                                                  SectionWriter.yes_no(conduit.flap_gate),
-                                                  conduit.seepage)
-        else:
-            return None
+        # if conduit.name and (conduit.entry_loss_coefficient
+        #                      or conduit.exit_loss_coefficient
+        #                      or conduit.loss_coefficient
+        #                      or conduit.seepage):
+        return LossWriter.field_format.format(conduit.name,
+                                              conduit.entry_loss_coefficient,
+                                              conduit.exit_loss_coefficient,
+                                              conduit.loss_coefficient,
+                                              SectionWriter.yes_no(conduit.flap_gate),
+                                              conduit.seepage)
+        # else:
+        #     return None
 
 
 class PumpWriter(SectionWriter):

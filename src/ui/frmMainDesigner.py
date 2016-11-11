@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Thu Nov 10 10:24:54 2016
+# Created: Fri Nov 11 16:47:09 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -612,6 +612,12 @@ class Ui_frmMain(object):
         icon47.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/map_measure.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionMapMeasure.setIcon(icon47)
         self.actionMapMeasure.setObjectName(_fromUtf8("actionMapMeasure"))
+        self.actionMapSelectVertices = QtGui.QAction(frmMain)
+        self.actionMapSelectVertices.setCheckable(True)
+        icon48 = QtGui.QIcon()
+        icon48.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/map_selectvertices.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.actionMapSelectVertices.setIcon(icon48)
+        self.actionMapSelectVertices.setObjectName(_fromUtf8("actionMapSelectVertices"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
@@ -681,6 +687,7 @@ class Ui_frmMain(object):
         self.toolBar_Map.addAction(self.actionPan)
         self.toolBar_Map.addAction(self.actionAdd_Feature)
         self.toolBar_Map.addAction(self.actionMapSelectObj)
+        self.toolBar_Map.addAction(self.actionMapSelectVertices)
         self.toolBar_Map.addAction(self.actionMapSelectRegion)
         self.toolBar_Map.addAction(self.actionMapMeasure)
         self.toolBar_Map.addAction(self.actionMapFindObj)
@@ -871,5 +878,7 @@ class Ui_frmMain(object):
         self.actionProjStatus.setToolTip(_translate("frmMain", "Project status report", None))
         self.actionMapMeasure.setText(_translate("frmMain", "MapMeasure", None))
         self.actionMapMeasure.setToolTip(_translate("frmMain", "Measure distance or area", None))
+        self.actionMapSelectVertices.setText(_translate("frmMain", "MapSelectVertices", None))
+        self.actionMapSelectVertices.setToolTip(_translate("frmMain", "Select vertex", None))
 
 import swmm_rc

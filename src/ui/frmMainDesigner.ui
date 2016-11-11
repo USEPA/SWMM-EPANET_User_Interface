@@ -288,6 +288,7 @@
    <addaction name="actionPan"/>
    <addaction name="actionAdd_Feature"/>
    <addaction name="actionMapSelectObj"/>
+   <addaction name="actionMapSelectVertices"/>
    <addaction name="actionMapSelectRegion"/>
    <addaction name="actionMapMeasure"/>
    <addaction name="actionMapFindObj"/>
@@ -1546,6 +1547,22 @@
    </property>
    <property name="toolTip">
     <string>Measure distance or area</string>
+   </property>
+  </action>
+  <action name="actionMapSelectVertices">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/map_selectvertices.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>MapSelectVertices</string>
+   </property>
+   <property name="toolTip">
+    <string>Select vertex</string>
    </property>
   </action>
  </widget>

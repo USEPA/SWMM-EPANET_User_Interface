@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
+    <file>icons/map_selectvertices.png</file>
     <file>icons/std_project_tstable.png</file>
     <file>icons/std_project_statisticreport.png</file>
     <file>icons/std_project_scatterplot.png</file>

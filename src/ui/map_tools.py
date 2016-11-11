@@ -660,6 +660,8 @@ try:
             self.capturing = True
 
         def bandType(self):
+            if self.measuring:
+                return QGis.Line
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 return QGis.Polygon
             else:
@@ -750,7 +752,8 @@ try:
                 self.session.add_item(new_object)
 
         def measureCaptured(self, layerCoords):
-            m = QgsDistanceArea()
+            if self.ruler is None:
+                return
             msgBox = QMessageBox()
             self.captureMode = CaptureTool.CAPTURE_LINE
             if len(layerCoords) < 2:
@@ -760,19 +763,18 @@ try:
                     self.captureMode = CaptureTool.CAPTURE_POLYGON
 
             if self.captureMode == CaptureTool.CAPTURE_LINE:
-                d = m.measureLine(layerCoords)
+                d = self.ruler.measureLine(layerCoords)
                 msgBox.setText("Line Distance: " + str(d))
             elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 geometry = QgsGeometry.fromPolygon([layerCoords])
-                a = m.measureArea(geometry)
-                d = m.measurePerimeter(geometry)
+                a = self.ruler.measureArea(geometry)
+                d = self.ruler.measurePerimeter(geometry)
                 msgBox.setText("Perimeter Distance: " + str(d) + '\n' +
                                "Area: " + str(a))
 
             msgBox.setWindowTitle("Measure Dimension")
             msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msgBox.exec_()
-            del m
             del msgBox
             self.stopCapturing()
             pass

@@ -2,7 +2,6 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
-from ui.help import HelpHandler
 import numpy as np
 from pandas import Series, DataFrame
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas

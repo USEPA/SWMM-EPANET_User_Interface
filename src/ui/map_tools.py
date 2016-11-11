@@ -578,8 +578,7 @@ try:
             self.tempRubberBand  = None
             self.capturedPoints  = []
             self.capturing       = False
-            self.length = 0.0
-            self.area = 0.0
+            self.ruler           = None
             if object_type is not None and issubclass(object_type, Polygon):
                 self.captureMode = CaptureTool.CAPTURE_POLYGON
             else:
@@ -592,12 +591,37 @@ try:
 
         def setMeasureMode(self, measuring):
             self.measuring = measuring
+            if self.measuring:
+                self.ruler = QgsDistanceArea()
+
+        def closedPolygon(self):
+            if not self.measuring:
+                return False
+            points = self.capturedPoints
+            if points is None or len(points) <= 2:
+                return False
+            if self.ruler is None:
+                return False
+
+            p_last = self.toCanvasCoordinates(points[len(points) - 1])
+            p_0 = self.toCanvasCoordinates(points[0])
+            close_d = self.ruler.measureLine(QgsPoint(p_last), QgsPoint(p_0))
+            if abs(close_d) < 5:
+                self.captureMode = CaptureTool.CAPTURE_POLYGON
+                return True
+            else:
+                self.captureMode = CaptureTool.CAPTURE_LINE
+                return False
 
         def canvasReleaseEvent(self, event):
             if event.button() == QtCore.Qt.LeftButton:
                 if not self.capturing:
                     self.startCapturing()
                 self.addVertex(event.pos())
+                if self.measuring:
+                    if self.closedPolygon():
+                        self.measureCaptured(self.capturedPoints)
+                        return
             elif event.button() == QtCore.Qt.RightButton:
                 self.geometryCaptured()
 
@@ -732,7 +756,7 @@ try:
             if len(layerCoords) < 2:
                 return
             elif len(layerCoords) >= 3:
-                if abs(m.measureLine(layerCoords[len(layerCoords) - 1], layerCoords[0])) < 5:
+                if self.closedPolygon():
                     self.captureMode = CaptureTool.CAPTURE_POLYGON
 
             if self.captureMode == CaptureTool.CAPTURE_LINE:
@@ -748,6 +772,8 @@ try:
             msgBox.setWindowTitle("Measure Dimension")
             msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msgBox.exec_()
+            del m
+            del msgBox
             self.stopCapturing()
             pass
 

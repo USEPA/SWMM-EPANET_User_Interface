@@ -191,6 +191,72 @@
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menuBackdrop">
+     <property name="title">
+      <string>Backdrop</string>
+     </property>
+     <addaction name="actionStdMapBackLoad"/>
+     <addaction name="actionStdMapBackUnload"/>
+     <addaction name="separator"/>
+     <addaction name="actionStdMapBackAlign"/>
+     <addaction name="actionStdMapBackResize"/>
+     <addaction name="separator"/>
+     <addaction name="actionStdMapBackWatermark"/>
+    </widget>
+    <widget class="QMenu" name="menuObjects">
+     <property name="title">
+      <string>Objects</string>
+     </property>
+     <addaction name="actionStdMapShowRainGages"/>
+     <addaction name="actionStdMapShowSubcatchments"/>
+     <addaction name="actionStdMapShowNodes"/>
+     <addaction name="actionStdMapShowLinks"/>
+     <addaction name="actionStdMapShowLabels"/>
+     <addaction name="actionStdMapShowBackdrop"/>
+    </widget>
+    <widget class="QMenu" name="menuLegends">
+     <property name="title">
+      <string>Legends</string>
+     </property>
+     <widget class="QMenu" name="menuModifyLeg">
+      <property name="title">
+       <string>Modify</string>
+      </property>
+      <addaction name="actionStdLegModSubcatchment"/>
+      <addaction name="actionStdLegModNode"/>
+      <addaction name="actionStdLegModLink"/>
+     </widget>
+     <addaction name="actionStdLegSubcatchment"/>
+     <addaction name="actionStdLegNode"/>
+     <addaction name="actionStdLegLink"/>
+     <addaction name="actionStdLegTime"/>
+     <addaction name="separator"/>
+     <addaction name="menuModifyLeg"/>
+    </widget>
+    <widget class="QMenu" name="menuToolbars">
+     <property name="title">
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionToolbarShowStandard"/>
+     <addaction name="actionToolbarShowMap"/>
+     <addaction name="actionToolbarShowObject"/>
+    </widget>
+    <addaction name="actionStdMapDimensions"/>
+    <addaction name="menuBackdrop"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdMapPan"/>
+    <addaction name="actionStdMapZoomIn"/>
+    <addaction name="actionStdMapZoomOut"/>
+    <addaction name="actionStdMapFullExtent"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdMapQuery"/>
+    <addaction name="actionStdMapOverview"/>
+    <addaction name="separator"/>
+    <addaction name="menuObjects"/>
+    <addaction name="menuLegends"/>
+    <addaction name="menuToolbars"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdMapOptions"/>
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
@@ -213,11 +279,18 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionStdProgPrefer"/>
+    <addaction name="actionStdConfigTools"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
     </property>
+    <addaction name="actionStdWinCascade"/>
+    <addaction name="actionStdWinTile"/>
+    <addaction name="actionStdWinCloseAll"/>
+    <addaction name="separator"/>
+    <addaction name="actionStdMapToggle"/>
    </widget>
    <widget class="QMenu" name="menuPlugins">
     <property name="title">
@@ -1577,6 +1650,231 @@
   <action name="actionStdDeleteObject">
    <property name="text">
     <string>Delete Object</string>
+   </property>
+  </action>
+  <action name="actionStdMapDimensions">
+   <property name="text">
+    <string>Dimensions...</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
+  <action name="actionStdMapBackLoad">
+   <property name="text">
+    <string>Load...</string>
+   </property>
+  </action>
+  <action name="actionStdMapBackUnload">
+   <property name="text">
+    <string>Unload</string>
+   </property>
+  </action>
+  <action name="actionStdMapBackAlign">
+   <property name="text">
+    <string>Align</string>
+   </property>
+  </action>
+  <action name="actionStdMapBackResize">
+   <property name="text">
+    <string>Resize...</string>
+   </property>
+  </action>
+  <action name="actionStdMapBackWatermark">
+   <property name="text">
+    <string>Watermark</string>
+   </property>
+  </action>
+  <action name="actionStdMapPan">
+   <property name="text">
+    <string>Pan</string>
+   </property>
+  </action>
+  <action name="actionStdMapZoomIn">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="actionStdMapZoomOut">
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="actionStdMapFullExtent">
+   <property name="text">
+    <string>Full Extent</string>
+   </property>
+  </action>
+  <action name="actionStdMapQuery">
+   <property name="text">
+    <string>Query...</string>
+   </property>
+  </action>
+  <action name="actionStdMapOverview">
+   <property name="text">
+    <string>Overview</string>
+   </property>
+  </action>
+  <action name="actionStdMapOptions">
+   <property name="text">
+    <string>Map Options...</string>
+   </property>
+  </action>
+  <action name="actionStdProgPrefer">
+   <property name="text">
+    <string>Program Preferences...</string>
+   </property>
+  </action>
+  <action name="actionStdConfigTools">
+   <property name="text">
+    <string>Configure Tools</string>
+   </property>
+  </action>
+  <action name="actionStdWinCascade">
+   <property name="text">
+    <string>Cascade</string>
+   </property>
+  </action>
+  <action name="actionStdWinTile">
+   <property name="text">
+    <string>Tile</string>
+   </property>
+  </action>
+  <action name="actionStdWinCloseAll">
+   <property name="text">
+    <string>Close All</string>
+   </property>
+  </action>
+  <action name="actionStdMapToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Study Area Map</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowRainGages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rain Gages</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowSubcatchments">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Subcatchments</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowNodes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nodes</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowLinks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Links</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Labels</string>
+   </property>
+  </action>
+  <action name="actionStdMapShowBackdrop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Backdrop</string>
+   </property>
+  </action>
+  <action name="actionStdLegSubcatchment">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Subcatchment</string>
+   </property>
+  </action>
+  <action name="actionStdLegNode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Node</string>
+   </property>
+  </action>
+  <action name="actionStdLegLink">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Link</string>
+   </property>
+  </action>
+  <action name="actionStdLegTime">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Time</string>
+   </property>
+  </action>
+  <action name="actionStdLegModSubcatchment">
+   <property name="text">
+    <string>Subcatchment</string>
+   </property>
+  </action>
+  <action name="actionStdLegModNode">
+   <property name="text">
+    <string>Node</string>
+   </property>
+  </action>
+  <action name="actionStdLegModLink">
+   <property name="text">
+    <string>Link</string>
+   </property>
+  </action>
+  <action name="actionToolbarShowStandard">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Standard</string>
+   </property>
+  </action>
+  <action name="actionToolbarShowMap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Map</string>
+   </property>
+  </action>
+  <action name="actionToolbarShowObject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Object</string>
    </property>
   </action>
  </widget>

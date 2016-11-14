@@ -655,6 +655,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.btnObjMoveUp.clicked.connect(self.moveup_object)
         self.btnObjMoveDown.clicked.connect(self.movedown_object)
         self.btnObjSort.clicked.connect(self.sort_object)
+        self.actionStdDeleteObject.triggered.connect(self.delete_object_clicked)
 
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
@@ -905,8 +906,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def delete_object_clicked(self):
         if self.project and self.get_editor:
-            self.undo_stack.beginMacro("Delete selected items")  # Keep deletion as one undo action instead of one per item
             selected_names = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+            msgBox = QMessageBox()
+            msgBox.setWindowTitle("Delete Object")
+            msgBox.setText("Delete the following objects?")
+            msgBox.setInformativeText(",".join(selected_names))
+            msgBox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+            msgBox.setDefaultButton(QMessageBox.Cancel)
+            ret = msgBox.exec_()
+            if ret != QMessageBox.Ok:
+                return
+            self.undo_stack.beginMacro("Delete selected items")  # Keep deletion as one undo action instead of one per item
+            #selected_names = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
             for item_name in selected_names:
                 self.delete_named_object(self.tree_section, item_name)
             self.undo_stack.endMacro()

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Fri Nov 11 16:47:09 2016
+# Created: Mon Nov 14 13:41:14 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -618,6 +618,10 @@ class Ui_frmMain(object):
         icon48.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/map_selectvertices.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.actionMapSelectVertices.setIcon(icon48)
         self.actionMapSelectVertices.setObjectName(_fromUtf8("actionMapSelectVertices"))
+        self.actionStdEditObject = QtGui.QAction(frmMain)
+        self.actionStdEditObject.setObjectName(_fromUtf8("actionStdEditObject"))
+        self.actionStdDeleteObject = QtGui.QAction(frmMain)
+        self.actionStdDeleteObject.setObjectName(_fromUtf8("actionStdDeleteObject"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
@@ -644,7 +648,11 @@ class Ui_frmMain(object):
         self.menuEdit.addAction(self.actionStdSelect_Region)
         self.menuEdit.addAction(self.actionStdSelect_All)
         self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionStdEditObject)
+        self.menuEdit.addAction(self.actionStdDeleteObject)
+        self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStdGroup_Edit)
+        self.menuEdit.addSeparator()
         self.menuProject.addAction(self.actionStdProjSummary)
         self.menuProject.addAction(self.actionStdProjDetails)
         self.menuProject.addAction(self.actionStdProjDefault)
@@ -880,5 +888,7 @@ class Ui_frmMain(object):
         self.actionMapMeasure.setToolTip(_translate("frmMain", "Measure distance or area", None))
         self.actionMapSelectVertices.setText(_translate("frmMain", "MapSelectVertices", None))
         self.actionMapSelectVertices.setToolTip(_translate("frmMain", "Select vertex", None))
+        self.actionStdEditObject.setText(_translate("frmMain", "Edit Object...", None))
+        self.actionStdDeleteObject.setText(_translate("frmMain", "Delete Object", None))
 
 import swmm_rc

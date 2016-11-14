@@ -181,7 +181,11 @@
     <addaction name="actionStdSelect_Region"/>
     <addaction name="actionStdSelect_All"/>
     <addaction name="separator"/>
+    <addaction name="actionStdEditObject"/>
+    <addaction name="actionStdDeleteObject"/>
+    <addaction name="separator"/>
     <addaction name="actionStdGroup_Edit"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1563,6 +1567,16 @@
    </property>
    <property name="toolTip">
     <string>Select vertex</string>
+   </property>
+  </action>
+  <action name="actionStdEditObject">
+   <property name="text">
+    <string>Edit Object...</string>
+   </property>
+  </action>
+  <action name="actionStdDeleteObject">
+   <property name="text">
+    <string>Delete Object</string>
    </property>
   </action>
  </widget>

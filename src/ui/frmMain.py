@@ -646,6 +646,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # self.obj_tree.itemClicked.connect(self.list_objects)
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
         self.listViewObjects.doubleClicked.connect(self.edit_selected_objects)
+        self.actionStdEditObject.triggered.connect(self.edit_selected_objects)
         self.listViewObjects.itemSelectionChanged.connect(self.list_selection_changed)
 
         self.btnObjAdd.clicked.connect(self.add_object_clicked)
@@ -878,6 +879,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         try:
             layer = self.current_map_layer()
             self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
+            if len(self.listViewObjects.selectedIndexes()) > 0:
+                self.actionStdEditObject.setEnabled(True)
+                self.actionStdDeleteObject.setEnabled(True)
+            else:
+                self.actionStdEditObject.setEnabled(False)
+                self.actionStdDeleteObject.setEnabled(False)
         except Exception as ex:
             msg = str(ex)
             if msg and msg != "''":
@@ -1098,7 +1105,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
         self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-
+        if len(self.listViewObjects.selectedIndexes()) > 0:
+            self.actionStdEditObject.setEnabled(True)
+            self.actionStdDeleteObject.setEnabled(True)
+        else:
+            self.actionStdEditObject.setEnabled(False)
+            self.actionStdDeleteObject.setEnabled(False)
 
 class ModelLayers:
     """

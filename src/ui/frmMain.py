@@ -152,6 +152,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             #self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
 
+                            self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
+                            self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
+                            self.actionStdMapZoomOut.triggered.connect(lambda: self.setMenuMapTool('zoomout'))
+                            self.actionStdMapFullExtent.triggered.connect(lambda: self.setMenuMapTool('fullextent'))
+
                             print("Found QGIS in " + qgis_home)
                             break  # Success, done looking for a qgis_home
                 except Exception as e1:
@@ -575,6 +580,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def setQgsMapToolSelect(self, tool):
         self.actionMapSelectObj.setChecked(True)
         self.setQgsMapTool()
+
+    def setMenuMapTool(self, aMenuMapToolName):
+        if aMenuMapToolName == 'pan':
+            self.actionPan.setChecked(True)
+        elif aMenuMapToolName == 'zoomin':
+            self.actionZoom_in.setChecked(True)
+        elif aMenuMapToolName == 'zoomout':
+            self.actionZoom_out.setChecked(True)
+        elif aMenuMapToolName == 'fullextent':
+            self.zoomfull()
+        if self.canvas:
+            self.map_widget.setZoomInMode()
+            self.map_widget.setZoomOutMode()
+            self.map_widget.setPanMode()
 
     def setQgsMapTool(self):
         if self.canvas:

@@ -675,6 +675,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.btnObjMoveDown.clicked.connect(self.movedown_object)
         self.btnObjSort.clicked.connect(self.sort_object)
         self.actionStdDeleteObject.triggered.connect(self.delete_object_clicked)
+        self.actionStdMapDimensions.triggered.connect(self.configMapDimensions)
 
         # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
@@ -691,6 +692,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.dockw_more.setLayout(mlayout)
         # self.actionPan.setEnabled(False)
         '''
+
+    def configMapDimensions(self):
+        from frmMapDimensions import frmMapDimensions
+        f = frmMapDimensions(self)
+        f.show()
+        result = f.exec_()
+        pass
 
     def populate_plugins_menu(self):
         if self.plugins:

@@ -52,6 +52,7 @@ try:
 
             self.qgisNewFeatureTool = None
             self.measureTool = None
+            self.mapLinearUnit = 'none'
 
             QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
 
@@ -203,7 +204,16 @@ try:
             x = p.x()
             y = p.y()
             pm = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-            self.session.btnCoord.setText('x,y: {:.4f}, {:.4f}'.format(pm.x(), pm.y()))
+            u = ""
+            if self.mapLinearUnit == 'none':
+                pass
+            elif self.mapLinearUnit == 'meters':
+                u = "m"
+            elif self.mapLinearUnit == 'feet':
+                u = "ft"
+            elif self.mapLinearUnit == 'degrees':
+                u = "deg"
+            self.session.btnCoord.setText('x,y: {:.4f}, {:.4f} {:s}'.format(pm.x(), pm.y(), u))
             pass
 
         @staticmethod

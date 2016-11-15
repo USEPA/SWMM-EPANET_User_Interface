@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmMapDimensionsDesigner</class>
+ <widget class="QDialog" name="frmMapDimensionsDesigner">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>439</width>
+    <height>185</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Map Dimensions</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="gbLowLeft">
+     <property name="title">
+      <string>Lower Left</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblLLx">
+        <property name="text">
+         <string>X-coordinate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtLLx"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblLLy">
+        <property name="text">
+         <string>Y-coordinate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtLLy"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QGroupBox" name="gbUpRight">
+     <property name="title">
+      <string>Upper Right</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblURx">
+        <property name="text">
+         <string>X-coordinate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtURx"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblURy">
+        <property name="text">
+         <string>Y-coordinate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtURy"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <widget class="QGroupBox" name="gbMapUnits">
+     <property name="title">
+      <string>Map Units</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QRadioButton" name="rdoUnitFeet">
+        <property name="text">
+         <string>Feet</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rdoUnitMeters">
+        <property name="text">
+         <string>Meters</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rdoUnitDegrees">
+        <property name="text">
+         <string>Degrees</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rdoUnitNone">
+        <property name="text">
+         <string>None</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btnAutoSize">
+     <property name="text">
+      <string>Auto-Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="btnHelp">
+     <property name="text">
+      <string>Help</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>txtLLx</tabstop>
+  <tabstop>txtLLy</tabstop>
+  <tabstop>txtURx</tabstop>
+  <tabstop>txtURy</tabstop>
+  <tabstop>rdoUnitFeet</tabstop>
+  <tabstop>rdoUnitMeters</tabstop>
+  <tabstop>rdoUnitDegrees</tabstop>
+  <tabstop>rdoUnitNone</tabstop>
+  <tabstop>btnAutoSize</tabstop>
+  <tabstop>btnHelp</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>frmMapDimensionsDesigner</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>frmMapDimensionsDesigner</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

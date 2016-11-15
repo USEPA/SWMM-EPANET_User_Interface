@@ -77,6 +77,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
+        self.actionToolbarShowMap.triggered.connect(
+            lambda: self.toggleToolbar('map,'+ str(self.actionToolbarShowMap.isChecked())))
+        self.actionToolbarShowObject.triggered.connect(
+            lambda: self.toggleToolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
+        self.actionToolbarShowStandard.triggered.connect(
+            lambda: self.toggleToolbar('standard,' +str(self.actionToolbarShowStandard.isChecked())))
         # self.actionGroup_Obj = QActionGroup(self)
 
         self.setAcceptDrops(True)
@@ -692,6 +698,25 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.dockw_more.setLayout(mlayout)
         # self.actionPan.setEnabled(False)
         '''
+
+    def toggleToolbar(self, eventArg):
+        tbname, is_checked = eventArg.split(',')
+        if tbname == 'map':
+            if is_checked == 'True':
+                self.toolBar_Map.setVisible(True)
+            else:
+                self.toolBar_Map.setVisible(False)
+        elif tbname == 'object':
+            if is_checked == 'True':
+                self.toolBar_Object.setVisible(True)
+            else:
+                self.toolBar_Object.setVisible(False)
+        elif tbname=='standard':
+            if is_checked == 'True':
+                self.toolBar_Standard.setVisible(True)
+            else:
+                self.toolBar_Standard.setVisible(False)
+        pass
 
     def configMapDimensions(self):
         from frmMapDimensions import frmMapDimensions

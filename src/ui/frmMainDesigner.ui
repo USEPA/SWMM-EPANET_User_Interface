@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>832</width>
-    <height>644</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -322,9 +322,9 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar_Object">
+  <widget class="QToolBar" name="toolBar_Standard">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Standard</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -332,24 +332,23 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionObjAddGage"/>
-   <addaction name="actionObjAddSub"/>
-   <addaction name="actionObjAddJunc"/>
-   <addaction name="actionObjAddOutfall"/>
-   <addaction name="actionObjAddDivider"/>
-   <addaction name="actionObjAddStorage"/>
-   <addaction name="actionObjAddTank"/>
-   <addaction name="actionObjAddConduit"/>
-   <addaction name="actionObjAddPump"/>
-   <addaction name="actionObjAddOrifice"/>
-   <addaction name="actionObjAddWeir"/>
-   <addaction name="actionObjAddOutlet"/>
-   <addaction name="actionObjAddValve"/>
-   <addaction name="actionObjAddLabel"/>
+   <addaction name="actionStdNewProject"/>
+   <addaction name="actionStdOpenProj"/>
+   <addaction name="actionStdSave"/>
+   <addaction name="actionStdPrint"/>
+   <addaction name="separator"/>
+   <addaction name="actionStdRun_Simulation"/>
+   <addaction name="separator"/>
+   <addaction name="actionProjStatus"/>
+   <addaction name="actionProjPlotProfile"/>
+   <addaction name="actionProjPlotTimeseries"/>
+   <addaction name="actionProjPlotScatter"/>
+   <addaction name="actionProjTableTimeseries"/>
+   <addaction name="actionProjTableStatistics"/>
   </widget>
   <widget class="QToolBar" name="toolBar_Map">
    <property name="windowTitle">
-    <string>toolBar_2</string>
+    <string>Map</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -373,15 +372,9 @@
    <addaction name="separator"/>
    <addaction name="actionMapOption"/>
   </widget>
-  <widget class="QToolBar" name="toolBar_Standard">
+  <widget class="QToolBar" name="toolBar_Object">
    <property name="windowTitle">
-    <string>toolBar_3</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>23</width>
-     <height>22</height>
-    </size>
+    <string>Object</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -389,19 +382,20 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="actionStdNewProject"/>
-   <addaction name="actionStdOpenProj"/>
-   <addaction name="actionStdSave"/>
-   <addaction name="actionStdPrint"/>
-   <addaction name="separator"/>
-   <addaction name="actionStdRun_Simulation"/>
-   <addaction name="separator"/>
-   <addaction name="actionProjStatus"/>
-   <addaction name="actionProjPlotProfile"/>
-   <addaction name="actionProjPlotTimeseries"/>
-   <addaction name="actionProjPlotScatter"/>
-   <addaction name="actionProjTableTimeseries"/>
-   <addaction name="actionProjTableStatistics"/>
+   <addaction name="actionObjAddGage"/>
+   <addaction name="actionObjAddSub"/>
+   <addaction name="actionObjAddJunc"/>
+   <addaction name="actionObjAddOutfall"/>
+   <addaction name="actionObjAddDivider"/>
+   <addaction name="actionObjAddStorage"/>
+   <addaction name="actionObjAddTank"/>
+   <addaction name="actionObjAddConduit"/>
+   <addaction name="actionObjAddPump"/>
+   <addaction name="actionObjAddOrifice"/>
+   <addaction name="actionObjAddWeir"/>
+   <addaction name="actionObjAddOutlet"/>
+   <addaction name="actionObjAddValve"/>
+   <addaction name="actionObjAddLabel"/>
   </widget>
   <widget class="QDockWidget" name="dockw_tab">
    <property name="sizePolicy">
@@ -418,6 +412,9 @@
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::TopDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Project Explorer</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -501,6 +498,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockw_more">
+   <property name="windowTitle">
+    <string>Object Explorer</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
@@ -1857,6 +1857,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Standard</string>
    </property>
@@ -1865,12 +1868,18 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Map</string>
    </property>
   </action>
   <action name="actionToolbarShowObject">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">

@@ -53,6 +53,10 @@ try:
             self.qgisNewFeatureTool = None
             self.measureTool = None
             self.mapLinearUnit = 'none'
+            self.coord_origin = Coordinate()
+            self.coord_fext = Coordinate()
+            self.coord_fext.float_x = 100000.0
+            self.coord_fext.float_y = 100000.0
 
             QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
 
@@ -602,7 +606,8 @@ try:
         def setMeasureMode(self, measuring):
             self.measuring = measuring
             if self.measuring:
-                self.ruler = QgsDistanceArea()
+                if self.ruler is None:
+                    self.ruler = QgsDistanceArea()
 
         def closedPolygon(self):
             if not self.measuring:

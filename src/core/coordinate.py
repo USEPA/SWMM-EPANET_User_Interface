@@ -12,6 +12,8 @@ class Coordinate:
         self.y = ''
         """Y-Coordinate; North-South dimension"""
 
+        self.float_x = 0.0
+        self.float_y = 0.0
 
 class Link:
     """A link between nodes in a model"""

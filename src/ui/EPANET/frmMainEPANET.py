@@ -692,6 +692,7 @@ class frmMainEPANET(frmMain):
             try:
                 self.model_layers.create_layers_from_project(self.project)
                 self.map_widget.zoomfull()
+                self.setQgsMapTool()  # Reset any active tool that still has state from old project
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
 

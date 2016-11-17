@@ -47,6 +47,7 @@ try:
             self.zoomOutTool.setAction(self.session.actionZoom_out)
 
             self.selectTool = None
+            self.selectVertexTool = None
             self.addObjectTool = None
             self.addPolygonTool = None
 
@@ -107,14 +108,29 @@ try:
 
         def setSelectMode(self):
             if self.session.actionMapSelectObj.isChecked():
-                if self.selectTool is None:
-                    if self.canvas.layers():
-                        self.selectTool = SelectMapTool(self.canvas, self.session)
-                        self.selectTool.setAction(self.session.actionMapSelectObj)
+                if self.canvas.layers():
+                    self.selectTool = SelectMapTool(self.canvas, self.session)
+                    self.selectTool.setAction(self.session.actionMapSelectObj)
+                else:
+                    self.selectTool = None
                 if self.selectTool:
                     self.canvas.setMapTool(self.selectTool)
             else:
                 self.canvas.unsetMapTool(self.selectTool)
+                self.selectTool = None
+
+        def setSelectVertexMode(self):
+            if self.session.actionMapSelectVertices.isChecked():
+                if self.canvas.layers():
+                    self.selectVertexTool = MoveVerticesTool(self.canvas, self.session)
+                    self.selectVertexTool.setAction(self.session.actionMapSelectVertices)
+                else:
+                    self.selectVertexTool = None
+                if self.selectVertexTool:
+                    self.canvas.setMapTool(self.selectVertexTool)
+            else:
+                self.canvas.unsetMapTool(self.selectVertexTool)
+                self.selectVertexTool = None
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():
@@ -656,6 +672,7 @@ try:
                 self.stopCapturing()
 
         def startCapturing(self):
+            self.stopCapturing()  # Clean up any leftover rubber bands
             self.inlet_node = None
             self.outlet_node = None
             color = QColor("red")
@@ -684,14 +701,20 @@ try:
                 return QGis.Line
 
         def stopCapturing(self):
-            if self.rubberBand:
-                self.canvas.scene().removeItem(self.rubberBand)
-                self.rubberBand = None
-            if self.tempRubberBand:
-                self.canvas.scene().removeItem(self.tempRubberBand)
-                self.tempRubberBand = None
             self.capturing = False
             self.capturedPoints = []
+            if self.rubberBand:
+                try:
+                    self.canvas.scene().removeItem(self.rubberBand)
+                except:
+                    pass
+                self.rubberBand = None
+            if self.tempRubberBand:
+                try:
+                    self.canvas.scene().removeItem(self.tempRubberBand)
+                except:
+                    pass
+                self.tempRubberBand = None
             self.canvas.refresh()
 
         def addVertex(self, canvasPoint):
@@ -821,50 +844,49 @@ try:
                     print str(e)
 
         def find_nearest_feature(self, canvas_point):
-            nearest_layer = None
-            nearest_feature = None
-            nearest_canvas_point = None
-            nearest_map_point = None
+            self.nearest_layer = None
+            self.nearest_feature = None
+            self.nearest_canvas_point = None
+            self.nearest_map_point = None
             nearest_pt_id = -1
-            nearest_distance = float("inf")
+            self.nearest_distance = float("inf")
             for (lyr, map_points, canvas_points, ids) in self.layer_spatial_indexes:
                 try:
                     pt_index = 0
                     for pt in canvas_points:
                         distance = (canvas_point.x() - pt.x()) ** 2 + (canvas_point.y() - pt.y()) ** 2
-                        if distance < nearest_distance:
-                            nearest_layer = lyr
-                            nearest_canvas_point = canvas_point
-                            nearest_map_point = map_points[pt_index]
+                        if distance < self.nearest_distance:
+                            self.nearest_layer = lyr
+                            self.nearest_canvas_point = canvas_point
+                            self.nearest_map_point = map_points[pt_index]
                             nearest_pt_id = ids[pt_index]
-                            nearest_distance = distance
+                            self.nearest_distance = distance
                             # print(str(math.sqrt(nearest_distance)))
                         pt_index += 1
 
                 except Exception as e1:
                     print str(e1)
 
-            if nearest_layer:
-                iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_pt_id))
+            if self.nearest_layer:
+                iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_pt_id))
                 if iterator:
-                    nearest_feature = next(iterator)
+                    self.nearest_feature = next(iterator)
 
-            return nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, math.sqrt(nearest_distance)
+            # return nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, math.sqrt(nearest_distance)
 
         def addVertex(self, canvas_point):
-            nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, nearest_distance =\
-                self.find_nearest_feature(canvas_point)
+            self.find_nearest_feature(canvas_point)
             # print("Found nearest distance " + str(nearest_distance))
-            if nearest_feature:
-                nearest_feature_name = nearest_feature.attributes()[0]
+            if self.nearest_feature:
+                nearest_feature_name = self.nearest_feature.attributes()[0]
                 if len(self.capturedPoints) == 0:
                     self.inlet_node = nearest_feature_name
-                    canvas_point = nearest_canvas_point
-                    map_point = nearest_map_point
-                elif nearest_distance < 15:
+                    canvas_point = self.nearest_canvas_point
+                    map_point = self.nearest_map_point
+                elif self.nearest_distance < 15:
                     self.outlet_node = nearest_feature_name
-                    canvas_point = nearest_canvas_point
-                    map_point = nearest_map_point
+                    canvas_point = self.nearest_canvas_point
+                    map_point = self.nearest_map_point
                 else:
                     map_point = self.toMapCoordinates(canvas_point)
 
@@ -944,8 +966,11 @@ try:
                 pt = geometry.asPoint()
             return pt
 
-        def start_drag(self, mouse_event):
-            self.start_drag_position = mouse_event.pos()
+        def start_drag(self, event_pos):
+            if self.tempRubberBand:  # Clean up old rubber band if we already have one
+                self.end_drag()
+
+            self.start_drag_position = event_pos
             color = QColor("red")
             color.setAlphaF(0.78)
 
@@ -953,13 +978,16 @@ try:
             self.tempRubberBand.setWidth(2)
             self.tempRubberBand.setColor(color)
             self.tempRubberBand.setLineStyle(QtCore.Qt.DotLine)
-            self.tempRubberBand.addPoint(self.toMapCoordinates(mouse_event.pos()))
+            self.tempRubberBand.addPoint(self.toMapCoordinates(event_pos))
             self.tempRubberBand.show()
 
         def end_drag(self):
             self.start_drag_position = None
             if self.tempRubberBand:
-                self.canvas.scene().removeItem(self.tempRubberBand)
+                try:
+                    self.canvas.scene().removeItem(self.tempRubberBand)
+                except:
+                    pass
                 self.tempRubberBand = None
 
         def canvasMoveEvent(self, mouse_event):
@@ -982,13 +1010,14 @@ try:
 
         def canvasPressEvent(self, mouse_event):
             try:
+                event_pos = mouse_event.pos()
                 extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
 
                 self.selected_names = []
-                map_point = self.toMapCoordinates(mouse_event.pos())
-                self.nearest_layer, nearest_feature, nearest_vertex = self.find_nearest_feature(map_point)
-                if nearest_feature:
-                    nearest_feature_name = nearest_feature.attributes()[0]
+                map_point = self.toMapCoordinates(event_pos)
+                self.find_nearest_feature(map_point)
+                if self.nearest_feature:
+                    nearest_feature_name = self.nearest_feature.attributes()[0]
                 else:
                     nearest_feature_name = None
 
@@ -998,7 +1027,7 @@ try:
 
                 if not extending and nearest_feature_name and nearest_feature_name in previously_selected:
                     # Clicking an already-selected item starts moving all selected items
-                    self.start_drag(mouse_event)
+                    self.start_drag(event_pos)
                 else:
                     # Clear selection on other layers and on this layer if not extending the selection with Ctrl or Shift
                     for layer in self.canvas.layers():
@@ -1016,34 +1045,54 @@ try:
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())
 
-        def find_nearest_feature(self, map_point):
-            nearest_layer = None
-            nearest_feature = None
-            nearest_pt_id = -1
-            nearest_vertex = -1
-            nearest_distance = float("inf")
-            for (lyr, points, ids, vertices) in self.layer_spatial_indexes:
+        def find_nearest_feature(self, map_point, make_distance_labels=False):
+            """ Locates the closest point in self.layer_spatial_indexes and Sets:
+             self.nearest_layer = QGIS layer object self.nearest_feature, self.nearest_vertex, self.nearest_spatial_index"""
+            if make_distance_labels:
+                if hasattr(self, "distance_layer") and self.distance_layer:
+                    self.session.map_widget.remove_layers([self.distance_layer])
+                distances = []
+
+            self.nearest_layer = None
+            self.nearest_feature = None
+            self.nearest_point_index = -1
+            self.nearest_distance = float("inf")
+            self.nearest_spatial_index = 0
+            nearest_feature_id = -1
+            layer_index = 0
+            for (lyr, points, ids, pt_indexes) in self.layer_spatial_indexes:
                 try:
-                    pt_index = 0
+                    sp_index = 0
                     for pt in points:
                         distance = map_point.sqrDist(pt)
-                        if distance < nearest_distance:
-                            nearest_layer = lyr
-                            nearest_pt_id = ids[pt_index]
-                            if vertices:
-                                nearest_vertex = vertices[pt_index]
-                            nearest_distance = distance
-                        pt_index += 1
+                        if make_distance_labels:
+                            dist_coord = Coordinate()
+                            dist_coord.x = pt.x()
+                            dist_coord.y = pt.y()
+                            dist_coord.name = "{:,}".format(distance)
+                            distances.append(dist_coord)
+                        if distance < self.nearest_distance:
+                            self.nearest_layer = lyr
+                            nearest_feature_id = ids[sp_index]
+                            if pt_indexes:
+                                self.nearest_point_index = pt_indexes[sp_index]
+                            self.nearest_distance = distance
+                            self.nearest_spatial_index = layer_index
+                            print("Nearest: " + "{:,}".format(pt.x()) + ", " + "{:,}".format(pt.y()))
+                        sp_index += 1
 
                 except Exception as e1:
                     print str(e1)
+                layer_index += 1
 
-            if nearest_layer:
-                iterator = nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_pt_id))
+            if nearest_feature_id > -1 and self.nearest_layer:
+                iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(nearest_feature_id))
                 if iterator:
-                    nearest_feature = next(iterator)
+                    self.nearest_feature = next(iterator)
 
-            return nearest_layer, nearest_feature, nearest_vertex
+            if make_distance_labels:
+                self.distance_layer = self.session.map_widget.addCoordinates(distances, "Distances")
+                self.canvas.refresh()
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()
@@ -1052,33 +1101,128 @@ try:
         """ Move the internal vertices of links or subcatchments. Not yet functional. """
         def __init__(self, canvas, session):
             SelectMapTool.__init__(self, canvas, session)
-            self.layer_spatial_indexes = []
+
+        # def canvasPressEvent(self, mouse_event):
+        #     try:
+        #         map_point = self.toMapCoordinates(mouse_event.pos())
+        #         self.nearest_layer, self.nearest_feature, self.nearest_vertex = self.find_nearest_feature(map_point)
+        #         if self.nearest_feature:
+        #             self.nearest_geometry = self.nearest_feature.geometry()
+        #             self.start_drag(mouse_event)
+        #     except Exception as e2:
+        #         print str(e2) + '\n' + str(traceback.print_exc())
+
+        def canvasPressEvent(self, mouse_event):
+            try:
+                event_pos = mouse_event.pos()
+                map_point = self.toMapCoordinates(event_pos)
+                self.find_nearest_feature(map_point)  #, True)
+                if self.nearest_feature:
+                    self.nearest_geometry = self.nearest_feature.geometry()
+                    wkb_type = self.nearest_geometry.wkbType()
+                    if wkb_type == QGis.WKBLineString:
+                        vertex = self.nearest_geometry.asPolyline()[self.nearest_point_index]
+                    elif wkb_type == QGis.WKBPolygon:
+                        vertex = self.nearest_geometry.asPolygon()[0][self.nearest_point_index]
+                    if vertex:
+                        start_pos = self.toCanvasCoordinates(vertex)
+                        #layer_point = self.toLayerCoordinates(self.nearest_layer, event_pos)
+                        #vertex_coord, vertex, prev_vertex, next_vertex, dist_squared = self.nearest_geometry.closestVertex(layer_point)
+                        #distance = math.sqrt(dist_squared)
+                        #tolerance = self.calcTolerance(event_pos)
+                        #if distance > tolerance: return
+                        if mouse_event.button() == 1:  # LeftButton:
+                            # Left click -> move vertex.
+                            self.start_drag(start_pos)
+                            #self.dragging = True
+                            #self.feature = feature
+                            #self.vertex = vertex
+                            #self.moveVertexTo(event_pos)
+                            self.canvas.refresh()
+                        elif mouse_event.button() == 2:  # QtGui.Qt.RightButton:
+                            # Right click -> delete vertex.
+                            self.delete_vertex()
+                            self.canvas.refresh()
+
+            except Exception as e2:
+                print str(e2) + '\n' + str(traceback.print_exc())
+
+
+        # def canvasMoveEvent(self, event):
+        #     if self.dragging:
+        #         self.moveVertexTo(event.pos())
+        #         self.canvas.refresh()
 
         def canvasReleaseEvent(self, mouse_event):
             if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
-                new_pts = []
-                for pt in geometry.asPolygon()[0]:
-                    new_pts.append(QgsPoint(pt.x() + dx, pt.y() + dy))
-                new_geom = QgsGeometry.fromPolygon([new_pts])
-            self.layer.changeGeometry(feature.id(), new_geom)
-                # event_pt = self.toMapCoordinates(mouse_event.pos())
-                # start_pt = self.toMapCoordinates(self.start_drag_position)
+                self.nearest_layer.startEditing()
+                self.moveVertexTo(mouse_event.pos())
+                self.nearest_layer.commitChanges()
+                self.canvas.refresh()
                 # self.session.move_selected_items(self.nearest_layer,
                 #                                  event_pt.x() - start_pt.x(),
                 #                                  event_pt.y() - start_pt.y())
             self.end_drag()
 
-        def canvasPressEvent(self, mouse_event):
-            try:
-                map_point = self.toMapCoordinates(mouse_event.pos())
-                self.nearest_layer, self.nearest_feature, self.nearest_vertex = self.find_nearest_feature(map_point)
-                if self.nearest_feature:
-                    self.start_drag(mouse_event)
-            except Exception as e2:
-                print str(e2) + '\n' + str(traceback.print_exc())
+        # def canvasDoubleClickEvent(self, event):
+        #     feature = self.findFeatureAt(event.pos())
+        #     if feature == None:
+        #         return
+        #     mapPt, layerPt = self.transformCoordinates(event.pos())
+        #     geometry = feature.geometry()
+        #     distSquared, closestPt, beforeVertex = geometry.closestSegmentWithContext(layerPt)
+        #     distance = math.sqrt(distSquared)
+        #     tolerance = self.calcTolerance(event.pos())
+        #     if distance > tolerance:
+        #         return
+        #     geometry.insertVertex(closestPt.x(), closestPt.y(), beforeVertex)
+        #     self.layer.changeGeometry(feature.id(), geometry)
+        #     self.canvas.refresh()
+
+        # def calcTolerance(self, pos):
+        #     pt1 = QPoint(pos.x(), pos.y())
+        #     pt2 = QPoint(pos.x() + 10, pos.y())
+        #     mapPt1, layerPt1 = self.transformCoordinates(pt1)
+        #     mapPt2, layerPt2 = self.transformCoordinates(pt2)
+        #     tolerance = layerPt2.x() - layerPt1.x()
+        #     return tolerance
+
+        def moveVertexTo(self, pos):
+            geometry = self.nearest_geometry
+            layerPt = self.toLayerCoordinates(self.nearest_layer, pos)
+            geometry.moveVertex(layerPt.x(), layerPt.y(), self.nearest_point_index)
+            self.nearest_layer.changeGeometry(self.nearest_feature.id(), geometry)
+            self.canvas.refresh()  # self.onGeometryChanged()
+            # Update this moved point in layer_spatial_indexes
+            self.build_spatial_index()
+            #pt_index = self.nearest_point_index
+            #if self.nearest_geometry.wkbType() == QGis.WKBPolygon:
+            #    pt_index += 1
+            #self.layer_spatial_indexes[self.nearest_spatial_index][1][pt_index] = layerPt
+
+        def delete_vertex(self):
+            geometry = self.nearest_geometry
+            wkb_type = geometry.wkbType()
+            if wkb_type == QGis.WKBLineString:
+                lineString = geometry.asPolyline()
+                if len(lineString) <= 2:
+                    return
+            elif wkb_type == QGis.WKBPolygon:
+                polygon = geometry.asPolygon()
+                exterior = polygon[0]
+                if len(exterior) <= 4:
+                    return
+            if geometry.deleteVertex(self.nearest_point_index):
+                self.nearest_layer.changeGeometry(self.nearest_feature.id(), geometry)
+                del self.layer_spatial_indexes[self.nearest_spatial_index]
+                self.nearest_feature = None
+                self.nearest_layer = None
+                self.nearest_feature = None
+                self.nearest_canvas_point = None
+                self.nearest_map_point = None
 
         def build_spatial_index(self):
-            """ Build list of eligivle vertices that could be moved by this tool.
+            """ Build list of eligible vertices that could be moved by this tool.
                 List is saved in self.layer_spatial_indexes. """
             self.layer_spatial_indexes = []
             model_layers = []
@@ -1090,17 +1234,17 @@ try:
             for lyr in model_layers:
                 try:
                     if isinstance(lyr, QgsVectorLayer):
-                        provider = lyr.dataProvider()
+                        # provider = lyr.dataProvider()
                         spatial_index = []
                         ids = []
                         pt_indexes = []
                         found = False
-                        for feat in provider.getFeatures():
+                        for feat in lyr.getFeatures():
                             geometry = feat.geometry()
                             points = None
                             try:
                                 if geometry.wkbType() == QGis.WKBLineString:
-                                    points = geometry.asPolyline()[1:-2]  # skip first and last point which are nodes
+                                    points = geometry.asPolyline()[1:-1]  # skip first and last point which are nodes
                                     index = 1
                                 elif geometry.wkbType() == QGis.WKBPolygon:
                                     points = geometry.asPolygon()[0]

@@ -154,6 +154,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionPan.triggered.connect(self.setQgsMapTool)
                             self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
                             self.actionStdSelect_Object.triggered.connect(self.setQgsMapToolSelect)
+                            self.actionMapSelectVertices.triggered.connect(self.setQgsMapTool)
+                            self.actionStdSelect_Vertex.triggered.connect(self.setQgsMapToolSelectVertex)
                             self.actionZoom_in.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
@@ -260,7 +262,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         self.actionStdImportNetwork.setVisible(False)
         self.actionStdSelect_Region.setEnabled(False)
-        self.actionStdSelect_Vertex.setEnabled(False)
         self.actionStdSelect_All.setEnabled(False)
         self.actionAdd_Feature.setCheckable(True)
         self.actionAdd_Feature.setVisible(False)
@@ -548,7 +549,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except Exception as ex:
                 print("_MoveSelectedItems: " + str(ex) + '\n' + str(traceback.print_exc()))
             try:
-                self.session.map_widget.selectTool.build_spatial_index()
+                self.setQgsMapTool()
             except:
                 pass
 
@@ -610,8 +611,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.time_index = slider_val
         self.signalTimeChanged.emit()
 
-    def setQgsMapToolSelect(self, tool):
+    def setQgsMapToolSelect(self):
         self.actionMapSelectObj.setChecked(True)
+        self.setQgsMapTool()
+
+    def setQgsMapToolSelectVertex(self):
+        self.actionMapSelectVertex.setChecked(True)
         self.setQgsMapTool()
 
     def setMenuMapTool(self, aMenuMapToolName):
@@ -635,6 +640,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
             self.map_widget.setSelectMode()
+            self.map_widget.setSelectVertexMode()
             self.map_widget.setMeasureMode()
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)

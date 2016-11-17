@@ -30,3 +30,13 @@ class MapOptions(Section):
         self.units = MapUnits.NONE
         """map units"""
 
+    def setMapUnits(self, unit):
+        if unit.upper() == 'FEET':
+            self.units = MapUnits.FEET
+        elif unit.upper() == 'METERS':
+            self.units = MapUnits.METERS
+        elif unit.upper() == 'DEGREES':
+            self.units = MapUnits.DEGREES
+        elif unit.upper() == 'NONE':
+            self.units = MapUnits.NONE
+

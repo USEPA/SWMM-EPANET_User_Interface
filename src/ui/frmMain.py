@@ -723,6 +723,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         f = frmMapDimensions(self)
         f.show()
         result = f.exec_()
+        if result:
+            #from qgis.core import QgsRectangle
+            #r = QgsRectangle(self.map_widget.coord_origin.float_x,
+            #                 self.map_widget.coord_origin.float_y,
+            #                 self.map_widget.coord_fext.float_x,
+            #                 self.map_widget.coord_fext.float_y)
+            #self.map_widget.canvas.setExtent(r)
+            pass
         pass
 
     def populate_plugins_menu(self):

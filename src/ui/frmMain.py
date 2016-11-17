@@ -83,6 +83,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             lambda: self.toggleToolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
             lambda: self.toggleToolbar('standard,' +str(self.actionToolbarShowStandard.isChecked())))
+        self.actionStdMapBackLoad.triggered.connect(self.map_addraster)
+        self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
+        self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
+        self.actionAdd_Vector.triggered.connect(self.map_addvector)
+        self.actionAdd_Raster.triggered.connect(self.map_addraster)
         # self.actionGroup_Obj = QActionGroup(self)
 
         self.setAcceptDrops(True)
@@ -146,8 +151,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
-                            self.actionAdd_Vector.triggered.connect(self.map_addvector)
-                            self.actionAdd_Raster.triggered.connect(self.map_addraster)
                             self.actionPan.triggered.connect(self.setQgsMapTool)
                             self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
                             self.actionStdSelect_Object.triggered.connect(self.setQgsMapToolSelect)
@@ -155,13 +158,31 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_out.triggered.connect(self.setQgsMapTool)
                             self.actionZoom_full.triggered.connect(self.zoomfull)
                             self.actionMapMeasure.triggered.connect(self.setQgsMapTool)
-                            #self.actionAdd_Feature.triggered.connect(self.map_addfeature)
+                            self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
 
                             self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
                             self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
                             self.actionStdMapZoomOut.triggered.connect(lambda: self.setMenuMapTool('zoomout'))
                             self.actionStdMapFullExtent.triggered.connect(lambda: self.setMenuMapTool('fullextent'))
+
+                            from qgis.gui import QgsLayerTreeView
+                            from qgis.core import QgsLayerTreeModel
+                            from qgis.core import QgsProject
+                            from qgis.gui import QgsLayerTreeMapCanvasBridge
+                            self.gis_layer_root = QgsProject.instance().layerTreeRoot()
+                            self.gis_layer_model = QgsLayerTreeModel(self.gis_layer_root)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeReorder)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
+                            self.gis_layer_tree = QgsLayerTreeView()
+                            self.gis_layer_tree.setModel(self.gis_layer_model)
+                            self.gis_layer_bridge = QgsLayerTreeMapCanvasBridge(self.gis_layer_root, self.canvas, self.tabGIS)
+                            mlayout = QVBoxLayout(self.tabGIS)
+                            mlayout.setContentsMargins(0, 0, 0, 0)
+                            mlayout.addWidget(self.gis_layer_tree)
+                            self.tabGIS.setLayout(mlayout)
 
                             print("Found QGIS in " + qgis_home)
                             break  # Success, done looking for a qgis_home
@@ -241,7 +262,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdSelect_Region.setEnabled(False)
         self.actionStdSelect_Vertex.setEnabled(False)
         self.actionStdSelect_All.setEnabled(False)
-        self.actionAdd_Feature.setCheckable(False)
+        self.actionAdd_Feature.setCheckable(True)
         self.actionAdd_Feature.setVisible(False)
         self.actionMapFindObj.setVisible(False)
         self.actionMapQuery.setVisible(False)
@@ -253,6 +274,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdCopy_To.setVisible(False)
         self.actionStdGroup_Edit.setVisible(False)
 
+    def loadBasemap(self):
+        pass
+    def unloadBasemap(self):
+        pass
+    def alignBasemap(self):
+        pass
 
     def import_from_gis(self):
         from plugins.ImportExportGIS import import_export
@@ -658,9 +685,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self):
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '/')
-        if len(filename) > 0:
-            self.map_widget.addRasterLayer(filename)
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("GISDataDir", "")
+        filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
+                                                      "geoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
+        #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
+        if filename:
+            try:
+                self.map_widget.addRasterLayer(filename)
+                path_only, file_only = os.path.split(filename)
+                if path_only != directory:
+                    gui_settings.setValue("GISDataDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except Exception as ex:
+                print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
+        else:
+            pass
 
     def on_load(self, tree_top_item_list):
         # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

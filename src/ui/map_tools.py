@@ -159,12 +159,26 @@ try:
         def setAddFeatureMode(self):
             layer = self.session.current_map_layer()
             if layer:
-                from qgis.core import QgsStyleV2
-                from qgis.gui import QgsRendererV2PropertiesDialog
-                from qgis.utils import iface
-                renderer_v2_properties = QgsRendererV2PropertiesDialog(layer, QgsStyleV2.defaultStyle(), True)
-                renderer_v2_properties.show()
-                self.session._forms.append(renderer_v2_properties)
+                """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
+                if self.session.actionAdd_Feature.isChecked():
+                    if self.qgisNewFeatureTool is None:
+                        if self.canvas.layers():
+                            self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
+                                                                  self.session.onGeometryAdded,
+                                                                  CaptureTool.CAPTURE_POLYGON)
+                            self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
+                    if self.qgisNewFeatureTool:
+                        self.canvas.setMapTool(self.qgisNewFeatureTool)
+                else:
+                    self.canvas.unsetMapTool(self.qgisNewFeatureTool)
+
+
+            #from qgis.core import QgsStyleV2
+            #from qgis.gui import QgsRendererV2PropertiesDialog
+            #from qgis.utils import iface
+            #renderer_v2_properties = QgsRendererV2PropertiesDialog(layer, QgsStyleV2.defaultStyle(), True)
+            #renderer_v2_properties.show()
+            #self.session._forms.append(renderer_v2_properties)
 
             # Test of activating QGIS properties editor, does not belong in this method
             # layer = self.canvas.layers()[0]
@@ -175,18 +189,6 @@ try:
             # self.layer_properties_widget.setMapCanvas(self.canvas)
             # self.layer_properties_widget.show()
 
-            # """This is an example method for interactively adding a polygon, need to make this add a subcatchment"""
-            # if self.session.actionAdd_Feature.isChecked():
-            #     if self.qgisNewFeatureTool is None:
-            #         if self.canvas.layers():
-            #             self.qgisNewFeatureTool = CaptureTool(self.canvas, self.canvas.layer(0),
-            #                                                   self.session.onGeometryAdded,
-            #                                                   CaptureTool.CAPTURE_POLYGON)
-            #             self.qgisNewFeatureTool.setAction(self.session.actionAdd_Feature)
-            #     if self.qgisNewFeatureTool:
-            #         self.canvas.setMapTool(self.qgisNewFeatureTool)
-            # else:
-            #     self.canvas.unsetMapTool(self.qgisNewFeatureTool)
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
@@ -576,7 +578,6 @@ try:
                 self.canvas().panActionEnd(event.pos())
                 self.dragging = False
 
-
     class CaptureTool(QgsMapTool):
         CAPTURE_LINE    = 1
         CAPTURE_POLYGON = 2
@@ -879,7 +880,6 @@ try:
                 self.inlet_node = None
                 self.outlet_node = None
 
-
     class AddPointTool(QgsMapTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             QgsMapTool.__init__(self, canvas)
@@ -896,7 +896,6 @@ try:
             new_object.x = point.x()
             new_object.y = point.y()
             self.session.add_item(new_object)
-
 
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.
@@ -1049,7 +1048,6 @@ try:
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()
 
-
     class MoveVerticesTool(SelectMapTool):
         """ Move the internal vertices of links or subcatchments. Not yet functional. """
         def __init__(self, canvas, session):
@@ -1124,7 +1122,6 @@ try:
                 except Exception as e:
                     print str(e)
 
-
     class SaveAsGis:
         @staticmethod
         def save_links(coordinates, links, link_attributes, file_name, driver_name="GeoJson"):
@@ -1160,7 +1157,6 @@ try:
             layer.updateExtents()
 
             QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
-
 
 except:
     print "Skipping map_tools"

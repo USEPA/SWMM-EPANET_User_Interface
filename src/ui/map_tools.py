@@ -1098,7 +1098,7 @@ try:
             self.session.edit_selected_objects()
 
     class MoveVerticesTool(SelectMapTool):
-        """ Move the internal vertices of links or subcatchments. Not yet functional. """
+        """ Move the internal vertices of links or subcatchments. """
         def __init__(self, canvas, session):
             SelectMapTool.__init__(self, canvas, session)
 
@@ -1189,16 +1189,22 @@ try:
 
         def moveVertexTo(self, pos):
             geometry = self.nearest_geometry
-            layerPt = self.toLayerCoordinates(self.nearest_layer, pos)
-            geometry.moveVertex(layerPt.x(), layerPt.y(), self.nearest_point_index)
-            self.nearest_layer.changeGeometry(self.nearest_feature.id(), geometry)
-            self.canvas.refresh()  # self.onGeometryChanged()
+            layer_pt = self.toLayerCoordinates(self.nearest_layer, pos)
+            start_pt = self.toLayerCoordinates(self.nearest_layer, self.start_drag_position)
+
+            self.session.move_vertex(self.nearest_layer,
+                                     self.nearest_feature.id(),
+                                     self.nearest_geometry,
+                                     self.nearest_point_index,
+                                     start_pt.x(), start_pt.y(),
+                                     layer_pt.x(), layer_pt.y())
+
             # Update this moved point in layer_spatial_indexes
-            self.build_spatial_index()
+            #self.build_spatial_index()
             #pt_index = self.nearest_point_index
             #if self.nearest_geometry.wkbType() == QGis.WKBPolygon:
             #    pt_index += 1
-            #self.layer_spatial_indexes[self.nearest_spatial_index][1][pt_index] = layerPt
+            #self.layer_spatial_indexes[self.nearest_spatial_index][1][pt_index] = layer_pt
 
         def delete_vertex(self):
             geometry = self.nearest_geometry

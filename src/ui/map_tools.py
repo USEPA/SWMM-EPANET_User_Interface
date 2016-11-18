@@ -17,6 +17,11 @@ try:
             self.canvas.useImageToRender(False)
             # self.canvas.setCanvasColor(QtGui.QColor.white)
 
+            root = QgsProject.instance().layerTreeRoot()
+            self.project_group = root.addGroup("Project Objects")
+            self.nodes_group = self.project_group.addGroup("Nodes")
+            self.links_group = self.project_group.addGroup("Links")
+
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
             # self.bridge = QgsLayerTreeMapCanvasBridge(self.root, self.canvas)
@@ -322,7 +327,7 @@ try:
 
                 # replace the default symbol layer with the new symbol layer
                 layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
-                self.add_layer(layer)
+                self.add_layer(layer, self.nodes_group)
                 return layer
             except Exception as exBig:
                 print("Error making layer: " + str(exBig))
@@ -375,23 +380,31 @@ try:
                 # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
                 #     {'width': '0.26', 'color': '0,0,0'})
                 # layer.rendererV2().symbols()[0].appendSymbolLayer(sl)
-                self.add_layer(layer)
+                self.add_layer(layer, self.links_group)
                 return layer
             except Exception as exBig:
                 print("Error making layer: " + str(exBig))
                 return None
 
-        def add_layer(self, layer):
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+        def add_layer(self, layer, group=None):
+            if group:
+                QgsMapLayerRegistry.instance().addMapLayer(layer, False)
+                group.addLayer(layer)
+            else:
+                QgsMapLayerRegistry.instance().addMapLayer(layer)
             layers = self.canvas.layers()
             layers.append(layer)
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in layers])
             self.set_extent(self.canvas.fullExtent())
 
-        def remove_layers(self, remove_layers):
+        def remove_all_layers(self):
+            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            self.canvas.setLayerSet([])
+
+        def remove_layers(self, remove_these_layers):
             layer_names = []
             canvas_layers = self.canvas.layers()
-            for layer in remove_layers:
+            for layer in remove_these_layers:
                 layer_names.append(layer.name())
                 canvas_layers.remove(layer)
             QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
@@ -447,7 +460,7 @@ try:
                     layer.updateExtents()
 
                 self.set_default_polygon_renderer(layer, poly_color)
-                self.add_layer(layer)
+                self.add_layer(layer, self.project_group)
                 return layer
             except Exception as exBig:
                 print("Error making layer: " + str(exBig))

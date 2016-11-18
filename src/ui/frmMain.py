@@ -1135,6 +1135,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             finally:  # Make sure lock is released even if there is an exception
                 self.selecting.release()
 
+    def confirm_discard_project(self):
+        if not self.undo_stack.isClean():
+            msg = QMessageBox()
+            msg.setText("Discard current project?")
+            msg.setWindowTitle(self.model)
+            msg.setIcon(QMessageBox.Question)
+            msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            choice = msg.exec_()
+            if choice == QMessageBox.Yes:
+                return True
+            return False
+        return True
+
     def new_project(self):
         self.open_project_quiet(None, None, None)
 
@@ -1147,6 +1160,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.open_project_quiet(file_name, gui_settings, directory)
 
     def open_project_quiet(self, file_name, gui_settings, directory):
+        if not self.confirm_discard_project():
+            return
+        self.map_widget.remove_all_layers()
         self.project = self.project_type()
         if file_name:
             try:
@@ -1171,6 +1187,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             file_name = self.project.file_name
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
+        self.undo_stack.setClean()
         #if self.map_widget:
         #    self.map_widget.saveVectorLayers(os.path.dirname(file_name))
 
@@ -1244,7 +1261,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             QMessageBox.Ok)
 
     def action_exit(self):
-        # TODO: check project status and prompt if there are unsaved changed
+        if not self.confirm_discard_project():
+            return
         if self.q_application:
             try:
                 self.q_application.quit()
@@ -1300,11 +1318,12 @@ class ModelLayers:
         self.nodes_layers = []
         self.links_layers = []
         self.all_layers = []
+        self.map_widget.remove_all_layers()
 
     def create_layers_from_project(self, project):
-        self.project = project
         # First remove old ModelLayers already on the map
-        self.map_widget.remove_layers(self.all_layers)
+        self.map_widget.remove_all_layers()
+        self.project = project
 
     def all_node_features(self):
         features = []

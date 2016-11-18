@@ -489,7 +489,7 @@
        </widget>
        <widget class="QWidget" name="tabGIS">
         <attribute name="title">
-         <string>GIS</string>
+         <string>Layers</string>
         </attribute>
        </widget>
       </widget>

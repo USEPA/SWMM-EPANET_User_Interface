@@ -907,7 +907,7 @@ class Ui_frmMain(object):
         self.lblMapNodes.setText(_translate("frmMain", "Nodes", None))
         self.lblMapLinks.setText(_translate("frmMain", "Links", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabMap), _translate("frmMain", "Map", None))
-        self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabGIS), _translate("frmMain", "GIS", None))
+        self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabGIS), _translate("frmMain", "Layers", None))
         self.dockw_more.setWindowTitle(_translate("frmMain", "Object Explorer", None))
         self.time_widget.setWindowTitle(_translate("frmMain", "Time", None))
         self.labelStartTime.setText(_translate("frmMain", "not set", None))

@@ -44,13 +44,11 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         self.listWidget_2.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.listWidget_2.clear()
         counter = -1
-        for link_group in project.links_groups():
-            if link_group and link_group.value:
-                for link in link_group.value:
-                    self.listWidget_2.addItem(link.name)
-                    counter += 1
-                    if link.name in section.links:
-                        self.listWidget_2.setItemSelected(self.listWidget_2.item(counter), True)
+        for link in project.all_links():
+            self.listWidget_2.addItem(link.name)
+            counter += 1
+            if link.name in section.links:
+                self.listWidget_2.setItemSelected(self.listWidget_2.item(counter), True)
         if section.links[0] == 'ALL':
             self.listWidget_2.selectAll()
         # add subcatchments to list 3

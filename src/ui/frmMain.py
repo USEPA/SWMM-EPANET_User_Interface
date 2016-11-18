@@ -637,6 +637,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
+
+                feature_name = self.feature.attributes()[0]
+                for section_field_name in self.session.section_types.values():
+                    try:
+                        if self.layer == self.session.model_layers.layer_by_name(section_field_name):
+                            section = getattr(self.session.project, section_field_name)
+                            object = section.value[feature_name]
+                            vertex_index = self.point_index
+                            if section_field_name != "subcatchments":
+                                vertex_index -= 1
+                            object.vertices[vertex_index].x = x
+                            object.vertices[vertex_index].y = y
+                            break
+                    except Exception as ex1:
+                        print("Searching for object to move vertex of: " + str(ex1) + '\n' + str(traceback.print_exc()))
+
             except Exception as ex:
                 print("_MoveVertex: " + str(ex) + '\n' + str(traceback.print_exc()))
             try:

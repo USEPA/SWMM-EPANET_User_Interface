@@ -258,16 +258,16 @@ try:
             link_coordinates.extend(item.vertices)
             link_coordinates.append(project_coordinates[item.outlet_node])
 
-            link_points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
+            points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPolyline(link_points))
+            feature.setGeometry(QgsGeometry.fromPolyline(points))
             feature.setAttributes([item.name, 0.0])
             return feature
 
         @staticmethod
         def polygon_feature_from_item(item):
-            pts = [QgsPoint(float(coord.x), float(coord.y)) for coord in item.vertices]
-            geometry = QgsGeometry.fromPolygon([pts])
+            points = [QgsPoint(float(coord.x), float(coord.y)) for coord in item.vertices]
+            geometry = QgsGeometry.fromPolygon([points])
             feature = QgsFeature()
             feature.setGeometry(geometry)
             feature.setAttributes([item.name, 0.0])
@@ -1168,10 +1168,7 @@ try:
 
         def canvasReleaseEvent(self, mouse_event):
             if self.tempRubberBand and mouse_event.pos() != self.start_drag_position:
-                self.nearest_layer.startEditing()
                 self.moveVertexTo(mouse_event.pos())
-                self.nearest_layer.commitChanges()
-                self.canvas.refresh()
                 # self.session.move_selected_items(self.nearest_layer,
                 #                                  event_pt.x() - start_pt.x(),
                 #                                  event_pt.y() - start_pt.y())

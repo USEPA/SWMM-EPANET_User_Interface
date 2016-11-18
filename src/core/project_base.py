@@ -68,6 +68,14 @@ class ProjectBase(object):
             lst_all.extend(section.value)
         return lst_all
 
+    def find_link(self, link_name):
+        for link_group in self.links_groups():
+            if link_group and link_group.value:
+                try:
+                    return link_group[link_name]
+                except:
+                    pass
+
     def all_vertices(self, set_names=False):
         """ Return a list of Coordinate objects, one for each internal vertices of all links.
             If set_names is True, also set the name of each vertex to match its link. """

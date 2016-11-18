@@ -428,31 +428,19 @@ try:
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                         QgsField("color", QtCore.QVariant.Double)])
-
                 features = []
-                # Receivers = as in the above example 'Receivers' is a list of results
-                poly_name = None
-                poly_points = []
                 if polygons:
-                    for coordinate_pair in polygons:
-                        if coordinate_pair.name != poly_name:
-                            if poly_points:
-                                # add a feature
-                                feature = QgsFeature()
-                                feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                                feature.setAttributes([poly_name, 0.0])
-                                features.append(feature)
-                                poly_points = []
-                            poly_name = coordinate_pair.name
-                        poly_points.append(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y)))
+                    for polygon in polygons:
+                        poly_points = []
+                        for coordinate_pair in polygon.vertices:
+                            poly_points.append(QgsPoint(float(coordinate_pair.x), float(coordinate_pair.y)))
 
-                if poly_points:
-                    # add a feature
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                    feature.setAttributes([poly_name, 0.0])
-                    features.append(feature)
-
+                        if poly_points:
+                            # add a feature
+                            feature = QgsFeature()
+                            feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
+                            feature.setAttributes([polygon.name, 0.0])
+                            features.append(feature)
                 if features:
                     layer.startEditing()
                     provider.addFeatures(features)

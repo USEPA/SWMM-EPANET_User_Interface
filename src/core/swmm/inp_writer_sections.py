@@ -94,6 +94,14 @@ class CoordinateWriter(SectionWriter):
         return inp
 
 
+class PolygonWriter(SectionWriter):
+    """Text version of a subcatchment polygon's points"""
+    @staticmethod
+    def as_text(coordinate_list):
+        inp = [CoordinateWriter.as_text(coord) for coord in coordinate_list]
+        return '\n'.join(inp)
+
+
 class LabelWriter(SectionWriter):
     field_format = ' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
 

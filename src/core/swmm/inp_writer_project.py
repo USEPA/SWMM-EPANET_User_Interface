@@ -232,9 +232,6 @@ class ProjectWriter(InputFileWriterBase):
                                                 ";;X-Coord         \tY-Coord           \tLabel")
         # X, Y coordinates, text, and font details of labels
 
-        self.write_polygons = SectionWriterAsList("[POLYGONS]", CoordinateWriter,
-                                                  ";Subcatchment    \tX-Coord   \tY-Coord")
-        # X, Y coordinates for each vertex of subcatchment polygons
 
     def as_text(self, project):
         # Figure out which kind of infiltration will be written for this project
@@ -290,6 +287,17 @@ class ProjectWriter(InputFileWriterBase):
         vertices_text = vertices_writer.as_text(vertices)
         if vertices_text:
             derived_sections[vertices.SECTION_NAME] = vertices_text
+
+        polygons = SectionAsList("[POLYGONS]")
+        polygon_list = []
+        for subc in project.subcatchments.value:
+            polygon_list.append(subc.vertices)
+        polygons.value = polygon_list
+        polygons_writer = SectionWriterAsList("[POLYGONS]", PolygonWriter,
+                                              ";Link            \tX-Coord   \tY-Coord")
+        polygons_text = polygons_writer.as_text(polygons)
+        if polygons_text:
+            derived_sections[polygons.SECTION_NAME] = polygons_text
 
         losses = SectionAsList("[LOSSES]")  # (list of Conduit)
         losses.value = project.conduits.value

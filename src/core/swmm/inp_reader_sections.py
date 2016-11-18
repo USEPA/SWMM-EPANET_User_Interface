@@ -148,6 +148,26 @@ class VerticesReader(SectionReader):
                         print("Link not found in model for vertex " + coordinate.name)
 
 
+class PolygonsReader(SectionReader):
+    """Read coordinates of intermediate points of subcatchments"""
+
+    @staticmethod
+    def read(new_text, project):
+        subcatchment_values = project.subcatchments.value
+        if subcatchment_values:
+            disposable_section = Section()
+            disposable_section.SECTION_NAME = "[POLYGONS]"
+            for line in new_text.splitlines():
+                line = SectionReader.set_comment_check_section(disposable_section, line)
+                coordinate = CoordinateReader.read(line)
+                if coordinate:
+                    try:
+                        subcatchment = subcatchment_values[coordinate.name]
+                        subcatchment.vertices.append(coordinate)
+                    except Exception:
+                        print("Subcatchment not found in model for polygon " + coordinate.name)
+
+
 class LabelReader(SectionReader):
     @staticmethod
     def read(new_text):

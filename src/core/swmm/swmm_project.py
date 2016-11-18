@@ -161,9 +161,6 @@ class SwmmProject(ProjectBase):
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         # X, Y coordinates and text of labels
 
-        self.polygons = SectionAsList("[POLYGONS]")  # (list of Coordinate)
-        # X, Y coordinates for each vertex of subcatchment polygons
-
         self.sections = [
             self.title,
             self.options,
@@ -208,8 +205,7 @@ class SwmmProject(ProjectBase):
             self.loadings,
             self.curves,
             self.timeseries,
-            self.labels,
-            self.polygons]  # Start with a sensible order of sections.
+            self.labels]  # Start with a sensible order of sections.
         self.add_sections_from_attributes()  # Add any sections not added in the line above, should not be any left.
 
     def nodes_groups(self):

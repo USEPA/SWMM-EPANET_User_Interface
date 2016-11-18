@@ -1013,7 +1013,7 @@ class ModelLayersSWMM(ModelLayers):
         self.outlets = addLinks(coordinates, project.outlets.value, "Outlets", QColor('pink'), 2)
         self.weirs = addLinks(coordinates, project.weirs.value, "Weirs", QColor('orange'), 2.5)
         self.conduits = addLinks(coordinates, project.conduits.value, "Conduits", QColor('gray'), 3.5)
-        self.subcatchments = self.map_widget.addPolygons(project.polygons.value, "Subcatchments")
+        self.subcatchments = self.map_widget.addPolygons(project.subcatchments.value, "Subcatchments")
         self.set_lists()
 
 

@@ -106,30 +106,30 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         start_node = ''
         end_node = ''
         LKsToPlotData = {}
-        for link_id in LKsToPlot:
-            for link_group in self.project.links_groups():
-                if link_group and link_group.value:
-                    for link in link_group.value:
-                        if link.name == link_id:
-                            nodes = (link.inlet_node, link.outlet_node)
-                            diameter = 0
-                            for cross_section in self.project.xsections.value:
-                                if cross_section.link == link_id:
-                                    diameter = cross_section.geometry1
-                            length = 10
-                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
-                                length = float(link.length) - 2*mhrad
-                            inlet_offset = 10
-                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
-                                inlet_offset = link.inlet_offset
-                            outlet_offset = 10
-                            if isinstance(link,core.swmm.hydraulics.link.Conduit):
-                                outlet_offset = link.outlet_offset
-                            LKsToPlotData[link_id] = [nodes,length,diameter,inlet_offset,outlet_offset]
-                            # this is also a convenient place to record the start and end nodes for use in the title
-                            if len(start_node) == 0:
-                                start_node = link.inlet_node
-                            end_node = link.outlet_node
+        for link_name in LKsToPlot:
+            try:
+                link = self.project.find_link(link_name)
+                nodes = (link.inlet_node, link.outlet_node)
+                diameter = 0
+                for cross_section in self.project.xsections.value:
+                    if cross_section.link == link_name:
+                        diameter = cross_section.geometry1
+                length = 10
+                if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                    length = float(link.length) - 2*mhrad
+                inlet_offset = 10
+                if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                    inlet_offset = link.inlet_offset
+                outlet_offset = 10
+                if isinstance(link,core.swmm.hydraulics.link.Conduit):
+                    outlet_offset = link.outlet_offset
+                LKsToPlotData[link_name] = [nodes, length, diameter, inlet_offset, outlet_offset]
+                # this is also a convenient place to record the start and end nodes for use in the title
+                if len(start_node) == 0:
+                    start_node = link.inlet_node
+                end_node = link.outlet_node
+            except:
+                pass  # probably did not find link in this group, move on to the next group
 
         NodeInverts = {}
         NodeDepths = {}

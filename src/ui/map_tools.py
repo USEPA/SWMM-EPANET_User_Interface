@@ -1078,7 +1078,7 @@ try:
                                 self.nearest_point_index = pt_indexes[sp_index]
                             self.nearest_distance = distance
                             self.nearest_spatial_index = layer_index
-                            print("Nearest: " + "{:,}".format(pt.x()) + ", " + "{:,}".format(pt.y()))
+                            # print("Nearest: " + "{:,}".format(pt.x()) + ", " + "{:,}".format(pt.y()))
                         sp_index += 1
 
                 except Exception as e1:
@@ -1198,6 +1198,7 @@ try:
                                      start_pt.x(), start_pt.y(),
                                      layer_pt.x(), layer_pt.y())
 
+            # This update is now handled within session.move_vertex via call to setQgsMapTool in class _MoveVertex
             # Update this moved point in layer_spatial_indexes
             #self.build_spatial_index()
             #pt_index = self.nearest_point_index

@@ -431,6 +431,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.layer.updateExtents()
                     self.layer.triggerRepaint()
                     self.session.map_widget.canvas.refresh()
+                    try:
+                        self.session.setQgsMapTool()
+                    except:
+                        pass
 
         def undo(self):
             self.section.value.insert(self.item_index, self.item)
@@ -443,6 +447,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
+                try:
+                    self.session.setQgsMapTool()
+                except:
+                    pass
 
     def delete_item(self, item):
         self.undo_stack.push(self._DeleteItem(self, item))

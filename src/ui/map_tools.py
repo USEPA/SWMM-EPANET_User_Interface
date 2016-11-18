@@ -1193,8 +1193,7 @@ try:
             start_pt = self.toLayerCoordinates(self.nearest_layer, self.start_drag_position)
 
             self.session.move_vertex(self.nearest_layer,
-                                     self.nearest_feature.id(),
-                                     self.nearest_geometry,
+                                     self.nearest_feature,
                                      self.nearest_point_index,
                                      start_pt.x(), start_pt.y(),
                                      layer_pt.x(), layer_pt.y())

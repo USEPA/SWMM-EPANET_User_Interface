@@ -592,21 +592,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     class _MoveVertex(QtGui.QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
-        def __init__(self, session, layer, feature_id, geometry, point_index, from_x, from_y, to_x, to_y):
+        def __init__(self, session, layer, feature, point_index, from_x, from_y, to_x, to_y):
             QtGui.QUndoCommand.__init__(self, "Move Vertex " + str(point_index) +
                                         " from " + str(from_x) + ", " + str(from_y) +
                                         " to " + str(to_x) + ", " + str(to_y))
             self.session = session
             self.layer = layer
-            self.feature_id = feature_id
-            self.geometry = geometry
+            self.feature = feature
             self.point_index = point_index
             self.from_x = from_x
             self.from_y = from_y
             self.to_x = to_x
             self.to_y = to_y
-            self.map_features = [feature for feature in layer.selectedFeatures()]
-            self.moved_links = []
 
         def redo(self):
             self.move(False)
@@ -625,8 +622,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     x = self.to_x
                     y = self.to_y
 
-                self.geometry.moveVertex(x, y, self.point_index)
-                self.layer.changeGeometry(self.feature_id, self.geometry)
+                geometry = self.feature.geometry()
+                geometry.moveVertex(x, y, self.point_index)
+                self.layer.changeGeometry(self.feature.id(), geometry)
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
@@ -638,9 +636,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except:
                 pass
 
-    def move_vertex(self, layer, feature_id, geometry, point_index, from_x, from_y, to_x, to_y):
+    def move_vertex(self, layer, feature, point_index, from_x, from_y, to_x, to_y):
         if layer:
-            self.undo_stack.push(self._MoveVertex(self, layer, feature_id, geometry, point_index,
+            self.undo_stack.push(self._MoveVertex(self, layer, feature, point_index,
                                                   from_x, from_y, to_x, to_y))
 
     def new_item_name(self, item_type):

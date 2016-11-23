@@ -21,6 +21,7 @@ try:
             self.project_group = root.addGroup("Project Objects")
             self.nodes_group = self.project_group.addGroup("Nodes")
             self.links_group = self.project_group.addGroup("Links")
+            self.base_group = root.addGroup("Base Maps")
 
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
@@ -306,6 +307,7 @@ try:
                 symbol_layer.setColor(QColor(130, 180, 255, 255))
 
                 # Label the coordinates if there are not too many of them
+                size = 8.0
                 if coordinates and len(coordinates) > 100:
                     symbol_layer.setSize(2.0)
                 else:
@@ -315,8 +317,7 @@ try:
                         symbol_layer.setOutlineColor(QColor('transparent'))
                         symbol_layer.setColor(QColor('transparent'))
                     else:
-                        size = 8.0
-                        symbol_layer.setSize(8.0)
+                        symbol_layer.setSize(size)
                     pal_layer = QgsPalLayerSettings()
                     pal_layer.readFromLayer(layer)
                     pal_layer.enabled = True
@@ -563,8 +564,10 @@ try:
 
         def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:
-                layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
-                self.add_layer(layer)
+                layer_name = os.path.basename(filename.strip())
+                #layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
+                layer = QgsRasterLayer(filename, layer_name)
+                self.add_layer(layer, self.base_group)
 
         # def saveVectorLayers(self, folder):
         #     layer_index = 0

@@ -4,9 +4,11 @@ try:
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import *
     from core.coordinate import Coordinate, Polygon
+    from svgs_rc import *
     import traceback
     import math
     import os
+    from enum import Enum
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
@@ -307,7 +309,7 @@ try:
                 symbol_layer.setColor(QColor(130, 180, 255, 255))
 
                 # Label the coordinates if there are not too many of them
-                size = 8.0
+                size = 4.0
                 if coordinates and len(coordinates) > 100:
                     symbol_layer.setSize(2.0)
                 else:
@@ -321,12 +323,30 @@ try:
                     pal_layer = QgsPalLayerSettings()
                     pal_layer.readFromLayer(layer)
                     pal_layer.enabled = True
+                    pal_layer.fontSizeInMapUnits = True
                     pal_layer.fieldName = 'name'
                     pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
-                    pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, str(size), '')
+                    #pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, str(size), '')
+                    expr = "case when size < 3 then size * 2 else size end case"
+                    pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
                     pal_layer.writeToLayer(layer)
 
                 # replace the default symbol layer with the new symbol layer
+                if "JUNCTION" in layer_name.upper():
+                    symbol_layer.setName(MapSymbol.circle.name)
+                elif "OUT" in layer_name.upper():
+                    symbol_layer.setName(MapSymbol.triangle.name)
+                    symbol_layer.setAngle(180.0)
+                elif "DIVIDER" in layer_name.upper():
+                    symbol_layer.setName(MapSymbol.diamond.name)
+                elif "STORAGE" in layer_name.upper():
+                    symbol_layer.setName(MapSymbol.rectangle.name)
+                elif "RAIN" in layer_name.upper():
+                    #symbol_layer.setName(MapSymbol.pentagon.name)
+                    symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_raingage.svg')
+                elif "MAP" in layer_name.upper():
+                    symbol_layer.setName(MapSymbol.x.name)
+
                 layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
                 self.add_layer(layer, self.nodes_group)
                 return layer
@@ -336,10 +356,34 @@ try:
 
         @staticmethod
         def set_default_point_renderer(layer):
-            sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
-            sym.setColor(QColor(130, 180, 255, 255))
-            sym.setSize(8.0)
-            layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
+            return
+            #sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+            symbol_layer = None #QgsSimpleMarkerSymbolLayerV2()
+            layer_name = layer.name()
+            if "JUNCTION" in layer_name.upper():
+                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                symbol_layer.setName(MapSymbol.circle.name)
+            elif "OUT" in layer_name.upper():
+                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                symbol_layer.setName(MapSymbol.triangle.name)
+                symbol_layer.setAngle(180.0)
+            elif "DIVIDER" in layer_name.upper():
+                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                symbol_layer.setName(MapSymbol.diamond.name)
+            elif "STORAGE" in layer_name.upper():
+                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                symbol_layer.setName(MapSymbol.rectangle.name)
+            elif "MAP" in layer_name.upper():
+                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                symbol_layer.setName(MapSymbol.x.name)
+            elif "RAIN" in layer_name.upper():
+                #symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+                #symbol_layer.setName(MapSymbol.pentagon.name)
+                symbol_layer = QgsSvgMarkerSymbolLayerV2()
+                symbol_layer.setPath('icons/svg/obj_raingage_qg.svg')
+            symbol_layer.setColor(QColor(130, 180, 255, 255))
+            symbol_layer.setSize(4.0)
+            layer.setRendererV2(QgsSingleSymbolRendererV2(symbol_layer))
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:
@@ -1308,6 +1352,21 @@ try:
             layer.updateExtents()
 
             QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
+
+    class MapSymbol(Enum):
+        circle = 1
+        square = 2
+        cross = 3
+        rectangle = 4
+        diamond = 5
+        pentagon = 6
+        triangle = 7
+        equitri = 8
+        star = 9
+        regstar = 10
+        arrow = 11
+        fillarrowhead = 12
+        x = 13
 
 except:
     print "Skipping map_tools"

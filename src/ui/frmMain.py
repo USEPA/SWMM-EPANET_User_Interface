@@ -351,11 +351,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.session = session
             self.item = item
             self.added_id = None
+            self.added_centroid_id = None
+            self.centroid_layer = None
             section_field_name = session.section_types[type(item)]
             if not hasattr(session.project, section_field_name):
                 raise Exception("Section not found in project: " + section_field_name)
             self.section = getattr(session.project, section_field_name)
             self.layer = self.session.model_layers.layer_by_name(section_field_name)
+            if isinstance(self.item, Polygon):
+                self.centroid_layer = self.session.model_layers.layer_by_name("centroid")
 
         def redo(self):
             if self.item.name == '' or self.item.name in self.section.value:
@@ -377,6 +381,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                                                        self.session.project.all_nodes())])
                 elif isinstance(self.item, Polygon):
                     added = self.layer.dataProvider().addFeatures([self.session.map_widget.polygon_feature_from_item(self.item)])
+                    if added[0]:
+                        self.centroid_layer.startEditing()
+                        added_centroid = self.centroid_layer.dataProvider().addFeatures([
+                            self.session.map_widget.point_feature_from_item(self.item.centroid)])
+                        if added_centroid[0]:
+                            self.added_centroid_id = added[1][0].id()
+                            self.centroid_layer.updateExtents()
+                            self.centroid_layer.commitChanges()
+                            self.centroid_layer.triggerRepaint()
+                        else:
+                            self.added_centroid_id = None
+                            self.centroid_layer.rollBack()
 
                 if added[0]:
                     self.added_id = added[1][0].id()
@@ -399,6 +415,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+            if self.added_centroid_id is not None:
+                self.session.map_widget.clearSelectableObjects()
+                self.centroid_layer.startEditing()
+                self.centroid_layer.dataProvider().deleteFeatures([self.added_centroid_id])
+                self.centroid_layer.commitChanges()
+                self.centroid_layer.updateExtents()
+                self.centroid_layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
 
     def add_item(self, new_item):
@@ -947,10 +971,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def script_ipython(self):
         pass
-        #widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE)
-        #ipy_win = self.map.addSubWindow(widget,QtCore.Qt.Widget)
-        #if ipy_win:
-        #    ipy_win.show()
+        #try:
+        #    widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE, install_dir=INSTALL_DIR)
+        #    ipy_win = self.map.addSubWindow(widget, QtCore.Qt.Widget)
+        #    if ipy_win:
+        #        ipy_win.show()
+        #except Exception as ex:
+        #    print("Error opening IPython: " + str(ex) + '\n' + str(traceback.print_exc()))
+
 
     def script_exec(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")

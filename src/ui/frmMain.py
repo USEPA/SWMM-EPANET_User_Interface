@@ -386,7 +386,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         added_centroid = self.centroid_layer.dataProvider().addFeatures([
                             self.session.map_widget.point_feature_from_item(self.item.centroid)])
                         if added_centroid[0]:
-                            self.added_centroid_id = added[1][0].id()
+                            self.added_centroid_id = added_centroid[1][0].id()
                             self.centroid_layer.updateExtents()
                             self.centroid_layer.commitChanges()
                             self.centroid_layer.triggerRepaint()

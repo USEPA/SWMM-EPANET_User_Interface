@@ -65,7 +65,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdOpenProj.triggered.connect(self.open_project)
         self.actionStdExit.triggered.connect(self.action_exit)
         self.actionIPython.triggered.connect(self.script_ipython)
-        self.actionExec.triggered.connect(self.script_exec)
+        self.actionExec.triggered.connect(self.script_browse_file)
         self.actionStdSave.triggered.connect(self.save_project)
         self.actionStdSaveMenu.triggered.connect(self.save_project)
         self.actionStdSave_As.triggered.connect(self.save_project_as)
@@ -970,6 +970,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     return
 
     def script_ipython(self):
+        import editor
+        editor_form = editor.EditorWindow()
+        editor_form.session = self
+        editor_form.show()
+
         pass
         #try:
         #    widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE, install_dir=INSTALL_DIR)
@@ -980,7 +985,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #    print("Error opening IPython: " + str(ex) + '\n' + str(traceback.print_exc()))
 
 
-    def script_exec(self):
+    def script_browse_file(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
         directory = gui_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", directory, "All files (*.*)")
@@ -990,7 +995,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 gui_settings.setValue("ScriptDir", path_only)
                 gui_settings.sync()
                 del gui_settings
+            self.script_run(file_name)
 
+    def script_run(self, file_name):
+        if file_name:
             save_handle = sys.stdout
             try:
                 redirected_output = StringIO()

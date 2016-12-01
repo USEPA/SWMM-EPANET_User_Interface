@@ -228,6 +228,10 @@ def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_
 
 def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer,
                         one_file, layer_file_name, driver_name, layer_options, coordinates):
+    if not one_file:
+        layer = None
+        all_gis_attributes = gis_attributes
+
     layer = make_links_layer(coordinates, model_links,
                              model_attributes, gis_attributes, all_gis_attributes, layer)
     if layer:

@@ -353,38 +353,90 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.added_id = None
             self.added_centroid_id = None
             self.centroid_layer = None
+            self.isSubLink = False
+            self.isSub2Sub = False
             section_field_name = session.section_types[type(item)]
             if not hasattr(session.project, section_field_name):
                 raise Exception("Section not found in project: " + section_field_name)
             self.section = getattr(session.project, section_field_name)
             self.layer = self.session.model_layers.layer_by_name(section_field_name)
             if isinstance(self.item, Polygon):
-                self.centroid_layer = self.session.model_layers.layer_by_name("centroid")
+                self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
 
         def redo(self):
-            if self.item.name == '' or self.item.name in self.section.value:
-                self.item.name = self.session.new_item_name(type(self.item))
-            if len(self.section.value) == 0 and not isinstance(self.section, list):
-                self.section.value = IndexedList([], ['name'])
-            self.section.value.append(self.item)
-            # self.session.list_objects()  # Refresh the list of items on the form
-            list_item = self.session.listViewObjects.addItem(self.item.name)
-            self.session.listViewObjects.scrollToItem(list_item)
+            self.isSubLink = False
+            self.isSub2Sub = False
+            self.inlet_sub = None
+            self.outlet_sub = None
+            self.inlet_sub_id = ""
+            self.outlet_sub_id = ""
+            if isinstance(self.item, Link):
+                if not self.item.inlet_node in self.session.project.all_nodes():
+                    for s in self.session.project.subcatchments.value:
+                        if s.name == self.item.inlet_node:
+                            self.inlet_sub_id = s.name
+                            self.inlet_sub = s.centroid
+                            break
+                    self.isSubLink = True
+
+                if not self.item.outlet_node in self.session.project.all_nodes():
+                    for s in self.session.project.subcatchments.value:
+                        if s.name == self.item.outlet_node:
+                            self.outlet_sub_id = s.name
+                            self.outlet_sub = s.centroid
+                            break
+                    self.isSubLink = True
+
+                if self.inlet_sub is not None and self.outlet_sub is not None:
+                    self.isSub2Sub = True
+
+            if self.isSubLink:
+                self.layer = self.session.model_layers.layer_by_name("sublinks")
+            else:
+                if self.item.name == '' or self.item.name in self.section.value:
+                    self.item.name = self.session.new_item_name(type(self.item))
+                if len(self.section.value) == 0 and not isinstance(self.section, list):
+                    self.section.value = IndexedList([], ['name'])
+                self.section.value.append(self.item)
+                # self.session.list_objects()  # Refresh the list of items on the form
+                list_item = self.session.listViewObjects.addItem(self.item.name)
+                self.session.listViewObjects.scrollToItem(list_item)
+
             if self.layer:
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
                 if isinstance(self.item, Coordinate):
                     added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
                 elif isinstance(self.item, Link):
-                    added = self.layer.dataProvider().addFeatures([
-                        self.session.map_widget.line_feature_from_item(self.item,
-                                                                       self.session.project.all_nodes())])
-                elif isinstance(self.item, Polygon):
-                    added = self.layer.dataProvider().addFeatures([self.session.map_widget.polygon_feature_from_item(self.item)])
+                    f = self.session.map_widget.line_feature_from_item(self.item,
+                                                                       self.session.project.all_nodes(),
+                                                                       self.inlet_sub, self.outlet_sub)
+                    added = self.layer.dataProvider().addFeatures([f])
                     if added[0]:
+                        #set subcatchment's outlet nodal/subcatch id
+                        if self.inlet_sub and self.inlet_sub_id:
+                            for s in self.session.project.subcatchments.value:
+                                if s.name == self.inlet_sub_id:
+                                    s.outlet = self.item.outlet_node
+                                    break
+                        #set sublink's attributes
+                        f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                        self.layer.updateExtents()
+                        self.layer.commitChanges()
+                        self.layer.triggerRepaint()
+                        self.session.map_widget.canvas.refresh()
+                elif isinstance(self.item, Polygon):
+                    f = self.session.map_widget.polygon_feature_from_item(self.item)
+                    added = self.layer.dataProvider().addFeatures([f])
+                    if added[0]:
+                        pt = f.geometry().centroid().asPoint()
+                        self.item.centroid.x = str(pt.x())
+                        self.item.centroid.y = str(pt.y())
+
                         self.centroid_layer.startEditing()
-                        added_centroid = self.centroid_layer.dataProvider().addFeatures([
-                            self.session.map_widget.point_feature_from_item(self.item.centroid)])
+                        pf = self.session.map_widget.point_feature_from_item(self.item.centroid)
+                        pf.setAttributes([str(added[1][0].id()), 0.0, added[1][0].id()])
+                        added_centroid = self.centroid_layer.dataProvider().addFeatures([pf])
                         if added_centroid[0]:
                             self.added_centroid_id = added_centroid[1][0].id()
                             self.centroid_layer.updateExtents()
@@ -405,10 +457,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.layer.rollBack()
 
         def undo(self):
-            self.section.value.remove(self.item)
+            if not "sublink" in self.layer.name().lower():
+                self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             # self.session.listViewObjects.takeItem(len(self.section.value))
             if self.added_id is not None:
+                if isinstance(self.item, Link):
+                    if self.isSubLink:
+                        #for sub to node link, need to empty out the outlet attribute
+                        # of the source sub of this soon to be deleted link
+                        for s in self.session.project.subcatchments.value:
+                            if s.name == self.item.inlet_node:
+                                s.outlet = ""
+                                break
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
                 self.layer.dataProvider().deleteFeatures([self.added_id])
@@ -872,10 +933,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         result = f.exec_()
         if result:
             #from qgis.core import QgsRectangle
-            #r = QgsRectangle(self.map_widget.coord_origin.float_x,
-            #                 self.map_widget.coord_origin.float_y,
-            #                 self.map_widget.coord_fext.float_x,
-            #                 self.map_widget.coord_fext.float_y)
+            #r = QgsRectangle((float)self.map_widget.coord_origin.x,
+            #                 (float)self.map_widget.coord_origin.y,
+            #                 (float)self.map_widget.coord_fext.x,
+            #                 (float)self.map_widget.coord_fext.y)
             #self.map_widget.canvas.setExtent(r)
             pass
         pass

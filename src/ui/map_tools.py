@@ -3,6 +3,7 @@ try:
     from qgis.gui import *
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtGui import *
+    from PyQt4.Qt import *
     from core.coordinate import Coordinate, Polygon
     from svgs_rc import *
     import traceback
@@ -64,8 +65,8 @@ try:
             self.mapLinearUnit = 'none'
             self.coord_origin = Coordinate()
             self.coord_fext = Coordinate()
-            self.coord_fext.float_x = 100000.0
-            self.coord_fext.float_y = 100000.0
+            self.coord_fext.x = 100000.0
+            self.coord_fext.y = 100000.0
 
             QtCore.QObject.connect(self.canvas, QtCore.SIGNAL("xyCoordinates(QgsPoint)"), self.canvasMoveEvent)
 
@@ -115,6 +116,7 @@ try:
                 #QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
 
         def setSelectMode(self):
+            QApplication.restoreOverrideCursor()
             if self.session.actionMapSelectObj.isChecked():
                 if self.canvas.layers():
                     self.selectTool = SelectMapTool(self.canvas, self.session)
@@ -255,11 +257,18 @@ try:
             return feature
 
         @staticmethod
-        def line_feature_from_item(item, project_coordinates):
+        def line_feature_from_item(item, project_coordinates, subinlet=None, suboutlet=None):
             link_coordinates = []
-            link_coordinates.append(project_coordinates[item.inlet_node])
+            if subinlet is not None:
+                link_coordinates.append(subinlet)
+            else:
+                link_coordinates.append(project_coordinates[item.inlet_node])
+
             link_coordinates.extend(item.vertices)
-            link_coordinates.append(project_coordinates[item.outlet_node])
+            if suboutlet is not None:
+                link_coordinates.append(suboutlet)
+            else:
+                link_coordinates.append(project_coordinates[item.outlet_node])
 
             points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
@@ -282,8 +291,15 @@ try:
                 provider = layer.dataProvider()
 
                 # add fields
-                provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double)])
+                if "CENTROID" in layer_name.upper():
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.Double),
+                                            QgsField("sub_id", QtCore.QVariant.Int)])
+                else:
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.Double)])
+
+                layer.updateFields()
 
                 features = []
                 if coordinates:
@@ -326,64 +342,55 @@ try:
                     pal_layer.fontSizeInMapUnits = True
                     pal_layer.fieldName = 'name'
                     pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
-                    #pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, str(size), '')
                     expr = "case when size < 3 then size * 2 else size end case"
                     pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
                     pal_layer.writeToLayer(layer)
 
                 # replace the default symbol layer with the new symbol layer
-                if "JUNCTION" in layer_name.upper():
-                    symbol_layer.setName(MapSymbol.circle.name)
-                elif "OUT" in layer_name.upper():
-                    symbol_layer.setName(MapSymbol.triangle.name)
-                    symbol_layer.setAngle(180.0)
-                elif "DIVIDER" in layer_name.upper():
-                    symbol_layer.setName(MapSymbol.diamond.name)
-                elif "STORAGE" in layer_name.upper():
-                    symbol_layer.setName(MapSymbol.rectangle.name)
-                elif "RAIN" in layer_name.upper():
-                    #symbol_layer.setName(MapSymbol.pentagon.name)
-                    symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_raingage.svg')
-                elif "MAP" in layer_name.upper():
-                    symbol_layer.setName(MapSymbol.x.name)
-
-                layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
-                self.add_layer(layer, self.nodes_group)
+                self.set_default_point_renderer(layer, size)
+                if "CENTROID" in layer.name().upper():
+                    self.add_layer(layer, self.project_group)
+                else:
+                    self.add_layer(layer, self.nodes_group)
                 return layer
             except Exception as exBig:
                 print("Error making layer: " + str(exBig))
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer):
-            return
+        def set_default_point_renderer(layer, aSize=4.0):
             #sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
-            symbol_layer = None #QgsSimpleMarkerSymbolLayerV2()
-            layer_name = layer.name()
-            if "JUNCTION" in layer_name.upper():
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            symbol_layer.setColor(QColor(130, 180, 255, 255))
+            if "JUNCTION" in layer.name().upper():
                 symbol_layer.setName(MapSymbol.circle.name)
-            elif "OUT" in layer_name.upper():
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            elif "OUT" in layer.name().upper():
                 symbol_layer.setName(MapSymbol.triangle.name)
                 symbol_layer.setAngle(180.0)
-            elif "DIVIDER" in layer_name.upper():
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            elif "DIVIDER" in layer.name().upper():
                 symbol_layer.setName(MapSymbol.diamond.name)
-            elif "STORAGE" in layer_name.upper():
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
-                symbol_layer.setName(MapSymbol.rectangle.name)
-            elif "MAP" in layer_name.upper():
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
+            elif "STORAGE" in layer.name().upper() or \
+                 "RESERVOIR" in layer.name().upper():
+                #symbol_layer.setName(MapSymbol.rectangle.name)
+                symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_storage.svg')
+            elif "MAP" in layer.name().upper():
                 symbol_layer.setName(MapSymbol.x.name)
-            elif "RAIN" in layer_name.upper():
-                #symbol_layer = QgsSimpleMarkerSymbolLayerV2()
-                #symbol_layer.setName(MapSymbol.pentagon.name)
-                symbol_layer = QgsSvgMarkerSymbolLayerV2()
-                symbol_layer.setPath('icons/svg/obj_raingage_qg.svg')
-            symbol_layer.setColor(QColor(130, 180, 255, 255))
-            symbol_layer.setSize(4.0)
-            layer.setRendererV2(QgsSingleSymbolRendererV2(symbol_layer))
+            elif "CENTROID" in layer.name().upper():
+                symbol_layer.setName(MapSymbol.square.name)
+                symbol_layer.setColor(QColor('black'))
+            elif "RAIN" in layer.name().upper():
+                symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_raingage.svg')
+            elif "TANK" in layer.name().upper():
+                symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_tank.svg')
+            if aSize < 1.0:
+                symbol_layer.setSize(4.0)
+            else:
+                if "CENTROID" in layer.name().upper():
+                    symbol_layer.setSize(1.0)
+                else:
+                    symbol_layer.setSize(aSize)
+            layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
+            #layer.setRendererV2(QgsSingleSymbolRendererV2(symbol_layer))
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:
@@ -401,12 +408,13 @@ try:
                 #                                             'placement': 'centralpoint',
                 #                                             'offset': '0'})
                 # subSymbol = markerLayer.subSymbol()
-
-                layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
-
+                self.set_default_line_renderer(layer)
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double)])
+                                        QgsField("color", QtCore.QVariant.Double),
+                                        QgsField("inlet", QtCore.QVariant.String),
+                                        QgsField("outlet", QtCore.QVariant.String),
+                                        QgsField("sub2sub", QtCore.QVariant.Bool)])
 
                 features = []
                 if links:
@@ -425,7 +433,11 @@ try:
                 # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
                 #     {'width': '0.26', 'color': '0,0,0'})
                 # layer.rendererV2().symbols()[0].appendSymbolLayer(sl)
-                self.add_layer(layer, self.links_group)
+                if "sublink" in layer_name.lower():
+                    self.add_layer(layer, self.project_group)
+                else:
+                    self.add_layer(layer, self.links_group)
+
                 return layer
             except Exception as exBig:
                 print("Error making layer: " + str(exBig))
@@ -458,10 +470,57 @@ try:
 
         @staticmethod
         def set_default_line_renderer(layer):
-            sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
-            sym.setColor(QColor('gray'))
-            sym.setWidth(3.5)
-            layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
+            if layer is None:
+                return
+            symbol = QgsLineSymbolV2.createSimple({})
+            symbol.deleteSymbolLayer(0)
+            slayer = QgsSimpleLineSymbolLayerV2()
+            slayer.setWidth(3.0)
+            slayer.setColor(QColor("dark gray"))
+            symbol.appendSymbolLayer(slayer)
+            if "CONDUIT" in layer.name().upper() or \
+               "PIPE" in layer.name().upper():
+                slayer = QgsSimpleLineSymbolLayerV2()
+                slayer.setWidth(1.5)
+                slayer.setColor(QColor("light gray"))
+                symbol.appendSymbolLayer(slayer)
+                renderer = QgsSingleSymbolRendererV2(symbol)
+                layer.setRendererV2(renderer)
+            elif "sublink" in layer.name().lower():
+                symbol.deleteSymbolLayer(0)
+                slayer = QgsSimpleLineSymbolLayerV2()
+                slayer.setWidth(0.5)
+                slayer.setColor(QColor("light blue"))
+                slayer.setPenStyle(QtCore.Qt.DotLine)
+                symbol.appendSymbolLayer(slayer)
+                renderer = QgsSingleSymbolRendererV2(symbol)
+                layer.setRendererV2(renderer)
+            else:
+                slayer.setWidth(1.0)
+                slayer = QgsMarkerLineSymbolLayerV2(True, 3)
+                mlayer = slayer.subSymbol()
+                anewlayer = None
+                if "PUMP" in layer.name().upper():
+                    anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_pump.svg')
+                elif "ORIFICE" in layer.name().upper():
+                    anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_orifice.svg')
+                elif "OUTLET" in layer.name().upper():
+                    anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_outlet.svg')
+                elif "WEIR" in layer.name().upper():
+                    anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_weir.svg')
+                elif "VALVE" in layer.name().upper():
+                    anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_valve.svg')
+                if anewlayer is not None:
+                    mlayer.changeSymbolLayer(0, anewlayer)
+                    slayer.setPlacement(QgsMarkerLineSymbolLayerV2.CentralPoint)
+                    symbol.appendSymbolLayer(slayer)
+                    renderer = QgsSingleSymbolRendererV2(symbol)
+                    layer.setRendererV2(renderer)
+                else:
+                    sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+                    sym.setColor(QColor('gray'))
+                    sym.setWidth(3.5)
+                    layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             try:
@@ -502,7 +561,23 @@ try:
         @staticmethod
         def set_default_polygon_renderer(layer, poly_color='lightgreen'):
             sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
-            sym.setColor(QColor(poly_color))
+            if "SUBCATCHMENT" in layer.name().upper():
+                sym.deleteSymbolLayer(0)
+                slayer = QgsSimpleFillSymbolLayerV2()
+                slayer.setColor(QColor('dark gray'))
+                sym.appendSymbolLayer(slayer)
+                slayer = QgsLinePatternFillSymbolLayer()
+                slayer.setColor(QColor("light gray"))
+                slayer.setLineWidth(1)
+                slayer.setDistance(2)
+                slayer.setLineAngle(70)
+                sym.appendSymbolLayer(slayer)
+                slayer = QgsCentroidFillSymbolLayerV2()
+                slayer.setColor(QColor("black"))
+                sym.appendSymbolLayer(slayer)
+            else:
+                sym.setColor(QColor(poly_color))
+            sym.setAlpha(0.2)
             layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         @staticmethod
@@ -874,7 +949,14 @@ try:
         def build_spatial_index(self):
             """ Build self.layer_spatial_indexes as cache of node locations eligible to be endpoints of a new link """
             self.layer_spatial_indexes = []
-            for lyr in self.session.model_layers.nodes_layers:
+            index_layers = []
+            index_layers.extend(self.session.model_layers.nodes_layers)
+            for lyr in self.session.model_layers.all_layers:
+                if "centroid" in lyr.name().lower():
+                    index_layers.extend([lyr])
+                    break
+            #for lyr in self.session.model_layers.nodes_layers:
+            for lyr in index_layers:
                 try:
                     if isinstance(lyr, QgsVectorLayer):
                         provider = lyr.dataProvider()

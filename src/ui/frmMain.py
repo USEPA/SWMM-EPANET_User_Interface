@@ -27,7 +27,7 @@ from core.coordinate import Coordinate, Link, Polygon
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
-
+MAX_RECENT_FILES = 8
 
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
@@ -43,6 +43,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         except Exception as exQsci:
             print str(exQsci)
         self._forms = []
+        self._editor_form = None
         """List of editor windows used during this session, kept here so they are not automatically closed."""
 
         # Make sure all required properties have already been set by subclass
@@ -57,6 +58,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
+        self.recent_scripts = self.create_recent_menus(self.menuScripting, self.run_recent_script)
+        self.add_recent_script(None)  # Populate the recent script menus, not adding one
         self.populate_plugins_menu()
         self.time_widget.setVisible(False)
         self.actionStdNewProjectMenu.triggered.connect(self.new_project)
@@ -65,7 +68,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdOpenProj.triggered.connect(self.open_project)
         self.actionStdExit.triggered.connect(self.action_exit)
         self.actionIPython.triggered.connect(self.script_ipython)
-        self.actionExec.triggered.connect(self.script_browse_file)
+        self.actionExec.triggered.connect(self.script_browse_and_run)
         self.actionStdSave.triggered.connect(self.save_project)
         self.actionStdSaveMenu.triggered.connect(self.save_project)
         self.actionStdSave_As.triggered.connect(self.save_project_as)
@@ -1032,11 +1035,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def script_ipython(self):
         import editor
-        editor_form = editor.EditorWindow()
-        editor_form.session = self
-        editor_form.show()
+        editor.ICON_FOLDER = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
+        editor.MAX_RECENT_FILES = MAX_RECENT_FILES
+        self._editor_form = editor.EditorWindow(parent=self, session=self)
+        self._editor_form.session = self
+        self._editor_form.show()
+        self.add_recent_script(None)  # Populate the recent script menus, not adding one
 
-        pass
         #try:
         #    widget = EmbedIPython(session=self, plugins=self.plugins, mainmodule=INIT_MODULE, install_dir=INSTALL_DIR)
         #    ipy_win = self.map.addSubWindow(widget, QtCore.Qt.Widget)
@@ -1045,18 +1050,40 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #except Exception as ex:
         #    print("Error opening IPython: " + str(ex) + '\n' + str(traceback.print_exc()))
 
+    def script_browse_and_run(self):
+        file_name = self.script_browse_open()
+        if file_name:
+            self.script_run(file_name)
 
-    def script_browse_file(self):
+    def script_browse_open(self, browse_title="Select script"):
         gui_settings = QtCore.QSettings(self.model, "GUI")
         directory = gui_settings.value("ScriptDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script to run", directory, "All files (*.*)")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, browse_title, directory,
+                                                      "Python Files (*.py);;All files (*.*)")
         if file_name:
+            self.add_recent_script(file_name)
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:
                 gui_settings.setValue("ScriptDir", path_only)
                 gui_settings.sync()
-                del gui_settings
-            self.script_run(file_name)
+
+        del gui_settings
+        return file_name
+
+    def script_browse_save(self, browse_title="Save Script As..."):
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("ScriptDir", "")
+        file_name = QtGui.QFileDialog.getSaveFileName(self, browse_title, directory,
+                                                            "Python Files (*.py);;All files (*.*)")
+        if file_name:
+            self.add_recent_script(file_name)
+            path_only, file_only = os.path.split(file_name)
+            if path_only != directory:
+                gui_settings.setValue("ScriptDir", path_only)
+                gui_settings.sync()
+
+        del gui_settings
+        return file_name
 
     def script_run(self, file_name):
         if file_name:
@@ -1073,6 +1100,62 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
+
+    def add_recent_script(self, file_name):
+        settings = QtCore.QSettings(self.model, "GUI")
+        files = settings.value('recentScriptList', [])
+
+        if files and files[0] == file_name:
+            return
+
+        if file_name:
+            try:
+                files.remove(file_name)
+            except:
+                pass
+
+            files.insert(0, file_name)
+        del files[MAX_RECENT_FILES:]
+
+        settings.setValue('recentScriptList', files)
+
+        self.update_recent(self.recent_scripts, files)
+        if self._editor_form:
+            # try:
+            self.update_recent(self._editor_form.recent_scripts, files)
+            # except:
+            #     self._editor_form = None
+
+    def run_recent_script(self):
+        action = self.sender()
+        if action and action.data():
+            self.script_run(action.data())
+
+    def create_recent_menus(self, parent_menu, callback):
+        """Create recent menus. All are invisible and have no text yet, that happens in update_recent."""
+        menus = []
+        parent_menu.addSeparator()
+        for i in range(MAX_RECENT_FILES):
+            action = QtGui.QAction(self, visible=False, triggered=callback)
+            # if parent_menu is not self.menuScripting:
+            #     action.setShortcut(QKeySequence("Ctrl+" + str(i+1)))
+            menus.append(action)
+            parent_menu.addAction(action)
+        return menus
+
+    @staticmethod
+    def update_recent(recent_menu_actions, file_names):
+        num_recent = min(len(file_names), MAX_RECENT_FILES)
+        for i in range(MAX_RECENT_FILES):
+            if i < num_recent:
+                text = "&%d %s" % (i + 1, QtCore.QFileInfo(file_names[i]).fileName())
+                recent_menu_actions[i].setText(text)
+                recent_menu_actions[i].setData(file_names[i])
+                recent_menu_actions[i].setVisible(True)
+            else:
+                recent_menu_actions[i].setVisible(False)
+
+        # recent_separator.setVisible((num_recent > 0))
 
     def make_editor_from_tree(self, search_for, tree_list, selected_items=[], new_item=None):
         edit_form = None

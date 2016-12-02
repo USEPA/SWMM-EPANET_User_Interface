@@ -41,13 +41,13 @@ class Report(Section):
         self.controls = False
         """Whether to list all control actions taken during a simulation"""
 
-        self.subcatchments = ["ALL"]
+        self.subcatchments = Report.ALL_LIST
         """List of subcatchments whose results are to be reported, or ALL or NONE"""
 
-        self.nodes = ["ALL"]
+        self.nodes = Report.ALL_LIST
         """List of nodes whose results are to be reported, or ALL or NONE"""
 
-        self.links = ["ALL"]
+        self.links = Report.ALL_LIST
         """List of links whose results are to be reported, or ALL or NONE"""
 
         self.lids = []

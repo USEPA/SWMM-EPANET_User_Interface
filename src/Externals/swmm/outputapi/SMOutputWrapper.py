@@ -60,10 +60,14 @@ class SwmmOutputCategoryBase:
         if hasattr(cls, "_first_pollutant"):
             pollutant_index = cls._first_pollutant
             if len(cls.attributes) == pollutant_index:
+                # pollutant_names = []
                 for pollutant in output.pollutants.values():
                     cls.attributes.append(SwmmOutputAttribute(pollutant_index, pollutant.name,
                                                               (pollutant.units, pollutant.units)))
+                    # pollutant_names.append(pollutant.name)
                     pollutant_index += 1
+                # if pollutant_names:
+                #     print(cls.type_label + " pollutants: " + ", ".join(pollutant_names))
             else:
                 print "Not reading pollutants because len(cls.attributes) == " + str(len(cls.attributes)) +\
                       " and pollutant_index == " + str(pollutant_index)

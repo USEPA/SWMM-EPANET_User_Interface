@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg3448"
+   viewBox="0 0 25 25"
+   height="25"
+   width="25"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="obj_tank.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="700"
+     inkscape:window-height="778"
+     id="namedview3346"
+     showgrid="false"
+     inkscape:zoom="9.52"
+     inkscape:cx="12.5"
+     inkscape:cy="12.5"
+     inkscape:window-x="588"
+     inkscape:window-y="43"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3448" />
+  <defs
+     id="defs3450">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 12.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="25 : 12.5 : 1"
+       inkscape:persp3d-origin="12.5 : 8.3333333 : 1"
+       id="perspective3348" />
+  </defs>
+  <metadata
+     id="metadata3453">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <ellipse
+     style="fill:#000000"
+     id="path3370"
+     cx="5.4096642"
+     cy="8.0882359"
+     rx="4.7794118"
+     ry="5.2521009" />
+  <ellipse
+     style="fill:#000000"
+     id="path3370-8"
+     cx="19.432772"
+     cy="8.0882339"
+     rx="4.7794118"
+     ry="5.1995797" />
+  <rect
+     style="fill:#000000"
+     id="rect3387"
+     width="15.12605"
+     height="10.504202"
+     x="5.042017"
+     y="2.8361342" />
+  <rect
+     style="fill:#000000"
+     id="rect3389"
+     width="8.6134453"
+     height="9.0336132"
+     x="7.9831934"
+     y="13.02521" />
+</svg>

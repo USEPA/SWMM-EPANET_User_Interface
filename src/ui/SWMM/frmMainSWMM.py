@@ -983,6 +983,8 @@ class ModelLayersSWMM(ModelLayers):
         self.outlets = addLinks(None, None, "Outlets", QColor('pink'), 2)
         self.weirs = addLinks(None, None, "Weirs", QColor('orange'), 2.5)
         self.conduits = addLinks(None, None, "Conduits", QColor('gray'), 3.5)
+        self.subcentroids = addCoordinates(None, "subcentroids")
+        self.sublinks = addLinks(None, None, "sublinks", QColor('gray'), 1.0)
         self.subcatchments = self.map_widget.addPolygons(None, "Subcatchments")
         self.set_lists()
 
@@ -990,7 +992,7 @@ class ModelLayersSWMM(ModelLayers):
         """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
-        self.all_layers = [self.raingages, self.labels, self.subcatchments]
+        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids]
         self.all_layers.extend(self.nodes_layers)
         self.all_layers.extend(self.links_layers)
 

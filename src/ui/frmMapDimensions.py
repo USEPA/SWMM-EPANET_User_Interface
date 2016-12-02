@@ -49,10 +49,10 @@ class frmMapDimensions(QtGui.QDialog):
                 #LLXEdit.SetFocus
                 return
             else:
-                self._main_form.map_widget.coord_origin.float_x = val1
-                self._main_form.map_widget.coord_origin.float_y = val2
-                self._main_form.map_widget.coord_fext.float_x = val3
-                self._main_form.map_widget.coord_fext.float_x = val4
+                self._main_form.map_widget.coord_origin.x = val1
+                self._main_form.map_widget.coord_origin.y = val2
+                self._main_form.map_widget.coord_fext.x = val3
+                self._main_form.map_widget.coord_fext.x = val4
                 if self._main_form.project is not None:
                     if self._main_form.project.map is not None:
                         self._main_form.project.map.dimensions = (val1, val2, val3, val4)
@@ -73,10 +73,14 @@ class frmMapDimensions(QtGui.QDialog):
         elif lu == 'degrees':
             self.ui.rdoUnitDegrees.setChecked(True)
 
-        self.ui.txtULx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.float_x))
-        self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.float_y))
-        self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.float_x))
-        self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.float_x))
+        #self.ui.txtULx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
+        #self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
+        #self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+        #self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+        self.ui.txtULx.setText(self._main_form.map_widget.coord_origin.x)
+        self.ui.txtULy.setText(self._main_form.map_widget.coord_origin.y)
+        self.ui.txtLRx.setText(str(self._main_form.map_widget.coord_fext.x))
+        self.ui.txtLRy.setText(str(self._main_form.map_widget.coord_fext.x))
 
     def floatTryParse(self, value):
         try:

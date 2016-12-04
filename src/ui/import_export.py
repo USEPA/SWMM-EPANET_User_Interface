@@ -518,12 +518,23 @@ def import_nodes(nodes, file_name, model_attributes, gis_attributes, model_type)
     return "Imported " + str(count) + " " + model_type.__name__ + "s"
 
 
+def import_epanet_junctions(session, file_name, model_attributes, gis_attributes):
+    project = session.project
+    section = project.junctions
+
+    result = import_nodes(section.value, file_name, model_attributes, gis_attributes, EpanetJunction)
+    session.model_layers.junctions = session.map_widget.addCoordinates(section.value, "Junctions")
+    session.model_layers.set_lists()
+    session.map_widget.zoomfull()
+    return result
+
+
 def import_epanet_tanks(session, file_name, model_attributes, gis_attributes):
     project = session.project
     section = project.tanks
 
     result = import_nodes(section.value, file_name, model_attributes, gis_attributes, EpanetTank)
-    session.model_layers.tanks = session.map_widget.addCoordinates(project.tanks.value, "Tanks")
+    session.model_layers.tanks = session.map_widget.addCoordinates(section.value, "Tanks")
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return result

@@ -5,7 +5,8 @@ try:
     from PyQt4.QtGui import QMessageBox
     from core.coordinate import Coordinate
     from core.epanet.hydraulics.link import Pipe
-    import plugins.ImportExportGIS.import_export as import_export
+    from ui import import_export
+    # import plugins.ImportExportGIS.import_export as import_export
     import os
 
     plugin_name = "ImportExportGIS"
@@ -55,4 +56,4 @@ try:
 
 
 except Exception as ex:
-    print "Skip loading plugin: " + str(ex)
+    print "Skip loading ImportExportGIS plugin: " + str(ex)

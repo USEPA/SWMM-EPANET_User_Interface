@@ -286,7 +286,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
 
     def import_from_gis(self):
-        from plugins.ImportExportGIS import import_export
+        import import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -307,7 +307,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         del gui_settings
 
     def export_to_gis(self):
-        from plugins.ImportExportGIS import import_export
+        import import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -843,22 +843,37 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pass
 
     def map_addvector(self):
-        print 'add vector'
-        from frmMapAddVector import frmMapAddVector
-        dlg = frmMapAddVector(self)
-        dlg.show()
-        result = dlg.exec_()
-        if result == 1:
-            specs = dlg.getLayerSpecifications()
-            filename = specs['filename']
-            if filename.lower().endswith('.shp'):
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("GISDataDir", "/")
+        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory,
+                                                     'Shapefiles (*.shp);;All files (*.*)')
+        if filename:
+            try:
                 self.map_widget.addVectorLayer(filename)
+                path_only, file_only = os.path.split(filename)
+                if path_only != directory:
+                    gui_settings.setValue("GISDataDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except Exception as ex:
+                print("map_addvector error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
+
+
+        # from frmMapAddVector import frmMapAddVector
+        # dlg = frmMapAddVector(self)
+        # dlg.show()
+        # result = dlg.exec_()
+        # if result == 1:
+        #     specs = dlg.getLayerSpecifications()
+        #     filename = specs['filename']
+        #     if filename.lower().endswith('.shp'):
+        #         self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISDataDir", "")
+        directory = gui_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
-                                                      "geoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
+                                                     "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
@@ -870,8 +885,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     del gui_settings
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
-        else:
-            pass
 
     def on_load(self, tree_top_item_list):
         # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)

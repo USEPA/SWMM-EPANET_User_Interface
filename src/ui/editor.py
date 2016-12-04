@@ -284,7 +284,7 @@ class EditorWindow(QtGui.QMainWindow):
 
     def open_file(self, file_name):
         if file_name:
-            with open(self.file_name, "rt") as open_file:
+            with open(file_name, "rt") as open_file:
                 self.text.setText(open_file.read())
             self.set_file_name(file_name)
 

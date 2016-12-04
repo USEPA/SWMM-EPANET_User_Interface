@@ -4,6 +4,7 @@ from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
 from core.epanet.hydraulics.node import Junction as EpanetJunction
+from core.epanet.hydraulics.node import Tank as EpanetTank
 from core.swmm.hydraulics.node import Junction as SwmmJunction
 from core.swmm.hydraulics.link import Conduit
 from core.epanet.hydraulics.link import Pipe, Pump, Valve
@@ -340,7 +341,6 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
         layer.updateExtents()
     return layer
 
-
 def import_from_gis(session, file_name):
     # importable_sections = [session.project.pipes, session.project.pumps, session.project.valves]
     # already_populated_sections = [section for section in importable_sections if len(section.value) > 0]
@@ -408,34 +408,122 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
+            attributes = zip(model_attributes, gis_attributes)
             coordinates = project.all_nodes()
             for feature in layer.getFeatures():
                 geom = feature.geometry()
                 if geom.type() == QGis.Line:
                     line = geom.asPolyline()
-                    model_item = model_type()
-                    for model_attribute, gis_attribute in zip(model_attributes, gis_attributes):
-                        attr_value = feature[gis_attribute]
-                        setattr(model_item, model_attribute, attr_value)
+                    item_name = ''
+                    for model_attribute, gis_attribute in attributes:
+                        if model_attribute == "name":
+                            item_name = feature[gis_attribute]
+                            break
+                    try:
+                        model_item = links[item_name]
+                    except:
+                        model_item = model_type()
+                        links.append(model_item)
+                    for model_attribute, gis_attribute in attributes:
+                        try:
+                            attr_value = feature[gis_attribute]
+                            setattr(model_item, model_attribute, attr_value)
 
-                        # If this attribute is the inlet or outlet node, make sure project has its coordinates
-                        index = -1
-                        if model_attribute == "inlet_node":
-                            index = 0
-                        elif model_attribute == "outlet_node":
-                            index = len(line) - 1
-                        if index >= 0:
-                            try:     # Remove this coordinate if it already exists
-                                this_coord = coordinates[attr_value]
-                            except:  # do not already have this coordinate, create it
-                                this_coord = junction_type()
-                                this_coord.name = attr_value
-                                project.junctions.value.append(this_coord)
-                                coordinates.append(this_coord)
-                            this_coord.x = line[index].x()
-                            this_coord.y = line[index].y()
-                    links.append(model_item)
+                            # If this attribute is the inlet or outlet node, make sure project has its coordinates
+                            index = -1
+                            if model_attribute == "inlet_node":
+                                index = 0
+                            elif model_attribute == "outlet_node":
+                                index = len(line) - 1
+                            if index >= 0:
+                                try:     # Keep node if it already exists in model, but update its coordinates
+                                    this_coord = coordinates[attr_value]
+                                except:  # Create new node since model does not already have this one
+                                    this_coord = junction_type()
+                                    this_coord.name = attr_value
+                                    project.junctions.value.append(this_coord)
+                                    coordinates.append(this_coord)
+                                this_coord.x = line[index].x()
+                                this_coord.y = line[index].y()
+                        except Exception as ex_attr:
+                            print("Could not read GIS attribute '" + gis_attribute + "' into '" + model_attribute + "'")
                     count += 1
     except Exception as ex:
         print(str(ex))
     return "Imported " + str(count) + " " + model_type.__name__ + "s"
+
+
+def import_epanet_pipes(session, file_name, model_attributes, gis_attributes):
+    project = session.project
+    section = project.pipes
+
+    result = import_links(project, section.value, file_name, model_attributes, gis_attributes, Pipe, EpanetJunction)
+    session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
+    session.model_layers.pipes = session.map_widget.addLinks(project.all_nodes(),
+                                                             section.value, "Pipes", QtGui.QColor('gray'), 3)
+    session.model_layers.set_lists()
+    session.map_widget.zoomfull()
+    return result
+
+
+def import_nodes(nodes, file_name, model_attributes, gis_attributes, model_type):
+    """ Read GIS vector layer in file_name into nodes list.
+    Args:
+        project: SWMM or EPANET project to import into, used for access to its all_coordinates method and junctions
+        nodes: list of project objects to populate.
+        file_name: GIS file to read.
+        model_attributes: attribute names of the model objects in "links" list.
+        gis_attributes: name of attributes as they exist in file_name.
+        model_type: type of node to create
+
+    Notes:
+        model_attributes and gis_attributes must be aligned with each other.
+        Each value found by gis_attribute is assigned to the model_attribute in the same position in its array.
+        If model_attribute is "inlet_node" or "outlet_node" these are added to project.junctions.
+    """
+    count = 0
+    try:
+        layer = QgsVectorLayer(file_name, "import", "ogr")
+        if layer:
+            attributes = zip(model_attributes, gis_attributes)
+            for feature in layer.getFeatures():
+                geom = feature.geometry()
+                if geom.type() == QGis.Point:
+                    item_name = ''
+                    for model_attribute, gis_attribute in attributes:
+                        if model_attribute == "name":
+                            item_name = feature[gis_attribute]
+                            break
+                    try:  # update item if it already exists in model
+                        model_item = nodes[item_name]
+                    except:  # add item if it does not already exist in model
+                        model_item = model_type()
+                        model_item.name = item_name
+                        nodes.append(model_item)
+                    geo_pt = geom.asPoint()
+                    model_item.x = geo_pt.x()
+                    model_item.y = geo_pt.y()
+
+                    for model_attribute, gis_attribute in attributes:
+                        attr_value = ''
+                        try:
+                            attr_value = feature[gis_attribute]
+                            setattr(model_item, model_attribute, attr_value)
+                        except Exception as ex_attr:
+                            print("Could not read GIS attribute '" + gis_attribute + "'='" + attr_value +
+                                  "' into '" + model_attribute + "'")
+                    count += 1
+    except Exception as ex:
+        print(str(ex))
+    return "Imported " + str(count) + " " + model_type.__name__ + "s"
+
+
+def import_epanet_tanks(session, file_name, model_attributes, gis_attributes):
+    project = session.project
+    section = project.tanks
+
+    result = import_nodes(section.value, file_name, model_attributes, gis_attributes, EpanetTank)
+    session.model_layers.tanks = session.map_widget.addCoordinates(project.tanks.value, "Tanks")
+    session.model_layers.set_lists()
+    session.map_widget.zoomfull()
+    return result

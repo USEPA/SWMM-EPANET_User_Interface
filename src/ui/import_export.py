@@ -102,50 +102,52 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
 
     # Export Pipes
     layer = export_links_layer(session.project.pipes.value, pipe_model_attributes, pipe_gis_attributes,
-                               all_gis_attributes, layer, one_file, path_file + "_pipes" + extension,
+                               all_gis_attributes, layer, session.crs, one_file, path_file + "_pipes" + extension,
                                driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Pumps
     layer = export_links_layer(session.project.pumps.value, pumps_model_attributes, pumps_gis_attributes,
-                               all_gis_attributes, layer, one_file, path_file + "_pumps" + extension,
+                               all_gis_attributes, layer, session.crs, one_file, path_file + "_pumps" + extension,
                                driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Valves
     layer = export_links_layer(session.project.valves.value, valves_model_attributes, valves_gis_attributes,
-                               all_gis_attributes, layer, one_file, path_file + "_valves" + extension,
+                               all_gis_attributes, layer, session.crs, one_file, path_file + "_valves" + extension,
                                driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Junctions
-    layer = export_points_layer(session.project.junctions.value,
-                                junctions_model_attributes, junctions_gis_attributes, all_gis_attributes, layer, one_file,
+    layer = export_points_layer(session.project.junctions.value, junctions_model_attributes, junctions_gis_attributes,
+                                all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_junctions" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
 
     # Export Labels
-    layer = export_points_layer(session.project.labels.value,
-                                labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer, one_file,
+    layer = export_points_layer(session.project.labels.value, labels_model_attributes, labels_gis_attributes,
+                                all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_labels" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
 
     for section in [session.project.reservoirs, session.project.tanks, session.project.sources]:
         if len(section.value) > 0:
-            layer = export_points_layer(section.value,
-                                        generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+            layer = export_points_layer(section.value, generic_model_attributes, generic_gis_attributes,
+                                        all_gis_attributes, layer, session.crs, one_file,
                                         path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
                                         + extension, driver_name, layer_options)
             if layer:
                 layer_count += 1
 
     if one_file:
-        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
+        if session.crs:
+            layer.setCrs(session.crs)
+        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", session.crs, driver_name)
         print("saved " + file_name)
 
     return "Exported " + str(layer_count) + " layers to GIS"
@@ -165,21 +167,21 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
 
     # Export conduits
     layer = export_links_layer(session.project.conduits.value, conduit_model_attributes, conduit_gis_attributes,
-                               all_gis_attributes, layer, one_file, path_file + "_conduits" + extension,
+                               all_gis_attributes, layer, session.crs, one_file, path_file + "_conduits" + extension,
                                driver_name, layer_options, coordinates)
     if layer:
         layer_count += 1
 
     # Export Junctions
-    layer = export_points_layer(session.project.junctions.value,
-                                junctions_model_attributes_swmm, junctions_gis_attributes_swmm, all_gis_attributes, layer, one_file,
+    layer = export_points_layer(session.project.junctions.value, junctions_model_attributes_swmm,
+                                junctions_gis_attributes_swmm, all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_junctions" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
 
     # Export Labels
-    layer = export_points_layer(session.project.labels.value,
-                                labels_model_attributes, labels_gis_attributes, all_gis_attributes, layer, one_file,
+    layer = export_points_layer(session.project.labels.value, labels_model_attributes, labels_gis_attributes,
+                                all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_labels" + extension, driver_name, layer_options)
     if layer:
         layer_count += 1
@@ -187,8 +189,8 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     for section in [session.project.raingages, session.project.outfalls,
                     session.project.dividers, session.project.storage]:
         if len(section.value) > 0:
-            layer = export_points_layer(section.value,
-                                        generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+            layer = export_points_layer(section.value, generic_model_attributes, generic_gis_attributes,
+                                        all_gis_attributes, layer, session.crs, one_file,
                                         path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
                                         + extension, driver_name, layer_options)
             if layer:
@@ -196,22 +198,24 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
 
     for section in [session.project.pumps, session.project.orifices, session.project.weirs, session.project.outlets]:
         if len(section.value) > 0:
-            layer = export_links_layer(section.value,
-                                       generic_model_attributes, generic_gis_attributes, all_gis_attributes, layer, one_file,
+            layer = export_links_layer(section.value, generic_model_attributes, generic_gis_attributes,
+                                       all_gis_attributes, layer, session.crs, one_file,
                                        path_file + "_" + session.project.format_as_attribute_name(section.SECTION_NAME)
                                        + extension, driver_name, layer_options, coordinates)
             if layer:
                 layer_count += 1
 
     if one_file:
-        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name,
+        if session.crs:
+            layer.setCrs(session.crs)
+        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", session.crs, driver_name,
                                                 layerOptions=layer_options)
         print("saved " + file_name)
 
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
-def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer,
+def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer, crs,
                         one_file, layer_file_name, driver_name, layer_options):
     if not one_file:
         layer = None
@@ -220,14 +224,16 @@ def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_
     layer = make_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer)
     if layer:
         if not one_file:
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
+            if crs:
+                layer.setCrs(crs)
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
                                                     driver_name, layerOptions=layer_options)
             print("saved " + layer_file_name)
         return layer
     return None
 
 
-def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer,
+def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer, crs,
                         one_file, layer_file_name, driver_name, layer_options, coordinates):
     if not one_file:
         layer = None
@@ -237,7 +243,9 @@ def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_at
                              model_attributes, gis_attributes, all_gis_attributes, layer)
     if layer:
         if not one_file:
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", layer.crs(),
+            if crs:
+                layer.setCrs(crs)
+            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
                                                     driver_name, layerOptions=layer_options)
             print("saved " + layer_file_name)
         return layer
@@ -374,7 +382,7 @@ def import_from_gis(session, file_name):
         elif choice == QMessageBox.Cancel:
             return
 
-    result = import_links(project, section.value, file_name, model_attributes, gis_attributes, link_type, junction_type)
+    result = import_links(session, section.value, file_name, model_attributes, gis_attributes, link_type, junction_type)
     if len(project.junctions.value) > num_existing_junctions:
         session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
 
@@ -389,7 +397,7 @@ def import_from_gis(session, file_name):
     return result
 
 
-def import_links(project, links, file_name, model_attributes, gis_attributes, model_type, junction_type):
+def import_links(session, links, file_name, model_attributes, gis_attributes, model_type, junction_type):
     """ Read GIS vector layer in file_name into links list.
     Args:
         project: SWMM or EPANET project to import into, used for access to its all_coordinates method and junctions
@@ -408,6 +416,8 @@ def import_links(project, links, file_name, model_attributes, gis_attributes, mo
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
+            session.map_widget.set_crs_from_layer(layer)
+            project = session.project
             attributes = zip(model_attributes, gis_attributes)
             coordinates = project.all_nodes()
             for feature in layer.getFeatures():
@@ -457,7 +467,7 @@ def import_epanet_pipes(session, file_name, model_attributes, gis_attributes):
     project = session.project
     section = project.pipes
 
-    result = import_links(project, section.value, file_name, model_attributes, gis_attributes, Pipe, EpanetJunction)
+    result = import_links(session, section.value, file_name, model_attributes, gis_attributes, Pipe, EpanetJunction)
     session.model_layers.junctions = session.map_widget.addCoordinates(project.junctions.value, "Junctions")
     session.model_layers.pipes = session.map_widget.addLinks(project.all_nodes(),
                                                              section.value, "Pipes", QtGui.QColor('gray'), 3)
@@ -466,10 +476,10 @@ def import_epanet_pipes(session, file_name, model_attributes, gis_attributes):
     return result
 
 
-def import_nodes(nodes, file_name, model_attributes, gis_attributes, model_type):
+def import_nodes(session, nodes, file_name, model_attributes, gis_attributes, model_type):
     """ Read GIS vector layer in file_name into nodes list.
     Args:
-        project: SWMM or EPANET project to import into, used for access to its all_coordinates method and junctions
+        session: current session containing SWMM or EPANET project to import into
         nodes: list of project objects to populate.
         file_name: GIS file to read.
         model_attributes: attribute names of the model objects in "links" list.
@@ -485,6 +495,7 @@ def import_nodes(nodes, file_name, model_attributes, gis_attributes, model_type)
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
+            session.map_widget.set_crs_from_layer(layer)
             attributes = zip(model_attributes, gis_attributes)
             for feature in layer.getFeatures():
                 geom = feature.geometry()
@@ -522,7 +533,7 @@ def import_epanet_junctions(session, file_name, model_attributes, gis_attributes
     project = session.project
     section = project.junctions
 
-    result = import_nodes(section.value, file_name, model_attributes, gis_attributes, EpanetJunction)
+    result = import_nodes(session, section.value, file_name, model_attributes, gis_attributes, EpanetJunction)
     session.model_layers.junctions = session.map_widget.addCoordinates(section.value, "Junctions")
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
@@ -533,7 +544,7 @@ def import_epanet_tanks(session, file_name, model_attributes, gis_attributes):
     project = session.project
     section = project.tanks
 
-    result = import_nodes(section.value, file_name, model_attributes, gis_attributes, EpanetTank)
+    result = import_nodes(session, section.value, file_name, model_attributes, gis_attributes, EpanetTank)
     session.model_layers.tanks = session.map_widget.addCoordinates(section.value, "Tanks")
     session.model_layers.set_lists()
     session.map_widget.zoomfull()

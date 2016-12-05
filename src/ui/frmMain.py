@@ -35,6 +35,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
+        self.crs = None
         self.setupUi(self)
         self.q_application = q_application
         try:

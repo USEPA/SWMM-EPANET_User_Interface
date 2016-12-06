@@ -81,6 +81,8 @@ from core.swmm.curves import CurveType
 from core.swmm.timeseries import TimeSeries
 from core.swmm.patterns import Pattern
 from core.swmm.labels import Label
+from core.swmm.hydraulics.node import SubCentroid
+from core.swmm.hydraulics.link import SubLink
 
 from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
@@ -300,7 +302,9 @@ class frmMainSWMM(frmMain):
             Curve: "curves",
             TimeSeries: "timeseries",
             Pattern: "patterns",
-            Label: "labels"
+            Label: "labels",
+            SubCentroid: "subcentroids",
+            SubLink: "sublinks"
         }
 
         if self.map_widget:  # initialize empty model map layers, ready to have model elements added

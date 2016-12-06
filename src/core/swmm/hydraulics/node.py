@@ -439,3 +439,39 @@ class Treatment(Section):
         """str: mathematical function expressing treatment result in terms of pollutant concentrations,
         pollutant removals, and other standard variables. Starts with C for concentration or R for removal."""
 
+
+class SubCentroid(Node):
+    """Centroid for Subcatchment, as a node"""
+
+    #    attribute, input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",            '', "Name",            '',   '',   '', "The subcatchment's name of centroid"),
+        ('x',               '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
+        ('y',               '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
+        ('subname',         '', "Sub name",        '',   '',   '', "Subcatchment name"),
+        ('tag',             '', "Tag",             '',   '',   '', "Optional category or classification"),
+        ('',                '', "Inflows",         'NO', '',   '',
+         "Click to specify any external inflows received at the junction")))
+
+    def __init__(self):
+        Node.__init__(self)
+
+        # self.name = ''  # Unicode(default_value='', label="Name", help="User-assigned name of junction")
+        # """name assigned to junction node"""
+
+        self.max_depth = ''
+        """Maximum depth of junction (i.e., from ground surface to invert)
+            (feet or meters). If zero, then the distance from the invert to
+            the top of the highest connecting link will be used.  (Ymax)"""
+
+        self.initial_depth = ''
+        """Depth of water at the junction at the start of the simulation
+            (feet or meters) (Y0)"""
+
+        self.ponded_area = ''
+        """Area occupied by ponded water atop the junction after flooding
+            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+            option is turned on, a non-zero value of this parameter will allow
+            ponded water to be stored and subsequently returned to the
+            conveyance system when capacity exists. (Apond)"""
+

@@ -161,6 +161,12 @@ class SwmmProject(ProjectBase):
         self.labels = SectionAsList("[LABELS]")  # (list of Label)
         # X, Y coordinates and text of labels
 
+        self.subcentroids = SectionAsList("[SUBCENTROIDS]")  # (list of subcentroids)
+        # X, Y coordinates and text of subcentroids
+
+        self.sublinks = SectionAsList("[SUBLINKS]")  # (list of sublinks)
+        # sublinks information
+
         self.sections = [
             self.title,
             self.options,
@@ -205,7 +211,9 @@ class SwmmProject(ProjectBase):
             self.loadings,
             self.curves,
             self.timeseries,
-            self.labels]  # Start with a sensible order of sections.
+            self.labels,
+            self.subcentroids,
+            self.sublinks]  # Start with a sensible order of sections.
         self.add_sections_from_attributes()  # Add any sections not added in the line above, should not be any left.
 
     def nodes_groups(self):

@@ -272,6 +272,29 @@ class Outlet(SwmmLink):
         """str: Name of rating curve that relates outflow to either depth or head"""
 
 
+class SubLink(SwmmLink):
+    """A symbolic link in a SWMM model drainage system that conveys water from a Sub to its outlet node."""
+
+    #    attribute,         input_name, label,         default, english, metric, hint
+    metadata = Metadata((
+        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the conduit"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the conduit"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the conduit"),
+        ("description",             '', "Description",     "",       '', '', "Optional description of the conduit"),
+        ("tag",                     '', "Tag",             "",       '', '',
+         "Optional label used to categorize or classify the conduit")
+    ))
+
+    def __init__(self):
+        SwmmLink.__init__(self)
+
+        self.length = "0.0"
+        """Conduit length (feet or meters)."""
+
+        self.roughness = "0.0"
+        """Manning's N roughness coefficient."""
+
+
 class CrossSectionShape(Enum):
     NotSet = 0
     CIRCULAR = 1            # Full Height = Diameter

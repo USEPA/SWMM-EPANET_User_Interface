@@ -1106,16 +1106,25 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if file_name:
             save_handle = sys.stdout
             try:
+                QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
                 redirected_output = StringIO()
                 sys.stdout = redirected_output
                 session = self
                 with open(file_name, 'r') as script_file:
                     exec(script_file)
+                # Potential alternative way to run script, would allow running without saving
+                # namespace['__file__'] = script_filename
+                # if os.path.exists(script_filename):
+                #     source = open(script_filename).read()
+                #     code = compile(source, script_filename, 'exec')
+                #     exec (code, namespace, namespace)
                 QMessageBox.information(None, "Finished Running Script",
                                         file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
             except Exception as ex:
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
+            finally:
+                QApplication.restoreOverrideCursor()
             sys.stdout = save_handle
 
     def run_recent_script(self):
@@ -1407,9 +1416,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.project = self.project_type()
         if file_name:
             try:
+                QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
                 path_only, file_only = os.path.split(file_name)
+                QApplication.restoreOverrideCursor()
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)

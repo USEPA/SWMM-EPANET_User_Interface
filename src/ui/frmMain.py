@@ -441,7 +441,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
                         self.centroid_layer.startEditing()
                         pf = self.session.map_widget.point_feature_from_item(self.item.centroid)
-                        pf.setAttributes([str(added[1][0].id()), 0.0, added[1][0].id()])
+                        #pf.setAttributes([self.item.name, 0.0, self.item.name])
+                        pf.setAttributes([self.item.name, 0.0, 1])
                         added_centroid = self.centroid_layer.dataProvider().addFeatures([pf])
                         if added_centroid[0]:
                             self.added_centroid_id = added_centroid[1][0].id()

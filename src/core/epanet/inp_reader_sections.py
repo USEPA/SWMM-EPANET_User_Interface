@@ -54,10 +54,10 @@ class CurveReader(SectionReader):
     def read(new_text):
         curve = Curve()
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
+            comment_split = line.split(';', 1)
             if len(comment_split) == 2:
                 # split curve type from description on colon and set
-                colon_split = str.split(line, ':', 1)
+                colon_split = line.split(':', 1)
                 if len(colon_split) == 2:
                     try:
                         curve.setattr_keep_type("curve_type", colon_split[0][1:].strip())
@@ -102,7 +102,7 @@ class PatternReader:
     def read(new_text):
         pattern = Pattern()
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
+            comment_split = line.split(';', 1)
             if len(comment_split) == 2:
                 pattern.description += line[1:].strip()
                 line = comment_split[0].strip()

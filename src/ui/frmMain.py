@@ -84,11 +84,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
         self.actionToolbarShowMap.triggered.connect(
-            lambda: self.toggleToolbar('map,'+ str(self.actionToolbarShowMap.isChecked())))
+            lambda: self.toggle_toolbar('map,' + str(self.actionToolbarShowMap.isChecked())))
         self.actionToolbarShowObject.triggered.connect(
-            lambda: self.toggleToolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
+            lambda: self.toggle_toolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
-            lambda: self.toggleToolbar('standard,' +str(self.actionToolbarShowStandard.isChecked())))
+            lambda: self.toggle_toolbar('standard,' + str(self.actionToolbarShowStandard.isChecked())))
         self.actionStdMapBackLoad.triggered.connect(self.map_addraster)
         self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
@@ -757,6 +757,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.undo_stack.push(self._MoveVertex(self, layer, feature, point_index,
                                                   from_x, from_y, to_x, to_y))
 
+    def edited_name(self, edited_list):
+        """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""
+        for old_name, item in edited_list:
+            section_field_name = self.section_types[type(item)]
+            if hasattr(self.project, section_field_name):
+                section = getattr(self.project, section_field_name)
+                try:
+                    index = section.value.index(item)
+                    section.value._index[item.name] = item
+                    del section.value._index[old_name]
+                except Exception as ex:
+                    print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
+            else:
+                raise Exception("edited_name: Section not found in project: " + section_field_name)
+
+
     def new_item_name(self, item_type):
         """ Generate a name for a new item.
             Start with a default of the number of items already in this section plus one (converted to a string).
@@ -891,12 +907,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
     def on_load(self, tree_top_item_list):
-        # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        # cleaner = QtCore.QObjectCleanupHandler()
-        # cleaner.add(self.tabProjMap.layout())
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
         self.obj_tree.itemDoubleClicked.connect(self.edit_options)
-        # self.obj_tree.itemClicked.connect(self.list_objects)
         self.obj_tree.itemSelectionChanged.connect(self.list_objects)
         self.listViewObjects.doubleClicked.connect(self.edit_selected_objects)
         self.actionStdEditObject.triggered.connect(self.edit_selected_objects)
@@ -911,23 +923,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdDeleteObject.triggered.connect(self.delete_object_clicked)
         self.actionStdMapDimensions.triggered.connect(self.configMapDimensions)
 
-        # self.tabProjMap.addTab(self.obj_tree, 'Project')
         layout = QtGui.QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)
         self.setWindowTitle(self.model)
-        '''
-        self.obj_list = ObjectListView(model=self.model, ObjRoot='', ObjType='', ObjList=None)
-        mlayout = self.dockw_more.layout()
-        # mlayout.setContentsMargins(0, 0, 0, 0)
-        mlayout.addWidget(self.obj_list)
-        # layout1 = QVBoxLayout(self.dockw_more)
-        self.dockw_more.setLayout(mlayout)
-        # self.actionPan.setEnabled(False)
-        '''
 
-    def toggleToolbar(self, eventArg):
+    def toggle_toolbar(self, eventArg):
         tbname, is_checked = eventArg.split(',')
         if tbname == 'map':
             if is_checked == 'True':
@@ -1409,6 +1411,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.open_project_quiet(file_name, gui_settings, directory)
             self.add_recent_project(file_name)
 
+    def setWaitCursor(self):
+        QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+
+    def restoreCursor(self):
+        QApplication.restoreOverrideCursor()
+
     def open_project_quiet(self, file_name, gui_settings, directory):
         if not self.confirm_discard_project():
             return
@@ -1416,11 +1424,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.project = self.project_type()
         if file_name:
             try:
-                QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
                 path_only, file_only = os.path.split(file_name)
-                QApplication.restoreOverrideCursor()
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)

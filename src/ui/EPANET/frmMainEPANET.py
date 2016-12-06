@@ -683,6 +683,11 @@ class frmMainEPANET(frmMain):
         self._frmAbout.show()
 
     def open_project_quiet(self, file_name, gui_settings, directory):
+        self.setWaitCursor()
+        self.setWindowTitle("Reading " + file_name)
+        if self.map_widget:
+            self.map_widget.setVisible(False)
+        self.repaint()
         frmMain.open_project_quiet(self, file_name, gui_settings, directory)
         ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
 
@@ -696,6 +701,8 @@ class frmMainEPANET(frmMain):
                 self.setQgsMapTool()  # Reset any active tool that still has state from old project
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
+            self.map_widget.setVisible(True)
+        self.restoreCursor()
 
 
 class ModelLayersEPANET(ModelLayers):

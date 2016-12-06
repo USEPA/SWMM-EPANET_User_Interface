@@ -444,6 +444,7 @@ try:
                 return None
 
         def add_layer(self, layer, group=None):
+            self.set_crs_from_layer(layer)
             if group:
                 QgsMapLayerRegistry.instance().addMapLayer(layer, False)
                 group.addLayer(layer)
@@ -453,6 +454,17 @@ try:
             layers.append(layer)
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in layers])
             self.set_extent(self.canvas.fullExtent())
+
+        def set_crs_from_layer(self, layer):
+            try:
+                dp = layer.dataProvider()
+                crs = dp.crs()
+                if crs.isValid():
+                    if not self.session.crs:
+                        self.session.crs = crs
+                        print("CRS = " + crs.toWkt())
+            except Exception as ex:
+                print str(ex)
 
         def remove_all_layers(self):
             QgsMapLayerRegistry.instance().removeAllMapLayers()
@@ -1399,41 +1411,42 @@ try:
                 except Exception as e:
                     print str(e)
 
-    class SaveAsGis:
-        @staticmethod
-        def save_links(coordinates, links, link_attributes, file_name, driver_name="GeoJson"):
-            layer = QgsVectorLayer("LineString", "links", "memory")
-            provider = layer.dataProvider()
-
-            # add fields
-            provider.addAttributes([QgsField(link_attr, QtCore.QVariant.String) for link_attr in link_attributes])
-
-            features = []
-            # Receivers = as in the above example 'Receivers' is a list of results
-            for link in links:
-                inlet_coord = None
-                outlet_coord = None
-                for coordinate_pair in coordinates:
-                    if coordinate_pair.name == link.inlet_node:
-                        inlet_coord = coordinate_pair
-                    if coordinate_pair.name == link.outlet_node:
-                        outlet_coord = coordinate_pair
-                if inlet_coord and outlet_coord:
-                    # add a feature
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPolyline([
-                        QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
-                        QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
-                    feature.setAttributes([getattr(link, link_attr, '') for link_attr in link_attributes])
-                    features.append(feature)
-
-            # changes are only possible when editing the layer
-            layer.startEditing()
-            provider.addFeatures(features)
-            layer.commitChanges()
-            layer.updateExtents()
-
-            QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", layer.crs(), driver_name)
+    # Replaced by ui/import_export.py
+    # class SaveAsGis:
+    #     @staticmethod
+    #     def save_links(coordinates, links, link_attributes, file_name, crs, driver_name="GeoJson"):
+    #         layer = QgsVectorLayer("LineString", "links", "memory")
+    #         provider = layer.dataProvider()
+    #
+    #         # add fields
+    #         provider.addAttributes([QgsField(link_attr, QtCore.QVariant.String) for link_attr in link_attributes])
+    #
+    #         features = []
+    #         # Receivers = as in the above example 'Receivers' is a list of results
+    #         for link in links:
+    #             inlet_coord = None
+    #             outlet_coord = None
+    #             for coordinate_pair in coordinates:
+    #                 if coordinate_pair.name == link.inlet_node:
+    #                     inlet_coord = coordinate_pair
+    #                 if coordinate_pair.name == link.outlet_node:
+    #                     outlet_coord = coordinate_pair
+    #             if inlet_coord and outlet_coord:
+    #                 # add a feature
+    #                 feature = QgsFeature()
+    #                 feature.setGeometry(QgsGeometry.fromPolyline([
+    #                     QgsPoint(float(inlet_coord.x), float(inlet_coord.y)),
+    #                     QgsPoint(float(outlet_coord.x), float(outlet_coord.y))]))
+    #                 feature.setAttributes([getattr(link, link_attr, '') for link_attr in link_attributes])
+    #                 features.append(feature)
+    #
+    #         # changes are only possible when editing the layer
+    #         layer.startEditing()
+    #         provider.addFeatures(features)
+    #         layer.commitChanges()
+    #         layer.updateExtents()
+    #
+    #         QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", crs, driver_name)
 
     class MapSymbol(Enum):
         circle = 1

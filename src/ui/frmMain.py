@@ -35,6 +35,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
+        self.crs = None
         self.setupUi(self)
         self.q_application = q_application
         try:
@@ -58,6 +59,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
+        self.recent_projects = self.create_recent_menus(self.actionStdRecent_Project, self.open_recent_project)
+        self.add_recent_project(None)  # Populate the recent script menus, not adding one
         self.recent_scripts = self.create_recent_menus(self.menuScripting, self.run_recent_script)
         self.add_recent_script(None)  # Populate the recent script menus, not adding one
         self.populate_plugins_menu()
@@ -286,7 +289,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
 
     def import_from_gis(self):
-        from plugins.ImportExportGIS import import_export
+        import import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -307,7 +310,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         del gui_settings
 
     def export_to_gis(self):
-        from plugins.ImportExportGIS import import_export
+        import import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -438,7 +441,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
                         self.centroid_layer.startEditing()
                         pf = self.session.map_widget.point_feature_from_item(self.item.centroid)
-                        pf.setAttributes([str(added[1][0].id()), 0.0, added[1][0].id()])
+                        #pf.setAttributes([self.item.name, 0.0, self.item.name])
+                        pf.setAttributes([self.item.name, 0.0, 1])
                         added_centroid = self.centroid_layer.dataProvider().addFeatures([pf])
                         if added_centroid[0]:
                             self.added_centroid_id = added_centroid[1][0].id()
@@ -843,22 +847,37 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pass
 
     def map_addvector(self):
-        print 'add vector'
-        from frmMapAddVector import frmMapAddVector
-        dlg = frmMapAddVector(self)
-        dlg.show()
-        result = dlg.exec_()
-        if result == 1:
-            specs = dlg.getLayerSpecifications()
-            filename = specs['filename']
-            if filename.lower().endswith('.shp'):
+        gui_settings = QtCore.QSettings(self.model, "GUI")
+        directory = gui_settings.value("GISDataDir", "/")
+        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory,
+                                                     'Shapefiles (*.shp);;All files (*.*)')
+        if filename:
+            try:
                 self.map_widget.addVectorLayer(filename)
+                path_only, file_only = os.path.split(filename)
+                if path_only != directory:
+                    gui_settings.setValue("GISDataDir", path_only)
+                    gui_settings.sync()
+                    del gui_settings
+            except Exception as ex:
+                print("map_addvector error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
+
+
+        # from frmMapAddVector import frmMapAddVector
+        # dlg = frmMapAddVector(self)
+        # dlg.show()
+        # result = dlg.exec_()
+        # if result == 1:
+        #     specs = dlg.getLayerSpecifications()
+        #     filename = specs['filename']
+        #     if filename.lower().endswith('.shp'):
+        #         self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self):
         gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISDataDir", "")
+        directory = gui_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
-                                                      "geoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
+                                                     "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
@@ -870,8 +889,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     del gui_settings
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
-        else:
-            pass
 
     def on_load(self, tree_top_item_list):
         # self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -1089,21 +1106,44 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if file_name:
             save_handle = sys.stdout
             try:
+                QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
                 redirected_output = StringIO()
                 sys.stdout = redirected_output
                 session = self
                 with open(file_name, 'r') as script_file:
                     exec(script_file)
+                # Potential alternative way to run script, would allow running without saving
+                # namespace['__file__'] = script_filename
+                # if os.path.exists(script_filename):
+                #     source = open(script_filename).read()
+                #     code = compile(source, script_filename, 'exec')
+                #     exec (code, namespace, namespace)
                 QMessageBox.information(None, "Finished Running Script",
                                         file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
             except Exception as ex:
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
+            finally:
+                QApplication.restoreOverrideCursor()
             sys.stdout = save_handle
 
-    def add_recent_script(self, file_name):
+    def run_recent_script(self):
+        action = self.sender()
+        if action and action.data():
+            self.script_run(action.data())
+
+    def open_recent_project(self):
+        action = self.sender()
+        if action and action.data():
+            file_name = action.data()
+            if os.path.isfile(file_name):
+                gui_settings = QtCore.QSettings(self.model, "GUI")
+                directory = gui_settings.value("ProjectDir", "")
+                self.open_project_quiet(file_name, gui_settings, directory)
+
+    def add_recent(self, file_name, settings_key):
         settings = QtCore.QSettings(self.model, "GUI")
-        files = settings.value('recentScriptList', [])
+        files = settings.value(settings_key, [])
 
         if files and files[0] == file_name:
             return
@@ -1116,9 +1156,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
             files.insert(0, file_name)
         del files[MAX_RECENT_FILES:]
+        settings.setValue(settings_key, files)
+        return files
 
-        settings.setValue('recentScriptList', files)
+    def add_recent_project(self, file_name):
+        files = self.add_recent(file_name, 'recentProjectList')
+        self.update_recent(self.recent_projects, files)
 
+    def add_recent_script(self, file_name):
+        files = self.add_recent(file_name, 'recentScriptList')
         self.update_recent(self.recent_scripts, files)
         if self._editor_form:
             # try:
@@ -1145,10 +1191,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     @staticmethod
     def update_recent(recent_menu_actions, file_names):
-        num_recent = min(len(file_names), MAX_RECENT_FILES)
+        num_recent = 0
+        if file_names:
+            num_recent = min(len(file_names), MAX_RECENT_FILES)
+            menu_texts = [QtCore.QFileInfo(file_name).fileName() for file_name in file_names]
+
         for i in range(MAX_RECENT_FILES):
             if i < num_recent:
-                text = "&%d %s" % (i + 1, QtCore.QFileInfo(file_names[i]).fileName())
+                # text = "&%d %s" % (i + 1, QtCore.QFileInfo(file_names[i]).fileName())
+                text = menu_texts[i]
+                if menu_texts.count(text) > 1:
+                    text = file_names[i]
                 recent_menu_actions[i].setText(text)
                 recent_menu_actions[i].setData(file_names[i])
                 recent_menu_actions[i].setVisible(True)
@@ -1354,6 +1407,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.open_project_quiet(file_name, gui_settings, directory)
+            self.add_recent_project(file_name)
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         if not self.confirm_discard_project():
@@ -1362,9 +1416,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.project = self.project_type()
         if file_name:
             try:
+                QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
                 path_only, file_only = os.path.split(file_name)
+                QApplication.restoreOverrideCursor()
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     gui_settings.setValue("ProjectDir", path_only)

@@ -59,6 +59,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
+        self.recent_projects = self.create_recent_menus(self.actionStdRecent_Project, self.open_recent_project)
+        self.add_recent_project(None)  # Populate the recent script menus, not adding one
         self.recent_scripts = self.create_recent_menus(self.menuScripting, self.run_recent_script)
         self.add_recent_script(None)  # Populate the recent script menus, not adding one
         self.populate_plugins_menu()
@@ -1115,9 +1117,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             sys.stdout = save_handle
 
-    def add_recent_script(self, file_name):
+    def run_recent_script(self):
+        action = self.sender()
+        if action and action.data():
+            self.script_run(action.data())
+
+    def open_recent_project(self):
+        action = self.sender()
+        if action and action.data():
+            file_name = action.data()
+            if os.path.isfile(file_name):
+                gui_settings = QtCore.QSettings(self.model, "GUI")
+                directory = gui_settings.value("ProjectDir", "")
+                self.open_project_quiet(file_name, gui_settings, directory)
+
+    def add_recent(self, file_name, settings_key):
         settings = QtCore.QSettings(self.model, "GUI")
-        files = settings.value('recentScriptList', [])
+        files = settings.value(settings_key, [])
 
         if files and files[0] == file_name:
             return
@@ -1130,9 +1146,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
             files.insert(0, file_name)
         del files[MAX_RECENT_FILES:]
+        settings.setValue(settings_key, files)
+        return files
 
-        settings.setValue('recentScriptList', files)
+    def add_recent_project(self, file_name):
+        files = self.add_recent(file_name, 'recentProjectList')
+        self.update_recent(self.recent_projects, files)
 
+    def add_recent_script(self, file_name):
+        files = self.add_recent(file_name, 'recentScriptList')
         self.update_recent(self.recent_scripts, files)
         if self._editor_form:
             # try:
@@ -1159,10 +1181,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     @staticmethod
     def update_recent(recent_menu_actions, file_names):
-        num_recent = min(len(file_names), MAX_RECENT_FILES)
+        num_recent = 0
+        if file_names:
+            num_recent = min(len(file_names), MAX_RECENT_FILES)
+            menu_texts = [QtCore.QFileInfo(file_name).fileName() for file_name in file_names]
+
         for i in range(MAX_RECENT_FILES):
             if i < num_recent:
-                text = "&%d %s" % (i + 1, QtCore.QFileInfo(file_names[i]).fileName())
+                # text = "&%d %s" % (i + 1, QtCore.QFileInfo(file_names[i]).fileName())
+                text = menu_texts[i]
+                if menu_texts.count(text) > 1:
+                    text = file_names[i]
                 recent_menu_actions[i].setText(text)
                 recent_menu_actions[i].setData(file_names[i])
                 recent_menu_actions[i].setVisible(True)
@@ -1368,6 +1397,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.open_project_quiet(file_name, gui_settings, directory)
+            self.add_recent_project(file_name)
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         if not self.confirm_discard_project():

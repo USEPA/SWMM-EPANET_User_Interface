@@ -50,6 +50,7 @@ class PropertyEditorBackend:
 
     def apply_edits(self):
         column = 0
+        edited_names = []
         for edit_this in self.edit_these:
             for row in range(self.table.rowCount()):
                 label_item = self.table.verticalHeaderItem(row)
@@ -58,6 +59,9 @@ class PropertyEditorBackend:
                     if label:
                         for meta_item in self.meta:
                             if meta_item.label == label:
+                                if not meta_item.attribute:
+                                    print "No attribute to set for " + label
+                                    break
                                 new_value = None
                                 widget = self.table.cellWidget(row, column)
                                 if widget:
@@ -79,15 +83,19 @@ class PropertyEditorBackend:
                                         new_value = widget.text()
                                 if new_value is not None:
                                     try:
-                                        old_value = getattr(edit_this, meta_item.attribute)
+                                        old_value = str(getattr(edit_this, meta_item.attribute))
                                         if new_value != old_value:
-                                            # TODO: make undoable edit
+                                            # TODO: make undoable edit?
                                             setattr(edit_this, meta_item.attribute, new_value)
+                                            if meta_item.attribute == "name":
+                                                edited_names.append((old_value, edit_this))
                                     except Exception as ex:
                                         print("Could not set " + str(meta_item.label) + " to " + str(new_value))
             column += 1
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+        elif edited_names:
+            self._main_form.edited_name(edited_names)
         else:
             pass
             # TODO: self._main_form.edited_?

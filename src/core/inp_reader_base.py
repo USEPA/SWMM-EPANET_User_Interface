@@ -11,11 +11,19 @@ class InputFileReader(object):
     def read_file(self, project, file_name):
         """ Read the contents of file_name into project. """
         try:
-            with open(file_name, 'r') as inp_reader:
+            import codecs
+            with codecs.open(file_name, 'r', "utf-8") as inp_reader:
                 project.file_name = file_name
                 self.set_from_text_lines(project, iter(inp_reader))
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
+
+            try:
+                with open(file_name, 'r') as inp_reader:
+                    project.file_name = file_name
+                    self.set_from_text_lines(project, iter(inp_reader))
+            except Exception as e:
+                print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def set_from_text_lines(self, project, lines_iterator):
         """Read a project file from lines of text.
@@ -100,7 +108,7 @@ class SectionReader(object):
                 section (Section): Section of input file to populate
                 line (str): Text to search for a comment or section name.
         """
-        comment_split = str.split(line, ';', 1)
+        comment_split = line.split(';', 1)
         if len(comment_split) == 2:  # Found a comment
             line = comment_split[0]
             this_comment = ';' + comment_split[1]

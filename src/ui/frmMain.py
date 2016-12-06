@@ -366,8 +366,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 raise Exception("Section not found in project: " + section_field_name)
             self.section = getattr(session.project, section_field_name)
             self.layer = self.session.model_layers.layer_by_name(section_field_name)
-            if isinstance(self.item, Polygon):
-                self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
+            #if isinstance(self.item, Polygon):
+            #    self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
 
         def redo(self):
             self.isSubLink = False
@@ -397,13 +397,28 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.isSub2Sub = True
 
             if self.isSubLink:
-                self.layer = self.session.model_layers.layer_by_name("sublinks")
-            else:
-                if self.item.name == '' or self.item.name in self.section.value:
-                    self.item.name = self.session.new_item_name(type(self.item))
-                if len(self.section.value) == 0 and not isinstance(self.section, list):
-                    self.section.value = IndexedList([], ['name'])
-                self.section.value.append(self.item)
+                #swap out link item and section types
+                #self.layer = self.session.model_layers.layer_by_name("sublinks")
+                for obj_type, lyr_name in self.session.section_types.iteritems():
+                    if lyr_name == "sublinks":
+                        in_node = self.item.inlet_node
+                        out_node = self.item.outlet_node
+                        self.item = obj_type()
+                        self.item.inlet_node = in_node
+                        self.item.outlet_node = out_node
+                        section_field_name = self.session.section_types[type(self.item)]
+                        if not hasattr(self.session.project, section_field_name):
+                            raise Exception("Section not found in project: " + section_field_name)
+                        self.section = getattr(self.session.project, section_field_name)
+                        self.layer = self.session.model_layers.layer_by_name(section_field_name)
+                        break
+
+            if self.item.name == '' or self.item.name in self.section.value:
+                self.item.name = self.session.new_item_name(type(self.item))
+            if len(self.section.value) == 0 and not isinstance(self.section, list):
+                self.section.value = IndexedList([], ['name'])
+            self.section.value.append(self.item)
+            if not self.isSubLink:
                 # self.session.list_objects()  # Refresh the list of items on the form
                 list_item = self.session.listViewObjects.addItem(self.item.name)
                 self.session.listViewObjects.scrollToItem(list_item)
@@ -439,10 +454,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         self.item.centroid.x = str(pt.x())
                         self.item.centroid.y = str(pt.y())
 
+                        #add centroid item
+                        c_item = None
+                        for obj_type, lyr_name in self.session.section_types.iteritems():
+                            if lyr_name == "subcentroids":
+                                c_item = obj_type()
+                                c_item.x = str(pt.x())
+                                c_item.y = str(pt.y())
+                                break
+                        c_item.name = self.session.new_item_name(type(c_item))
+                        c_section_field_name = self.session.section_types[type(c_item)]
+                        if not hasattr(self.session.project, c_section_field_name):
+                            raise Exception("Section not found in project: " + c_section_field_name)
+                        c_section = getattr(self.session.project, c_section_field_name)
+                        self.centroid_layer = self.session.model_layers.layer_by_name(c_section_field_name)
+                        if len(c_section.value) == 0 and not isinstance(c_section, list):
+                            c_section.value = IndexedList([], ['name'])
+                        c_section.value.append(c_item)
                         self.centroid_layer.startEditing()
                         pf = self.session.map_widget.point_feature_from_item(self.item.centroid)
-                        #pf.setAttributes([self.item.name, 0.0, self.item.name])
-                        pf.setAttributes([self.item.name, 0.0, 1])
+                        pf.setAttributes([self.item.name, 0.0])
                         added_centroid = self.centroid_layer.dataProvider().addFeatures([pf])
                         if added_centroid[0]:
                             self.added_centroid_id = added_centroid[1][0].id()

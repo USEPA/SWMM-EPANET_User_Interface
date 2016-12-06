@@ -291,14 +291,8 @@ try:
                 provider = layer.dataProvider()
 
                 # add fields
-                if "CENTROID" in layer_name.upper():
-                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double),
-                                            QgsField("sub_id", QtCore.QVariant.Int)])
-                else:
-                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double)])
-
+                provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                        QgsField("color", QtCore.QVariant.Double)])
                 layer.updateFields()
 
                 features = []

@@ -903,7 +903,8 @@ try:
                 if len(points) < 3:
                     points = None
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                points.append(points[0]) # Close polygon.
+                if points is not None:
+                    points.append(points[0]) # Close polygon.
 
             self.stopCapturing()
 

@@ -611,16 +611,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.selectSubAndCentroid()
 
         def selectSubAndCentroid(self):
-            if "centroid" in self.layer.name():
+            if "centroid" in self.layer.name().lower():
                 layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
+                layer_subcatchments.removeSelection()
                 sel_sub_ids = []
                 for f in self.layer.selectedFeatures():
                     sel_sub_ids.append(f['sub_mapid'])
                 layer_subcatchments.setSelectedFeatures(sel_sub_ids)
                 self.map_features.extend(layer_subcatchments.selectedFeatures())
                 pass
-            elif "subcatchment" in self.layer.name():
+            elif "subcatchment" in self.layer.name().lower():
                 layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+                layer_subcentroids.removeSelection()
                 sel_cent_ids = []
                 for f in self.layer.selectedFeatures():
                     sel_cent_ids.append(f['c_mapid'])

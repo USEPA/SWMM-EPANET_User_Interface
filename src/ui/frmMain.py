@@ -458,7 +458,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                     s.outlet = self.item.outlet_node
                                     break
                         #set sublink's attributes
-                        f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                        #f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                        #self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+                        #self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+                        self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
+                        self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
+                        self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
                         self.layer.updateExtents()
                         self.layer.commitChanges()
                         self.layer.triggerRepaint()

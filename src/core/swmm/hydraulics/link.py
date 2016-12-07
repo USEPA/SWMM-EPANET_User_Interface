@@ -287,12 +287,7 @@ class SubLink(SwmmLink):
 
     def __init__(self):
         SwmmLink.__init__(self)
-
-        self.length = "0.0"
-        """Conduit length (feet or meters)."""
-
-        self.roughness = "0.0"
-        """Manning's N roughness coefficient."""
+        pass
 
 
 class CrossSectionShape(Enum):

@@ -455,23 +455,4 @@ class SubCentroid(Node):
 
     def __init__(self):
         Node.__init__(self)
-
-        # self.name = ''  # Unicode(default_value='', label="Name", help="User-assigned name of junction")
-        # """name assigned to junction node"""
-
-        self.max_depth = ''
-        """Maximum depth of junction (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used.  (Ymax)"""
-
-        self.initial_depth = ''
-        """Depth of water at the junction at the start of the simulation
-            (feet or meters) (Y0)"""
-
-        self.ponded_area = ''
-        """Area occupied by ponded water atop the junction after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists. (Apond)"""
-
+        pass

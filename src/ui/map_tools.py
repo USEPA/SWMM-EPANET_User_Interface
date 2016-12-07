@@ -282,7 +282,7 @@ try:
             geometry = QgsGeometry.fromPolygon([points])
             feature = QgsFeature()
             feature.setGeometry(geometry)
-            feature.setAttributes([item.name, 0.0])
+            feature.setAttributes([item.name, 0.0, 1])
             return feature
 
         def addCoordinates(self, coordinates, layer_name):
@@ -291,8 +291,15 @@ try:
                 provider = layer.dataProvider()
 
                 # add fields
-                provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double)])
+                if "CENTROID" in layer.name().upper():
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.Double),
+                                            QgsField("sub_mapid", QtCore.QVariant.Int),
+                                            QgsField("sub_modelid", QtCore.QVariant.String)])
+                    pass
+                else:
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.Double)])
                 layer.updateFields()
 
                 features = []
@@ -537,7 +544,9 @@ try:
                 layer.startEditing()
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double)])
+                                        QgsField("color", QtCore.QVariant.Double),
+                                        QgsField("c_mapid", QtCore.QVariant.Int),
+                                        QgsField("c_modelid", QtCore.QVariant.String)])
                 features = []
                 if polygons:
                     for polygon in polygons:
@@ -549,7 +558,7 @@ try:
                             # add a feature
                             feature = QgsFeature()
                             feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                            feature.setAttributes([polygon.name, 0.0])
+                            feature.setAttributes([polygon.name, 0.0, 0, 0])
                             features.append(feature)
                 if features:
                     layer.startEditing()

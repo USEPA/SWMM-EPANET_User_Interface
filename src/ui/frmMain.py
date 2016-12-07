@@ -378,19 +378,36 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.outlet_sub_id = ""
             if isinstance(self.item, Link):
                 if not self.item.inlet_node in self.session.project.all_nodes():
-                    for s in self.session.project.subcatchments.value:
-                        if s.name == self.item.inlet_node:
-                            self.inlet_sub_id = s.name
-                            self.inlet_sub = s.centroid
+                    self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
+                    for cf in self.centroid_layer.getFeatures():
+                        if cf["name"] == self.item.inlet_node:
+                            self.inlet_sub_id = cf["sub_modelid"]
+                            s = self.session.project.subcatchments.find_item(self.inlet_sub_id)
+                            if s is not None:
+                                self.inlet_sub = s.centroid
                             break
+
+                    #for s in self.session.project.subcatchments.value:
+                    #    if s.name == self.item.inlet_node:
+                    #        self.inlet_sub_id = s.name
+                    #        self.inlet_sub = s.centroid
+                    #        break
                     self.isSubLink = True
 
                 if not self.item.outlet_node in self.session.project.all_nodes():
-                    for s in self.session.project.subcatchments.value:
-                        if s.name == self.item.outlet_node:
-                            self.outlet_sub_id = s.name
-                            self.outlet_sub = s.centroid
+                    self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
+                    for cf in self.centroid_layer.getFeatures():
+                        if cf["name"] == self.item.outlet_node:
+                            self.outlet_sub_id = cf["sub_modelid"]
+                            s = self.session.project.subcatchments.find_item(self.outlet_sub_id)
+                            if s is not None:
+                                self.outlet_sub = s.centroid
                             break
+                    #for s in self.session.project.subcatchments.value:
+                    #    if s.name == self.item.outlet_node:
+                    #        self.outlet_sub_id = s.name
+                    #        self.outlet_sub = s.centroid
+                    #        break
                     self.isSubLink = True
 
                 if self.inlet_sub is not None and self.outlet_sub is not None:
@@ -473,10 +490,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         c_section.value.append(c_item)
                         self.centroid_layer.startEditing()
                         pf = self.session.map_widget.point_feature_from_item(self.item.centroid)
-                        pf.setAttributes([self.item.name, 0.0])
+                        pf.setAttributes([c_item.name, 0.0, added[1][0].id(), self.item.name])
                         added_centroid = self.centroid_layer.dataProvider().addFeatures([pf])
                         if added_centroid[0]:
                             self.added_centroid_id = added_centroid[1][0].id()
+                            self.layer.changeAttributeValue(added[1][0].id(), 2, added_centroid[1][0].id())
+                            self.layer.changeAttributeValue(added[1][0].id(), 3, c_item.name)
                             self.centroid_layer.updateExtents()
                             self.centroid_layer.commitChanges()
                             self.centroid_layer.triggerRepaint()
@@ -495,8 +514,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.layer.rollBack()
 
         def undo(self):
-            if not "sublink" in self.layer.name().lower():
-                self.section.value.remove(self.item)
+            #if not "sublink" in self.layer.name().lower():
+            #    self.section.value.remove(self.item)
+            self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             # self.session.listViewObjects.takeItem(len(self.section.value))
             if self.added_id is not None:
@@ -588,6 +608,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.dy = dy
             self.map_features = [feature for feature in layer.selectedFeatures()]
             self.moved_links = []
+            self.selectSubAndCentroid()
+
+        def selectSubAndCentroid(self):
+            if "centroid" in self.layer.name():
+                layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
+                sel_sub_ids = []
+                for f in self.layer.selectedFeatures():
+                    sel_sub_ids.append(f['sub_mapid'])
+                layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                self.map_features.extend(layer_subcatchments.selectedFeatures())
+                pass
+            elif "subcatchment" in self.layer.name():
+                layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+                sel_cent_ids = []
+                for f in self.layer.selectedFeatures():
+                    sel_cent_ids.append(f['c_mapid'])
+                layer_subcentroids.setSelectedFeatures(sel_cent_ids)
+                self.map_features.extend(layer_subcentroids.selectedFeatures())
+
+            pass
 
         def redo(self):
             self.move(False)
@@ -601,6 +641,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.layer.startEditing()
                 all_nodes = self.session.project.all_nodes()
                 all_links = self.session.project.all_links()
+                if hasattr(self.session.project, "subcatchments"):
+                    all_nodes.extend(self.session.project.find_section("subcentroids").value)
+                    all_links.extend(self.session.project.find_section("sublinks").value)
                 moved_coordinates = IndexedList([], ['name'])
                 for section_field_name in ["labels", "raingages"]:
                     if hasattr(self.session.project, section_field_name):
@@ -621,7 +664,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             new_point = point
                         else:
                             new_point = QgsPoint(point.x() + dx, point.y() + dy)
-                        self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                        if "subcatchment" in self.layer.name().lower():
+                            layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+                            layer_subcentroids.startEditing()
+                            layer_subcentroids.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                            layer_subcentroids.commitChanges()
+                            layer_subcentroids.updateExtents()
+                            layer_subcentroids.triggerRepaint()
+                        else:
+                            self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+
                         node = all_nodes[name]
                         if node:
                             node.x = new_point.x()
@@ -637,7 +689,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             for pt in geometry.asPolygon()[0]:
                                 new_pts.append(QgsPoint(pt.x() + dx, pt.y() + dy))
                             new_geom = QgsGeometry.fromPolygon([new_pts])
-                        self.layer.changeGeometry(feature.id(), new_geom)
+                        if "centroid" in self.layer.name().lower():
+                            layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
+                            layer_subcatchments.startEditing()
+                            layer_subcatchments.changeGeometry(feature.id(), new_geom)
+                            layer_subcatchments.commitChanges()
+                            layer_subcatchments.updateExtents()
+                            layer_subcatchments.triggerRepaint()
+                        else:
+                            self.layer.changeGeometry(feature.id(), new_geom)
 
                     elif geometry.wkbType() == QGis.WKBLineString:
                         link = all_links[name]

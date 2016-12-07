@@ -1506,8 +1506,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
-            self.open_project_quiet(file_name, gui_settings, directory)
             self.add_recent_project(file_name)
+            self.open_project_quiet(file_name, gui_settings, directory)
 
     def setWaitCursor(self):
         QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -1566,6 +1566,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         directory = gui_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
+            self.add_recent_project(file_name)
             path_only, file_only = os.path.split(file_name)
             try:
                 self.save_project(file_name)

@@ -211,7 +211,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
-def write_layer(layer, crs, one_file, layer_file_name, driver_name, layer_options):
+def write_layer(layer, crs, layer_file_name, driver_name, layer_options):
     if layer:
         if crs:
             layer.setCrs(crs)
@@ -219,6 +219,8 @@ def write_layer(layer, crs, one_file, layer_file_name, driver_name, layer_option
                                                 driver_name, layerOptions=layer_options)
         if driver_name == "ESRI Shapefile":
             basename = os.path.splitext(layer_file_name)[0]
+            os.remove(basename + ".cpg")
+            os.remove(basename + ".qpj")
             if not crs or not crs.isValid():
                 os.remove(basename + ".prj")
 

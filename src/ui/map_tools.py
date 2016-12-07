@@ -464,6 +464,8 @@ try:
                     if not self.session.crs:
                         self.session.crs = crs
                         print("CRS = " + crs.toWkt())
+                    else:  # TODO: compare to existing CRS?
+                        pass
             except Exception as ex:
                 print str(ex)
 

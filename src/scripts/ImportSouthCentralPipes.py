@@ -1,8 +1,12 @@
 import ui.import_export as ie
+from PyQt4 import QtGui
 
-file_name = r"C:/devNotMW/SWMM-EPANET_User_Interface_dev_ui/test/core/epanet/Examples/SouthCentral/pipe.shp"
+directory = r"C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/test/core/epanet/Examples/SouthCentral/"
 
-model_attributes = ["name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
-gis_attributes   = ["ID",   "DESCRIPT",    "FROM",       "TO",          "LENGTH", "DIAMETER", "ROUGHNESS", "MINORLOSS"]
+file_name = QtGui.QFileDialog.getOpenFileName(None, 'Open Pipe File...', directory,
+                                             'Shapefiles (*.shp);;All files (*.*)')
+if file_name:
+    model_attributes = ["name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]
+    gis_attributes   = ["ID",   "DESCRIPT",    "FROM",       "TO",          "LENGTH", "DIAMETER", "ROUGHNESS", "MINORLOSS"]
 
-print(ie.import_epanet_pipes(session, file_name, model_attributes, gis_attributes))
+    print(ie.import_epanet_pipes(session, file_name, model_attributes, gis_attributes))

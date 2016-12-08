@@ -684,7 +684,8 @@ class frmMainEPANET(frmMain):
 
     def open_project_quiet(self, file_name, gui_settings, directory):
         self.setWaitCursor()
-        self.setWindowTitle("Reading " + file_name)
+        if file_name:
+            self.setWindowTitle("Reading " + file_name)
         if self.map_widget:
             self.map_widget.setVisible(False)
         self.repaint()

@@ -1118,6 +1118,7 @@ class ModelLayersSWMM(ModelLayers):
                 sublink_section.value = IndexedList([], ['name'])
             sublink_section.value.append(link_item)
             # set sublink's attributes
+            self.sublinks.startEditing()
             # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
             # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
             # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)

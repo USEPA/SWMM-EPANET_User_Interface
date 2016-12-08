@@ -273,7 +273,7 @@ try:
             points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
             feature.setGeometry(QgsGeometry.fromPolyline(points))
-            feature.setAttributes([item.name, 0.0])
+            feature.setAttributes([item.name, 0.0, "", "", 0])
             return feature
 
         @staticmethod

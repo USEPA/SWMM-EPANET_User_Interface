@@ -796,6 +796,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         " to " + str(to_x) + ", " + str(to_y))
             self.session = session
             self.layer = layer
+            self.subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+            self.sublinks = self.session.model_layers.layer_by_name("sublinks")
             self.feature = feature
             self.point_index = point_index
             self.from_x = from_x
@@ -839,6 +841,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 vertex_index -= 1
                             object.vertices[vertex_index].x = x
                             object.vertices[vertex_index].y = y
+                            if hasattr(object, "centroid"):
+                                new_c_g = geometry.centroid()
+                                new_c = new_c_g.asPoint()
+                                object.centroid.x = str(new_c.x)
+                                object.centroid.y = str(new_c.y)
+                                for fc in self.subcentroids.getFeatures():
+                                    if fc["sub_modelid"] == feature_name:
+                                        #from qgis.core import QgsMap
+                                        change_map = {fc.id() : new_c_g}
+                                        self.subcentroids.dataProvider().changeGeometryValues(change_map)
+                                        break
+                                for fl in self.sublinks.dataProvider().getFeatures():
+                                    if fl["inlet"] == self.feature["c_modelid"]:
+                                        if fl.geometry().wkbType() == QGis.WKBLineString:
+                                            line = fl.geometry().asPolyline()
+                                            new_l_g = QgsGeometry.fromPolyline([new_c, line[-1]])
+                                            change_map = {fl.id() : new_l_g}
+                                            self.sublinks.dataProvider().changeGeometryValues(change_map)
+                                        break
+
                             break
                     except Exception as ex1:
                         print("Searching for object to move vertex of: " + str(ex1) + '\n' + str(traceback.print_exc()))

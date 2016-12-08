@@ -1,6 +1,21 @@
 import ui.import_export as ie
 from PyQt4 import QtGui
 
+"""
+    Example script that imports a particular set of shapefiles into an EPANET project.
+
+    model_attributes is the list of model attributes for which there are values to be imported.
+    When customizing this script, attributes for which there are no values in the GIS layer should be removed.
+    gis_attributes is the list of field names in the GIS layer that will be imported into the model.
+    The gis_attributes list must have the same order and number of attributes as the model_attributes for that layer.
+
+    To make a more complicated import script, for example one that does a unit conversion on an attribute, see the
+    source code at: https://github.com/USEPA/SWMM-EPANET_User_Interface/blob/dev-ui/src/ui/import_export.py
+    and copy the import function called below and the import_nodes or import_links that it calls into your script and
+    customize it as needed.
+"""
+
+# Customize this line to make the script start looking for files in a particular directory
 directory = r"C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/test/core/epanet/Examples/SouthCentral/"
 
 

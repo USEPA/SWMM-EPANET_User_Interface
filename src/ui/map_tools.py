@@ -415,8 +415,9 @@ try:
                                         QgsField("color", QtCore.QVariant.Double),
                                         QgsField("inlet", QtCore.QVariant.String),
                                         QgsField("outlet", QtCore.QVariant.String),
-                                        QgsField("sub2sub", QtCore.QVariant.Bool)])
+                                        QgsField("sub2sub", QtCore.QVariant.Int)])
 
+                layer.updateFields()
                 features = []
                 if links:
                     for link in links:

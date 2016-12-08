@@ -88,6 +88,7 @@ from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
+from core.indexed_list import IndexedList
 import ui.convenience
 
 
@@ -1026,9 +1027,103 @@ class ModelLayersSWMM(ModelLayers):
         self.outlets = addLinks(coordinates, project.outlets.value, "Outlets", QColor('pink'), 2)
         self.weirs = addLinks(coordinates, project.weirs.value, "Weirs", QColor('orange'), 2.5)
         self.conduits = addLinks(coordinates, project.conduits.value, "Conduits", QColor('gray'), 3.5)
+        self.subcentroids = addCoordinates(None, "subcentroids")
+        self.sublinks = addLinks(None, None, "sublinks", QColor('gray'), 1.0)
         self.subcatchments = self.map_widget.addPolygons(project.subcatchments.value, "Subcatchments")
         self.set_lists()
+        self.create_subcatchment_links(project)
 
+    def create_subcatchment_links(self, project):
+        #create centroids
+        for fs in self.subcatchments.getFeatures():
+            self.create_subcatchment_centroid(fs)
+
+        #create sub links
+        for fs in self.subcatchments.getFeatures():
+            self.create_subcatchment_link(fs)
+
+        pass
+
+    def create_subcatchment_centroid(self, fs):
+        pt = fs.geometry().centroid().asPoint()
+        #ms = self.map_widget.session.project.subcatchments.find_item(fs["name"])
+        for ms in self.map_widget.session.project.subcatchments.value:
+            if ms.name == fs["name"]:
+                ms.centroid.x = str(pt.x())
+                ms.centroid.y = str(pt.y())
+                break
+
+        # add centroid item
+        c_item = None
+        for obj_type, lyr_name in self.map_widget.session.section_types.iteritems():
+            if lyr_name == "subcentroids":
+                c_item = obj_type()
+                c_item.x = str(pt.x())
+                c_item.y = str(pt.y())
+                break
+        c_item.name = self.map_widget.session.new_item_name(type(c_item))
+        c_section_field_name = self.map_widget.session.section_types[type(c_item)]
+        if not hasattr(self.map_widget.session.project, c_section_field_name):
+            raise Exception("Section not found in project: " + c_section_field_name)
+        c_section = getattr(self.map_widget.session.project, c_section_field_name)
+        centroid_layer = self.map_widget.session.model_layers.layer_by_name(c_section_field_name)
+        if len(c_section.value) == 0 and not isinstance(c_section, list):
+            c_section.value = IndexedList([], ['name'])
+        c_section.value.append(c_item)
+        centroid_layer.startEditing()
+        pf = self.map_widget.point_feature_from_item(ms.centroid)
+        pf.setAttributes([c_item.name, 0.0, fs.id(), ms.name])
+        added_centroid = centroid_layer.dataProvider().addFeatures([pf])
+        if added_centroid[0]:
+            self.subcatchments.startEditing()
+            self.subcatchments.changeAttributeValue(fs.id(), 2, added_centroid[1][0].id())
+            self.subcatchments.changeAttributeValue(fs.id(), 3, c_item.name)
+            self.subcatchments.updateExtents()
+            self.subcatchments.commitChanges()
+            self.subcatchments.triggerRepaint()
+            centroid_layer.updateExtents()
+            centroid_layer.commitChanges()
+            centroid_layer.triggerRepaint()
+
+    def create_subcatchment_link(self, fs):
+        # sub_section = getattr(self.map_widget.session.project, "Subcatchments")
+        # ms = sub_section.find_item(fs["name"])
+        # if not ms.outlet:
+        #     return
+        # fc = None
+        # for fc in self.subcentroids.getFeatures():
+        #     if ms.name == fc["sub_modelid"]:
+        #         break
+        # if fc is None:
+        #     return
+        #
+        # link_item = SubLink()
+        # link_item.inlet_node = ms.name
+        # link_item.outlet_node = ms.outlet
+        # inlet_sub =
+        # f = self.map_widget.line_feature_from_item(link_item,
+        #                                            self.map_widget.session.project.all_nodes(),
+        #                                            self.inlet_sub, self.outlet_sub)
+        # added = self.layer.dataProvider().addFeatures([f])
+        # if added[0]:
+        #     # set subcatchment's outlet nodal/subcatch id
+        #     if self.inlet_sub and self.inlet_sub_id:
+        #         for s in self.session.project.subcatchments.value:
+        #             if s.name == self.inlet_sub_id:
+        #                 s.outlet = self.item.outlet_node
+        #                 break
+        #     # set sublink's attributes
+        #     # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+        #     # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+        #     # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+        #     self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
+        #     self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
+        #     self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
+        #     self.layer.updateExtents()
+        #     self.layer.commitChanges()
+        #     self.layer.triggerRepaint()
+        #     self.session.map_widget.canvas.refresh()
+        pass
 
 if __name__ == '__main__':
     print("QApplication")

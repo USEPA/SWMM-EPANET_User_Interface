@@ -1101,7 +1101,7 @@ class ModelLayersSWMM(ModelLayers):
         #assume we only handle sub-node connection
         #ToDo: need to handle sub-sub connection perhaps
         subcent_section = getattr(self.map_widget.session.project, "subcentroids")
-        isSub2Sub = False
+        isSub2Sub = 0 #False
         link_item = SubLink()
         link_item.name = self.map_widget.session.new_item_name(type(link_item))
         link_item.inlet_node = fc["name"]

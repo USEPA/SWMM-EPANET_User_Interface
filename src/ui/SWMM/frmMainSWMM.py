@@ -1087,43 +1087,47 @@ class ModelLayersSWMM(ModelLayers):
             centroid_layer.triggerRepaint()
 
     def create_subcatchment_link(self, fs):
-        # sub_section = getattr(self.map_widget.session.project, "Subcatchments")
-        # ms = sub_section.find_item(fs["name"])
-        # if not ms.outlet:
-        #     return
-        # fc = None
-        # for fc in self.subcentroids.getFeatures():
-        #     if ms.name == fc["sub_modelid"]:
-        #         break
-        # if fc is None:
-        #     return
-        #
-        # link_item = SubLink()
-        # link_item.inlet_node = ms.name
-        # link_item.outlet_node = ms.outlet
-        # inlet_sub =
-        # f = self.map_widget.line_feature_from_item(link_item,
-        #                                            self.map_widget.session.project.all_nodes(),
-        #                                            self.inlet_sub, self.outlet_sub)
-        # added = self.layer.dataProvider().addFeatures([f])
-        # if added[0]:
-        #     # set subcatchment's outlet nodal/subcatch id
-        #     if self.inlet_sub and self.inlet_sub_id:
-        #         for s in self.session.project.subcatchments.value:
-        #             if s.name == self.inlet_sub_id:
-        #                 s.outlet = self.item.outlet_node
-        #                 break
-        #     # set sublink's attributes
-        #     # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
-        #     # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
-        #     # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
-        #     self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
-        #     self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
-        #     self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
-        #     self.layer.updateExtents()
-        #     self.layer.commitChanges()
-        #     self.layer.triggerRepaint()
-        #     self.session.map_widget.canvas.refresh()
+        sub_section = getattr(self.project, "subcatchments")
+        ms = sub_section.find_item(fs["name"])
+        if not ms.outlet:
+            return
+        fc = None
+        for fc in self.subcentroids.getFeatures():
+            if ms.name == fc["sub_modelid"]:
+                break
+        if fc is None:
+            return
+
+        #assume we only handle sub-node connection
+        #ToDo: need to handle sub-sub connection perhaps
+        subcent_section = getattr(self.map_widget.session.project, "subcentroids")
+        isSub2Sub = 0 #False
+        link_item = SubLink()
+        link_item.name = self.map_widget.session.new_item_name(type(link_item))
+        link_item.inlet_node = fc["name"]
+        link_item.outlet_node = ms.outlet
+        inlet_sub = ms.centroid
+        outlet_sub = None
+        f = self.map_widget.line_feature_from_item(link_item,
+                                                   self.map_widget.session.project.all_nodes(),
+                                                   inlet_sub, outlet_sub)
+        added = self.sublinks.dataProvider().addFeatures([f])
+        if added[0]:
+            sublink_section = getattr(self.map_widget.session.project, "sublinks")
+            if len(sublink_section.value) == 0 and not isinstance(sublink_section, list):
+                sublink_section.value = IndexedList([], ['name'])
+            sublink_section.value.append(link_item)
+            # set sublink's attributes
+            # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+            # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+            # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+            self.sublinks.changeAttributeValue(added[1][0].id(), 2, fc["name"])
+            self.sublinks.changeAttributeValue(added[1][0].id(), 3, link_item.outlet_node)
+            self.sublinks.changeAttributeValue(added[1][0].id(), 4, isSub2Sub)
+            self.sublinks.updateExtents()
+            self.sublinks.commitChanges()
+            self.sublinks.triggerRepaint()
+            self.map_widget.canvas.refresh()
         pass
 
 if __name__ == '__main__':

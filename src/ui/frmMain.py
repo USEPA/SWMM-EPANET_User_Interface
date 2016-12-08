@@ -360,7 +360,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.added_centroid_id = None
             self.centroid_layer = None
             self.isSubLink = False
-            self.isSub2Sub = False
+            self.isSub2Sub = 0 #False
             section_field_name = session.section_types[type(item)]
             if not hasattr(session.project, section_field_name):
                 raise Exception("Section not found in project: " + section_field_name)
@@ -371,7 +371,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         def redo(self):
             self.isSubLink = False
-            self.isSub2Sub = False
+            self.isSub2Sub = 0 #False
             self.inlet_sub = None
             self.outlet_sub = None
             self.inlet_sub_id = ""
@@ -411,7 +411,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.isSubLink = True
 
                 if self.inlet_sub is not None and self.outlet_sub is not None:
-                    self.isSub2Sub = True
+                    self.isSub2Sub = 1 #True
 
             if self.isSubLink:
                 #swap out link item and section types

@@ -445,13 +445,12 @@ class MixingReader(SectionReader):
                 mixing_model = MixingModel[fields[1].upper().replace("2", "TWO_")]
                 if len(fields) > 2:
                     mixing_fraction = fields[2]
-                for nodes in (project.tanks.value):
-                    for node in nodes:
-                        if node.name == node_name:
-                            node.setattr_keep_type("mixing_model", mixing_model)
-                            if len(fields) > 2:
-                                node.setattr_keep_type("mixing_fraction", mixing_fraction)
-                            break
+                for tank in (project.tanks.value):
+                    if tank.name == node_name:
+                        tank.setattr_keep_type("mixing_model", mixing_model)
+                        if len(fields) > 2:
+                            tank.setattr_keep_type("mixing_fraction", mixing_fraction)
+                    break
 
 
 class EmittersReader(SectionReader):

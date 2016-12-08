@@ -1506,8 +1506,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
-            self.open_project_quiet(file_name, gui_settings, directory)
             self.add_recent_project(file_name)
+            self.open_project_quiet(file_name, gui_settings, directory)
 
     def setWaitCursor(self):
         QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -1524,6 +1524,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             try:
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
+                projection_file_name = file_name[:-3] + "prj"
+                if os.path.isfile(projection_file_name):
+                    try:
+                        from qgis.core import QgsCoordinateReferenceSystem
+                        with open(projection_file_name, "rt") as open_file:
+                            wkt = open_file.read()
+                            self.crs = QgsCoordinateReferenceSystem(wkt)
+                            if not self.crs or not self.crs.isValid():
+                                self.crs = None
+                    except Exception as exCRS:
+                        print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
@@ -1543,6 +1554,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             file_name = self.project.file_name
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
+        if self.crs and self.crs.isValid():
+            try:
+                from qgis.core import QgsCoordinateReferenceSystem
+                projection_file_name = file_name[:-3] + "prj"
+                with open(projection_file_name, "wt") as save_file:
+                    save_file.write(self.crs.toWkt())
+            except Exception as exCRS:
+                print("error saving " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
+
         self.undo_stack.setClean()
         #if self.map_widget:
         #    self.map_widget.saveVectorLayers(os.path.dirname(file_name))
@@ -1566,6 +1586,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         directory = gui_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
+            self.add_recent_project(file_name)
             path_only, file_only = os.path.split(file_name)
             try:
                 self.save_project(file_name)

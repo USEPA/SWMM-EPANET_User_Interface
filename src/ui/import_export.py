@@ -206,13 +206,25 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
                 layer_count += 1
 
     if one_file:
-        if session.crs:
-            layer.setCrs(session.crs)
-        QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", session.crs, driver_name,
-                                                layerOptions=layer_options)
-        print("saved " + file_name)
+        write_layer(layer, session.crs, file_name, driver_name, layer_options)
 
     return "Exported " + str(layer_count) + " layers to GIS"
+
+
+def write_layer(layer, crs, layer_file_name, driver_name, layer_options):
+    if layer:
+        if crs:
+            layer.setCrs(crs)
+        QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
+                                                driver_name, layerOptions=layer_options)
+        if driver_name == "ESRI Shapefile":
+            basename = os.path.splitext(layer_file_name)[0]
+            os.remove(basename + ".cpg")
+            os.remove(basename + ".qpj")
+            if not crs or not crs.isValid():
+                os.remove(basename + ".prj")
+
+        print("saved " + layer_file_name)
 
 
 def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer, crs,
@@ -222,15 +234,10 @@ def export_points_layer(model_points, model_attributes, gis_attributes, all_gis_
         all_gis_attributes = gis_attributes
 
     layer = make_points_layer(model_points, model_attributes, gis_attributes, all_gis_attributes, layer)
-    if layer:
-        if not one_file:
-            if crs:
-                layer.setCrs(crs)
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
-                                                    driver_name, layerOptions=layer_options)
-            print("saved " + layer_file_name)
-        return layer
-    return None
+
+    if not one_file:
+        write_layer(layer, crs, layer_file_name, driver_name, layer_options)
+    return layer
 
 
 def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_attributes, layer, crs,
@@ -241,15 +248,9 @@ def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_at
 
     layer = make_links_layer(coordinates, model_links,
                              model_attributes, gis_attributes, all_gis_attributes, layer)
-    if layer:
-        if not one_file:
-            if crs:
-                layer.setCrs(crs)
-            QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
-                                                    driver_name, layerOptions=layer_options)
-            print("saved " + layer_file_name)
-        return layer
-    return None
+    if not one_file:
+        write_layer(layer, crs, layer_file_name, driver_name, layer_options)
+    return layer
 
 
 def make_gis_fields(gis_attributes):

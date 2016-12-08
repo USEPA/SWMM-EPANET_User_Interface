@@ -10,8 +10,8 @@ MAX_RECENT_FILES = 8
 class EditorWindow(QtGui.QMainWindow):
     def __init__(self, parent=None, session=None):
         QtGui.QMainWindow.__init__(self, parent)
-        self.file_name = ""
-        self.changesSaved = True
+        self.file_name = ''
+        self.saved_text = ''
         self.session = session
         self.initUI()
         if session:
@@ -99,24 +99,36 @@ class EditorWindow(QtGui.QMainWindow):
         self.toolbar.addAction(self.redoAction)
 
     def set_font_size(self):
-        cursor = self.text.textCursor()
-        self.text.selectAll()
-        self.text.setFontPointSize(self.fontSize.value())
-        self.text.setTextCursor(cursor)
+        self.set_font(self.text.font())
+        #cursor = self.text.textCursor()
+        #self.text.selectAll()
+        #self.text.setFontPointSize(self.fontSize.value())  # Set size of all existing text
+        #self.text.setTextCursor(cursor)
+        #self.text.setFontPointSize(self.fontSize.value())  # Set size of text about to be typed at cursor
+        if self.session:
+            gui_settings = QtCore.QSettings(self.session.model, "GUI")
+            gui_settings.setValue("ScriptFontSize", self.fontSize.value())
+            gui_settings.sync()
+            del gui_settings
+
+    def set_font(self, font):
+        font.setPointSize(self.fontSize.value())
+        self.text.setFont(font)
 
     def initFormatbar(self):
-
         self.fontBox = QtGui.QFontComboBox(self)
-        self.fontBox.currentFontChanged.connect(lambda font: self.text.setFont(font))
+        self.fontBox.currentFontChanged.connect(self.set_font)
 
         self.fontSize = QtGui.QSpinBox(self)
-
-        # Will display " pt" after each value
-        self.fontSize.setSuffix(" pt")
-
+        self.fontSize.setSuffix(" pt")        # Will display " pt" after each value
         self.fontSize.valueChanged.connect(self.set_font_size)
-
-        self.fontSize.setValue(14)
+        try:
+            if self.session:
+                gui_settings = QtCore.QSettings(self.session.model, "GUI")
+                font_size = gui_settings.value("ScriptFontSize", "14")
+                self.fontSize.setValue(float(font_size))
+        except:
+            pass
 
         indentAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "indent.png")), "Indent Area", self)
         indentAction.setShortcut("Ctrl+Tab")
@@ -208,8 +220,6 @@ class EditorWindow(QtGui.QMainWindow):
         self.text.setContextMenuPolicy(Qt.CustomContextMenu)
         self.text.customContextMenuRequested.connect(self.context)
 
-        self.text.textChanged.connect(self.changed)
-
         self.setGeometry(100, 100, 1030, 800)
         self.setWindowTitle("Script Editor")
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_FOLDER, "icon.png")))
@@ -220,11 +230,8 @@ class EditorWindow(QtGui.QMainWindow):
             print(ex_highlight.message)
             pass
 
-    def changed(self):
-        self.changesSaved = False
-
     def closeEvent(self, event):
-        if self.changesSaved:
+        if self.text.toPlainText() == self.saved_text:
             event.accept()
         else:
             popup = QtGui.QMessageBox(self)
@@ -285,7 +292,8 @@ class EditorWindow(QtGui.QMainWindow):
     def open_file(self, file_name):
         if file_name:
             with open(file_name, "rt") as open_file:
-                self.text.setText(open_file.read())
+                self.saved_text = open_file.read()
+                self.text.setText(self.saved_text)
             self.set_file_name(file_name)
 
     def save_as(self):
@@ -306,12 +314,12 @@ class EditorWindow(QtGui.QMainWindow):
                 self.file_name += ".py"
 
             with open(file_name, "wt") as save_file:
-                save_file.write(self.text.toPlainText())
+                self.saved_text = self.text.toPlainText()
+                save_file.write(self.saved_text)
             self.set_file_name(file_name)
 
     def set_file_name(self, file_name):
         self.file_name = file_name
-        self.changesSaved = True
         self.setWindowTitle("Script Editor - " + self.file_name)
 
     def preview(self):

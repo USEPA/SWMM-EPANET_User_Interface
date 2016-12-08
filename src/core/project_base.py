@@ -149,6 +149,12 @@ class Section(object):
             setattr(self, attr_name, attr_value)
             print(str(attr_name) + " now = " + str(getattr(self, attr_name)))
 
+    def find_item(self, aName):
+        if isinstance(self.value, list):
+            for obj in self.value:
+                if aName.upper() in obj.name.upper():
+                    return obj
+        return None
 
 class SectionAsList(Section):
     def __init__(self, section_name, section_comment=None):

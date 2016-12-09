@@ -36,6 +36,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
         self.crs = None
+        self.project_settings = None
         self.setupUi(self)
         self.q_application = q_application
         try:
@@ -888,24 +889,46 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
 
-
     def new_item_name(self, item_type):
         """ Generate a name for a new item.
-            Start with a default of the number of items already in this section plus one (converted to a string).
-            Next, search all sections and increase the number as needed if something already has that name. """
+            Start with a default of the number of items already in this section plus one (converted to a string). """
         section = getattr(self.project, self.section_types[item_type])
-        number = len(section.value)
-        found = True
-        while found:
-            number += 1
-            new_name = str(number)
-            found = False
-            for obj_type, section_name in self.section_types.iteritems():
-                section = getattr(self.project, section_name)
-                if new_name in section.value:
-                    found = True
-                    break
-        return str(number)
+        prefix = ""
+        number = 1
+        increment = 1
+        if self.project_settings:
+            item_type_name = item_type.__name__
+            prefix = self.project_settings.value("Labels/" + item_type_name, "")
+            try:
+                increment = int(self.project_settings.value("Labels/Increment", 1))
+            except:
+                pass
+            try:
+                number = int(self.project_settings.value("Labels/" + item_type_name + "_NextID", 1))
+            except:
+                pass
+
+        try:
+            for item in section.value:
+                digits = filter(unicode.isdigit, item.name)
+                if digits:
+                    int_digits = int(digits)
+                    if int_digits >= number:
+                        number = int_digits + increment
+        except Exception as ex:
+            print(str(ex))
+            pass
+
+        str_number = str(number)
+        new_name = prefix + str_number
+        while new_name in section.value or str_number in section.value:
+            number += increment
+            str_number = str(number)
+            new_name = prefix + str_number
+
+        if self.project_settings:
+            self.project_settings.setValue("Labels/" + item_type_name + "_NextID", number + 1)
+        return new_name
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
@@ -1263,7 +1286,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pass
 
             files.insert(0, file_name)
-        del files[MAX_RECENT_FILES:]
+
+        if files:
+            del files[MAX_RECENT_FILES:]
         self.program_settings.setValue(settings_key, files)
         return files
 
@@ -1526,6 +1551,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
+        self.project_settings = None
         self.project = self.project_type()
         if file_name:
             try:
@@ -1546,6 +1572,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("ProjectDir", path_only)
                     self.program_settings.sync()
+                ini_file_name = file_name[:-3] + "ini"
+                if os.path.isfile(ini_file_name):
+                    try:
+                        self.project_settings = QtCore.QSettings(ini_file_name, QtCore.QSettings.IniFormat)
+                        print("Read project settings from " + self.program_settings.fileName())
+                    except Exception as exINI:
+                        self.project_settings = None
+                        print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
+                            traceback.print_exc()))
+
             except Exception as ex:
                 print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
                 self.project = ProjectBase()

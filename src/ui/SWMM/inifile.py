@@ -125,7 +125,7 @@ def InitMapLegends():
 #         PointSize[I] = DefGraphOptions.PointSize[I]
 
 
-def ReadIniFile():
+def ReadIniFile(session):
     """
         Read map settings, program preferences, current directories,
         and most-recently-used file list from the EPASWMM5.INI file.

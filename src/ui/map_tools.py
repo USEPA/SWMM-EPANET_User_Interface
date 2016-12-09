@@ -282,7 +282,7 @@ try:
             geometry = QgsGeometry.fromPolygon([points])
             feature = QgsFeature()
             feature.setGeometry(geometry)
-            feature.setAttributes([item.name, 0.0, 1])
+            feature.setAttributes([item.name, 0.0, 0, ""])
             return feature
 
         def addCoordinates(self, coordinates, layer_name):
@@ -456,6 +456,12 @@ try:
             layers.append(layer)
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in layers])
             self.set_extent(self.canvas.fullExtent())
+            if "centroid" in layer.name().lower():
+                for mlyrkey in QgsMapLayerRegistry.instance().mapLayers().keys():
+                    if "centroid" in mlyrkey:
+                        break
+                node = self.session.gis_layer_root.findLayer(mlyrkey)
+                node.setVisible(Qt.Unchecked)
 
         def set_crs_from_layer(self, layer):
             try:
@@ -543,13 +549,12 @@ try:
                 layer = QgsVectorLayer("Polygon", layer_name, "memory")
                 provider = layer.dataProvider()
 
-                # changes are only possible when editing the layer
-                layer.startEditing()
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                         QgsField("color", QtCore.QVariant.Double),
                                         QgsField("c_mapid", QtCore.QVariant.Int),
                                         QgsField("c_modelid", QtCore.QVariant.String)])
+                layer.updateFields()
                 features = []
                 if polygons:
                     for polygon in polygons:

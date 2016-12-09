@@ -11,8 +11,11 @@ try:
     import os
     from enum import Enum
 
+
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
+        map_unit_names = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "UnknownUnit"]
+
         def __init__(self, canvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
             self.canvas = canvas  # QgsMapCanvas()
@@ -469,7 +472,7 @@ try:
                 crs = dp.crs()
                 if crs.isValid():
                     if not self.session.crs:
-                        self.session.crs = crs
+                        self.session.set_crs(crs)
                         print("CRS = " + crs.toWkt())
                     else:  # TODO: compare to existing CRS?
                         pass

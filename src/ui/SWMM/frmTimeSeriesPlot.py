@@ -100,8 +100,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
         # cb.setText(self.get_text(), mode=cb.Clipboard)
 
     def save_script(self):
-        gui_settings = QtCore.QSettings(self.session.model, "GUI")
-        directory = gui_settings.value("ScriptDir", "")
+        directory = self.session.program_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Script As...", directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
@@ -124,9 +123,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     writer.write("graphSWMM.plot_time(output, lines_list, elapsed_flag, start_index, num_steps)\n")
 
                 if path_only != directory:
-                    gui_settings.setValue("ScriptDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
+                    self.session.program_settings.setValue("ScriptDir", path_only)
+                    self.session.program_settings.sync()
 
             except Exception as e:
                 print("Error writing {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
@@ -152,8 +150,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     self.lstData.addItem(line)
 
     def save_file(self):
-        gui_settings = QtCore.QSettings(self.session.model, "GUI")
-        directory = gui_settings.value("PlotSpecDir", "")
+        directory = self.session.program_settings.value("PlotSpecDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Specification As...", directory,
                                                            "Time Series Plot (*.tsplt);;All files (*.*)")
         if file_name:
@@ -162,16 +159,14 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     writer.write(self.get_text_lines())
                     path_only, file_only = os.path.split(file_name)
                     if path_only != directory:
-                        gui_settings.setValue("PlotSpecDir", path_only)
-                        gui_settings.sync()
-                        del gui_settings
+                        self.session.program_settings.setValue("PlotSpecDir", path_only)
+                        self.session.program_settings.sync()
 
             except Exception as e:
                 print("Error writing {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def load_file(self):
-        gui_settings = QtCore.QSettings(self.session.model, "GUI")
-        directory = gui_settings.value("PlotSpecDir", "")
+        directory = self.session.program_settings.value("PlotSpecDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Time Series Plot Specification...", directory,
                                                             "Time Series Plot (*.tsplt);;All files (*.*)")
         if file_name:
@@ -180,9 +175,8 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                     self.set_from_text_lines(iter(inp_reader))
                     path_only, file_only = os.path.split(file_name)
                     if path_only != directory:
-                        gui_settings.setValue("PlotSpecDir", path_only)
-                        gui_settings.sync()
-                        del gui_settings
+                        self.session.program_settings.setValue("PlotSpecDir", path_only)
+                        self.session.program_settings.sync()
             except Exception as e:
                 print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 

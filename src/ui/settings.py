@@ -1,6 +1,8 @@
 from PyQt4.QtCore import QTranslator
 from PyQt4.QtGui import QInputDialog
 from ui.translations_rc import *
+
+
 class internationalization:
     def __init__(self):
         self.ui_languages = ("English", "French", "Chinese")
@@ -9,7 +11,7 @@ class internationalization:
         self.ui_mTranslator = QTranslator()
 
     def set_language(self):
-        lang = QInputDialog.getItem(None, "Select Language", "Language", self.ui_languages)
+        lang = "English"  # QInputDialog.getItem(None, "Select Language", "Language", self.ui_languages)
         self.ui_language = lang[0]
         if self.ui_language == "French":
             self.ui_mTranslator.load(":/french.qm")

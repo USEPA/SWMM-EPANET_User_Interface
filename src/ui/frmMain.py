@@ -102,6 +102,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # Map attributes will be set below if possible or will remain None to indicate map is not present.
         self.canvas = None
         self.map_widget = None
+        self.map_units = "UnknownUnit"
         self.selecting = Lock()
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
@@ -295,19 +296,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                       "Shapefile (*.shp);;" \
                       "Comma-separated text (*.csv);;" \
                       "All files (*.*)"
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISPath", os.path.dirname(self.project.file_name))
+        directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Select GIS file to import",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:  # Save path as default for next import/export operation
-                gui_settings.setValue("GISPath", path_only)
-                gui_settings.sync()
+                self.program_settings.setValue("GISPath", path_only)
+                self.program_settings.sync()
 
             import_export.import_from_gis(self, file_name)
-        del gui_settings
 
     def export_to_gis(self):
         import import_export
@@ -316,19 +315,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                       "Shapefile (*.shp);;" \
                       "Comma-separated text (*.csv);;" \
                       "All files (*.*)"
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISPath", os.path.dirname(self.project.file_name))
+        directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Export to GIS",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:  # Save path as default for next import/export operation
-                gui_settings.setValue("GISPath", path_only)
-                gui_settings.sync()
+                self.program_settings.setValue("GISPath", path_only)
+                self.program_settings.sync()
 
             import_export.export_to_gis(self, file_name)
-        del gui_settings
 
     def tabProjMapChanged(self, index):
         if index == 1:
@@ -337,8 +334,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.time_widget.setVisible(False)
 
     def saveMapAsImage(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("ProjectDir", "")
+        directory = self.program_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Map As...", directory,
                                                             "PNG Files (*.png);;All files (*.*)")
         if file_name:
@@ -983,8 +979,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pass
 
     def map_addvector(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISDataDir", "/")
+        directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory,
                                                      'Shapefiles (*.shp);;All files (*.*)')
         if filename:
@@ -992,9 +987,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.map_widget.addVectorLayer(filename)
                 path_only, file_only = os.path.split(filename)
                 if path_only != directory:
-                    gui_settings.setValue("GISDataDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
+                    self.program_settings.setValue("GISDataDir", path_only)
+                    self.program_settings.sync()
             except Exception as ex:
                 print("map_addvector error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1010,8 +1004,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #         self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("GISDataDir", "/")
+        directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
                                                      "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
@@ -1020,9 +1013,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.map_widget.addRasterLayer(filename)
                 path_only, file_only = os.path.split(filename)
                 if path_only != directory:
-                    gui_settings.setValue("GISDataDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
+                    self.program_settings.setValue("GISDataDir", path_only)
+                    self.program_settings.sync()
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1195,33 +1187,29 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.script_run(file_name)
 
     def script_browse_open(self, browse_title="Select script"):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("ScriptDir", "")
+        directory = self.program_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, browse_title, directory,
                                                       "Python Files (*.py);;All files (*.*)")
         if file_name:
             self.add_recent_script(file_name)
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:
-                gui_settings.setValue("ScriptDir", path_only)
-                gui_settings.sync()
+                self.program_settings.setValue("ScriptDir", path_only)
+                self.program_settings.sync()
 
-        del gui_settings
         return file_name
 
     def script_browse_save(self, browse_title="Save Script As..."):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("ScriptDir", "")
+        directory = self.program_settings.value("ScriptDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, browse_title, directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
             self.add_recent_script(file_name)
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:
-                gui_settings.setValue("ScriptDir", path_only)
-                gui_settings.sync()
+                self.program_settings.setValue("ScriptDir", path_only)
+                self.program_settings.sync()
 
-        del gui_settings
         return file_name
 
     def script_run(self, file_name):
@@ -1259,13 +1247,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if action and action.data():
             file_name = action.data()
             if os.path.isfile(file_name):
-                gui_settings = QtCore.QSettings(self.model, "GUI")
-                directory = gui_settings.value("ProjectDir", "")
-                self.open_project_quiet(file_name, gui_settings, directory)
+                directory = self.program_settings.value("ProjectDir", "")
+                self.open_project_quiet(file_name, directory)
 
     def add_recent(self, file_name, settings_key):
-        settings = QtCore.QSettings(self.model, "GUI")
-        files = settings.value(settings_key, [])
+        files = self.program_settings.value(settings_key, [])
 
         if files and files[0] == file_name:
             return
@@ -1278,7 +1264,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
             files.insert(0, file_name)
         del files[MAX_RECENT_FILES:]
-        settings.setValue(settings_key, files)
+        self.program_settings.setValue(settings_key, files)
         return files
 
     def add_recent_project(self, file_name):
@@ -1520,16 +1506,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return True
 
     def new_project(self):
-        self.open_project_quiet(None, None, None)
+        self.open_project_quiet(None, None)
 
     def open_project(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("ProjectDir", "")
+        directory = self.program_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.add_recent_project(file_name)
-            self.open_project_quiet(file_name, gui_settings, directory)
+            self.open_project_quiet(file_name, directory)
 
     def setWaitCursor(self):
         QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -1537,7 +1522,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def restoreCursor(self):
         QApplication.restoreOverrideCursor()
 
-    def open_project_quiet(self, file_name, gui_settings, directory):
+    def open_project_quiet(self, file_name, directory):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
@@ -1546,23 +1531,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             try:
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
-                projection_file_name = file_name[:-3] + "prj"
-                if os.path.isfile(projection_file_name):
-                    try:
-                        from qgis.core import QgsCoordinateReferenceSystem
-                        with open(projection_file_name, "rt") as open_file:
-                            wkt = open_file.read()
-                            self.crs = QgsCoordinateReferenceSystem(wkt)
-                            if not self.crs or not self.crs.isValid():
-                                self.crs = None
-                    except Exception as exCRS:
-                        print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
+                if self.map_widget:
+                    projection_file_name = file_name[:-3] + "prj"
+                    if os.path.isfile(projection_file_name):
+                        try:
+                            from qgis.core import QgsCoordinateReferenceSystem
+                            with open(projection_file_name, "rt") as open_file:
+                                wkt = open_file.read()
+                                self.set_crs(QgsCoordinateReferenceSystem(wkt))
+                        except Exception as exCRS:
+                            print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
-                    gui_settings.setValue("ProjectDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
+                    self.program_settings.setValue("ProjectDir", path_only)
+                    self.program_settings.sync()
             except Exception as ex:
                 print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
                 self.project = ProjectBase()
@@ -1570,6 +1553,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.project.file_name = "New.inp"
             self.setWindowTitle(self.model + " - New")
+
+    def set_crs(self, crs):
+        if crs and crs.isValid():
+            self.crs = crs
+            self.map_units = self.map_widget.map_unit_names[self.crs.DistanceUnit()]
+        else:
+            self.crs = None
 
     def save_project(self, file_name=None):
         if not file_name:
@@ -1604,8 +1594,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return filename
 
     def save_project_as(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("ProjectDir", "")
+        directory = self.program_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
             self.add_recent_project(file_name)
@@ -1614,9 +1603,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.save_project(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
-                    gui_settings.setValue("ProjectDir", path_only)
-                    gui_settings.sync()
-                    del gui_settings
+                    self.program_settings.setValue("ProjectDir", path_only)
+                    self.program_settings.sync()
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
                 QMessageBox.information(self, self.model,
@@ -1646,8 +1634,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             full_path = os.path.join(directory, filename)
             lfilename = filename.lower()
             if lfilename.endswith('.inp'):
-                gui_settings = QtCore.QSettings(self.model, "GUI")
-                self.open_project_quiet(full_path, gui_settings, directory)
+                self.open_project_quiet(full_path, directory)
             #TODO - check to see if QGIS can handle file type
             elif lfilename.endswith('.shp') or lfilename.endswith(".json"):
                 self.map_widget.addVectorLayer(full_path)
@@ -1662,6 +1649,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def action_exit(self):
         if not self.confirm_discard_project():
             return
+        del self.program_settings
         if self.q_application:
             try:
                 self.q_application.quit()

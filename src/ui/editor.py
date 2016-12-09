@@ -106,10 +106,8 @@ class EditorWindow(QtGui.QMainWindow):
         #self.text.setTextCursor(cursor)
         #self.text.setFontPointSize(self.fontSize.value())  # Set size of text about to be typed at cursor
         if self.session:
-            gui_settings = QtCore.QSettings(self.session.model, "GUI")
-            gui_settings.setValue("ScriptFontSize", self.fontSize.value())
-            gui_settings.sync()
-            del gui_settings
+            self.session.program_settings.setValue("ScriptFontSize", self.fontSize.value())
+            self.session.program_settings.sync()
 
     def set_font(self, font):
         font.setPointSize(self.fontSize.value())
@@ -124,8 +122,7 @@ class EditorWindow(QtGui.QMainWindow):
         self.fontSize.valueChanged.connect(self.set_font_size)
         try:
             if self.session:
-                gui_settings = QtCore.QSettings(self.session.model, "GUI")
-                font_size = gui_settings.value("ScriptFontSize", "14")
+                font_size = self.session.program_settings.value("ScriptFontSize", "14")
                 self.fontSize.setValue(float(font_size))
         except:
             pass

@@ -25,8 +25,7 @@ try:
             result = "Project is not open"
         else:
             try:
-                gui_settings = QtCore.QSettings(session.model, "GUI")
-                directory = gui_settings.value("GISPath", os.path.dirname(session.project.file_name))
+                directory = session.program_settings.value("GISPath", os.path.dirname(session.project.file_name))
 
                 if choice == 1:
                     file_name = QtGui.QFileDialog.getSaveFileName(session, "Export to GIS",
@@ -40,8 +39,8 @@ try:
                 if file_name:
                     path_only, file_only = os.path.split(file_name)
                     if path_only != directory:  # Save path as default for next import/export operation
-                        gui_settings.setValue("GISPath", path_only)
-                        gui_settings.sync()
+                        session.program_settings.setValue("GISPath", path_only)
+                        session.program_settings.sync()
 
                     if choice == 1:
                         result = import_export.export_to_gis(session, file_name)
@@ -49,7 +48,6 @@ try:
                         result = import_export.import_from_gis(session, file_name)
                 else:
                     result = "Selected operation not yet implemented."
-                del gui_settings
                 QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
             except Exception as ex:
                 print str(ex)

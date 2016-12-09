@@ -59,8 +59,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
             pass
 
     def toolButton_Clicked(self):
-        gui_settings = QtCore.QSettings(self.model, "GUI")
-        directory = gui_settings.value("CaliDir", "")
+        directory = self.session.program_settings.value("CaliDir", "")
         file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Calibration File", directory,
                                                       "Data files (*.DAT);;All files (*.*)")
         if file_name:
@@ -75,7 +74,6 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         if self.calibrations == None:
             return
 
-        gui_settings = QtCore.QSettings(self.model, "GUI")
         rowHeader = ""
         litem = None
         lcali = None
@@ -129,10 +127,8 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
             lcali.is_flow = lis_flow
 
             if os.path.exists(lcali.filename):
-                gui_settings.setValue("CaliDir", os.path.dirname(lcali.filename))
-                gui_settings.sync()
-            pass
-        del gui_settings
+                self.session.program_settings.setValue("CaliDir", os.path.dirname(lcali.filename))
+                self.session.program_settings.sync()
         self.close()
 
     def cmdCancel_Clicked(self):

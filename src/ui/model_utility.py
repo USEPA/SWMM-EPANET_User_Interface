@@ -153,3 +153,18 @@ class Worker(QtCore.QObject):
     def readStdOutput(self):
         output = QString(self.process.readAllStandardOutput())
         self.sendOutput.emit(output)
+
+class ParseData:
+    @staticmethod
+    def intTryParse(self, value):
+        try:
+            return int(value), True
+        except ValueError:
+            return value, False
+
+    @staticmethod
+    def floatTryParse(self, value):
+        try:
+            return float(value), True
+        except ValueError:
+            return value, False

@@ -8,12 +8,6 @@ from core.metadata import Metadata
 from core.coordinate import Link
 
 
-class PumpType(Enum):
-    """Pump Type"""
-    POWER = 1
-    HEAD = 2
-
-
 class ValveType(Enum):
     """Valve Type"""
     PRV = 1
@@ -110,8 +104,7 @@ class Pump(EpanetLink):
     def __init__(self):
         EpanetLink.__init__(self)
 
-        self.type = PumpType.POWER
-        """Either POWER or HEAD must be supplied for each pump. The other keywords are optional."""
+        # Either power or head_curve_name must be supplied for each pump. The other fields are optional.
 
         self.power = "0.0"
         """power value for constant energy pump, hp (kW)"""
@@ -125,7 +118,7 @@ class Pump(EpanetLink):
         self.pattern = ''
         """time pattern that describes how speed setting varies with time"""
 
-        # TODO: access pump-specific energy parameters in options/energy
+        # pump energy parameters are in options/energy
 
 
 class Valve(EpanetLink):

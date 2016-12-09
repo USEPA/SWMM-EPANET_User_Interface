@@ -10,7 +10,6 @@ from core.epanet.title import Title
 from core.epanet.hydraulics.control import ControlType
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.control import Rule
-from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
 from core.epanet.hydraulics.link import Pipe
@@ -175,7 +174,7 @@ class PumpWriter():
         """format contents of this item for writing to file"""
         if len(pump.name) > 0:
             txt = PumpWriter.field_format.format(pump.name, pump.inlet_node, pump.outlet_node)
-            if pump.type == PumpType.HEAD:
+            if pump.head_curve_name:
                 txt += "\tHEAD " + pump.head_curve_name
             else:
                 txt += "\tPOWER " + pump.power

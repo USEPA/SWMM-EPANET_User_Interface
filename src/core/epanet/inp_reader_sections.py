@@ -11,7 +11,6 @@ from core.epanet.title import Title
 from core.epanet.hydraulics.control import ControlType
 from core.epanet.hydraulics.control import Control
 from core.epanet.hydraulics.control import Rule
-from core.epanet.hydraulics.link import PumpType
 from core.epanet.hydraulics.link import ValveType
 from core.epanet.hydraulics.link import FixedStatus
 from core.epanet.hydraulics.link import Pipe
@@ -238,10 +237,8 @@ class PumpReader():
             for key_index in range(3, len(fields) - 1, 2):
                 value_index = key_index + 1
                 if fields[key_index].upper() == "HEAD":
-                    pump.type = PumpType.HEAD
                     pump.head_curve_name = fields[value_index]
                 elif fields[key_index].upper() == "POWER":
-                    pump.type = PumpType.POWER
                     pump.power = fields[value_index]
                 elif fields[key_index].upper() == "PATTERN":
                     pump.pattern = fields[value_index]

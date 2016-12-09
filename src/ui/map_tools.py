@@ -1088,6 +1088,7 @@ try:
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
             for lyr in self.session.model_layers.all_layers:
+                lyr.removeSelection()
                 try:
                     if isinstance(lyr, QgsVectorLayer):
                         provider = lyr.dataProvider()

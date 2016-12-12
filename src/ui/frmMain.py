@@ -1286,7 +1286,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except:
                 pass
 
-            files.insert(0, file_name)
+            if files:
+                files.insert(0, file_name)
 
         if files:
             del files[MAX_RECENT_FILES:]

@@ -897,12 +897,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         """ Generate a name for a new item.
             Start with a default of the number of items already in this section plus one (converted to a string). """
         section = getattr(self.project, self.section_types[item_type])
-        prefix = ""
+        links_groups = self.project.links_groups()
+        if section in links_groups:
+            unique_groups = links_groups
+        else:
+            if hasattr(self.project, "subcatchments"):
+                unique_groups = [self.project.subcatchments]
+                unique_groups.extend(self.project.nodes_groups())
+            else:
+                unique_groups = self.project.nodes_groups()
+        existing_names = []
+        for section in unique_groups:
+            for item in section.value:
+                existing_names.append(unicode(item.name))
+        prefix = u""
         number = 1
         increment = 1
+
         if self.project_settings:
             item_type_name = item_type.__name__
-            prefix = self.project_settings.value("Labels/" + item_type_name, "")
+            prefix = unicode(self.project_settings.value("Labels/" + item_type_name, ""))
             try:
                 increment = int(self.project_settings.value("Labels/Increment", 1))
             except:
@@ -912,20 +926,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except:
                 pass
 
-        try:
-            for item in section.value:
-                digits = filter(unicode.isdigit, unicode(item.name))
+        for name in existing_names:
+            try:
+                digits = filter(unicode.isdigit, name)
                 if digits:
                     int_digits = int(digits)
                     if int_digits >= number:
                         number = int_digits + increment
-        except Exception as ex:
-            print(str(ex))
-            pass
+            except Exception as ex:
+                print(str(ex))
 
         str_number = str(number)
         new_name = prefix + str_number
-        while new_name in section.value or str_number in section.value:
+        while new_name in existing_names or str_number in existing_names:
             number += increment
             str_number = str(number)
             new_name = prefix + str_number

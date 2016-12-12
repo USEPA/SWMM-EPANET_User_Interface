@@ -983,9 +983,12 @@ try:
             index_layers = []
             index_layers.extend(self.session.model_layers.nodes_layers)
             for lyr in self.session.model_layers.all_layers:
-                if "centroid" in lyr.name().lower():
-                    index_layers.extend([lyr])
-                    break
+                try:
+                    if "centroid" in lyr.name().lower():
+                        index_layers.extend([lyr])
+                        break
+                except:
+                    pass
             #for lyr in self.session.model_layers.nodes_layers:
             for lyr in index_layers:
                 try:

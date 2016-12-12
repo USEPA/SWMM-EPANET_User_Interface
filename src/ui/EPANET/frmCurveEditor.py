@@ -74,6 +74,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
         self.X = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
         self.Y = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
+        self.xvals = []
+        self.yvals = []
 
         self.new_item = new_item
         if new_item:
@@ -186,19 +188,44 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # honor the original FitPumpCurve's algorithm of setting array start at position 1
         #xvals = np.arange(n + 1, dtype=float) * float('NaN')
         #yvals = np.arange(n + 1, dtype=float) * float('NaN')
-        xvals = []
-        yvals = []
+        del self.xvals[:]
+        del self.yvals[:]
+        sort_needed = False
+        x_prev = float('-inf')
         for i in range(1, len(self.X)):
             if np.isnan(self.X[i]) or np.isnan(self.Y[i]):
                 break
                 pass
             else:
-                xvals.append(self.X[i])
-                yvals.append(self.Y[i])
+                if self.X[i] >= x_prev:
+                    x_prev = self.X[i]
+                else:
+                    sort_needed = True
+                self.xvals.append(self.X[i])
+                self.yvals.append(self.Y[i])
                 n += 1
         if n > 0:
-            self.plot.setData(xvals, yvals, self.Xlabel, self.Ylabel, self.good_pump_curve)
+            if sort_needed:
+                self.sortData()
+                pass
+            self.plot.setData(self.xvals, self.yvals, self.Xlabel, self.Ylabel, self.good_pump_curve)
         pass
+
+    def sortData(self):
+        if len(self.xvals) > 1 and len(self.yvals) > 1:
+            d = {}
+            for i in range(0, len(self.xvals)):
+                d[self.xvals[i]] = i
+            sd = sorted(d)
+            del self.xvals[:]
+            new_yvals = []
+            for i in range(0, len(sd)):
+                self.xvals.append(sd[i])
+                new_yvals.append(self.yvals[d[sd[i]]])
+            del self.yvals[:]
+            for i in range (0, len(new_yvals)):
+                self.yvals.append(new_yvals[i])
+            del new_yvals
 
     def cmdOK_Clicked(self):
         if not self.loaded:

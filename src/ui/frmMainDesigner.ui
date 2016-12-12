@@ -154,9 +154,15 @@
      </property>
      <addaction name="actionStdExportMap"/>
     </widget>
+    <widget class="QMenu" name="menuRecent">
+     <property name="title">
+      <string>Recent</string>
+     </property>
+     <addaction name="actionOpen"/>
+    </widget>
     <addaction name="actionStdNewProjectMenu"/>
     <addaction name="actionStdOpenProjMenu"/>
-    <addaction name="actionStdRecent_Project"/>
+    <addaction name="menuRecent"/>
     <addaction name="actionStdSaveMenu"/>
     <addaction name="actionStdSave_As"/>
     <addaction name="actionSave_Map_As_Image"/>
@@ -303,10 +309,12 @@
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuScriptEditor">
+   <widget class="QMenu" name="menuScripting">
     <property name="title">
-     <string>ScriptEditor</string>
+     <string>Scripting</string>
     </property>
+    <addaction name="actionEditScript"/>
+    <addaction name="actionRun_Script"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -316,7 +324,7 @@
    <addaction name="menuTools"/>
    <addaction name="menuWindow"/>
    <addaction name="menuPlugins"/>
-   <addaction name="menuScriptEditor"/>
+   <addaction name="menuScripting"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -1048,14 +1056,6 @@
    </property>
    <property name="toolTip">
     <string>Add Feature</string>
-   </property>
-  </action>
-  <action name="actionStdRecent_Project">
-   <property name="text">
-    <string>Recent</string>
-   </property>
-   <property name="toolTip">
-    <string>Open Recent Project</string>
    </property>
   </action>
   <action name="actionStdSaveMenu">
@@ -1885,6 +1885,21 @@
    </property>
    <property name="text">
     <string>Object</string>
+   </property>
+  </action>
+  <action name="actionEditScript">
+   <property name="text">
+    <string>Script Editor</string>
+   </property>
+  </action>
+  <action name="actionRun_Script">
+   <property name="text">
+    <string>Run Script</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>File0</string>
    </property>
   </action>
  </widget>

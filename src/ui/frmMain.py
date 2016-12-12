@@ -925,9 +925,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             number += increment
             str_number = str(number)
             new_name = prefix + str_number
-
-        if self.project_settings:
-            self.project_settings.setValue("Labels/" + item_type_name + "_NextID", number + 1)
+        # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
+        # if self.project_settings:
+        #     self.project_settings.setValue("Labels/" + item_type_name + "_NextID", number + 1)
         return new_name
 
     def currentTimeChanged(self, slider_val):
@@ -1274,6 +1274,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.open_project_quiet(file_name, directory)
 
     def add_recent(self, file_name, settings_key):
+        """ Add a recently accessed file to program settings. Used when opening and saving projects and scripts. """
         files = self.program_settings.value(settings_key, [])
 
         if files and files[0] == file_name:
@@ -1551,7 +1552,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
-        self.project_settings = None
+        del self.project_settings
         self.project = self.project_type()
         if file_name:
             try:
@@ -1602,6 +1603,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             file_name = self.project.file_name
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
+        # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
+        # if self.project_settings:
+        #     self.project_settings.sync()
         if self.crs and self.crs.isValid():
             try:
                 from qgis.core import QgsCoordinateReferenceSystem
@@ -1616,17 +1620,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #    self.map_widget.saveVectorLayers(os.path.dirname(file_name))
 
     def find_external(self, lib_name):
-        filename = os.path.join(self.assembly_path, lib_name)
+        """ Find the specified library in program_settings, assembly path, Externals folder, or Externals/model.
+            Prompt user to find library if not found.
+            Save the found location in program_settings."""
+        filename = self.program_settings.value("Libraries/" + lib_name, "")
         if not os.path.exists(filename):
-            pp = os.path.dirname(os.path.dirname(self.assembly_path))
-            filename = os.path.join(pp, "Externals", lib_name)
-        if not os.path.exists(filename):
-            pp = os.path.dirname(os.path.dirname(self.assembly_path))
-            filename = os.path.join(pp, "Externals", self.model.lower(), "model", lib_name)
-        if not os.path.exists(filename):
-            filename = QtGui.QFileDialog.getOpenFileName(self,
-                                                         'Locate ' + self.model + ' Library',
-                                                         '/', '(*{0})'.format(os.path.splitext(lib_name)[1]))
+            filename = os.path.join(self.assembly_path, lib_name)
+            if not os.path.exists(filename):
+                path_prefix = os.path.dirname(os.path.dirname(self.assembly_path))
+                filename = os.path.join(path_prefix, "Externals", lib_name)
+                if not os.path.exists(filename):
+                    filename = os.path.join(path_prefix, "Externals", self.model.lower(), "model", lib_name)
+                    if not os.path.exists(filename):
+                        filename = QtGui.QFileDialog.getOpenFileName(self,
+                                                                     'Locate ' + self.model + ' Library', '/',
+                                                                     '(*{0})'.format(os.path.splitext(lib_name)[1]))
+            if os.path.exists(filename):
+                self.program_settings.setValue("Libraries/" + lib_name, filename)
         return filename
 
     def save_project_as(self):

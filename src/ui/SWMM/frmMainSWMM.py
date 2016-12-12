@@ -5,8 +5,6 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 import webbrowser
 import traceback
-import ConfigParser
-import Externals.appdirs as appdirs
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 
@@ -241,14 +239,20 @@ class frmMainSWMM(frmMain):
     def __init__(self, q_application):
         self.model = "SWMM"
 
-        # self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
-        #                                          "EPASWMM", "epaswmm5")
-        # print("Reading settings from " + self.program_settings.fileName())
-        self.program_settings_file = appdirs.user_data_dir(appauthor="EPASWMM", appname="epaswmm5.ini", roaming=True)
-        self.program_settings = ConfigParser.RawConfigParser()
-        self.program_settings.read(self.program_settings_file)
-        # for name, value in self.program_settings_file.items("MRU"):
-        #     mru_file = value
+        self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
+                                                 "EPA", self.model)
+        print("Read program settings from " + self.program_settings.fileName())
+        # ConfigParser is an alternative class for managing ini files.
+        # Neither QSettings nor ConfigParser is backward-compatible with existing epaswmm5.ini,
+        # they both cannot read the MRU section because it contains unescaped backslashes, and they have trouble with
+        # keys that contain spaces, so we use a different file name to avoid corrupting the existing settings.
+        # import ConfigParser
+        # import Externals.appdirs as appdirs
+        # self.program_settings_file = appdirs.user_data_dir(appauthor="EPASWMM", appname="epaswmm5.ini", roaming=True)
+        # self.program_settings = ConfigParser.RawConfigParser()
+        # self.program_settings.read(self.program_settings_file)
+        # for name, value in self.program_settings.items("MRU"):
+        #     print(name + " = " + value)
 
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available

@@ -116,10 +116,9 @@ class frmMainEPANET(frmMain):
 
     def __init__(self, q_application):
         self.model = "EPANET"
-        self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat,
-                                                 QtCore.QSettings.UserScope,
-                                                 "EPANET", "epanet2")
-        print("Reading settings from " + self.program_settings.fileName())
+        self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
+                                                 "EPA", self.model)
+        print("Read program settings from " + self.program_settings.fileName())
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
         self.status_suffix = "_status.txt"

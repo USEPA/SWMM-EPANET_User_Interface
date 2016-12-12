@@ -159,14 +159,14 @@ class Worker(QtCore.QObject):
 
 class ParseData:
     @staticmethod
-    def intTryParse(self, value):
+    def intTryParse(value):
         try:
             return int(value), True
         except ValueError:
             return value, False
 
     @staticmethod
-    def floatTryParse(self, value):
+    def floatTryParse(value):
         try:
             return float(value), True
         except ValueError:
@@ -174,12 +174,12 @@ class ParseData:
 
 class BasePlot(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        fig.subplots_adjust(bottom=0.2)
-        self.axes = fig.add_subplot(111)
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        self.fig.subplots_adjust(bottom=0.2)
+        self.axes = self.fig.add_subplot(111)
         #self.axes.hold(False)
 
-        FigureCanvas.__init__(self, fig)
+        FigureCanvas.__init__(self, self.fig)
         self.setParent(main_form)
 
         FigureCanvas.setSizePolicy(self,

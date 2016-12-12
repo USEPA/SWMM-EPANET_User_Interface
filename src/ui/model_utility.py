@@ -20,6 +20,9 @@ except AttributeError:
 
 process_events = QtGui.QApplication.processEvents
 
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+
 
 class ObjectTreeView(QtGui.QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
@@ -153,3 +156,49 @@ class Worker(QtCore.QObject):
     def readStdOutput(self):
         output = QString(self.process.readAllStandardOutput())
         self.sendOutput.emit(output)
+
+class ParseData:
+    @staticmethod
+    def intTryParse(self, value):
+        try:
+            return int(value), True
+        except ValueError:
+            return value, False
+
+    @staticmethod
+    def floatTryParse(self, value):
+        try:
+            return float(value), True
+        except ValueError:
+            return value, False
+
+class BasePlot(FigureCanvas):
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        fig.subplots_adjust(bottom=0.2)
+        self.axes = fig.add_subplot(111)
+        #self.axes.hold(False)
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(main_form)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QtGui.QSizePolicy.Expanding,
+                                   QtGui.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+    def setTitle(self, aTitle):
+        if self.axes is not None:
+            self.axes.set_title(aTitle)
+        pass
+
+    def setXlabel(self, aLabel):
+        if self.axes is not None:
+            self.axes.set_xlabel(aLabel, fontsize=10)
+        # self.ax = plt.AxesSubplot() #debug only
+        pass
+
+    def setYlabel(self, aLabel):
+        if self.axes is not None:
+            self.axes.set_ylabel(aLabel)
+        pass

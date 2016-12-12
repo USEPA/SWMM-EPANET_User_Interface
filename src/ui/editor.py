@@ -220,12 +220,12 @@ class EditorWindow(QtGui.QMainWindow):
         self.setGeometry(100, 100, 1030, 800)
         self.setWindowTitle("Script Editor")
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_FOLDER, "icon.png")))
-        try:
-            import highlighting
-            highlighting.PythonHighlighter(self.text.document())
-        except Exception as ex_highlight:
-            print(ex_highlight.message)
-            pass
+        # try:
+        #     import highlighting
+        #     highlighting.PythonHighlighter(self.text.document())
+        # except Exception as ex_highlight:
+        #     print(ex_highlight.message)
+        #     pass
 
     def closeEvent(self, event):
         if self.text.toPlainText() == self.saved_text:

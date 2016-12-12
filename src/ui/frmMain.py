@@ -4,6 +4,8 @@ import sip
 for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", "QUrl"]:
     sip.setapi(typ, 2)
 from cStringIO import StringIO
+if sys.version_info >= (3,):
+    unicode = str
 # from embed_ipython_new import EmbedIPython
 from threading import Lock
 from PyQt4.Qsci import QsciScintilla
@@ -60,7 +62,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
-        self.recent_projects = self.create_recent_menus(self.actionStdRecent_Project, self.open_recent_project)
+        self.menuRecent.setVisible(False)
+        self.menuRecent.removeAction(self.actionOpen)
+        self.recent_projects = self.create_recent_menus(self.menuFile, self.open_recent_project)
         self.add_recent_project(None)  # Populate the recent script menus, not adding one
         self.recent_scripts = self.create_recent_menus(self.menuScripting, self.run_recent_script)
         self.add_recent_script(None)  # Populate the recent script menus, not adding one
@@ -71,8 +75,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdOpenProjMenu.triggered.connect(self.open_project)
         self.actionStdOpenProj.triggered.connect(self.open_project)
         self.actionStdExit.triggered.connect(self.action_exit)
-        self.actionIPython.triggered.connect(self.script_ipython)
-        self.actionExec.triggered.connect(self.script_browse_and_run)
+        self.actionEditScript.triggered.connect(self.edit_script)
+        self.actionRun_Script.triggered.connect(self.script_browse_and_run)
         self.actionStdSave.triggered.connect(self.save_project)
         self.actionStdSaveMenu.triggered.connect(self.save_project)
         self.actionStdSave_As.triggered.connect(self.save_project_as)
@@ -910,7 +914,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         try:
             for item in section.value:
-                digits = filter(unicode.isdigit, item.name)
+                digits = filter(unicode.isdigit, unicode(item.name))
                 if digits:
                     int_digits = int(digits)
                     if int_digits >= number:
@@ -1187,7 +1191,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     loaded_plugin.run(self, int(loaded_plugin.__all__[str(method_name)]))
                     return
 
-    def script_ipython(self):
+    def edit_script(self):
         import editor
         editor.ICON_FOLDER = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
         editor.MAX_RECENT_FILES = MAX_RECENT_FILES
@@ -1270,12 +1274,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if action and action.data():
             file_name = action.data()
             if os.path.isfile(file_name):
-                directory = self.program_settings.value("ProjectDir", "")
-                self.open_project_quiet(file_name, directory)
+                self.open_project_quiet(file_name)
 
     def add_recent(self, file_name, settings_key):
         """ Add a recently accessed file to program settings. Used when opening and saving projects and scripts. """
-        files = self.program_settings.value(settings_key, [])
+        files_str = self.program_settings.value(settings_key, None)
+        if files_str:
+            files = files_str.split('|')
+        else:
+            files = []
 
         if files and files[0] == file_name:
             return
@@ -1286,12 +1293,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             except:
                 pass
 
-            if files:
-                files.insert(0, file_name)
+            files.insert(0, file_name)
 
         if files:
             del files[MAX_RECENT_FILES:]
-        self.program_settings.setValue(settings_key, files)
+        self.program_settings.setValue(settings_key, u'|'.join(files))
         return files
 
     def add_recent_project(self, file_name):
@@ -1533,7 +1539,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return True
 
     def new_project(self):
-        self.open_project_quiet(None, None)
+        self.open_project_quiet(None)
 
     def open_project(self):
         directory = self.program_settings.value("ProjectDir", "")
@@ -1541,7 +1547,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.add_recent_project(file_name)
-            self.open_project_quiet(file_name, directory)
+            self.open_project_quiet(file_name)
+            path_only, file_only = os.path.split(file_name)
+            if path_only != directory:
+                self.program_settings.setValue("ProjectDir", path_only)
 
     def setWaitCursor(self):
         QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
@@ -1549,7 +1558,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def restoreCursor(self):
         QApplication.restoreOverrideCursor()
 
-    def open_project_quiet(self, file_name, directory):
+    def open_project_quiet(self, file_name):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
@@ -1571,14 +1580,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
-                if path_only != directory:
-                    self.program_settings.setValue("ProjectDir", path_only)
-                    self.program_settings.sync()
                 ini_file_name = file_name[:-3] + "ini"
                 if os.path.isfile(ini_file_name):
                     try:
                         self.project_settings = QtCore.QSettings(ini_file_name, QtCore.QSettings.IniFormat)
-                        print("Read project settings from " + self.program_settings.fileName())
+                        print("Read project settings from " + self.project_settings.fileName())
                     except Exception as exINI:
                         self.project_settings = None
                         print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
@@ -1681,7 +1687,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             full_path = os.path.join(directory, filename)
             lfilename = filename.lower()
             if lfilename.endswith('.inp'):
-                self.open_project_quiet(full_path, directory)
+                self.open_project_quiet(full_path)
             #TODO - check to see if QGIS can handle file type
             elif lfilename.endswith('.shp') or lfilename.endswith(".json"):
                 self.map_widget.addVectorLayer(full_path)

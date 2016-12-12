@@ -467,6 +467,10 @@ try:
                 node.setVisible(Qt.Unchecked)
 
         def set_crs_from_layer(self, layer):
+            """ If this layer has a valid coordinate reference system (projection),
+                If the current session does not yet have a crs, use this one for this session.
+                The crs for the session is later saved in filename.prj when the project is saved in filename.inp.
+            """
             try:
                 dp = layer.dataProvider()
                 crs = dp.crs()

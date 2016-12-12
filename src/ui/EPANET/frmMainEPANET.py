@@ -685,14 +685,17 @@ class frmMainEPANET(frmMain):
         self._frmAbout = frmAbout(self)
         self._frmAbout.show()
 
-    def open_project_quiet(self, file_name, directory):
+    def open_project_quiet(self, file_name):
+        """ Set wait cursor during open to show operation is in progress.
+            Open project from file_name using frmMain.open_project_quiet.
+            Create model layers on map and set UI controls from opened project. """
         self.setWaitCursor()
         if file_name:
             self.setWindowTitle("Reading " + file_name)
         if self.map_widget:
             self.map_widget.setVisible(False)
         self.repaint()
-        frmMain.open_project_quiet(self, file_name, directory)
+        frmMain.open_project_quiet(self, file_name)
         ui.convenience.set_combo(self.cbFlowUnits, 'Flow Units: ' + self.project.options.hydraulics.flow_units.name)
 
         if self.time_widget:
@@ -711,7 +714,7 @@ class frmMainEPANET(frmMain):
 
 class ModelLayersEPANET(ModelLayers):
     """
-    This class creates and manages the map layers that are directly linked to SWMM model elements.
+    Create and manage the map layers that are directly linked to SWMM model elements.
     Layer names must match the text in the tree control for the corresponding model section.
     """
     def __init__(self, map_widget):

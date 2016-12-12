@@ -70,7 +70,20 @@ from core.swmm.quality import WashoffFunction
 from core.swmm.timeseries import TimeSeries
 from core.swmm.title import Title
 from core.indexed_list import IndexedList
-
+try:
+    unicode = unicode
+except NameError:
+    # 'unicode' is undefined, must be Python 3
+    str = str
+    unicode = str
+    bytes = bytes
+    basestring = (str,bytes)
+else:
+    # 'unicode' exists, must be Python 2
+    str = str
+    unicode = unicode
+    bytes = str
+    basestring = basestring
 
 class CoordinateReader(SectionReader):
     @staticmethod
@@ -217,7 +230,7 @@ class PatternReader(SectionReader):
     def read(new_text):
         pattern = Pattern()
         for line in new_text.splitlines():
-            comment_split = str.split(line, ';', 1)
+            comment_split = unicode.split(line, ';', 1)
             if len(comment_split) > 1:
                 pattern.description += line[1:].strip()
                 line = comment_split[0].strip()

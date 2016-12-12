@@ -8,6 +8,8 @@ from core.epanet.curves import Curve
 from PyQt4.QtGui import *
 import numpy as np
 from ui.model_utility import ParseData
+from ui.model_utility import BasePlot
+from math import isnan
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
@@ -15,16 +17,25 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
+        self.loaded = False
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.epanet.curves.CurveType, self.cboCurveType)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
+        #QtCore.QObject.connect(self.tblMult, QtCore.SIGNAL("cellChanged(int, int)"), self.tblMult_cellChanged(int, int))
+        #QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
+        self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
         self.selected_curve_name = ''
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.curves
+        self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
+        layout = QtGui.QVBoxLayout(self.fraPlot)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.plot)
+        self.fraPlot.setLayout(layout)
+        self.good_pump_curve = False
 
         self.VOLCURVE = 0
         self.HEADCURVE = 1
@@ -32,8 +43,22 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.HLOSSCURVE = 3
         self.MAXPOINTS = 51
         self.TINY = 1.e-6
-        self.Xlabel = (' Height', ' Flow', ' Flow', ' Flow')
-        self.Ylabel = (' Volume', ' Head', ' Efficiency', ' Headloss')
+        self.Xlabels = {CurveType.VOLUME : " Height",
+                       CurveType.PUMP : " Flow",
+                       CurveType.EFFICIENCY : " Flow",
+                       CurveType.HEADLOSS : " Flow",
+                        CurveType.UNSET : ""}
+        self.Ylabels = {CurveType.VOLUME : " Volume",
+                       CurveType.PUMP : " Head",
+                       CurveType.EFFICIENCY : " Efficiency",
+                       CurveType.HEADLOSS : " Headloss",
+                        CurveType.UNSET : ""}
+        self.Xunits = {}
+        self.Yunits = {}
+        self.Xlabel = ""
+        self.Ylabel = ""
+        self.Xunit = ""
+        self.Yunit = ""
         self.MSG_OUT_OF_ORDER = ' values are not in ascending order.'
         self.MSG_BAD_CURVE = 'Illegal pump curve. Continue editing?'
         self.FMT_EQN = ' Head = %f%-.4g(Flow)^%f'
@@ -41,15 +66,14 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.TXT_CUBIC = ' (cubic '
         self.TXT_PUMP = 'PUMP'
         self.TXT_BAD_CURVE = ' Illegal pump curve.'
+        self.TXT_INVALID_CURVE = " Invalid pump curve."
         self.TXT_OPEN_CURVE_TITLE = 'Open a Curve'
         self.TXT_SAVE_CURVE_TITLE = 'Save Curve As'
         self.TXT_CURVE_FILTER = 'Curve files (*.CRV)|*.CRV|All files|*.*'
         self.TXT_CURVE_HEADER = 'EPANET Curve Data'
 
-        self.X = np.arange(self.MAXPOINTS, dtype=float) * 0.0
-        self.Y = np.arange(self.MAXPOINTS, dtype=float) * 0.0
-        self.Xunits = ["", "", "", ""] #array[0..3] of String
-        self.Yunits = ["", "", "", ""] #array[0..3] of String
+        self.X = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
+        self.Y = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
 
         self.new_item = new_item
         if new_item:
@@ -61,7 +85,11 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 self.set_from(edit_these)
 
         self.txtEquation.setEnabled(False) #only for display
-        self.txtEquation.setText("Display only")
+        curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
+        if curve_type == CurveType.PUMP and not self.good_pump_curve:
+            self.txtEquation.setText(self.TXT_BAD_CURVE)
+
+        self.loaded = True
 
     def set_from(self, curve):
         if not isinstance(curve, Curve):
@@ -70,6 +98,18 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             self.editing_item = curve
         self.txtCurveName.setText(str(curve.name))
         self.txtDescription.setText(str(curve.description))
+        LengthUnits = "???"
+        FlowUnits = "???"
+        self.Xunits[CurveType.VOLUME] = ' (' + LengthUnits + ')'
+        self.Xunits[CurveType.PUMP] = ' (' + FlowUnits + ')'
+        self.Xunits[CurveType.EFFICIENCY] = self.Xunits[CurveType.PUMP]
+        self.Xunits[CurveType.HEADLOSS] = self.Xunits[CurveType.PUMP]
+        self.Xunits[CurveType.UNSET] = ""
+        self.Yunits[CurveType.VOLUME] = self.TXT_CUBIC + LengthUnits + ')'
+        self.Yunits[CurveType.PUMP] = ' (' + LengthUnits + ')'
+        self.Yunits[CurveType.EFFICIENCY] = self.TXT_PERCENT
+        self.Yunits[CurveType.HEADLOSS] = ' (' + LengthUnits + ')'
+        self.Yunits[CurveType.UNSET] = ""
         ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
         point_count = -1
         for point in curve.curve_xy:
@@ -78,22 +118,12 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
             led = QtGui.QLineEdit(str(point[1]))
             self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
-
-        LengthUnits = "???"
-        FlowUnits = "???"
-        self.Xunits[self.VOLCURVE] = ' (' + LengthUnits + ')'
-        self.Xunits[self.HEADCURVE] = ' (' + FlowUnits + ')'
-        self.Xunits[self.EFFCURVE] = self.Xunits[self.HEADCURVE]
-        self.Xunits[self.HLOSSCURVE] = self.Xunits[self.HEADCURVE]
-        self.Yunits[self.VOLCURVE] = self.TXT_CUBIC + LengthUnits + ')'
-        self.Yunits[self.HEADCURVE] = ' (' + LengthUnits + ')'
-        self.Yunits[self.EFFCURVE] = self.TXT_PERCENT
-        self.Yunits[self.HLOSSCURVE] = ' (' + LengthUnits + ')'
         #CurveGrid.RowCount= MAXPOINTS + 1
         #CurveID.MaxLength= MAXID; // Max.chars. in a ID
         #ActiveControl= CurveID
 
     def GetData(self):
+        n = 0
         for row in range(self.tblMult.rowCount()):
             if self.tblMult.item(row,0) and self.tblMult.item(row,1):
                 x_val, x_val_good = ParseData.floatTryParse(self.tblMult.item(row, 0).text())
@@ -104,8 +134,75 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                     else:
                         self.X[row + 1] = x_val
                         self.Y[row + 1] = y_val
+                        n += 1
+            else:
+                return n
+        return n
+
+    def resetData(self):
+        for i in range(0, len(self.X)):
+            self.X[i] *= float('NaN')
+            self.Y[i] *= float('NaN')
+        self.txtEquation.setText("")
+
+    def tblMult_cellChanged(self, row, col):
+        if col == 1:
+            if self.tblMult.item(row, 0) and self.tblMult.item(row, 1):
+                self.setupPlotData()
+
+    def setupPlotData(self):
+        self.resetData()
+        N = self.GetData()
+        if N < 1:
+            return
+        curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
+        if curve_type == CurveType.PUMP:
+            # for PUMP curve, only plot 1- or 3-point pump head curves
+            if N == 1 or N == 3:
+                # Fit power function to 1- or 3-point pump head curves
+                if self.FitPumpCurve(N):
+                    self.good_pump_curve = True
+                    self.display_curve()
+                else:
+                    # Invalid pump curve - retrieve curve points again
+                    #self.txtEquation.setText(self.TXT_INVALID_CURVE)
+                    self.good_pump_curve = False
+                    self.display_curve()
+                    N = self.GetData()
+                    if len(self.txtEquation.text()) == 0:
+                        self.txtEquation.setText(self.TXT_BAD_CURVE)
+            else:
+                self.good_pump_curve = False
+                self.display_curve()
+        else:
+            # if not pump curve, then simply plot x, y in the data grid
+            self.good_pump_curve = False
+            self.display_curve()
+
+    def display_curve(self):
+        # plot curve
+        #self.setParent(self._main_form)
+        n = 0
+        # honor the original FitPumpCurve's algorithm of setting array start at position 1
+        #xvals = np.arange(n + 1, dtype=float) * float('NaN')
+        #yvals = np.arange(n + 1, dtype=float) * float('NaN')
+        xvals = []
+        yvals = []
+        for i in range(1, len(self.X)):
+            if np.isnan(self.X[i]) or np.isnan(self.Y[i]):
+                break
+                pass
+            else:
+                xvals.append(self.X[i])
+                yvals.append(self.Y[i])
+                n += 1
+        if n > 0:
+            self.plot.setData(xvals, yvals, self.Xlabel, self.Ylabel, self.good_pump_curve)
+        pass
 
     def cmdOK_Clicked(self):
+        if not self.loaded:
+            return
         # TODO: Check for duplicate curve name
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
@@ -131,14 +228,25 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def cboCurveType_currentIndexChanged(self, newIndex):
         curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
+        # if curve_type == CurveType.PUMP:
+        #     self.tblMult.setHorizontalHeaderLabels(("Flow", "Head"))
+        # elif curve_type == CurveType.EFFICIENCY:
+        #     self.tblMult.setHorizontalHeaderLabels(("Flow", "Efficiency"))
+        # elif curve_type == CurveType.HEADLOSS:
+        #     self.tblMult.setHorizontalHeaderLabels(("Flow", "Headloss"))
+        # elif curve_type == CurveType.VOLUME:
+        #     self.tblMult.setHorizontalHeaderLabels(("Height", "Volume"))
+        self.Xlabel = self.Xlabels[curve_type]
+        self.Ylabel = self.Ylabels[curve_type]
+        self.Xunit = self.Xunits[curve_type]
+        self.Yunit = self.Yunits[curve_type]
+        self.tblMult.setHorizontalHeaderLabels((self.Xlabel, self.Ylabel))
         if curve_type == CurveType.PUMP:
-            self.tblMult.setHorizontalHeaderLabels(("Flow", "Head"))
-        elif curve_type == CurveType.EFFICIENCY:
-            self.tblMult.setHorizontalHeaderLabels(("Flow", "Efficiency"))
-        elif curve_type == CurveType.HEADLOSS:
-            self.tblMult.setHorizontalHeaderLabels(("Flow", "Headloss"))
-        elif curve_type == CurveType.VOLUME:
-            self.tblMult.setHorizontalHeaderLabels(("Height", "Volume"))
+            pass
+        else:
+            self.txtEquation.setText("")
+            self.txtEquation.setEnabled(False)
+        self.setupPlotData()
 
     def FitPumpCurve(self, N):
         # From Dcurve.pas, LR
@@ -217,10 +325,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
         if Result:
             N = 25
-            if N > self.tblMult.rowCount:
-                N = self.tblMult.rowCount
             #with CurveGrid do
             #  if N > RowCount then N = RowCount
+            if N > self.tblMult.rowCount():
+                N = self.tblMult.rowCount()
             h4 = -a/b
             h5 = 1.0/c
             #q1 = Power(h4,h5)
@@ -232,11 +340,44 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 self.X[I] = (I-1)*q1
                 #Y[I] = a + b*Power(X[I],c)
                 self.Y[I] = a + b * (self.X[I] ** c)
+            self.txtEquation.setEnabled(True)
             #CurveEqn.Caption = Format(FMT_EQN,[a,b,c])
-            print "equation is good"
+            self.txtEquation.setText(self.FMT_EQN % (a, b, c))
         else:
             #CurveEqn.Caption = self.TXT_BAD_CURVE
-            self.setWindowTitle(self.TXT_BAD_CURVE)
+            self.txtEquation.setText(self.TXT_BAD_CURVE)
+            self.txtEquation.setEnabled(False)
         #EqnLabel.Enabled = True
-        self.txtEquation.setEnabled(True)
+        return Result
+
+class CurvePlot(BasePlot):
+    def __init__(self, main_form=None, width=5, height=4, dpi=100):
+        BasePlot.__init__(self, main_form, width, height, dpi)
+        self.line, = self.axes.plot([],[], 'r-')
+        pass
+
+    def setData(self, X, Y, Xlabel, Ylabel, good_pump_curve):
+        color = self.get_colors()
+        #self.axes.scatter(self.X, self.Y, s=10, c=color, marker="o", label="")
+        #self.axes.legend(loc='upper left')
+        self.line.set_xdata(X)
+        self.line.set_ydata(Y)
+        if good_pump_curve:
+            self.line.set_marker(None)
+        else:
+            self.line.set_marker("s")
+            self.line.set_markeredgecolor("black")
+            self.line.set_markerfacecolor("green")
+
+        self.setXlabel(Xlabel)
+        self.setYlabel(Ylabel)
+        self.axes.relim()
+        self.axes.autoscale_view()
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
+        #self.setTitle('Pump head curve for %s' % aData.name)
+        pass
+
+    def get_colors(self):
+        return QColor("red")
 

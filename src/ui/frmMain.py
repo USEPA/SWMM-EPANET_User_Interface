@@ -378,7 +378,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.inlet_sub_id = ""
             self.outlet_sub_id = ""
             if isinstance(self.item, Link):
-                if not self.item.inlet_node in self.session.project.all_nodes():
+                if 'subcentroid' in self.item.inlet_node: #not self.item.inlet_node in self.session.project.all_nodes():
                     self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
                     for cf in self.centroid_layer.getFeatures():
                         if cf["name"] == self.item.inlet_node:
@@ -395,7 +395,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     #        break
                     self.isSubLink = True
 
-                if not self.item.outlet_node in self.session.project.all_nodes():
+                if 'subcentroid' in self.item.outlet_node: #not self.item.outlet_node in self.session.project.all_nodes():
                     self.centroid_layer = self.session.model_layers.layer_by_name("subcentroids")
                     for cf in self.centroid_layer.getFeatures():
                         if cf["name"] == self.item.outlet_node:
@@ -432,7 +432,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         break
 
             if self.item.name == '' or self.item.name in self.section.value:
-                self.item.name = self.session.new_item_name(type(self.item))
+                if "sublink" in self.layer.name().lower():
+                    self.item.name = u'sublink-' + self.item.inlet_node
+                else:
+                    self.item.name = self.session.new_item_name(type(self.item))
             if len(self.section.value) == 0 and not isinstance(self.section, list):
                 self.section.value = IndexedList([], ['name'])
             self.section.value.append(self.item)
@@ -485,7 +488,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 c_item.x = str(pt.x())
                                 c_item.y = str(pt.y())
                                 break
-                        c_item.name = self.session.new_item_name(type(c_item))
+                        c_item.name = u'subcentroid-' + self.item.name #self.session.new_item_name(type(c_item))
                         c_section_field_name = self.session.section_types[type(c_item)]
                         if not hasattr(self.session.project, c_section_field_name):
                             raise Exception("Section not found in project: " + c_section_field_name)
@@ -1575,7 +1578,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
-        del self.project_settings
+        if hasattr(self, "project_settings"):
+            del self.project_settings
         self.project = self.project_type()
         if file_name:
             try:

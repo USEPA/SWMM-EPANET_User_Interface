@@ -1081,7 +1081,7 @@ class ModelLayersSWMM(ModelLayers):
                 c_item.x = str(pt.x())
                 c_item.y = str(pt.y())
                 break
-        c_item.name = self.map_widget.session.new_item_name(type(c_item))
+        c_item.name = u'subcentroid-' + ms.name #self.map_widget.session.new_item_name(type(c_item))
         c_section_field_name = self.map_widget.session.section_types[type(c_item)]
         if not hasattr(self.map_widget.session.project, c_section_field_name):
             raise Exception("Section not found in project: " + c_section_field_name)
@@ -1122,7 +1122,7 @@ class ModelLayersSWMM(ModelLayers):
         subcent_section = getattr(self.map_widget.session.project, "subcentroids")
         isSub2Sub = 0 #False
         link_item = SubLink()
-        link_item.name = self.map_widget.session.new_item_name(type(link_item))
+        link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
         link_item.inlet_node = fc["name"]
         link_item.outlet_node = ms.outlet
         inlet_sub = ms.centroid

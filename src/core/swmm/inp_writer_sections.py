@@ -267,7 +267,10 @@ class TitleWriter(SectionWriter):
     @staticmethod
     def as_text(title):
         """format contents of this item for writing to file"""
-        return Title.SECTION_NAME + '\n' + title.title
+        if len(title.title) > 0:
+            return Title.SECTION_NAME + '\n' + title.title
+        else:
+            return Title.SECTION_NAME + '\n' + ";;Project Title/Notes"
 
 
 class TemperatureWriter(SectionWriter):
@@ -1197,6 +1200,7 @@ class GeneralWriter(SectionWriter):
     """SWMM General Options"""
 
     SECTION_NAME = "[OPTIONS]"
+    DEFAULT_COMMENT = ";;Option             Value"
 
     section_comments = (";; Dates", ";; Time Steps", ";; Dynamic Wave")
 

@@ -36,6 +36,8 @@ class InputFileWriterBase(object):
                 section_name = ''
                 if hasattr(section, "SECTION_NAME"):
                     section_name = section.SECTION_NAME
+                    if "subcentroid" in section_name.lower() or "sublink" in section_name.lower():
+                        continue
                     attr_name = "write_" + project.format_as_attribute_name(section_name)
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)

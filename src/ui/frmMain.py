@@ -62,8 +62,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.obj_list = None
         self.obj_view_model = QStandardItemModel()
         self.plugins = self.get_plugins()
-        self.menuRecent.setVisible(False)
-        self.menuRecent.removeAction(self.actionOpen)
         self.recent_projects = self.create_recent_menus(self.menuFile, self.open_recent_project)
         self.add_recent_project(None)  # Populate the recent script menus, not adding one
         self.recent_scripts = self.create_recent_menus(self.menuScripting, self.run_recent_script)
@@ -1618,9 +1616,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def set_crs(self, crs):
         if crs and crs.isValid():
             self.crs = crs
-            self.map_units = self.map_widget.map_unit_names[self.crs.DistanceUnit()]
+            self.map_units = self.map_widget.map_unit_names[self.crs.mapUnits()]
         else:
             self.crs = None
+            self.map_units = None
 
     def save_project(self, file_name=None):
         if not file_name:

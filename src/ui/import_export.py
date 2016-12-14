@@ -483,7 +483,7 @@ def import_nodes(session, nodes, file_name, model_attributes, gis_attributes, mo
         session: current session containing SWMM or EPANET project to import into
         nodes: list of project objects to populate.
         file_name: GIS file to read.
-        model_attributes: attribute names of the model objects in "links" list.
+        model_attributes: attribute names of the model objects in nodes list.
         gis_attributes: name of attributes as they exist in file_name.
         model_type: type of node to create
 

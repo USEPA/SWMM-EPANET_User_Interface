@@ -3,6 +3,7 @@ from PyQt4 import QtGui
 
 """
     Example script that imports a particular set of shapefiles into an EPANET project.
+    This can be used on a blank project to start a new project or on an existing project to add objects.
 
     model_attributes is the list of model attributes for which there are values to be imported.
     When customizing this script, attributes for which there are no values in the GIS layer should be removed.
@@ -13,9 +14,13 @@ from PyQt4 import QtGui
     source code at: https://github.com/USEPA/SWMM-EPANET_User_Interface/blob/dev-ui/src/ui/import_export.py
     and copy the import function called below and the import_nodes or import_links that it calls into your script and
     customize it as needed.
+
+    All layers being imported must already be in the same projection or they will not line up on the map.
+    If a shapefile being imported has a projection file (for example if Junction.shp has a corresponding Junction.prj)
+    then that projection will be used by the project.
 """
 
-# Customize this line to make the script start looking for files in a particular directory
+# Customize this line to make the script start looking for files in a particular directory (optional)
 directory = r"C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/test/core/epanet/Examples/SouthCentral/"
 
 

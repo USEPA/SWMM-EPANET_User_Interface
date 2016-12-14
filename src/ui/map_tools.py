@@ -292,9 +292,10 @@ try:
             try:
                 layer = QgsVectorLayer("Point", layer_name, "memory")
                 provider = layer.dataProvider()
+                is_centroid = "CENTROID" in layer.name().upper()
 
                 # add fields
-                if "CENTROID" in layer.name().upper():
+                if is_centroid:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                             QgsField("color", QtCore.QVariant.Double),
                                             QgsField("sub_mapid", QtCore.QVariant.Int),
@@ -325,34 +326,8 @@ try:
                     layer.updateExtents()
 
                 # create a new symbol layer with default properties
-                symbol_layer = QgsSimpleMarkerSymbolLayerV2()
-                symbol_layer.setColor(QColor(130, 180, 255, 255))
-
-                # Label the coordinates if there are not too many of them
-                size = 4.0
-                if coordinates and len(coordinates) > 100:
-                    symbol_layer.setSize(2.0)
-                else:
-                    if coordinates and hasattr(coordinates[0], "size"):
-                        size = coordinates[0].size
-                        symbol_layer.setSize(10.0)
-                        symbol_layer.setOutlineColor(QColor('transparent'))
-                        symbol_layer.setColor(QColor('transparent'))
-                    else:
-                        symbol_layer.setSize(size)
-                    pal_layer = QgsPalLayerSettings()
-                    pal_layer.readFromLayer(layer)
-                    pal_layer.enabled = True
-                    pal_layer.fontSizeInMapUnits = True
-                    pal_layer.fieldName = 'name'
-                    pal_layer.placement= QgsPalLayerSettings.QuadrantAbove
-                    expr = "case when size < 3 then size * 2 else size end case"
-                    pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
-                    pal_layer.writeToLayer(layer)
-
-                # replace the default symbol layer with the new symbol layer
-                self.set_default_point_renderer(layer, size)
-                if "CENTROID" in layer.name().upper():
+                self.set_default_point_renderer(layer, coordinates)
+                if is_centroid:
                     self.add_layer(layer, self.project_group)
                 else:
                     self.add_layer(layer, self.nodes_group)
@@ -362,39 +337,67 @@ try:
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer, aSize=4.0):
-            #sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
+        def set_default_point_renderer(layer, coordinates=None, size=4.0):
+            """ Create and set the default appearance of layer.
+                If specified, coordinates will be used to check for whether there are too many to label. """
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
             symbol_layer.setColor(QColor(130, 180, 255, 255))
-            if "JUNCTION" in layer.name().upper():
+
+            # Label the coordinates if there are not too many of them
+            do_labels = True
+            if coordinates and len(coordinates) > 500:
+                size = 2.0
+                do_labels = False
+
+            layer_name_upper = layer.name().upper()
+
+            if "JUNCTION" in layer_name_upper:
                 symbol_layer.setName(MapSymbol.circle.name)
-            elif "OUT" in layer.name().upper():
+            elif "OUT" in layer_name_upper:
                 symbol_layer.setName(MapSymbol.triangle.name)
                 symbol_layer.setAngle(180.0)
-            elif "DIVIDER" in layer.name().upper():
+            elif "DIVIDER" in layer_name_upper:
                 symbol_layer.setName(MapSymbol.diamond.name)
-            elif "STORAGE" in layer.name().upper() or \
-                 "RESERVOIR" in layer.name().upper():
+            elif "STORAGE" in layer_name_upper or \
+                 "RESERVOIR" in layer_name_upper:
                 #symbol_layer.setName(MapSymbol.rectangle.name)
                 symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_storage.svg')
-            elif "MAP" in layer.name().upper():
+            elif "MAP" in layer_name_upper:
                 symbol_layer.setName(MapSymbol.x.name)
-            elif "CENTROID" in layer.name().upper():
+            elif "CENTROID" in layer_name_upper:
                 symbol_layer.setName(MapSymbol.square.name)
                 symbol_layer.setColor(QColor('black'))
-            elif "RAIN" in layer.name().upper():
+                size = 1.0
+            elif "RAIN" in layer_name_upper:
                 symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_raingage.svg')
-            elif "TANK" in layer.name().upper():
+            elif "TANK" in layer_name_upper:
                 symbol_layer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_tank.svg')
-            if aSize < 1.0:
-                symbol_layer.setSize(4.0)
-            else:
-                if "CENTROID" in layer.name().upper():
-                    symbol_layer.setSize(1.0)
+
+            if size < 1.0:
+                size = 4.0
+            if do_labels:
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fontSizeInMapUnits = False
+                pal_layer.labelOffsetInMapUnits = False
+                pal_layer.fieldName = 'name'
+                pal_layer.placement = QgsPalLayerSettings.OverPoint
+                # expr = "case when size < 3 then size * 2 else size end case"
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+                if "LABELS" in layer_name_upper:
+                    # size = coordinates[0].size
+                    size = 10.0
+                    symbol_layer.setOutlineColor(QColor('transparent'))
+                    symbol_layer.setColor(QColor('transparent'))
                 else:
-                    symbol_layer.setSize(aSize)
+                    pal_layer.xOffset = size
+                    pal_layer.yOffset = -size
+                pal_layer.writeToLayer(layer)
+
+            symbol_layer.setSize(size)
+
             layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
-            #layer.setRendererV2(QgsSingleSymbolRendererV2(symbol_layer))
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:
@@ -507,15 +510,16 @@ try:
             slayer.setWidth(3.0)
             slayer.setColor(QColor("dark gray"))
             symbol.appendSymbolLayer(slayer)
-            if "CONDUIT" in layer.name().upper() or \
-               "PIPE" in layer.name().upper():
+            layer_name_upper = layer.name().upper()
+            if "CONDUIT" in layer_name_upper or \
+               "PIPE" in layer_name_upper:
                 slayer = QgsSimpleLineSymbolLayerV2()
                 slayer.setWidth(1.5)
                 slayer.setColor(QColor("light gray"))
                 symbol.appendSymbolLayer(slayer)
                 renderer = QgsSingleSymbolRendererV2(symbol)
                 layer.setRendererV2(renderer)
-            elif "sublink" in layer.name().lower():
+            elif "SUBLINK" in layer_name_upper:
                 symbol.deleteSymbolLayer(0)
                 slayer = QgsSimpleLineSymbolLayerV2()
                 slayer.setWidth(0.5)
@@ -529,15 +533,15 @@ try:
                 slayer = QgsMarkerLineSymbolLayerV2(True, 3)
                 mlayer = slayer.subSymbol()
                 anewlayer = None
-                if "PUMP" in layer.name().upper():
+                if "PUMP" in layer_name_upper:
                     anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_pump.svg')
-                elif "ORIFICE" in layer.name().upper():
+                elif "ORIFICE" in layer_name_upper:
                     anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_orifice.svg')
-                elif "OUTLET" in layer.name().upper():
+                elif "OUTLET" in layer_name_upper:
                     anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_outlet.svg')
-                elif "WEIR" in layer.name().upper():
+                elif "WEIR" in layer_name_upper:
                     anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_weir.svg')
-                elif "VALVE" in layer.name().upper():
+                elif "VALVE" in layer_name_upper:
                     anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/obj_valve.svg')
                 if anewlayer is not None:
                     mlayer.changeSymbolLayer(0, anewlayer)

@@ -291,6 +291,8 @@ class ProjectWriter(InputFileWriterBase):
         polygons = SectionAsList("[POLYGONS]")
         polygon_list = []
         for subc in project.subcatchments.value:
+            for vertex in subc.vertices:
+                vertex.name = subc.name
             polygon_list.append(subc.vertices)
         polygons.value = polygon_list
         polygons_writer = SectionWriterAsList("[POLYGONS]", PolygonWriter,

@@ -62,19 +62,19 @@ class Subcatchment(Section, Polygon):
         self.tag = ''
         """Optional label used to categorize or classify the Subcatchment."""
 
-        self.rain_gage = ''
+        self.rain_gage = 'None'
         """str: The RainGage ID associated with the Subcatchment."""
 
-        self.outlet = ''
+        self.outlet = 'None'
         """The Node or Subcatchment which receives Subcatchment's runoff."""
 
-        self.area = ''
+        self.area = 0.0
         """float: Area of the subcatchment (acres or hectares)."""
 
-        self.percent_impervious = ''
+        self.percent_impervious = 0.0
         """float: Percent of land area which is impervious."""
 
-        self.width = ''
+        self.width = 0.0
         """Characteristic width of the overland flow path for sheet flow
             runoff (feet or meters). An initial estimate of the characteristic
             width is given by the subcatchment area divided by the average
@@ -87,42 +87,39 @@ class Subcatchment(Section, Polygon):
             example. Adjustments should be made to the width parameter to
             produce good fits to measured runoff hydrographs."""
 
-        self.percent_slope = ''
+        self.percent_slope = 0.0
         """float: Average percent slope of the subcatchment."""
 
-        self.n_imperv = ''
+        self.n_imperv = 0.0
         """float: Manning's n for overland flow in impervious part of Subcatchment"""
 
-        self.n_perv = ''
+        self.n_perv = 0.0
         """Manning's n for overland flow in pervious part of Subcatchment"""
 
-        self.storage_depth_imperv = ''
+        self.storage_depth_imperv = 0.0
         """float: Depth of depression storage on the impervious portion of the
             Subcatchment (inches or millimeters) """
 
-        self.storage_depth_perv = ''
+        self.storage_depth_perv = 0.0
         """float: Depth of depression storage on the pervious portion of the
             Subcatchment (inches or millimeters)"""
 
-        self.percent_zero_impervious = ''
+        self.percent_zero_impervious = 0.0
         """float: Percent of the impervious area with no depression storage."""
 
         self.subarea_routing = Routing.OUTLET
         """Routing: Internal routing of runoff between pervious and impervious areas"""
 
-        self.percent_routed = ''
+        self.percent_routed = 100.0
         """float: Percent of runoff routed between subareas"""
 
         self.infiltration_parameters = HortonInfiltration()
         """infiltration parameters from horton, green-ampt, or scs classes"""
 
-        self.groundwater = ''
-        """Groundwater flow parameters for the subcatchment."""
-
         self.snow_pack = ''
         """Snow pack parameter set (if any) of the subcatchment."""
 
-        self.curb_length = ''
+        self.curb_length = 0
         """ Total length of curbs in the subcatchment (any length units).
             Used only when initial_loadings are normalized to curb length."""
 

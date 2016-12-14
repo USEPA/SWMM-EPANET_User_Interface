@@ -67,25 +67,25 @@ class Junction(Node):
         # self.name = ''  # Unicode(default_value='', label="Name", help="User-assigned name of junction")
         # """name assigned to junction node"""
 
-        self.elevation = ''
+        self.elevation = 0.0
         """Invert elevation of the Node (feet or meters)"""
 
-        self.max_depth = ''
+        self.max_depth = 0.0
         """Maximum depth of junction (i.e., from ground surface to invert)
             (feet or meters). If zero, then the distance from the invert to
             the top of the highest connecting link will be used.  (Ymax)"""
 
-        self.initial_depth = ''
+        self.initial_depth = 0.0
         """Depth of water at the junction at the start of the simulation
             (feet or meters) (Y0)"""
 
-        self.surcharge_depth = ''
+        self.surcharge_depth = 0.0
         """Additional depth of water beyond the maximum depth that is
             allowed before the junction floods (feet or meters).
             This parameter can be used to simulate bolted manhole covers
             or force main connections. (Ysur)"""
 
-        self.ponded_area = ''
+        self.ponded_area = 0.0
         """Area occupied by ponded water atop the junction after flooding
             occurs (sq. feet or sq. meters). If the Allow Ponding simulation
             option is turned on, a non-zero value of this parameter will allow
@@ -111,7 +111,7 @@ class OutfallType(Enum):
     TIMESERIES = 5
 
 
-class Outfall(Node):
+class Outfall(Junction):
     """A terminal node of the drainage system
         Defines a final downstream boundary under Dynamic Wave flow routing.
         For other types of flow routing they behave as a junction.
@@ -133,7 +133,7 @@ class Outfall(Node):
         ("name",                '', "Name",            '',   '',   '',  "User-assigned name of outfall"),
         ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of outfall on study area map"),
         ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of outfall on study area map"),
-        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
+       #('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
         ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the outfall"),
         ('.treatment(name)',    '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
@@ -146,10 +146,7 @@ class Outfall(Node):
         ("time_series_name",    '', "Series Name",     '0',  '',   '',  "Name of time series for a TIMESERIES boundary condition")))
 
     def __init__(self):
-        Node.__init__(self)
-
-        # self.name = ''
-        # """name assigned to outfall node"""
+        Junction.__init__(self)
 
         self.tide_gate = False
         """Tide Gate is present to prevent backflow"""

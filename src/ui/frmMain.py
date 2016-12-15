@@ -1592,14 +1592,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 project_reader.read_file(self.project, file_name)
                 if self.map_widget:
                     projection_file_name = file_name[:-3] + "prj"
-                    if os.path.isfile(projection_file_name):
-                        try:
-                            from qgis.core import QgsCoordinateReferenceSystem
-                            with open(projection_file_name, "rt") as open_file:
-                                wkt = open_file.read()
-                                self.set_crs(QgsCoordinateReferenceSystem(wkt))
-                        except Exception as exCRS:
-                            print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
+                    self.open_prj(projection_file_name)
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
                 ini_file_name = file_name[:-3] + "ini"
@@ -1619,6 +1612,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.project.file_name = "New.inp"
             self.setWindowTitle(self.model + " - New")
+
+    def open_prj(self, projection_file_name):
+        if os.path.isfile(projection_file_name):
+            try:
+                from qgis.core import QgsCoordinateReferenceSystem
+                with open(projection_file_name, "rt") as open_file:
+                    wkt = open_file.read()
+                    self.set_crs(QgsCoordinateReferenceSystem(wkt))
+            except Exception as exCRS:
+                print("error opening " + projection_file_name + ":\n" + str(exCRS) + '\n' + str(traceback.print_exc()))
 
     def set_crs(self, crs):
         self.map_widget.map_linear_unit = self.map_widget.map_unit_names[7]  # Unknown
@@ -1673,6 +1676,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         return filename
 
     def save_project_as(self):
+        """ Prompt for file to save as and save project. Returns file name if saved, None on cancel or error. """
         directory = self.program_settings.value("ProjectDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
@@ -1684,6 +1688,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("ProjectDir", path_only)
                     self.program_settings.sync()
+                return file_name
             except Exception as ex:
                 print(str(ex) + '\n' + str(traceback.print_exc()))
                 QMessageBox.information(self, self.model,
@@ -1691,39 +1696,40 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                             file_only, path_only,
                                             str(ex), str(traceback.print_exc())),
                                         QMessageBox.Ok)
+        return None
 
     def dragEnterEvent(self, drag_enter_event):
+        """ When user drags an item onto the form, show that the form will accept if dragging a file. """
         if drag_enter_event.mimeData().hasUrls():
             drag_enter_event.accept()
         else:
             drag_enter_event.ignore()
 
     def dropEvent(self, drop_event):
-        #TODO: check project status and prompt if there are unsaved changes that would be overwritten
+        """ When user drops a file onto the form:
+            Open as a project if file extension is .inp,
+            Open as a projection if file extension is .prj,
+            Otherwise try opening as a GIS layer. """
         for url in drop_event.mimeData().urls():
             directory, filename = os.path.split(str(url.encodedPath()))
             directory = str.lstrip(str(directory), 'file:')
-            print(directory)
+            # print(directory)
             if os.path.isdir(directory):
-                print(' is directory')
+                pass  # print(' is directory')
             elif os.path.isdir(directory[1:]):
                 directory = directory[1:]
             filename = str.rstrip(str(filename), '\r\n')
-            print(filename)
+            print("Opening " + filename)
             full_path = os.path.join(directory, filename)
             lfilename = filename.lower()
             if lfilename.endswith('.inp'):
                 self.open_project_quiet(full_path)
-            #TODO - check to see if QGIS can handle file type
-            elif lfilename.endswith('.shp') or lfilename.endswith(".json"):
-                self.map_widget.addVectorLayer(full_path)
+            elif lfilename.endswith('.prj'):
+                self.open_prj(full_path)
             else:
-                try:
-                    self.map_widget.addRasterLayer(full_path)
-                except:
+                if not self.map_widget.add_layer_from_file(full_path):
                     QMessageBox.information(self, self.model,
-                            "Dropped file '" + full_path + "' is not a know type of file",
-                            QMessageBox.Ok)
+                                            "Could not open dropped file '" + full_path + "'", QMessageBox.Ok)
 
     def action_exit(self):
         if not self.confirm_discard_project():

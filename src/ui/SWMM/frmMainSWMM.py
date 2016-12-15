@@ -872,14 +872,20 @@ class frmMainSWMM(frmMain):
     def run_simulation(self):
         self.output = None
         # First find input file to run
-        file_name = ''
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
         if use_existing:
-            file_name = self.project.file_name
-            # TODO: save if needed, decide whether to save to temp location as previous version did.
+            self.save_project(self.project.file_name)
+            # TODO: decide whether to automatically save to temp location as previous version did.
+        elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
+            # unsaved changes to a new project have been made, prompt to save
+            if self.save_project_as():
+                use_existing = True
+            else:
+                return None
         else:
             self.open_project()
 
+        file_name = ''
         if self.project:
             file_name = self.project.file_name
 
@@ -952,6 +958,8 @@ class frmMainSWMM(frmMain):
                 self.status_monitor = StatusMonitor0(exe_path, args, self, model='SWMM')
                 self.status_monitor.butt.clicked.connect(self.set_thematic_controls)
                 self.status_monitor.show()
+            else:
+                QMessageBox.information(None, self.model, self.model + " model executable not found", QMessageBox.Ok)
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 

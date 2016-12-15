@@ -706,6 +706,27 @@ try:
             self.LegendDock.setContentsMargins ( 9, 9, 9, 9 )
             # self.addDockWidget( Qt.LeftDockWidgetArea, self.LegendDock )
 
+        def add_layer_from_file(self, file_name):
+            """
+            Add a GIS layer to the map from the file specified.
+            Args:
+                file_name: file to read as a GIS layer
+
+            Returns:
+                QGIS layer if added, None if not added
+            """
+            layer_name = os.path.basename(file_name.strip())
+            layer = QgsVectorLayer(file_name, layer_name, "ogr")
+            if layer.isValid():
+                self.add_layer(layer)
+                return layer
+            else:
+                layer = QgsRasterLayer(file_name, layer_name)
+                if layer.isValid():
+                    self.add_layer(layer, self.base_group)
+                    return layer
+            return None
+
         def addVectorLayer(self, filename):
             layers = self.canvas.layers()
             layer_count = len(layers)

@@ -574,14 +574,20 @@ class frmMainEPANET(frmMain):
 
     def run_simulation(self):
         # Find input file to run
-        inp_file_name = ''
-        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
+        # TODO: decide whether to automatically save to temp location as previous version did.
+        use_existing = self.project and self.project.file_name
         if use_existing:
-            inp_file_name = self.project.file_name
-            # TODO: save if needed, decide whether to save to temp location as previous version did.
+            self.save_project(self.project.file_name)
+        elif self.project.all_nodes():
+            # unsaved changes to a new project have been made, prompt to save
+            if self.save_project_as():
+                use_existing = True
+            else:
+                return None
         else:
             self.open_project()
 
+        inp_file_name = ''
         if self.project:
             inp_file_name = self.project.file_name
 

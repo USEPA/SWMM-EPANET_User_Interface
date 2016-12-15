@@ -15,6 +15,7 @@ from core.epanet.hydraulics.node import Source
 from core.epanet.labels import Label
 from core.epanet.options.options import Options
 from core.epanet.options.backdrop import BackdropOptions
+from core.swmm.options.map import MapOptions
 from core.epanet.options.energy import EnergyOptions
 from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import ReportOptions
@@ -48,6 +49,8 @@ class EpanetProject(ProjectBase):
         """Initialize the sections of an EPANET input file.
            Any sections not initialized here will be handled by the generic core.project_base.Section class."""
         self.title = Title()
+        self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
+        self.map = MapOptions()                 # MAP           map's bounding rectangle and units
         self.junctions = SectionAsList("[JUNCTIONS]")  # (list of Junction)
         self.reservoirs = SectionAsList("[RESERVOIRS]")  # (list of Reservoir)
         self.tanks = SectionAsList("[TANKS]")  # (list of Tank)

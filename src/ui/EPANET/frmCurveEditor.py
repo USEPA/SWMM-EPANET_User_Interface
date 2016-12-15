@@ -108,6 +108,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         FlowUnits = "???"
         if self.project:
             FlowUnits = self.project.options.hydraulics.flow_units.name
+        if self._main_form and self._main_form.map_widget:
+            LengthUnits = self._main_form.map_widget.map_linear_unit
         self.Xunits[CurveType.VOLUME] = ' (' + LengthUnits + ')'
         self.Xunits[CurveType.PUMP] = ' (' + FlowUnits + ')'
         self.Xunits[CurveType.EFFICIENCY] = self.Xunits[CurveType.PUMP]

@@ -98,6 +98,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
         self.actionAdd_Raster.triggered.connect(self.map_addraster)
         # self.actionGroup_Obj = QActionGroup(self)
+        self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
+        self.auto_length = (self.cbAutoLength.currentIndex == 1)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -105,7 +107,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # Map attributes will be set below if possible or will remain None to indicate map is not present.
         self.canvas = None
         self.map_widget = None
-        self.map_units = "UnknownUnit"
         self.selecting = Lock()
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
@@ -161,6 +162,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
+                            # self.map_win.map_unit_names = [transl8("frmMain", units, None)
+                            #                                for units in self.map_win.map_unit_names]
                             self.actionPan.triggered.connect(self.setQgsMapTool)
                             self.actionMapSelectObj.triggered.connect(self.setQgsMapTool)
                             self.actionStdSelect_Object.triggered.connect(self.setQgsMapToolSelect)
@@ -291,6 +294,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
     def alignBasemap(self):
         pass
+
+    def cbAutoLength_currentIndexChanged(self):
+        self.auto_length = (self.cbAutoLength.currentIndex() == 1)
 
     def import_from_gis(self):
         import import_export
@@ -999,25 +1005,25 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def onGeometryAdded(self):
         print 'Geometry Added'
 
-    def mouseMoveEvent(self, event):
-        pass
-        x = event.x()
-        y = event.y()
-        if self.canvas:
-            p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-            self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
+    # def mouseMoveEvent(self, event):
+    #     pass
+    #     x = event.x()
+    #     y = event.y()
+    #     if self.canvas:
+    #         p = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+    #         self.btnCoord.setText('x,y: {:}, {:}'.format(p.x(), p.y()))
 
-    def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.MouseMove:
-            if event.buttons() == QtCore.Qt.NoButton:
-                pos = event.pos()
-                x = pos.x()
-                y = pos.y()
-                if self.canvas:
-                    p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-                    self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
-            else:
-                pass
+    # def eventFilter(self, source, event):
+    #     if event.type() == QtCore.QEvent.MouseMove:
+    #         if event.buttons() == QtCore.Qt.NoButton:
+    #             pos = event.pos()
+    #             x = pos.x()
+    #             y = pos.y()
+    #             if self.canvas:
+    #                 p = self.map_widget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+    #                 self.btnCoord.setText('x,y: %s, %s' % (p.x()), p.y())
+    #         else:
+    #             pass
 
     def map_addvector(self):
         directory = self.program_settings.value("GISDataDir", "/")
@@ -1578,6 +1584,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.remove_all_layers()
         if hasattr(self, "project_settings"):
             del self.project_settings
+        self.project_settings = None
         self.project = self.project_type()
         if file_name:
             try:
@@ -1614,12 +1621,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.setWindowTitle(self.model + " - New")
 
     def set_crs(self, crs):
+        self.map_widget.map_linear_unit = self.map_widget.map_unit_names[7]  # Unknown
         if crs and crs.isValid():
             self.crs = crs
-            self.map_units = self.map_widget.map_unit_names[self.crs.mapUnits()]
+            try:
+                self.map_widget.map_linear_unit = self.map_widget.map_unit_names[self.crs.mapUnits()]
+            except:
+                pass
         else:
             self.crs = None
-            self.map_units = None
 
     def save_project(self, file_name=None):
         if not file_name:

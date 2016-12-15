@@ -14,7 +14,9 @@ try:
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
-        map_unit_names = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "UnknownUnit"]
+
+        map_unit_names = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
+        map_unit_abbrev = ["m", "km", "ft", "nmi", "yd", "mi", "deg", ""]
 
         def __init__(self, canvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
@@ -65,7 +67,7 @@ try:
 
             self.qgisNewFeatureTool = None
             self.measureTool = None
-            self.mapLinearUnit = 'none'
+            self.map_linear_unit = self.map_unit_names[7]  # Unknown
             self.coord_origin = Coordinate()
             self.coord_fext = Coordinate()
             self.coord_fext.x = 100000.0
@@ -236,20 +238,24 @@ try:
             recursive_set(self)
 
         def canvasMoveEvent(self, p):
-            x = p.x()
-            y = p.y()
-            pm = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-            u = ""
-            if self.mapLinearUnit == 'none':
-                pass
-            elif self.mapLinearUnit == 'meters':
-                u = "m"
-            elif self.mapLinearUnit == 'feet':
-                u = "ft"
-            elif self.mapLinearUnit == 'degrees':
-                u = "deg"
-            self.session.btnCoord.setText('x,y: {:.4f}, {:.4f} {:s}'.format(pm.x(), pm.y(), u))
-            pass
+            try:
+                unit_index = self.map_unit_names.index(self.map_linear_unit)
+                u = self.map_unit_abbrev[unit_index]
+            except:
+                u = ''
+            # pm = self.canvas.getCoordinateTransform().toMapCoordinates(p.x(), p.y())
+            x = '%g' % self.round_to_n(p.x(), 5)
+            y = '%g' % self.round_to_n(p.y(), 5)
+            # x = ('%.5f' % pm.x()).rstrip('0').rstrip('.')
+            # y = ('%.5f' % pm.y()).rstrip('0').rstrip('.')
+            self.session.btnCoord.setText('{:s}, {:s} {:s}'.format(x, y, u))
+
+        @staticmethod
+        def round_to_n(x, n):
+            if not x: return 0
+            power = -int(math.floor(math.log10(abs(x)))) + (n - 1)
+            factor = (10 ** power)
+            return round(x * factor) / factor
 
         @staticmethod
         def point_feature_from_item(item):
@@ -933,6 +939,24 @@ try:
             if points or self.inlet_node and self.outlet_node:
                 new_object = self.object_type()
                 new_object.vertices = []
+                if self.session.auto_length and self.session.crs and self.session.crs.isValid():
+                    try:
+                        map_widget = self.session.map_widget
+                        unit_index = map_widget.map_unit_names.index(map_widget.map_linear_unit)
+                        u = map_widget.map_unit_abbrev[unit_index]
+                        if u:
+                            if hasattr(new_object, "length"):
+                                ruler = QgsDistanceArea()
+                                new_object.length = str(map_widget.round_to_n(ruler.measureLine(points), 5)) + u
+                                # TODO: convert to correct distance units for model
+
+                            if hasattr(new_object, "area"):
+                                ruler = QgsDistanceArea()
+                                new_object.area = str(map_widget.round_to_n(ruler.measureArea(points), 5)) + u + '2'
+                                # TODO: convert to acres or hectares
+                    except:
+                        pass
+
                 if self.inlet_node is not None and self.outlet_node is not None:
                     new_object.inlet_node = self.inlet_node
                     new_object.outlet_node = self.outlet_node
@@ -1052,6 +1076,8 @@ try:
                     canvas_point = self.nearest_canvas_point
                     map_point = self.nearest_map_point
                 elif self.nearest_distance < 15:
+                    if nearest_feature_name == self.inlet_node:
+                        return
                     self.outlet_node = nearest_feature_name
                     canvas_point = self.nearest_canvas_point
                     map_point = self.nearest_map_point

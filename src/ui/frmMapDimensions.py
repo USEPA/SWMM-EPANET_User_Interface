@@ -3,7 +3,8 @@ from frmMapDimensionsDesigner import Ui_frmMapDimensionsDesigner
 
 class frmMapDimensions(QtGui.QDialog):
     def __init__(self, main_form=None, *args):
-        self._main_form = main_form
+        self.session = main_form
+        self.map_widget = self._main_form.map_widget
         QtGui.QDialog.__init__(self)
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
@@ -34,9 +35,9 @@ class frmMapDimensions(QtGui.QDialog):
         pass
 
     def setExtent(self):
-        if self._main_form is None:
+        if self.session is None:
             return
-        if self._main_form.map_widget is None:
+        if self.map_widget is None:
             return
         val1, is_val_good1 = self.floatTryParse(self.ui.txtULx.text())
         val2, is_val_good2 = self.floatTryParse(self.ui.txtULy.text())
@@ -49,38 +50,38 @@ class frmMapDimensions(QtGui.QDialog):
                 #LLXEdit.SetFocus
                 return
             else:
-                self._main_form.map_widget.coord_origin.x = val1
-                self._main_form.map_widget.coord_origin.y = val2
-                self._main_form.map_widget.coord_fext.x = val3
-                self._main_form.map_widget.coord_fext.x = val4
-                if self._main_form.project is not None:
-                    if self._main_form.project.map is not None:
-                        self._main_form.project.map.dimensions = (val1, val2, val3, val4)
+                self.map_widget.coord_origin.x = val1
+                self.map_widget.coord_origin.y = val2
+                self.map_widget.coord_fext.x = val3
+                self.map_widget.coord_fext.x = val4
+                if self.session.project is not None:
+                    if self.session.project.map is not None:
+                        self.session.project.map.dimensions = (val1, val2, val3, val4)
         pass
 
     def setupOptions(self):
-        if self._main_form is None:
+        if self.session is None:
             return
-        if self._main_form.map_widget is None:
+        if self.map_widget is None:
             return
-        lu = self._main_form.map_widget.mapLinearUnit
-        if lu == 'none':
-            self.ui.rdoUnitNone.setChecked(True)
-        elif lu == 'feet':
+        lu = self.map_widget.map_linear_unit
+        if lu == self.map_widget.map_unit_names[2]:  # feet
             self.ui.rdoUnitFeet.setChecked(True)
-        elif lu == 'meters':
+        elif lu == self.map_widget.map_unit_names[0]:  # meters
             self.ui.rdoUnitMeters.setChecked(True)
-        elif lu == 'degrees':
+        elif lu == self.map_widget.map_unit_names[6]:  # degrees
             self.ui.rdoUnitDegrees.setChecked(True)
+        else:
+            self.ui.rdoUnitNone.setChecked(True)
 
         #self.ui.txtULx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
         #self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
         #self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
         #self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        self.ui.txtULx.setText(self._main_form.map_widget.coord_origin.x)
-        self.ui.txtULy.setText(self._main_form.map_widget.coord_origin.y)
-        self.ui.txtLRx.setText(str(self._main_form.map_widget.coord_fext.x))
-        self.ui.txtLRy.setText(str(self._main_form.map_widget.coord_fext.x))
+        self.ui.txtULx.setText(self.map_widget.coord_origin.x)
+        self.ui.txtULy.setText(self.map_widget.coord_origin.y)
+        self.ui.txtLRx.setText(str(self.map_widget.coord_fext.x))
+        self.ui.txtLRy.setText(str(self.map_widget.coord_fext.x))
 
     def floatTryParse(self, value):
         try:
@@ -89,23 +90,23 @@ class frmMapDimensions(QtGui.QDialog):
             return value, False
 
     def changeLinearMapUnit(self):
-        if self._main_form is None:
+        if self.session is None:
             return
-        if self._main_form.map_widget is None:
+        if self.map_widget is None:
             return
         if self.ui.rdoUnitDegrees.isChecked():
-            self._main_form.map_widget.mapLinearUnit = 'degrees'
+            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[6]  # Degrees
         elif self.ui.rdoUnitMeters.isChecked():
-            self._main_form.map_widget.mapLinearUnit = 'meters'
+            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[0]  # Meters
         elif self.ui.rdoUnitNone.isChecked():
-            self._main_form.map_widget.mapLinearUnit = 'none'
+            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[7]  # Unknown
         elif self.ui.rdoUnitFeet.isChecked():
-            self._main_form.map_widget.mapLinearUnit = 'feet'
+            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[2]  # Feet
 
-        if self._main_form.project is not None:
-            if self._main_form.project.map is not None:
-                self._main_form.project.map.setMapUnits(
-                    self._main_form.map_widget.mapLinearUnit
+        if self.session.project is not None:
+            if self.session.project.map is not None:
+                self.session.project.map.setMapUnits(
+                    self.session.map_widget.map_linear_unit
                 )
         return
 

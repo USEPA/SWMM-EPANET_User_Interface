@@ -217,13 +217,20 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def curve_data_to_file(self, file_name):
         if file_name:
+            for i in range(0, len(self.X)):
+                self.X[i] *= float('NaN')
+                self.Y[i] *= float('NaN')
+            N = self.GetData()
             with open(file_name, 'w') as writer:
                 #writer.writelines(self.as_text(project))
                 writer.write("EPANET Curve Data\n")
                 writer.write(self.cboCurveType.currentText() + "\n")
                 writer.write("PUMP: Pump Curve for Pump " + self.editing_item.name + "\n")
-                for i in range(0, len(self.xvals)):
-                    writer.write("%s  %s\n" % (str(self.xvals[i]), str(self.yvals[i])))
+                for i in range(0, len(self.X)):
+                    if np.isnan(self.X[i]) or np.isnan(self.Y[i]):
+                        pass
+                    else:
+                        writer.write("%s  %s\n" % (str(self.X[i]), str(self.Y[i])))
 
     def tblMult_cellChanged(self, row, col):
         if col == 1:

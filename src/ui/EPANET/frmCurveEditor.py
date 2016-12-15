@@ -28,6 +28,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         #QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         self.btnSave.clicked.connect(self.save_curve_data)
+        self.btnLoad.clicked.connect(self.load_curve_data)
         self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
         self.selected_curve_name = ''
         self._main_form = main_form
@@ -150,9 +151,51 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             self.Y[i] *= float('NaN')
         self.txtEquation.setText("")
 
+    def load_curve_data(self):
+        directory = self._main_form.program_settings.value("DataDir", "")
+        #file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.crv)")
+        if os.path.exists(file_name):
+            self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
+            self._main_form.program_settings.sync()
+
+        if file_name:
+            with open(file_name, "r") as open_file:
+                lines = open_file.readlines()
+
+            if len(lines) > 1:
+                ui.convenience.set_combo(self.cboCurveType, lines[1].strip())
+            if len(lines) > 2:
+                a = lines[2].split()
+                self.txtCurveName.setText(a[len(a) - 1])
+            if len(lines) > 3:
+                curve_xy = []
+                for i in range(3, len(lines)):
+                    try:
+                        x, y = lines[i].split()
+                        xval, xval_is_good = ParseData.floatTryParse(x)
+                        yval, yval_is_good = ParseData.floatTryParse(y)
+                        if xval_is_good and yval_is_good:
+                            curve_xy.append((x, y))
+
+                        point_count = -1
+                        for point in curve_xy:
+                            point_count += 1
+                            led = QtGui.QLineEdit(str(point[0]))
+                            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
+                            led = QtGui.QLineEdit(str(point[1]))
+                            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+
+                        pass
+                    except Exception as ex:
+                        pass
+
     def save_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
         file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        if os.path.exists(file_name):
+            self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
+            self._main_form.program_settings.sync()
         if file_name:
             #self.add_recent_project(file_name)
             path_only, file_only = os.path.split(file_name)

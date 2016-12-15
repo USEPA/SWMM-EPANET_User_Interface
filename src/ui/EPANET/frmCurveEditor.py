@@ -10,6 +10,8 @@ import numpy as np
 from ui.model_utility import ParseData
 from ui.model_utility import BasePlot
 from math import isnan
+import os
+import traceback
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
@@ -25,6 +27,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         #QtCore.QObject.connect(self.tblMult, QtCore.SIGNAL("cellChanged(int, int)"), self.tblMult_cellChanged(int, int))
         #QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
+        self.btnSave.clicked.connect(self.save_curve_data)
         self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
         self.selected_curve_name = ''
         self._main_form = main_form
@@ -146,6 +149,38 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             self.X[i] *= float('NaN')
             self.Y[i] *= float('NaN')
         self.txtEquation.setText("")
+
+    def save_curve_data(self):
+        directory = self._main_form.program_settings.value("DataDir", "")
+        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        if file_name:
+            #self.add_recent_project(file_name)
+            path_only, file_only = os.path.split(file_name)
+            try:
+                self.curve_data_to_file(file_name)
+                self.setWindowTitle(self._main_form.model + " - " + file_only)
+                if path_only != directory:
+                    self._main_form.program_settings.setValue("DataDir", path_only)
+                    self._main_form.program_settings.sync()
+            except Exception as ex:
+                print(str(ex) + '\n' + str(traceback.print_exc()))
+                QMessageBox.information(self, self._main_form.model,
+                                        "Error saving {0}\nin {1}\n{2}\n{2}".format(
+                                            file_only, path_only,
+                                            str(ex), str(traceback.print_exc())),
+                                        QMessageBox.Ok)
+
+            #self._main_form.undo_stack.setClean()
+
+    def curve_data_to_file(self, file_name):
+        if file_name:
+            with open(file_name, 'w') as writer:
+                #writer.writelines(self.as_text(project))
+                writer.write("EPANET Curve Data\n")
+                writer.write(self.cboCurveType.currentText() + "\n")
+                writer.write("PUMP: Pump Curve for Pump " + self.editing_item.name + "\n")
+                for i in range(0, len(self.xvals)):
+                    writer.write("%s  %s\n" % (str(self.xvals[i]), str(self.yvals[i])))
 
     def tblMult_cellChanged(self, row, col):
         if col == 1:

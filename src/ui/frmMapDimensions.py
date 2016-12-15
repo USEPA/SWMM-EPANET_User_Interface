@@ -3,11 +3,11 @@ from frmMapDimensionsDesigner import Ui_frmMapDimensionsDesigner
 
 class frmMapDimensions(QtGui.QDialog):
     def __init__(self, main_form=None, *args):
-        self.session = main_form
-        self.map_widget = self._main_form.map_widget
         QtGui.QDialog.__init__(self)
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
+        self.session = main_form
+        self.map_widget = self.session.map_widget
         self.options = None
         if args is not None and len(args) > 0:
             self.options = args[0]

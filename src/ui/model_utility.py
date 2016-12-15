@@ -176,7 +176,12 @@ class BasePlot(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
         self.fig.subplots_adjust(bottom=0.2)
+        self.fig.subplots_adjust(left=0.15)
+
         self.axes = self.fig.add_subplot(111)
+        self.label_size = 7
+        self.axes.tick_params(labelsize=self.label_size)
+        #self.axes.tight_layout()
         #self.axes.hold(False)
 
         FigureCanvas.__init__(self, self.fig)
@@ -194,11 +199,11 @@ class BasePlot(FigureCanvas):
 
     def setXlabel(self, aLabel):
         if self.axes is not None:
-            self.axes.set_xlabel(aLabel, fontsize=10)
+            self.axes.set_xlabel(aLabel, fontsize=self.label_size)
         # self.ax = plt.AxesSubplot() #debug only
         pass
 
     def setYlabel(self, aLabel):
         if self.axes is not None:
-            self.axes.set_ylabel(aLabel)
+            self.axes.set_ylabel(aLabel, fontsize=self.label_size)
         pass

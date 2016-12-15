@@ -106,6 +106,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.txtDescription.setText(str(curve.description))
         LengthUnits = "???"
         FlowUnits = "???"
+        if self.project:
+            FlowUnits = self.project.options.hydraulics.flow_units.name
         self.Xunits[CurveType.VOLUME] = ' (' + LengthUnits + ')'
         self.Xunits[CurveType.PUMP] = ' (' + FlowUnits + ')'
         self.Xunits[CurveType.EFFICIENCY] = self.Xunits[CurveType.PUMP]
@@ -293,7 +295,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             if sort_needed:
                 self.sortData()
                 pass
-            self.plot.setData(self.xvals, self.yvals, self.Xlabel, self.Ylabel, self.good_pump_curve)
+            self.plot.setData(self.xvals, self.yvals,
+                              self.Xlabel + self.Xunit,
+                              self.Ylabel + self.Yunit,
+                              self.good_pump_curve)
         pass
 
     def sortData(self):

@@ -57,6 +57,7 @@ class ProjectReader(InputFileReader):
         self.defer_tags = None
         self.defer_mixing = None
         self.defer_emitters = None
+        self.defer_status = None
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
@@ -78,6 +79,9 @@ class ProjectReader(InputFileReader):
         elif section_name_upper == "[EMITTERS]":
             self.defer_emitters = section_text
             return  # Skip read_section, defer until finished_reading is called.
+        elif section_name_upper == "[STATUS]":
+            self.defer_status = section_text
+            return
         InputFileReader.read_section(self, project, section_name, section_text)
 
 
@@ -99,3 +103,7 @@ class ProjectReader(InputFileReader):
             self.defer_mixing = None
         if self.defer_emitters:
             EmittersReader.read(self.defer_emitters, project)
+            self.defer_emitters = None
+        if self.defer_status:
+            StatusReader.read(self.defer_status, project)
+            self.defer_status = None

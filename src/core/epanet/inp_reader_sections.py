@@ -276,16 +276,20 @@ class StatusReader(SectionReader):
         Pipes can have a status of OPEN, CLOSED, or CV.
         Pumps can have a status of OPEN, CLOSED, or a speed.
     """
-
     @staticmethod
-    def read(new_text):
-        status = Status()
-        new_text = SectionReader.set_comment_check_section(status, new_text)
-        fields = new_text.split()
-        if len(fields) > 1:
-            status.name = fields[0]
-            status.status = fields[1]
-        return status
+    def read(new_text, project):
+        disposable_section = Section()
+        disposable_section.SECTION_NAME = "[STATUS]"
+        for line in new_text.splitlines():
+            line = SectionReader.set_comment_check_section(disposable_section, line)
+            fields = line.split(None)
+            if len(fields) > 1:
+                link_name = fields[0]
+                status = fields[1]
+                for link in project.all_links():
+                    if link.name == link_name:
+                        link.setattr_keep_type("initial_status", status)
+                        break
 
 
 class CoordinateReader(SectionReader):

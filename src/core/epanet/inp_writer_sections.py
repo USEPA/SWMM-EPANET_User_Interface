@@ -222,14 +222,13 @@ class StatusWriter(SectionWriter):
     field_format = "{:16}\t{}\t{}"
 
     @staticmethod
-    def as_text(status):
+    def as_text(link):
         """format contents of this item for writing to file"""
-        if len(status.name) > 0:
-            return StatusWriter.field_format.format(status.name,
-                                            status.status,
-                                            status.comment)
-        elif status.comment:
-            return status.comment
+        if isinstance(link, Pump):
+            if hasattr(link, "initial_status") and len(link.initial_status) > 0:
+                return StatusWriter.field_format.format(link.name, link.initial_status)
+        #elif status.comment:
+        #    return status.comment
 
 
 class CoordinateWriter(SectionWriter):

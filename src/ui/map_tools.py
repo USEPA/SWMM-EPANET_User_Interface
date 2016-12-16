@@ -15,8 +15,12 @@ try:
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
 
-        map_unit_names = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
-        map_unit_abbrev = ["m", "km", "ft", "nmi", "yd", "mi", "deg", ""]
+        map_unit_names       = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
+        map_unit_abbrev      = ["m",      "km",         "ft",   "nmi",           "yd",    "mi",    "deg",     ""]
+        map_unit_to_meters   = [1.0,         1000.0,    0.3048,   1852,          0.9144,  1609.34, 0,         0]
+        map_unit_to_feet     = [3.28084,     3280.84,   1.0,      6076.12,       3.0,     5280.0,  0,         0]
+        map_unit_to_hectares = [0.0001,      100,       9.2903e-6, 342.99,    8.36127e-5, 259,     0,         0]
+        map_unit_to_acres    = [0.000247105, 247.105,   2.2957e-5, 847.548,  0.000206612, 640,     0,         0]
 
         def __init__(self, canvas, session, main_form=None, **kwargs):
             super(EmbedMap, self).__init__(main_form)
@@ -968,13 +972,19 @@ try:
                         if u:
                             if hasattr(new_object, "length"):
                                 ruler = QgsDistanceArea()
-                                new_object.length = str(map_widget.round_to_n(ruler.measureLine(points), 5)) + u
-                                # TODO: convert to correct distance units for model
+                                if self.session.project.metric:
+                                    unit_conversion = map_widget.map_unit_to_meters[unit_index]
+                                else:
+                                    unit_conversion = map_widget.map_unit_to_feet[unit_index]
+                                new_object.length = map_widget.round_to_n(ruler.measureLine(points) * unit_conversion, 5)
 
                             if hasattr(new_object, "area"):
                                 ruler = QgsDistanceArea()
-                                new_object.area = str(map_widget.round_to_n(ruler.measureArea(points), 5)) + u + '2'
-                                # TODO: convert to acres or hectares
+                                if self.session.project.metric:
+                                    unit_conversion = map_widget.map_unit_to_hectares[unit_index]
+                                else:
+                                    unit_conversion = map_widget.map_unit_to_acres[unit_index]
+                                new_object.area = map_widget.round_to_n(ruler.measureArea(points) * unit_conversion, 5)
                     except:
                         pass
 

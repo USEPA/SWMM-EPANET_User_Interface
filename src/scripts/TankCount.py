@@ -1,0 +1,1 @@
+print len(session.project.tanks.value)

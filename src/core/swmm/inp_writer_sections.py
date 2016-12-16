@@ -569,12 +569,16 @@ class CrossSectionWriter(SectionWriter):
         # elif cross_section.shape == CrossSectionShape.IRREGULAR:
         #     inp += CrossSectionWriter.field_format_irregular.format(cross_section.link, cross_section.shape.name, cross_section.transect)
         else:
+            g1 = str(cross_section.geometry1)
+            g2 = str(cross_section.geometry2)
+            g3 = str(cross_section.geometry3)
+            g4 = str(cross_section.geometry4)
+            if len(g1) == 0: g1 = '0'
+            if len(g2) == 0: g2 = '0'
+            if len(g3) == 0: g3 = '0'
+            if len(g4) == 0: g4 = '0'
             inp += CrossSectionWriter.field_format_shape.format(cross_section.link,
-                                                                shape_name,
-                                                                cross_section.geometry1,
-                                                                cross_section.geometry2,
-                                                                cross_section.geometry3,
-                                                                cross_section.geometry4,
+                                                                shape_name, g1, g2, g3, g4,
                                                                 cross_section.barrels,
                                                                 cross_section.culvert_code)
         return inp
@@ -1137,7 +1141,7 @@ class RainGageWriter(SectionWriter):
                 "FILE",
                 rain_gage.data_file_name,
                 rain_gage.data_file_station_id,
-                rain_gage.data_file_rain_units)
+                rain_gage.data_file_rain_units.name)
         if rain_gage.comment:
             inp += " # " + rain_gage.comment
         return inp

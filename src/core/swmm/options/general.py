@@ -15,6 +15,8 @@ class FlowUnits(Enum):
     LPS = 5
     MLD = 6
 
+flow_units_metric = [FlowUnits.CMS, FlowUnits.LPS, FlowUnits.MLD]
+
 
 class FlowRouting(Enum):
     """Flow Routing Method"""

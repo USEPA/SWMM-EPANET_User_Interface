@@ -160,6 +160,7 @@ class EditorWindow(QtGui.QMainWindow):
         self.menu_file.addAction(self.newAction)
         self.menu_file.addAction(self.openAction)
         self.menu_file.addAction(self.saveAction)
+        self.menu_file.addAction(self.saveAsAction)
         self.menu_file.addAction(self.printAction)
         self.menu_file.addAction(self.previewAction)
 

@@ -54,6 +54,9 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtTimeseriesName.text()
         self.editing_item.comment = self.txtDescription.text()
+        if self.editing_item.comment and self.editing_item.comment[0] != ';':
+            # Make sure comment starts with a semicolon
+            self.editing_item.comment = '; ' + self.editing_item.comment
         if self.rbnExternal.isChecked():
             self.editing_item.file = self.txtExternalFile.text()
             self.editing_item.dates = []
@@ -64,12 +67,25 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
             self.editing_item.times = []
             self.editing_item.values = []
             for row in range(self.tblTime.rowCount()):
-                if self.tblTime.item(row,2):
-                    x = self.tblTime.item(row,2).text()
-                    if len(x) > 0:
-                        self.editing_item.dates.append(self.tblTime.item(row,0).text())
-                        self.editing_item.times.append(self.tblTime.item(row,1).text())
-                        self.editing_item.values.append(x)
+                try:
+                    if self.tblTime.item(row, 2):
+                        value_text = self.tblTime.item(row, 2).text()
+                        if value_text:
+                            item = self.tblTime.item(row, 0)
+                            if item:
+                                date_text = item.text()
+                            else:
+                                date_text = ''
+                            item = self.tblTime.item(row, 1)
+                            if item:
+                                time_text = item.text()
+                            else:
+                                time_text = ''
+                            self.editing_item.dates.append(date_text)
+                            self.editing_item.times.append(time_text)
+                            self.editing_item.values.append(value_text)
+                except Exception as ex:
+                    print("Skipping row " + str(row) + " of time series grid: " + str(ex))
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
         else:

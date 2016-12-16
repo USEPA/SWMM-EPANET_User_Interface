@@ -878,7 +878,7 @@ class Ui_frmMain(object):
         self.cbFlowUnits.setItemText(1, _translate("frmMain", "Flow Units: GPM", None))
         self.cbFlowUnits.setItemText(2, _translate("frmMain", "Flow Units: MGD", None))
         self.cbFlowUnits.setItemText(3, _translate("frmMain", "Flow Units: CMS", None))
-        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units:  LPS", None))
+        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units: LPS", None))
         self.cbFlowUnits.setItemText(5, _translate("frmMain", "Flow Units: MLD", None))
         self.btnZoom100.setText(_translate("frmMain", "Zoom Level: 100%", None))
         self.btnCoord.setText(_translate("frmMain", "x,y", None))

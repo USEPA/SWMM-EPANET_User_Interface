@@ -4,7 +4,7 @@ from core.swmm.hydraulics.node import Junction, Outfall, Divider, StorageUnit
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from core.swmm.hydraulics.link import Conduit, Pump, Orifice, Weir, Outlet, CrossSection, Transects
 from core.swmm.title import Title
-from core.swmm.options.general import General
+from core.swmm.options.general import General, flow_units_metric
 # from core.swmm.options.time_steps import TimeSteps
 from core.swmm.options.report import Report
 from core.swmm.options.files import Files
@@ -229,5 +229,7 @@ class ProjectReader(InputFileReader):
         if self.defer_polygons:
             PolygonsReader.read(self.defer_polygons, project)
             self.defer_polygons = None
+        project.metric = self.project.options.general.flow_units in flow_units_metric
+
 
 

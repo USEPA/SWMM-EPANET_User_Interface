@@ -4,6 +4,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.title import Title
 from core.coordinate import Coordinate
 from core.epanet.inp_reader_sections import *
+from core.epanet.options.hydraulics import flow_units_metric
 
 try:
     unicode = unicode
@@ -84,7 +85,6 @@ class ProjectReader(InputFileReader):
             return
         InputFileReader.read_section(self, project, section_name, section_text)
 
-
     def finished_reading(self, project):
         if self.defer_quality:
             QualityReader.read(self.defer_quality, project)
@@ -107,3 +107,4 @@ class ProjectReader(InputFileReader):
         if self.defer_status:
             StatusReader.read(self.defer_status, project)
             self.defer_status = None
+        project.metric = project.options.hydraulics.flow_units in flow_units_metric

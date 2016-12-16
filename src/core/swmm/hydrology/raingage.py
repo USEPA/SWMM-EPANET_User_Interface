@@ -39,7 +39,7 @@ class RainGage(Section, Coordinate):
         ("description",             '', "Description",           "",       '', '', "Optional comment or description"),
         ("tag",                     '', "Tag",                   "",       '', '', "Optional category or classification"),
         ("rain_format",             '', "Rain Format",           "",       '', '', "Type of rainfall data recorded at rain gage"),
-        ("rain_interval",           '', "Time Interval",         "1.0",    '', '', "Data recording time intervsl at rain gage"),
+        ("rain_interval",           '', "Time Interval",         "1:00",   '', '', "Data recording time intervsl at rain gage"),
         ("snow_catch_factor",       '', "Snow Catch Factor",     "1",      '', '', "Correction factor applied to snowfall"),
         ("data_source",             '', "Data Source",           "",       '', '', "Source of rainfall data"),
         ("timeseries",              '', "Time Series Name",      "",       '', '', "Name of rainfall time series"),
@@ -62,7 +62,7 @@ class RainGage(Section, Coordinate):
         """Format in which the rain data are supplied:
             INTENSITY, VOLUME, CUMULATIVE (see also self.rain_units)"""
 
-        self.rain_interval = 0.0
+        self.rain_interval = "1:00"
         """Recording time interval between gage readings in either decimal
             hours or hours:minutes format."""
 

@@ -362,6 +362,8 @@ class frmMainEPANET(frmMain):
     def cbFlowUnits_currentIndexChanged(self):
         import core.epanet.options.hydraulics
         self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
+        self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
+
 
     def report_status(self):
         print "report_status"

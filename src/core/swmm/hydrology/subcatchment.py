@@ -22,8 +22,8 @@ class Subcatchment(Section, Polygon):
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
         ("name",                    '', "Name",            "",       '', '', "User-assigned name of subcatchment"),
-        ("centroid.X",              '', "X-Coordinate",    "",       '', '', "X coordinate of subcatchment centroid on map"),
-        ("centroid.Y",              '', "Y-Coordinate",    "",       '', '', "Y coordinate of subcatchment centroid on map"),
+        #("centroid.X",              '', "X-Coordinate",    "",       '', '', "X coordinate of subcatchment centroid on map"),
+        #("centroid.Y",              '', "Y-Coordinate",    "",       '', '', "Y coordinate of subcatchment centroid on map"),
         ("description",             '', "Description",     "",       '', '', "Optional comment or description"),
         ("tag",                     '', "Tag",             "",       '', '', "Optional category or classification"),
         ("rain_gage",               '', "Rain Gage",       "*",      '', '', "Rain gage assigned to subcatchment"),

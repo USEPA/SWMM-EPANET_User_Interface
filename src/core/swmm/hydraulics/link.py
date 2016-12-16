@@ -343,19 +343,19 @@ class CrossSection(Section):
         self.shape = CrossSectionShape.NotSet
         """cross-section shape"""
 
-        self.geometry1 = ''
+        self.geometry1 = '0.0'
         """float as str: full height of the cross-section (ft or m)"""
 
-        self.geometry2 = ''
+        self.geometry2 = '0.0'
         """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.geometry3 = ''
+        self.geometry3 = '0.0'
         """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.geometry4 = ''
+        self.geometry4 = '0.0'
         """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
-        self.barrels = ''
+        self.barrels = '0.0'
         """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
         roughness) associated with a conduit (default is 1)."""
 

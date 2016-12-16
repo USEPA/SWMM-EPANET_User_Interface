@@ -96,12 +96,9 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.set_link(main_form.project, '1')
 
     def set_link(self, project, link_name):
-        # section = core.swmm.project.CrossSection()
-        section = project.find_section("XSECTIONS")
-        link_list = section.value[0:]
         # assume we want to edit the first one
         self.link_name = link_name
-        for value in link_list:
+        for value in project.xsections.value:
             if value.link == link_name:
                 # this is the link we want to edit
                 for list_index in range(0,self.listWidget.count()):
@@ -207,79 +204,79 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         if cur:
             current_selection = str(cur.text())
 
-        section = self._main_form.project.find_section("XSECTIONS")
-        link_list = section.value[0:]
-        for value in link_list:
-            if value.link == self.link_name:
-                # this is the link we are editing
-                value.barrels = self.sbxNumber.text()
-                value.geometry1 = self.txt1.text()
-                value.geometry2 = self.txt2.text()
-                value.geometry3 = self.txt3.text()
-                value.geometry4 = self.txt4.text()
-                value.transect = ''
-                value.curve = ''
-                XType = ''
-                if current_selection == 'Rectangular':
-                    XType = 'RECT_OPEN'
-                    value.geometry3 = int(self.cboCombo.currentIndex())
-                elif current_selection == 'Trapezoidal':
-                    XType = 'TRAPEZOIDAL'
-                elif current_selection == 'Triangular':
-                    XType = 'TRIANGULAR'
-                elif current_selection == 'Parabolic':
-                    XType = 'PARABOLIC'
-                elif current_selection == 'Power':
-                    XType = 'POWER'
-                elif current_selection == 'Irregular':
-                    XType = 'IRREGULAR'
-                    value.transect = self.cboCombo.itemText(self.cboCombo.currentIndex())
-                elif current_selection == 'Circular':
-                    XType = 'CIRCULAR'
-                elif current_selection == 'Force Main':
-                    XType = 'FORCE_MAIN'
-                elif current_selection == 'Filled Circular':
-                    XType = 'FILLED_CIRCULAR'
-                elif current_selection == 'Closed Rectangular':
-                    XType = 'RECT_CLOSED'
-                elif current_selection == 'Horizontal Elliptical':
-                    XType = 'HORIZ_ELLIPSE'
-                elif current_selection == 'Vertical Elliptical':
-                    XType = 'VERT_ELLIPSE'
-                elif current_selection == 'Arch':
-                    XType = 'ARCH'
-                elif current_selection == 'Rectangular Triangular':
-                    XType = 'RECT_TRIANGULAR'
-                elif current_selection == 'Rectangular Round':
-                    XType = 'RECT_ROUND'
-                elif current_selection == 'Modified Baskethandle':
-                    XType = 'MODBASKETHANDLE'
-                elif current_selection == 'Egg':
-                    XType = 'EGG'
-                elif current_selection == 'Horseshoe':
-                    XType = 'HORSESHOE'
-                elif current_selection == 'Gothic':
-                    XType = 'GOTHIC'
-                elif current_selection == 'Catenary':
-                    XType = 'CATENARY'
-                elif current_selection == 'Semi-Elliptical':
-                    XType = 'SEMIELLIPTICAL'
-                elif current_selection == 'Baskethandle':
-                    XType = 'BASKETHANDLE'
-                elif current_selection == 'Semi-Circular':
-                    XType = 'SEMICIRCULAR'
-                elif current_selection == 'Custom':
-                    XType = 'CUSTOM'
-                    value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
-                elif current_selection == 'Dummy':
-                    XType = 'DUMMY'
-                value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
-        self.close()
+        try:
+            value = self._main_form.project.xsections.value[self.link_name]
+        except:  # This must be a new one we need to add
+            value = core.swmm.hydraulics.link.CrossSection()
+            value.link = self.link_name
+            self._main_form.project.xsections.value.append(value)
 
+        value.barrels = self.sbxNumber.text()
+        value.geometry1 = self.txt1.text()
+        value.geometry2 = self.txt2.text()
+        value.geometry3 = self.txt3.text()
+        value.geometry4 = self.txt4.text()
+        value.transect = ''
+        value.curve = ''
+        XType = ''
+        if current_selection == 'Rectangular':
+            XType = 'RECT_OPEN'
+            value.geometry3 = int(self.cboCombo.currentIndex())
+        elif current_selection == 'Trapezoidal':
+            XType = 'TRAPEZOIDAL'
+        elif current_selection == 'Triangular':
+            XType = 'TRIANGULAR'
+        elif current_selection == 'Parabolic':
+            XType = 'PARABOLIC'
+        elif current_selection == 'Power':
+            XType = 'POWER'
+        elif current_selection == 'Irregular':
+            XType = 'IRREGULAR'
+            value.transect = self.cboCombo.itemText(self.cboCombo.currentIndex())
+        elif current_selection == 'Circular':
+            XType = 'CIRCULAR'
+        elif current_selection == 'Force Main':
+            XType = 'FORCE_MAIN'
+        elif current_selection == 'Filled Circular':
+            XType = 'FILLED_CIRCULAR'
+        elif current_selection == 'Closed Rectangular':
+            XType = 'RECT_CLOSED'
+        elif current_selection == 'Horizontal Elliptical':
+            XType = 'HORIZ_ELLIPSE'
+        elif current_selection == 'Vertical Elliptical':
+            XType = 'VERT_ELLIPSE'
+        elif current_selection == 'Arch':
+            XType = 'ARCH'
+        elif current_selection == 'Rectangular Triangular':
+            XType = 'RECT_TRIANGULAR'
+        elif current_selection == 'Rectangular Round':
+            XType = 'RECT_ROUND'
+        elif current_selection == 'Modified Baskethandle':
+            XType = 'MODBASKETHANDLE'
+        elif current_selection == 'Egg':
+            XType = 'EGG'
+        elif current_selection == 'Horseshoe':
+            XType = 'HORSESHOE'
+        elif current_selection == 'Gothic':
+            XType = 'GOTHIC'
+        elif current_selection == 'Catenary':
+            XType = 'CATENARY'
+        elif current_selection == 'Semi-Elliptical':
+            XType = 'SEMIELLIPTICAL'
+        elif current_selection == 'Baskethandle':
+            XType = 'BASKETHANDLE'
+        elif current_selection == 'Semi-Circular':
+            XType = 'SEMICIRCULAR'
+        elif current_selection == 'Custom':
+            XType = 'CUSTOM'
+            value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
+        elif current_selection == 'Dummy':
+            XType = 'DUMMY'
+        value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
+        self.close()
 
     def cmdCancel_Clicked(self):
         self.close()
-
 
     def btnDialog_Clicked(self):
         cur = self.listWidget.currentItem()
@@ -294,7 +291,6 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE")
             self._frmCurveEditor.set_from(self._main_form.project, '')
             self._frmCurveEditor.show()
-
 
     def listWidget_currentItemChanged(self):
 

@@ -16,6 +16,8 @@ class FlowUnits(Enum):
     CMH = 9
     CMD = 10
 
+flow_units_metric = [FlowUnits.LPS, FlowUnits.LPM, FlowUnits.MLD, FlowUnits.CMH, FlowUnits.CMD]
+
 
 class HeadLoss(Enum):
     """Head Loss"""
@@ -64,7 +66,7 @@ class HydraulicsOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.flow_units = FlowUnits.GPM
+        self.flow_units = FlowUnits.CFS
         """FlowUnits: units in use for flow values"""
 
         self.head_loss = HeadLoss.H_W

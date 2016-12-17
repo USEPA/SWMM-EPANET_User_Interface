@@ -705,7 +705,8 @@ class ReactionsReader(SectionReader):
         for line in new_text.splitlines():
             upper_line = line.upper().strip()
             if upper_line.startswith("BULK") or upper_line.startswith("WALL") or upper_line.startswith("TANK"):
-                reactions.comment += '\n' + line  # TODO: parse into table of per pipe values
+                reactions.value.append(upper_line)
+                #reactions.comment += '\n' + line  # TODO: parse into table of per pipe values
             else:
                 SectionReader.set_text_line(reactions, line)
         return reactions

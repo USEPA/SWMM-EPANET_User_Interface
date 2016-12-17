@@ -56,9 +56,9 @@ class InputFileReader(object):
     def read_section(self, project, section_name, section_text):
         """ Read the section named section_name whose complete text is section_text into project. """
 
-        # old_section = project.find_section(section_name)
-        # if old_section:
-        #     project.sections.remove(old_section)
+        old_section = project.find_section(section_name)
+        #if old_section:
+        #    project.sections.remove(old_section)
         new_section = None
         attr_name = project.format_as_attribute_name(section_name)
         reader_name = "read_" + attr_name
@@ -76,7 +76,13 @@ class InputFileReader(object):
             new_section.SECTION_NAME = section_name
             new_section.value = section_text
 
-        project.__setattr__(attr_name, new_section)
+        if "REACTION" in new_section.SECTION_NAME.upper() and old_section:
+            for vmdata in old_section.metadata:
+                old_section.__setattr__(vmdata.attribute, new_section.__getattribute__(vmdata.attribute))
+            old_section.value.append(new_section.value)
+        else:
+            project.__setattr__(attr_name, new_section)
+
         if new_section not in project.sections:
             project.sections.append(new_section)
 

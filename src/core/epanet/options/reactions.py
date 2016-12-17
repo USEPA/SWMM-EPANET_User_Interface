@@ -21,13 +21,13 @@ class Reactions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.order_bulk = 1.0		    # real
+        self.order_bulk = 1		    # int
         """set the order of reactions occurring in the bulk fluid"""
 
-        self.order_wall = 1.0		    # real
+        self.order_wall = 1		    # int
         """set the order of reactions occurring in the pipe wall"""
 
-        self.order_tank = 1.0	        # real
+        self.order_tank = 1	        # int
         """set the order of reactions occurring in the tanks"""
 
         self.global_bulk = 0.0		    # real
@@ -42,3 +42,5 @@ class Reactions(Section):
         self.roughness_correlation = 0.0    # real
         """make all default pipe wall reaction coefficients be related to pipe roughness"""
 
+        self.value = []
+        """ pipe/tank specific reaction coefficients """

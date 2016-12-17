@@ -14,6 +14,8 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        QtCore.QObject.connect(self.rbnChemical, QtCore.SIGNAL("clicked()"), self.analysis_option_changed)
+        QtCore.QObject.connect(self.txtChemicalName, QtCore.SIGNAL("textChanged(QString)"), self.chemical_name_changed)
 
         self.quality_dict = {
             QualityAnalysisType.NONE: self.rbnNone,
@@ -34,7 +36,24 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         self.txtTolerance.setText(str(quality_options.tolerance))
         self.txtTraceNode.setText(str(quality_options.trace_node))
 
+    def check_options(self):
+        if self.rbnTrace.isChecked():
+            if not self.txtTraceNode.text().strip():
+                return "Must specify a node id for trace analysis."
+        if self.rbnChemical.isChecked():
+            if not self.txtChemicalName.text().strip():
+                return "Must specify a chemical name for chemical analysis."
+
     def cmdOK_Clicked(self):
+        warning_msg = self.check_options()
+        if warning_msg:
+            msgbox = QtGui.QMessageBox()
+            msgbox.setIcon(QtGui.QMessageBox.Information)
+            msgbox.setText(warning_msg)
+            msgbox.setWindowTitle("Quality Analysis Options")
+            msgbox.setStandardButtons(QtGui.QMessageBox.Ok)
+            ret = msgbox.exec_()
+            return
         quality_options = self._main_form.project.options.quality
         if self.rbnNone.isChecked():
             quality_options.quality = QualityAnalysisType.NONE
@@ -50,6 +69,13 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
         quality_options.tolerance = self.txtTolerance.text()
         quality_options.trace_node = self.txtTraceNode.text()
         self.close()
+
+    def chemical_name_changed(self, aName):
+        #print "name change: " + aName
+        pass
+
+    def analysis_option_changed(self):
+        pass
 
     def cmdCancel_Clicked(self):
         self.close()

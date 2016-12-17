@@ -39,9 +39,9 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
             self.rbnStop.setChecked(True)
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
-            if hydraulics_options.unbalanced_continue == 0:
+            if int(hydraulics_options.unbalanced_continue) == 0:
                 self.rbnContinue.setChecked(True)
-            elif hydraulics_options.unbalanced_continue > 0:
+            elif int(hydraulics_options.unbalanced_continue) > 0:
                 self.rbnContinueN.setChecked(True)
         self.txtContinueN.setText(str(hydraulics_options.unbalanced_continue))
 

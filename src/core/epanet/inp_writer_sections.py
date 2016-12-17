@@ -481,8 +481,8 @@ class QualityOptionsWriter(SectionWriter):
                 txt += quality_options.chemical_name
             else:
                 txt += "CHEMICAL"
-        if txt and quality_options.mass_units:
-            txt += " " + quality_options.mass_units
+            if txt and quality_options.mass_units:
+                txt += " " + quality_options.mass_units
         if txt:
             txt += "\n"
         txt += QualityOptionsWriter.field_format.format("Diffusivity", str(quality_options.diffusivity))

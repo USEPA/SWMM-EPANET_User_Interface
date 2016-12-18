@@ -7,10 +7,10 @@ class TimeSeries(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ""
+        self.name = "Unnamed"
         """name of timeseries"""
 
-        self.file = ""
+        self.file = "None"
         """file name if timeseries read from file"""
 
         self.dates = []

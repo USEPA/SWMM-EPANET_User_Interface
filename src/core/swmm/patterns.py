@@ -15,7 +15,7 @@ class Pattern(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ''
+        self.name = "Unnamed"
         """Pattern name"""
 
         self.pattern_type = PatternType.MONTHLY

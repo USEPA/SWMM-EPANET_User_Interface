@@ -5,7 +5,7 @@ class Transect:
     """Describes the cross-section geometry of natural channels or conduits with irregular shapes
     following the HEC-2 data format"""
     def __init__(self):
-        self.name = ''
+        self.name = "Unnamed"
         """Transect Name"""
 
         self.description = ''

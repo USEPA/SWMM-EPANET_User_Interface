@@ -140,22 +140,22 @@ class HortonInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment = ''
+        self.subcatchment = "None"
         """Subcatchment name"""
 
-        self.max_rate = ''
+        self.max_rate = '0.0'
         """Maximum infiltration rate on Horton curve (in/hr or mm/hr)"""
 
-        self.min_rate = ''
+        self.min_rate = '0.0'
         """Minimum infiltration rate on Horton curve (in/hr or mm/hr)."""
 
-        self.decay = ''
+        self.decay = '0.0'
         """Decay rate constant of Horton curve (1/hr)."""
 
-        self.dry_time = ''
+        self.dry_time = '0.0'
         """Time it takes for fully saturated soil to dry (days)."""
 
-        self.max_volume = ''
+        self.max_volume = '0.0'
         """Maximum infiltration volume possible (in or mm)."""
 
 
@@ -173,16 +173,16 @@ class GreenAmptInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment = ''
+        self.subcatchment = "None"
         """Subcatchment name"""
 
-        self.suction = ''
+        self.suction = '0.0'
         """Soil capillary suction (in or mm)."""
 
-        self.hydraulic_conductivity = ''
+        self.hydraulic_conductivity = '0.0'
         """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
-        self.initial_moisture_deficit = ''
+        self.initial_moisture_deficit = '0.0'
         """Initial soil moisture deficit (volume of voids / total volume)."""
 
 
@@ -200,16 +200,16 @@ class CurveNumberInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment = ''
+        self.subcatchment = "None"
         """Subcatchment name"""
 
-        self.curve_number = None
+        self.curve_number = "None"
         """SCS Curve Number"""
 
-        self.hydraulic_conductivity = ''
+        self.hydraulic_conductivity = '0'
         """Soil saturated hydraulic conductivity (no longer used for curve number infiltration)."""
 
-        self.dry_days = ''
+        self.dry_days = '0.0'
         """Time it takes for fully saturated soil to dry (days)."""
 
 
@@ -239,41 +239,41 @@ class Groundwater(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment = ''
+        self.subcatchment = "None"
         """Subcatchment name"""
 
-        self.aquifer = ''
+        self.aquifer = "None"
         """Aquifer that supplies groundwater. None = no groundwater flow."""
 
-        self.receiving_node = ''
+        self.receiving_node = "None"
         """Node that receives groundwater from the aquifer."""
 
-        self.surface_elevation = ''
+        self.surface_elevation = '0.0'
         """Elevation of ground surface for the subcatchment
             that lies above the aquifer (feet or meters)."""
 
-        self.groundwater_flow_coefficient = ''
+        self.groundwater_flow_coefficient = '0.0'
         """Value of A1 in the groundwater flow formula."""
 
-        self.groundwater_flow_exponent = ''
+        self.groundwater_flow_exponent = '0.0'
         """Value of B1 in the groundwater flow formula."""
 
-        self.surface_water_flow_coefficient = ''
+        self.surface_water_flow_coefficient = '0.0'
         """Value of A2 in the groundwater flow formula."""
 
-        self.surface_water_flow_exponent = ''
+        self.surface_water_flow_exponent = '0.0'
         """Value of B2 in the groundwater flow formula."""
 
-        self.surface_gw_interaction_coefficient = ''
+        self.surface_gw_interaction_coefficient = '0.0'
         """Value of A3 in the groundwater flow formula."""
 
-        self.fixed_surface_water_depth = ''
+        self.fixed_surface_water_depth = '0.0'
         """Fixed depth of surface water at the receiving node (feet or meters)
             (set to zero if surface water depth will vary
              as computed by flow routing).
             This value is used to compute HSW."""
 
-        self.threshold_groundwater_elevation = ''
+        self.threshold_groundwater_elevation = '*'
         """Groundwater elevation that must be reached before any flow occurs
             (feet or meters).
             Leave blank to use the receiving node's invert elevation."""
@@ -300,25 +300,25 @@ class LIDUsage(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment_name = ''
+        self.subcatchment_name = "None"
         """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
 
-        self.control_name = ''
+        self.control_name = "None"
         """Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment"""
 
         self.number_replicate_units = '0'
         """Number of equal size units of the LID practice deployed within the subcatchment"""
 
-        self.area_each_unit = ''
+        self.area_each_unit = '0'
         """Surface area devoted to each replicate LID unit"""
 
-        self.top_width_overland_flow_surface = ''
+        self.top_width_overland_flow_surface = '0'
         """Width of the outflow face of each identical LID unit"""
 
-        self.percent_initially_saturated = ''
+        self.percent_initially_saturated = '0'
         """Degree to which storage zone is initially filled with water"""
 
-        self.percent_impervious_area_treated = ''
+        self.percent_impervious_area_treated = '0'
         """Percent of the impervious portion of the subcatchment's non-LID area whose runoff
         is treated by the LID practice"""
 
@@ -326,10 +326,10 @@ class LIDUsage(Section):
         """1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
         than going to the subcatchment's outlet"""
 
-        self.detailed_report_file = ""
+        self.detailed_report_file = ''
         """Name of an optional file where detailed time series results for the LID will be written"""
 
-        self.subcatchment_drains_to = ""
+        self.subcatchment_drains_to = ''
         """ID of a subcatchment that this LID drains to"""
 
 
@@ -367,13 +367,13 @@ class InitialLoading(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.subcatchment_name = ''
+        self.subcatchment_name = "None"
         """Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs"""
 
-        self.pollutant_name = ''
+        self.pollutant_name = "None"
         """Name of a pollutant"""
 
-        self.initial_buildup = ''
+        self.initial_buildup = '0'
         """Initial buildup of pollutant (lbs/acre or kg/hectare)"""
 
 

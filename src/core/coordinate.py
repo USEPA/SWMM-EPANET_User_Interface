@@ -17,7 +17,7 @@ class Link:
     """A link between nodes in a model"""
 
     def __init__(self):
-        self.name = ""
+        self.name = 'Unnamed'
         """Link Name/Identifier"""
 
         self.description = ''
@@ -26,10 +26,10 @@ class Link:
         self.tag = ''
         """Optional label used to categorize or classify the Link"""
 
-        self.inlet_node = ''
+        self.inlet_node = 'None'
         """Name of node on the inlet end of the Link"""
 
-        self.outlet_node = ''
+        self.outlet_node = 'None'
         """Name of node on the outlet end of the Link"""
 
         self.vertices = []

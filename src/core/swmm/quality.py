@@ -50,7 +50,7 @@ class Landuse(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.name = ""
+        self.name = "Unnamed"
         """Name assigned to the land use"""
 
         self.street_sweeping_interval = ''
@@ -103,10 +103,10 @@ class Buildup(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.land_use_name = ""
+        self.land_use_name = "None"
         """land use name"""
 
-        self.pollutant = ''
+        self.pollutant = "None"
         """str: Pollutant name"""
 
         self.function = BuildupFunction.POW
@@ -125,7 +125,7 @@ class Buildup(Section):
         self.scaling_factor = '1.0'
         """float: Multiplier used to adjust the buildup rates listed in the time series"""
 
-        self.timeseries = ''
+        self.timeseries = "None"
         """str: ID of Time Series that contains buildup rates"""
 
         self.normalizer = Normalizer.AREA
@@ -152,10 +152,10 @@ class Washoff(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.land_use_name = ""
+        self.land_use_name = "None"
         """land use name"""
 
-        self.pollutant = ''
+        self.pollutant = "None"
         """Pollutant name"""
 
         self.function = WashoffFunction.EXP
@@ -206,7 +206,7 @@ class Pollutant(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ''
+        self.name = "Unnamed"
         """str: Name assigned to the pollutant"""
 
         self.units = ConcentrationUnits.MG_per_L
@@ -240,5 +240,3 @@ class Pollutant(Section):
         self.co_fraction = '0.0'
         """float: Fraction of the co-pollutant's runoff concentration that contributes to the
             runoff concentration of the current pollutant"""
-
-

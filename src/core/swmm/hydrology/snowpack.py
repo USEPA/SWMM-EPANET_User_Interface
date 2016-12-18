@@ -45,7 +45,7 @@ class SnowPack(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ''
+        self.name = "Unnamed"
         """User-assigned name for this snow pack"""
 
         self.has_plowable = False
@@ -136,10 +136,8 @@ class SnowPack(Section):
         self.fraction_converted_immediate_melt = "0.0"
         """Fraction of snow depth that becomes liquid water, runs onto any subcatchment associated with the snow pack"""
 
-        self.fraction_moved_another_subcatchment = "0.0"
+        self.fraction_moved_another_subcatchment = ''
         """Fraction of snow depth which is added to the snow accumulation on some other subcatchment"""
 
-        self.subcatchment_transfer = ""
+        self.subcatchment_transfer = ''
         """subcatchment receiving transfers of snow depth"""
-
-

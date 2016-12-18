@@ -52,10 +52,10 @@ class RainGage(Section, Coordinate):
         Section.__init__(self)
         Coordinate.__init__(self)
 
-        self.description = None
+        self.description = ''
         """Optional description of the gage"""
 
-        self.tag = None
+        self.tag = ''
         """Optional label used to categorize the gage"""
 
         self.rain_format = RainFormat.VOLUME
@@ -66,20 +66,20 @@ class RainGage(Section, Coordinate):
         """Recording time interval between gage readings in either decimal
             hours or hours:minutes format."""
 
-        self.snow_catch_factor = 1
+        self.snow_catch_factor = 1.0
         """Factor that corrects gage readings for snowfall"""
 
         self.data_source = RainDataSource.TIMESERIES
         """Source of rainfall data; This can be set to a
             TimeSeries or a TimeSeriesFile."""
 
-        self.timeseries = ""
+        self.timeseries = "None"
         """name of time series with rainfall data if Data Source selection was TIMESERIES"""
 
-        self.data_file_name = ""
+        self.data_file_name = "None"
         """Name of external file containing rainfall data"""
 
-        self.data_file_station_id = ""
+        self.data_file_station_id = "StationID"
         """Recording gage station number"""
 
         self.data_file_rain_units = RainFileUnits.IN

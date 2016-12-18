@@ -101,10 +101,10 @@ class Pump(SwmmLink):
     def __init__(self):
         SwmmLink.__init__(self)
 
-        self.pump_curve = ""
+        self.pump_curve = "None"
         """str: Associated pump curve"""
 
-        self.initial_status = ""
+        self.initial_status = "ON"
         """float: Initial status of the pump"""
 
         self.startup_depth = 0.0
@@ -135,7 +135,7 @@ class Orifice(SwmmLink):
         ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of bottom of orifice opening from inlet node invert"),
         ("discharge_coefficient",   '', "Discharge Coeff.",   "0.0",   '', '', "Discharge coefficient"),
         ("flap_gate",               '', "Flap Gate",          "False", '', '', "True if orifice contains a flap gate to prevent backflow"),
-        ("o_rate",                  '', "Time to Open/Close", "0.0",   '', '', "Time to open/close a gated orifice")
+        ("o_rate",                  '', "Time to Open/Close", "0.0",   '', '', "Time in decimal hours to open/close a gated orifice")
     ))
 
     def __init__(self):
@@ -143,7 +143,7 @@ class Orifice(SwmmLink):
         self.type = OrificeType.SIDE
         """OrificeType: Type of orifice"""
 
-        self.cross_section = ''
+        self.cross_section = "None"
         """Name of cross section in XSECTIONS Section"""
 
         self.inlet_offset = 0.0
@@ -156,7 +156,7 @@ class Orifice(SwmmLink):
         """bool: True if a flap gate exists that prevents backflow."""
 
         self.o_rate = 0.0
-        """float: Time to open/close a gated orifice"""
+        """float: Time in decimal hours to open/close a gated orifice"""
 
 
 class WeirType(Enum):
@@ -268,7 +268,7 @@ class Outlet(SwmmLink):
         self.curve_type = OutletCurveType.TABULAR_DEPTH
         """OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet"""
 
-        self.rating_curve = ""
+        self.rating_curve = "None"
         """str: Name of rating curve that relates outflow to either depth or head"""
 
 
@@ -337,7 +337,7 @@ class CrossSection(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.link = ''
+        self.link = "None"
         """name of the conduit, orifice, or weir this is a cross-section of."""
 
         self.shape = CrossSectionShape.NotSet
@@ -362,7 +362,7 @@ class CrossSection(Section):
         self.culvert_code = ''
         """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
 
-        self.curve = ''
+        self.curve = "None"
         """str: name of associated Shape Curve that defines how width varies with depth."""
 
     # TODO: access geometry1 as a name such as transect or xsection_name or geometry
@@ -387,11 +387,11 @@ class Transect(Section):
         self.name = ''
         """Transect Name"""
 
-        self.n_left = ''   # Manning's n of left overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_right = ''  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_channel = ''  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
-        self.overbank_left = ''   # station position which ends the left overbank portion of the channel (ft or m).
-        self.overbank_right = ''  # station position which begins the right overbank portion of the channel (ft or m).
+        self.n_left = '0'   # Manning's n of left overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_right = '0'  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_channel = '0'  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
+        self.overbank_left = '0'   # station position which ends the left overbank portion of the channel (ft or m).
+        self.overbank_right = '0'  # station position which begins the right overbank portion of the channel (ft or m).
         self.stations_modifier = '0'  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
         self.elevations_modifier = '0'  # amount added (or subtracted) from the elevation of each station (ft or m).
         self.meander_modifier = '0'  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).

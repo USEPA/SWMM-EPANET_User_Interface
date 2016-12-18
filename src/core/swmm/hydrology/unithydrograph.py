@@ -6,16 +6,16 @@ class UnitHydrographEntry:
         self.hydrograph_month = ''
         """str: Month for which hydrograph parameters will be defined"""
 
-        self.term = ''
+        self.term = "SHORT"
         """str: term of RDII response: SHORT or MEDIUM or LONG """
 
-        self.response_ratio = ''
+        self.response_ratio = '0'
         """str: Parameter R"""
 
-        self.time_to_peak = ''
+        self.time_to_peak = '0'
         """str: Parameter T (hours)"""
 
-        self.recession_limb_ratio = ''
+        self.recession_limb_ratio = '0'
         """str: Parameter K"""
 
         self.initial_abstraction_depth = ''
@@ -39,7 +39,7 @@ class UnitHydrograph(Section):
         self.name = "Unnamed"
         """str: Name assigned to this Unit Hydrograph group"""
 
-        self.rain_gage_name = ''
+        self.rain_gage_name = "None"
         """str: Name of the rain gage that supplies rainfall data to the unit hydrographs in the group"""
 
         self.value = []

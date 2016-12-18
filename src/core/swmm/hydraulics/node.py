@@ -11,7 +11,7 @@ class Node(Section, Coordinate):
         Coordinate.__init__(self)
         # self.name, inherited from Coordinate
         """Unique name or number identifying this node"""
-#
+
         # self.x, self.y, inherited from Coordinate
         """Node location for mapping"""
 
@@ -157,11 +157,11 @@ class Outfall(Junction):
         self.fixed_stage = 0.0
         """Water elevation for a FIXED type of outfall (feet or meters)."""
 
-        self.tidal_curve = ''
+        self.tidal_curve = "None"
         """The TidalCurve relating water elevation to hour of the
             day for a TIDAL outfall."""
 
-        self.time_series_name = ''
+        self.time_series_name = "None"
         """Name of time series containing time history of outfall elevations
             for a TIMESERIES outfall"""
 
@@ -231,7 +231,7 @@ class Divider(Junction):
     def __init__(self):
         Junction.__init__(self)
 
-        self.diverted_link = ''
+        self.diverted_link = "None"
         """Name of link which receives the diverted flow."""
 
         self.flow_divider_type = FlowDividerType.CUTOFF
@@ -240,7 +240,7 @@ class Divider(Junction):
         self.min_diversion_flow = 0.0
         """Flow at which diversion begins for a CUTOFF or WEIR divider (flow units)."""
 
-        self.divider_curve = ''
+        self.divider_curve = "None"
         """Diversion Curve used with a TABULAR divider"""
 
         self.weir_height = 0.0
@@ -289,37 +289,37 @@ class StorageUnit(Junction):
         self.storage_curve_type = StorageCurveType.TABULAR
         """StorageCurveType: FUNCTIONAL or TABULAR"""
 
-        self.storage_curve = ''
+        self.storage_curve = "None"
         """Storage Curve containing the relationship between
             surface area and storage depth"""
 
-        self.coefficient = ''
+        self.coefficient = '0'
         """A-value in the functional relationship
             between surface area and storage depth."""
 
-        self.exponent = ''
+        self.exponent = '0'
         """B-value in the functional relationship
             between surface area and storage depth."""
 
-        self.constant = ''
+        self.constant = '0'
         """C-value in the functional relationship
             between surface area and storage depth."""
 
-        self.evaporation_factor = ''
+        self.evaporation_factor = '0'
         """The fraction of the potential evaporation from the storage units
             water surface that is actually realized."""
 
-        self.seepage_loss = ''
+        self.seepage_loss = '0'
         """The following Green-Ampt infiltration parameters are only used when the storage
             node is intended to act as an infiltration basin:"""
 
-        self.seepage_suction_head = ''
+        self.seepage_suction_head = '0'
         """Soil capillary suction head (in or mm)."""
 
-        self.seepage_hydraulic_conductivity = ''
+        self.seepage_hydraulic_conductivity = '0'
         """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
-        self.seepage_initial_moisture_deficit = ''
+        self.seepage_initial_moisture_deficit = '0'
         """Initial soil moisture deficit (volume of voids / total volume)."""
 
 
@@ -334,13 +334,13 @@ class DirectInflow(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.node = ''
+        self.node = "None"
         """str: name of node where external inflow enters."""
 
-        self.timeseries = ''
+        self.timeseries = "None"
         """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
-        self.constituent = ''
+        self.constituent = "FLOW"
         """str: Name of constituent (pollutant) or FLOW"""
 
         self.format = DirectInflowType.CONCEN
@@ -366,13 +366,13 @@ class DryWeatherInflow(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.node = ''
+        self.node = "None"
         """str: name of node where external inflow enters."""
 
-        self.constituent = ''
+        self.constituent = "FLOW"
         """str: Name of constituent (pollutant) or FLOW"""
 
-        self.average = ''
+        self.average = '0.0'
         """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
 
         self.time_patterns = []
@@ -388,10 +388,10 @@ class RDIInflow(Section):
         self.node = ''
         """str: name of node where external inflow enters."""
 
-        self.hydrograph_group = ""
+        self.hydrograph_group = "None"
         """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
 
-        self.sewershed_area = ''
+        self.sewershed_area = '0'
         """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
 
 
@@ -426,10 +426,10 @@ class Treatment(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.node = ''
+        self.node = "None"
         """str: name of node where external inflow enters."""
 
-        self.pollutant = ''
+        self.pollutant = "None"
         """Name of pollutant receiving treatment"""
 
         self.function = ''

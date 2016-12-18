@@ -35,10 +35,10 @@ class Temperature(Section):
         self.source = TemperatureSource.UNSET
         """source of temperature data; timeseries or file"""
 
-        self.timeseries = ''
+        self.timeseries = "None"
         """name of time series in [TIMESERIES] section"""
 
-        self.filename = ''
+        self.filename = "None"
         """name of external Climate file with temperature data."""
 
         self.start_date = ''
@@ -62,19 +62,19 @@ class Evaporation(Section):
         self.format = EvaporationFormat.UNSET
         """format used for evaporation data"""
 
-        self.constant = ''
+        self.constant = '0'
         """a constant evaporation rate"""
 
         self.monthly = ()
         """twelve monthly evaporation rates"""
 
-        self.timeseries = ''
+        self.timeseries = "None"
         """name of time series in [TIMESERIES] section with evaporation data"""
 
         self.monthly_pan_coefficients = ()
         """twelve monthly pan coefficients used with file option and file name in temperature section"""
 
-        self.recovery_pattern = ''  # time pattern ID
+        self.recovery_pattern = "None"  # time pattern ID
         """name of a monthly time pattern"""
 
         self.dry_only = False

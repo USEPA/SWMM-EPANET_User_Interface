@@ -8,6 +8,6 @@ class Title(Section):
 
     def __init__(self):
         Section.__init__(self)
-        self.title = ""
+        self.title = "SWMM Project"
         """str: Descriptive title"""
 

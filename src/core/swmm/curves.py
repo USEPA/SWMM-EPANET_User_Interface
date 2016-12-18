@@ -23,7 +23,7 @@ class Curve(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ''      # string
+        self.name = "Unnamed"      # string
         """Curve name/ID/Label"""
 
         self.curve_type = CurveType.PUMP1

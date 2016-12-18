@@ -63,7 +63,7 @@ class LIDControl(Section):
     def __init__(self):
         Section.__init__(self)
 
-        self.name = ''
+        self.name = "Unnamed"
         """Name used to identify the particular LID control"""
 
         self.lid_type = LIDType.BC

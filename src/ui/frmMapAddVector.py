@@ -24,12 +24,10 @@ class frmMapAddVector(QtGui.QDialog):
 
     def btnBrowse_Clicked(self):
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
-        self.ui.txtDataset.text = filename
         self.ui.txtDataset.setText(filename)
         self.specs['filename'] = filename
 
     def btnBox_Clicked(self, btn):
-        choice = ""
         if len(self.ui.txtDataset.text().strip()) == 0:
             QMessageBox.information(None, "Add Vector Layer",  "Need to specify a data file", QMessageBox.Ok)
             pass
@@ -46,7 +44,7 @@ class frmMapAddVector(QtGui.QDialog):
         return ''
 
     def getLayerSpecifications(self):
-        #self.specs['filename'] = self.ui.txtDataset.text
+        self.specs['filename'] = self.ui.txtDataset.text().strip()
         #self.specs.add['datatype'] = ''
         #self.specs.add['dataencoding'] = ''
         return self.specs

@@ -355,7 +355,7 @@ class TimeSeriesReader(SectionReader):
             try:
                 fields = line.split()
                 if len(fields) > 1:
-                    if time_series.name:
+                    if time_series.name and time_series.name != "Unnamed":
                         if time_series.name != fields[0]:
                             raise ValueError("TimeSeriesReader.read: Different Timeseries names " +
                                              time_series.name + ', ' + fields[0])

@@ -229,7 +229,7 @@ class ProjectReader(InputFileReader):
         if self.defer_polygons:
             PolygonsReader.read(self.defer_polygons, project)
             self.defer_polygons = None
-        project.metric = self.project.options.general.flow_units in flow_units_metric
+        project.metric = project.options.flow_units in flow_units_metric
 
 
 

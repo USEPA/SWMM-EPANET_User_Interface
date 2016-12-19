@@ -906,6 +906,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
         if self.model_layers:
             self.model_layers.create_layers_from_project(self.project)
+            try:
+                self.setQgsMapTool()
+            except:
+                pass
 
     def new_item_name(self, item_type):
         """ Generate a name for a new item.
@@ -918,7 +922,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         links_groups = self.project.links_groups()
         if section in links_groups:
             unique_groups = links_groups
-        elif item_type.__name__ == "RainGage":
+        elif section.SECTION_NAME.upper() in ["[RAINGAGES]", "[LABELS]"]:
             unique_groups = [section]
         else:
             unique_groups = self.project.nodes_groups()

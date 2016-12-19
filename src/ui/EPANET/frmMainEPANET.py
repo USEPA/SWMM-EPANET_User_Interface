@@ -628,7 +628,7 @@ class frmMainEPANET(frmMain):
                     frmRun = frmRunEPANET(model_api, self.project, self)
                     self._forms.append(frmRun)
                     frmRun.Execute()
-                    self.report_status()
+                    # self.report_status()
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
                         self.set_thematic_controls()

@@ -550,7 +550,7 @@ class frmMainEPANET(frmMain):
 
     def get_object_list(self, category):
         section = self.project.find_section(category)
-        if category == 'Quality' or category == 'Controls':
+        if category == 'Quality' or category == 'Controls' or category == 'Reactions':
             return None
         if section and isinstance(section.value, list):
             return [item.name for item in section.value]

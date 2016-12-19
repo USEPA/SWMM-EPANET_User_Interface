@@ -68,13 +68,13 @@ class Evaporation(Section):
         self.monthly = ()
         """twelve monthly evaporation rates"""
 
-        self.timeseries = "None"
+        self.timeseries = ''
         """name of time series in [TIMESERIES] section with evaporation data"""
 
         self.monthly_pan_coefficients = ()
         """twelve monthly pan coefficients used with file option and file name in temperature section"""
 
-        self.recovery_pattern = "None"  # time pattern ID
+        self.recovery_pattern = ''  # time pattern ID
         """name of a monthly time pattern"""
 
         self.dry_only = False

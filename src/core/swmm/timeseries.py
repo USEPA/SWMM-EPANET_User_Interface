@@ -10,7 +10,7 @@ class TimeSeries(Section):
         self.name = "Unnamed"
         """name of timeseries"""
 
-        self.file = "None"
+        self.file = ''
         """file name if timeseries read from file"""
 
         self.dates = []

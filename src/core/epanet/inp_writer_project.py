@@ -119,11 +119,11 @@ class ProjectWriter(InputFileWriterBase):
         if emitters_text:
             derived_sections[emitters.SECTION_NAME] = emitters_text
 
-        #status = SectionAsList('[STATUS]')
-        #status.value = project.all_links()
-        #status_text = self.write_status.as_text(status)
-        #if status_text:
-        #    derived_sections[status.SECTION_NAME] = status_text
+        status = SectionAsList('[STATUS]')
+        status.value = project.all_links()
+        status_text = self.write_status.as_text(status)
+        if status_text:
+           derived_sections[status.SECTION_NAME] = status_text
 
         inp = InputFileWriterBase.as_text(self, project, derived_sections)
         inp += '\n' + '[END]' + '\n'

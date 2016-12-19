@@ -219,7 +219,7 @@ class StatusWriter(SectionWriter):
         Pumps can have a status of OPEN, CLOSED, or a speed.
     """
 
-    field_format = "{:16}\t{}\t{}"
+    field_format = "{:16}\t{}"
 
     @staticmethod
     def as_text(link):

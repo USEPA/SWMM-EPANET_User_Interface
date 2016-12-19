@@ -59,8 +59,8 @@ class Junction(Node):
         ('y',                   '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
         ('',                    '', "Description",     '',   '',   '', "Optional comment or description"),
         ('tag',                 '', "Tag",             '',   '',   '', "Optional category or classification"),
-        ('elevation',           '', "Elevation",       '',   '',   '', "Elevation of junction"),
-        ('base_demand_flow',    '', 'Base Demand',       '',  '',   '', "Base demand flow, characteristic of all demands at this node"),
+        ('elevation',           '', "Elevation",       '0.0',   '',   '', "Elevation of junction"),
+        ('base_demand_flow',    '', 'Base Demand',       '0.0',  '',   '', "Base demand flow, characteristic of all demands at this node"),
         ('demand_pattern_name', '', 'Demand Pattern',    '',  '',   '', "Demand pattern ID, optional"),
         ('demand_categories',   '', 'Demand Categories', '',  '',   '', "Number of demand categories, click to edit"),
         ('emitter_coefficient', '', 'Emitter Coeff.',    '',  '',   '', "Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which defaults to 0.5 and can be set in OPTIONS section."),
@@ -70,10 +70,10 @@ class Junction(Node):
     def __init__(self):
         Node.__init__(self)
 
-        self.elevation = ''
+        self.elevation = '0.0'
         """elevation of junction"""
 
-        self.base_demand_flow = ''
+        self.base_demand_flow = '0.0'
         """Base demand flow, characteristic of all demands at this node"""
 
         self.demand_pattern_name = ''

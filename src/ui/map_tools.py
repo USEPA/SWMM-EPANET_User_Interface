@@ -1144,6 +1144,10 @@ try:
             new_object.x = point.x()
             new_object.y = point.y()
             self.session.add_item(new_object)
+            if self.object_type.__name__ == "Label":
+                self.session.show_edit_window(
+                    self.session.make_editor_from_tree(self.session.tree_section,
+                                                       self.session.tree_top_items, [new_object.name]))
 
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.

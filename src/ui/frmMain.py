@@ -39,6 +39,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         QtGui.QMainWindow.__init__(self, None)
         self.crs = None
         self.project_settings = None
+        self.no_items = True
         self.setupUi(self)
         self.q_application = q_application
         try:
@@ -435,7 +436,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         self.layer = self.session.model_layers.layer_by_name(section_field_name)
                         break
 
-            if self.item.name == '' or self.item.name in self.section.value:
+            if self.item.name == '' or self.item.name == 'Unnamed' or self.item.name in self.section.value:
                 if "sublink" in self.layer.name().lower():
                     self.item.name = u'sublink-' + self.item.inlet_node
                 else:
@@ -520,8 +521,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.added_id = added[1][0].id()
                     self.layer.updateExtents()
                     self.layer.commitChanges()
-                    self.layer.triggerRepaint()
-                    self.session.map_widget.canvas.refresh()
+                    if self.session.no_items:
+                        self.session.zoomfull()
+                        self.session.no_items = False
+                    else:
+                        self.layer.triggerRepaint()
+                        self.session.map_widget.canvas.refresh()
                 else:
                     self.added_id = None
                     self.layer.rollBack()
@@ -899,20 +904,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
+        if self.model_layers:
+            self.model_layers.create_layers_from_project(self.project)
 
     def new_item_name(self, item_type):
         """ Generate a name for a new item.
-            Start with a default of the number of items already in this section plus one (converted to a string). """
+            Make sure name is unique within the set of items that item_type falls in
+                (links, rain gages, or nodes and subcatchments)
+            Search all names in the set of related items for numbers and use a number greater than any in use.
+            Use the prefix for item_type from self.project_settings if specified.
+        """
         section = getattr(self.project, self.section_types[item_type])
         links_groups = self.project.links_groups()
         if section in links_groups:
             unique_groups = links_groups
+        elif item_type.__name__ == "RainGage":
+            unique_groups = [section]
         else:
+            unique_groups = self.project.nodes_groups()
             if hasattr(self.project, "subcatchments"):
-                unique_groups = [self.project.subcatchments]
-                unique_groups.extend(self.project.nodes_groups())
-            else:
-                unique_groups = self.project.nodes_groups()
+                unique_groups.append(self.project.subcatchments)
         existing_names = []
         for section in unique_groups:
             for item in section.value:
@@ -1595,6 +1606,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.open_prj(projection_file_name)
                 path_only, file_only = os.path.split(file_name)
                 self.setWindowTitle(self.model + " - " + file_only)
+                self.no_items = False
                 ini_file_name = file_name[:-3] + "ini"
                 if os.path.isfile(ini_file_name):
                     try:

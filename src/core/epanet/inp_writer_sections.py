@@ -519,14 +519,23 @@ class ReactionsWriter(SectionWriter):
 
     SECTION_NAME = "[REACTIONS]"
 
-    # @staticmethod
-    # def as_text(reactions):
-    #     """format contents of this item for writing to file"""
-    #     if reactions.comment and reactions.comment.upper().startswith(";TYPE"):
-    #         # TODO: implement reactions table as list of reactions
-    #         return reactions.value
-    #     else:
-    #         return SectionWriter.as_text(reactions)
+    @staticmethod
+    def as_text(reactions):
+        txt = "[REACTIONS]\n"
+        txt += ";Type     	Pipe/Tank       	Coefficient\n"
+        """format contents of this item for writing to file"""
+        if reactions.value is not None and len(reactions.value) > 0:
+            for loc_spec in reactions.value:
+                txt += str(loc_spec) + "\n"
+        txt += "\n" + SectionWriter.as_text(reactions)
+
+        # if reactions.comment and reactions.comment.upper().startswith(";TYPE"):
+        #     # TODO: implement reactions table as list of reactions
+        #     return reactions.value
+        # else:
+        #     return SectionWriter.as_text(reactions)
+
+        return txt
 
 
 class ReportOptionsWriter(SectionWriter):

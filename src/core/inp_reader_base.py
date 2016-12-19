@@ -79,11 +79,13 @@ class InputFileReader(object):
         if "REACTION" in new_section.SECTION_NAME.upper() and old_section:
             for vmdata in old_section.metadata:
                 old_section.__setattr__(vmdata.attribute, new_section.__getattribute__(vmdata.attribute))
-            old_section.value.append(new_section.value)
+            if new_section.value and len(new_section.value) > 0:
+                for spec in new_section.value:
+                    old_section.value.append(spec)
         else:
             project.__setattr__(attr_name, new_section)
 
-        if new_section not in project.sections:
+        if old_section is None: #new_section not in project.sections:
             project.sections.append(new_section)
 
 

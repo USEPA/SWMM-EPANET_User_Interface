@@ -48,6 +48,8 @@ class EpanetProject(ProjectBase):
     def __init__(self):
         """Initialize the sections of an EPANET input file.
            Any sections not initialized here will be handled by the generic core.project_base.Section class."""
+        ProjectBase.__init__(self)
+
         self.title = Title()
         self.backdrop = BackdropOptions()       # BACKDROP      bounding rectangle and file name of backdrop image
         self.map = MapOptions()                 # MAP           map's bounding rectangle and units
@@ -75,7 +77,23 @@ class EpanetProject(ProjectBase):
         self.backdrop = BackdropOptions()
         self.calibrations = SectionAsList("[CALIBRATIONS]") # (list of Calibration)
 
-        ProjectBase.__init__(self)   # Do this after setting attributes so they will all get added to sections[]
+        self.sections = [
+            self.title,
+            self.options,
+            self.report,
+            self.junctions,
+            self.tanks,
+            self.reservoirs,
+            self.pipes,
+            self.pumps,
+            self.valves,
+            self.controls,
+            self.patterns,
+            self.curves,
+            self.backdrop,
+            self.map,
+            self.labels]  # Start with a sensible order of sections.
+        self.add_sections_from_attributes()  # Add any sections not added in the line above, should not be any left.
 
     def nodes_groups(self):
         return [self.junctions, self.reservoirs, self.tanks, self.sources]

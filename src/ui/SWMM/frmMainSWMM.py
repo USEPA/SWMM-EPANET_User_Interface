@@ -482,7 +482,7 @@ class frmMainSWMM(frmMain):
                             index += 1
                 if color_by:
                     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by, min, max)
-                    self.map_widget.LegendDock.setVisible(True)
+                    #self.map_widget.LegendDock.setVisible(True)
                 else:
                     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
                 self.model_layers.subcatchments.triggerRepaint()
@@ -526,7 +526,7 @@ class frmMainSWMM(frmMain):
                     if layer_type.isValid():
                         if color_by:
                             self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by, min, max)
-                            self.map_widget.LegendDock.setVisible(True)
+                            #self.map_widget.LegendDock.setVisible(True)
                         else:
                             self.map_widget.set_default_point_renderer(layer_type)
                         layer_type.triggerRepaint()
@@ -598,7 +598,7 @@ class frmMainSWMM(frmMain):
                             index += 1
                 if color_by:
                     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.conduits, color_by, min, max)
-                    self.map_widget.LegendDock.setVisible(True)
+                    #self.map_widget.LegendDock.setVisible(True)
                 else:
                     self.map_widget.set_default_line_renderer(self.model_layers.conduits)
                 self.model_layers.conduits.triggerRepaint()

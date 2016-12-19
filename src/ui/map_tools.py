@@ -681,9 +681,9 @@ try:
             for label, lower, upper, color in colorRamp:
                 symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
                 if layer.geometryType() == 0:
-                    symbol.setSize(8.0)
+                    symbol.setSize(4.0)
                 elif layer.geometryType() == 1:
-                    symbol.setWidth(3.5)
+                    symbol.setWidth(1.5)
                 symbol.setColor(QtGui.QColor(color))
                 rng = QgsRendererRangeV2(lower, upper, symbol, label)
                 ranges.append(rng)

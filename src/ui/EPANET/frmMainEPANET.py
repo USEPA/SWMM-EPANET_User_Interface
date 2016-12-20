@@ -266,12 +266,16 @@ class frmMainEPANET(frmMain):
                 attribute_names = [attribute.name for attribute in object_type.Attributes]
                 for item in attribute_names:
                     self.cboMapLinks.addItem(item)
+            self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
+
         self.allow_thematic_update = True
         self.update_thematic_map()
 
     def update_thematic_map(self):
         if not self.allow_thematic_update or not self.map_widget:
             return
+
+        enable_time_widget = False
 
         if self.model_layers.nodes_layers:
             setting = self.cboMapNodes.currentText()
@@ -292,6 +296,7 @@ class frmMainEPANET(frmMain):
                 pass
                 attribute = ENO.ENR_node_type.get_attribute_by_name(setting)
                 if attribute:
+                    enable_time_widget = True
                     values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
                     # also get min and max values over entire run
                     for time_increment in range(0,self.output.num_periods-1):
@@ -336,6 +341,7 @@ class frmMainEPANET(frmMain):
             elif self.output:  # Look for attribute to color by in the output
                 attribute = ENO.ENR_link_type.get_attribute_by_name(setting)
                 if attribute:
+                    enable_time_widget = True
                     values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
                     # also get min and max values over entire run
                     for time_increment in range(0,self.output.num_periods-1):
@@ -355,6 +361,7 @@ class frmMainEPANET(frmMain):
             else:
                 self.map_widget.set_default_line_renderer(self.model_layers.pipes)
             self.model_layers.pipes.triggerRepaint()
+        self.time_widget.setVisible(enable_time_widget)
 
     def cboMap_currentIndexChanged(self):
         pass

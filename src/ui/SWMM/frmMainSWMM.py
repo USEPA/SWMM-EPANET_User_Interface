@@ -413,7 +413,7 @@ class frmMainSWMM(frmMain):
             self.cboMapSubcatchments.currentIndexChanged.connect(self.update_thematic_map)
             self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
             self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
-            self.signalTimeChanged.connect(self.update_thematic_map)
+            self.signalTimeChanged.connect(self.update_thematic_map_time)
 
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.currentIndexChanged.connect(self.cbOffset_currentIndexChanged)
@@ -447,163 +447,242 @@ class frmMainSWMM(frmMain):
         self.update_thematic_map()
 
     def update_thematic_map(self):
+        enable_time_widget = False  # Flag to set if any selected attributes are time-based
         try:
             if not self.allow_thematic_update or not self.map_widget:
                 return
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
-                setting = self.cboMapSubcatchments.currentText()
+                selected_attribute = self.cboMapSubcatchments.currentText()
                 attribute = None
                 setting_index = self.cboMapSubcatchments.currentIndex()
                 if setting_index < 6:
-                    meta_item = Subcatchment.metadata.meta_item_of_label(setting)
+                    meta_item = Subcatchment.metadata.meta_item_of_label(selected_attribute)
                     attribute = meta_item.attribute
                 color_by = {}
-                min = None
-                max = None
+                self.thematic_subcatchment_min = None
+                self.thematic_subcatchment_max = None
                 if attribute:  # Found an attribute of the subcatchment class to color by
                     for subcatchment in self.project.subcatchments.value:
-                        color_by[subcatchment.name] = float(getattr(subcatchment, attribute, 0))
+                        value = float(getattr(subcatchment, attribute, 0))
+                        color_by[subcatchment.name] = value
+                        if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
+                            self.thematic_subcatchment_min = value
+                        if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
+                            self.thematic_subcatchment_max = value
+
                 elif self.output:  # Look for attribute to color by in the output
-                    attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(setting)
+                    attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
                     if attribute:
+                        enable_time_widget = True
+                        # find min and max values over entire run
+                        for time_increment in range(0, self.output.num_periods-1):
+                            values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute, time_increment)
+                            for value in values:
+                                if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
+                                    self.thematic_subcatchment_min = value
+                                if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
+                                    self.thematic_subcatchment_max = value
+                if color_by:
+                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                                                                        self.thematic_subcatchment_min,
+                                                                        self.thematic_subcatchment_max)
+                else:
+                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                self.model_layers.subcatchments.triggerRepaint()
+
+            if self.model_layers.nodes_layers:
+                selected_attribute = self.cboMapNodes.currentText()
+                attribute = None
+                setting_index = self.cboMapNodes.currentIndex()
+                if setting_index < 2:
+                    meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
+                    attribute = meta_item.attribute
+                color_by = {}
+                self.thematic_node_min = None
+                self.thematic_node_max = None
+                if attribute:  # Found an attribute of the node class to color by
+                    for section in self.project.nodes_groups():
+                        for item in section.value:
+                            value = float(getattr(item, attribute, 0))
+                            color_by[item.name] = value
+                            if self.thematic_node_min is None or value < self.thematic_node_min:
+                                self.thematic_node_min = value
+                            if self.thematic_node_max is None or value > self.thematic_node_max:
+                                self.thematic_node_max = value
+
+                elif self.output:  # Look for attribute to color by in the output
+                    attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        enable_time_widget = True
+                        # find min and max values over entire run
+                        for time_increment in range(0, self.output.num_periods-1):
+                            values = SMO.SwmmOutputNode.get_attribute_for_all_at_time(self.output, attribute, time_increment)
+                            for value in values:
+                                if self.thematic_node_min is None or value < self.thematic_node_min:
+                                    self.thematic_node_min = value
+                                if self.thematic_node_max is None or value > self.thematic_node_max:
+                                    self.thematic_node_max = value
+
+                for layer in self.model_layers.nodes_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_node_min,
+                                                                                self.thematic_node_max)
+                        else:
+                            self.map_widget.set_default_point_renderer(layer)
+                        layer.triggerRepaint()
+
+            if self.model_layers.links_layers:
+                selected_attribute = self.cboMapLinks.currentText()
+                attribute = None
+                setting_index = self.cboMapLinks.currentIndex()
+                if setting_index < 3:
+                    meta_item = Conduit.metadata.meta_item_of_label(selected_attribute)
+                    attribute = meta_item.attribute
+                if setting_index == 3:
+                    # special case for slope
+                    attribute = 'slope'
+                color_by = {}
+                self.thematic_link_min = None
+                self.thematic_link_max = None
+                if attribute:  # Found an attribute of the conduit class to color by
+                    for link in self.project.all_links():
+                        try:
+                            if attribute == 'max_depth':
+                                for value in self.project.xsections.value:
+                                    if value.link == link.name:
+                                        color_by[link.name] = float(value.geometry1)
+                            elif attribute == 'slope':
+                                # calculate slope
+                                try:
+                                    start_elev = float(self.project.all_nodes()[link.inlet_node].elevation)
+                                except Exception as start_elev_ex:
+                                    print("Exception finding conduit start elevation, using 0: " + str(start_elev_ex))
+                                    start_elev = 0.0
+                                try:
+                                    end_elev = float(self.project.all_nodes()[link.outlet_node].elevation)
+                                except Exception as end_elev_ex:
+                                    print("Exception finding conduit end elevation, using 0: " + str(end_elev_ex))
+                                    end_elev = 0.0
+                                if link.length > 0.0:
+                                    slope = abs((float(start_elev) - float(end_elev)) / float(link.length))
+                                else:
+                                    slope = 0.0
+                                color_by[link.name] = float(slope)
+                            else:
+                                color_by[link.name] = float(getattr(link, attribute, 0))
+                            if self.thematic_link_min is None or color_by[link.name] < self.thematic_link_min:
+                                self.thematic_link_min = color_by[link.name]
+                            if self.thematic_link_max is None or color_by[link.name] > self.thematic_link_max:
+                                self.thematic_link_max = color_by[link.name]
+                        except Exception as exLinkAtt:
+                            print("update_thematic_map: link attribute: " + link.name + ': ' + str(exLinkAtt))
+
+                elif self.output:  # Look for attribute to color by in the output
+                    attribute = SMO.SwmmOutputLink.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        enable_time_widget = True
+                        # find min and max values over entire run
+                        for time_increment in range(0, self.output.num_periods-1):
+                            values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute, time_increment)
+                            for value in values:
+                                if self.thematic_link_min is None or value < self.thematic_link_min:
+                                    self.thematic_link_min = value
+                                if self.thematic_link_max is None or value > self.thematic_link_max:
+                                    self.thematic_link_max = value
+                for layer in self.model_layers.links_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_link_min,
+                                                                                self.thematic_link_max)
+                        else:
+                            self.map_widget.set_default_line_renderer(layer)
+                        layer.triggerRepaint()
+        except Exception as exBig:
+            print("Exception in update_thematic_map: " + str(exBig))
+
+        self.time_widget.setVisible(enable_time_widget)
+        if enable_time_widget:
+            self.update_thematic_map_time()
+
+    def update_thematic_map_time(self):
+        try:
+            if not self.allow_thematic_update or not self.map_widget:
+                return
+
+            if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
+                selected_attribute = self.cboMapSubcatchments.currentText()
+                setting_index = self.cboMapSubcatchments.currentIndex()
+                color_by = {}
+                if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
+                    attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        enable_time_widget = True
                         values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        # also get min and max values over entire run
-                        for time_increment in range(0,self.output.num_periods-1):
-                            temp_values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
-                            for temp_value in temp_values:
-                                if min is None or temp_value < min:
-                                    min = temp_value
-                                if max is None or temp_value > max:
-                                    max = temp_value
                         index = 0
                         for subcatchment in self.output.subcatchments.values():
                             color_by[subcatchment.name] = values[index]
                             index += 1
                 if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by, min, max)
+                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                                                                        self.thematic_subcatchment_min,
+                                                                        self.thematic_subcatchment_max)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
                     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
                 self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
-                setting = self.cboMapNodes.currentText()
-                attribute = None
+                selected_attribute = self.cboMapNodes.currentText()
                 setting_index = self.cboMapNodes.currentIndex()
-                if setting_index < 2:
-                    meta_item = Junction.metadata.meta_item_of_label(setting)
-                    attribute = meta_item.attribute
                 color_by = {}
-                min = None
-                max = None
-                if attribute:  # Found an attribute of the node class to color by
-                    for junction in self.project.junctions.value:
-                        color_by[junction.name] = float(getattr(junction, attribute, 0))
-                    for outfall in self.project.outfalls.value:
-                        color_by[outfall.name] = float(getattr(outfall, attribute, 0))
-                    for divider in self.project.dividers.value:
-                        color_by[divider.name] = float(getattr(divider, attribute, 0))
-                    for storage in self.project.storage.value:
-                        color_by[storage.name] = float(getattr(storage, attribute, 0))
-                elif self.output:  # Look for attribute to color by in the output
-                    attribute = SMO.SwmmOutputNode.get_attribute_by_name(setting)
+                if setting_index >= 2 and self.output:  # Look for attribute to color by in the output
+                    attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
                     if attribute:
+                        enable_time_widget = True
+                        # set values to color by at current time index
                         values = SMO.SwmmOutputNode.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        # also get min and max values over entire run
-                        for time_increment in range(0,self.output.num_periods-1):
-                            temp_values = SMO.SwmmOutputNode.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
-                            for temp_value in temp_values:
-                                if min is None or temp_value < min:
-                                    min = temp_value
-                                if max is None or temp_value > max:
-                                    max = temp_value
                         index = 0
                         for node in self.output.nodes.values():
                             color_by[node.name] = values[index]
                             index += 1
+
                 for layer_type in self.model_layers.nodes_layers:
                     if layer_type.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by, min, max)
-                            #self.map_widget.LegendDock.setVisible(True)
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by,
+                                                                                self.thematic_node_min,
+                                                                                self.thematic_node_max)
                         else:
                             self.map_widget.set_default_point_renderer(layer_type)
                         layer_type.triggerRepaint()
 
-            if self.model_layers.conduits and self.model_layers.conduits.isValid():
-                setting = self.cboMapLinks.currentText()
-                attribute = None
+            if self.model_layers.links_layers:
+                selected_attribute = self.cboMapLinks.currentText()
                 setting_index = self.cboMapLinks.currentIndex()
-                if setting_index < 3:
-                    meta_item = Conduit.metadata.meta_item_of_label(setting)
-                    attribute = meta_item.attribute
-                if setting_index == 3:
-                    # special case for slope
-                    attribute = 'slope'
                 color_by = {}
-                min = None
-                max = None
-                if attribute:  # Found an attribute of the conduit class to color by
-                    for conduit in self.project.conduits.value:
-                        if attribute == 'max_depth':
-                            for value in self.project.xsections.value:
-                                if value.link == conduit.name:
-                                    color_by[conduit.name] = float(value.geometry1)
-                        elif attribute == 'slope':
-                            # have to do calcs to get slope
-                            start_elev = 0.0
-                            end_elev = 0.0
-                            slope = 0.0
-                            for junction in self.project.junctions.value:
-                                if junction.name == conduit.inlet_node:
-                                    start_elev = junction.elevation
-                                if junction.name == conduit.outlet_node:
-                                    end_elev = junction.elevation
-                            for outfall in self.project.outfalls.value:
-                                if outfall.name == conduit.inlet_node:
-                                    start_elev = outfall.elevation
-                                if outfall.name == conduit.outlet_node:
-                                    end_elev = outfall.elevation
-                            for divider in self.project.dividers.value:
-                                if divider.name == conduit.inlet_node:
-                                    start_elev = divider.elevation
-                                if divider.name == conduit.outlet_node:
-                                    end_elev = divider.elevation
-                            for storage in self.project.storage.value:
-                                if storage.name == conduit.inlet_node:
-                                    start_elev = storage.elevation
-                                if storage.name == conduit.outlet_node:
-                                    end_elev = storage.elevation
-                            if conduit.length > 0.0:
-                                slope = abs((float(start_elev) - float(end_elev)) / float(conduit.length))
-                            color_by[conduit.name] = float(slope)
-                        else:
-                            color_by[conduit.name] = float(getattr(conduit, attribute, 0))
-                elif self.output:  # Look for attribute to color by in the output
-                    attribute = SMO.SwmmOutputLink.get_attribute_by_name(setting)
+                if setting_index > 3 and self.output:  # Look for attribute to color by in the output
+                    attribute = SMO.SwmmOutputLink.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        # also get min and max values over entire run
-                        for time_increment in range(0,self.output.num_periods-1):
-                            temp_values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
-                            for temp_value in temp_values:
-                                if min is None or temp_value < min:
-                                    min = temp_value
-                                if max is None or temp_value > max:
-                                    max = temp_value
                         index = 0
                         for link in self.output.links.values():
                             color_by[link.name] = values[index]
                             index += 1
-                if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.conduits, color_by, min, max)
-                    #self.map_widget.LegendDock.setVisible(True)
-                else:
-                    self.map_widget.set_default_line_renderer(self.model_layers.conduits)
-                self.model_layers.conduits.triggerRepaint()
+                for layer in self.model_layers.links_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_link_min,
+                                                                                self.thematic_link_max)
+                        else:
+                            self.map_widget.set_default_line_renderer(layer)
+                        layer.triggerRepaint()
         except Exception as exBig:
-            print("Exception in update_thematic_map: " + str(exBig))
+            print("Exception in update_thematic_map_time: " + str(exBig))
 
     def get_output(self):
         if not self.output:

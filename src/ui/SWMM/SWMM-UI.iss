@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SWMM-UI"
-#define MyAppVersion "MTP 3"
+#define MyAppVersion "MTP 3r3"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/SWMM-EPANET_User_Interface/"
 #define MyAppExeName "SWMM-UI.exe"
@@ -24,7 +24,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=SWMM-UI-MTP3
+OutputBaseFilename=SWMM-UI-MTP3r3
 Compression=lzma
 SolidCompression=yes
 

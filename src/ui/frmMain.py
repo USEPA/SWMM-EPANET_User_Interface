@@ -82,7 +82,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdRun_Simulation.triggered.connect(self.run_simulation)
         self.actionRun_SimulationMenu.triggered.connect(self.run_simulation)
         self.actionStdProjCalibration_Data.triggered.connect(self.calibration_data)
-        self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
+        # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
@@ -337,11 +337,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
             import_export.export_to_gis(self, file_name)
 
-    def tabProjMapChanged(self, index):
-        if index == 1:
-            self.time_widget.setVisible(True)
-        else:
-            self.time_widget.setVisible(False)
+    # def tabProjMapChanged(self, index):
+    #     if index == 1:
+    #         self.time_widget.setVisible(True)
+    #     else:
+    #         self.time_widget.setVisible(False)
 
     def saveMapAsImage(self):
         directory = self.program_settings.value("ProjectDir", "")
@@ -1228,7 +1228,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def edit_script(self):
         import editor
-        editor.ICON_FOLDER = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
+        editor.ICON_FOLDER = os.path.join(INSTALL_DIR, "icons", "editor")
+        if not os.path.isdir(editor.ICON_FOLDER):
+            editor.ICON_FOLDER = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
         editor.MAX_RECENT_FILES = MAX_RECENT_FILES
         self._editor_form = editor.EditorWindow(parent=self, session=self)
         self._editor_form.session = self

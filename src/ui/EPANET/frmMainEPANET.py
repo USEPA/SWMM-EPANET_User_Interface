@@ -246,7 +246,7 @@ class frmMainEPANET(frmMain):
             self.set_thematic_controls()
             self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
             self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
-            self.signalTimeChanged.connect(self.update_thematic_map)
+            self.signalTimeChanged.connect(self.update_thematic_map_time)
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -278,90 +278,164 @@ class frmMainEPANET(frmMain):
         enable_time_widget = False
 
         if self.model_layers.nodes_layers:
-            setting = self.cboMapNodes.currentText()
+            selected_attribute = self.cboMapNodes.currentText()
             attribute = None
             setting_index = self.cboMapNodes.currentIndex()
             if setting_index < 4:
-                meta_item = Junction.metadata.meta_item_of_label(setting)
+                meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
                 attribute = meta_item.attribute
             color_by = {}
-            min = None
-            max = None
+            self.thematic_node_min = None
+            self.thematic_node_max = None
             if attribute:  # Found an attribute of the node class to color by
-                for junction in self.project.junctions.value:
-                    color_by[junction.name] = float(getattr(junction, attribute, 0))
-                for tank in self.project.tanks.value:
-                    color_by[tank.name] = float(getattr(tank, attribute, 0))
+                for item in self.project.all_nodes():
+                    value = float(getattr(item, attribute, 0))
+                    color_by[item.name] = value
+                    if self.thematic_node_min is None or value < self.thematic_node_min:
+                        self.thematic_node_min = value
+                    if self.thematic_node_max is None or value > self.thematic_node_max:
+                        self.thematic_node_max = value
+
             elif self.output:  # Look for attribute to color by in the output
-                pass
-                attribute = ENO.ENR_node_type.get_attribute_by_name(setting)
+                attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
                 if attribute:
                     enable_time_widget = True
+                    # find min and max values over entire run
+                    for time_increment in range(0, self.output.num_periods-1):
+                        values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
+                        for value in values:
+                            if self.thematic_node_min is None or value < self.thematic_node_min:
+                                self.thematic_node_min = value
+                            if self.thematic_node_max is None or value > self.thematic_node_max:
+                                self.thematic_node_max = value
                     values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                    # also get min and max values over entire run
-                    for time_increment in range(0,self.output.num_periods-1):
-                        temp_values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
-                        for temp_value in temp_values:
-                            if min is None or temp_value < min:
-                                min = temp_value
-                            if max is None or temp_value > max:
-                                max = temp_value
                     index = 0
                     for node in self.output.nodes.values():
                         color_by[node.name] = values[index]
                         index += 1
-            for layer_type in self.model_layers.nodes_layers:
-                if layer_type.isValid():
-                    if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by, min, max)
-                        #self.map_widget.LegendDock.setVisible(True)
-                    else:
-                        self.map_widget.set_default_point_renderer(layer_type)
-                    layer_type.triggerRepaint()
 
-        if self.model_layers.pipes and self.model_layers.pipes.isValid():
-            setting = self.cboMapLinks.currentText()
+            for layer in self.model_layers.nodes_layers:
+                if layer.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_node_min,
+                                                                            self.thematic_node_max)
+                    else:
+                        self.map_widget.set_default_point_renderer(layer)
+                    layer.triggerRepaint()
+
+        if self.model_layers.links_layers:
+            selected_attribute = self.cboMapLinks.currentText()
             attribute = None
             setting_index = self.cboMapLinks.currentIndex()
             if setting_index < 6:
-                meta_item = Pipe.metadata.meta_item_of_label(setting)
+                meta_item = Pipe.metadata.meta_item_of_label(selected_attribute)
                 attribute = meta_item.attribute
             color_by = {}
-            min = None
-            max = None
+            self.thematic_link_min = None
+            self.thematic_link_max = None
             if attribute:  # Found an attribute of the pipe class to color by
-                for pipe in self.project.pipes.value:
-                    if attribute == 'max_depth':
-                        pass
-        #                 for value in self.project.xsections.value:
-        #                     if value.link == conduit.name:
-        #                         color_by[conduit.name] = float(value.geometry1)
-                    else:
-                        color_by[pipe.name] = float(getattr(pipe, attribute, 0))
+                for link in self.project.all_links():
+                    try:
+                        if attribute == 'max_depth':
+                            pass
+                            # for value in self.project.xsections.value:
+                            #     if value.link == conduit.name:
+                            #         color_by[conduit.name] = float(value.geometry1)
+                        else:
+                            color_by[link.name] = float(getattr(link, attribute, 0))
+                        if self.thematic_link_min is None or color_by[link.name] < self.thematic_link_min:
+                            self.thematic_link_min = color_by[link.name]
+                        if self.thematic_link_max is None or color_by[link.name] > self.thematic_link_max:
+                            self.thematic_link_max = color_by[link.name]
+                    except Exception as exLinkAtt:
+                        print("update_thematic_map: link attribute: " + link.name + ': ' + str(exLinkAtt))
+
             elif self.output:  # Look for attribute to color by in the output
-                attribute = ENO.ENR_link_type.get_attribute_by_name(setting)
+                attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
                 if attribute:
                     enable_time_widget = True
+                    # find min and max values over entire run
+                    for time_increment in range(0, self.output.num_periods-1):
+                        values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
+                        for value in values:
+                            if self.thematic_link_min is None or value < self.thematic_link_min:
+                                self.thematic_link_min = value
+                            if self.thematic_link_max is None or value > self.thematic_link_max:
+                                self.thematic_link_max = value
                     values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                    # also get min and max values over entire run
-                    for time_increment in range(0,self.output.num_periods-1):
-                        temp_values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
-                        for temp_value in temp_values:
-                            if min is None or temp_value < min:
-                                min = temp_value
-                            if max is None or temp_value > max:
-                                max = temp_value
                     index = 0
                     for link in self.output.links.values():
                         color_by[link.name] = values[index]
                         index += 1
-            if color_by:
-                self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.pipes, color_by, min, max)
-                #self.map_widget.LegendDock.setVisible(True)
-            else:
-                self.map_widget.set_default_line_renderer(self.model_layers.pipes)
-            self.model_layers.pipes.triggerRepaint()
+            for layer in self.model_layers.links_layers:
+                if layer.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_link_min,
+                                                                            self.thematic_link_max)
+                    else:
+                        self.map_widget.set_default_line_renderer(layer)
+                    layer.triggerRepaint()
         self.time_widget.setVisible(enable_time_widget)
+        if enable_time_widget:
+            self.update_thematic_map_time()
+
+    def update_thematic_map_time(self):
+        """
+            Update thematic map for the current self.time_index.
+            Depends on update_thematic_map having been called since last change to thematic map options.
+        """
+        try:
+            if not self.allow_thematic_update or not self.map_widget:
+                return
+
+            if self.model_layers.nodes_layers:
+                selected_attribute = self.cboMapNodes.currentText()
+                setting_index = self.cboMapNodes.currentIndex()
+                color_by = {}
+                if setting_index >= 4 and self.output:  # Look for attribute to color by in the output
+                    attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                        index = 0
+                        for node in self.output.nodes.values():
+                            color_by[node.name] = values[index]
+                            index += 1
+
+                for layer in self.model_layers.nodes_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_node_min,
+                                                                                self.thematic_node_max)
+                        else:
+                            self.map_widget.set_default_point_renderer(layer)
+                        layer.triggerRepaint()
+
+            if self.model_layers.links_layers:
+                selected_attribute = self.cboMapLinks.currentText()
+                setting_index = self.cboMapLinks.currentIndex()
+                color_by = {}
+                if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
+                    attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                        index = 0
+                        for link in self.output.links.values():
+                            color_by[link.name] = values[index]
+                            index += 1
+                for layer in self.model_layers.links_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_link_min,
+                                                                                self.thematic_link_max)
+                        else:
+                            self.map_widget.set_default_line_renderer(layer)
+                        layer.triggerRepaint()
+        except Exception as exBig:
+            print("Exception in update_thematic_map_time: " + str(exBig))
 
     def cboMap_currentIndexChanged(self):
         pass

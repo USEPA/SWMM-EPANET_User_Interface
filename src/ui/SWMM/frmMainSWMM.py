@@ -502,14 +502,13 @@ class frmMainSWMM(frmMain):
                 self.thematic_node_min = None
                 self.thematic_node_max = None
                 if attribute:  # Found an attribute of the node class to color by
-                    for section in self.project.nodes_groups():
-                        for item in section.value:
-                            value = float(getattr(item, attribute, 0))
-                            color_by[item.name] = value
-                            if self.thematic_node_min is None or value < self.thematic_node_min:
-                                self.thematic_node_min = value
-                            if self.thematic_node_max is None or value > self.thematic_node_max:
-                                self.thematic_node_max = value
+                    for item in self.project.all_nodes():
+                        value = float(getattr(item, attribute, 0))
+                        color_by[item.name] = value
+                        if self.thematic_node_min is None or value < self.thematic_node_min:
+                            self.thematic_node_min = value
+                        if self.thematic_node_max is None or value > self.thematic_node_max:
+                            self.thematic_node_max = value
 
                 elif self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
@@ -609,6 +608,10 @@ class frmMainSWMM(frmMain):
             self.update_thematic_map_time()
 
     def update_thematic_map_time(self):
+        """
+            Update thematic map for the current self.time_index.
+            Depends on update_thematic_map having been called since last change to thematic map options.
+        """
         try:
             if not self.allow_thematic_update or not self.map_widget:
                 return
@@ -642,7 +645,6 @@ class frmMainSWMM(frmMain):
                 if setting_index >= 2 and self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
                     if attribute:
-                        enable_time_widget = True
                         # set values to color by at current time index
                         values = SMO.SwmmOutputNode.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
                         index = 0
@@ -650,15 +652,15 @@ class frmMainSWMM(frmMain):
                             color_by[node.name] = values[index]
                             index += 1
 
-                for layer_type in self.model_layers.nodes_layers:
-                    if layer_type.isValid():
+                for layer in self.model_layers.nodes_layers:
+                    if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer_type, color_by,
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
                                                                                 self.thematic_node_max)
                         else:
-                            self.map_widget.set_default_point_renderer(layer_type)
-                        layer_type.triggerRepaint()
+                            self.map_widget.set_default_point_renderer(layer)
+                        layer.triggerRepaint()
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()

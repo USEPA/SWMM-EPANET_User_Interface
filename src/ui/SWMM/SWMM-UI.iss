@@ -20,7 +20,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
@@ -35,10 +35,11 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\SWMM-UI\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
-Source: "swmmimages\*";       DestDir: "{app}\swmmimages"; Flags: ignoreversion recursesubdirs
-Source: "{#QTplugins}\sqldrivers\qsqlite4.dll";       DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "{#QTplugins}\imageformats\*";                DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+Source: "dist\SWMM-UI\*";     DestDir: "{app}";              Flags: ignoreversion recursesubdirs
+Source: "swmmimages\*";       DestDir: "{app}\swmmimages";   Flags: ignoreversion recursesubdirs
+Source: "..\icons\editor\*";  DestDir: "{app}\icons\editor"; Flags: ignoreversion recursesubdirs
+Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"

@@ -1268,6 +1268,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getSaveFileName(self, browse_title, directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
+            # Append extension if not there yet
+            if not str(file_name).lower().endswith(".py"):
+                file_name += ".py"
             self.add_recent_script(file_name)
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:

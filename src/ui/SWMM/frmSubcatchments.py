@@ -40,72 +40,73 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item,
+                                          "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
+        self.row_named = {}
+
+        for row in range(0, self.tblGeneric.rowCount()):
+            self.row_named[str(self.tblGeneric.verticalHeaderItem(row).text())] = row
 
         for column in range(0, self.tblGeneric.columnCount()):
+
             # for snowpacks, show available snowpacks
-            snowpack_section = self.project.find_section("SNOWPACKS")
-            snowpack_list = snowpack_section.value[0:]
             combobox = QtGui.QComboBox()
             combobox.addItem('')
             selected_index = 0
-            for value in snowpack_list:
+            for value in self.project.snowpacks.value:
                 combobox.addItem(value.name)
                 if edit_these[column].snow_pack == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
-            self.tblGeneric.setCellWidget(20, column, combobox)
+            self.tblGeneric.setCellWidget(self.row_named["Snow Pack"], column, combobox)
+
             # also set special text plus button cells
-            self.set_infiltration_cell(column)
-            self.set_groundwater_cell(column)
-            self.set_lid_control_cell(column)
-            self.set_land_use_cell(column)
-            self.set_initial_buildup_cell(column)
+            self.set_special_cells(column)
 
         self.installEventFilter(self)
+
+    def set_special_cells(self, column):
+        self.set_infiltration_cell(self.row_named["Infiltration"], column)
+        self.set_groundwater_cell(self.row_named["Groundwater"], column)
+        self.set_lid_control_cell(self.row_named["LID Controls"], column)
+        self.set_land_use_cell(self.row_named["Land Uses"], column)
+        self.set_initial_buildup_cell(self.row_named["Initial Buildup"], column)
 
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:
-                self.set_infiltration_cell(self.refresh_column)
-                self.set_groundwater_cell(self.refresh_column)
-                self.set_lid_control_cell(self.refresh_column)
-                self.set_land_use_cell(self.refresh_column)
-                self.set_initial_buildup_cell(self.refresh_column)
+                self.set_special_cells(self.refresh_column)
                 self.refresh_column = -1
         return False
 
-    def set_infiltration_cell(self, column):
+    def set_infiltration_cell(self, row, column):
         # text plus button for infiltration editor
-        option_section = self.project.find_section('OPTIONS')
         tb = TextPlusButton(self)
-        tb.textbox.setText(option_section.infiltration)
+        tb.textbox.setText(self.project.options.infiltration)
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilt(column))
-        self.tblGeneric.setItem(18, column, QtGui.QTableWidgetItem(''))
-        self.tblGeneric.setCellWidget(18, column, tb)
+        self.tblGeneric.setItem(row, column, QtGui.QTableWidgetItem(''))
+        self.tblGeneric.setCellWidget(row, column, tb)
 
-    def set_groundwater_cell(self, column):
+    def set_groundwater_cell(self, row, column):
         # text plus button for groundwater editor
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
+        for value in self.project.groundwater.value:
             if value.subcatchment == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_groundwater(column))
-        self.tblGeneric.setCellWidget(19, column, tb)
+        self.tblGeneric.setCellWidget(row, column, tb)
 
-    def set_lid_control_cell(self, column):
+    def set_lid_control_cell(self, row, column):
         # text plus button for lid controls
         tb = TextPlusButton(self)
         section = self.project.find_section("LID_USAGE")
         if section:
-            lid_list = section.value[0:]
+            lid_list = section.value
         else:
             lid_list = []
         lid_count = 0
@@ -116,9 +117,9 @@ class frmSubcatchments(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_lid_controls(column))
-        self.tblGeneric.setCellWidget(21, column, tb)
+        self.tblGeneric.setCellWidget(row, column, tb)
 
-    def set_land_use_cell(self, column):
+    def set_land_use_cell(self, row, column):
         # text plus button for land use coverages
         tb = TextPlusButton(self)
         section = self.project.find_section("COVERAGES")
@@ -131,21 +132,19 @@ class frmSubcatchments(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_coverage_controls(column))
-        self.tblGeneric.setCellWidget(22, column, tb)
+        self.tblGeneric.setCellWidget(row, column, tb)
 
-    def set_initial_buildup_cell(self, column):
+    def set_initial_buildup_cell(self, row, column):
         # text plus button for initial buildup
         tb = TextPlusButton(self)
         tb.textbox.setText('NONE')
-        loadings_section = self.project.find_section('LOADINGS')
-        loadings_list = loadings_section.value[0:]
-        for value in loadings_list:
-            if value.subcatchment_name == str(self.tblGeneric.item(0,column).text()):
+        for value in self.project.loadings.value:
+            if value.subcatchment_name == str(self.tblGeneric.item(0, column).text()):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_loadings_controls(column))
-        self.tblGeneric.setCellWidget(23, column, tb)
+        self.tblGeneric.setCellWidget(row, column, tb)
 
     def make_show_groundwater(self, column):
         def local_show():
@@ -174,25 +173,26 @@ class frmSubcatchments(frmGenericPropertyEditor):
     def make_show_infilt(self, column):
         def local_show():
             edit_these = []
-            infiltration_section = self.project.find_section('INFILTRATION')
+            infiltration_section = self.project.infiltration
             if isinstance(infiltration_section.value, list):
                 if len(infiltration_section.value) > 0:
                     for item in infiltration_section.value:
-                        if item.subcatchment == str(self.tblGeneric.item(0,column).text()):
+                        if item.subcatchment == str(self.tblGeneric.item(0, column).text()):
                             edit_these.append(item)
                 if len(edit_these) == 0:
-                    option_section = self.project.find_section('OPTIONS')
-                    new_item = HortonInfiltration()
-                    if option_section.infiltration == "HORTON":
+                    infiltration = self.project.options.infiltration.upper()
+                    if infiltration == "HORTON":
                         new_item = HortonInfiltration()
-                    elif option_section.infiltration == "MODIFIED_HORTON":
+                    elif infiltration == "MODIFIED_HORTON":
                         new_item = HortonInfiltration()
-                    elif option_section.infiltration == "GREEN_AMPT":
+                    elif infiltration == "GREEN_AMPT":
                         new_item = GreenAmptInfiltration()
-                    elif option_section.infiltration == "MODIFIED_GREEN_AMPT":
+                    elif infiltration == "MODIFIED_GREEN_AMPT":
                         new_item = GreenAmptInfiltration()
-                    elif option_section.infiltration == "CURVE_NUMBER":
+                    elif infiltration == "CURVE_NUMBER":
                         new_item = CurveNumberInfiltration()
+                    else:
+                        new_item = HortonInfiltration()
                     infiltration_section.value.append(new_item)
                     edit_these.append(new_item)
             editor = frmInfiltration(self, edit_these, None, "SWMM Infiltration Editor")

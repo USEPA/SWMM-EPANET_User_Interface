@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.SWMM.frmLandUsesDesigner import Ui_frmLandUsesEditor
 import ui.convenience
+from core.swmm.quality import Buildup
 from core.swmm.quality import Landuse
 from core.swmm.quality import BuildupFunction
 from core.swmm.quality import Normalizer
@@ -73,94 +74,69 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 local_column += 1
                 pollutant_found = False
                 for buildup in self.project.buildup.value:
-                    if buildup.land_use_name == land_use.name and pollutant == buildup.pollutant:
+                    if buildup.land_use_name == land_use.name and  buildup.pollutant == pollutant:
                         # this is the land_use we want to edit
                         pollutant_found = True
-                        combobox = QtGui.QComboBox()
-                        ui.convenience.set_combo_items(type(buildup.function), combobox)
-                        ui.convenience.set_combo(combobox, buildup.function)  # BuildupFunction.POW
-                        self.tblBuildup.setCellWidget(0,local_column, combobox)
-                        led = QtGui.QLineEdit(buildup.max_buildup)
-                        self.tblBuildup.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
-                        led = QtGui.QLineEdit(buildup.rate_constant)
-                        self.tblBuildup.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
-                        led = QtGui.QLineEdit(buildup.power_sat_constant)
-                        self.tblBuildup.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
-                        combobox = QtGui.QComboBox()
-                        ui.convenience.set_combo_items(type(buildup.normalizer), combobox)
-                        ui.convenience.set_combo(combobox, buildup.normalizer)   # Normalizer.AREA
-                        self.tblBuildup.setCellWidget(4,local_column, combobox)
-                        led = QtGui.QLineEdit(buildup.scaling_factor)
-                        self.tblBuildup.setItem(5,local_column,QtGui.QTableWidgetItem(led.text()))
-                        combobox = QtGui.QComboBox()
-                        combobox.addItem('')
-                        selected_index = 0
-                        for value in self.project.timeseries.value:
-                            combobox.addItem(value.name)
-                            if buildup.timeseries == value.name:
-                                selected_index = int(combobox.count())-1
-                        combobox.setCurrentIndex(selected_index)
-                        self.tblBuildup.setCellWidget(6, local_column, combobox)
+                        break
                 if not pollutant_found:
-                    combobox = QtGui.QComboBox()
-                    ui.convenience.set_combo_items(type(buildup.function), combobox)
-                    ui.convenience.set_combo(combobox, buildup.function)  # BuildupFunction.POW
-                    self.tblBuildup.setCellWidget(0,local_column, combobox)
-                    led = QtGui.QLineEdit(buildup.max_buildup)
-                    self.tblBuildup.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(buildup.rate_constant)
-                    self.tblBuildup.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(buildup.power_sat_constant)
-                    self.tblBuildup.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
-                    combobox = QtGui.QComboBox()
-                    ui.convenience.set_combo_items(type(buildup.normalizer), combobox)
-                    ui.convenience.set_combo(combobox, buildup.normalizer)   # Normalizer.AREA
-                    self.tblBuildup.setCellWidget(4,local_column, combobox)
-                    led = QtGui.QLineEdit(buildup.scaling_factor)
-                    self.tblBuildup.setItem(5,local_column,QtGui.QTableWidgetItem(led.text()))
-                    combobox = QtGui.QComboBox()
-                    combobox.addItem('')
-                    selected_index = 0
-                    for value in self.project.timeseries.value:
-                        combobox.addItem(value.name)
-                        if buildup.timeseries == value.name:
-                            selected_index = int(combobox.count())-1
-                    combobox.setCurrentIndex(selected_index)
-                    self.tblBuildup.setCellWidget(6, local_column, combobox)
+                    buildup = Buildup()
+                    buildup.land_use_name = land_use.name
+                    buildup.pollutant == pollutant
+                    self.project.buildup.value.append(buildup)
+
+                combobox = QtGui.QComboBox()
+                ui.convenience.set_combo_items(type(buildup.function), combobox)
+                ui.convenience.set_combo(combobox, buildup.function)  # BuildupFunction.POW
+                self.tblBuildup.setCellWidget(0, local_column, combobox)
+                led = QtGui.QLineEdit(buildup.max_buildup)
+                self.tblBuildup.setItem(1, local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(buildup.rate_constant)
+                self.tblBuildup.setItem(2, local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(buildup.power_sat_constant)
+                self.tblBuildup.setItem(3, local_column,QtGui.QTableWidgetItem(led.text()))
+                combobox = QtGui.QComboBox()
+                ui.convenience.set_combo_items(type(buildup.normalizer), combobox)
+                ui.convenience.set_combo(combobox, buildup.normalizer)   # Normalizer.AREA
+                self.tblBuildup.setCellWidget(4, local_column, combobox)
+                led = QtGui.QLineEdit(buildup.scaling_factor)
+                self.tblBuildup.setItem(5, local_column, QtGui.QTableWidgetItem(led.text()))
+                combobox = QtGui.QComboBox()
+                combobox.addItem('')
+                selected_index = 0
+                for value in self.project.timeseries.value:
+                    combobox.addItem(value.name)
+                    if buildup.timeseries == value.name:
+                        selected_index = int(combobox.count())-1
+                combobox.setCurrentIndex(selected_index)
+                self.tblBuildup.setCellWidget(6, local_column, combobox)
             self.tblBuildup.setCurrentCell(0,0)
             local_column = -1
             for pollutant in self.local_pollutant_list:
                 local_column += 1
                 pollutant_found = False
                 for washoff in self.project.washoff.value:
-                    if washoff.land_use_name == land_use.name and pollutant == washoff.pollutant:
+                    if washoff.land_use_name == land_use.name and washoff.pollutant == pollutant:
                         # this is the land_use we want to edit
                         pollutant_found = True
-                        combobox = QtGui.QComboBox()
-                        ui.convenience.set_combo_items(type(washoff.function), combobox)
-                        ui.convenience.set_combo(combobox, washoff.function)  # WashoffFunction.EXP
-                        self.tblWashoff.setCellWidget(0,local_column, combobox)
-                        led = QtGui.QLineEdit(washoff.coefficient)
-                        self.tblWashoff.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
-                        led = QtGui.QLineEdit(washoff.exponent)
-                        self.tblWashoff.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
-                        led = QtGui.QLineEdit(washoff.cleaning_efficiency)
-                        self.tblWashoff.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
-                        led = QtGui.QLineEdit(washoff.bmp_efficiency)
-                        self.tblWashoff.setItem(4,local_column,QtGui.QTableWidgetItem(led.text()))
+                        break
                 if not pollutant_found:
-                    combobox = QtGui.QComboBox()
-                    ui.convenience.set_combo_items(type(washoff.function), combobox)
-                    ui.convenience.set_combo(combobox, washoff.function)  # WashoffFunction.EXP
-                    self.tblWashoff.setCellWidget(0,local_column, combobox)
-                    led = QtGui.QLineEdit(washoff.coefficient)
-                    self.tblWashoff.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(washoff.exponent)
-                    self.tblWashoff.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(washoff.cleaning_efficiency)
-                    self.tblWashoff.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(washoff.bmp_efficiency)
-                    self.tblWashoff.setItem(4,local_column,QtGui.QTableWidgetItem(led.text()))
+                    washoff = Washoff()
+                    washoff.land_use_name = land_use.name
+                    washoff.pollutant = pollutant
+                    self.project.washoff.value.append(washoff)
+
+                combobox = QtGui.QComboBox()
+                ui.convenience.set_combo_items(type(washoff.function), combobox)
+                ui.convenience.set_combo(combobox, washoff.function)  # WashoffFunction.EXP
+                self.tblWashoff.setCellWidget(0,local_column, combobox)
+                led = QtGui.QLineEdit(washoff.coefficient)
+                self.tblWashoff.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(washoff.exponent)
+                self.tblWashoff.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(washoff.cleaning_efficiency)
+                self.tblWashoff.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(washoff.bmp_efficiency)
+                self.tblWashoff.setItem(4,local_column,QtGui.QTableWidgetItem(led.text()))
             self.tblWashoff.setCurrentCell(0,0)
 
     def cmdOK_Clicked(self):

@@ -1,8 +1,6 @@
 # SWMM-EPANET_User_Interface
-Re-engineer of EPA SWMM and EPANET software user interface using Open Source
-Python and Qt Creator
+User interfaces for EPA SWMM and EPANET models implemented in Python using Qt
 
-The major improvements:
-- open development framework
-- allow user plugin
-- allow dynamic scripting
+doc: documentation
+src: source code
+test: unit tests and user interface tests

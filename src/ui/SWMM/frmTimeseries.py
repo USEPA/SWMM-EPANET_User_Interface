@@ -2,6 +2,10 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
 from core.swmm.timeseries import TimeSeries
+from ui.model_utility import ParseData
+import pandas as pd
+#import matplotlib.pyplot as plt
+from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
@@ -12,11 +16,13 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.btnFile, QtCore.SIGNAL("clicked()"), self.btnFile_Clicked)
-        # QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
+        QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.timeseries
         self.new_item = new_item
+        self.X = []
+        self.Y = []
         if new_item:
             self.set_from(new_item)
         elif edit_these:
@@ -50,6 +56,36 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                     self.tblTime.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
                     led = QtGui.QLineEdit(str(value))
                     self.tblTime.setItem(point_count,2,QtGui.QTableWidgetItem(led.text()))
+
+    def GetData(self):
+        """
+        construct pandas time series from grid data
+        Returns:
+        """
+        del self.X[:] #datetime
+        del self.Y[:] #value
+        n = 0
+        for row in range(self.tblTime.rowCount()):
+            if self.tblTime.item(row,2):
+                y_val, y_val_good = ParseData.floatTryParse(self.tblTime.item(row, 2).text())
+                if y_val_good:
+                    # as long as the value is good, then start parsing time stamp
+                    self.Y.append(y_val)
+                    ldate = ""
+                    ltime = ""
+                    if self.tblTime.item(row, 0):
+                        ldate = self.tblTime.item(row, 0).text()
+                    if self.tblTime.item(row, 1):
+                        ltime = self.tblTime.item(row, 1).text()
+                    if ldate:
+                        stamp = pd.Timestamp(ldate + " " + ltime)
+                    else:
+                        stamp = pd.Timestamp(ltime)
+                    self.X.append(stamp)
+                    n += 1
+            else:
+                return n
+        return n
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtTimeseriesName.text()
@@ -102,3 +138,17 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         if file_name:
             self.txtExternalFile.setText(file_name)
 
+    def btnView_Clicked(self):
+        """
+        Display the grid data with pandas dataframe plot function
+        Returns: None
+        """
+        n = self.GetData()
+        if n > 0:
+            ts = pd.Series(self.Y, index=self.X)
+            #plt.figure()
+            #ts.plot()
+            df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
+            frm_plt = frmPlotViewer(df)
+            frm_plt.show()
+        pass

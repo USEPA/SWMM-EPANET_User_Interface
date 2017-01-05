@@ -437,7 +437,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         break
 
             if self.item.name == '' or self.item.name == 'Unnamed' or self.item.name in self.section.value:
-                if "sublink" in self.layer.name().lower():
+                if self.layer and "sublink" in self.layer.name().lower():
                     self.item.name = u'sublink-' + self.item.inlet_node
                 else:
                     self.item.name = self.session.new_item_name(type(self.item))
@@ -904,6 +904,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
+        self.list_objects()
         if self.model_layers:
             self.model_layers.create_layers_from_project(self.project)
             try:
@@ -1780,14 +1781,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.dockw_more.setWindowTitle('')
         if self.project is None or not selected_text:
             return
-        ids = self.get_object_list(selected_text)
+        names = self.get_object_list(selected_text)
         self.tree_section = selected_text
-        if ids is None:
+        if names is None:
             self.dockw_more.setEnabled(False)
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            self.listViewObjects.addItems(ids)
+            self.listViewObjects.addItems(names)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

@@ -95,7 +95,8 @@ class WindSpeed:
         self.source = WindSource.MONTHLY
         """Whether wind speed is entered from the climate file or as monthly values"""
 
-        self.wind_speed_monthly = ()
+        self.wind_speed_monthly = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
 
 

@@ -7,15 +7,13 @@ Each form may have three files:
 
 Folders:
 
-* EPANET, SWMM: model-specific forms and behavior
+* [EPANET](EPANET), [SWMM](SWMM): model-specific forms and behavior
 
-Files:
+Source Code:
 
-* chinese.qm, qt_zh_CN.qm: Chinese internationalization
 * [convenience](convenience.py): Methods for interacting with Qt controls
 * [editor](editor.py): Script editor form
 * [embed_ipython_new](embed_ipython_new.py): Not in use, was for using iPython script editor
-* french.qm, qt_fr.qm: French internationalization
 * [frmGenericListOutput](frmGenericListOutput.py): Display for a grid of data
 * [frmGenericPropertyEditor](frmGenericPropertyEditor.py): Display and allow editing of properties
 * [frmMain](frmMain.py): Main form base class for frmMainEPANET and frmMainSWMM
@@ -31,6 +29,11 @@ Files:
 * [property_editor_backend](property_editor_backend.py): populate property editor form and apply changes to model objects
 * [settings](settings.py): set which language is displayed
 * [text_plus_button](text_plus_button.py): combination of controls used in property editor to launch another editor
+
+Resources:
+
+* chinese.qm, qt_zh_CN.qm: Chinese internationalization
+* french.qm, qt_fr.qm: French internationalization
+* translations.qrc, translations_rc.py: translation resources
 * svgs.qrc, svgs_rc.py: SVG icons that can be used on the map
 * swmm.qrc, swmm_rc.py: icons for main form
-* translations.qrc, translations_rc.py: internationalization resources

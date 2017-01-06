@@ -2,10 +2,11 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
 from ui.help import HelpHandler
 from frmPlotViewerDesigner import Ui_frmPlot
-import matplotlib as mp
+import matplotlib.dates as mdates
 from model_utility import ParseData
 from model_utility import BasePlot
 import numpy as np
+from datetime import datetime
 
 
 class frmPlotViewer(QtGui.QMainWindow, Ui_frmPlot):
@@ -74,7 +75,18 @@ class frmPlotViewer(QtGui.QMainWindow, Ui_frmPlot):
 
         """
         if self.dataset.shape[0] > 0 and self.dataset.shape[1] > 0:
-            self.plot.set_data(self.dataset)
+            self.plot.set_time_series_data(self.dataset)
+            #if self.dataset.hour_only:
+            #    self.plot.setData(self.xvals, self.yvals, "", "")
+            #else:
+            #    self.plot.set_time_series_data(self.dataset)
+            #for row in range(len(self.dataset)):
+            #    #ts = self.dataset.index[row]
+            #    #self.xvals.append(datetime(ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second))
+            #    self.xvals.append(mdates.date2num(self.dataset.index[row]))
+            #    self.yvals.append(self.dataset.iloc[row][0])
+            #self.plot.setData(self.xvals, self.yvals, "", "")
+
         pass
 
     def frm_close(self):
@@ -95,18 +107,15 @@ class CurvePlot(BasePlot):
         self.line, = self.axes.plot([],[], 'r-')
         pass
 
-    def setData(self, X, Y, Xlabel, Ylabel, good_pump_curve):
+    def setData(self, X, Y, Xlabel, Ylabel):
         color = self.get_colors()
         #self.axes.scatter(self.X, self.Y, s=10, c=color, marker="o", label="")
         #self.axes.legend(loc='upper left')
         self.line.set_xdata(X)
         self.line.set_ydata(Y)
-        if good_pump_curve:
-            self.line.set_marker(None)
-        else:
-            self.line.set_marker("s")
-            self.line.set_markeredgecolor("black")
-            self.line.set_markerfacecolor("green")
+        self.line.set_marker("o")
+        self.line.set_markeredgecolor("blue")
+        self.line.set_markerfacecolor("lightblue")
 
         self.setXlabel(Xlabel)
         self.setYlabel(Ylabel)
@@ -117,11 +126,39 @@ class CurvePlot(BasePlot):
         #self.setTitle('Pump head curve for %s' % aData.name)
         pass
 
-    def set_data(self, df):
-        self.axes = df.plot()
+    def set_time_series_data(self, df):
+        #self.line, = self.axes.plot_date(x=[],y=[])
+        if df.shape[0] > 0 and df.shape[1] > 0:
+            x = []
+            y = []
+            for row in range(len(df)):
+                #ts = self.dataset.index[row]
+                #self.xvals.append(datetime(ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second))
+                if df.hour_only:
+                    x.append(df.index[row])
+                else:
+                    x.append(mdates.date2num(df.index[row]))
+                y.append(df.iloc[row][0])
+
+            if df.hour_only:
+                self.setData(x, y, "Elapsed time (hours)", "")
+            else:
+                self.axes.plot_date(x, y, 'b-', marker='o', markeredgecolor='blue',
+                                markerfacecolor='lightblue')
+                self.axes.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y\n%H:%M'))
+                self.setXlabel("Elapsed time (date)")
+                self.setYlabel("")
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+
+    def set_data(self, df, **kwargs):
+        df.plot(ax=self.axes)
+        self.draw()
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
         pass
+
+
 
     def get_colors(self):
         return QColor("blue")

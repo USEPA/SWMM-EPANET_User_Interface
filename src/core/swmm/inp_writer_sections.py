@@ -316,7 +316,7 @@ class EvaporationWriter(SectionWriter):
         if evaporation.format != EvaporationFormat.UNSET:
             format_line = evaporation.format.name + '\t'
             if evaporation.format == EvaporationFormat.CONSTANT:
-                format_line += evaporation.constant
+                format_line += str(evaporation.constant)
             elif evaporation.format == EvaporationFormat.MONTHLY:
                 format_line += '\t'.join(evaporation.monthly)
             elif evaporation.format == EvaporationFormat.TIMESERIES:

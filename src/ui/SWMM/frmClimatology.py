@@ -167,17 +167,25 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
 
         # areal depletion
         areal_list = temp_section.areal_depletion.adc_impervious
-        point_count = -1
-        for value in areal_list:
-            point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAreal.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
+        if len(areal_list) > 0:
+            point_count = -1
+            for value in areal_list:
+                point_count += 1
+                led = QtGui.QLineEdit(str(value))
+                self.tblAreal.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
+        else:
+            self.btnImpNo_Clicked()
+
         areal_list = temp_section.areal_depletion.adc_pervious
-        point_count = -1
-        for value in areal_list:
-            point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAreal.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+        if len(areal_list) > 0:
+            point_count = -1
+            for value in areal_list:
+                point_count += 1
+                led = QtGui.QLineEdit(str(value))
+                self.tblAreal.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+            pass
+        else:
+            self.btnPerNo_Clicked()
         # self.tblAreal.resizeColumnsToContents()
 
         # adjustments for temp, evap, rain, cond

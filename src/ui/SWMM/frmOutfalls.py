@@ -47,12 +47,14 @@ class frmOutfalls(frmGenericPropertyEditor):
                 combobox.setCurrentIndex(0)
             else:
                 combobox.setCurrentIndex(1)
-            self.tblGeneric.setCellWidget(8, column, combobox)
+            row = self.header_index("tide")
+            if row >= 0:
+                self.tblGeneric.setCellWidget(row, column, combobox)
             # for curves, show available curves
             curves_section = self.project.find_section("CURVES")
             curves_list = curves_section.value[0:]
             combobox = QtGui.QComboBox()
-            combobox.addItem('')
+            combobox.addItem('*')
             selected_index = 0
             for value in curves_list:
                 if value.curve_type == CurveType.TIDAL:
@@ -60,24 +62,43 @@ class frmOutfalls(frmGenericPropertyEditor):
                     if edit_these[column].tidal_curve == value.name:
                         selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
-            self.tblGeneric.setCellWidget(12, column, combobox)
+            row = self.header_index("curve")
+            if row >= 0:
+                self.tblGeneric.setCellWidget(row, column, combobox)
             # for time series, show available timeseries
             timeseries_section = self.project.find_section("TIMESERIES")
             timeseries_list = timeseries_section.value[0:]
             combobox = QtGui.QComboBox()
-            combobox.addItem('')
+            combobox.addItem('*')
             selected_index = 0
             for value in timeseries_list:
                 combobox.addItem(value.name)
                 if edit_these[column].time_series_name == value.name:
                     selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
-            self.tblGeneric.setCellWidget(13, column, combobox)
+            row = self.header_index("series")
+            if row >= 0:
+                self.tblGeneric.setCellWidget(row, column, combobox)
             # also set special text plus button cells
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
 
         self.installEventFilter(self)
+
+    def header_index(self, prop):
+        """
+        Look up the row header to match up with prop
+        Args:
+            prop: header text
+        Returns:
+            row number of matching header text
+        """
+        header = ""
+        for row in range(self.tblGeneric.rowCount()):
+            header = self.tblGeneric.verticalHeaderItem(row).text()
+            if header and prop.upper() in header.upper():
+                return row
+        return -999
 
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
@@ -108,7 +129,9 @@ class frmOutfalls(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_inflows(column))
-        self.tblGeneric.setCellWidget(5, column, tb)
+        row = self.header_index("inflow")
+        if row >=0:
+            self.tblGeneric.setCellWidget(row, column, tb)
 
     def set_treatment_cell(self, column):
         # text plus button for treatments editor
@@ -122,7 +145,9 @@ class frmOutfalls(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_treatments(column))
-        self.tblGeneric.setCellWidget(6, column, tb)
+        row = self.header_index("treatment")
+        if row >=0:
+            self.tblGeneric.setCellWidget(row, column, tb)
 
     def make_show_inflows(self, column):
         def local_show():

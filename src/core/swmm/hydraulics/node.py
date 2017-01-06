@@ -139,7 +139,7 @@ class Outfall(Junction):
         ('.treatment(name)',    '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
         ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of outfall's invert"),
         ("tide_gate",           '', "Tide Gate",       '0',  '',   '',  "True if outfall contains a tide gate to prevent backflow"),
-        ("route_to",            '', "Route To",        '0',  '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
+        ("route_to",            '', "Route To",        '',   '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
         ("outfall_type",        '', "Type",            '0',  '',   '',  "Type of outfall boundary condition"),
         ("fixed_stage",         '', "Fixed Stage",     '0',  '',   '',  "Water elevation for a FIXED boundary condition"),
         ("tidal_curve",         '', "Curve Name",      '0',  '',   '',  "Name of tidal curve used for a TIDAL boundary condition"),

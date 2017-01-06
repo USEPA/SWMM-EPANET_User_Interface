@@ -21,6 +21,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         self.project = main_form.project
         self.section = self.project.timeseries
         self.new_item = new_item
+        self.hour_only = True
         self.X = []
         self.Y = []
         if new_item:
@@ -64,23 +65,42 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         """
         del self.X[:] #datetime
         del self.Y[:] #value
+        self.hour_only = True
+        if self.tblTime.item(0, 0):
+            if self.tblTime.item(0, 0).text():
+                self.hour_only = False
         n = 0
+        ldate = ""
+        ltime = ""
         for row in range(self.tblTime.rowCount()):
             if self.tblTime.item(row,2):
                 y_val, y_val_good = ParseData.floatTryParse(self.tblTime.item(row, 2).text())
                 if y_val_good:
                     # as long as the value is good, then start parsing time stamp
                     self.Y.append(y_val)
-                    ldate = ""
-                    ltime = ""
                     if self.tblTime.item(row, 0):
-                        ldate = self.tblTime.item(row, 0).text()
+                        if self.tblTime.item(row, 0).text():
+                            ldate = self.tblTime.item(row, 0).text()
                     if self.tblTime.item(row, 1):
-                        ltime = self.tblTime.item(row, 1).text()
-                    if ldate:
-                        stamp = pd.Timestamp(ldate + " " + ltime)
+                        if self.tblTime.item(row, 1).text():
+                            ltime = self.tblTime.item(row, 1).text()
+                        else:
+                            continue
+                    if self.hour_only:
+                        arr = ltime.split(":")
+                        hr = 0
+                        mm = 0
+                        ss = 0
+                        if len(arr) > 0:
+                            hr = int(arr[0])
+                        if len(arr) > 1:
+                            mm = int(arr[1])
+                        if len(arr) > 2:
+                            ss = int(arr[2])
+                        stamp = hr + mm / 60.0 + ss / 3600.0
                     else:
-                        stamp = pd.Timestamp(ltime)
+                        stamp = pd.Timestamp(ldate + " " + ltime)
+
                     self.X.append(stamp)
                     n += 1
             else:
@@ -149,6 +169,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
             #plt.figure()
             #ts.plot()
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
+            df.hour_only = self.hour_only
             frm_plt = frmPlotViewer(df)
             frm_plt.show()
         pass

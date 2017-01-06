@@ -103,7 +103,7 @@ class PolygonWriter(SectionWriter):
 
 
 class LabelWriter(SectionWriter):
-    field_format = ' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
+    field_format = u' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
 
     @staticmethod
     def as_text(label):

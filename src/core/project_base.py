@@ -4,6 +4,7 @@ from enum import Enum
 from core.indexed_list import IndexedList
 from utility import ParseData
 
+
 class ProjectBase(object):
     """
     Base class of SWMM and EPANET project classes that hold the data in an input sequence.

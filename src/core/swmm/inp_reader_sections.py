@@ -185,12 +185,13 @@ class LabelReader(SectionReader):
     @staticmethod
     def read(new_text):
         label = Label()
-        fields = shlex.split(new_text)
+        fields = shlex.split(new_text.encode('utf8'))
         if len(fields) > 2:
-            label.x, label.y, label.name = fields[0:3]
+            (label.x, label.y) = fields[0:2]
+            label.name = fields[2].decode('UTF8')
 
             if len(fields) > 3:
-                label.anchor_name = fields[3]  # name of an anchor node (optional)
+                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
             if len(fields) > 4:
                 label.font = fields[4]
             if len(fields) > 5:

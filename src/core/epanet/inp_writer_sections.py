@@ -64,7 +64,7 @@ class CurveWriter(SectionWriter):
 class LabelWriter(SectionWriter):
     """A label on the map with location, text, and optional anchor node ID"""
 
-    field_format = '{:16}\t{:16}\t"{}"\t{:16}'
+    field_format = u'{:16}\t{:16}\t"{}"\t{:16}'
 
     @staticmethod
     def as_text(label):

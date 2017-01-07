@@ -81,7 +81,7 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if not pollutant_found:
                     buildup = Buildup()
                     buildup.land_use_name = land_use.name
-                    buildup.pollutant == pollutant
+                    buildup.pollutant = pollutant
                     self.project.buildup.value.append(buildup)
 
                 combobox = QtGui.QComboBox()

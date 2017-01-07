@@ -60,6 +60,21 @@ class frmSubcatchments(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(self.row_named["Snow Pack"], column, combobox)
 
+            # show available rain gages
+            raingage_section = self.project.find_section("RAINGAGES")
+            raingage_list = raingage_section.value[0:]
+            combobox = QtGui.QComboBox()
+            combobox.addItem('*')
+            selected_index = 0
+            for value in raingage_list:
+                combobox.addItem(value.name)
+                if edit_these[column].rain_gage == value.name:
+                    selected_index = int(combobox.count()) - 1
+            combobox.setCurrentIndex(selected_index)
+            row = self.header_index("rain")
+            if row >= 0:
+                self.tblGeneric.setCellWidget(row, column, combobox)
+
             # also set special text plus button cells
             self.set_special_cells(column)
 

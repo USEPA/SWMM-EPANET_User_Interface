@@ -85,21 +85,6 @@ class frmOutfalls(frmGenericPropertyEditor):
 
         self.installEventFilter(self)
 
-    def header_index(self, prop):
-        """
-        Look up the row header to match up with prop
-        Args:
-            prop: header text
-        Returns:
-            row number of matching header text
-        """
-        header = ""
-        for row in range(self.tblGeneric.rowCount()):
-            header = self.tblGeneric.verticalHeaderItem(row).text()
-            if header and prop.upper() in header.upper():
-                return row
-        return -999
-
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:

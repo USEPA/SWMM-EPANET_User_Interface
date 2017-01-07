@@ -1332,6 +1332,7 @@ class SubcatchmentReader(SectionReader):
         fields = new_text.split()
         if len(fields) > 0:
             subcatchment.name = fields[0]
+            subcatchment.infiltration_parameters.subcatchment = subcatchment.name
         if len(fields) > 1:
             subcatchment.rain_gage = fields[1]
         if len(fields) > 2:
@@ -1360,6 +1361,8 @@ class HortonInfiltrationReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(horton_infiltration, new_text)
         fields = new_text.split()
         if len(fields) > 0:
+            if "none" in fields[0].lower():
+                return None
             horton_infiltration.subcatchment = fields[0]
         if len(fields) > 1:
             horton_infiltration.max_rate = fields[1]

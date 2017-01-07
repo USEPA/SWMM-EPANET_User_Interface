@@ -187,6 +187,10 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_infilt(self, column):
         def local_show():
+            row = self.header_index("name")
+            sub_name = ""
+            if row >= 0:
+                sub_name = self.tblGeneric.item(row, column).text()
             edit_these = []
             infiltration_section = self.project.infiltration
             if isinstance(infiltration_section.value, list):
@@ -208,6 +212,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                         new_item = CurveNumberInfiltration()
                     else:
                         new_item = HortonInfiltration()
+                    new_item.subcatchment = sub_name
                     infiltration_section.value.append(new_item)
                     edit_these.append(new_item)
             editor = frmInfiltration(self, edit_these, None, "SWMM Infiltration Editor")

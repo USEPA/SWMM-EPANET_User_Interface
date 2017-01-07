@@ -114,6 +114,7 @@ class Subcatchment(Section, Polygon):
         """float: Percent of runoff routed between subareas"""
 
         self.infiltration_parameters = HortonInfiltration()
+        #self.infiltration_parameters.subcatchment = self.name
         """infiltration parameters from horton, green-ampt, or scs classes"""
 
         self.snow_pack = ''

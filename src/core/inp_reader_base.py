@@ -279,7 +279,8 @@ class SectionReaderAsList(SectionReader):
             else:
                 make_one = text
 
-            section.value.append(make_one)
+            if make_one is not None:
+                section.value.append(make_one)
         except Exception as e:
             print("Could not create object from: " + text + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 

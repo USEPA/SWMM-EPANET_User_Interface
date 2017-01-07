@@ -132,7 +132,8 @@ class SectionReader(object):
                 # elif hasattr(section, "DEFAULT_COMMENT") and section.comment == section.DEFAULT_COMMENT:
                 #     section.comment = ''  # Replace default comment with the one we are reading
                 # else:
-                section.comment += '\n' + this_comment  # Separate from existing comment with newline
+                if not this_comment.lower() in section.comment.lower():
+                    section.comment += '\n' + this_comment  # Separate from existing comment with newline
             else:
                 section.comment = this_comment
         if line.startswith('['):

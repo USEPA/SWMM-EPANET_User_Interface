@@ -770,6 +770,8 @@ class CrossSectionReader(SectionReader):
                 cross_section.barrels = fields[4]
                 if len(fields) > 6 and fields[6].isdigit():  # Old interface saves CUSTOM barrels in this field.
                     cross_section.barrels = fields[6]
+        elif cross_section.shape == CrossSectionShape.NotSet:
+            return None
         # elif cross_section.shape == CrossSectionShape.IRREGULAR:
         #     if len(fields) > 2:
         #         cross_section.transect = fields[2]
@@ -1424,6 +1426,8 @@ class GroundwaterReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(groundwater, new_text)
         fields = new_text.split()
         if len(fields) > 0:
+            if "none" in fields[0].lower():
+                return None
             groundwater.subcatchment = fields[0]
         if len(fields) > 1:
             groundwater.aquifer = fields[1]

@@ -131,6 +131,7 @@ class Section(object):
                 if val_is_good:
                     setattr(self, attr_name, val)
             elif isinstance(old_value, Enum):
+                val_is_good = True
                 if not isinstance(attr_value, Enum):
                     enum_type = type(old_value)
                     try:
@@ -139,8 +140,10 @@ class Section(object):
                         try:
                             attr_value = enum_type[attr_value.upper().replace('-', '_')]
                         except KeyError:
+                            val_is_good = False
                             print("Did not find value '" + attr_value + "' in valid values for '" + attr_name + "'")
-                setattr(self, attr_name, attr_value)
+                if val_is_good:
+                    setattr(self, attr_name, attr_value)
             elif type(old_value) == bool:
                 if not isinstance(attr_value, bool):
                     attr_value = str(attr_value).upper() not in ("NO", "FALSE")

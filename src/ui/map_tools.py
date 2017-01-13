@@ -10,6 +10,7 @@ try:
     import math
     import os
     from enum import Enum
+    from map_edit import EditTool
 
 
     class EmbedMap(QWidget):
@@ -150,6 +151,28 @@ try:
             else:
                 self.canvas.unsetMapTool(self.selectVertexTool)
                 self.selectVertexTool = None
+
+        def setEditVertexMode(self):
+            layer = None
+            if self.canvas.layers():
+                for lyr in self.canvas.layers():
+                    if "subcatchment" in lyr.name().lower():
+                        layer = lyr
+                        break
+            if self.session.actionMapSelectVertices.isChecked() and layer is not None:
+                if self.canvas.layers():
+                    layer.startEditing()
+                    self.canvas.refresh()
+                    self.selectVertexTool = EditTool(self.canvas, layer, self.session, self.session.onGeometryChanged)
+                    self.selectVertexTool.setAction(self.session.actionMapSelectVertices)
+                else:
+                    self.selectVertexTool = None
+                if self.selectVertexTool:
+                    self.canvas.setMapTool(self.selectVertexTool)
+            else:
+                self.canvas.unsetMapTool(self.selectVertexTool)
+                self.selectVertexTool = None
+                layer.commitChanges()
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():
@@ -753,6 +776,17 @@ try:
                 #layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
                 layer = QgsRasterLayer(filename, layer_name)
                 self.add_layer(layer, self.base_group)
+
+        def drawVertexMarker(self, layer):
+            """
+            implement the drawVertexMarker routine to highlight the vertices of polygon
+            for editing purpose
+            Args:
+                layer:
+
+            Returns:
+
+            """
 
         # def saveVectorLayers(self, folder):
         #     layer_index = 0

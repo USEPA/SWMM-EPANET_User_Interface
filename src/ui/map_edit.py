@@ -35,13 +35,18 @@ try:
                 geometry.closestVertex(layerPt)
             distance = math.sqrt(distSquared)
             tolerance = self.calcTolerance(event.pos())
-            if distance > tolerance: return
+            if distance > tolerance:
+                return
             if event.button() == QtCore.Qt.LeftButton:
                 # Left click -> move vertex.
                 self.dragging = True
                 self.feature = feature
                 self.vertex = vertex
-                self.start_geom = self.copy_geometry(geometry)
+                if self.start_geom is None:
+                    self.start_geom = self.copy_geometry(geometry)
+                else:
+                    self.canvasReleaseEvent(event)
+                    return
                 self.moveVertexTo(event.pos())
             elif event.button() == QtCore.Qt.RightButton:
                 # Right click -> delete vertex
@@ -56,14 +61,14 @@ try:
 
         def canvasReleaseEvent(self, event):
             if self.dragging:
-                if self.feature:
-                    self.end_geom = self.copy_geometry(self.feature.geometry)
                 self.moveVertexTo(event.pos())
-                self.layer.updateExtents()
-                self.canvas().refresh()
+                self.end_geom = self.copy_geometry(self.feature.geometry())
+                #self.layer.updateExtents()
+                #self.canvas().refresh()
                 self.dragging = False
                 self.feature = None
                 self.vertex = None
+                self.onGeometryChanged()
 
         def canvasDoubleClickEvent(self, event):
             feature = self.findFeatureAt(event.pos())
@@ -129,16 +134,16 @@ try:
                 #self.onGeometryChanged()
 
         def copy_geometry(self, geometry):
-            vs = []
-            for v in geometry.asPolyline():
-                vs.append(v)
-            return QgsGeometry.fromPolygon(vs)
+            if isinstance(geometry.asPolygon(), list):
+                return QgsGeometry.fromPolygon(geometry.asPolygon())
+            else:
+                return None
 
         def onGeometryChanged(self):
-            curr_geom = self.copy_geometry()
             self.session.edit_vertex(self.nearest_layer,
                                      self.nearest_feature,
-                                     self.start_geom, curr_geom)
+                                     self.start_geom, self.end_geom)
+            self.start_geom = None
 
 except:
     print "Skipping map_edit"

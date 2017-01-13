@@ -921,8 +921,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
                 self.layer.changeGeometry(self.feature.id(), geom)
                 #self.layer.commitChanges()
-                #self.layer.updateExtents()
-                #self.layer.triggerRepaint()
+                self.layer.updateExtents()
+                self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
 
                 feature_name = self.feature.attributes()[0]

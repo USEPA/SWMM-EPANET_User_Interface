@@ -108,8 +108,14 @@ try:
             tolerance = self.calcTolerance(event.pos())
             if distance > tolerance: return
             geometry.insertVertex(closestPt.x(), closestPt.y(), beforeVertex)
+            self.edit_type = "add"
+            self.feature = feature
+            self.vertex = beforeVertex
+            self.coord_x = closestPt.x()
+            self.coord_y = closestPt.y()
             self.layer.changeGeometry(feature.id(), geometry)
             self.canvas().refresh()
+            self.onGeometryChanged()
 
         def findFeatureAt(self, pos):
             #mapPt, layerPt = self.transformCoordinates(pos)
@@ -185,6 +191,10 @@ try:
             elif "delete" in self.edit_type:
                 self.session.edit_vertex(self.layer, self.feature, self.edit_type, self.vertex,
                                          True, self.coord_x, self.coord_y)
+            elif "add" in self.edit_type:
+                self.session.edit_vertex(self.layer, self.feature, self.edit_type, self.vertex,
+                                         True, self.coord_x, self.coord_y)
+
 
             self.feature = None
             self.edit_type = ""
@@ -314,33 +324,36 @@ try:
                 self.session.map_widget.canvas.refresh()
                 self.update_centroidlinks(geometry)
             except Exception as ex:
-                print("_MoveVertex: " + str(ex) + '\n' + str(traceback.print_exc()))
+                print("MoveVertexz: " + str(ex) + '\n' + str(traceback.print_exc()))
             try:
                 self.session.setQgsMapTool()
+                pass
             except:
                 pass
 
 
-    class DeleteVertexz(EditVertex):
+    class AddDeleteVertexz(EditVertex):
         """Private class that deletes a vertex from a polygon feature."""
 
-        def __init__(self, session, layer, feature, point_index, point_deleted, coord_x, coord_y):
+        def __init__(self, session, layer, feature, point_index, edit_type, point_effected, coord_x, coord_y):
             EditVertex.__init__(self, session, layer, feature)
-            # self.session = session
-            # self.layer = layer
-            # self.subcentroids = self.session.model_layers.layer_by_name("subcentroids")
-            # self.sublinks = self.session.model_layers.layer_by_name("sublinks")
-            # self.feature = feature
+            self.edit_type = edit_type
             self.point_index = point_index
             self.coord_x = coord_x
             self.coord_y = coord_y
-            self.point_deleted = point_deleted
+            self.point_effected = point_effected
 
         def redo(self):
-            self.delete(False)
+            if "delete" in self.edit_type:
+                self.delete(False)
+            elif "add" in self.edit_type:
+                self.add(False)
 
         def undo(self):
-            self.delete(True)
+            if "delete" in self.edit_type:
+                self.delete(True)
+            elif "add" in self.edit_type:
+                self.add(True)
 
         def delete(self, undo):
             from qgis.core import QgsGeometry, QGis, QgsPoint
@@ -351,13 +364,13 @@ try:
                 geometry = self.feature.geometry()
                 if undo:
                     geometry.insertVertex(self.coord_x, self.coord_y, self.point_index)
-                    self.point_deleted = False
+                    self.point_effected = False
                     self.layer.changeGeometry(self.feature.id(), geometry)
                 else:
-                    if not self.point_deleted:
+                    if not self.point_effected:
                         if geometry.deleteVertex(self.point_index):
                             self.layer.changeGeometry(self.feature.id(), geometry)
-                            self.point_deleted = True
+                            self.point_effected = True
 
                 # self.layer.commitChanges()
                 self.layer.updateExtents()
@@ -368,6 +381,36 @@ try:
                 print("DeleteVertexz: " + str(ex) + '\n' + str(traceback.print_exc()))
             try:
                 #self.session.setQgsMapTool()
+                pass
+            except:
+                pass
+
+        def add(self, undo):
+            from qgis.core import QgsGeometry, QGis, QgsPoint
+            try:
+                if not self.layer.isEditable():
+                    self.layer.startEditing()
+
+                geometry = self.feature.geometry()
+                if undo:
+                    if geometry.deleteVertex(self.point_index):
+                        self.layer.changeGeometry(self.feature.id(), geometry)
+                        self.point_effected = True
+                else:
+                    if not self.point_effected:
+                        geometry.insertVertex(self.coord_x, self.coord_y, self.point_index)
+                        self.point_effected = False
+                        self.layer.changeGeometry(self.feature.id(), geometry)
+
+                # self.layer.commitChanges()
+                self.layer.updateExtents()
+                self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                self.update_centroidlinks(geometry)
+            except Exception as ex:
+                print("AddVertexz: " + str(ex) + '\n' + str(traceback.print_exc()))
+            try:
+                # self.session.setQgsMapTool()
                 pass
             except:
                 pass

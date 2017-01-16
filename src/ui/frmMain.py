@@ -892,10 +892,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def edit_vertex(self, layer, feature, edit_type, *args):
         if layer:
-            #self.undo_stack.push(self._EditVertex(self, layer, feature, from_geom, to_geom))
-            from map_edit import EditVertex
             from map_edit import MoveVertexz
-            from map_edit import DeleteVertexz
+            from map_edit import AddDeleteVertexz
             if "move" in edit_type.lower():
                 pind = args[0]
                 fx = args[1]
@@ -908,8 +906,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 pt_deleted = args[1]
                 fx = args[2]
                 fy = args[3]
-                self.undo_stack.push(DeleteVertexz(self, layer, feature, pind, pt_deleted, fx, fy))
-
+                self.undo_stack.push(AddDeleteVertexz(self, layer, feature, pind, edit_type,
+                                                            pt_deleted, fx, fy))
+            elif "add" in edit_type.lower():
+                pind = args[0]
+                pt_added = args[1]
+                fx = args[2]
+                fy = args[3]
+                self.undo_stack.push(AddDeleteVertexz(self, layer, feature, pind, edit_type,
+                                                            pt_added, fx, fy))
 
     def edited_name(self, edited_list):
         """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""

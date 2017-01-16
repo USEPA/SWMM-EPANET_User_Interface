@@ -890,89 +890,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.undo_stack.push(self._MoveVertex(self, layer, feature, point_index,
                                                   from_x, from_y, to_x, to_y))
 
-
-    class _EditVertex(QtGui.QUndoCommand):
-        """Private class that edit a sub or link vertices from the model and the map. Accessed via delete_item method."""
-
-        def __init__(self, session, layer, feature, from_geom, to_geom):
-            QtGui.QUndoCommand.__init__(self, "Change geometry")
-            self.session = session
-            self.layer = layer
-            self.subcentroids = self.session.model_layers.layer_by_name("subcentroids")
-            self.sublinks = self.session.model_layers.layer_by_name("sublinks")
-            self.feature = feature
-            self.from_geom = from_geom
-            self.to_geom = to_geom
-
-        def redo(self):
-            self.edit(False)
-
-        def undo(self):
-            self.edit(True)
-
-        def edit(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
-            try:
-                #self.layer.startEditing()
-                if undo:
-                    geom = self.from_geom
-                else:
-                    geom = self.to_geom
-
-                self.layer.changeGeometry(self.feature.id(), geom)
-                #self.layer.commitChanges()
-                self.layer.updateExtents()
-                self.layer.triggerRepaint()
-                self.session.map_widget.canvas.refresh()
-
-                feature_name = self.feature.attributes()[0]
-                for section_field_name in self.session.section_types.values():
-                    try:
-                        if self.layer == self.session.model_layers.layer_by_name(section_field_name):
-                            section = getattr(self.session.project, section_field_name)
-                            object = section.value[feature_name]
-                            if section_field_name != "subcatchments":
-                                if hasattr(object, "vertices"):
-                                    del object.vertices[:]
-                                    for v in geom.asPolyline():
-                                        coord = Coordinate()
-                                        coord.x = v.x()
-                                        coord.y = v.y()
-                                        object.vertices.append(coord)
-                        if hasattr(object, "centroid"):
-                            new_c_g = geom.centroid()
-                            new_c = new_c_g.asPoint()
-                            object.centroid.x = str(new_c.x)
-                            object.centroid.y = str(new_c.y)
-                            for fc in self.subcentroids.getFeatures():
-                                if fc["sub_modelid"] == feature_name:
-                                    # from qgis.core import QgsMap
-                                    change_map = {fc.id(): new_c_g}
-                                    self.subcentroids.dataProvider().changeGeometryValues(change_map)
-                                    break
-                            for fl in self.sublinks.dataProvider().getFeatures():
-                                if fl["inlet"] == self.feature["c_modelid"]:
-                                    if fl.geometry().wkbType() == QGis.WKBLineString:
-                                        line = fl.geometry().asPolyline()
-                                        new_l_g = QgsGeometry.fromPolyline([new_c, line[-1]])
-                                        change_map = {fl.id(): new_l_g}
-                                        self.sublinks.dataProvider().changeGeometryValues(change_map)
-                                    break
-
-                        break
-                    except Exception as ex1:
-                        print("Searching for object to edit vertex of: " + str(ex1) + '\n' + str(traceback.print_exc()))
-
-            except Exception as ex:
-                print("_EditVertex: " + str(ex) + '\n' + str(traceback.print_exc()))
-            try:
-                self.setQgsMapTool()
-            except:
-                pass
-
-    def edit_vertex(self, layer, feature, from_geom, to_geom):
+    def edit_vertex(self, layer, feature, edit_type, *args):
         if layer:
-            self.undo_stack.push(self._EditVertex(self, layer, feature, from_geom, to_geom))
+            #self.undo_stack.push(self._EditVertex(self, layer, feature, from_geom, to_geom))
+            from map_edit import EditVertex
+            from map_edit import MoveVertexz
+            if "move" in edit_type.lower():
+                pind = args[0]
+                fx = args[1]
+                fy = args[2]
+                tx = args[3]
+                ty = args[4]
+                self.undo_stack.push(MoveVertexz(self, layer, feature, pind, fx, fy, tx, ty))
+                #self.undo_stack.push(self._MoveVertex(self, layer, feature, pind, fx, fy, tx, ty))
 
     def edited_name(self, edited_list):
         """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""

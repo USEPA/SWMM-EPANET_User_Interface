@@ -352,12 +352,13 @@ try:
                 if undo:
                     geometry.insertVertex(self.coord_x, self.coord_y, self.point_index)
                     self.point_deleted = False
+                    self.layer.changeGeometry(self.feature.id(), geometry)
                 else:
                     if not self.point_deleted:
-                        geometry.deleteVertex(self.point_index)
-                        self.point_deleted = True
+                        if geometry.deleteVertex(self.point_index):
+                            self.layer.changeGeometry(self.feature.id(), geometry)
+                            self.point_deleted = True
 
-                self.layer.changeGeometry(self.feature.id(), geometry)
                 # self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()

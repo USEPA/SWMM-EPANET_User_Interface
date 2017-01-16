@@ -31,6 +31,8 @@ try:
             self.start_event_y = None
             self.end_event_x = None
             self.end_event_y = None
+            self.coord_x = None
+            self.coord_y = None
 
         def canvasPressEvent(self, event):
             feature = self.findFeatureAt(event.pos())
@@ -61,7 +63,12 @@ try:
                 #self.moveVertexTo(event.pos())
             elif event.button() == QtCore.Qt.RightButton:
                 # Right click -> delete vertex
+                self.feature = feature
+                self.vertex = vertex
+                self.coord_x = vertexCoord.x() #in map coord
+                self.coord_y = vertexCoord.y() #in map coord
                 self.deleteVertex(feature, vertex)
+                return
             self.canvas().refresh()
             pass
 
@@ -141,6 +148,7 @@ try:
             self.layer.changeGeometry(self.feature.id(), geometry)
 
         def deleteVertex(self, feature, vertex):
+            self.edit_type = "delete"
             geometry = feature.geometry()
             if geometry.wkbType() == QGis.WKBLineString:
                 lineString = geometry.asPolyline()
@@ -153,7 +161,8 @@ try:
                     return
             if geometry.deleteVertex(vertex):
                 self.layer.changeGeometry(feature.id(), geometry)
-                #self.onGeometryChanged()
+                self.canvas().refresh()
+                self.onGeometryChanged()
 
         def copy_geometry(self, geometry):
             if isinstance(geometry.asPolygon(), list):
@@ -166,17 +175,21 @@ try:
 
         def onGeometryChanged(self):
             if "move" in self.edit_type:
-                fx = self.start_event_x
                 from_pt = QPoint(self.start_event_x, self.start_event_y)
                 to_pt = QPoint(self.end_event_x, self.end_event_y)
                 self.start_pos = self.toMapCoordinates(from_pt)
                 self.end_pos = self.toMapCoordinates(to_pt)
-                self.session.edit_vertex(self.layer,
-                                        self.feature, self.edit_type, self.vertex,
+                self.session.edit_vertex(self.layer, self.feature, self.edit_type, self.vertex,
                                         self.start_pos.x(), self.start_pos.y(),
                                         self.end_pos.x(), self.end_pos.y())
-                self.start_pos = None
-                self.start_pos = None
+            elif "delete" in self.edit_type:
+                self.session.edit_vertex(self.layer, self.feature, self.edit_type, self.vertex,
+                                         True, self.coord_x, self.coord_y)
+
+            self.feature = None
+            self.edit_type = ""
+            self.vertex = None
+
 
     class EditVertex(QtGui.QUndoCommand):
         """Private class that edit a sub or link vertices from the model and the map. Accessed via delete_item method."""
@@ -221,6 +234,7 @@ try:
             feature_name = self.feature.attributes()[0]
             for section_field_name in self.session.section_types.values():
                 try:
+                    object = None
                     if self.layer == self.session.model_layers.layer_by_name(section_field_name):
                         section = getattr(self.session.project, section_field_name)
                         object = section.value[feature_name]
@@ -232,7 +246,7 @@ try:
                                     coord.x = v.x()
                                     coord.y = v.y()
                                     object.vertices.append(coord)
-                    if hasattr(object, "centroid"):
+                    if object is not None and hasattr(object, "centroid"):
                         new_c_g = geom.centroid()
                         new_c = new_c_g.asPoint()
                         object.centroid.x = str(new_c.x)
@@ -305,5 +319,57 @@ try:
                 self.session.setQgsMapTool()
             except:
                 pass
+
+
+    class DeleteVertexz(EditVertex):
+        """Private class that deletes a vertex from a polygon feature."""
+
+        def __init__(self, session, layer, feature, point_index, point_deleted, coord_x, coord_y):
+            EditVertex.__init__(self, session, layer, feature)
+            # self.session = session
+            # self.layer = layer
+            # self.subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+            # self.sublinks = self.session.model_layers.layer_by_name("sublinks")
+            # self.feature = feature
+            self.point_index = point_index
+            self.coord_x = coord_x
+            self.coord_y = coord_y
+            self.point_deleted = point_deleted
+
+        def redo(self):
+            self.delete(False)
+
+        def undo(self):
+            self.delete(True)
+
+        def delete(self, undo):
+            from qgis.core import QgsGeometry, QGis, QgsPoint
+            try:
+                if not self.layer.isEditable():
+                    self.layer.startEditing()
+
+                geometry = self.feature.geometry()
+                if undo:
+                    geometry.insertVertex(self.coord_x, self.coord_y, self.point_index)
+                    self.point_deleted = False
+                else:
+                    if not self.point_deleted:
+                        geometry.deleteVertex(self.point_index)
+                        self.point_deleted = True
+
+                self.layer.changeGeometry(self.feature.id(), geometry)
+                # self.layer.commitChanges()
+                self.layer.updateExtents()
+                self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                self.update_centroidlinks(geometry)
+            except Exception as ex:
+                print("DeleteVertexz: " + str(ex) + '\n' + str(traceback.print_exc()))
+            try:
+                #self.session.setQgsMapTool()
+                pass
+            except:
+                pass
+
 except:
     print "Skipping map_edit"

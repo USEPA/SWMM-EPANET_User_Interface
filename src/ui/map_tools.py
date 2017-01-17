@@ -159,7 +159,9 @@ try:
                     if "subcatchment" in lyr.name().lower():
                         layer = lyr
                         break
-            if self.session.actionMapSelectVertices.isChecked() and layer is not None:
+            if layer is None:
+                return
+            if self.session.actionMapSelectVertices.isChecked():
                 if self.canvas.layers():
                     layer.startEditing()
                     self.canvas.refresh()
@@ -172,7 +174,20 @@ try:
             else:
                 self.canvas.unsetMapTool(self.selectVertexTool)
                 self.selectVertexTool = None
-                layer.commitChanges()
+                #layer.commitChanges()
+                if layer.isEditable():
+                    buf = layer.editBuffer()
+                    if len(buf.changedGeometries()) > 0:
+                        reply = QMessageBox.question(None, "Confirm",
+                                                 "Save changes to subcatchments?",
+                                                 QMessageBox.Yes | QMessageBox.No,
+                                                 QMessageBox.Yes)
+                        if reply == QMessageBox.Yes:
+                            layer.commitChanges()
+                        else:
+                            layer.rollBack()
+                #else:
+                #    layer.rollBack()
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():

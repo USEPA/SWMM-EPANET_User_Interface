@@ -45,7 +45,7 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         val, val_is_good = ParseData.intTryParse(section.threads)
         if val_is_good:
             self.cboThreads.setCurrentIndex(val - 1)
-        if section.variable_step > 0:
+        if float(section.variable_step) > 0:
             self.cbxUseVariable.setChecked(True)
         self.sbxAdjusted.setValue(float(section.variable_step) * 100)
         self.txtMinimum.setText(str(section.minimum_step))

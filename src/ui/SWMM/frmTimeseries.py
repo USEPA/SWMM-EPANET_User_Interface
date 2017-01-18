@@ -87,17 +87,21 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                         else:
                             continue
                     if self.hour_only:
-                        arr = ltime.split(":")
-                        hr = 0
-                        mm = 0
-                        ss = 0
-                        if len(arr) > 0:
-                            hr = int(arr[0])
-                        if len(arr) > 1:
-                            mm = int(arr[1])
-                        if len(arr) > 2:
-                            ss = int(arr[2])
-                        stamp = hr + mm / 60.0 + ss / 3600.0
+                        if ":" in ltime:
+                            arr = ltime.split(":")
+                            hr = 0
+                            mm = 0
+                            ss = 0
+                            if len(arr) > 0:
+                                hr = int(arr[0])
+                            if len(arr) > 1:
+                                mm = int(arr[1])
+                            if len(arr) > 2:
+                                ss = int(arr[2])
+                            stamp = hr + mm / 60.0 + ss / 3600.0
+                        else:
+                            # if not in H:M format, then it is just fraction hours from beginning
+                            stamp = float(ltime)
                     else:
                         stamp = pd.Timestamp(ldate + " " + ltime)
 

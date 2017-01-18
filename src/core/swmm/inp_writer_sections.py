@@ -786,7 +786,11 @@ class DryWeatherInflowWriter(SectionWriter):
         inp = ''
         if dry_weather_inflow.comment:
             inp = dry_weather_inflow.comment + '\n'
-        inp += DryWeatherInflowWriter.field_format.format(dry_weather_inflow.node,
+        if "none" in dry_weather_inflow.node.lower() or \
+                len(dry_weather_inflow.node) == 0:
+            pass
+        else:
+            inp += DryWeatherInflowWriter.field_format.format(dry_weather_inflow.node,
                                         dry_weather_inflow.constituent,
                                         dry_weather_inflow.average) + '\t' + '\t'.join(dry_weather_inflow.time_patterns)
         return inp
@@ -802,7 +806,12 @@ class RDIInflowWriter(SectionWriter):
         inp = ''
         if rdi_inflow.comment:
             inp = rdi_inflow.comment + '\n'
-        inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
+        if "none" in rdi_inflow.node.lower() or \
+            len(rdi_inflow.node) == 0 or \
+            "none" in rdi_inflow.hydrograph_group.lower():
+            pass
+        else:
+            inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
                                         rdi_inflow.hydrograph_group,
                                         rdi_inflow.sewershed_area)
         return inp

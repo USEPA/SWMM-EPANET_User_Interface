@@ -183,6 +183,16 @@ try:
                                                  QMessageBox.Yes | QMessageBox.No,
                                                  QMessageBox.Yes)
                         if reply == QMessageBox.Yes:
+                            for fid in buf.changedGeometries():
+                                iterator = layer.getFeatures(QgsFeatureRequest().setFilterFid(fid))
+                                ftarget = None
+                                if iterator:
+                                    ftarget = next(iterator)
+                                if ftarget is not None:
+                                    self.session.update_model_object_vertices("subcatchment",
+                                                                              ftarget.attributes()[0],
+                                                                              ftarget.geometry().asPolygon()[0])
+                                    pass
                             layer.commitChanges()
                         else:
                             layer.rollBack()

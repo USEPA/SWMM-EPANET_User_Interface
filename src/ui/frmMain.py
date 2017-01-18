@@ -916,6 +916,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.undo_stack.push(AddDeleteVertexz(self, layer, feature, pind, edit_type,
                                                             pt_added, fx, fy))
 
+    def update_model_object_vertices(self, model_obj_type, model_obj_name, new_vertices):
+        """
+        update model object's vertices after editing
+        Args:
+            model_obj_type: e.g. subcatchment
+            model_obj_name: e.g. name of a subcatchment, u'1'
+            new_vertices: list of vertices' coordinates (map coordinate, e.g. list of QgsPoint)
+        Returns:
+        """
+        m_target = None
+        if "subcatch" in model_obj_type:
+            m_target = self.project.subcatchments.find_item(model_obj_name)
+            if m_target is not None:
+                del m_target.vertices[:]
+                for v in new_vertices:
+                    coord = Coordinate()
+                    coord.x = str(v.x())
+                    coord.y = str(v.y())
+                    m_target.vertices.append(coord)
+
     def edited_name(self, edited_list):
         """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""
         for old_name, item in edited_list:

@@ -1,0 +1,25 @@
+var classcore_1_1epanet_1_1calibration_1_1_calibration_dataset =
+[
+    [ "__init__", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#ac0ec4c55c8bae96a7eb14b562da3647a", null ],
+    [ "calc_stats", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a01588a1f30fd44dfdfe85fa9cefdfc53", null ],
+    [ "get_sim_value", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a32cef7f4135bd9ee64ce9993b09e0b75", null ],
+    [ "get_sim_value_seqential", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#acf4de9e2617a36548d72db8e589956cc", null ],
+    [ "read_simulated_values", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a525036192e7ecadb1c9ce422fed35973", null ],
+    [ "read_simulated_values_seqential", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a746bcc90edeb60fdb08da252122cc083", null ],
+    [ "SumsToStats", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#aabbb80193a10815d9fd2f82f17d89618", null ],
+    [ "data", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a15d1d1a0655156484f4077539748c9c9", null ],
+    [ "id", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#aaf5fb5caf718e62fb050d4fa122a745f", null ],
+    [ "is_selected", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a85783af32cb2b7916e9656e6ff6552ed", null ],
+    [ "mean_err", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a05aab3a9c721edde14fec98e9b23ccbb", null ],
+    [ "mean_obs", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#ae830ee4a58312147fcf41f6558933b41", null ],
+    [ "mean_rms", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a3075b8203aba45341c00eb1acb0c6d64", null ],
+    [ "mean_sim", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#ad7d82d2e46e244abe027c613892a3e83", null ],
+    [ "need_to_calculate_stats", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a5b31168c5aa3aba1e719639259e679bc", null ],
+    [ "sum_err", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a2002c635620a225cd874ce94a08a7270", null ],
+    [ "sum_err2", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a3ac083b7c64ad0ffaeff65f876fa91d7", null ],
+    [ "sum_err_relative", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#aad6f23a4cde2b24b75a3267deef306f9", null ],
+    [ "sum_obs", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a7c2527ee753c297004b1e524318b494b", null ],
+    [ "sum_obs_non0_ctr", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#ac2c8868a5c7411e495ad2b34bfd6dc8a", null ],
+    [ "sum_sim", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#afff359472737d7121953076d5d3ef2f6", null ],
+    [ "sum_sim_stats_ctr", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html#a0543e05c8fb7e9d935513a12af21c1c0", null ]
+];

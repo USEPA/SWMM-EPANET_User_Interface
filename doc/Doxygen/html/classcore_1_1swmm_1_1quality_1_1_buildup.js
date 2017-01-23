@@ -1,8 +1,6 @@
 var classcore_1_1swmm_1_1quality_1_1_buildup =
 [
-    [ "__init__", "classcore_1_1swmm_1_1quality_1_1_buildup.html#ae67cff016fd14a9fa285a5db5e67eca3", null ],
-    [ "get_text", "classcore_1_1swmm_1_1quality_1_1_buildup.html#abd0e8401aab5e6ac440efa5361582175", null ],
-    [ "set_text", "classcore_1_1swmm_1_1quality_1_1_buildup.html#a952035144db7e519074e0703ff1a7be6", null ],
+    [ "__init__", "classcore_1_1swmm_1_1quality_1_1_buildup.html#a0fda885e861b0312a01c737fe766964b", null ],
     [ "function", "classcore_1_1swmm_1_1quality_1_1_buildup.html#a9aca929afd12a82c32147b45b3b4f0db", null ],
     [ "land_use_name", "classcore_1_1swmm_1_1quality_1_1_buildup.html#a2c56382c82d72d453d1ad5a1d43ed3ed", null ],
     [ "max_buildup", "classcore_1_1swmm_1_1quality_1_1_buildup.html#ad1ced631a189c15282186a143c27c41f", null ],

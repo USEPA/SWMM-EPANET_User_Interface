@@ -297,7 +297,7 @@ class TemperatureWriter(SectionWriter):
         elif temperature.source == TemperatureSource.FILE and temperature.filename:
             text_list.append(field_start + temperature.filename + '\t' + temperature.start_date)
 
-        text_list.append(WindSpeedWriter.as_text(temperature.wind_speed))  #xw9/13/2016 bug here, not fixed
+        text_list.append(WindSpeedWriter.as_text(temperature.wind_speed))
         text_list.append(SnowMeltWriter.as_text(temperature.snow_melt))   #xw bug here
         text_list.append(ArealDepletionWriter.as_text(temperature.areal_depletion))   #xw bug here
         return '\n'.join(text_list)
@@ -347,7 +347,7 @@ class WindSpeedWriter(SectionWriter):
         inp = TemperatureWriter.field_format.format(WindSpeed.SECTION_NAME) + '\t' + wind_speed.source.name
         if wind_speed.source == WindSource.MONTHLY:
             if len(wind_speed.wind_speed_monthly) > 0:
-                inp += '\t' + '\t'.join(wind_speed.wind_speed_monthly)
+                inp += '\t' + '\t'.join(map(str, wind_speed.wind_speed_monthly))
             else:
                 inp = ''
         elif wind_speed.source == WindSource.FILE:

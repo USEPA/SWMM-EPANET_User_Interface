@@ -231,7 +231,7 @@ class PatternReader(SectionReader):
     def read(new_text):
         pattern = Pattern()
         for line in new_text.splitlines():
-            comment_split = unicode.split(line, ';', 1)
+            comment_split = line.split(';', 1)
             if len(comment_split) > 1:
                 pattern.description += line[1:].strip()
                 line = comment_split[0].strip()

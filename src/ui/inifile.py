@@ -5,7 +5,7 @@ class ini_setting:
     """
     class for managing .ini file and project defaults
     """
-    def __init__(self, file_name):
+    def __init__(self, file_name, qsetting):
         """
         constructor
         Args:
@@ -15,14 +15,16 @@ class ini_setting:
         """
         self.file_name = file_name
         self.error_msg = ""
-        try:
-            self.config = QSettings(self.file_name, QSettings.IniFormat)
-            print("Read project settings from " + self.file_name)
-        except Exception as exINI:
-            self.config = None
-            self.error_msg = "Reading Error" + ":\n" + str(exINI)
+        self.config = qsetting
+        if self.config is None:
+            try:
+                self.config = QSettings(self.file_name, QSettings.IniFormat)
+                print("Read project settings from " + self.file_name)
+            except Exception as exINI:
+                self.config = None
+                self.error_msg = "Reading Error" + ":\n" + str(exINI)
 
-        self.sections = {} # all values read
+        self.groups_with_values = {} # all values read
         self.groups = {} # group names and key names
 
         if self.config is not None:
@@ -36,7 +38,7 @@ class ini_setting:
                     #print group + "::" + key + "::" + self.config.value(key).toString()
                 self.config.endGroup()
 
-    def get_setting(self, group, key):
+    def get_setting_value(self, group, key):
         """
         Get the value of a ini setting
         Args:
@@ -86,9 +88,9 @@ class ini_setting:
         """
         for group in self.config.childGroups():
             self.config.beginGroup(group)
-            self.sections[group] = {}
+            self.groups_with_values[group] = {}
             for key in self.config.childKeys():
-                self.sections[group][key] = self.get_setting(group, key)
+                self.groups_with_values[group][key] = self.get_setting_value(group, key)
                 # print group + "::" + key + "::" + self.config.value(key).toString()
             self.config.endGroup()
 

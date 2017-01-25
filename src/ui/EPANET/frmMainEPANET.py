@@ -586,8 +586,9 @@ class frmMainEPANET(frmMain):
 
     def edit_defaults(self):
         directory = self.program_settings.value("ProjectDir", "")
-
-
+        from frmDefaultsEditor import frmDefaultsEditor
+        fd = frmDefaultsEditor(self, self.project, self.project_settings)
+        fd.show()
 
     def get_editor(self, edit_name):
         frm = None

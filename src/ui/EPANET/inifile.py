@@ -50,9 +50,9 @@ class EPROPERTY_PIPE(Enum):
     KWALL = 8 # Wall coeff.
 
 
-class Defaults(ini_setting):
-    def __init__(self, file_name, project):
-        ini_setting.__init__(self, file_name)
+class DefaultsEPANET(ini_setting):
+    def __init__(self, file_name, project, qsetting):
+        ini_setting.__init__(self, file_name, qsetting)
         self.project = project
         self.model = "epanet"
 

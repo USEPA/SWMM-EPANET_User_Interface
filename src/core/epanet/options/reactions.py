@@ -21,26 +21,27 @@ class Reactions(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## set the order of reactions occurring in the bulk fluid
         self.order_bulk = 1		    # int
-        """set the order of reactions occurring in the bulk fluid"""
 
+        ## set the order of reactions occurring in the pipe wall
         self.order_wall = 1		    # int
-        """set the order of reactions occurring in the pipe wall"""
 
+        ## set the order of reactions occurring in the tanks
         self.order_tank = 1	        # int
-        """set the order of reactions occurring in the tanks"""
 
+        ## set a global value for all bulk reaction coefficients
         self.global_bulk = 0.0		    # real
-        """set a global value for all bulk reaction coefficients"""
 
+        ## set a global value for all wall reaction coefficients
         self.global_wall = 0.0		    # real
-        """set a global value for all wall reaction coefficients"""
 
+        ## specifies that reaction rates are proportional to difference between concentration and potential value
         self.limiting_potential = 0.0	    # real
-        """specifies that reaction rates are proportional to difference between concentration and potential value"""
 
+        ## make all default pipe wall reaction coefficients be related to pipe roughness
         self.roughness_correlation = 0.0    # real
-        """make all default pipe wall reaction coefficients be related to pipe roughness"""
 
+        ## pipe/tank specific reaction coefficients
         self.value = []
-        """ pipe/tank specific reaction coefficients """
+

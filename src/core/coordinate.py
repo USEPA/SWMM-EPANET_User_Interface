@@ -6,40 +6,42 @@ class Coordinate:
     def __init__(self):
         self.name = ''
 
+        ## X-Coordinate; East-West dimension
         self.x = ''
-        """X-Coordinate; East-West dimension"""
 
+        ## Y-Coordinate; North-South dimension
         self.y = ''
-        """Y-Coordinate; North-South dimension"""
 
 
 class Link:
     """A link between nodes in a model"""
 
     def __init__(self):
+
+        ## Link Name/Identifier
         self.name = 'Unnamed'
-        """Link Name/Identifier"""
 
+        ## Optional description of the Link
         self.description = ''
-        """Optional description of the Link"""
 
+        ## Optional label used to categorize or classify the Link
         self.tag = ''
-        """Optional label used to categorize or classify the Link"""
 
+        ## Name of node on the inlet end of the Link
         self.inlet_node = 'None'
-        """Name of node on the inlet end of the Link"""
 
+        ## Name of node on the outlet end of the Link
         self.outlet_node = 'None'
-        """Name of node on the outlet end of the Link"""
 
+        ## Intermediate vertices between inlet_node and outlet_node along the length of the link
         self.vertices = []
-        """Intermediate vertices between inlet_node and outlet_node along the length of the link"""
 
 
 class Polygon:
     def __init__(self):
+        ## Name/Identifier
         self.name = ''
-        """Name/Identifier"""
 
+        ## Coordinates of each vertex of this polygon
         self.vertices = []
-        """Coordinates of each vertex of this polygon"""
+

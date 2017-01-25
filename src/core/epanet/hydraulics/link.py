@@ -31,12 +31,12 @@ class EpanetLink(Section, Link):
         Section.__init__(self)
         Link.__init__(self)
 
+        ## Flag indicating whether an output report is desired for this link
         self.report_flag = ''
-        """Flag indicating whether an output report is desired for this link"""
 
         # TODO: sync this with STATUS section:
+        ## initial status of a pipe, pump, or valve; can be a speed setting for a pump
         self.initial_status = ''
-        """initial status of a pipe, pump, or valve; can be a speed setting for a pump"""
 
 
 class Pipe(EpanetLink):
@@ -61,25 +61,26 @@ class Pipe(EpanetLink):
     def __init__(self):
         EpanetLink.__init__(self)
 
+        ## pipe length
         self.length = "0.0"
-        """pipe length"""
 
+        ## pipe diameter
         self.diameter = "0.0"
-        """pipe diameter"""
 
+        ## Manning's roughness coefficient
         self.roughness = "0.0"
-        """Manning's roughness coefficient"""
 
+        ## Minor loss coefficient
         self.loss_coefficient = "0.0"
-        """Minor loss coefficient"""
 
         # See REACTIONS section for this parameter; could add convenience function to find it
+        ## bulk reaction coefficient for this pipe
         # self.bulk_reaction_coefficient = "0.0"
-        """bulk reaction coefficient for this pipe"""
 
         # See REACTIONS section for this parameter; could add convenience function to find it
+        ## wall reaction coefficient for this pipe
         # self.wall_reaction_coefficient = "0.0"
-        """wall reaction coefficient for this pipe"""
+
 
 class Pump(EpanetLink):
     """A Pump link in an EPANET model"""
@@ -106,17 +107,17 @@ class Pump(EpanetLink):
 
         # Either power or head_curve_name must be supplied for each pump. The other fields are optional.
 
+        ## power value for constant energy pump, hp (kW)
         self.power = "0.0"
-        """power value for constant energy pump, hp (kW)"""
 
+        ## curve that describes head versus flow for the pump
         self.head_curve_name = ''
-        """curve that describes head versus flow for the pump"""
 
+        ## relative speed setting (normal speed is 1.0, 0 means pump is off)
         self.speed = "0.0"
-        """relative speed setting (normal speed is 1.0, 0 means pump is off)"""
 
+        ## time pattern that describes how speed setting varies with time
         self.pattern = ''
-        """time pattern that describes how speed setting varies with time"""
 
         # pump energy parameters are in options/energy
 
@@ -141,25 +142,25 @@ class Valve(EpanetLink):
     def __init__(self):
         EpanetLink.__init__(self)
 
+        ## valve diameter
         self.diameter = "0.0"
-        """valve diameter"""
 
+        ##  PRV (pressure reducing valve) Pressure, psi (m);
+        ##  PSV (pressure sustaining valve) Pressure, psi (m);
+        ##  PBV (pressure breaker valve) Pressure, psi (m);
+        ##  FCV (flow control valve) Flow (flow units);
+        ##  TCV (throttle control valve) Loss Coefficient;
+        ##  GPV (general purpose valve) ID of head loss curve
         self.type = ValveType.PRV
-        """ PRV (pressure reducing valve) Pressure, psi (m)
-            PSV (pressure sustaining valve) Pressure, psi (m)
-            PBV (pressure breaker valve) Pressure, psi (m)
-            FCV (flow control valve) Flow (flow units)
-            TCV (throttle control valve) Loss Coefficient
-            GPV (general purpose valve) ID of head loss curve"""
 
+        ## Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve name for GPV
         self.setting = "0.0"
-        """Pressure for PRV, PSV, and PBV; flow for FCV, Loss Coefficient for TCV, head loss curve name for GPV"""
 
+        ## TCV (throttle control valve) Loss Coefficient
         self.minor_loss_coefficient = "0.0"
-        """TCV (throttle control valve) Loss Coefficient"""
 
+        ## valve is open or closed
         # TODO: access this: self.fixed_status = FixedStatus.OPEN
-        """valve is open or closed"""
 
 
 class Status(Section):
@@ -172,9 +173,10 @@ class Status(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Identifier of link whose initial status is being specified
         self.name = ''
-        """Identifier of link whose initial status is being specified"""
 
+        ## Initial status of link
         self.status = ''
-        """Initial status of link"""
+
 

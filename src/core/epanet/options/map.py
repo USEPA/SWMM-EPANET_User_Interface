@@ -9,6 +9,6 @@ class MapOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Name of a file containing coordinates of the network's nodes;
+        ## Don't write by default
         self.map = ""
-        """Name of a file containing coordinates of the network's nodes"""
-        """Don't write by default"""

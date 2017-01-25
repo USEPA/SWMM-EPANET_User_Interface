@@ -18,16 +18,17 @@ class Curve(Section):
 
     def __init__(self):
         Section.__init__(self)
+
+        ## Curve name/ID/Label
         self.name = ''      # string
-        """Curve name/ID/Label"""
 
+        ## Curve description
         self.description = ''   # string
-        """Curve description"""
 
+        ## CurveType: Type of Curve
         self.curve_type = CurveType.UNSET    # PUMP, EFFICIENCY, VOLUME, or HEADLOSS
-        """CurveType: Type of Curve"""
 
+        ## X, Y Values
         self.curve_xy = []      # list of (x, y) tuples
-        """X, Y Values"""
 
 

@@ -782,6 +782,9 @@ class frmMainSWMM(frmMain):
         self._frmCalibrationData.show()
         pass
 
+    def edit_defaults(self):
+        directory = self.program_settings.value("ProjectDir", "")
+
     def get_editor(self, edit_name):
         frm = None
         # First handle special cases where forms need more than simply being created

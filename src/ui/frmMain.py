@@ -82,6 +82,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdRun_Simulation.triggered.connect(self.run_simulation)
         self.actionRun_SimulationMenu.triggered.connect(self.run_simulation)
         self.actionStdProjCalibration_Data.triggered.connect(self.calibration_data)
+        self.actionStdProjDefault.triggered.connect(self.edit_defaults)
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
@@ -1671,6 +1672,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     try:
                         self.project_settings = QtCore.QSettings(ini_file_name, QtCore.QSettings.IniFormat)
                         print("Read project settings from " + self.project_settings.fileName())
+                        #self.project_settings = ini_setting(self.project, ini_file_name, self.model)
+                        #self.project_settings.read_ini_file()
+                        print("Read project settings from " + self.project_settings.file_name)
                     except Exception as exINI:
                         self.project_settings = None
                         print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(

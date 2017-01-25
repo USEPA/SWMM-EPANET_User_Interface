@@ -915,3 +915,10 @@ def ExtractValues(S, N1, N2, X):
     # finally
     #     Slist.Free
 
+from ui.inifile import ini_setting
+class Defaults(ini_setting):
+    def __init__(self, file_name, project):
+        ini_setting.__init__(self, file_name)
+        self.project = project
+        self.model = "swmm"
+

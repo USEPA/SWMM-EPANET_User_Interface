@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmGenericDefaultsEditorDesigner.ui'
 #
-# Created: Thu Jan 19 16:34:59 2017
+# Created: Thu Jan 26 13:04:07 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,10 +42,8 @@ class Ui_frmGenericDefaultsEditor(object):
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.tblGeneric = QtGui.QTableWidget(self.tab)
         self.tblGeneric.setObjectName(_fromUtf8("tblGeneric"))
-        self.tblGeneric.setColumnCount(1)
+        self.tblGeneric.setColumnCount(0)
         self.tblGeneric.setRowCount(0)
-        item = QtGui.QTableWidgetItem()
-        self.tblGeneric.setHorizontalHeaderItem(0, item)
         self.gridLayout_2.addWidget(self.tblGeneric, 0, 0, 1, 1)
         self.tabDefaults.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
@@ -89,8 +87,6 @@ class Ui_frmGenericDefaultsEditor(object):
 
     def retranslateUi(self, frmGenericDefaultsEditor):
         frmGenericDefaultsEditor.setWindowTitle(_translate("frmGenericDefaultsEditor", "Project Defaults", None))
-        item = self.tblGeneric.horizontalHeaderItem(0)
-        item.setText(_translate("frmGenericDefaultsEditor", "Value", None))
         self.tabDefaults.setTabText(self.tabDefaults.indexOf(self.tab), _translate("frmGenericDefaultsEditor", "Tab 1", None))
         self.tabDefaults.setTabText(self.tabDefaults.indexOf(self.tab_2), _translate("frmGenericDefaultsEditor", "Tab 2", None))
         self.tabDefaults.setTabText(self.tabDefaults.indexOf(self.tab_3), _translate("frmGenericDefaultsEditor", "Page", None))

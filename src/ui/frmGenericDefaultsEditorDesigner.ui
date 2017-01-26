@@ -31,13 +31,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tblGeneric">
-          <column>
-           <property name="text">
-            <string>Value</string>
-           </property>
-          </column>
-         </widget>
+         <widget class="QTableWidget" name="tblGeneric"/>
         </item>
        </layout>
       </widget>

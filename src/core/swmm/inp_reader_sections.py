@@ -826,7 +826,7 @@ class TransectsReader(SectionReader):
                 comment = Section()
                 comment.name = "Comment"
                 comment.value = ''
-                transects.value.append(comment)
+                # transects.value.append(comment)
             else:
                 fields = line.split()
                 if len(fields) > 2:

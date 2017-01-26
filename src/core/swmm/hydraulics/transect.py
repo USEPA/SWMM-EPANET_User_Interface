@@ -13,7 +13,7 @@ class Transect:
 
         ## Values of distance from the left side of the channel along with the corresponding elevation of the
         ## channel bottom as one moves across the channel from left to right, looking in the downstream direction
-        self.station_elevation_data_grid = []
+        self.stations = []
 
         ## Mannings roughness for the left overbank portion of the transect
         self.roughness_left_bank = 0.0

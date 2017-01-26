@@ -42,44 +42,45 @@ class Conduit(SwmmLink):
     def __init__(self):
         SwmmLink.__init__(self)
 
+        ## Conduit length (feet or meters)
         self.length = "0.0"
-        """Conduit length (feet or meters)."""
 
+        ## Manning's N roughness coefficient
         self.roughness = "0.0"
-        """Manning's N roughness coefficient."""
 
+        ## Depth or elevation of the conduit invert above the node invert
+        ## at the upstream end of the conduit (feet or meters)
         self.inlet_offset = "0.0"
-        """ Depth or elevation of the conduit invert above the node invert
-            at the upstream end of the conduit (feet or meters)."""
 
+        ## Depth or elevation of the conduit invert above the node invert
+        ## at the downstream end of the conduit (feet or meters)
         self.outlet_offset = "0.0"
-        """ Depth or elevation of the conduit invert above the node invert
-            at the downstream end of the conduit (feet or meters)."""
 
+        ## Initial flow in the conduit (flow units)
         self.initial_flow = "0.0"
-        """Initial flow in the conduit (flow units)."""
 
+        ## Maximum flow allowed in the conduit (flow units)
         self.maximum_flow = ''
-        """Maximum flow allowed in the conduit (flow units)."""
 
         # TODO: provide access to the following:
         # self.cross_section = ''
         # """See class CrossSection"""             # from [XSECTIONS] table
 
+        ## Head loss coefficient associated with energy losses at the entrance of the conduit
         self.entry_loss_coefficient = 0.0      # from [LOSSES] table
-        """Head loss coefficient associated with energy losses at the entrance of the conduit"""
 
+        ## Head loss coefficient associated with energy losses at the exit of the conduit
         self.exit_loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses at the exit of the conduit"""
 
+        ## Head loss coefficient associated with energy losses along the length of the conduit
         self.loss_coefficient = 0.0
-        """Head loss coefficient associated with energy losses along the length of the conduit"""
 
+        ## True if a flap gate exists that prevents backflow
         self.flap_gate = False
-        """True if a flap gate exists that prevents backflow."""
 
+        ## Rate of seepage loss into surrounding soil (in/hr or mm/hr)
         self.seepage = 0.0
-        """Rate of seepage loss into surrounding soil (in/hr or mm/hr)."""
+
 
 class Pump(SwmmLink):
     """A pump link in a SWMM model"""
@@ -101,17 +102,18 @@ class Pump(SwmmLink):
     def __init__(self):
         SwmmLink.__init__(self)
 
+        ## str: Associated pump curve
         self.pump_curve = "None"
-        """str: Associated pump curve"""
 
+        ## float: Initial status of the pump
         self.initial_status = "ON"
-        """float: Initial status of the pump"""
 
+        ## float: Depth at inlet node when the pump turns on
         self.startup_depth = 0.0
-        """float: Depth at inlet node when the pump turns on"""
 
+        ## float: Depth at inlet node when the pump turns off
         self.shutoff_depth = 0.0
-        """float: Depth at inlet node when the pump turns off"""
+
 
 class OrificeType(Enum):
     SIDE = 1
@@ -140,23 +142,24 @@ class Orifice(SwmmLink):
 
     def __init__(self):
         SwmmLink.__init__(self)
+
+        ## OrificeType: Type of orifice
         self.type = OrificeType.SIDE
-        """OrificeType: Type of orifice"""
 
+        ## Name of cross section in XSECTIONS Section
         self.cross_section = "None"
-        """Name of cross section in XSECTIONS Section"""
 
+        ## float: Depth of bottom of orifice opening from inlet node invert
         self.inlet_offset = 0.0
-        """float: Depth of bottom of orifice opening from inlet node invert"""
 
+        ## float: Discharge coefficient
         self.discharge_coefficient = 0.0
-        """float: Discharge coefficient"""
 
+        ## bool: True if a flap gate exists that prevents backflow.
         self.flap_gate = False
-        """bool: True if a flap gate exists that prevents backflow."""
 
+        ## float: Time in decimal hours to open/close a gated orifice
         self.o_rate = 0.0
-        """float: Time in decimal hours to open/close a gated orifice"""
 
 
 class WeirType(Enum):
@@ -198,32 +201,33 @@ class Weir(SwmmLink):
 
     def __init__(self):
         SwmmLink.__init__(self)
+
+        ## Type of weir
         self.type = WeirType.TRANSVERSE
-        """Type of weir"""
 
+        ## float: Depth of bottom of weir opening from inlet node invert
         self.inlet_offset = 0.0
-        """float: Depth of bottom of weir opening from inlet node invert"""
 
+        ## float: Discharge coefficient for central portion of weir
         self.discharge_coefficient = 0.0
-        """float: Discharge coefficient for central portion of weir"""
 
+        ## bool: True if weir contains a flap gate to prevent backflow
         self.flap_gate = False
-        """bool: True if weir contains a flap gate to prevent backflow"""
 
+        ## Number of end contractions for TRANSVERSE or TRAPEZOIDAL
         self.end_contractions = 0
-        """Number of end contractions for TRANSVERSE or TRAPEZOIDAL"""
 
+        ## float: Discharge coefficient for flow through the triangular ends of a trapezoidal weir
         self.end_coefficient = 0.0
-        """float: Discharge coefficient for flow through the triangular ends of a trapezoidal weir"""
 
+        ## bool: True if weir can surcharge
         self.can_surcharge = False
-        """bool: True if weir can surcharge"""
 
+        ## float: Width of road lanes and shoulders
         self.road_width = 0.0
-        """float: Width of road lanes and shoulders"""
 
+        ## RoadSurfaceType: Type of road surface
         self.road_surface = RoadSurfaceType.PAVED
-        """RoadSurfaceType: Type of road surface"""
 
 
 class OutletCurveType(Enum):
@@ -253,23 +257,24 @@ class Outlet(SwmmLink):
 
     def __init__(self):
         SwmmLink.__init__(self)
+
+        ## float: Depth of outlet above inlet node invert
         self.inlet_offset = 0.0
-        """float: Depth of outlet above inlet node invert"""
 
+        ## bool: True if outlet contains a flap gate to prevent backflow
         self.flap_gate = False
-        """bool: True if outlet contains a flap gate to prevent backflow"""
 
+        ## float: Coefficient in outflow expression
         self.coefficient = 0.0
-        """float: Coefficient in outflow expression"""
 
+        ## float: Exponent in outflow expression
         self.exponent = 0.0
-        """float: Exponent in outflow expression"""
 
+        ## OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet
         self.curve_type = OutletCurveType.TABULAR_DEPTH
-        """OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet"""
 
+        ## str: Name of rating curve that relates outflow to either depth or head
         self.rating_curve = "None"
-        """str: Name of rating curve that relates outflow to either depth or head"""
 
 
 class SubLink(SwmmLink):
@@ -337,33 +342,33 @@ class CrossSection(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## name of the conduit, orifice, or weir this is a cross-section of.
         self.link = "None"
-        """name of the conduit, orifice, or weir this is a cross-section of."""
 
+        ## cross-section shape"""
         self.shape = CrossSectionShape.NotSet
-        """cross-section shape"""
 
+        ## float as str: full height of the cross-section (ft or m)
         self.geometry1 = '0.0'
-        """float as str: full height of the cross-section (ft or m)"""
 
+        ## float as str: auxiliary parameters (width, side slopes, etc.)
         self.geometry2 = '0.0'
-        """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
+        ## float as str: auxiliary parameters (width, side slopes, etc.)
         self.geometry3 = '0.0'
-        """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
+        ## float as str: auxiliary parameters (width, side slopes, etc.)
         self.geometry4 = '0.0'
-        """float as str: auxiliary parameters (width, side slopes, etc.)"""
 
+        ## float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
+        ## roughness) associated with a conduit (default is 1).
         self.barrels = '0.0'
-        """float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
-        roughness) associated with a conduit (default is 1)."""
 
+        ## code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control
         self.culvert_code = ''
-        """code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control"""
 
+        ## str: name of associated Shape Curve that defines how width varies with depth.
         self.curve = "None"
-        """str: name of associated Shape Curve that defines how width varies with depth."""
 
     # TODO: access geometry1 as a name such as transect or xsection_name or geometry
     # """str: name of cross-section geometry of an irregular channel"""
@@ -384,15 +389,32 @@ class Transect(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Transect Name
         self.name = ''
-        """Transect Name"""
 
-        self.n_left = '0'   # Manning's n of left overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_right = '0'  # Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
-        self.n_channel = '0'  # Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
-        self.overbank_left = '0'   # station position which ends the left overbank portion of the channel (ft or m).
-        self.overbank_right = '0'  # station position which begins the right overbank portion of the channel (ft or m).
-        self.stations_modifier = '0'  # factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
-        self.elevations_modifier = '0'  # amount added (or subtracted) from the elevation of each station (ft or m).
-        self.meander_modifier = '0'  # the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
-        self.stations = []          # list of (station, elevation) pairs
+        ## Manning's n of left overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_left = '0'
+
+        ## Manning's n of right overbank portion of channel. Use 0 if no change from previous NC line.
+        self.n_right = '0'
+
+        ## Manning's n of main channel portion of channel. Use 0 if no change from previous NC line.
+        self.n_channel = '0'
+
+        ## station position which ends the left overbank portion of the channel (ft or m).
+        self.overbank_left = '0'
+
+        ## station position which begins the right overbank portion of the channel (ft or m).
+        self.overbank_right = '0'
+
+        ## factor by which distances between stations should be multiplied to increase (or decrease) the width of the channel (enter 0 if not applicable).
+        self.stations_modifier = '0'
+
+        ## amount added (or subtracted) from the elevation of each station (ft or m).
+        self.elevations_modifier = '0'
+
+        ## the ratio of the length of a meandering main channel to the length of the overbank area that surrounds it (use 0 if not applicable).
+        self.meander_modifier = '0'
+
+        ## list of (station, elevation) pairs
+        self.stations = []

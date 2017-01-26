@@ -26,32 +26,32 @@ class Files(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Name of rainfall data file to use
         self.use_rainfall = None
-        """Name of rainfall data file to use"""
 
+        ## Name of rainfall data file to save
         self.save_rainfall = None
-        """Name of rainfall data file to save"""
 
+        ## Name of runoff data file to use
         self.use_runoff = None
-        """Name of runoff data file to use"""
 
+        ## Name of runoff data file to save
         self.save_runoff = None
-        """Name of runoff data file to save"""
 
+        ## Name of hot start data file to use
         self.use_hotstart = None
-        """Name of hot start data file to use"""
 
+        ## Name of hot start data file to save
         self.save_hotstart = None
-        """Name of hot start data file to save"""
 
+        ## Name of RDII data file to use
         self.use_rdii = None
-        """Name of RDII data file to use"""
 
+        ## Name of RDII data file to save
         self.save_rdii = None
-        """Name of RDII data file to save"""
 
+        ## Name of inflows data file to use
         self.use_inflows = None
-        """Name of inflows data file to use"""
 
+        ## Name of outflows data file to save
         self.save_outflows = None
-        """Name of outflows data file to save"""

@@ -9,17 +9,18 @@ class Node(Section, Coordinate):
     """A node in a SWMM model (base class of Junction, Outfall, Divider, and Storage)"""
     def __init__(self):
         Coordinate.__init__(self)
+
+        ## Unique name or number identifying this node
         # self.name, inherited from Coordinate
-        """Unique name or number identifying this node"""
 
+        ## Node location for mapping
         # self.x, self.y, inherited from Coordinate
-        """Node location for mapping"""
 
+        ## Optional description of the Node
         # self.description = ''
-        """Optional description of the Node"""
 
+        ## Optional label used to categorize or classify this Node
         self.tag = ''
-        """Optional label used to categorize or classify this Node"""
 #
 #         self.direct_inflows = []
 #         """List of external direct, dry weather, or RDII inflows"""
@@ -67,30 +68,30 @@ class Junction(Node):
         # self.name = ''  # Unicode(default_value='', label="Name", help="User-assigned name of junction")
         # """name assigned to junction node"""
 
+        ## Invert elevation of the Node (feet or meters)
         self.elevation = 0.0
-        """Invert elevation of the Node (feet or meters)"""
 
+        ## Maximum depth of junction (i.e., from ground surface to invert)
+        ## feet or meters). If zero, then the distance from the invert to
+        ## the top of the highest connecting link will be used.  (Ymax)
         self.max_depth = 0.0
-        """Maximum depth of junction (i.e., from ground surface to invert)
-            (feet or meters). If zero, then the distance from the invert to
-            the top of the highest connecting link will be used.  (Ymax)"""
 
+        ## Depth of water at the junction at the start of the simulation
+        ## (feet or meters) (Y0)
         self.initial_depth = 0.0
-        """Depth of water at the junction at the start of the simulation
-            (feet or meters) (Y0)"""
 
+        ## Additional depth of water beyond the maximum depth that is
+        ##  allowed before the junction floods (feet or meters).
+        ## This parameter can be used to simulate bolted manhole covers
+        ## or force main connections. (Ysur)
         self.surcharge_depth = 0.0
-        """Additional depth of water beyond the maximum depth that is
-            allowed before the junction floods (feet or meters).
-            This parameter can be used to simulate bolted manhole covers
-            or force main connections. (Ysur)"""
 
+        ## Area occupied by ponded water atop the junction after flooding
+        ## occurs (sq. feet or sq. meters). If the Allow Ponding simulation
+        ## option is turned on, a non-zero value of this parameter will allow
+        ## ponded water to be stored and subsequently returned to the
+        ## conveyance system when capacity exists. (Apond)
         self.ponded_area = 0.0
-        """Area occupied by ponded water atop the junction after flooding
-            occurs (sq. feet or sq. meters). If the Allow Ponding simulation
-            option is turned on, a non-zero value of this parameter will allow
-            ponded water to be stored and subsequently returned to the
-            conveyance system when capacity exists. (Apond)"""
 
 
 class OutfallType(Enum):
@@ -148,25 +149,25 @@ class Outfall(Junction):
     def __init__(self):
         Junction.__init__(self)
 
+        ## Tide Gate is present to prevent backflow
         self.tide_gate = False
-        """Tide Gate is present to prevent backflow"""
 
+        ## Type of outfall boundary condition
         self.outfall_type = OutfallType.FREE
-        """Type of outfall boundary condition"""
 
+        ## Water elevation for a FIXED type of outfall (feet or meters).
         self.fixed_stage = 0.0
-        """Water elevation for a FIXED type of outfall (feet or meters)."""
 
+        ## The TidalCurve relating water elevation to hour of the
+        ## day for a TIDAL outfall.
         self.tidal_curve = "None"
-        """The TidalCurve relating water elevation to hour of the
-            day for a TIDAL outfall."""
 
+        ## Name of time series containing time history of outfall elevations
+        ## for a TIMESERIES outfall
         self.time_series_name = "None"
-        """Name of time series containing time history of outfall elevations
-            for a TIMESERIES outfall"""
 
+        ## Optional name of a subcatchment that receives the outfall's discharge
         self.route_to = ''
-        """Optional name of a subcatchment that receives the outfall's discharge"""
 
 
 class FlowDividerType(Enum):
@@ -186,16 +187,16 @@ class FlowDividerType(Enum):
 
 class WeirDivider:
     def __init__(self):
+        ## Minimum flow at which diversion begins (flow units).
         self.min_flow = 0.0
-        """Minimum flow at which diversion begins (flow units)."""
 
+        ## Vertical height of WEIR opening (feet or meters)
         self.max_depth = 0.0
-        """Vertical height of WEIR opening (feet or meters)"""
 
+        ## Product of WEIR's discharge coefficient and its length.
+        ## Weir coefficients are typically in the range of
+        ## 2.65 to 3.10 per foot, for flows in CFS.
         self.coefficient = 0.0
-        """Product of WEIR's discharge coefficient and its length.
-            Weir coefficients are typically in the range of
-            2.65 to 3.10 per foot, for flows in CFS."""
 
 
 class Divider(Junction):
@@ -231,23 +232,23 @@ class Divider(Junction):
     def __init__(self):
         Junction.__init__(self)
 
+        ## Name of link which receives the diverted flow.
         self.diverted_link = "None"
-        """Name of link which receives the diverted flow."""
 
+        ## Type of flow divider from FlowDividerType(Enum)
         self.flow_divider_type = FlowDividerType.CUTOFF
-        """Type of flow divider from FlowDividerType(Enum)"""
 
+        ## Flow at which diversion begins for a CUTOFF or WEIR divider (flow units).
         self.min_diversion_flow = 0.0
-        """Flow at which diversion begins for a CUTOFF or WEIR divider (flow units)."""
 
+        ## Diversion Curve used with a TABULAR divider
         self.divider_curve = "None"
-        """Diversion Curve used with a TABULAR divider"""
 
+        ## Height of WEIR divider (ft or m)
         self.weir_height = 0.0
-        """Height of WEIR divider (ft or m)"""
 
+        ## Discharge coefficient for a WEIR divider
         self.weir_coefficient = 0.0
-        """Discharge coefficient for a WEIR divider"""
 
 
 class StorageCurveType(Enum):
@@ -286,41 +287,41 @@ class StorageUnit(Junction):
     def __init__(self):
         Junction.__init__(self)
 
+        ## StorageCurveType: FUNCTIONAL or TABULAR
         self.storage_curve_type = StorageCurveType.TABULAR
-        """StorageCurveType: FUNCTIONAL or TABULAR"""
 
+        ## Storage Curve containing the relationship between
+        ## surface area and storage depth
         self.storage_curve = "None"
-        """Storage Curve containing the relationship between
-            surface area and storage depth"""
 
+        ## A-value in the functional relationship
+        ## between surface area and storage depth.
         self.coefficient = '0'
-        """A-value in the functional relationship
-            between surface area and storage depth."""
 
+        ## B-value in the functional relationship
+        ## between surface area and storage depth.
         self.exponent = '0'
-        """B-value in the functional relationship
-            between surface area and storage depth."""
 
+        ## C-value in the functional relationship
+        ## between surface area and storage depth.
         self.constant = '0'
-        """C-value in the functional relationship
-            between surface area and storage depth."""
 
+        ## The fraction of the potential evaporation from the storage units
+        ## water surface that is actually realized.
         self.evaporation_factor = '0'
-        """The fraction of the potential evaporation from the storage units
-            water surface that is actually realized."""
 
+        ## The following Green-Ampt infiltration parameters are only used when the storage
+        ## node is intended to act as an infiltration basin
         self.seepage_loss = '0'
-        """The following Green-Ampt infiltration parameters are only used when the storage
-            node is intended to act as an infiltration basin:"""
 
+        ## Soil capillary suction head (in or mm)
         self.seepage_suction_head = '0'
-        """Soil capillary suction head (in or mm)."""
 
+        ## Soil saturated hydraulic conductivity (in/hr or mm/hr)
         self.seepage_hydraulic_conductivity = '0'
-        """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
+        ## Initial soil moisture deficit (volume of voids / total volume)
         self.seepage_initial_moisture_deficit = '0'
-        """Initial soil moisture deficit (volume of voids / total volume)."""
 
 
 class DirectInflowType(Enum):
@@ -334,30 +335,30 @@ class DirectInflow(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## str: name of node where external inflow enters
         self.node = "None"
-        """str: name of node where external inflow enters."""
 
+        ## str: Name of the time series describing how flow or constituent loading to this node varies with time
         self.timeseries = "None"
-        """str: Name of the time series describing how flow or constituent loading to this node varies with time."""
 
+        ## str: Name of constituent (pollutant) or FLOW
         self.constituent = "FLOW"
-        """str: Name of constituent (pollutant) or FLOW"""
 
+        ## DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate
         self.format = DirectInflowType.CONCEN
-        """DirectInflowType: Type of data contained in constituent_timeseries, concentration or mass flow rate"""
 
+        ## float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
+        ## into project mass units per second as specified in [POLLUTANTS]
         self.conversion_factor = '1.0'
-        """float: Numerical factor used to convert the units of pollutant mass flow rate in constituent_timeseries
-        into project mass units per second as specified in [POLLUTANTS]"""
 
+        ## float: Scaling factor that multiplies the recorded time series values
         self.scale_factor = '1.0'
-        """float: Scaling factor that multiplies the recorded time series values."""
 
+        ## float: Constant baseline added to the time series values
         self.baseline = '0.0'
-        """float: Constant baseline added to the time series values."""
 
+        ## str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis
         self.baseline_pattern = ''
-        """str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis"""
 
 
 class DryWeatherInflow(Section):
@@ -366,17 +367,17 @@ class DryWeatherInflow(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## str: name of node where external inflow enters
         self.node = "None"
-        """str: name of node where external inflow enters."""
 
+        ## str: Name of constituent (pollutant) or FLOW
         self.constituent = "FLOW"
-        """str: Name of constituent (pollutant) or FLOW"""
 
+        ## str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units
         self.average = '0.0'
-        """str: Average (or baseline) value of the dry weather inflow of the constituent in the relevant units"""
 
+        ## str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion
         self.time_patterns = []
-        """str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion"""
 
 
 class RDIInflow(Section):
@@ -385,14 +386,14 @@ class RDIInflow(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## str: name of node where external inflow enters
         self.node = ''
-        """str: name of node where external inflow enters."""
 
+        ## str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section
         self.hydrograph_group = "None"
-        """str: name of an RDII unit hydrograph group specified in the [HYDROGRAPHS] section"""
 
+        ## float: area of the sewershed which contributes RDII to the node (acres or hectares)
         self.sewershed_area = '0'
-        """float: area of the sewershed which contributes RDII to the node (acres or hectares)"""
 
 
 class Treatment(Section):
@@ -426,15 +427,15 @@ class Treatment(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## str: name of node where external inflow enters.
         self.node = "None"
-        """str: name of node where external inflow enters."""
 
+        ## Name of pollutant receiving treatment
         self.pollutant = "None"
-        """Name of pollutant receiving treatment"""
 
+        ## str: mathematical function expressing treatment result in terms of pollutant concentrations,
+        ## pollutant removals, and other standard variables. Starts with C for concentration or R for removal.
         self.function = ''
-        """str: mathematical function expressing treatment result in terms of pollutant concentrations,
-        pollutant removals, and other standard variables. Starts with C for concentration or R for removal."""
 
 
 class SubCentroid(Node):

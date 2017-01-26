@@ -826,7 +826,7 @@ class TransectsReader(SectionReader):
                 comment = Section()
                 comment.name = "Comment"
                 comment.value = ''
-                transects.value.append(comment)
+                # transects.value.append(comment)
             else:
                 fields = line.split()
                 if len(fields) > 2:
@@ -1233,7 +1233,7 @@ class LIDControlReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) == 2:
-                    if lid_control.name:
+                    if lid_control.name and lid_control.name != 'Unnamed':
                         raise ValueError("LIDControlReader.read: LID name already set: " +
                                          lid_control.name + ", then found 2-element line: " + line)
                     lid_control.name = fields[0]
@@ -1307,7 +1307,7 @@ class SnowPackReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) > 2:
-                    if not snow_pack.name:                      # If we have not found a name yet, use the first one we find
+                    if not snow_pack.name or snow_pack.name == 'Unnamed':                      # If we have not found a name yet, use the first one we find
                         snow_pack.name = fields[0]
                     elif fields[0] != snow_pack.name:           # If we find a different name, complain
                         raise ValueError("SnowPackReader.read: name: " + fields[0] + " != " + snow_pack.name)

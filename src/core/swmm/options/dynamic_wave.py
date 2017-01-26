@@ -46,65 +46,46 @@ class DynamicWave(Section):
     def __init__(self):
         Section.__init__(self)
 
+
+        ## How the inertial terms in the Saint Venant momentum equation
+        ## will be handled under dynamic wave flow routing
         self.inertial_damping = InertialDamping.NONE
-        """
-        How the inertial terms in the Saint Venant momentum equation
-        will be handled under dynamic wave flow routing
-        """
 
+        ## Which condition is checked to determine if flow in a conduit
+        ## is supercritical and should thus be limited to the normal flow
         self.normal_flow_limited = NormalFlowLimited.BOTH
-        """
-        Which condition is checked to determine if flow in a conduit
-        is supercritical and should thus be limited to the normal flow
-        """
 
+        ## Establishes whether the Hazen-Williams (H-W) or the Darcy-Weisbach (D-W) equation will be used to
+        ## compute friction losses for pressurized flow in conduits that have been assigned a Circular Force
+        ## Main cross-section shape. The default is H-W.
         self.force_main_equation = ForceMainEquation.H_W
-        """
-        Establishes whether the Hazen-Williams (H-W) or the Darcy-Weisbach (D-W) equation will be used to
-        compute friction losses for pressurized flow in conduits that have been assigned a Circular Force
-        Main cross-section shape. The default is H-W.
-        """
 
+        ## Time step, in seconds, used to lengthen conduits under
+        ## dynamic wave routing, so that they meet the
+        ## Courant stability criterion under full-flow conditions
         self.lengthening_step = '0'
-        """
-        Time step, in seconds, used to lengthen conduits under 
-        dynamic wave routing, so that they meet the 
-        Courant stability criterion under full-flow conditions
-        """
 
+        ## Safety factor applied to a variable time step computed for each
+        ## time period under dynamic wave flow routing
         self.variable_step = '0'
-        """
-        Safety factor applied to a variable time step computed for each
-        time period under dynamic wave flow routing
-        """
 
+        ## Minimum surface area used at nodes when computing
+        ## changes in water depth under dynamic wave routing
         self.min_surface_area = '0'
-        """
-        Minimum surface area used at nodes when computing 
-        changes in water depth under dynamic wave routing
-        """
 
+        ## The maximum number of trials allowed during a time step to reach convergence
+        ## when updating hydraulic heads at the conveyance system's nodes. The default value is 8.
         self.max_trials = '8'
-        """
-        The maximum number of trials allowed during a time step to reach convergence
-        when updating hydraulic heads at the conveyance system's nodes. The default value is 8.
-        """
 
+        ## Difference in computed head at each node between successive trials below
+        ## which the flow solution for the current time step is assumed to have converged.
+        ## The default tolerance is 0.005 ft (0.0015 m).
         self.head_tolerance = ''
-        """
-        Difference in computed head at each node between successive trials below
-        which the flow solution for the current time step is assumed to have converged.
-        The default tolerance is 0.005 ft (0.0015 m).
-        """
 
+        ## Smallest time step allowed when variable time steps are used for dynamic
+        ## wave flow routing. The default value is 0.5 seconds.
         self.minimum_step = '0.5'
-        """
-        Smallest time step allowed when variable time steps are used for dynamic
-        wave flow routing. The default value is 0.5 seconds.
-        """
 
+        ## Number of parallel computing threads to use for dynamic wave flow routing
+        ## on machines equipped with multi-core processors.
         self.threads = ''
-        """
-        Number of parallel computing threads to use for dynamic wave flow routing
-        on machines equipped with multi-core processors.
-        """

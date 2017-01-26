@@ -52,77 +52,77 @@ class Subcatchment(Section, Polygon):
         Section.__init__(self)
         Polygon.__init__(self)
 
+        ## Coordinates: Subcatchment's centroid on the Study Area Map.
+        ## If not set, the subcatchment will not appear on the map.
         self.centroid = Coordinate()
-        """Coordinates: Subcatchment's centroid on the Study Area Map.
-            If not set, the subcatchment will not appear on the map."""
 
+        ## str: Optional description of the Subcatchment.
         self.description = ''
-        """str: Optional description of the Subcatchment."""
 
+        ## Optional label used to categorize or classify the Subcatchment.
         self.tag = ''
-        """Optional label used to categorize or classify the Subcatchment."""
 
+        ## str: The RainGage ID associated with the Subcatchment.
         self.rain_gage = 'None'
-        """str: The RainGage ID associated with the Subcatchment."""
 
+        ## The Node or Subcatchment which receives Subcatchment's runoff.
         self.outlet = 'None'
-        """The Node or Subcatchment which receives Subcatchment's runoff."""
 
+        ## float: Area of the subcatchment (acres or hectares).
         self.area = 0.0
-        """float: Area of the subcatchment (acres or hectares)."""
 
+        ## float: Percent of land area which is impervious.
         self.percent_impervious = 0.0
-        """float: Percent of land area which is impervious."""
 
+        ## Characteristic width of the overland flow path for sheet flow
+        ## runoff (feet or meters). An initial estimate of the characteristic
+        ## width is given by the subcatchment area divided by the average
+        ## maximum overland flow length. The maximum overland flow
+        ## length is the length of the flow path from the the furthest drainage
+        ## point of the subcatchment before the flow becomes channelized.
+        ## Maximum lengths from several different possible flow paths
+        ## should be averaged. These paths should reflect slow flow, such as
+        ## over pervious surfaces, more than rapid flow over pavement, for
+        ## example. Adjustments should be made to the width parameter to
+        ## produce good fits to measured runoff hydrographs.
         self.width = 0.0
-        """Characteristic width of the overland flow path for sheet flow
-            runoff (feet or meters). An initial estimate of the characteristic
-            width is given by the subcatchment area divided by the average
-            maximum overland flow length. The maximum overland flow
-            length is the length of the flow path from the the furthest drainage
-            point of the subcatchment before the flow becomes channelized.
-            Maximum lengths from several different possible flow paths
-            should be averaged. These paths should reflect slow flow, such as
-            over pervious surfaces, more than rapid flow over pavement, for
-            example. Adjustments should be made to the width parameter to
-            produce good fits to measured runoff hydrographs."""
 
+        ## float: Average percent slope of the subcatchment.
         self.percent_slope = 0.0
-        """float: Average percent slope of the subcatchment."""
 
+        ## float: Manning's n for overland flow in impervious part of Subcatchment
         self.n_imperv = 0.0
-        """float: Manning's n for overland flow in impervious part of Subcatchment"""
 
+        ## Manning's n for overland flow in pervious part of Subcatchment
         self.n_perv = 0.0
-        """Manning's n for overland flow in pervious part of Subcatchment"""
 
+        ## float: Depth of depression storage on the impervious portion of the
+        ## Subcatchment (inches or millimeters)
         self.storage_depth_imperv = 0.0
-        """float: Depth of depression storage on the impervious portion of the
-            Subcatchment (inches or millimeters) """
 
+        ## float: Depth of depression storage on the pervious portion of the
+        ## Subcatchment (inches or millimeters)
         self.storage_depth_perv = 0.0
-        """float: Depth of depression storage on the pervious portion of the
-            Subcatchment (inches or millimeters)"""
 
+        ## float: Percent of the impervious area with no depression storage.
         self.percent_zero_impervious = 0.0
-        """float: Percent of the impervious area with no depression storage."""
 
+        ## Routing: Internal routing of runoff between pervious and impervious areas
         self.subarea_routing = Routing.OUTLET
-        """Routing: Internal routing of runoff between pervious and impervious areas"""
 
+        ## float: Percent of runoff routed between subareas
         self.percent_routed = 100.0
-        """float: Percent of runoff routed between subareas"""
 
+        ## infiltration parameters from horton, green-ampt, or scs classes
         self.infiltration_parameters = HortonInfiltration()
         #self.infiltration_parameters.subcatchment = self.name
-        """infiltration parameters from horton, green-ampt, or scs classes"""
 
+        ## Snow pack parameter set (if any) of the subcatchment.
         self.snow_pack = ''
-        """Snow pack parameter set (if any) of the subcatchment."""
 
+        ## Total length of curbs in the subcatchment (any length units).
+        ## Used only when initial_loadings are normalized to curb length.
         self.curb_length = 0
-        """ Total length of curbs in the subcatchment (any length units).
-            Used only when initial_loadings are normalized to curb length."""
 
 
 class HortonInfiltration(Section):
@@ -141,23 +141,23 @@ class HortonInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Subcatchment name
         self.subcatchment = "None"
-        """Subcatchment name"""
 
+        ## Maximum infiltration rate on Horton curve (in/hr or mm/hr)
         self.max_rate = '0.0'
-        """Maximum infiltration rate on Horton curve (in/hr or mm/hr)"""
 
+        ## Minimum infiltration rate on Horton curve (in/hr or mm/hr).
         self.min_rate = '0.0'
-        """Minimum infiltration rate on Horton curve (in/hr or mm/hr)."""
 
+        ## Decay rate constant of Horton curve (1/hr).
         self.decay = '0.0'
-        """Decay rate constant of Horton curve (1/hr)."""
 
+        ## Time it takes for fully saturated soil to dry (days).
         self.dry_time = '0.0'
-        """Time it takes for fully saturated soil to dry (days)."""
 
+        ## Maximum infiltration volume possible (in or mm).
         self.max_volume = '0.0'
-        """Maximum infiltration volume possible (in or mm)."""
 
 
 class GreenAmptInfiltration(Section):
@@ -174,17 +174,17 @@ class GreenAmptInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Subcatchment name
         self.subcatchment = "None"
-        """Subcatchment name"""
 
+        ## Soil capillary suction (in or mm).
         self.suction = '0.0'
-        """Soil capillary suction (in or mm)."""
 
+        ## Soil saturated hydraulic conductivity (in/hr or mm/hr).
         self.hydraulic_conductivity = '0.0'
-        """Soil saturated hydraulic conductivity (in/hr or mm/hr)."""
 
+        ## Initial soil moisture deficit (volume of voids / total volume).
         self.initial_moisture_deficit = '0.0'
-        """Initial soil moisture deficit (volume of voids / total volume)."""
 
 
 class CurveNumberInfiltration(Section):
@@ -201,17 +201,17 @@ class CurveNumberInfiltration(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Subcatchment name
         self.subcatchment = "None"
-        """Subcatchment name"""
 
+        ## SCS Curve Number
         self.curve_number = "None"
-        """SCS Curve Number"""
 
+        ## Soil saturated hydraulic conductivity (no longer used for curve number infiltration).
         self.hydraulic_conductivity = '0'
-        """Soil saturated hydraulic conductivity (no longer used for curve number infiltration)."""
 
+        ## Time it takes for fully saturated soil to dry (days).
         self.dry_days = '0.0'
-        """Time it takes for fully saturated soil to dry (days)."""
 
 
 class Groundwater(Section):
@@ -240,59 +240,59 @@ class Groundwater(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Subcatchment name
         self.subcatchment = "None"
-        """Subcatchment name"""
 
+        ## Aquifer that supplies groundwater. None = no groundwater flow.
         self.aquifer = "None"
-        """Aquifer that supplies groundwater. None = no groundwater flow."""
 
+        ## Node that receives groundwater from the aquifer.
         self.receiving_node = "None"
-        """Node that receives groundwater from the aquifer."""
 
+        ## Elevation of ground surface for the subcatchment
+        ## that lies above the aquifer (feet or meters).
         self.surface_elevation = '0.0'
-        """Elevation of ground surface for the subcatchment
-            that lies above the aquifer (feet or meters)."""
 
+        ## Value of A1 in the groundwater flow formula.
         self.groundwater_flow_coefficient = '0.0'
-        """Value of A1 in the groundwater flow formula."""
 
+        ## Value of B1 in the groundwater flow formula.
         self.groundwater_flow_exponent = '0.0'
-        """Value of B1 in the groundwater flow formula."""
 
+        ## Value of A2 in the groundwater flow formula.
         self.surface_water_flow_coefficient = '0.0'
-        """Value of A2 in the groundwater flow formula."""
 
+        ## Value of B2 in the groundwater flow formula.
         self.surface_water_flow_exponent = '0.0'
-        """Value of B2 in the groundwater flow formula."""
 
+        ## Value of A3 in the groundwater flow formula.
         self.surface_gw_interaction_coefficient = '0.0'
-        """Value of A3 in the groundwater flow formula."""
 
+        ## Fixed depth of surface water at the receiving node (feet or meters)
+        ## (set to zero if surface water depth will vary
+        ## as computed by flow routing).
+        ## This value is used to compute HSW.
         self.fixed_surface_water_depth = '0.0'
-        """Fixed depth of surface water at the receiving node (feet or meters)
-            (set to zero if surface water depth will vary
-             as computed by flow routing).
-            This value is used to compute HSW."""
 
+        ## Groundwater elevation that must be reached before any flow occurs
+        ## (feet or meters).
+        ## Leave blank to use the receiving node's invert elevation.
         self.threshold_groundwater_elevation = '*'
-        """Groundwater elevation that must be reached before any flow occurs
-            (feet or meters).
-            Leave blank to use the receiving node's invert elevation."""
 
+        ## override bottom elevation aquifer parameter
         self.bottom_elevation = ''
-        """override bottom elevation aquifer parameter"""
 
+        ## override initial water table elevation aquifer parameter
         self.water_table_elevation = ''
-        """override initial water table elevation aquifer parameter"""
 
+        ## override initial upper moisture content aquifer parameter
         self.unsaturated_zone_moisture = ''
-        """override initial upper moisture content aquifer parameter"""
 
+        ## expression for lateral groundwater flow (to a node of the conveyance network)
         self.custom_lateral_flow_equation = ''
-        """expression for lateral groundwater flow (to a node of the conveyance network)"""
 
+        ## expression for vertical loss to deep groundwater
         self.custom_deep_flow_equation = ''
-        """expression for vertical loss to deep groundwater"""
 
 
 class LIDUsage(Section):
@@ -301,37 +301,37 @@ class LIDUsage(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs
         self.subcatchment_name = "None"
-        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this usage occurs"""
 
+        ## Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment
         self.control_name = "None"
-        """Name of the LID control defined in [LID_CONTROLS] to be used in the subcatchment"""
 
+        ## Number of equal size units of the LID practice deployed within the subcatchment
         self.number_replicate_units = '0'
-        """Number of equal size units of the LID practice deployed within the subcatchment"""
 
+        ## Surface area devoted to each replicate LID unit
         self.area_each_unit = '0'
-        """Surface area devoted to each replicate LID unit"""
 
+        ## Width of the outflow face of each identical LID unit
         self.top_width_overland_flow_surface = '0'
-        """Width of the outflow face of each identical LID unit"""
 
+        ## Degree to which storage zone is initially filled with water
         self.percent_initially_saturated = '0'
-        """Degree to which storage zone is initially filled with water"""
 
+        ## Percent of the impervious portion of the subcatchment's non-LID area whose runoff
+        ## is treated by the LID practice
         self.percent_impervious_area_treated = '0'
-        """Percent of the impervious portion of the subcatchment's non-LID area whose runoff
-        is treated by the LID practice"""
 
+        ## 1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
+        ## than going to the subcatchment's outlet
         self.send_outflow_pervious_area = '0'
-        """1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
-        than going to the subcatchment's outlet"""
 
+        ## Name of an optional file where detailed time series results for the LID will be written
         self.detailed_report_file = ''
-        """Name of an optional file where detailed time series results for the LID will be written"""
 
+        ## ID of a subcatchment that this LID drains to
         self.subcatchment_drains_to = ''
-        """ID of a subcatchment that this LID drains to"""
 
 
 class Coverage(Section):
@@ -340,14 +340,14 @@ class Coverage(Section):
     def __init__(self, subcatchment_name = '', land_use_name = '', percent_subcatchment_area = ''):
         Section.__init__(self)
 
+        ## Name of the Subcatchment defined in [SUBCATCHMENTS] where this coverage occurs
         self.subcatchment_name = subcatchment_name
-        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this coverage occurs"""
 
+        ## land use name from [LANDUSE] of this coverage
         self.land_use_name = land_use_name
-        """land use name from [LANDUSE] of this coverage"""
 
+        ## percent of subcatchment area covered by this land use
         self.percent_subcatchment_area = percent_subcatchment_area
-        """percent of subcatchment area covered by this land use"""
 
 
 class Coverages(Section):
@@ -368,14 +368,14 @@ class InitialLoading(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs
         self.subcatchment_name = "None"
-        """Name of the Subcatchment defined in [SUBCATCHMENTS] where this loading occurs"""
 
+        ## Name of a pollutant
         self.pollutant_name = "None"
-        """Name of a pollutant"""
 
+        ## Initial buildup of pollutant (lbs/acre or kg/hectare)
         self.initial_buildup = '0'
-        """Initial buildup of pollutant (lbs/acre or kg/hectare)"""
 
 
 class InitialLoadings(Section):

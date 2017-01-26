@@ -25,18 +25,19 @@ class Label(Section, Coordinate):
 
         """Text of label is saved in name attribute defined in Coordinate base class."""
 
+        ## ID label of an anchor node (optional)
         self.anchor_name = ""			# string
-        """ID label of an anchor node (optional)"""
 
+        ## label font
         self.font = ""
-        """label font"""
 
+        ## label size
         self.size = 10.0
-        """label size"""
 
+        ## label bold
         self.bold = False
-        """label bold"""
 
+        ## lable italics
         self.italic = False
-        """lable italics"""
+
 

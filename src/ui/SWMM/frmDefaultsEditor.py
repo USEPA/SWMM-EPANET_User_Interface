@@ -6,9 +6,12 @@ from ui.convenience import set_combo_items
 from ui.convenience import set_combo
 from core.swmm.hydrology.subcatchment import E_Infiltration
 from core.swmm.options.general import FlowUnits
-from core.epanet.options.hydraulics import HeadLoss
-from core.epanet.options.hydraulics import Unbalanced
-from core.epanet.options.report import StatusWrite
+from core.swmm.options.general import LinkOffsets
+from core.swmm.options.general import FlowRouting
+from core.swmm.options.dynamic_wave import ForceMainEquation
+from ui.text_plus_button import TextPlusButton
+from ui.SWMM.frmInfiltration import frmInfiltration
+from ui.SWMM.frmCrossSection import frmCrossSection
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -28,6 +31,8 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.qsettings = qsettings
         self.session = session
         self.project = project
+        self.default_key_channel = "def_xsection"
+        self.default_key_infilmodel = "def_infilmodel"
         if self.session is not None:
             self.setWindowTitle(self.session.model + " Project Defaults")
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -51,6 +56,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
 
         self.populate_defaults()
+        self.installEventFilter(self)
 
     def populate_defaults(self):
         """
@@ -130,15 +136,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             if self.qsettings:
                 def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
             self.tbl_2.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
-        self.infil_model = "HORTON"
-        if self.qsettings:
-            self.infil_model = unicode(self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
-                                                           self.infil_model))
-        combobox = QtGui.QComboBox()
-        enum_val = E_Infiltration[self.infil_model]
-        set_combo_items(type(enum_val), combobox)
-        set_combo(combobox, enum_val)
-        self.tbl_2.setCellWidget(self.tbl_2.rowCount() - 1, 0, combobox)
+        self.set_infilmodel_cell(0)
 
         pass
 
@@ -149,13 +147,12 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         """
         self.parameters = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length", "Conduit Geometry",
                            "Conduit Roughness", "Flow Units", "Link Offsets", "Routing Method", "Force Main Equation"]
-        self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "Yes",
-                                      "", "", ""]
+        self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "KINWAVE", "H_W"]
         self.tbl_3.setColumnCount(1)
         self.tbl_3.setRowCount(len(self.parameters))
         self.tbl_3.setHorizontalHeaderLabels(["Default Value"])
         self.tbl_3.setVerticalHeaderLabels(self.parameters)
-        for i in range(0, len(self.parameters) - 1):
+        for i in range(0, len(self.parameters)):
             combobox = None
             def_val = self.parameters_def_values[self.parameters.index(self.parameters[i])]
             if self.qsettings:
@@ -163,23 +160,83 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             if "flow units" in self.parameters[i].lower():
                 combobox = QtGui.QComboBox()
                 enum_val = FlowUnits[def_val]
-            elif "headloss" in self.parameters[i].lower():
+            elif "link offsets" in self.parameters[i].lower():
                 combobox = QtGui.QComboBox()
-                enum_val = HeadLoss[def_val.replace("-", "_")]
-            elif "unbalanced" in self.parameters[i].lower():
+                enum_val = LinkOffsets[def_val]
+            elif "routing method" in self.parameters[i].lower():
                 combobox = QtGui.QComboBox()
-                enum_val = Unbalanced[def_val.upper()]
-            elif "status report" in self.parameters[i].lower():
+                enum_val = FlowRouting[def_val.upper()]
+            elif "force main" in self.parameters[i].lower():
                 combobox = QtGui.QComboBox()
-                enum_val = StatusWrite[def_val.upper()]
+                enum_val = ForceMainEquation[def_val.upper()]
 
             if combobox is not None:
                 set_combo_items(type(enum_val), combobox)
                 set_combo(combobox, enum_val)
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
-                self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
+                if "conduit geometry" in self.parameters[i].lower():
+                    self.set_channel_cell(0)
+                else:
+                    self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
         pass
+
+    def eventFilter(self, ui_object, event):
+        if event.type() == QtCore.QEvent.WindowUnblocked:
+            if self.refresh_column > -1:
+                self.set_infilmodel_cell(self.refresh_column)
+                self.set_channel_cell(self.refresh_column)
+                self.refresh_column = -1
+        return False
+
+    def set_infilmodel_cell(self, column):
+        # text plus button for demand categories editor
+        tb = TextPlusButton(self)
+        self.infil_model = "HORTON"
+        if self.qsettings:
+            self.infil_model = unicode(self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
+                                                           self.infil_model))
+        tb.textbox.setText(self.infil_model)
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_infilmodel(column))
+        self.tbl_2.setCellWidget(self.tbl_2.rowCount() - 1, 0, tb)
+
+    def make_show_infilmodel(self, column):
+        def local_show():
+            frm = frmInfiltration(self, [], None, "Default Infiltration Model")
+            #frm.set_from(self.project, "")
+            frm.setWindowModality(QtCore.Qt.ApplicationModal)
+            frm.show()
+            self.refresh_column = column
+        return local_show
+
+    def set_channel_cell(self, column):
+        # text plus button for demand categories editor
+        tb = TextPlusButton(self)
+        self.channel_geom = "CIRCULAR"
+        if self.qsettings:
+            if self.qsettings.contains(self.default_key_channel):
+                xs = self.qsettings.value(self.default_key_channel)
+                if xs is not None:
+                    self.channel_geom = unicode(xs.shape.name)
+            else:
+                self.channel_geom = unicode(self.qsettings.value("Defaults/" + self.parameters[4], self.channel_geom))
+        tb.textbox.setText(self.channel_geom)
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_channel(column, self.qsettings))
+        self.tbl_3.setCellWidget(4, 0, tb)
+
+    def make_show_channel(self, column, setting):
+        def local_show():
+            frm = frmCrossSection(self, qsettings=setting, default_key=self.default_key_channel)
+            frm.setWindowTitle("Define Default Conduit Geometry")
+            #frm.set_from(self.project, "")
+            frm.setWindowModality(QtCore.Qt.ApplicationModal)
+            frm.show()
+            self.refresh_column = column
+        return local_show
 
     def move_table(self, index):
         """

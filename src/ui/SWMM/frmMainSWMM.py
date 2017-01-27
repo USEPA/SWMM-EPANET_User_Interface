@@ -784,8 +784,11 @@ class frmMainSWMM(frmMain):
 
     def edit_defaults(self):
         directory = self.program_settings.value("ProjectDir", "")
+        qsettings = self.project_settings
+        if qsettings is None:
+            qsettings = self.program_settings
         from frmDefaultsEditor import frmDefaultsEditor
-        fd = frmDefaultsEditor(self, self.project, self.project_settings)
+        fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
 
     def get_editor(self, edit_name):

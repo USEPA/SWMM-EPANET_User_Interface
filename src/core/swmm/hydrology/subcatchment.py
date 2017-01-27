@@ -5,6 +5,17 @@ from core.metadata import Metadata
 from core.swmm.hydrology.raingage import RainGage
 
 
+class E_Infiltration(Enum):
+    """
+    Enumeration Types of Infiltration Model
+    """
+    HORTON = 1
+    MODIFIED_HORTON = 2
+    GREEN_AMPT = 3
+    MODIFIED_GREEN_AMPT = 4
+    CURVE_NUMBER = 5
+
+
 class Routing(Enum):
     """Routing of runoff between pervious and impervious areas
         IMPERV: runoff from pervious area flows to impervious area,
@@ -159,6 +170,21 @@ class HortonInfiltration(Section):
         ## Maximum infiltration volume possible (in or mm).
         self.max_volume = '0.0'
 
+    @staticmethod
+    def default_max_rate(): return 3.0
+
+    @staticmethod
+    def default_min_rate(): return 0.5
+
+    @staticmethod
+    def default_decay(): return 4
+
+    @staticmethod
+    def default_dry_time(): return 7
+
+    @staticmethod
+    def default_max_volume(): return 0
+
 
 class GreenAmptInfiltration(Section):
     """Green-Ampt Infiltration parameters"""
@@ -186,6 +212,15 @@ class GreenAmptInfiltration(Section):
         ## Initial soil moisture deficit (volume of voids / total volume).
         self.initial_moisture_deficit = '0.0'
 
+    @staticmethod
+    def default_suction(): return 3.5
+
+    @staticmethod
+    def default_conductivity(): return 0.5
+
+    @staticmethod
+    def default_init_deficit(): return 0.25
+
 
 class CurveNumberInfiltration(Section):
     """Curve Number Infiltration parameters"""
@@ -212,6 +247,12 @@ class CurveNumberInfiltration(Section):
 
         ## Time it takes for fully saturated soil to dry (days).
         self.dry_days = '0.0'
+
+    @staticmethod
+    def default_CN(): return 80
+
+    @staticmethod
+    def default_dry_time(): return 7
 
 
 class Groundwater(Section):

@@ -1674,7 +1674,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         print("Read project settings from " + self.project_settings.fileName())
                         #self.project_settings = ini_setting(self.project, ini_file_name, self.model)
                         #self.project_settings.read_ini_file()
-                        print("Read project settings from " + self.project_settings.file_name)
+                        #print("Read project settings from " + self.project_settings.file_name)
                     except Exception as exINI:
                         self.project_settings = None
                         print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(

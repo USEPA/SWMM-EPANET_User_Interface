@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmGenericDefaultsEditorDesigner.ui'
 #
-# Created: Thu Jan 26 13:04:07 2017
+# Created: Sat Jan 28 10:36:33 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,7 @@ class Ui_frmGenericDefaultsEditor(object):
         self.tblGeneric.setObjectName(_fromUtf8("tblGeneric"))
         self.tblGeneric.setColumnCount(0)
         self.tblGeneric.setRowCount(0)
+        self.tblGeneric.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_2.addWidget(self.tblGeneric, 0, 0, 1, 1)
         self.tabDefaults.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()

@@ -45,6 +45,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_2.setObjectName(_fromUtf8("tbl_2"))
         self.tbl_2.setColumnCount(1)
         self.tbl_2.setRowCount(1)
+        self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
 
         self.gridLayout_tab3 = QtGui.QGridLayout(self.tabDefaults.widget(2))
@@ -53,6 +54,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_3.setObjectName(_fromUtf8("tbl_3"))
         self.tbl_3.setColumnCount(1)
         self.tbl_3.setRowCount(1)
+        self.tbl_3.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
 
         self.populate_defaults()

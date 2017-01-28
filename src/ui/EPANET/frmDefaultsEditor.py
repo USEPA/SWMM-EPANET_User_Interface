@@ -33,13 +33,31 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.tabDefaults, QtCore.SIGNAL("currentChanged(int)"), self.tab_changed)
 
+        self.corner_label_tab1 = QtGui.QLabel("Object", self.tblGeneric)
+        self.corner_label_tab1.setAlignment(QtCore.Qt.AlignCenter)
+        self.corner_label_tab1.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        QtCore.QObject.connect(self.tblGeneric.verticalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        QtCore.QObject.connect(self.tblGeneric.horizontalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+
+
         self.gridLayout_tab2 = QtGui.QGridLayout(self.tabDefaults.widget(1))
         self.gridLayout_tab2.setObjectName(_fromUtf8("gridLayout_tab2"))
         self.tbl_2 = QtGui.QTableWidget(self.tabDefaults.widget(1))
         self.tbl_2.setObjectName(_fromUtf8("tbl_2"))
         self.tbl_2.setColumnCount(1)
         self.tbl_2.setRowCount(1)
+        self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
+
+        self.corner_label_tab2 = QtGui.QLabel("Property", self.tbl_2)
+        self.corner_label_tab2.setAlignment(QtCore.Qt.AlignCenter)
+        self.corner_label_tab2.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        QtCore.QObject.connect(self.tblGeneric.verticalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        QtCore.QObject.connect(self.tblGeneric.horizontalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
 
         self.gridLayout_tab3 = QtGui.QGridLayout(self.tabDefaults.widget(2))
         self.gridLayout_tab3.setObjectName(_fromUtf8("gridLayout_tab3"))
@@ -47,9 +65,30 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_3.setObjectName(_fromUtf8("tbl_3"))
         self.tbl_3.setColumnCount(1)
         self.tbl_3.setRowCount(1)
+        self.tbl_3.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
 
+        self.corner_label_tab3 = QtGui.QLabel("Option", self.tbl_3)
+        self.corner_label_tab3.setAlignment(QtCore.Qt.AlignCenter)
+        self.corner_label_tab3.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        QtCore.QObject.connect(self.tbl_3.verticalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        QtCore.QObject.connect(self.tbl_3.horizontalHeader(),
+                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+
         self.populate_defaults()
+
+    def resizeCorner(self):
+        tab_ind = self.tabDefaults.currentIndex()
+        if tab_ind == 0:
+            self.corner_label_tab1.setGeometry(0, 0, self.tblGeneric.verticalHeader().width(),
+                          self.tblGeneric.horizontalHeader().height())
+        elif tab_ind == 1:
+            self.corner_label_tab2.setGeometry(0, 0, self.tbl_2.verticalHeader().width(),
+                                               self.tbl_2.horizontalHeader().height())
+        elif tab_ind == 2:
+            self.corner_label_tab3.setGeometry(0, 0, self.tbl_3.verticalHeader().width(),
+                                               self.tbl_3.horizontalHeader().height())
 
     def populate_defaults(self):
         """

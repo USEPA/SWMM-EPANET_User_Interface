@@ -7,6 +7,9 @@ from ui.property_editor_backend import PropertyEditorBackend
 from ui.convenience import set_combo_items
 from ui.convenience import set_combo
 from core.swmm.hydrology.subcatchment import E_InfilModel
+from core.swmm.hydrology.subcatchment import HortonInfiltration
+from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
+from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 
 
 class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
@@ -24,21 +27,30 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         self.setWindowTitle(title)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, parent, edit_these, new_item)
-        #self.lblTop.setText("Infiltration Method:  " + parent.project.find_section('OPTIONS').infiltration)
-        proj_infilmodel = parent.project.find_section('OPTIONS').infiltration
-        enum_val = E_InfilModel[proj_infilmodel.upper()]
-        set_combo_items(type(enum_val), self.cboInfilModel)
-        set_combo(self.cboInfilModel, enum_val)
-        self.cboInfilModel.setEnabled(False)
-        # self.tblGeneric.horizontalHeader().show()
-        # self.tblGeneric.setHorizontalHeaderLabels(('1','2','3','4','5','6','7','8'))
+
         self.qsettings = None
         if kwargs.has_key("qsettings"):
             self.qsettings = kwargs["qsettings"]
         self.default_key = "def_infilmodel"
         if kwargs.has_key("default_key"):
             self.default_key = kwargs["default_key"]
+
+        enum_val = E_InfilModel.HORTON
+        if self.qsettings is not None:
+            QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
+            self.cboInfilModel.setEnabled(True)
+            pass
+        else:
+            self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, parent, edit_these, new_item)
+            #self.lblTop.setText("Infiltration Method:  " + parent.project.find_section('OPTIONS').infiltration)
+            proj_infilmodel = parent.project.find_section('OPTIONS').infiltration
+            enum_val = E_InfilModel[proj_infilmodel.upper()]
+            self.cboInfilModel.setEnabled(False)
+
+        set_combo_items(type(enum_val), self.cboInfilModel)
+        set_combo(self.cboInfilModel, enum_val)
+        # self.tblGeneric.horizontalHeader().show()
+        # self.tblGeneric.setHorizontalHeaderLabels(('1','2','3','4','5','6','7','8'))
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()

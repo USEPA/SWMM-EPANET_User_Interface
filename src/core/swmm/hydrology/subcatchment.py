@@ -5,7 +5,7 @@ from core.metadata import Metadata
 from core.swmm.hydrology.raingage import RainGage
 
 
-class E_Infiltration(Enum):
+class E_InfilModel(Enum):
     """
     Enumeration Types of Infiltration Model
     """

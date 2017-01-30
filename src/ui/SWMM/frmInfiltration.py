@@ -65,6 +65,7 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             self.cboInfilModel.setEnabled(True)
             if self.lblNotes:
                 self.tblGeneric.currentCellChanged.connect(self.table_currentCellChanged)
+            self.tblGeneric.itemChanged.connect(self.table_itemChanged)
             pass
         else:
             self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, parent, edit_these, new_item)
@@ -75,8 +76,6 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
 
         set_combo_items(type(enum_val), self.cboInfilModel)
         set_combo(self.cboInfilModel, enum_val)
-        # self.tblGeneric.horizontalHeader().show()
-        # self.tblGeneric.setHorizontalHeaderLabels(('1','2','3','4','5','6','7','8'))
 
         self.corner_label = QtGui.QLabel("Property", self.tblGeneric)
         self.corner_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -101,8 +100,6 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         elif enum_val == E_InfilModel.CURVE_NUMBER:
             self.meta = self.infil_model_cn.metadata
             self.set_CN()
-
-
 
     def set_horton(self):
         mtype = self.infil_model_horton.model_type()
@@ -209,6 +206,31 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                 self.lblNotes.setText(self.meta[row + 1].hint)
             else:
                 self.lblNotes.setText('')
+
+    def table_itemChanged(self, item):
+        if self.tblGeneric.currentItem() is None: return
+        new_val, new_val_is_good = ParseData.floatTryParse(self.tblGeneric.currentItem().text())
+        if not new_val_is_good: return
+        vtitle = self.tblGeneric.verticalHeaderItem(self.tblGeneric.currentRow()).text()
+
+        attr_name = ""
+        for i in range(0, len(self.meta)):
+            if self.meta[i].label == vtitle:
+                attr_name = self.meta[i].attribute
+
+        if len(attr_name) == 0: return
+
+        enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
+        if enum_val == E_InfilModel.HORTON or \
+           enum_val == E_InfilModel.MODIFIED_HORTON:
+            self.infil_model_horton.__dict__[attr_name] = new_val
+        elif enum_val == E_InfilModel.GREEN_AMPT or \
+             enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+            self.infil_model_greenampt.__dict__[attr_name] = new_val
+        elif enum_val == E_InfilModel.CURVE_NUMBER:
+            self.infil_model_cn.__dict__[attr_name] = new_val
+
+        pass
 
     def cmdOK_Clicked(self):
         if self.backend is not None:

@@ -259,7 +259,7 @@ class CurveNumberInfiltration(Section):
     metadata = Metadata((
         ("subcatchment",             '', "Subcatchment Name",  "", '', '', "User-assigned name of subcatchment"),
         ("curve_number",             '', "Curve Number",       "", '', '', "SCS runoff curve number"),
-        ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "This property has been deprecated and its value is ignored."),
+    #   ("hydraulic_conductivity",   '', "Conductivity",       "", '', '', "This property has been deprecated and its value is ignored."),
         ("dry_days",                 '', "Drying Time",        "", '', '', "Time for a fully saturated soil to completely dry (days)")
     ))
 

@@ -170,6 +170,23 @@ class HortonInfiltration(Section):
         ## Maximum infiltration volume possible (in or mm).
         self.max_volume = '0.0'
 
+    def model_type(self):
+        if str(self.max_rate) != str(HortonInfiltration.default_max_rate()) or \
+           str(self.min_rate) != str(HortonInfiltration.default_min_rate()) or \
+           str(self.decay) != str(HortonInfiltration.default_decay()) or \
+           str(self.dry_time) != str(HortonInfiltration.default_dry_time()) or \
+           str(self.max_volume) != str(HortonInfiltration.default_max_volume()):
+            return E_InfilModel.MODIFIED_HORTON
+        else:
+            return E_InfilModel.HORTON
+
+    def set_defaults(self):
+        self.max_rate = str(HortonInfiltration.default_max_rate())
+        self.min_rate = str(HortonInfiltration.default_min_rate())
+        self.decay = str(HortonInfiltration.default_decay())
+        self.dry_time = str(HortonInfiltration.default_dry_time())
+        self.max_volume = str(HortonInfiltration.default_max_volume())
+
     @staticmethod
     def default_max_rate(): return 3.0
 
@@ -212,6 +229,19 @@ class GreenAmptInfiltration(Section):
         ## Initial soil moisture deficit (volume of voids / total volume).
         self.initial_moisture_deficit = '0.0'
 
+    def model_type(self):
+        if str(self.suction) != str(GreenAmptInfiltration.default_suction()) or \
+           str(self.hydraulic_conductivity) != str(GreenAmptInfiltration.default_conductivity()) or \
+           str(self.initial_moisture_deficit) != str(GreenAmptInfiltration.default_init_deficit()):
+            return E_InfilModel.MODIFIED_GREEN_AMPT
+        else:
+            return E_InfilModel.GREEN_AMPT
+
+    def set_defaults(self):
+        self.suction = str(GreenAmptInfiltration.default_suction())
+        self.hydraulic_conductivity = str(GreenAmptInfiltration.default_conductivity())
+        self.initial_moisture_deficit = str(GreenAmptInfiltration.default_init_deficit())
+
     @staticmethod
     def default_suction(): return 3.5
 
@@ -247,6 +277,10 @@ class CurveNumberInfiltration(Section):
 
         ## Time it takes for fully saturated soil to dry (days).
         self.dry_days = '0.0'
+
+    def set_defaults(self):
+        self.curve_number = str(CurveNumberInfiltration.default_CN())
+        self.dry_days = str(CurveNumberInfiltration.default_dry_time())
 
     @staticmethod
     def default_CN(): return 80

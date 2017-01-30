@@ -24,7 +24,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.set_from(main_form.project)
         self._main_form = main_form
         self.qsettings = None
-        self.default_key = "def_xsection"
+        self.default_key = "obj_def_xsection"
         if kwargs.has_key("qsettings"):
             self.qsettings = kwargs["qsettings"]
         if kwargs.has_key("default_key"):

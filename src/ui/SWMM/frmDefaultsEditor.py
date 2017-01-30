@@ -4,7 +4,7 @@ from ui.frmGenericDefaultsEditorDesigner import Ui_frmGenericDefaultsEditor
 from ui.inifile import ini_setting
 from ui.convenience import set_combo_items
 from ui.convenience import set_combo
-from core.swmm.hydrology.subcatchment import E_Infiltration
+from core.swmm.hydrology.subcatchment import E_InfilModel
 from core.swmm.options.general import FlowUnits
 from core.swmm.options.general import LinkOffsets
 from core.swmm.options.general import FlowRouting
@@ -31,8 +31,8 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.qsettings = qsettings
         self.session = session
         self.project = project
-        self.default_key_channel = "def_xsection"
-        self.default_key_infilmodel = "def_infilmodel"
+        self.default_key_channel = "obj_def_xsection"
+        self.default_key_infilmodel = "obj_def_infilmodel"
         if self.session is not None:
             self.setWindowTitle(self.session.model + " Project Defaults")
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -206,7 +206,8 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
 
     def make_show_infilmodel(self, column):
         def local_show():
-            frm = frmInfiltration(self, [], None, "Default Infiltration Model")
+            frm = frmInfiltration(self, [], None, "Default Infiltration Model", qsettings=self.qsettings,
+                                  default_key=self.default_key_infilmodel)
             #frm.set_from(self.project, "")
             frm.setWindowModality(QtCore.Qt.ApplicationModal)
             frm.show()

@@ -282,6 +282,9 @@ class CurveNumberInfiltration(Section):
         self.curve_number = str(CurveNumberInfiltration.default_CN())
         self.dry_days = str(CurveNumberInfiltration.default_dry_time())
 
+    def model_type(self):
+        return E_InfilModel.CURVE_NUMBER
+
     @staticmethod
     def default_CN(): return 80
 

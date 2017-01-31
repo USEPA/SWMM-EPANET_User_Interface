@@ -233,12 +233,21 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         pass
 
     def cmdOK_Clicked(self):
-        if self.backend is not None:
+        if hasattr(self, "backend") and self.backend is not None:
             self.backend.apply_edits()
         else:
-            infil_model = None
             if self.qsettings is not None:
-                self.qsettings.setValue(self.default_key, infil_model)
+                self.qsettings.remove(self.default_key)
+                enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
+                if enum_val == E_InfilModel.HORTON or \
+                   enum_val == E_InfilModel.MODIFIED_HORTON:
+                    self.qsettings.setValue(self.default_key, self.infil_model_horton)
+                elif enum_val == E_InfilModel.GREEN_AMPT or \
+                     enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+                    self.qsettings.setValue(self.default_key, self.infil_model_greenampt)
+                elif enum_val == E_InfilModel.CURVE_NUMBER:
+                    self.qsettings.setValue(self.default_key, self.infil_model_cn)
+
         self.close()
 
     def cmdCancel_Clicked(self):

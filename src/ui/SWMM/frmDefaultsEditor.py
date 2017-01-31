@@ -9,6 +9,9 @@ from core.swmm.options.general import FlowUnits
 from core.swmm.options.general import LinkOffsets
 from core.swmm.options.general import FlowRouting
 from core.swmm.options.dynamic_wave import ForceMainEquation
+from core.swmm.hydrology.subcatchment import HortonInfiltration
+from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
+from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmInfiltration import frmInfiltration
 from ui.SWMM.frmCrossSection import frmCrossSection
@@ -196,7 +199,13 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         tb = TextPlusButton(self)
         self.infil_model = "HORTON"
         if self.qsettings:
-            self.infil_model = unicode(self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
+            if self.qsettings.contains(self.default_key_infilmodel):
+                model_obj = self.qsettings.value(self.default_key_infilmodel)
+                # model_name = type(model_obj)
+                if model_obj is not None:
+                    self.infil_model = unicode(model_obj.model_type().name)
+            else:
+                self.infil_model = unicode(self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
                                                            self.infil_model))
         tb.textbox.setText(self.infil_model)
         tb.textbox.setEnabled(False)

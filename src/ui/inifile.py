@@ -60,7 +60,7 @@ class ini_setting:
 
     def get_setting_value(self, group, key):
         """
-        Get the value of a ini setting
+        Get the value of a ini setting, assuming all settings are grouped
         Args:
             group: the string name of a group or section
             key: the string name of a key
@@ -70,6 +70,9 @@ class ini_setting:
         rval = [None, None]
         if len(self.groups) == 0:
             return rval
+        if not self.groups.has_key(group):
+            return rval
+
         self.config.beginGroup(group)
         qvar = self.config.value(key)
         if qvar is None:

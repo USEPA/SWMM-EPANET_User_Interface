@@ -72,6 +72,9 @@ class ini_setting:
             return rval
         self.config.beginGroup(group)
         qvar = self.config.value(key)
+        if qvar is None:
+            self.config.endGroup()
+            return rval
         str_val = qvar.toString()
         if len(str_val) > 0:
             tval, tval_is_good = ParseData.intTryParse(str_val)

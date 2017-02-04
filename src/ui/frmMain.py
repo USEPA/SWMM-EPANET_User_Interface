@@ -26,6 +26,7 @@ import traceback
 from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
+from ui.inifile import ini_setting
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -1668,18 +1669,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.setWindowTitle(self.model + " - " + file_only)
                 self.no_items = False
                 ini_file_name = file_name[:-3] + "ini"
-                if os.path.isfile(ini_file_name):
-                    try:
-                        self.project_settings = QtCore.QSettings(ini_file_name, QtCore.QSettings.IniFormat)
-                        print("Read project settings from " + self.project_settings.fileName())
-                        #self.project_settings = ini_setting(self.project, ini_file_name, self.model)
-                        #self.project_settings.read_ini_file()
-                        #print("Read project settings from " + self.project_settings.file_name)
-                    except Exception as exINI:
-                        self.project_settings = None
-                        print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
-                            traceback.print_exc()))
-
+                try:
+                    if "EPANET" in self.model.upper():
+                        from ui.EPANET.inifile import DefaultsEPANET
+                        self.project_settings = DefaultsEPANET(ini_file_name, self.project)
+                    elif "SWMM" in self.model.upper():
+                        from ui.SWMM.inifile import DefaultsSWMM
+                        self.project_settings = DefaultsSWMM(ini_file_name, self.project)
+                except Exception as exINI:
+                    self.project_settings = None
+                    print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
+                        traceback.print_exc()))
             except Exception as ex:
                 print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
                 self.project = ProjectBase()
@@ -1810,6 +1810,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         del self.program_settings
+        del self.project_settings
         if self.q_application:
             try:
                 self.q_application.quit()

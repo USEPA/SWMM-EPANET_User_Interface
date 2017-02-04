@@ -60,6 +60,7 @@ from frmRunEPANET import frmRunEPANET
 
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
+from ui.EPANET.inifile import DefaultsEPANET
 
 
 class frmMainEPANET(frmMain):
@@ -131,6 +132,7 @@ class frmMainEPANET(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
+        self.project_settings = DefaultsEPANET("", self.project)
         self.tree_types = {
             self.tree_Patterns[0]: Pattern,
             self.tree_Curves[0]: Curve,

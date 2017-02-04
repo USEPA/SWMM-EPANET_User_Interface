@@ -1,42 +1,62 @@
 from PyQt4.QtCore import QSettings
 from model_utility import ParseData
+import os
 
 class ini_setting:
     """
     class for managing .ini file and project defaults
     """
-    def __init__(self, file_name, qsetting):
+    def __init__(self, file_name):
         """
-        constructor
+        constructor: read setting values into a QSetting object
         Args:
-            project: model project instance
             file_name: ini file name
-            model: model type, either "swmm" or "epanet"
         """
         self.file_name = file_name
         self.error_msg = ""
-        self.config = qsetting
-        if self.config is None:
+        self.groups_with_values = {} # all values read
+        self.groups = {} # group names and key names
+        self.config = None
+        if self.config is None and os.path.isfile(self.file_name):
             try:
                 self.config = QSettings(self.file_name, QSettings.IniFormat)
+                self.build_setting_map()
                 print("Read project settings from " + self.file_name)
             except Exception as exINI:
                 self.config = None
                 self.error_msg = "Reading Error" + ":\n" + str(exINI)
+        else:
+            if file_name:
+                self.create_ini_file(file_name)
 
-        self.groups_with_values = {} # all values read
-        self.groups = {} # group names and key names
-
-        if self.config is not None:
-            # only create group dictionary keyed on group name, pointing to its list of keys
-            # so we can get setting values on a as needed basis
-            for group in self.config.childGroups():
-                self.config.beginGroup(group)
-                self.groups[group] = []
-                for key in self.config.childKeys():
-                    self.groups[group].append(key)
-                    #print group + "::" + key + "::" + self.config.value(key).toString()
-                self.config.endGroup()
+    def create_ini_file(self, file_name):
+        """
+        Specify .ini file path after instantiation
+        if setting is not yet instantiated:
+            a new setting is instantiated
+            if the new setting has no key:
+                a new ini file is created
+        Args:
+            file_name: the full path to an ini file
+        Returns: True if successful; False if failed
+        """
+        if os.path.isfile(self.file_name): return False
+        if self.config is None:
+            try:
+                self.config = QSettings(file_name, QSettings.IniFormat)
+                if len(self.config.allKeys()) == 0:
+                    # this is a brand new ini file
+                    self.config.setValue("Model/Name", "")
+                    self.config.sync()
+                    print("created ini file: " + file_name)
+                else:
+                    print("Read settings from ini file: " + file_name)
+                self.file_name = file_name
+                return True
+            except Exception as exINI:
+                self.config = None
+                self.error_msg = "Reading Error" + ":\n" + str(exINI)
+                return False
 
     def get_setting_value(self, group, key):
         """
@@ -84,13 +104,24 @@ class ini_setting:
     def build_setting_map(self):
         """
         Build a setting group-key-value mapping dictionary as below:
+        self.groups_with_values
         [group_name] -> [key_name] -> [value, value_type]
+
+        Also create group dictionary keyed on group name, pointing to its list of keys
+        so we can get setting values on a as needed basis
+        self.groups
+        [group_name] -> [key names]
         """
+        self.groups.clear()
+        self.groups_with_values.clear()
         for group in self.config.childGroups():
             self.config.beginGroup(group)
             self.groups_with_values[group] = {}
+            self.groups[group] = []
             for key in self.config.childKeys():
-                self.groups_with_values[group][key] = self.get_setting_value(group, key)
+                self.groups[group].append(key)
+                val, vtype = self.get_setting_value(group, key)
+                self.groups_with_values[group][key] = val
                 # print group + "::" + key + "::" + self.config.value(key).toString()
             self.config.endGroup()
 

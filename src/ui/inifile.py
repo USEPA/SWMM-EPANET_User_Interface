@@ -78,7 +78,7 @@ class ini_setting:
         if qvar is None:
             self.config.endGroup()
             return rval
-        str_val = qvar.toString()
+        str_val = unicode(qvar)
         if len(str_val) > 0:
             tval, tval_is_good = ParseData.intTryParse(str_val)
             if tval_is_good:
@@ -96,6 +96,9 @@ class ini_setting:
             rval[1] = "string"
             self.config.endGroup()
             return rval
+        elif str_val == "":
+            rval[0] = ""
+            rval[1] = "string"
         else:
             str_list = qvar.toStringList().join(",")
             if len(str_list) > 0:

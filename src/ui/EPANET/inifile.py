@@ -103,3 +103,21 @@ class DefaultsEPANET(ini_setting):
                 val, vtype = self.get_setting_value("Defaults", key)
                 if val is not None:
                     self.parameters_values[key] = val
+
+    def sync_defaults_label(self):
+        for key in self.model_object_keys:
+            if self.config:
+                self.config.setValue("Labels/" + key, self.model_object_prefix[key])
+        if self.config:
+            self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
+
+    def sync_defaults_property(self):
+        for key in self.properties_keys:
+            if self.config:
+                self.config.setValue("Defaults/" + key, self.properties_values[key])
+
+    def sync_defaults_parameter(self):
+        for key in self.parameters_keys:
+            if self.config:
+                self.config.setValue("Defaults/" + key, self.parameters_values[key])
+

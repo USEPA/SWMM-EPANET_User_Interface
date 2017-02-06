@@ -8,6 +8,7 @@ from core.epanet.options.hydraulics import FlowUnits
 from core.epanet.options.hydraulics import HeadLoss
 from core.epanet.options.hydraulics import Unbalanced
 from core.epanet.options.report import StatusWrite
+from ui.model_utility import ParseData
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -27,11 +28,16 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.defaults = defaults
         self.session = session
         self.project = project
+        self.label_changed = False
+        self.property_changed = False
+        self.parameter_changed = False
+        self.loaded = False
         if self.session is not None:
             self.setWindowTitle(self.session.model + " Project Defaults")
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         QtCore.QObject.connect(self.tabDefaults, QtCore.SIGNAL("currentChanged(int)"), self.tab_changed)
+        QtCore.QObject.connect(self.tblGeneric, QtCore.SIGNAL("cellChanged(int, int)"), self.tblGeneric_changed)
 
         self.corner_label_tab1 = QtGui.QLabel("Object", self.tblGeneric)
         self.corner_label_tab1.setAlignment(QtCore.Qt.AlignCenter)
@@ -50,6 +56,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_2.setRowCount(1)
         self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
+        QtCore.QObject.connect(self.tbl_2, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_2_changed)
 
         self.corner_label_tab2 = QtGui.QLabel("Property", self.tbl_2)
         self.corner_label_tab2.setAlignment(QtCore.Qt.AlignCenter)
@@ -67,6 +74,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_3.setRowCount(1)
         self.tbl_3.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
+        QtCore.QObject.connect(self.tbl_3, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_3_changed)
 
         self.corner_label_tab3 = QtGui.QLabel("Option", self.tbl_3)
         self.corner_label_tab3.setAlignment(QtCore.Qt.AlignCenter)
@@ -76,7 +84,12 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         QtCore.QObject.connect(self.tbl_3.horizontalHeader(),
                                QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
 
+        self.sm_hydraulics = QtCore.QSignalMapper(self)
+        QtCore.QObject.connect(self.sm_hydraulics, QtCore.SIGNAL("mapped(int)"),
+                               self.tbl_3_combo_indexChanged)
+        self.sm_property = QtCore.QSignalMapper(self)
         self.populate_defaults()
+        self.loaded = True
 
     def resizeCorner(self):
         tab_ind = self.tabDefaults.currentIndex()
@@ -205,22 +218,27 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             def_val = self.defaults.parameters_values[self.defaults.parameters_keys[i]]
             #if self.qsettings:
             #    def_val = unicode(self.qsettings.value("Defaults/" + self.parameters[i], def_val))
-            if "flow units" in self.defaults.parameters_keys[i].lower():
+            key = self.defaults.parameters_keys[i].lower()
+            if "flow units" in key:
                 combobox = QtGui.QComboBox()
                 enum_val = FlowUnits[def_val]
-            elif "headloss" in self.defaults.parameters_keys[i].lower():
+            elif "headloss" in key:
                 combobox = QtGui.QComboBox()
                 enum_val = HeadLoss[def_val.replace("-", "_")]
-            elif "unbalanced" in self.defaults.parameters_keys[i].lower():
+            elif "unbalanced" in key:
                 combobox = QtGui.QComboBox()
                 enum_val = Unbalanced[def_val.upper()]
-            elif "status report" in self.defaults.parameters_keys[i].lower():
+            elif "status report" in key:
                 combobox = QtGui.QComboBox()
                 enum_val = StatusWrite[def_val.upper()]
 
             if combobox is not None:
+                combobox.setObjectName(key + "|" + str(i) + "|0")
                 set_combo_items(type(enum_val), combobox)
                 set_combo(combobox, enum_val)
+                QtCore.QObject.connect(combobox, QtCore.SIGNAL("currentIndexChanged(int)"),
+                                       self.sm_hydraulics, QtCore.SLOT("map()"))
+                self.sm_hydraulics.setMapping(combobox, i)
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
                 self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
@@ -259,11 +277,87 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         #    self.set_tab_hydraulics()
         pass
 
+    def tblGeneric_changed(self, row, col):
+        if not self.loaded: return
+        if self.tblGeneric.verticalHeaderItem(row) is None: return
+        item = self.tblGeneric.item(row, col)
+        if item is None: return
+        key = self.tblGeneric.verticalHeaderItem(row).text()
+        if row == self.tblGeneric.rowCount() - 1:
+            val, val_is_good = ParseData.intTryParse(item.text())
+            if val_is_good:
+                self.defaults.id_increment = val
+        else:
+            self.defaults.model_object_prefix[key] = item.text()
+        self.label_changed = True
+        pass
+
+    def tbl_2_changed(self, row, col):
+        if not self.loaded: return
+        if self.tbl_2.verticalHeaderItem(row) is None: return
+        item = self.tbl_2.item(row, col)
+        if item is None: return
+        key = self.tbl_2.verticalHeaderItem(row).text()
+        if "auto length" in key.lower():
+            self.defaults.model_object_prefix[key] = item.currentText()
+        else:
+            val, val_is_good = ParseData.floatTryParse(item.text())
+            if val_is_good:
+                self.defaults.properties_values[key] = val
+        self.property_changed = True
+        pass
+
+    def tbl_2_combo_indexChanged(self):
+        pass
+
+    def tbl_3_changed(self, row, col):
+        if not self.loaded: return
+        if self.tbl_3.verticalHeaderItem(row) is None: return
+        item = self.tbl_3.item(row, col)
+        if item is None: return
+        key = self.tbl_3.verticalHeaderItem(row).text()
+        if "flow units" in key.lower() or \
+           "headloss" in key.lower() or \
+           "unbalanced" in key.lower() or \
+           "status report" in key.lower():
+            self.defaults.model_object_prefix[key] = item.currentText()
+        elif "maximum trials" in key.lower() or \
+             "default pattern" in key.lower():
+            val, val_is_good = ParseData.intTryParse(item.text())
+            if val_is_good:
+                self.defaults.properties_values[key] = val
+        else:
+            val, val_is_good = ParseData.floatTryParse(item.text())
+            if val_is_good:
+                self.defaults.properties_values[key] = val
+        self.parameter_changed = True
+        pass
+
+    def tbl_3_combo_indexChanged(self, index):
+        if not self.loaded: return
+        cb = self.tbl_3.cellWidget(index, 0)
+        key = self.tbl_3.verticalHeaderItem(index).text()
+        val = cb.currentText()
+        self.defaults.parameters_values[key] = val
+        pass
+
     def cmdOK_Clicked(self):
         """
         save/sync user changes to the defaults
         Returns:
         """
+        if self.label_changed:
+            self.defaults.sync_defaults_label()
+            pass
+
+        if self.property_changed:
+            self.defaults.sync_defaults_property()
+            pass
+
+        if self.parameter_changed:
+            self.defaults.sync_defaults_parameter()
+            pass
+
         self.close()
         pass
 

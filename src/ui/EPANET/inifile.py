@@ -178,7 +178,7 @@ class DefaultsEPANET(ini_setting):
                 hydraulics_options.maximum_trials = int(val)
             elif "viscosity" in key.lower():
                 hydraulics_options.viscosity = float(val)
-            elif "viscosity" in key.lower():
+            elif "gravity" in key.lower():
                 hydraulics_options.specific_gravity = float(val)
 
     def apply_default_attributes(self, item):

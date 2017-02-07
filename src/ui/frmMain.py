@@ -445,6 +445,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.item.name = self.session.new_item_name(type(self.item))
             if len(self.section.value) == 0 and not isinstance(self.section, list):
                 self.section.value = IndexedList([], ['name'])
+            if self.session and self.session.project_settings:
+                self.session.project_settings.apply_default_attributes(self.item)
             self.section.value.append(self.item)
             if not self.isSubLink:
                 # self.session.list_objects()  # Refresh the list of items on the form

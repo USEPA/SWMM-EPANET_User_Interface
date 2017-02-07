@@ -650,6 +650,8 @@ class frmMainEPANET(frmMain):
         item_type = self.tree_types[tree_text]
         new_item = item_type()
         new_item.name = self.new_item_name(item_type)
+        if self.project_settings:
+            self.project_settings.apply_default_attributes(new_item)
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
     def delete_named_object(self, tree_text, item_name):

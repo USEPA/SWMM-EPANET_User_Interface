@@ -121,6 +121,9 @@ class DefaultsEPANET(ini_setting):
             self.config.setValue("Defaults/" + key, self.parameters_values[key])
 
     def sync_defaults_label(self):
+        """
+        sync object label/prefix with internal qsettings
+        """
         for key in self.model_object_keys:
             if self.config:
                 self.config.setValue("Labels/" + key, self.model_object_prefix[key])
@@ -128,12 +131,39 @@ class DefaultsEPANET(ini_setting):
             self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
 
     def sync_defaults_property(self):
+        """
+        sync object properties with internal qsettings
+        """
         for key in self.properties_keys:
             if self.config:
                 self.config.setValue("Defaults/" + key, self.properties_values[key])
 
     def sync_defaults_parameter(self):
+        """
+        sync hydraulic parameters with internal qsettings
+        """
         for key in self.parameters_keys:
             if self.config:
                 self.config.setValue("Defaults/" + key, self.parameters_values[key])
+
+    def apply_default_attributes(self, item):
+        """
+        Set default attributes for new model object
+        Args:
+            item: newly created model object
+        """
+        item_type = item.__class__.__name__
+        if item_type == "Junction":
+            item.elevation = self.properties_values["Node Elevation"]
+        elif item_type == "Tank":
+            item.elevation = self.properties_values["Node Elevation"]
+            item.diameter = self.properties_values["Tank Diameter"]
+            item.initial_level = self.properties_values["Tank Height"]
+        elif item_type == "Pipe":
+            item.length = self.properties_values["Pipe Length"]
+            item.diameter = self.properties_values["Pipe Diameter"]
+            item.roughness = self.properties_values["Pipe Roughness"]
+
+
+
 

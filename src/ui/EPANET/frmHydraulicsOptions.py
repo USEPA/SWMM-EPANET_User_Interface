@@ -4,6 +4,7 @@ import core.epanet.options.hydraulics
 from enum import Enum
 from ui.EPANET.frmHydraulicsOptionsDesigner import Ui_frmHydraulicsOptions
 import ui.convenience
+from ui.model_utility import ParseData
 
 
 class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
@@ -39,9 +40,12 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
             self.rbnStop.setChecked(True)
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
-            if int(hydraulics_options.unbalanced_continue) == 0:
+            val, val_is_good = ParseData.intTryParse(hydraulics_options.unbalanced_continue)
+            if not val_is_good:
+                val = 0
+            if val == 0:
                 self.rbnContinue.setChecked(True)
-            elif int(hydraulics_options.unbalanced_continue) > 0:
+            elif val > 0:
                 self.rbnContinueN.setChecked(True)
         self.txtContinueN.setText(str(hydraulics_options.unbalanced_continue))
 

@@ -1,6 +1,7 @@
 from enum import Enum
 from ui.inifile import ini_setting
 from PyQt4.QtCore import QSettings
+import core.epanet.options.hydraulics as hyd
 
 class EPROPERTY_JUNCTION(Enum):
     """junction property index"""
@@ -75,7 +76,7 @@ class DefaultsEPANET(ini_setting):
                            "Maximum Trials", "Accuracy", "If Unbalanced", "Default Pattern", "Demand Multiplier",
                            "Emitter Exponent", "Status Report", "Check Frequency", "Max Check", "Damp Limit"]
         self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "Continue", 1, 1.0, 0.5, "Yes",
-                                      "", "", ""]
+                                      2, 10, 0.0]
 
         self.model_object_prefix = {}
         for key in self.model_object_keys:
@@ -145,6 +146,40 @@ class DefaultsEPANET(ini_setting):
         for key in self.parameters_keys:
             if self.config:
                 self.config.setValue("Defaults/" + key, self.parameters_values[key])
+        if self.project:
+            self.sync_project_hydraulic_parameters()
+
+    def sync_project_hydraulic_parameters(self):
+        hydraulics_options = self.project.options.hydraulics
+        for key in self.parameters_keys:
+            val = self.parameters_values[key]
+            if "flow unit" in key.lower():
+                hydraulics_options.flow_units = hyd.FlowUnits[val]
+            elif "headloss" in key.lower():
+                #head_loss_underscore = self.cboHeadloss.currentText().replace('-', '_')
+                hydraulics_options.head_loss = hyd.HeadLoss[val]
+            elif "unbalanced" in key.lower():
+                hydraulics_options.unbalanced = hyd.Unbalanced[val]
+            elif "accuracy" in key.lower():
+                hydraulics_options.accuracy = float(val)
+            elif "check freq" in key.lower():
+                hydraulics_options.check_frequency = int(val)
+            elif "damp" in key.lower():
+                hydraulics_options.damp_limit = float(val)
+            elif "pattern" in key.lower():
+                hydraulics_options.default_pattern = val
+            elif "demand" in key.lower():
+                hydraulics_options.demand_multiplier = float(val)
+            elif "emitter" in key.lower():
+                hydraulics_options.emitter_exponent = float(val)
+            elif "max check" in key.lower():
+                hydraulics_options.max_check = int(val)
+            elif "trials" in key.lower():
+                hydraulics_options.maximum_trials = int(val)
+            elif "viscosity" in key.lower():
+                hydraulics_options.viscosity = float(val)
+            elif "viscosity" in key.lower():
+                hydraulics_options.specific_gravity = float(val)
 
     def apply_default_attributes(self, item):
         """

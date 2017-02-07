@@ -319,6 +319,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         key = self.tbl_2.verticalHeaderItem(index).text()
         val = cb.currentText()
         self.defaults.properties_values[key] = val
+        self.property_changed = True
         pass
 
     def tbl_3_changed(self, row, col):
@@ -334,7 +335,9 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             # do nothing
             pass
         elif "maximum trials" in key.lower() or \
-             "default pattern" in key.lower():
+             "default pattern" in key.lower() or \
+             "check freq" in key.lower() or \
+             "max check" in key.lower():
             val, val_is_good = ParseData.intTryParse(item.text())
             if val_is_good:
                 self.defaults.parameters_values[key] = val
@@ -351,6 +354,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         key = self.tbl_3.verticalHeaderItem(index).text()
         val = cb.currentText()
         self.defaults.parameters_values[key] = val
+        self.parameter_changed = True
         pass
 
     def cmdOK_Clicked(self):

@@ -84,10 +84,12 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         QtCore.QObject.connect(self.tbl_3.horizontalHeader(),
                                QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
 
+        self.sm_property = QtCore.QSignalMapper(self)
+        QtCore.QObject.connect(self.sm_property, QtCore.SIGNAL("mapped(int)"),
+                               self.tbl_2_combo_indexChanged)
         self.sm_hydraulics = QtCore.QSignalMapper(self)
         QtCore.QObject.connect(self.sm_hydraulics, QtCore.SIGNAL("mapped(int)"),
                                self.tbl_3_combo_indexChanged)
-        self.sm_property = QtCore.QSignalMapper(self)
         self.populate_defaults()
         self.loaded = True
 
@@ -180,7 +182,8 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             def_val = self.defaults.properties_values[self.defaults.properties_keys[i]]
             #if self.qsettings:
             #    def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
-            if "auto" in self.defaults.properties_keys[i].lower():
+            key = self.defaults.properties_keys[i].lower()
+            if "auto" in key:
                 self.autolen_on = "Off"
                 if def_val is not None:
                     self.autolen_on = def_val
@@ -192,7 +195,10 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
                 combobox.addItem("On")
                 combobox.addItem("Off")
                 set_combo(combobox, self.autolen_on)
-                #self.tbl_2.setCellWidget(self.tbl_2.rowCount() - 1, 0, combobox)
+                combobox.setObjectName(key + "|" + str(i) + "|0")
+                QtCore.QObject.connect(combobox, QtCore.SIGNAL("currentIndexChanged(int)"),
+                                       self.sm_property, QtCore.SLOT("map()"))
+                self.sm_property.setMapping(combobox, i)
                 self.tbl_2.setCellWidget(i, 0, combobox)
             else:
                 self.tbl_2.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
@@ -307,7 +313,12 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.property_changed = True
         pass
 
-    def tbl_2_combo_indexChanged(self):
+    def tbl_2_combo_indexChanged(self, index):
+        if not self.loaded: return
+        cb = self.tbl_2.cellWidget(index, 0)
+        key = self.tbl_2.verticalHeaderItem(index).text()
+        val = cb.currentText()
+        self.defaults.properties_values[key] = val
         pass
 
     def tbl_3_changed(self, row, col):
@@ -320,16 +331,17 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
            "headloss" in key.lower() or \
            "unbalanced" in key.lower() or \
            "status report" in key.lower():
-            self.defaults.model_object_prefix[key] = item.currentText()
+            # do nothing
+            pass
         elif "maximum trials" in key.lower() or \
              "default pattern" in key.lower():
             val, val_is_good = ParseData.intTryParse(item.text())
             if val_is_good:
-                self.defaults.properties_values[key] = val
+                self.defaults.parameters_values[key] = val
         else:
             val, val_is_good = ParseData.floatTryParse(item.text())
             if val_is_good:
-                self.defaults.properties_values[key] = val
+                self.defaults.parameters_values[key] = val
         self.parameter_changed = True
         pass
 

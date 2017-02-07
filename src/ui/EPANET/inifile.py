@@ -1,5 +1,6 @@
 from enum import Enum
 from ui.inifile import ini_setting
+from PyQt4.QtCore import QSettings
 
 class EPROPERTY_JUNCTION(Enum):
     """junction property index"""
@@ -57,7 +58,7 @@ class DefaultsEPANET(ini_setting):
         self.model = "epanet"
 
         # [Labels] label prefix
-        self.model_object_keys = ["Junctions", "Reservoirs", "Tanks", "Pumps", "Valves", "Patterns", "Curves"]
+        self.model_object_keys = ["Junction", "Reservoir", "Tank", "Pump", "Valve", "Pattern", "Curve"]
         self.model_object_def_prefix = ["J", "R", "T", "P", "V", "Ptn", "C"]
 
         self.id_increment_key = "ID Increment"
@@ -103,6 +104,21 @@ class DefaultsEPANET(ini_setting):
                 val, vtype = self.get_setting_value("Defaults", key)
                 if val is not None:
                     self.parameters_values[key] = val
+
+        if self.config is None:
+            self.init_config()
+
+    def init_config(self):
+        # if a new qsettings has not been created such as when no project is created
+        # then, create an empty qsettings
+        self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        self.config.setValue("Model/Name", self.model)
+        for key in self.model_object_keys:
+            self.config.setValue("Labels/" + key, self.model_object_prefix[key])
+        for key in self.properties_keys:
+            self.config.setValue("Defaults/" + key, self.properties_values[key])
+        for key in self.parameters_keys:
+            self.config.setValue("Defaults/" + key, self.parameters_values[key])
 
     def sync_defaults_label(self):
         for key in self.model_object_keys:

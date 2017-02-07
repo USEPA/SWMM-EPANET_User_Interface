@@ -987,13 +987,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         if self.project_settings:
             item_type_name = item_type.__name__
-            prefix = unicode(self.project_settings.value("Labels/" + item_type_name, ""))
+            prefix = unicode(self.project_settings.config.value("Labels/" + item_type_name, ""))
             try:
-                increment = int(self.project_settings.value("Labels/Increment", 1))
+                increment = int(self.project_settings.config.value("Labels/ID Increment", 1))
             except:
                 pass
             try:
-                number = int(self.project_settings.value("Labels/" + item_type_name + "_NextID", 1))
+                number = int(self.project_settings.config.value("Labels/" + item_type_name + "_NextID", 1))
             except:
                 pass
 

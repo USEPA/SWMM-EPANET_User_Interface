@@ -41,7 +41,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.property_sub_changed = False
         self.parameter_changed = False
         self.loaded = False
-        self.default_key_channel = "obj_def_xsection"
+        self.refresh_column = None
         if self.session is not None:
             self.setWindowTitle(self.session.model + " Project Defaults")
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
@@ -65,6 +65,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_2.setRowCount(1)
         self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
+        QtCore.QObject.connect(self.tbl_2, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_2_changed)
 
         self.corner_label_tab2 = QtGui.QLabel("Property", self.tbl_2)
         self.corner_label_tab2.setAlignment(QtCore.Qt.AlignCenter)
@@ -82,6 +83,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_3.setRowCount(1)
         self.tbl_3.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
+        QtCore.QObject.connect(self.tbl_3, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_3_changed)
 
         self.corner_label_tab3 = QtGui.QLabel("Option", self.tbl_3)
         self.corner_label_tab3.setAlignment(QtCore.Qt.AlignCenter)
@@ -371,7 +373,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             # do nothing
             pass
         elif "conduit geometry" in key.lower():
-            self.defaults.xsection.shape = CrossSection[item.text()]
+            #self.defaults.xsection.shape = CrossSection[item.text()]
             pass
         else:
             val, val_is_good = ParseData.floatTryParse(item.text())

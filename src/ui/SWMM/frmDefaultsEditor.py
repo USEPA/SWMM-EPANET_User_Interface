@@ -165,12 +165,13 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             #self.tblGeneric.insertRow(self.tblGeneric.rowCount())
             self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(prefix))
         self.tblGeneric.insertRow(self.tblGeneric.rowCount())
-        self.tblGeneric.setVerticalHeaderItem(self.tblGeneric.rowCount()- 1, QtGui.QTableWidgetItem("ID Increment"))
-        self.increment = "1"
+        self.tblGeneric.setVerticalHeaderItem(self.tblGeneric.rowCount()- 1,
+                                              QtGui.QTableWidgetItem(self.defaults.id_increment_key))
         if self.defaults:
             #self.increment = int(self.qsettings.value("Labels/Increment", 1))
-            self.increment = int(self.defaults.id_increment)
-        self.tblGeneric.setItem(self.tblGeneric.rowCount()- 1,0, QtGui.QTableWidgetItem(self.increment))
+            self.increment = self.defaults.id_increment
+        self.tblGeneric.setItem(self.tblGeneric.rowCount()- 1,0,
+                                QtGui.QTableWidgetItem(unicode(self.defaults.id_increment)))
         pass
 
     def set_sub_properties(self):
@@ -336,7 +337,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         item = self.tblGeneric.item(row, col)
         if item is None: return
         key = self.tblGeneric.verticalHeaderItem(row).text()
-        if row == self.tblGeneric.rowCount() - 1:
+        if key == self.defaults.id_increment_key:
             val, val_is_good = ParseData.intTryParse(item.text())
             if val_is_good:
                 self.defaults.id_increment = val

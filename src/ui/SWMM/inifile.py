@@ -946,6 +946,7 @@ class DefaultsSWMM(ini_setting):
         self.keyprefix_node = "NODE_"
         self.keyprefix_link = "LINK_"
         self.keyprefix_conduit = "CONDUIT_"
+        self.keyprefix_xsection = "XSECTION_"
         self.infil_model_key = "Infiltration Model"
         self.infil_model_horton = HortonInfiltration()
         self.infil_model_horton.set_defaults()
@@ -968,8 +969,10 @@ class DefaultsSWMM(ini_setting):
         self.xsection.shape = CrossSectionShape.CIRCULAR
         self.xsection.barrels = 1
         self.xsection.geometry1 = 1.0
-        self.parameters_keys = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length", "Conduit Geometry",
-                           "Conduit Roughness", "Flow Units", "Link Offsets", "Routing Method", "Force Main Equation"]
+        self.xsection_key = "Conduit Geometry"
+        self.parameters_keys = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length",
+                                self.xsection_key, "Conduit Roughness", "Flow Units", "Link Offsets",
+                                "Routing Method", "Force Main Equation"]
         self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "KINWAVE", "H_W"]
 
         self.model_object_prefix = {}

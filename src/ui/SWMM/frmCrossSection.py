@@ -98,7 +98,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                               '137','139','142','148','150','152','154','161','167','169','171','178','184','186',
                               '188','190','197','199','159','162','168','170','173','179','184','187','190','195',
                               '198','204','206','209','215','217','223','225','231','234','236','239','245','247')
-        if self.qsettings is not None:
+        if self.defaults is not None:
             self.set_default()
         else:
             # set for first link for now
@@ -173,10 +173,12 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         Set cross-section choice from default in qsetting
         Returns:
         """
-        if self.qsettings is None: return
+        if self.defaults is None: return
         #value = self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
-        value = self.qsettings.value(self.default_key, None)
-        if value is None: return
+        #value = self.qsettings.value(self.default_key, None)
+        xs_name = self.defaults.parameters_values[self.defaults.xsection_key]
+        value = self.defaults.xsection
+        if not value: return
         for list_index in range(0,self.listWidget.count()):
             list_item = self.listWidget.item(list_index)
             if str(list_item.text()).upper() == value.shape.name:
@@ -281,8 +283,9 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             current_selection = str(cur.text())
 
         value = None
-        if self.qsettings is not None:
-            value = core.swmm.hydraulics.link.CrossSection()
+        if self.defaults is not None:
+            #value = core.swmm.hydraulics.link.CrossSection()
+            value = self.defaults.xsection
         else:
             try:
                 value = self._main_form.project.xsections.value[self.link_name]
@@ -351,10 +354,11 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'CUSTOM'
             value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Dummy':
-            XType = 'DUMMY'
+            XType = 'NotSet'
         value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
-        if self.qsettings is not None:
-            self.qsettings.setValue(self.default_key, value)
+        if self.defaults is not None:
+            #self.qsettings.setValue(self.default_key, value)
+            self.defaults.parameters_values[self.defaults.xsection_key] = value.shape.name
         self.close()
 
     def cmdCancel_Clicked(self):

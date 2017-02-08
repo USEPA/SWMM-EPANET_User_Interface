@@ -230,7 +230,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
                 if "conduit geometry" in key.lower():
-                    self.set_channel_cell(0, self.defaults)
+                    self.set_channel_cell(0)
                 else:
                     self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
         pass
@@ -239,7 +239,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:
                 self.set_infilmodel_cell(self.refresh_column)
-                self.set_channel_cell(0, self.refresh_column)
+                self.set_channel_cell(self.refresh_column)
                 self.refresh_column = -1
         return False
 
@@ -273,16 +273,16 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             self.refresh_column = column
         return local_show
 
-    def set_channel_cell(self, column, defaults):
+    def set_channel_cell(self, column):
         # text plus button for demand categories editor
         # xsection = CrossSection()
         tb = TextPlusButton(self)
-        if defaults is not None and defaults.xsection is not None:
-            self.channel_geom = defaults.xsection.shape.name
+        if self.defaults is not None and self.defaults.xsection is not None:
+            self.channel_geom = self.defaults.xsection.shape.name
         tb.textbox.setText(self.channel_geom)
         tb.textbox.setEnabled(False)
         tb.column = column
-        tb.button.clicked.connect(self.make_show_channel(column, defaults))
+        tb.button.clicked.connect(self.make_show_channel(column, self.defaults))
         self.tbl_3.setCellWidget(4, 0, tb)
 
     def make_show_channel(self, column, defaults):

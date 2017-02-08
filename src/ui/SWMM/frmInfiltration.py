@@ -48,7 +48,7 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             #         self.infil_model_horton.__dict__.update(self.infil_model.__dict__)
             #     elif enum_val == E_InfilModel.GREEN_AMPT or \
             #          enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-            #         self.infil_model_greenampt.__dict__.update(self.infil_model.__dict__)
+            #         self.infil_model_ga.__dict__.update(self.infil_model.__dict__)
             #     elif enum_val == E_InfilModel.CURVE_NUMBER:
             #         self.infil_model_cn.__dict__.update(self.infil_model.__dict__)
 
@@ -130,7 +130,7 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
 
     def set_greenampt(self):
-        mtype = self.defaults.infil_model_greenampt.model_type()
+        mtype = self.defaults.infil_model_ga.model_type()
         props = []
         for i in range(0, len(GreenAmptInfiltration.metadata)):
             if "subcatch" in GreenAmptInfiltration.metadata[i].label.lower():
@@ -236,7 +236,7 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                         self.defaults.infil_model_horton.model_type().name
                 elif enum_val == E_InfilModel.GREEN_AMPT or \
                      enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    #self.qsettings.setValue(self.default_key, self.infil_model_greenampt)
+                    #self.qsettings.setValue(self.default_key, self.infil_model_ga)
                     self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
                     self.defaults.infil_model_ga.model_type().name
                 elif enum_val == E_InfilModel.CURVE_NUMBER:

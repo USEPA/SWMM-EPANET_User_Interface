@@ -149,17 +149,17 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         setup the object id tab entries
         Returns:
         """
-        #self.model_object_types = ["Rain Gage", "Subcatchment", "Junction", "Outfall", "Divider",
+        #self.model_object_keys = ["Rain Gage", "Subcatchment", "Junction", "Outfall", "Divider",
         #                           "Storage Unit", "Conduit", "Pump", "Regulator"]
         self.tblGeneric.setColumnCount(1)
-        self.tblGeneric.setRowCount(len(self.defaults.model_object_types))
+        self.tblGeneric.setRowCount(len(self.defaults.model_object_keys))
         self.tblGeneric.setHorizontalHeaderLabels(["ID Prefix"])
-        self.tblGeneric.setVerticalHeaderLabels(self.defaults.model_object_types)
-        for i in range(0, len(self.defaults.model_object_types)):
+        self.tblGeneric.setVerticalHeaderLabels(self.defaults.model_object_keys)
+        for i in range(0, len(self.defaults.model_object_keys)):
             prefix = ""
             if self.defaults:
-                #prefix = unicode(self.qsettings.value("Labels/" + self.model_object_types[i], ""))
-                prefix = self.defaults.model_object_prefix[self.defaults.model_object_types[i]]
+                #prefix = unicode(self.qsettings.value("Labels/" + self.model_object_keys[i], ""))
+                prefix = self.defaults.model_object_prefix[self.defaults.model_object_keys[i]]
             #self.tblGeneric.insertRow(self.tblGeneric.rowCount())
             self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(prefix))
         self.tblGeneric.insertRow(self.tblGeneric.rowCount())
@@ -185,7 +185,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_2.setVerticalHeaderLabels(self.defaults.properties_sub_keys)
         for i in range(0, len(self.defaults.properties_sub_keys) - 1):
             #def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
-            def_val = self.defaults.properties_sub_values[self.default.properties_sub_keys[i]]
+            def_val = self.defaults.properties_sub_values[self.defaults.properties_sub_keys[i]]
             self.tbl_2.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
         self.set_infilmodel_cell(0)
 
@@ -230,7 +230,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
                 if "conduit geometry" in key.lower():
-                    self.set_channel_cell(self.defaults)
+                    self.set_channel_cell(0, self.defaults)
                 else:
                     self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
         pass
@@ -239,7 +239,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:
                 self.set_infilmodel_cell(self.refresh_column)
-                self.set_channel_cell(self.refresh_column)
+                self.set_channel_cell(0, self.refresh_column)
                 self.refresh_column = -1
         return False
 

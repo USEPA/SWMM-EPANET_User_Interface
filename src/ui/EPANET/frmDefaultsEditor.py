@@ -305,7 +305,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         if item is None: return
         key = self.tbl_2.verticalHeaderItem(row).text()
         if "auto length" in key.lower():
-            self.defaults.model_object_prefix[key] = item.currentText()
+            self.defaults.properties_values[key] = item.currentText()
         else:
             val, val_is_good = ParseData.floatTryParse(item.text())
             if val_is_good:

@@ -31,36 +31,26 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         QtCore.QObject.connect(self.cboInfilModel, QtCore.SIGNAL("currentIndexChanged(int)"),
                                self.cboInfilModel_currentIndexChanged)
 
-        self.qsettings = None
-        if kwargs.has_key("qsettings"):
-            self.qsettings = kwargs["qsettings"]
-        self.default_key = "obj_def_infilmodel"
-        if kwargs.has_key("default_key"):
-            self.default_key = kwargs["default_key"]
-        self.infil_model = None
-        self.infil_model_horton = HortonInfiltration()
-        self.infil_model_greenampt = GreenAmptInfiltration()
-        self.infil_model_cn = CurveNumberInfiltration()
-        self.infil_model_horton.set_defaults()
-        self.infil_model_greenampt.set_defaults()
-        self.infil_model_cn.set_defaults()
-
+        self.defaults = None
+        if kwargs.has_key("defaults"):
+            self.defaults = kwargs["defaults"]
         enum_val = E_InfilModel.HORTON
-        if self.qsettings is not None:
-            self.infil_model = self.qsettings.value(self.default_key, None)
-            if self.infil_model is None:
-                self.infil_model = HortonInfiltration()
-                self.infil_model.set_defaults()
-            else:
-                enum_val = self.infil_model.model_type()
-                if enum_val == E_InfilModel.HORTON or \
-                   enum_val == E_InfilModel.MODIFIED_HORTON:
-                    self.infil_model_horton.__dict__.update(self.infil_model.__dict__)
-                elif enum_val == E_InfilModel.GREEN_AMPT or \
-                     enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    self.infil_model_greenampt.__dict__.update(self.infil_model.__dict__)
-                elif enum_val == E_InfilModel.CURVE_NUMBER:
-                    self.infil_model_cn.__dict__.update(self.infil_model.__dict__)
+        if self.defaults is not None:
+            enum_val = E_InfilModel[self.defaults.properties_sub_values[self.defaults.infil_model_key]]
+            # self.infil_model = self.qsettings.value(self.default_key, None)
+            # if self.infil_model is None:
+            #     self.infil_model = HortonInfiltration()
+            #     self.infil_model.set_defaults()
+            # else:
+            #     enum_val = self.infil_model.model_type()
+            #     if enum_val == E_InfilModel.HORTON or \
+            #        enum_val == E_InfilModel.MODIFIED_HORTON:
+            #         self.infil_model_horton.__dict__.update(self.infil_model.__dict__)
+            #     elif enum_val == E_InfilModel.GREEN_AMPT or \
+            #          enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+            #         self.infil_model_greenampt.__dict__.update(self.infil_model.__dict__)
+            #     elif enum_val == E_InfilModel.CURVE_NUMBER:
+            #         self.infil_model_cn.__dict__.update(self.infil_model.__dict__)
 
             self.cboInfilModel.setEnabled(True)
             if self.lblNotes:
@@ -86,23 +76,23 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                                QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
 
     def cboInfilModel_currentIndexChanged(self, currentIndex):
-        if self.infil_model is None: return
+        #if self.infil_model is None: return
         self.tblGeneric.clearContents()
         enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
         if enum_val == E_InfilModel.HORTON or \
            enum_val == E_InfilModel.MODIFIED_HORTON:
-            self.meta = self.infil_model_horton.metadata
+            self.meta = self.defaults.infil_model_horton.metadata
             self.set_horton()
         elif enum_val == E_InfilModel.GREEN_AMPT or \
              enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-            self.meta = self.infil_model_greenampt.metadata
+            self.meta = self.defaults.infil_model_ga.metadata
             self.set_greenampt()
         elif enum_val == E_InfilModel.CURVE_NUMBER:
-            self.meta = self.infil_model_cn.metadata
+            self.meta = self.defaults.infil_model_cn.metadata
             self.set_CN()
 
     def set_horton(self):
-        mtype = self.infil_model_horton.model_type()
+        mtype = self.defaults.infil_model_horton.model_type()
         props = []
         for i in range(0, len(HortonInfiltration.metadata)):
             if "subcatch" in HortonInfiltration.metadata[i].label.lower():
@@ -114,33 +104,33 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         for i in range(0, self.tblGeneric.rowCount()):
             vtitle = self.tblGeneric.verticalHeaderItem(i).text().lower()
             if "max" in vtitle and "infil" in vtitle:
-                val = self.infil_model_horton.default_max_rate()
+                val = self.defaults.infil_model_horton.default_max_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
-                    val = self.infil_model_horton.max_rate
+                    val = self.defaults.infil_model_horton.max_rate
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "min" in vtitle and "infil" in vtitle:
-                val = self.infil_model_horton.default_min_rate()
+                val = self.defaults.infil_model_horton.default_min_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
-                    val = self.infil_model_horton.min_rate
+                    val = self.defaults.infil_model_horton.min_rate
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "decay" in vtitle:
-                val = self.infil_model_horton.default_decay()
+                val = self.defaults.infil_model_horton.default_decay()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
-                    val = self.infil_model_horton.decay
+                    val = self.defaults.infil_model_horton.decay
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "dry" in vtitle:
-                val = self.infil_model_horton.default_dry_time()
+                val = self.defaults.infil_model_horton.default_dry_time()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
-                    val = self.infil_model_horton.dry_time
+                    val = self.defaults.infil_model_horton.dry_time
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "max" in vtitle and "volume" in vtitle:
-                val = self.infil_model_horton.default_max_volume()
+                val = self.defaults.infil_model_horton.default_max_volume()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
-                    val = self.infil_model_horton.max_volume
+                    val = self.defaults.infil_model_horton.max_volume
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
 
     def set_greenampt(self):
-        mtype = self.infil_model_greenampt.model_type()
+        mtype = self.defaults.infil_model_greenampt.model_type()
         props = []
         for i in range(0, len(GreenAmptInfiltration.metadata)):
             if "subcatch" in GreenAmptInfiltration.metadata[i].label.lower():
@@ -153,19 +143,19 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         for i in range(0, self.tblGeneric.rowCount()):
             vtitle = self.tblGeneric.verticalHeaderItem(i).text().lower()
             if "suction" in vtitle:
-                val = self.infil_model_greenampt.default_suction()
+                val = self.defaults.infil_model_ga.default_suction()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    val = self.infil_model_greenampt.suction
+                    val = self.defaults.infil_model_ga.suction
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "conduct" in vtitle:
-                val = self.infil_model_greenampt.default_conductivity()
+                val = self.defaults.infil_model_ga.default_conductivity()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    val = self.infil_model_greenampt.hydraulic_conductivity
+                    val = self.defaults.infil_model_ga.hydraulic_conductivity
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
             elif "deficit" in vtitle:
-                val = self.infil_model_greenampt.default_init_deficit()
+                val = self.defaults.infil_model_ga.default_init_deficit()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    val = self.infil_model_greenampt.initial_moisture_deficit
+                    val = self.defaults.infil_model_ga.initial_moisture_deficit
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
 
     def set_CN(self):
@@ -183,17 +173,17 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         for i in range(0, self.tblGeneric.rowCount()):
             vtitle = self.tblGeneric.verticalHeaderItem(i).text().lower()
             if "curve" in vtitle:
-                val, val_is_good = ParseData.floatTryParse(self.infil_model_cn.curve_number)
+                val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.curve_number)
                 if val_is_good:
                     self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.infil_model_cn.default_CN())))
+                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_CN())))
             elif "dry" in vtitle:
-                val, val_is_good = ParseData.floatTryParse(self.infil_model_cn.dry_days)
+                val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.dry_days)
                 if val_is_good:
                     self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.infil_model_cn.default_dry_time())))
+                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_dry_time())))
 
     def resizeCorner(self):
         self.corner_label.setGeometry(0, 0, self.tblGeneric.verticalHeader().width(),
@@ -217,37 +207,42 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         for i in range(0, len(self.meta)):
             if self.meta[i].label == vtitle:
                 attr_name = self.meta[i].attribute
+                break
 
         if len(attr_name) == 0: return
 
         enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
         if enum_val == E_InfilModel.HORTON or \
            enum_val == E_InfilModel.MODIFIED_HORTON:
-            self.infil_model_horton.__dict__[attr_name] = new_val
+            self.defaults.infil_model_horton.__dict__[attr_name] = new_val
         elif enum_val == E_InfilModel.GREEN_AMPT or \
              enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-            self.infil_model_greenampt.__dict__[attr_name] = new_val
+            self.defaults.infil_model_ga.__dict__[attr_name] = new_val
         elif enum_val == E_InfilModel.CURVE_NUMBER:
-            self.infil_model_cn.__dict__[attr_name] = new_val
-
+            self.defaults.infil_model_cn.__dict__[attr_name] = new_val
         pass
 
     def cmdOK_Clicked(self):
         if hasattr(self, "backend") and self.backend is not None:
             self.backend.apply_edits()
         else:
-            if self.qsettings is not None:
-                self.qsettings.remove(self.default_key)
+            if self.defaults is not None:
+                # self.qsettings.remove(self.default_key)
                 enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
                 if enum_val == E_InfilModel.HORTON or \
                    enum_val == E_InfilModel.MODIFIED_HORTON:
-                    self.qsettings.setValue(self.default_key, self.infil_model_horton)
+                    #self.qsettings.setValue(self.default_key, self.infil_model_horton)
+                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
+                        self.defaults.infil_model_horton.model_type().name
                 elif enum_val == E_InfilModel.GREEN_AMPT or \
                      enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
-                    self.qsettings.setValue(self.default_key, self.infil_model_greenampt)
+                    #self.qsettings.setValue(self.default_key, self.infil_model_greenampt)
+                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
+                    self.defaults.infil_model_ga.model_type().name
                 elif enum_val == E_InfilModel.CURVE_NUMBER:
-                    self.qsettings.setValue(self.default_key, self.infil_model_cn)
-
+                    #self.qsettings.setValue(self.default_key, self.infil_model_cn)
+                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
+                        self.defaults.infil_model_cn.model_type().name
         self.close()
 
     def cmdCancel_Clicked(self):

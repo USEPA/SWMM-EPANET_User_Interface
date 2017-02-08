@@ -1,4 +1,13 @@
 from PyQt4.Qt import Qt
+from PyQt4.Qt import QSettings
+from core.swmm.hydrology.subcatchment import HortonInfiltration
+from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
+from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
+from core.swmm.hydrology.subcatchment import E_InfilModel
+from core.swmm.hydraulics.link import CrossSectionShape
+from core.swmm.hydraulics.link import CrossSection
+import core.swmm.options.general as hyd
+import core.swmm.options.dynamic_wave as dw
 
 """
 Read and write initialization data to the SWMM INI file (epaswmm5.ini)
@@ -917,8 +926,203 @@ def ExtractValues(S, N1, N2, X):
 
 from ui.inifile import ini_setting
 class DefaultsSWMM(ini_setting):
-    def __init__(self, file_name, project, qsetting):
-        ini_setting.__init__(self, file_name, qsetting)
+    def __init__(self, file_name, project):
+        ini_setting.__init__(self, file_name)
         self.project = project
         self.model = "swmm"
+
+        # [Labels] label prefix
+        self.model_object_keys = ["Rain Gage", "Subcatchment", "Junction", "Outfall", "Divider",
+                                  "Storage Unit", "Conduit", "Pump", "Regulator"]
+        self.model_object_def_prefix = ["RG", "S", "J", "O", "D", "SU", "C", "P", "R"]
+
+        self.id_increment_key = "ID Increment"
+        self.id_def_increment = 1
+        self.id_increment = 1
+
+        # [Defaults]
+        self.keyprefix_subcatch = "SUBCATCH_"
+        self.keyprefix_infil = "INFIL_"
+        self.keyprefix_node = "NODE_"
+        self.keyprefix_link = "LINK_"
+        self.keyprefix_conduit = "CONDUIT_"
+        self.infil_model_key = "Infiltration Model"
+        self.infil_model_horton = HortonInfiltration()
+        self.infil_model_horton.set_defaults()
+        self.infil_model_ga = GreenAmptInfiltration()
+        self.infil_model_ga.set_defaults()
+        self.infil_model_cn = CurveNumberInfiltration()
+        self.infil_model_cn.set_defaults()
+        self.properties_sub_keys = ["Area", "Width", "% Slope", "% Imperv", "N-Imperv", "N-Perv",
+                           "Dstore-Imperv", "Dstore-Perv", "%Zero-Imperv", self.infil_model_key]
+        self.properties_sub_def_values = [5.0, 500.0, 0.5, 25.0, 0.01, 0.1, 0.05, 0.05, 25.0, "HORTON"]
+
+        # [Defaults]
+        # default xsection
+        self.xsection_def = CrossSection()
+        self.xsection_def.shape = CrossSectionShape.CIRCULAR
+        self.xsection_def.barrels = 1
+        self.xsection_def.geometry1 = 1.0
+        # user choice
+        self.xsection = CrossSection()
+        self.xsection.shape = CrossSectionShape.CIRCULAR
+        self.xsection.barrels = 1
+        self.xsection.geometry1 = 1.0
+        self.parameters_keys = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length", "Conduit Geometry",
+                           "Conduit Roughness", "Flow Units", "Link Offsets", "Routing Method", "Force Main Equation"]
+        self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "KINWAVE", "H_W"]
+
+        self.model_object_prefix = {}
+        for key in self.model_object_keys:
+            self.model_object_prefix[key] = self.model_object_def_prefix[self.model_object_keys.index(key)]
+            if self.config:
+                val, vtype = self.get_setting_value("Labels", key)
+                if val is not None:
+                    self.model_object_prefix[key] = val
+
+        self.id_increment, vtype = self.get_setting_value("Labels", self.id_increment_key)
+        if self.id_increment is None:
+            self.id_increment = 1
+
+        self.properties_sub_values = {}
+        for key in self.properties_sub_keys:
+            self.properties_sub_values[key] = self.properties_sub_def_values[self.properties_sub_keys.index(key)]
+            if self.config:
+                val, vtype = self.get_setting_value("Defaults", self.keyprefix_subcatch + key)
+                if val is not None:
+                    self.properties_sub_values[key] = val
+
+        self.parameters_values = {}
+        for key in self.parameters_keys:
+            self.parameters_values[key] = self.parameters_def_values[self.parameters_keys.index(key)]
+            if self.config:
+                val, vtype = self.get_setting_value("Defaults", key)
+                if val is not None:
+                    self.parameters_values[key] = val
+
+        if self.config is None:
+            self.init_config()
+
+    def init_config(self):
+        # if a new qsettings has not been created such as when no project is created
+        # then, create an empty qsettings
+        self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        self.config.setValue("Model/Name", self.model)
+        for key in self.model_object_keys:
+            self.config.setValue("Labels/" + key, self.model_object_prefix[key])
+        for key in self.properties_sub_keys:
+            self.config.setValue("Defaults/" + self.keyprefix_subcatch + key, self.properties_sub_values[key])
+        for key in self.parameters_keys:
+            self.config.setValue("Defaults/" + key, self.parameters_values[key])
+
+    def sync_defaults_label(self):
+        """
+        sync object label/prefix with internal qsettings
+        """
+        for key in self.model_object_keys:
+            if self.config:
+                self.config.setValue("Labels/" + key, self.model_object_prefix[key])
+        if self.config:
+            self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
+
+    def sync_defaults_sub_property(self):
+        """
+        sync subcatchment properties with internal qsettings
+        """
+        for key in self.properties_sub_keys:
+            if self.config:
+                self.config.setValue("Defaults/" + self.keyprefix_subcatch + key, self.properties_sub_values[key])
+
+    def sync_defaults_parameter(self):
+        """
+        sync hydraulic parameters with internal qsettings
+        """
+        for key in self.parameters_keys:
+            if self.config:
+                self.config.setValue("Defaults/" + key, self.parameters_values[key])
+        if self.project:
+            self.sync_project_hydraulic_parameters()
+
+    def sync_project_hydraulic_parameters(self):
+        hydraulics_options = self.project.options
+        for key in self.parameters_keys:
+            val = self.parameters_values[key]
+            if "flow unit" in key.lower():
+                hydraulics_options.flow_units = hyd.FlowUnits[val]
+            elif "link offset" in key.lower():
+                hydraulics_options.link_offsets = hyd.LinkOffsets[val]
+            elif "routing" in key.lower():
+                hydraulics_options.flow_routing = hyd.FlowRouting[val]
+            elif "force main" in key.lower():
+                hydraulics_options.dynamic_wave.force_main_equation = dw.ForceMainEquation[val]
+            elif "node invert" in key.lower():
+                #hydraulics_options.node_invert = float(val)
+                pass
+            elif "node max. depth" in key.lower():
+                #hydraulics_options.node_max_depth = float(val)
+                pass
+            elif "node ponded area" in key.lower():
+                #hydraulics_options.node_ponded_area = float(val)
+                pass
+            elif "conduit length" in key.lower():
+                #hydraulics_options.conduit_length = float(val)
+                pass
+            elif "conduit geometry" in key.lower():
+                #hydraulics_options.conduit_geometry = float(val)
+                pass
+            elif "conduit roughness" in key.lower():
+                #hydraulics_options.conduit_roughness = float(val)
+                pass
+
+    def apply_default_attributes(self, item):
+        """
+        Set default attributes for new model object
+        Args:
+            item: newly created model object
+        """
+        item_type = item.__class__.__name__
+        if item_type == "Junction" or item_type == "Outfall" or item_type== "Divider" or \
+                item_type == "StorageUnit":
+            item.elevation = self.parameters_values["Node Invert"]
+            if item_type == "Junction" or item_type == "Divider" or item_type == "StorageUnit":
+                item.max_depth = self.parameters_values["Node Max. Depth"]
+        elif item_type == "Conduit":
+            # from core.swmm.hydraulics.link import Conduit
+            # item = Conduit()
+            item.length = self.parameters_values["Conduit Length"]
+            item.roughness = self.parameters_values["Conduit Roughness"]
+        elif item_type == "CrossSection":
+            # from core.swmm.hydraulics.link import CrossSection
+            # from core.swmm.hydraulics.link import CrossSectionShape
+            # item = CrossSection()
+            item.barrels = self.xsection.barrels
+            item.shape = self.xsection.shape
+            item.geometry1 = self.xsection.geometry1
+            item.geometry2 = self.xsection.geometry2
+            item.geometry3 = self.xsection.geometry3
+            item.geometry4 = self.xsection.geometry4
+        elif item_type == "Subcatchment":
+            # from core.swmm.hydrology.subcatchment import Subcatchment
+            # item = Subcatchment()
+            item.area = self.properties_sub_values["Area"]
+            item.width = self.properties_sub_values["Width"]
+            item.percent_slope = self.properties_sub_values["% Slope"]
+            item.percent_impervious = self.properties_sub_values["% Imperv"]
+            item.n_imperv = self.properties_sub_values["N-Imperv"]
+            item.n_perv = self.properties_sub_values["N-Perv"]
+            item.storage_depth_imperv = self.properties_sub_values["Dstore-Imperv"]
+            item.storage_depth_perv = self.properties_sub_values["Dstore-Perv"]
+            item.percent_zero_impervious = self.properties_sub_values["%Zero-Imperv"]
+            item.infiltration_parameters = None
+            infil_model_name = self.properties_sub_values["Infiltration Model"]
+            # as the project_setting is an entity that exists during project session
+            # its ok to reference an instance variable here
+            if "HORTON" in infil_model_name.upper() :
+                item.infiltration_parameters = self.infil_model_horton
+            elif "GREEN" in infil_model_name.upper():
+                item.infiltration_parameters = self.infil_model_ga
+            elif "CURVE" in infil_model_name.upper():
+                item.infiltration_parameters = self.infil_model_cn
+
+            pass
 

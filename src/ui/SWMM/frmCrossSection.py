@@ -23,12 +23,12 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(main_form.project)
         self._main_form = main_form
-        self.qsettings = None
-        self.default_key = "obj_def_xsection"
-        if kwargs.has_key("qsettings"):
-            self.qsettings = kwargs["qsettings"]
-        if kwargs.has_key("default_key"):
-            self.default_key = kwargs["default_key"]
+        self.defaults = None
+        if kwargs.has_key("defaults"):
+            self.defaults = kwargs["defaults"]
+        #self.default_key = "obj_def_xsection"
+        #if kwargs.has_key("default_key"):
+        #    self.default_key = kwargs["default_key"]
         self.link_name = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
         self.ellipse_major_axis_in = (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180)

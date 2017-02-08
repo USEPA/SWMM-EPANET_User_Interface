@@ -92,7 +92,8 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             self.set_CN()
 
     def set_horton(self):
-        mtype = self.defaults.infil_model_horton.model_type()
+        #mtype = self.defaults.infil_model_horton.model_type()
+        mtype = E_InfilModel[self.cboInfilModel.currentText().upper()]
         props = []
         for i in range(0, len(HortonInfiltration.metadata)):
             if "subcatch" in HortonInfiltration.metadata[i].label.lower():
@@ -130,7 +131,8 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                 self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
 
     def set_greenampt(self):
-        mtype = self.defaults.infil_model_ga.model_type()
+        #mtype = self.defaults.infil_model_ga.model_type()
+        mtype = E_InfilModel[self.cboInfilModel.currentText().upper()]
         props = []
         for i in range(0, len(GreenAmptInfiltration.metadata)):
             if "subcatch" in GreenAmptInfiltration.metadata[i].label.lower():
@@ -212,11 +214,9 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         if len(attr_name) == 0: return
 
         enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
-        if enum_val == E_InfilModel.HORTON or \
-           enum_val == E_InfilModel.MODIFIED_HORTON:
+        if enum_val == E_InfilModel.MODIFIED_HORTON:
             self.defaults.infil_model_horton.__dict__[attr_name] = new_val
-        elif enum_val == E_InfilModel.GREEN_AMPT or \
-             enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+        elif enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
             self.defaults.infil_model_ga.__dict__[attr_name] = new_val
         elif enum_val == E_InfilModel.CURVE_NUMBER:
             self.defaults.infil_model_cn.__dict__[attr_name] = new_val
@@ -229,20 +229,13 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             if self.defaults is not None:
                 # self.qsettings.remove(self.default_key)
                 enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
-                if enum_val == E_InfilModel.HORTON or \
-                   enum_val == E_InfilModel.MODIFIED_HORTON:
+                self.defaults.properties_sub_values[self.defaults.infil_model_key] = enum_val.name
+                if enum_val == E_InfilModel.HORTON:
                     #self.qsettings.setValue(self.default_key, self.infil_model_horton)
-                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
-                        self.defaults.infil_model_horton.model_type().name
-                elif enum_val == E_InfilModel.GREEN_AMPT or \
-                     enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+                    self.defaults.infil_model_horton.set_defaults()
+                elif enum_val == E_InfilModel.GREEN_AMPT:
                     #self.qsettings.setValue(self.default_key, self.infil_model_ga)
-                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
-                    self.defaults.infil_model_ga.model_type().name
-                elif enum_val == E_InfilModel.CURVE_NUMBER:
-                    #self.qsettings.setValue(self.default_key, self.infil_model_cn)
-                    self.defaults.properties_sub_values[self.defaults.infil_model_key] = \
-                        self.defaults.infil_model_cn.model_type().name
+                    self.defaults.infil_model_ga.set_defaults()
         self.close()
 
     def cmdCancel_Clicked(self):

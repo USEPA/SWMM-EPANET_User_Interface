@@ -397,6 +397,18 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         save/sync user changes to the defaults
         Returns:
         """
+        if self.label_changed:
+            self.defaults.sync_defaults_label()
+            pass
+
+        if self.property_sub_changed:
+            self.defaults.sync_defaults_sub_property()
+            pass
+
+        if self.parameter_changed:
+            self.defaults.sync_defaults_parameter()
+            pass
+
         self.close()
         pass
 

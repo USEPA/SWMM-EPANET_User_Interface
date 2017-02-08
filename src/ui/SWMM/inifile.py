@@ -987,21 +987,59 @@ class DefaultsSWMM(ini_setting):
         if self.id_increment is None:
             self.id_increment = 1
 
+        group = "Defaults"
         self.properties_sub_values = {}
         for key in self.properties_sub_keys:
             self.properties_sub_values[key] = self.properties_sub_def_values[self.properties_sub_keys.index(key)]
             if self.config:
-                val, vtype = self.get_setting_value("Defaults", self.keyprefix_subcatch + key)
+                val, vtype = self.get_setting_value(group, self.keyprefix_subcatch + key)
                 if val is not None:
                     self.properties_sub_values[key] = val
+
+        if self.config:
+            # retrieve infiltration model parameters
+            infil_model_name, vtype = self.get_setting_value(group, self.infil_model_key)
+            if not infil_model_name:
+                infil_model_name, vtype = self.get_setting_value(group, "INFILTRATION")
+            if infil_model_name:
+                infil_model_type = E_InfilModel[infil_model_name]
+                key = self.keyprefix_infil + "PARAM"
+                if infil_model_type == E_InfilModel.HORTON or \
+                    infil_model_type == E_InfilModel.MODIFIED_HORTON:
+                    self.infil_model_horton.max_rate, vtype = self.get_setting_value(group, key + "1")
+                    self.infil_model_horton.min_rate, vtype = self.get_setting_value(group, key + "2")
+                    self.infil_model_horton.decay, vtype = self.get_setting_value(group, key + "3")
+                    self.infil_model_horton.dry_time, vtype = self.get_setting_value(group, key + "4")
+                    pass
+                elif infil_model_type == E_InfilModel.GREEN_AMPT or \
+                   infil_model_type == E_InfilModel.MODIFIED_GREEN_AMPT:
+                    self.infil_model_ga.suction, vtype = self.get_setting_value(group, key + "1")
+                    self.infil_model_ga.hydraulic_conductivity, vtype = self.get_setting_value(group, key + "2")
+                    self.infil_model_ga.initial_moisture_deficit, vtype = self.get_setting_value(group, key + "3")
+                    pass
+                elif infil_model_type == E_InfilModel.CURVE_NUMBER:
+                    self.infil_model_cn.curve_number, vtype = self.get_setting_value(group, key + "1")
+                    self.infil_model_cn.dry_days, vtype = self.get_setting_value(group, key + "2")
+                    pass
 
         self.parameters_values = {}
         for key in self.parameters_keys:
             self.parameters_values[key] = self.parameters_def_values[self.parameters_keys.index(key)]
             if self.config:
-                val, vtype = self.get_setting_value("Defaults", key)
+                val, vtype = self.get_setting_value(group, key)
                 if val is not None:
                     self.parameters_values[key] = val
+
+        if self.config:
+            # retrieve cross section parameters
+            xsect_name, vtype = self.get_setting_value(group, self.keyprefix_conduit + "SHAPE")
+            if xsect_name is not None:
+                self.xsection.shape = CrossSectionShape[xsect_name]
+                key_prefix = self.keyprefix_conduit + "GEOM"
+                self.xsection.geometry1, vtype = self.get_setting_value(group, key_prefix + "1")
+                self.xsection.geometry2, vtype = self.get_setting_value(group, key_prefix + "2")
+                self.xsection.geometry3, vtype = self.get_setting_value(group, key_prefix + "3")
+                self.xsection.geometry4, vtype = self.get_setting_value(group, key_prefix + "4")
 
         if self.config is None:
             self.init_config()
@@ -1032,9 +1070,38 @@ class DefaultsSWMM(ini_setting):
         """
         sync subcatchment properties with internal qsettings
         """
+        group = "Defaults/"
         for key in self.properties_sub_keys:
             if self.config:
-                self.config.setValue("Defaults/" + self.keyprefix_subcatch + key, self.properties_sub_values[key])
+                self.config.setValue(group + self.keyprefix_subcatch + key, self.properties_sub_values[key])
+        # record infiltration model parameters
+        infil_model_name = self.properties_sub_values[self.infil_model_key]
+        infil_model_type = E_InfilModel[infil_model_name]
+        self.config.setValue(group + self.infil_model_key, infil_model_name)
+        key_prefix = group + self.keyprefix_infil + "PARAM"
+        if infil_model_type == E_InfilModel.HORTON or \
+           infil_model_type == E_InfilModel.MODIFIED_HORTON:
+            self.config.setValue(key_prefix + "1", unicode(self.infil_model_horton.max_rate))
+            self.config.setValue(key_prefix + "2", unicode(self.infil_model_horton.min_rate))
+            self.config.setValue(key_prefix + "3", unicode(self.infil_model_horton.decay))
+            self.config.setValue(key_prefix + "4", unicode(self.infil_model_horton.dry_time))
+            self.config.setValue(key_prefix + "5", "0")
+            self.config.setValue(key_prefix + "6", "")
+        elif infil_model_type == E_InfilModel.GREEN_AMPT or \
+             infil_model_type == E_InfilModel.MODIFIED_GREEN_AMPT:
+            self.config.setValue(key_prefix + "1", unicode(self.infil_model_ga.suction))
+            self.config.setValue(key_prefix + "2", unicode(self.infil_model_ga.hydraulic_conductivity))
+            self.config.setValue(key_prefix + "3", unicode(self.infil_model_ga.initial_moisture_deficit))
+            self.config.setValue(key_prefix + "4", "")
+            self.config.setValue(key_prefix + "5", "")
+            self.config.setValue(key_prefix + "6", "")
+        elif infil_model_type == E_InfilModel.CURVE_NUMBER:
+            self.config.setValue(key_prefix + "1", unicode(self.infil_model_cn.curve_number))
+            self.config.setValue(key_prefix + "2", unicode(self.infil_model_cn.dry_days))
+            self.config.setValue(key_prefix + "3", "")
+            self.config.setValue(key_prefix + "4", "")
+            self.config.setValue(key_prefix + "5", "")
+            self.config.setValue(key_prefix + "6", "")
 
     def sync_defaults_parameter(self):
         """
@@ -1046,10 +1113,23 @@ class DefaultsSWMM(ini_setting):
         if self.project:
             self.sync_project_hydraulic_parameters()
 
+        # record cross section parameters
+        group = "Defaults/"
+        xsect_name = self.parameters_values[self.xsection_key]
+        xsect_type = CrossSection[xsect_name]
+        self.config.setValue(group + self.keyprefix_conduit + "SHAPE", self.xsection.shape.name)
+        key_prefix = group + self.keyprefix_conduit + "GEOM"
+        self.config.setValue(key_prefix + "1", unicode(self.xsection.geometry1))
+        self.config.setValue(key_prefix + "2", unicode(self.xsection.geometry2))
+        self.config.setValue(key_prefix + "3", unicode(self.xsection.geometry3))
+        self.config.setValue(key_prefix + "4", unicode(self.xsection.geometry4))
+
     def sync_project_hydraulic_parameters(self):
+        group = "Defaults/"
         hydraulics_options = self.project.options
         for key in self.parameters_keys:
             val = self.parameters_values[key]
+            self.config.setValue(group + key, unicode(val))
             if "flow unit" in key.lower():
                 hydraulics_options.flow_units = hyd.FlowUnits[val]
             elif "link offset" in key.lower():
@@ -1117,7 +1197,7 @@ class DefaultsSWMM(ini_setting):
             item.storage_depth_perv = self.properties_sub_values["Dstore-Perv"]
             item.percent_zero_impervious = self.properties_sub_values["%Zero-Imperv"]
             item.infiltration_parameters = None
-            infil_model_name = self.properties_sub_values["Infiltration Model"]
+            infil_model_name = self.properties_sub_values[self.infil_model_key]
             # as the project_setting is an entity that exists during project session
             # its ok to reference an instance variable here
             if "HORTON" in infil_model_name.upper() :

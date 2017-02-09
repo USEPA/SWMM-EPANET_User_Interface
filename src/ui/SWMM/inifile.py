@@ -1173,7 +1173,7 @@ class DefaultsSWMM(ini_setting):
             if item_type == "Junction" or item_type == "Divider" or item_type == "StorageUnit":
                 item.max_depth = self.parameters_values["Node Max. Depth"]
             if item_type == "Junction":
-                item.ponded_area = self.properties_sub_values["Node Ponded Area"]
+                item.ponded_area = self.parameters_values["Node Ponded Area"]
         elif item_type == "Conduit":
             # from core.swmm.hydraulics.link import Conduit
             # item = Conduit()

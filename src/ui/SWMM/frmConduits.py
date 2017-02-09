@@ -60,10 +60,19 @@ class frmConduits(frmGenericPropertyEditor):
     def set_cross_section_cell(self, column):
         # text plus button for cross section
         tb = TextPlusButton(self)
-        for value in self.project.xsections.value:
-            if value.link == str(self.tblGeneric.item(0,column).text()):
+        if len(self.project.xsections.value) > 0:
+            for value in self.project.xsections.value:
+                if value.link == str(self.tblGeneric.item(0,column).text()):
+                    tb.textbox.setText(value.shape.name)
+                    self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+                    break
+        else:
+            if self._main_form and self._main_form.project_settings and \
+                    self._main_form.project_settings.xsection:
+                value = self._main_form.project_settings.xsection
                 tb.textbox.setText(value.shape.name)
                 self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.show_cross_section(column))

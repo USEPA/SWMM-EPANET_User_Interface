@@ -102,11 +102,25 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.set_default()
         else:
             # set for first link for now
-            self.set_link(main_form.project, '1')
+            #self.set_link(main_form.project, '1')
+            pass
 
     def set_link(self, project, link_name):
         # assume we want to edit the first one
         self.link_name = link_name
+        value = None
+        try:
+            value = self._main_form.project.xsections.get_item("link", self.link_name)
+        except:  # This must be a new one we need to add
+            value = None
+
+        if not value:
+            value = core.swmm.hydraulics.link.CrossSection()
+            value.link = self.link_name
+            if self._main_form and self._main_form.project_settings:
+                self._main_form.project_settings.apply_default_attributes(value)
+            self._main_form.project.xsections.value.append(value)
+
         for value in project.xsections.value:
             if value.link == link_name:
                 # this is the link we want to edit
@@ -288,7 +302,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             value = self.defaults.xsection
         else:
             try:
-                value = self._main_form.project.xsections.value[self.link_name]
+                value = self._main_form.project.xsections.get_item("link", self.link_name)
             except:  # This must be a new one we need to add
                 value = core.swmm.hydraulics.link.CrossSection()
                 value.link = self.link_name

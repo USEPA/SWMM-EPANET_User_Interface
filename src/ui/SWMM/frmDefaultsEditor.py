@@ -265,7 +265,6 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilmodel(column))
         self.tbl_2.setCellWidget(self.tbl_2.rowCount() - 1, 0, tb)
-        self.property_sub_changed = True
 
     def make_show_infilmodel(self, column):
         def local_show():
@@ -275,6 +274,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             frm.setWindowModality(QtCore.Qt.ApplicationModal)
             frm.show()
             self.refresh_column = column
+            self.property_sub_changed = True
         return local_show
 
     def set_channel_cell(self, column):
@@ -297,6 +297,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             frm.setWindowModality(QtCore.Qt.ApplicationModal)
             frm.show()
             self.refresh_column = column
+            self.parameter_changed = True
         return local_show
 
     def move_table(self, index):
@@ -359,7 +360,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             val, val_is_good = ParseData.floatTryParse(item.text())
             if val_is_good:
                 self.defaults.properties_sub_values[key] = val
-        self.property_changed = True
+        self.property_sub_changed = True
         pass
 
     def tbl_3_changed(self, row, col):

@@ -162,6 +162,15 @@ class Section(object):
                     return obj
         return None
 
+    def get_item(self, fname, fvalue):
+        if not isinstance(self.value, list): return None
+        if not self.value or len(self.value) == 0: return None
+        if not hasattr(self.value[0], fname): return None
+        for obj in self.value:
+            if obj.__dict__[fname] == fvalue:
+                return obj
+        return None
+
 class SectionAsList(Section):
     def __init__(self, section_name, section_comment=None):
         self.value = []
@@ -175,6 +184,14 @@ class SectionAsList(Section):
     def find_item(self, aName):
         for obj in self.value:
             if aName.upper() in obj.name.upper():
+                return obj
+        return None
+
+    def get_item(self, fname, fvalue):
+        if not self.value or len(self.value) == 0: return None
+        if not hasattr(self.value[0], fname): return None
+        for obj in self.value:
+            if obj.__dict__[fname] == fvalue:
                 return obj
         return None
 

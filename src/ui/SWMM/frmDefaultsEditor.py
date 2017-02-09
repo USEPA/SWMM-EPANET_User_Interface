@@ -265,6 +265,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilmodel(column))
         self.tbl_2.setCellWidget(self.tbl_2.rowCount() - 1, 0, tb)
+        self.property_sub_changed = True
 
     def make_show_infilmodel(self, column):
         def local_show():

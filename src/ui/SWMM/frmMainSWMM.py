@@ -898,6 +898,8 @@ class frmMainSWMM(frmMain):
             # need to add corresponding cross section
             new_xsection = CrossSection()
             new_xsection.name = new_item.name
+            if self.project_settings:
+                self.project_settings.apply_default_attributes(new_xsection)
             if len(self.project.xsections.value) == 0:
                 edit_these = [new_xsection]
                 self.project.xsections.value = edit_these
@@ -918,6 +920,8 @@ class frmMainSWMM(frmMain):
         elif tree_text == self.tree_curves_TidalCurves[0]:
             new_item.curve_type = CurveType.TIDAL
 
+        if self.project_settings:
+            self.project_settings.apply_default_attributes(new_item)
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
     def delete_named_object(self, tree_text, item_name):

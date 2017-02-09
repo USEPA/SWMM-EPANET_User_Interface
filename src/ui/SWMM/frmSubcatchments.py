@@ -212,6 +212,8 @@ class frmSubcatchments(frmGenericPropertyEditor):
                         new_item = CurveNumberInfiltration()
                     else:
                         new_item = HortonInfiltration()
+                    if self._main_form and self._main_form.project_settings:
+                        self._main_form.project_settings.apply_default_infiltration_attributes(new_item)
                     new_item.subcatchment = sub_name
                     infiltration_section.value.append(new_item)
                     edit_these.append(new_item)

@@ -1102,6 +1102,9 @@ class DefaultsSWMM(ini_setting):
             self.config.setValue(key_prefix + "4", "")
             self.config.setValue(key_prefix + "5", "")
             self.config.setValue(key_prefix + "6", "")
+        if self.project:
+            #update the default infiltration model name in the global project option
+            self.project.options.infiltration = infil_model_name
 
     def sync_defaults_parameter(self):
         """
@@ -1116,7 +1119,7 @@ class DefaultsSWMM(ini_setting):
         # record cross section parameters
         group = "Defaults/"
         xsect_name = self.parameters_values[self.xsection_key]
-        xsect_type = CrossSection[xsect_name]
+        xsect_type = CrossSectionShape[xsect_name]
         self.config.setValue(group + self.keyprefix_conduit + "SHAPE", self.xsection.shape.name)
         key_prefix = group + self.keyprefix_conduit + "GEOM"
         self.config.setValue(key_prefix + "1", unicode(self.xsection.geometry1))
@@ -1169,6 +1172,8 @@ class DefaultsSWMM(ini_setting):
             item.elevation = self.parameters_values["Node Invert"]
             if item_type == "Junction" or item_type == "Divider" or item_type == "StorageUnit":
                 item.max_depth = self.parameters_values["Node Max. Depth"]
+            if item_type == "Junction":
+                item.ponded_area = self.properties_sub_values["Node Ponded Area"]
         elif item_type == "Conduit":
             # from core.swmm.hydraulics.link import Conduit
             # item = Conduit()
@@ -1196,16 +1201,41 @@ class DefaultsSWMM(ini_setting):
             item.storage_depth_imperv = self.properties_sub_values["Dstore-Imperv"]
             item.storage_depth_perv = self.properties_sub_values["Dstore-Perv"]
             item.percent_zero_impervious = self.properties_sub_values["%Zero-Imperv"]
-            item.infiltration_parameters = None
-            infil_model_name = self.properties_sub_values[self.infil_model_key]
-            # as the project_setting is an entity that exists during project session
-            # its ok to reference an instance variable here
-            if "HORTON" in infil_model_name.upper() :
-                item.infiltration_parameters = self.infil_model_horton
-            elif "GREEN" in infil_model_name.upper():
-                item.infiltration_parameters = self.infil_model_ga
-            elif "CURVE" in infil_model_name.upper():
-                item.infiltration_parameters = self.infil_model_cn
-
+            #self.apply_default_infiltration_attributes(item)
+            #item.infiltration_parameters = None
+            #infil_model_name = self.properties_sub_values[self.infil_model_key]
+            ## as the project_setting is an entity that exists during project session
+            ## its ok to reference an instance variable here
+            #if "HORTON" in infil_model_name.upper() :
+            #    item.infiltration_parameters = self.infil_model_horton
+            #elif "GREEN" in infil_model_name.upper():
+            #    item.infiltration_parameters = self.infil_model_ga
+            #elif "CURVE" in infil_model_name.upper():
+            #    item.infiltration_parameters = self.infil_model_cn
             pass
+
+    def apply_default_infiltration_attributes(self, infil_item):
+        if not infil_item: return
+        enum_val = E_InfilModel[self.properties_sub_values[self.infil_model_key]]
+        if enum_val == E_InfilModel.HORTON or \
+           enum_val == E_InfilModel.MODIFIED_HORTON:
+            for attr in HortonInfiltration.metadata:
+                infil_item.__dict__[attr.attribute] = \
+                       self.infil_model_horton.__dict__[attr.attribute]
+            #infil_item.subcatchment = sub_id
+        elif enum_val == E_InfilModel.GREEN_AMPT or \
+             enum_val == E_InfilModel.MODIFIED_GREEN_AMPT:
+            #infil_item = GreenAmptInfiltration()
+            for attr in GreenAmptInfiltration.metadata:
+                infil_item.__dict__[attr.attribute] = \
+                    self.infil_model_ga.__dict__[attr.attribute]
+            #infil_item.subcatchment = sub_id
+        elif enum_val == E_InfilModel.CURVE_NUMBER:
+            #infil_item = CurveNumberInfiltration()
+            for attr in CurveNumberInfiltration.metadata:
+                infil_item.__dict__[attr.attribute] = \
+                    self.infil_model_cn.__dict__[attr.attribute]
+            #infil_item.subcatchment = sub_id
+        pass
+
 

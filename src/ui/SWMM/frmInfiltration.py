@@ -77,6 +77,7 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
 
     def cboInfilModel_currentIndexChanged(self, currentIndex):
         #if self.infil_model is None: return
+        if not self.defaults: return
         self.tblGeneric.clearContents()
         enum_val = E_InfilModel[self.cboInfilModel.currentText().upper()]
         if enum_val == E_InfilModel.HORTON or \

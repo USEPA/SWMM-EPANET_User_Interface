@@ -115,33 +115,33 @@ class frmRunSWMM(frmRunSimulation):
                     self.txtHrsMin.setText("00:00")
             else:  # No computed number of simulation days, so hide progress and date/time controls
                 self.progressBar.setVisible(False)
-                # self.lblTime.setVisible(False)
-                # self.fraTime.setVisible(False)
+                self.lblTime.setVisible(False)
+                self.fraTime.setVisible(False)
 
             self.set_status(RunStatus.rsComputing)
 
             print("Running SWMM " + str(self.model_api.swmm_getVersion()))
             self.model_api.swmm_run()
 
-            # self.model_api.swmm_open()
-            # self.model_api.swmm_start()
-            # date_updated = datetime.now()
-            # while self.run_status == RunStatus.rsComputing and self.model_api.errcode == 0:
-            #     elapsed_days = self.model_api.swmm_step()
-            #     if elapsed_days > 0:
-            #         if total_days:
-            #             date_now = datetime.now()
-            #             if (date_now - date_updated).microseconds > 100000:
-            #                 self.update_progress_days(elapsed_days, total_days)
-            #                 self.update_progress_bar(elapsed_days, total_days)
-            #                 process_events()
-            #                 date_updated = date_now
-            #     else:
-            #         self.model_api.swmm_end()
-            #         break
+            self.model_api.swmm_open()
+            self.model_api.swmm_start()
+            date_updated = datetime.now()
+            while self.run_status == RunStatus.rsComputing and self.model_api.errcode == 0:
+                elapsed_days = self.model_api.swmm_step()
+                if elapsed_days > 0:
+                    if total_days:
+                        date_now = datetime.now()
+                        if (date_now - date_updated).microseconds > 100000:
+                            self.update_progress_days(elapsed_days, total_days)
+                            self.update_progress_bar(elapsed_days, total_days)
+                            process_events()
+                            date_updated = date_now
+                else:
+                    self.model_api.swmm_end()
+                    break
 
-            #     #  Step through each time period until there is no more time left,
-            #     #  an error occurs, or the user stops the run
+                #  Step through each time period until there is no more time left,
+                #  an error occurs, or the user stops the run
             #     OldTime = Time
             #     repeat
             #     Application.ProcessMessages

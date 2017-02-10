@@ -100,7 +100,7 @@ class pyswmm():
         sys.stdout.write(errtxt+"\n")
         if self.errcode >= 100:
             self.Errflag = True
-            raise(SWMMException('Fatal error occured'))
+            raise(SWMMException('Fatal error occured ' + errtxt))
         else:
             self.Warnflag = True
         return
@@ -159,9 +159,9 @@ class pyswmm():
         if self.fileLoaded: self.swmm_close()
         if self.fileLoaded: 
             raise(SWMMException('Fatal error closing previously opened file'))
-        if inpfile is None: inpfile = self.inpfile
-        if rptfile is None: rptfile = self.rptfile
-        if binfile is None: binfile = self.binfile
+        if inpfile is None: inpfile = self.inpfile.encode('utf-8')
+        if rptfile is None: rptfile = self.rptfile.encode('utf-8')
+        if binfile is None: binfile = self.binfile.encode('utf-8')
         self.errcode = self.SWMMlibobj.swmm_open(inpfile, rptfile, binfile)
         
         self._error()

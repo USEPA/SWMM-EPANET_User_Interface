@@ -993,50 +993,51 @@ class frmMainSWMM(frmMain):
             if self.output:
                 self.output.close()
                 self.output = None
-            # if not os.path.exists(self.model_path):
-            #     if 'darwin' in sys.platform:
-            #         lib_name = 'libswmm.dylib'
-            #     elif 'win' in sys.platform:
-            #         lib_name = 'swmm5_x64.dll'
-            #     else:  # Linux
-            #         lib_name = 'libswmm_amd64.so'
-            #     self.model_path = self.find_external(lib_name)
-            #
-            # if os.path.exists(self.model_path):
-            #     try:
-            #         from Externals.swmm.model.swmm5 import pyswmm
-            #         model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
-            #         frmRun = frmRunSWMM(model_api, self.project, self)
-            #         self._forms.append(frmRun)
-            #         if not use_existing:
-            #             # Read this project so we can refer to it while running
-            #             frmRun.progressBar.setVisible(False)
-            #             frmRun.lblTime.setVisible(False)
-            #             frmRun.fraTime.setVisible(False)
-            #             frmRun.fraBottom.setVisible(False)
-            #             frmRun.showNormal()
-            #             frmRun.set_status_text("Reading " + file_name)
-            #
-            #             self.project = Project()
-            #             self.project.read_file(file_name)
-            #             frmRun.project = self.project
-            #
-            #         frmRun.Execute()
-            #         self.add_map_constituents()
-            #         return
-            #     except Exception as e1:
-            #         print(str(e1) + '\n' + str(traceback.print_exc()))
-            #         QMessageBox.information(None, self.model,
-            #                                 "Error running model with library:\n {0}\n{1}\n{2}".format(
-            #                                     self.model_path, str(e1), str(traceback.print_exc())),
-            #                                 QMessageBox.Ok)
-                # finally:
-                #     try:
-                #         if model_api and model_api.isOpen():
-                #             model_api.ENclose()
-                #     except:
-                #         pass
-                #     return
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libswmm.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'swmm5_x64.dll'
+                else:  # Linux
+                    lib_name = 'libswmm_amd64.so'
+                self.model_path = self.find_external(lib_name)
+
+            if os.path.exists(self.model_path):
+                print('Model Path ' + self.model_path + '\n')
+                try:
+                    from Externals.swmm.model.swmm5 import pyswmm
+                    model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunSWMM(model_api, self.project, self)
+                    self._forms.append(frmRun)
+                    if not use_existing:
+                        # Read this project so we can refer to it while running
+                        frmRun.progressBar.setVisible(False)
+                        frmRun.lblTime.setVisible(False)
+                        frmRun.fraTime.setVisible(False)
+                        frmRun.fraBottom.setVisible(False)
+                        frmRun.showNormal()
+                        frmRun.set_status_text("Reading " + file_name)
+
+                        self.project = Project()
+                        self.project.read_file(file_name)
+                        frmRun.project = self.project
+
+                    frmRun.Execute()
+                    # self.add_map_constituents()
+                    return
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                finally:
+                    try:
+                        if model_api and model_api.isOpen():
+                            model_api.ENclose()
+                    except:
+                        pass
+                    return
 
             # Could not run with library, try running with executable
             args = []

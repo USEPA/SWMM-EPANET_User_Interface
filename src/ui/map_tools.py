@@ -395,7 +395,7 @@ try:
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer, coordinates=None, size=4.0):
+        def set_default_point_renderer(layer, coordinates=None, size=3.5):
             """ Create and set the default appearance of layer.
                 If specified, coordinates will be used to check for whether there are too many to label. """
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
@@ -404,14 +404,16 @@ try:
             # Label the coordinates if there are not too many of them
             do_labels = True
             if coordinates and len(coordinates) > 500:
-                size = 2.0
+                size = 1.5
                 do_labels = False
 
             layer_name_upper = layer.name().upper()
 
             if "JUNCTION" in layer_name_upper:
+                size = 1.5
                 symbol_layer.setName(MapSymbol.circle.name)
             elif "OUT" in layer_name_upper:
+                size = 2.5
                 symbol_layer.setName(MapSymbol.triangle.name)
                 symbol_layer.setAngle(180.0)
             elif "DIVIDER" in layer_name_upper:
@@ -565,14 +567,14 @@ try:
             symbol = QgsLineSymbolV2.createSimple({})
             symbol.deleteSymbolLayer(0)
             slayer = QgsSimpleLineSymbolLayerV2()
-            slayer.setWidth(3.0)
+            slayer.setWidth(1.0)
             slayer.setColor(QColor("dark gray"))
             symbol.appendSymbolLayer(slayer)
             layer_name_upper = layer.name().upper()
             if "CONDUIT" in layer_name_upper or \
                "PIPE" in layer_name_upper:
                 slayer = QgsSimpleLineSymbolLayerV2()
-                slayer.setWidth(1.5)
+                slayer.setWidth(0.5)
                 slayer.setColor(QColor("light gray"))
                 symbol.appendSymbolLayer(slayer)
                 renderer = QgsSingleSymbolRendererV2(symbol)
@@ -588,7 +590,7 @@ try:
                 layer.setRendererV2(renderer)
             else:
                 slayer.setWidth(1.0)
-                slayer = QgsMarkerLineSymbolLayerV2(True, 3)
+                slayer = QgsMarkerLineSymbolLayerV2(True, 1.5)
                 mlayer = slayer.subSymbol()
                 anewlayer = None
                 if "PUMP" in layer_name_upper:
@@ -610,7 +612,7 @@ try:
                 else:
                     sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
                     sym.setColor(QColor('gray'))
-                    sym.setWidth(3.5)
+                    sym.setWidth(0.5)
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):

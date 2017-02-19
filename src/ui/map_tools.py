@@ -16,6 +16,8 @@ try:
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
 
+        QGis_UnitType = ["Meters", "Feet", "Degrees", "Unknown", "DecimalDegree", "DegreesMinutesSeconds",
+                         "DegreesDecimalMinutes"]
         map_unit_names       = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
         map_unit_abbrev      = ["m",      "km",         "ft",   "nmi",           "yd",    "mi",    "deg",     ""]
         map_unit_to_meters   = [1.0,         1000.0,    0.3048,   1852,          0.9144,  1609.34, 0,         0]

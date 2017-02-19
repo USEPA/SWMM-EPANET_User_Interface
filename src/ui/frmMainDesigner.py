@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Mon Dec 12 16:21:43 2016
+# Created: Sat Feb 18 22:38:14 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,12 +61,14 @@ class Ui_frmMain(object):
         self.cbFlowUnits.addItem(_fromUtf8(""))
         self.cbFlowUnits.addItem(_fromUtf8(""))
         self.horizontalLayout.addWidget(self.cbFlowUnits)
-        self.btnZoom100 = QtGui.QPushButton(self.centralwidget)
-        self.btnZoom100.setObjectName(_fromUtf8("btnZoom100"))
-        self.horizontalLayout.addWidget(self.btnZoom100)
         self.btnCoord = QtGui.QPushButton(self.centralwidget)
         self.btnCoord.setObjectName(_fromUtf8("btnCoord"))
         self.horizontalLayout.addWidget(self.btnCoord)
+        self.txtCrs = QtGui.QLineEdit(self.centralwidget)
+        self.txtCrs.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.txtCrs.setReadOnly(True)
+        self.txtCrs.setObjectName(_fromUtf8("txtCrs"))
+        self.horizontalLayout.addWidget(self.txtCrs)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
@@ -80,6 +82,8 @@ class Ui_frmMain(object):
         self.menuImport.setObjectName(_fromUtf8("menuImport"))
         self.menuExport = QtGui.QMenu(self.menuFile)
         self.menuExport.setObjectName(_fromUtf8("menuExport"))
+        self.menuRecent = QtGui.QMenu(self.menuFile)
+        self.menuRecent.setObjectName(_fromUtf8("menuRecent"))
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         self.menuView = QtGui.QMenu(self.menubar)
@@ -723,12 +727,16 @@ class Ui_frmMain(object):
         self.actionEditScript.setObjectName(_fromUtf8("actionEditScript"))
         self.actionRun_Script = QtGui.QAction(frmMain)
         self.actionRun_Script.setObjectName(_fromUtf8("actionRun_Script"))
+        self.actionOpen = QtGui.QAction(frmMain)
+        self.actionOpen.setObjectName(_fromUtf8("actionOpen"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
         self.menuExport.addAction(self.actionStdExportMap)
+        self.menuRecent.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionStdNewProjectMenu)
         self.menuFile.addAction(self.actionStdOpenProjMenu)
+        self.menuFile.addAction(self.menuRecent.menuAction())
         self.menuFile.addAction(self.actionStdSaveMenu)
         self.menuFile.addAction(self.actionStdSave_As)
         self.menuFile.addAction(self.actionSave_Map_As_Image)
@@ -878,13 +886,13 @@ class Ui_frmMain(object):
         self.cbFlowUnits.setItemText(1, _translate("frmMain", "Flow Units: GPM", None))
         self.cbFlowUnits.setItemText(2, _translate("frmMain", "Flow Units: MGD", None))
         self.cbFlowUnits.setItemText(3, _translate("frmMain", "Flow Units: CMS", None))
-        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units: LPS", None))
+        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units:  LPS", None))
         self.cbFlowUnits.setItemText(5, _translate("frmMain", "Flow Units: MLD", None))
-        self.btnZoom100.setText(_translate("frmMain", "Zoom Level: 100%", None))
         self.btnCoord.setText(_translate("frmMain", "x,y", None))
         self.menuFile.setTitle(_translate("frmMain", "File", None))
         self.menuImport.setTitle(_translate("frmMain", "Import", None))
         self.menuExport.setTitle(_translate("frmMain", "Export", None))
+        self.menuRecent.setTitle(_translate("frmMain", "Recent", None))
         self.menuEdit.setTitle(_translate("frmMain", "Edit", None))
         self.menuView.setTitle(_translate("frmMain", "View", None))
         self.menuBackdrop.setTitle(_translate("frmMain", "Backdrop", None))
@@ -1082,5 +1090,6 @@ class Ui_frmMain(object):
         self.actionToolbarShowObject.setText(_translate("frmMain", "Object", None))
         self.actionEditScript.setText(_translate("frmMain", "Script Editor", None))
         self.actionRun_Script.setText(_translate("frmMain", "Run Script", None))
+        self.actionOpen.setText(_translate("frmMain", "File0", None))
 
 import swmm_rc

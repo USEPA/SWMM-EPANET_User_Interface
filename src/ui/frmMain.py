@@ -1705,6 +1705,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if crs and crs.isValid():
             self.crs = crs
             try:
+                self.txtCrs.setText(unicode(crs.ellipsoidAcronym()))
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
             except:
                 pass

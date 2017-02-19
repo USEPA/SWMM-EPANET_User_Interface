@@ -97,16 +97,19 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnZoom100">
+       <widget class="QPushButton" name="btnCoord">
         <property name="text">
-         <string>Zoom Level: 100%</string>
+         <string>x,y</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnCoord">
-        <property name="text">
-         <string>x,y</string>
+       <widget class="QLineEdit" name="txtCrs">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

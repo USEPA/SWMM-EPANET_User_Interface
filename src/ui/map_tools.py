@@ -799,11 +799,14 @@ try:
             self.canvas.setExtent(buffered_extent)
             self.canvas.refresh()
 
-        def addRasterLayer(self, filename):
+        def addRasterLayer(self, filename, *args):
             if len(filename.strip()) > 0:
                 layer_name = os.path.basename(filename.strip())
                 #layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
                 layer = QgsRasterLayer(filename, layer_name)
+                if args and len(args) > 0:
+                    if args[0] == 'backdrop':
+                        self.session.backdrop_name = layer.name()
                 self.add_layer(layer, self.base_group)
 
         def drawVertexMarker(self, layer):

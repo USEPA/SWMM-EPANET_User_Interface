@@ -95,11 +95,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             lambda: self.toggle_toolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
             lambda: self.toggle_toolbar('standard,' + str(self.actionToolbarShowStandard.isChecked())))
-        self.actionStdMapBackLoad.triggered.connect(self.map_addraster)
+        self.actionStdMapBackLoad.triggered.connect(lambda: self.map_addraster('backdrop'))
         self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
-        self.actionAdd_Raster.triggered.connect(self.map_addraster)
+        self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
         self.auto_length = (self.cbAutoLength.currentIndex == 1)
@@ -111,6 +111,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.canvas = None
         self.map_widget = None
         self.selecting = Lock()
+        self.backdrop_name = ''
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
@@ -293,8 +294,26 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def loadBasemap(self):
         pass
+
     def unloadBasemap(self):
+        back_layers = []
+        back_node = None
+        for tlayer in self.map_widget.base_group.findLayers():
+            if tlayer.layer().name() == self.backdrop_name:
+                back_node = tlayer
+                back_layers.append(tlayer.layer())
+                break
+        if len(back_layers) == 0:
+            for layer in self.map_widget.canvas.layers():
+                if layer.name() == self.backdrop_name:
+                    back_layers.append(layer)
+                    break
+        if len(back_layers) > 0:
+            self.map_widget.remove_layers(back_layers)
+            if back_node:
+                self.map_widget.base_group.removeChildNode(tlayer)
         pass
+
     def alignBasemap(self):
         pass
 
@@ -1119,14 +1138,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #     if filename.lower().endswith('.shp'):
         #         self.map_widget.addVectorLayer(filename)
 
-    def map_addraster(self):
+    def map_addraster(self, eventArg):
         directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
                                                      "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
-                self.map_widget.addRasterLayer(filename)
+                self.map_widget.addRasterLayer(filename, eventArg)
                 path_only, file_only = os.path.split(filename)
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)

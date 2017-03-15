@@ -54,6 +54,7 @@ from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 
 import core.epanet.reports as reports
+from core.epanet.options.quality import QualityAnalysisType
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
@@ -535,46 +536,53 @@ class frmMainEPANET(frmMain):
 
     def reaction_report(self):
         # Reaction Report'
+
         if self.output:
             # Find conversion factor to kilograms/day
             ucf = 1.0e6/24
             quality_options = self.project.options.quality
-            if 'ug' in str(quality_options.mass_units):
-                ucf = 1.0e9/24
+            if quality_options.quality != QualityAnalysisType.NONE:
+                if 'ug' in str(quality_options.mass_units):
+                    ucf = 1.0e9/24
 
-            # Get average reaction rates from output file
-            bulk, wall, tank, source = self.output.get_reaction_summary()
-            bulk /= ucf
-            wall /= ucf
-            tank /= ucf
-            source /= ucf
+                # Get average reaction rates from output file
+                bulk, wall, tank, source = self.output.get_reaction_summary()
+                bulk /= ucf
+                wall /= ucf
+                tank /= ucf
+                source /= ucf
 
-            if bulk > 0 or wall > 0 or tank > 0 or source > 0:
-                footer_text = "Inflow Rate = " + format(source,'0.1f')
+                if bulk > 0 or wall > 0 or tank > 0 or source > 0:
+                    footer_text = "Inflow Rate = " + format(source,'0.1f')
+                else:
+                    footer_text = 'No reactions occurred'
+
+                import matplotlib.pyplot as plt
+
+                labels = "%10.1f Tanks" % tank, "%10.1f Bulk" % bulk, "%10.1f Wall" % wall
+                sum_reaction = bulk + wall + tank
+                size_bulk = bulk / sum_reaction
+                size_wall = wall / sum_reaction
+                size_tank = tank / sum_reaction
+                sizes = [size_tank, size_bulk, size_wall]
+                colors = ['green', 'blue', 'red']
+                explode = (0, 0, 0)
+
+                plt.figure("Reaction Report")
+
+                plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+                        autopct='%1.2f%%', shadow=True, startangle=180)
+
+                plt.axis('equal')
+                plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
+                plt.text(0.9,-0.9,footer_text)
+
+                plt.show()
             else:
-                footer_text = 'No reactions occurred'
-
-            import matplotlib.pyplot as plt
-
-            labels = "%10.1f Tanks" % tank, "%10.1f Bulk" % bulk, "%10.1f Wall" % wall
-            sum_reaction = bulk + wall + tank
-            size_bulk = bulk / sum_reaction
-            size_wall = wall / sum_reaction
-            size_tank = tank / sum_reaction
-            sizes = [size_tank, size_bulk, size_wall]
-            colors = ['green', 'blue', 'red']
-            explode = (0, 0, 0)
-
-            plt.figure("Reaction Report")
-
-            plt.pie(sizes, explode=explode, labels=labels, colors=colors,
-                    autopct='%1.2f%%', shadow=True, startangle=180)
-
-            plt.axis('equal')
-            plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
-            plt.text(0.9,-0.9,footer_text)
-
-            plt.show()
+                QMessageBox.information(None, self.model,
+                                    "No water quality analysis is specified.\n"
+                                    "See Options --> Quality.",
+                                    QMessageBox.Ok)
         else:
             QMessageBox.information(None, self.model,
                                     "Model output not found.\n"

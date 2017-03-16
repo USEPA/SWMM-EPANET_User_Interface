@@ -166,6 +166,9 @@ class frmMainEPANET(frmMain):
         self.helper = HelpHandler(self)
 
         self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
+        self.menuProject.removeAction(self.actionStdProjDetails)
+        QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
+
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
@@ -599,6 +602,9 @@ class frmMainEPANET(frmMain):
         from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, self.project_settings)
         fd.show()
+
+    def edit_simulation_options(self):
+        self.show_edit_window(self.get_editor('Hydraulics'))
 
     def get_editor(self, edit_name):
         frm = None

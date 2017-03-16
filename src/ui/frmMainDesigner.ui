@@ -157,15 +157,8 @@
      </property>
      <addaction name="actionStdExportMap"/>
     </widget>
-    <widget class="QMenu" name="menuRecent">
-     <property name="title">
-      <string>Recent</string>
-     </property>
-     <addaction name="actionOpen"/>
-    </widget>
     <addaction name="actionStdNewProjectMenu"/>
     <addaction name="actionStdOpenProjMenu"/>
-    <addaction name="menuRecent"/>
     <addaction name="actionStdSaveMenu"/>
     <addaction name="actionStdSave_As"/>
     <addaction name="actionSave_Map_As_Image"/>
@@ -532,7 +525,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -558,7 +551,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -584,7 +577,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -610,7 +603,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -636,7 +629,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -662,7 +655,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">

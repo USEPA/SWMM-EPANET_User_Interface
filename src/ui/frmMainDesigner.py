@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'frmMainDesigner.ui'
+# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
 #
-# Created: Sat Feb 18 22:38:14 2017
+# Created: Thu Mar 16 14:04:57 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -82,8 +82,6 @@ class Ui_frmMain(object):
         self.menuImport.setObjectName(_fromUtf8("menuImport"))
         self.menuExport = QtGui.QMenu(self.menuFile)
         self.menuExport.setObjectName(_fromUtf8("menuExport"))
-        self.menuRecent = QtGui.QMenu(self.menuFile)
-        self.menuRecent.setObjectName(_fromUtf8("menuRecent"))
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         self.menuView = QtGui.QMenu(self.menubar)
@@ -733,10 +731,8 @@ class Ui_frmMain(object):
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
         self.menuExport.addAction(self.actionStdExportMap)
-        self.menuRecent.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionStdNewProjectMenu)
         self.menuFile.addAction(self.actionStdOpenProjMenu)
-        self.menuFile.addAction(self.menuRecent.menuAction())
         self.menuFile.addAction(self.actionStdSaveMenu)
         self.menuFile.addAction(self.actionStdSave_As)
         self.menuFile.addAction(self.actionSave_Map_As_Image)
@@ -892,7 +888,6 @@ class Ui_frmMain(object):
         self.menuFile.setTitle(_translate("frmMain", "File", None))
         self.menuImport.setTitle(_translate("frmMain", "Import", None))
         self.menuExport.setTitle(_translate("frmMain", "Export", None))
-        self.menuRecent.setTitle(_translate("frmMain", "Recent", None))
         self.menuEdit.setTitle(_translate("frmMain", "Edit", None))
         self.menuView.setTitle(_translate("frmMain", "View", None))
         self.menuBackdrop.setTitle(_translate("frmMain", "Backdrop", None))

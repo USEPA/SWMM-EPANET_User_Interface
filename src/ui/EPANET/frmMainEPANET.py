@@ -170,7 +170,9 @@ class frmMainEPANET(frmMain):
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
         self.menuTools.removeAction(self.actionStdProgPrefer)
+        self.menuLegends.removeAction(self.actionStdLegSubcatchment)
         self.menuTools.deleteLater()
+        self.menuObjects.deleteLater()
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))

@@ -166,8 +166,11 @@ class frmMainEPANET(frmMain):
         self.helper = HelpHandler(self)
 
         self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
-        self.menuProject.removeAction(self.actionStdProjDetails)
         QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
+        self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
+        self.menuTools.removeAction(self.actionStdConfigTools)
+        self.menuTools.removeAction(self.actionStdProgPrefer)
+        self.menuTools.deleteLater()
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))

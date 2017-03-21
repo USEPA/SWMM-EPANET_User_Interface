@@ -228,6 +228,9 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
         self.actionProjTableTimeseries.triggered.connect(self.report_table)
 
+        self.actionStdMapQuery.triggered.connect(self.map_query)
+        self.actionStdMapFind.triggered.connect(self.map_finder)
+
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
@@ -607,6 +610,16 @@ class frmMainEPANET(frmMain):
         from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, self.project_settings)
         fd.show()
+
+    def map_query(self):
+        from ui.EPANET.frmQuery import frmQuery
+        frmQ = frmQuery(self, self.project)
+        frmQ.show()
+
+    def map_finder(self):
+        from ui.EPANET.frmFind import frmFind
+        frmF = frmFind(self, self.project)
+        frmF.show()
 
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))

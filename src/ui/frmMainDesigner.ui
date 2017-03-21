@@ -251,6 +251,7 @@
     <addaction name="actionStdMapZoomOut"/>
     <addaction name="actionStdMapFullExtent"/>
     <addaction name="separator"/>
+    <addaction name="actionStdMapFind"/>
     <addaction name="actionStdMapQuery"/>
     <addaction name="actionStdMapOverview"/>
     <addaction name="separator"/>
@@ -1896,6 +1897,11 @@
   <action name="actionOpen">
    <property name="text">
     <string>File0</string>
+   </property>
+  </action>
+  <action name="actionStdMapFind">
+   <property name="text">
+    <string>Find...</string>
    </property>
   </action>
  </widget>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
 #
-# Created: Thu Mar 16 14:04:57 2017
+# Created: Tue Mar 21 13:53:08 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -727,6 +727,8 @@ class Ui_frmMain(object):
         self.actionRun_Script.setObjectName(_fromUtf8("actionRun_Script"))
         self.actionOpen = QtGui.QAction(frmMain)
         self.actionOpen.setObjectName(_fromUtf8("actionOpen"))
+        self.actionStdMapFind = QtGui.QAction(frmMain)
+        self.actionStdMapFind.setObjectName(_fromUtf8("actionStdMapFind"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
@@ -790,6 +792,7 @@ class Ui_frmMain(object):
         self.menuView.addAction(self.actionStdMapZoomOut)
         self.menuView.addAction(self.actionStdMapFullExtent)
         self.menuView.addSeparator()
+        self.menuView.addAction(self.actionStdMapFind)
         self.menuView.addAction(self.actionStdMapQuery)
         self.menuView.addAction(self.actionStdMapOverview)
         self.menuView.addSeparator()
@@ -1086,5 +1089,6 @@ class Ui_frmMain(object):
         self.actionEditScript.setText(_translate("frmMain", "Script Editor", None))
         self.actionRun_Script.setText(_translate("frmMain", "Run Script", None))
         self.actionOpen.setText(_translate("frmMain", "File0", None))
+        self.actionStdMapFind.setText(_translate("frmMain", "Find...", None))
 
 import swmm_rc

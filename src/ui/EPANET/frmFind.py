@@ -34,7 +34,7 @@ class frmFind(QtGui.QMainWindow, Ui_frmFind):
         elif self.rbnSources.isChecked():
             self.txtID.setText("")
             self.lstAdjacent.clear()
-            self.txtID.setEnabled(True)
+            self.txtID.setEnabled(False)
             self.gbxAdjacent.setTitle("Source Nodes")
 
     def cmdFind_Clicked(self):
@@ -43,93 +43,58 @@ class frmFind(QtGui.QMainWindow, Ui_frmFind):
         TXT_LINK_NOT_ON_MAP = 'Link exists but is not on the map.'
         TXT_NODE_NOT_ON_MAP = 'Node exists but is not on the map.'
 
-#         // Place map in Selection mode
-#     MainForm.SelectorButtonClick;
-#
-# // Search database for specified node/link ID
-# // and save object type and index if found.
-#   s := Edit1.Text;
-#   ListBox1.Clear;
-#   if (RadioGroup1.ItemIndex = 2) then
-#   begin
-#     GetWQSources;
-#     Exit;
-#   end;
-#   if (RadioGroup1.ItemIndex = 0) then
-#     Found := Uinput.FindNode(s,FoundObject,FoundIndex)
-#   else
-#     Found := Uinput.FindLink(s,FoundObject,FoundIndex);
-#
-# // If ID found then highlight object on the map and
-# // make it the current item shown in the Browser.
-#   if Found then
-#   begin
-#     GetAdjacentObjects;
-#     UpdateMapDisplay;
-#     BrowserForm.UpdateBrowser(FoundObject,FoundIndex)
-#   end
-#
-# // If not found then issue a message.
-#   else
-#     MessageDlg(TXT_NO_SUCH_OBJECT,mtInformation,[mbOK],0);
-#   Edit1.SetFocus;
-#   Edit1.SelectAll;
-# end;
-#
-# procedure TFindForm.GetAdjacentObjects;
-# //----------------------------------------------
-# // Lists links connected to a found node or
-# // nodes connected to a found link.
-# //----------------------------------------------
-# var
-#   aLink: TLink;
-#   aNode: TNode;
-#   k,m  : Integer;
-# begin
-#   if FoundObject in [PIPES, PUMPS, VALVES] then
-#   begin
-#     aLink := Link(FoundObject,FoundIndex);
-#     ListBox1.Items.Add(aLink.Node1.ID);
-#     ListBox1.Items.Add(aLink.Node2.ID);
-#   end
-#   else
-#   begin
-#     aNode := Node(FoundObject,FoundIndex);
-#     for k := PIPES to VALVES do
-#     begin
-#       for m := Network.Lists[k].Count-1 downto 0 do
-#       begin
-#         aLink := Link(k,m);
-#         if (aLink.Node1 = aNode) or (aLink.Node2 = aNode)
-#           then ListBox1.Items.Add(GetID(k,m));
-#       end;
-#     end;
-#   end;
-# end;
-#
-# procedure TFindForm.GetWQSources;
-# //----------------------------------------------
-# // Lists WQ source nodes in network
-# //----------------------------------------------
-# var
-#   i,j,k: Integer;
-#   x    : Single;
-# begin
-#   for i := JUNCS to TANKS do
-#   begin
-#     case i of
-#       JUNCS:   k := JUNC_SRCQUAL_INDEX;
-#       RESERVS: k := RES_SRCQUAL_INDEX;
-#       TANKS:   k := TANK_SRCQUAL_INDEX;
-#       else     k := 0;
-#     end;
-#     for j := 0 to Network.Lists[i].Count-1 do
-#       if Uutils.GetSingle(Node(i,j).Data[k],x) and (x > 0) then
-#         ListBox1.Items.Add(GetID(i,j));
-#   end;
-#   if ListBox1.Items.Count = 0 then
-#     MessageDlg(TXT_NO_SOURCE_NODES,mtInformation,[mbOK],0);
-# end;
+        # Place map in Selection mode
+        # MainForm.SelectorButtonClick;
+
+        # Search database for specified node/link ID
+        # and save object type and index if found
+        s = self.txtID.text()
+        self.lstAdjacent.clear()
+        found = False
+        if self.rbnSources.isChecked():
+            for node in self.project.sources.value:
+                self.lstAdjacent.addItem(node.name)
+                found = True
+        if self.rbnNode.isChecked():
+            for node in self.project.junctions.value:
+                if node.name == s:
+                    found = True
+            for node in self.project.reservoirs.value:
+                if node.name == s:
+                    found = True
+            for node in self.project.tanks.value:
+                if node.name == s:
+                    found = True
+            if found:
+                for link in self.project.pipes.value:
+                    if link.inlet_node == s or link.outlet_node == s:
+                        self.lstAdjacent.addItem(link.name)
+                for link in self.project.pumps.value:
+                    if link.inlet_node == s or link.outlet_node == s:
+                        self.lstAdjacent.addItem(link.name)
+                for link in self.project.valves.value:
+                    if link.inlet_node == s or link.outlet_node == s:
+                        self.lstAdjacent.addItem(link.name)
+        if self.rbnLink.isChecked():
+            for link in self.project.pipes.value:
+                if link.name == s:
+                    found = True
+                    self.lstAdjacent.addItem(link.inlet_node)
+                    self.lstAdjacent.addItem(link.outlet_node)
+            for link in self.project.pumps.value:
+                if link.name == s:
+                    found = True
+                    self.lstAdjacent.addItem(link.inlet_node)
+                    self.lstAdjacent.addItem(link.outlet_node)
+            for link in self.project.valves.value:
+                if link.name == s:
+                    found = True
+                    self.lstAdjacent.addItem(link.inlet_node)
+                    self.lstAdjacent.addItem(link.outlet_node)
+        # if not found:
+            #     MessageDlg(TXT_NO_SUCH_OBJECT,mtInformation,[mbOK],0);
+
+
 #
 # procedure TFindForm.UpdateMapDisplay;
 # //----------------------------------------------

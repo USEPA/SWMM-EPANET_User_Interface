@@ -417,6 +417,9 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
+            field_len = 20
+            if layer.storageType() == u'ESRI Shapefile':
+                field_len = 10
             session.map_widget.set_crs_from_layer(layer)
             project = session.project
             attributes = zip(model_attributes, gis_attributes)
@@ -428,7 +431,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
                         if model_attribute == "name":
-                            item_name = feature[gis_attribute]
+                            item_name = feature[gis_attribute[:field_len]]
                             break
                     try:
                         model_item = links[item_name]
@@ -437,7 +440,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
                         links.append(model_item)
                     for model_attribute, gis_attribute in attributes:
                         try:
-                            attr_value = feature[gis_attribute]
+                            attr_value = feature[gis_attribute[:field_len]]
                             setattr(model_item, model_attribute, attr_value)
 
                             # If this attribute is the inlet or outlet node, make sure project has its coordinates

@@ -1546,6 +1546,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             pass
         return None
 
+    def set_current_map_layer(self, input_tree_section):
+        try:
+            return getattr(self.model_layers, self.section_types[self.tree_types[input_tree_section]])
+        except:
+            pass
+        return None
+
     def list_selection_changed(self):
         try:
             layer = self.current_map_layer()

@@ -55,9 +55,11 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
         val = float(self.txtNum.text())
         selected_attribute = self.cboProperty.currentText()
         setting_index = self.cboProperty.currentIndex()
+        slist = []
 
         count = 0
         if self.cboFind.currentIndex() == 0:
+            otype = "Junctions"
             attribute = None
             if setting_index < 3:
                 meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
@@ -69,14 +71,17 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                             # below
                             if value < val:
                                 count += 1
+                                slist.append(item.name)
                         elif self.cboAbove.currentIndex() == 1:
                             # equal to
                             if value == val:
                                 count += 1
+                                slist.append(item.name)
                         elif self.cboAbove.currentIndex() == 2:
                             # above
                             if value > val:
                                 count += 1
+                                slist.append(item.name)
             elif self.session.output:  # Look for attribute to color by in the output
                 attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
                 if attribute:
@@ -89,15 +94,19 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                             # below
                             if value < val:
                                 count += 1
+                                slist.append(node.name)
                         elif self.cboAbove.currentIndex() == 1:
                             # equal to
                             if value == val:
                                 count += 1
+                                slist.append(node.name)
                         elif self.cboAbove.currentIndex() == 2:
                             # above
                             if value > val:
                                 count += 1
+                                slist.append(node.name)
         else:
+            otype = 'Pipes'
             attribute = None
             if setting_index < 5:
                 meta_item = Pipe.metadata.meta_item_of_label(selected_attribute)
@@ -109,14 +118,17 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                             # below
                             if value < val:
                                 count += 1
+                                slist.append(link.name)
                         elif self.cboAbove.currentIndex() == 1:
                             # equal to
                             if value == val:
                                 count += 1
+                                slist.append(link.name)
                         elif self.cboAbove.currentIndex() == 2:
                             # above
                             if value > val:
                                 count += 1
+                                slist.append(link.name)
             elif self.session.output:  # Look for attribute to color by in the output
                 attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
                 if attribute:
@@ -129,14 +141,20 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                             # below
                             if value < val:
                                 count += 1
+                                slist.append(link.name)
                         elif self.cboAbove.currentIndex() == 1:
                             # equal to
                             if value == val:
                                 count += 1
+                                slist.append(link.name)
                         elif self.cboAbove.currentIndex() == 2:
                             # above
                             if value > val:
                                 count += 1
+                                slist.append(link.name)
 
         # Display number of items matching the query
         self.txtSummary.setText(str(count) + ' items found')
+
+        layer = self.session.set_current_map_layer(otype)
+        self.session.select_named_items(layer, slist)

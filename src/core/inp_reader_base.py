@@ -260,7 +260,11 @@ class SectionReaderAsList(SectionReader):
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():
                 if section.value:  # If we have already added items to this section, add comment as a Section
-                    comment += line
+                    # comment += line  xw20170327
+                    if len(comment) > 0:  # xw20170327, added \n for multiple lines of comments within a section
+                        comment += "\n" + line
+                    else:
+                        comment += line
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
                     self.set_comment_check_section(section, line)
             else:

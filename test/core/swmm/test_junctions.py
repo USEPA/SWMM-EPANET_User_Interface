@@ -4,7 +4,7 @@ from core.swmm.inp_writer_sections import JunctionWriter
 from core.swmm.hydraulics.node import Junction
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit
+from test.core.section_match import match, match_omit, match_keyword_lines
 
 class SimpleJunctionTest(unittest.TestCase):
     """Test JUNCTIONS section"""
@@ -28,7 +28,8 @@ class SimpleJunctionTest(unittest.TestCase):
         my_options = JunctionReader.read(test_text)
         actual_text = JunctionWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match_keyword_lines(test_text, actual_text,
+                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
 
     def test_junctions(self):
         """Test JUNCTIONS section through Project class"""
@@ -58,7 +59,8 @@ J17              4973.5     0          0          0          0
         section_from_text = self.project_reader.read_junctions.read(source_text)
         actual_text = self.project_writer.write_junctions.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match(actual_text, source_text), msg)
+        self.assertTrue(match_keyword_lines(source_text, actual_text,
+                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
 
 def main():
     unittest.main()

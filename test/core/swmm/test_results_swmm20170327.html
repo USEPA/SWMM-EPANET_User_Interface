@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2017-03-27 19:08:27</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.111000</p>
-<p class='attribute'><strong>Status:</strong> Pass 125 Failure 13</p>
+<p class='attribute'><strong>Start Time:</strong> 2017-03-27 15:00:03</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.196000</p>
+<p class='attribute'><strong>Status:</strong> Pass 116 Failure 22</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -445,8 +445,8 @@ function showOutput(id, name) {
 <tr class='failClass'>
     <td>test_temperature.TemperatureTest: Test TEMPERATURE section</td>
     <td>11</td>
-    <td>8</td>
-    <td>3</td>
+    <td>5</td>
+    <td>6</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c10',11)">Detail</a></td>
 </tr>
@@ -456,19 +456,127 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt10.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_timeseries: Test daily temperature in time series</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft10.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_timeseries: Test daily temperature in time series</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.2')" >
+        fail</a>
+
+    <div id='div_ft10.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft10.2: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 34, in test_timeseries
+    self.assertTrue(match(actual_text, test_time_series), msg)
+AssertionError: 
+Set:[TEMPERATURE]
+ ;;Parameter  TSeries
+ TIMESERIES TS1
+ SNOWMELT 2 0.5 0.6 0.0 50 0
+ ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+ ADC PERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+Get:[TEMPERATURE]
+;;Parameter  TSeries
+TIMESERIES        	TS1
+WINDSPEED         	MONTHLY	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0
+SNOWMELT          	2	0.5	0.6	0.0	50	0
+ADC IMPERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+ADC PERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt10.3' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_file: Test daily temperature in file daily_temperature.txt</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft10.3' class='none'>
+    <td class='failCase'><div class='testcase'>test_file: Test daily temperature in file daily_temperature.txt</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.3')" >
+        fail</a>
+
+    <div id='div_ft10.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft10.3: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 48, in test_file
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:[TEMPERATURE]
+ ;;Parameter  Fname (Start)
+ FILE daily_tmperature.txt
+ SNOWMELT 2 0.5 0.6 0.0 50 0
+ ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+ ADC PERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+Get:[TEMPERATURE]
+;;Parameter  Fname (Start)
+FILE              	daily_tmperature.txt	
+WINDSPEED         	MONTHLY	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0
+SNOWMELT          	2	0.5	0.6	0.0	50	0
+ADC IMPERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+ADC PERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt10.4' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_file_wt_date: Test daily temperature in tepmerature.txt(file name with space) and start date</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft10.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_file_wt_date: Test daily temperature in tepmerature.txt(file name with space) and start date</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft10.4')" >
+        fail</a>
+
+    <div id='div_ft10.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft10.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft10.4: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 64, in test_file_wt_date
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:[TEMPERATURE]
+ ;;Parameter  Fname (Start)
+ FILE daily temperature 1-1-1999.txt 2/2/2012
+ SNOWMELT 2 0.5 0.6 0.0 50 0
+ ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+ ADC PERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+Get:[TEMPERATURE]
+;;Parameter  Fname (Start)
+FILE              	daily temperature 1-1-1999.txt	2/2/2012
+WINDSPEED         	MONTHLY	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0
+SNOWMELT          	2	0.5	0.6	0.0	50	0
+ADC IMPERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+ADC PERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr id='pt10.5' class='hiddenRow'>
@@ -497,21 +605,9 @@ function showOutput(id, name) {
         <pre>
         
 ft10.7: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 126, in test_windspeed_file_fail
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 120, in test_windspeed_file_fail
     self.assertTrue(find_error, msg)
 AssertionError: 
-Set:
-        [TEMPERATURE]
-        ;;Parameter  TimeSeries
-        TIMESERIES TS1
-        WINDSPEED FILE
-        
-Get:[TEMPERATURE]
-;;Parameter  TimeSeries
-TIMESERIES        	TS1
-WINDSPEED         	FILE
-SNOWMELT          		0.5	0.6	0	0.0	0
-
 Rule not enforced: Windspeed file should be the same climate file used for air temperature
 
 
@@ -543,24 +639,9 @@ Rule not enforced: Windspeed file should be the same climate file used for air t
         <pre>
         
 ft10.9: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 165, in test_snowmelt_fail
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 159, in test_snowmelt_fail
     self.assertTrue(find_error, msg)
 AssertionError: 
-Set:
-        [TEMPERATURE]
-        ;;Parameter  TimeSeries
-        TIMESERIES daily_temperature.txt
-        WINDSPEED FILE
-        SNOWMELT 2 0.5 0.6 0.0 50 0
-        ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
-        
-Get:[TEMPERATURE]
-;;Parameter  TimeSeries
-TIMESERIES        	daily_temperature.txt
-WINDSPEED         	FILE
-SNOWMELT          	2	0.5	0.6	0.0	50	0
-ADC IMPERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
-ADC PERVIOUS	
 Rule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one.
 
 
@@ -592,7 +673,7 @@ Rule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one.
         <pre>
         
 ft10.11: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 193, in test_snowmelt_wo_temperature
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 187, in test_snowmelt_wo_temperature
     self.assertTrue(match(actual_text, test_text), msg)
 AssertionError: 
 Set:
@@ -907,18 +988,43 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test_xsections.SimpleCrossSectionTest: Test XSECTIONS section</td>
     <td>7</td>
-    <td>7</td>
-    <td>0</td>
+    <td>4</td>
+    <td>3</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c24',7)">Detail</a></td>
 </tr>
 
-<tr id='pt24.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft24.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.1')" >
+        fail</a>
+
+    <div id='div_ft24.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft24.1: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 23, in test_geom
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:W1   RECT_OPEN    2.83             1.75       0          0
+Get:W1              	RECT_OPEN   	2.83            	1.75      	0         	0         	0.0       	          
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr id='pt24.2' class='hiddenRow'>
@@ -931,9 +1037,34 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt24.4' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft24.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.4')" >
+        fail</a>
+
+    <div id='div_ft24.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft24.4: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 47, in test_custom_curve
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:W1   CUSTOM    1.0  Curve1
+Get:W1              	CUSTOM      	1.0             	Curve1    	0.0       
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr id='pt24.5' class='hiddenRow'>
@@ -946,9 +1077,82 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt24.7' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_xsections_section: Test XSECTIONS: example 3</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft24.7' class='none'>
+    <td class='failCase'><div class='testcase'>test_xsections_section: Test XSECTIONS: example 3</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.7')" >
+        fail</a>
+
+    <div id='div_ft24.7' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.7').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft24.7: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 98, in test_xsections_section
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[XSECTIONS]
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
+C1               TRAPEZOIDAL  3                5          5          5          1
+C2               TRAPEZOIDAL  1                0          0.0001     25         1
+C3               CIRCULAR     2.25             0          0          0          1
+C4               TRAPEZOIDAL  3                5          5          5          1
+C5               TRAPEZOIDAL  3                5          5          5          1
+C6               TRAPEZOIDAL  3                5          5          5          1
+C7               CIRCULAR     3.5              0          0          0          1
+C8               TRAPEZOIDAL  3                5          5          5          1
+C9               TRAPEZOIDAL  3                5          5          5          1
+C10              TRAPEZOIDAL  3                5          5          5          1
+C11              CIRCULAR     4.75             0          0          0          1
+C_out            CIRCULAR     4.75             0          0          0          1
+Or1              RECT_CLOSED  0.3              0.25       0          0
+Or2              RECT_CLOSED  0.5              2          0          0
+Or3              RECT_CLOSED  0.25             0.35       0          0
+W1               RECT_OPEN    2.83             1.75       0          0
+;;Link          	Shape       	Geom1           	Geom2     	Geom3     	Geom4     	Barrels   	Culvert
+;;--------------	------------	----------------	----------	----------	----------	----------	----------
+Culvert         	CIRCULAR    	3               	0         	0         	0         	2         	4
+Channel         	TRAPEZOIDAL 	9               	10        	2         	2         	1
+Roadway         	RECT_OPEN   	50              	200       	0         	0
+
+Get:
+[XSECTIONS]
+;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
+;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
+C1              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C2              	TRAPEZOIDAL 	1               	0         	0.0001    	25        	1         	          
+C3              	CIRCULAR    	2.25            	0         	0         	0         	1         	          
+C4              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C5              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C6              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C7              	CIRCULAR    	3.5             	0         	0         	0         	1         	          
+C8              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C9              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C10             	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
+C11             	CIRCULAR    	4.75            	0         	0         	0         	1         	          
+C_out           	CIRCULAR    	4.75            	0         	0         	0         	1         	          
+Or1             	RECT_CLOSED 	0.3             	0.25      	0         	0         	0.0       	          
+Or2             	RECT_CLOSED 	0.5             	2         	0         	0         	0.0       	          
+Or3             	RECT_CLOSED 	0.25            	0.35      	0         	0         	0.0       	          
+W1              	RECT_OPEN   	2.83            	1.75      	0         	0         	0.0       	          
+;;Link          	Shape       	Geom1           	Geom2     	Geom3     	Geom4     	Barrels   	Culvert;;--------------	------------	----------------	----------	----------	----------	----------	----------
+Culvert         	CIRCULAR    	3               	0         	0         	0         	2         	4         
+Channel         	TRAPEZOIDAL 	9               	10        	2         	2         	1         	          
+Roadway         	RECT_OPEN   	50              	200       	0         	0         	0.0       	          
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -992,8 +1196,8 @@ Get:
 <tr class='failClass'>
     <td>test_junctions.SimpleJunctionTest: Test JUNCTIONS section</td>
     <td>3</td>
-    <td>2</td>
     <td>1</td>
+    <td>2</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c27',3)">Detail</a></td>
 </tr>
@@ -1003,9 +1207,34 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt27.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_selected_parameters: Test junction omit some parameters</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft27.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_selected_parameters: Test junction omit some parameters</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft27.2')" >
+        fail</a>
+
+    <div id='div_ft27.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft27.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft27.2: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 31, in test_selected_parameters
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set: J1 2.0 
+Get:J1              	2.0       	       0.0	       0.0	       0.0	0.0
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr id='ft27.3' class='none'>
@@ -1024,8 +1253,8 @@ Get:
         <pre>
         
 ft27.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 63, in test_junctions
-    keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 61, in test_junctions
+    self.assertTrue(match(actual_text, source_text), msg)
 AssertionError: 
 Set:
 
@@ -1104,8 +1333,8 @@ J17             	4973.5    	0         	0         	0         	0
 <tr class='failClass'>
     <td>test_dividers.SimpleDividerTest: Test DIVIDER section</td>
     <td>5</td>
-    <td>4</td>
-    <td>1</td>
+    <td>2</td>
+    <td>3</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c29',5)">Detail</a></td>
 </tr>
@@ -1148,14 +1377,74 @@ AssertionError
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt29.4' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_weir_divider: Test divider: WEIR created according to Manual</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft29.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_weir_divider: Test divider: WEIR created according to Manual</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.4')" >
+        fail</a>
+
+    <div id='div_ft29.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft29.4: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dividers.py", line 65, in test_weir_divider
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:NODE10   0      LK1    WEIR   0.5   2   0.7    2    0     0
+Get:NODE10          	0.0       	LK1             	WEIR      	0.5       	2         	0.7       	2.0       	0.0       	0.0       	0.0       
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt29.5' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_dividers: Test DIVIDERS section from Example-1b</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft29.5' class='none'>
+    <td class='failCase'><div class='testcase'>test_dividers: Test DIVIDERS section from Example-1b</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.5')" >
+        fail</a>
+
+    <div id='div_ft29.5' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.5').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft29.5: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dividers.py", line 77, in test_dividers
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[DIVIDERS]
+;;Name           Elevation  Diverted Link    Type       Parameters
+;;-------------- ---------- ---------------- ---------- ----------
+10               0          *                CUTOFF     0          0          0
+NODE10   0      LK1    WEIR   0.5   2   0.7    2    0     0
+Get:
+[DIVIDERS]
+;;Name           Elevation  Diverted Link    Type       Parameters
+;;-------------- ---------- ---------------- ---------- ----------
+10              	0.0       	*               	CUTOFF    	0.0       	0.0       	0.0       	0.0       	0.0       
+NODE10          	0.0       	LK1             	WEIR      	0.5       	2         	0.7       	2.0       	0.0       	0.0       	0.0       
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='failClass'>
@@ -1265,9 +1554,7 @@ Get:
 ;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
 ;;--------------	----------------	----------------	--------	--------	--------	--------	--------
 None            	FLOW            	None            	FLOW    	1.0     	1.0     	0.0     	        
-;;                                                   Concen   Conversion
-;;Node             Parameter        Time Series      /Mass    Factor
-;;----------------------------------------------------------------------
+;;                                                   Concen   Conversion;;Node             Parameter        Time Series      /Mass    Factor;;----------------------------------------------------------------------
 80408           	FLOW            	80408           	FLOW    	1.0     	1.0     	0.0     	        
 81009           	FLOW            	81009           	FLOW    	1.0     	1.0     	0.0     	        
 82309           	FLOW            	82310           	FLOW    	1.0     	1.0     	0.0     	        
@@ -1311,8 +1598,7 @@ Get:
 ;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
 ;;--------------	----------------	----------------	--------	--------	--------	--------	--------
 None            	FLOW            	None            	FLOW    	1.0     	1.0     	0.0     	        
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
+;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern;;--------------	----------------	----------------	--------	--------	--------	--------	--------
 Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.0     	        
 
 
@@ -1425,11 +1711,7 @@ Get:
 ;;Node          	Pollutant       	Function
 ;;--------------	----------------	--------
 None            	None            	
-;;                                  Results: R or C
-;;                                  R-Fraction removal
-;;                                  C-efflument concentration
-;;Node             Pollutant        Result = Func
-;;----------------------------------------------------------------------
+;;                                  Results: R or C;;                                  R-Fraction removal;;                                  C-efflument concentration;;Node             Pollutant        Result = Func;;----------------------------------------------------------------------
 Node23          	BOD             	C = BOD * exp(-0.05*HRT)
 Node24          	Lead            	R = 0.2 * R_TSS
 
@@ -1781,8 +2063,8 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>138</td>
-    <td>125</td>
-    <td>13</td>
+    <td>116</td>
+    <td>22</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

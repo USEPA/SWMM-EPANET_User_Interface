@@ -125,6 +125,58 @@ class ProjectTest(unittest.TestCase):
         f2.close()
         return diff_msg
 
+    @staticmethod
+    def compare_two_analysis_blocks(fname1, fname2, exempted_strings,
+                                    str_start="Analysis begun", str_end="Analysis ended"):
+        """Modified from method compare_two_files by xw 3/27/2017
+        Compare text between "Analysis begun" and "Analysis ended" of EPANET rpt files:
+        Strip all white spaces, empty lines and exempt the lines with exempted_strings
+        Return a string message diff_msg. If identical, return empty string
+        """
+
+        diff_msg = ''
+        # Open file for reading in text mode (default mode)
+
+        fnames = [fname1, fname2]
+        new_lines = [[], []]
+        try:
+            for ifile, fname in enumerate(fnames):
+                f = open(fname)
+                lines = f.readlines()
+                start_compare = False
+
+                for id_line, line in enumerate(lines):
+                    if line.find(str_start) != -1:
+                        start_compare = True
+                    elif line.find(str_end) != -1:
+                        start_compare = False
+                    elif start_compare:
+                        if line.replace(' ', '').replace('\t', '').replace('\n', '') != '':
+                            is_exempted = False
+                            for exempted_string in exempted_strings:
+                                if line.find(exempted_string) == -1:
+                                    is_exempted = False
+                                else:
+                                    is_exempted = True
+                                    break
+                            if is_exempted is False:
+                                new_lines[ifile].append([id_line, line])
+                    else:
+                        pass
+                f.close()
+        except IOError as e:
+            diff_msg = '<br>IO Error: {} <br>'.format(str(e))
+
+        for f1_line, f2_line in zip(new_lines[0], new_lines[1]):
+            if f1_line[1] != f2_line[1]:
+                is_diff = True
+                if is_diff:
+                    diff_msg = '<br>[old]Line-' + str(f1_line[0]) + ':' + f1_line[1] + '<br>' + \
+                               '[new]Line-' + str(f1_line[0]) + ':' + f2_line[1] + '<br>'
+                    # Break on the first difference
+                    break
+        return diff_msg
+
     def runTest(self):
         directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
 
@@ -282,7 +334,8 @@ class ProjectTest(unittest.TestCase):
                         original_ = os.path.join(example_path, prefix + '.rpt')
                         copy_ = os.path.join(example_path, prefix + '_copy'+ '.rpt')
                         if os.path.isfile(original_) and os.path.isfile(copy_):
-                            diff_msg = ProjectTest.compare_two_files(original_, copy_, exempted_strings)
+                            # diff_msg = ProjectTest.compare_two_files(original_, copy_, exempted_strings)
+                            diff_msg = ProjectTest.compare_two_analysis_blocks(original_, copy_, exempted_strings)
                             if diff_msg:
                                 msg = prefix + '.rpt:'\
                                       +'results of modified differ from results of original'+'\n'\

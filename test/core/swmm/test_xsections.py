@@ -4,7 +4,7 @@ from core.swmm.inp_writer_sections import CrossSectionWriter
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit
+from test.core.section_match import match, match_omit, match_keyword_lines
 
 class SimpleCrossSectionTest(unittest.TestCase):
     """Test XSECTIONS section"""
@@ -20,7 +20,8 @@ class SimpleCrossSectionTest(unittest.TestCase):
         my_options = CrossSectionReader.read(test_text)
         actual_text = CrossSectionWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match_keyword_lines(test_text, actual_text,
+                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
 
     def test_geom_barrel(self):
         """Predefined shapes with Geoms and Barrel only"""
@@ -44,7 +45,8 @@ class SimpleCrossSectionTest(unittest.TestCase):
         my_options = CrossSectionReader.read(test_text)
         actual_text = CrossSectionWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match_keyword_lines(test_text, actual_text,
+                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
 
     def test_custom_curve_barrelnum(self):
         """CUSTOM with Curve and number of barrels"""
@@ -67,7 +69,7 @@ class SimpleCrossSectionTest(unittest.TestCase):
 
     def test_xsections_section(self):
         """Test XSECTIONS: example 3"""
-        source_text = """[XSECTIONS]
+        test_text = """[XSECTIONS]
 ;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
 ;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
 C1               TRAPEZOIDAL  3                5          5          5          1
@@ -92,10 +94,12 @@ Culvert         	CIRCULAR    	3               	0         	0         	0         	
 Channel         	TRAPEZOIDAL 	9               	10        	2         	2         	1
 Roadway         	RECT_OPEN   	50              	200       	0         	0
 """
-        section_from_text = self.project_reader.read_xsections.read(source_text)
+        section_from_text = self.project_reader.read_xsections.read(test_text)
         actual_text = self.project_writer.write_xsections.as_text(section_from_text)
-        msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match(actual_text, source_text), msg)
+        msg = '\nSet:\n' + test_text + '\nGet:\n' + actual_text
+        # self.assertTrue(match(actual_text, source_text), msg)
+        self.assertTrue(match_keyword_lines(test_text, actual_text,
+                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
 
 def main():
     unittest.main()

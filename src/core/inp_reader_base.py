@@ -256,6 +256,7 @@ class SectionReaderAsList(SectionReader):
     def read(self, new_text):
         section = self._init_section()
         comment = ''
+        new_text = new_text.lstrip()  # xw20170328, remove heading white spaces indluing /n /t and spaces
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():

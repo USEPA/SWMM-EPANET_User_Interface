@@ -90,18 +90,20 @@ def match_keyword_lines(test_text, actual_text,
             skipped_keywords = ";"
         for line in test_lines:
             for skw in skipped_keywords:
-                new_str = line.strip().upper()  # strip beginning and ending spaces
-                if new_str.find(skw.upper()) != 0:  # did not find the skipped keywords at the beginning
-                    new_tlines.append(new_str)
-                else:
-                    break
+                new_str = line.strip().upper() # strip beginning and ending spaces
+                if new_str.replace("\n", "").replace("\t","").replace(" ","") != "":
+                    if new_str.find(skw.upper()) != 0:  # did not find the skipped keywords at the beginning
+                        new_tlines.append(new_str)
+                    else:
+                        break
         for line in actual_lines:
             for skw in skipped_keywords:
                 new_str = line.strip().upper()  # strip beginning and ending spaces
-                if new_str.find(skw.upper()) != 0:  # did not find the skipped keywords at the beginning
-                    new_alines.append(new_str)
-                else:
-                    break
+                if new_str.replace("\n", "").replace("\t","").replace(" ","") != "":
+                    if new_str.find(skw.upper()) != 0:  # did not find the skipped keywords at the beginning
+                        new_alines.append(new_str)
+                    else:
+                        break
         # Selected lines with keywords_
         if keywords_ is not None:
             for kw in keywords_:

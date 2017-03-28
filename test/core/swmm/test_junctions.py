@@ -33,8 +33,7 @@ class SimpleJunctionTest(unittest.TestCase):
 
     def test_junctions(self):
         """Test JUNCTIONS section through Project class"""
-        source_text = r"""
-[JUNCTIONS]
+        source_text = r"""[JUNCTIONS]
 ;;               Invert     Max.       Init.      Surcharge  Ponded
 ;;Name           Elev.      Depth      Depth      Depth      Area
 ;;-------------- ---------- ---------- ---------- ---------- ----------

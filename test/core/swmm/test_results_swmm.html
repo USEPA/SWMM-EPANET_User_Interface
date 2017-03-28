@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2017-03-27 19:08:27</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.111000</p>
-<p class='attribute'><strong>Status:</strong> Pass 125 Failure 13</p>
+<p class='attribute'><strong>Start Time:</strong> 2017-03-28 16:00:17</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.135000</p>
+<p class='attribute'><strong>Status:</strong> Pass 134 Failure 4</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -989,11 +989,11 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_junctions.SimpleJunctionTest: Test JUNCTIONS section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c27',3)">Detail</a></td>
 </tr>
@@ -1008,78 +1008,9 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft27.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_junctions: Test JUNCTIONS section through Project class</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft27.3')" >
-        fail</a>
-
-    <div id='div_ft27.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft27.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft27.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_junctions.py", line 63, in test_junctions
-    keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
-AssertionError: 
-Set:
-
-[JUNCTIONS]
-;;               Invert     Max.       Init.      Surcharge  Ponded
-;;Name           Elev.      Depth      Depth      Depth      Area
-;;-------------- ---------- ---------- ---------- ---------- ----------
-J1               4973       0          0          0          0
-J2               4969       0          0          0          0
-J3               4973       0          0          0          0
-J4               4971       0          0          0          0
-J5               4969.8     0          0          0          0
-J6               4969       0          0          0          0
-J7               4971.5     0          0          0          0
-J8               4966.5     0          0          0          0
-J9               4964.8     0          0          0          0
-J10              4963.8     0          0          0          0
-J11              4963       0          0          0          0
-J12              4973.8     0          0          0          0
-J13              4970.7     0          0          0          0
-J14              4972.9     0          0          0          0
-J15              4974.5     0          0          0          0
-J16              4973.5     0          0          0          0
-J17              4973.5     0          0          0          0
-        
-Get:
-[JUNCTIONS]
-;;Name          	Elevation 	MaxDepth  	InitDepth 	SurDepth  	Aponded
-;;--------------	----------	----------	----------	----------	----------
-                	       0.0	       0.0	       0.0	       0.0	0.0
-J1              	4973      	0         	0         	0         	0
-J2              	4969      	0         	0         	0         	0
-J3              	4973      	0         	0         	0         	0
-J4              	4971      	0         	0         	0         	0
-J5              	4969.8    	0         	0         	0         	0
-J6              	4969      	0         	0         	0         	0
-J7              	4971.5    	0         	0         	0         	0
-J8              	4966.5    	0         	0         	0         	0
-J9              	4964.8    	0         	0         	0         	0
-J10             	4963.8    	0         	0         	0         	0
-J11             	4963      	0         	0         	0         	0
-J12             	4973.8    	0         	0         	0         	0
-J13             	4970.7    	0         	0         	0         	0
-J14             	4972.9    	0         	0         	0         	0
-J15             	4974.5    	0         	0         	0         	0
-J16             	4973.5    	0         	0         	0         	0
-J17             	4973.5    	0         	0         	0         	0
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt27.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_junctions: Test JUNCTIONS section through Project class</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1101,41 +1032,18 @@ J17             	4973.5    	0         	0         	0         	0
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_dividers.SimpleDividerTest: Test DIVIDER section</td>
     <td>5</td>
-    <td>4</td>
-    <td>1</td>
+    <td>5</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c29',5)">Detail</a></td>
 </tr>
 
-<tr id='ft29.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_overflow_divider: Test divider: OVERFLOW created according to Manual</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft29.1')" >
-        fail</a>
-
-    <div id='div_ft29.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft29.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft29.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_dividers.py", line 28, in test_overflow_divider
-    assert my_options.elevation == '0'
-AssertionError
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt29.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_overflow_divider: Test divider: OVERFLOW created according to Manual</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt29.2' class='hiddenRow'>
@@ -1158,73 +1066,23 @@ AssertionError
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_inflows.SimpleInflowTest: Test INFLOWS section</td>
     <td>5</td>
-    <td>1</td>
-    <td>4</td>
+    <td>5</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c30',5)">Detail</a></td>
 </tr>
 
-<tr id='ft30.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_flow_type: Test inflow: FLOW type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.1')" >
-        fail</a>
-
-    <div id='div_ft30.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.1: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 24, in test_flow_type
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:NODE2  FLOW  N2FLOW 
-Get:NODE2           	FLOW            	N2FLOW          	FLOW    	1.0     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_flow_type: Test inflow: FLOW type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft30.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_mass_type: Test inflow: mass type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.2')" >
-        fail</a>
-
-    <div id='div_ft30.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 42, in test_mass_type
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:NODE65 BOD N65BOD MASS 126
-Get:NODE65          	BOD             	N65BOD          	MASS    	126     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_mass_type: Test inflow: mass type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt30.3' class='hiddenRow'>
@@ -1232,95 +1090,14 @@ Get:NODE65          	BOD             	N65BOD          	MASS    	126     	1.0    
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft30.4' class='none'>
-    <td class='failCase'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.4')" >
-        fail</a>
-
-    <div id='div_ft30.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.4: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 83, in test_inflows_flow
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[INFLOWS]
-;;                                                   Concen   Conversion
-;;Node             Parameter        Time Series      /Mass    Factor
-;;----------------------------------------------------------------------
-  80408            FLOW             80408
-  81009            FLOW             81009
-  82309            FLOW             82310
-Get:
-[INFLOWS]
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-None            	FLOW            	None            	FLOW    	1.0     	1.0     	0.0     	        
-;;                                                   Concen   Conversion
-;;Node             Parameter        Time Series      /Mass    Factor
-;;----------------------------------------------------------------------
-80408           	FLOW            	80408           	FLOW    	1.0     	1.0     	0.0     	        
-81009           	FLOW            	81009           	FLOW    	1.0     	1.0     	0.0     	        
-82309           	FLOW            	82310           	FLOW    	1.0     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft30.5' class='none'>
-    <td class='failCase'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft30.5')" >
-        fail</a>
-
-    <div id='div_ft30.5' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft30.5').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft30.5: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_inflows.py", line 131, in test_inflows_flowts
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[INFLOWS]
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
-        
-Get:
-[INFLOWS]
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-None            	FLOW            	None            	FLOW    	1.0     	1.0     	0.0     	        
-;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
-;;--------------	----------------	----------------	--------	--------	--------	--------	--------
-Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.0     	        
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt30.5' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1371,11 +1148,11 @@ Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_treatment.SimpleTreatmentTest</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c33',3)">Detail</a></td>
 </tr>
@@ -1390,55 +1167,9 @@ Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft33.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_treatment_section: Test TREATMENT section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft33.3')" >
-        fail</a>
-
-    <div id='div_ft33.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft33.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft33.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_treatment.py", line 48, in test_treatment_section
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[TREATMENT]
-;;                                  Results: R or C
-;;                                  R-Fraction removal
-;;                                  C-efflument concentration
-;;Node             Pollutant        Result = Func
-;;----------------------------------------------------------------------
-  Node23            BOD              C = BOD * exp(-0.05*HRT)
-  Node24            Lead             R = 0.2 * R_TSS
-        
-Get:
-[TREATMENT]
-;;Node          	Pollutant       	Function
-;;--------------	----------------	--------
-None            	None            	
-;;                                  Results: R or C
-;;                                  R-Fraction removal
-;;                                  C-efflument concentration
-;;Node             Pollutant        Result = Func
-;;----------------------------------------------------------------------
-Node23          	BOD             	C = BOD * exp(-0.05*HRT)
-Node24          	Lead            	R = 0.2 * R_TSS
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt33.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_treatment_section: Test TREATMENT section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='failClass'>
@@ -1484,10 +1215,10 @@ Set:
   Lead             UG/L   0.0        0.0        0          0.0        NO    TSS 0.2
 Get:
 [POLLUTANTS]
-;;Name          	Units 	Crain     	Cgw       	Crdii     	Kdecay    	SnowOnly  	Co-Pollutant    	Co-Frac   	Cdwf      	Cinit
-;;--------------	------	----------	----------	----------	----------	----------	----------------	----------	----------	----------
- Unnamed         	MG/L  	0.0       	0.0       	0.0       	0.0       	NO        	*               	0.0       	0.0       	0.0       
- TSS             	MG/L  	0.0       	0.0       	0         	0.0       	NO        	;;              	Mass      	Rain      	GW        
+;;                 Mass   Rain       GW         I&amp;I        Decay      Snow
+;;Name             Units  Conc.      Conc.      Conc.      Coeff.     Only  Co-Pollutant
+;;------------------------------------------------------------------------------------------
+ TSS             	MG/L  	0.0       	0.0       	0         	0.0       	NO        	*               	0.0       	0.0       	0.0       
  Lead            	UG/L  	0.0       	0.0       	0         	0.0       	NO        	TSS             	0.2       	0.0       	0.0       
 
 
@@ -1517,11 +1248,11 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_washoff.SimpleWashoffTest: Test WASHOFF section</td>
     <td>2</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c36',2)">Detail</a></td>
 </tr>
@@ -1531,59 +1262,16 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft36.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_washoff_section: Test WASHOFF section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft36.2')" >
-        fail</a>
-
-    <div id='div_ft36.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft36.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft36.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_washoff.py", line 41, in test_washoff_section
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[WASHOFF]
-;;                                                               Clean.   BMP
-;;LandUse          Pollutant        Function   Coeff1   Coeff2   Effic.   Effic.
-;;------------------------------------------------------------------------------
-  Residential      TSS              EXP        0.1      1        0        0
-  Residential      Lead             EMC        0        0        0        0
-  Undeveloped      TSS              EXP        0.1      0.7      0        0
-  Undeveloped      Lead             EMC        0        0        0        0
-        
-Get:
-[WASHOFF]
-;;Land Use      	Pollutant       	Function  	Coeff1    	Coeff2    	SweepRmvl 	BmpRmvl
-;;--------------	----------------	----------	----------	----------	----------	----------
-None            	None            	EXP       	0.0       	0.0       	0.0       	0.0       
-Residential     	TSS             	EXP       	0.1       	1         	0         	0         
-Residential     	Lead            	EMC       	0         	0         	0         	0         
-Undeveloped     	TSS             	EXP       	0.1       	0.7       	0         	0         
-Undeveloped     	Lead            	EMC       	0         	0         	0         	0         
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt36.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_washoff_section: Test WASHOFF section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_landuses.SimpleLanduseTest: Test LANDUSES section</td>
     <td>3</td>
-    <td>2</td>
-    <td>1</td>
+    <td>3</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c37',3)">Detail</a></td>
 </tr>
@@ -1598,53 +1286,9 @@ Undeveloped     	Lead            	EMC       	0         	0         	0         	0
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft37.3' class='none'>
-    <td class='failCase'><div class='testcase'>test_landuses: Test LANDUSES section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft37.3')" >
-        fail</a>
-
-    <div id='div_ft37.3' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft37.3').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft37.3: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_landuses.py", line 48, in test_landuses
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[LANDUSES]
-;;               Cleaning   Fraction   Last
-;;Name           Interval   Available  Cleaned
-;;-------------- ---------- ---------- ----------
-Residential_1    0          0          0
-Residential_2    0          0          0
-Commercial       0          0          0
-LID              0          0          0
-        
-Get:
-[LANDUSES]
-;;              	Sweeping  	Fraction  	Last
-;;Name          	Interval  	Available 	Swept
-;;--------------	----------	----------	----------
- [LANDUSES]     	          	          	          
- Residential_1  	0         	0         	0         
- Residential_2  	0         	0         	0         
- Commercial     	0         	0         	0         
- LID            	0         	0         	0         
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt37.3' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_landuses: Test LANDUSES section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1781,8 +1425,8 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>138</td>
-    <td>125</td>
-    <td>13</td>
+    <td>134</td>
+    <td>4</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

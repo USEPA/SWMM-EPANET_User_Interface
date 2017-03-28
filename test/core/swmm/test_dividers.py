@@ -25,12 +25,12 @@ class SimpleDividerTest(unittest.TestCase):
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
         self.assertTrue(match(actual_text, test_text), msg)
         assert my_options.name == 'NODE10'
-        assert my_options.elevation == '0'
+        assert my_options.elevation == 0
         assert my_options.diverted_link == 'LK1'
-        assert my_options.max_depth == '0'
-        assert my_options.initial_depth == '0'
-        assert my_options.surcharge_depth == '0'
-        assert my_options.ponded_area == '0'
+        assert my_options.max_depth == 0
+        assert my_options.initial_depth == 0
+        assert my_options.surcharge_depth == 0
+        assert my_options.ponded_area == 0
 
     def test_cutoff_divider(self):
         """Test divider: CUTOFF created according to Manual

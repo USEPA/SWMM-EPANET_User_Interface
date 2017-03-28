@@ -39,6 +39,7 @@ class SimplePollutantTest(unittest.TestCase):
             msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
             self.assertTrue(match(actual_text, source_text), msg)
 
+
 def main():
     unittest.main()
 

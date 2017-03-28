@@ -1,113 +1,26 @@
 import os
-import unittest
 import inspect
-import shutil
-import filecmp
 import webbrowser
-from core.swmm.inp_reader_project import ProjectReader
-from core.swmm.inp_writer_project import ProjectWriter
-from core.swmm.swmm_project import SwmmProject
+from section_match import get_immediate_subdirectories, compare_two_analysis_blocks
 
 
-class ProjectTest(unittest.TestCase):
+class RegressTestBase(object):
     def __init__(self):
-        unittest.TestCase.__init__(self)
-        self.my_project = SwmmProject()
-        self.new_project = SwmmProject()
-
-    @staticmethod
-    def get_immediate_subdirectories(a_dir):
-        return [name for name in os.listdir(a_dir)
-                if os.path.isdir(os.path.join(a_dir, name))]
-
-    @staticmethod
-    def readline_nowhite(f):
-        """ Readline_nowhite
-         Strip all carriage returns, tabs and spaces
-         If it is empty line, read the next line
-         Return the lines read, and the line without white
-        """
-        f_line = f.readline()
-        line_no = 1
-        f_line_nw = f_line.replace('\n', '').replace('\t', '').replace(' ', '')
-
-        while f_line_nw == '' and f_line != '':
-            f_line = f.readline()
-            line_no += 1
-            f_line_nw = f_line.replace('\n', '').replace('\t', '').replace(' ', '')
-        f_line = f_line_nw
-        return line_no, f_line
-
-    @staticmethod
-    def compare_two_files(fname1, fname2, exempted_strings):
-        """Reference: http://www.opentechguides.com/how-to/article/python/58/python-file-comparison.html
-        Modified by xw 2016/05/12
-        Strip all white spaces, empty lines and exempt the lines with exempted_strings
-        Return a list of messages diff_msg. If identical, return empty list
-        """
-
-        diff_msg = ''
-        # Open file for reading in text mode (default mode)
-        f1 = open(fname1)
-        f2 = open(fname2)
-
-        # Initialize counter for line number
-        line_no_f1 = 0
-        line_no_f2 = 0
-
-        # Readline_nowhite
-        # Strip all carriage returns, tabs and spaces
-        # If it is empty line, read the next line
-        # File 1:
-        line_read, f1_line = ProjectTest.readline_nowhite(f1)
-        line_no_f1 = line_no_f1 + line_read
-
-        # File 2:
-        line_read, f2_line = ProjectTest.readline_nowhite(f2)
-        line_no_f2 = line_no_f2 + line_read
-
-        # Loop if either file1 or file2 has not reached EOF
-        while f1_line != '' or f2_line != '':
-
-            # Compare the lines from both file
-            if f1_line != f2_line:
-
-                is_diff = True
-                # Loop through lines with keyword(s) indicating an exemption
-                for exempted_string in exempted_strings:
-                    str_nw = exempted_string.replace(' ','')
-                    if f1_line.find(str_nw) != -1 \
-                            and f2_line.find(str_nw) != -1:
-                        is_diff = False
-                        # Break when the exempted_string hit
-                        break
-
-                if is_diff:
-                    diff_msg = '<br>[old]Line-'+str(line_no_f1)+':'+f1_line+'<br>'+ \
-                               '[new]Line-'+str(line_no_f2)+':'+f2_line+'<br>'
-                    # Break on the first difference
-                    break
-
-            # File 1:
-            line_read, f1_line = ProjectTest.readline_nowhite(f1)
-            line_no_f1 = line_no_f1 + line_read
-
-            # File 2:
-            line_read, f2_line = ProjectTest.readline_nowhite(f2)
-            line_no_f2 = line_no_f2 + line_read
-
-        # Close the files
-        f1.close()
-        f2.close()
-        return diff_msg
+        self.my_project = None
+        self.new_project = None
+        self.reader = None
+        self.writer = None
+        self.model_type = None # "EPANET" or "SWMM"
+        self.test_meta = {"EPANET": ["epanet","epanet2d.exe", "Test_Example_Summaries_EPANET.html"],
+                          "SWMM": ["swmm", "swmm5.exe", 'Test_Example_Summaries_SWMM.html']}
 
     def runTest(self):
-        directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
-
-        # Get path to swmm5.exe
+        # Get path to epanet2d.exe
+        current_directory = os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename))
+        directory = os.path.join(current_directory, self.test_meta[self.model_type][0])
         source_root_path = os.path.split(os.path.split(os.path.split(directory)[0])[0])[0]
-        exe_path = os.path.join(source_root_path, "src", "Externals", "swmm", "model")
-        exe_name = "swmm5.exe"
+        exe_path = os.path.join(source_root_path, "src", "Externals", self.test_meta[self.model_type][0], "model")
+        exe_name = self.test_meta[self.model_type][1]
         exe_full_path = os.path.join(exe_path, exe_name)
 
         # Get example path and the paths to its first level sub directories
@@ -115,7 +28,7 @@ class ProjectTest(unittest.TestCase):
         example_root_path = os.path.join(directory, "Examples")
         example_paths = []
         example_paths.append(example_root_path)
-        example_sub_directories = ProjectTest.get_immediate_subdirectories(example_root_path)
+        example_sub_directories = get_immediate_subdirectories(example_root_path)
         if example_sub_directories:
             for subdir in example_sub_directories:
                 example_paths.append(os.path.join(example_root_path, subdir))
@@ -127,7 +40,7 @@ class ProjectTest(unittest.TestCase):
         examples = [] # example name
         status = []   # example test status 'Pass' or 'Fail'
         remarks = []  # error message goes here
-        html_file = os.path.join(directory, 'Test_Example_Summaries_SWMM.html')
+        html_file = os.path.join(directory, self.test_meta[self.model_type][2])
 
         # Open html file
         text_file = open(html_file, "w")
@@ -156,22 +69,22 @@ class ProjectTest(unittest.TestCase):
 
                     # Read .inp file, count the number of sections
                     my_file = os.path.join(example_path, filename)
-                    ProjectReader().read_file(self.my_project, my_file)
+                    self.reader().read_file(self.my_project,my_file)
                     number_of_sections = len(self.my_project.sections)
 
                     # Write my_project to new file .inptest
                     new_filename = filename + "_copy"
                     new_file = os.path.join(example_path, new_filename)
-                    ProjectWriter().write_file(self.my_project, new_file)
+                    self.writer().write_file(self.my_project, new_file)
 
                     # Read .inptest into new_project, count the number of sections, assert
-                    ProjectReader().read_file(self.new_project, new_file)
+                    self.reader().read_file(self.new_project, new_file)
                     new_number_of_sections = len(self.new_project.sections)
                     assert number_of_sections == new_number_of_sections
 
-                    # If the numbers of sections agree, run swmm5.exe using:
-                    # swmm5.exe XXXXX1.inp XXXXXX1.rpt XXXXXX1.out
-                    # Have trouble with path, copied swmm5.exe into the Examples folder
+                    # If the numbers of sections agree, run epanet2d.exe using:
+                    # epanet2d.exe XXXXX1.inp XXXXXX1.rpt XXXXXX1.out
+                    # Have trouble with path, copied epanet2d.exe into the Examples folder
                     if number_of_sections == new_number_of_sections:
 
                         # Run my_file
@@ -190,9 +103,13 @@ class ProjectTest(unittest.TestCase):
 
                         # Run new_file (copy of original .inp)
                         # Must rename the .inp_copy to renameit.inp
-                        # swmm5.exe requires .inp as input files
+                        # epanet2d.exe requires .inp as input files
                         # but the duplicates should not be named as .inp
                         # They will be renamed to .inp_copy after the run
+                        # Note that epanet factors the input file name and
+                        # some minor differences in the .out file
+                        # Binary comparison is not really valid
+
                         temp_file = "renameit.inp"
                         try:
                             os.remove(temp_file)
@@ -212,48 +129,15 @@ class ProjectTest(unittest.TestCase):
                             remarks.append(msg)
                             pass
 
-                        # Compare two .out files
-                        original_ = os.path.join(example_path, prefix + '.out')
-                        copy_ = os.path.join(example_path, prefix + '_copy'+ '.out')
-
-                        # If both exists
-                        if os.path.isfile(original_) and os.path.isfile(copy_):
-                            same_ = filecmp.cmp(original_,copy_)
-                            if not same_:
-                                msg = prefix+'.out binary differ, ' \
-                                             'results of modified differ from results of original\n'
-                                examples.append(original_)
-                                status.append('Fail')
-                                remarks.append(msg)
-                            else:
-                                msg = prefix + '.out successful matching\n'
-                                examples.append(original_)
-                                status.append('Pass')
-                                remarks.append(msg)
-
-                        # If the original does not produce .out '----'
-                        elif not os.path.isfile(original_):
-                            msg = prefix + '.out does not exist, ' \
-                                           'original input did not run\n'
-                            examples.append(original_)
-                            status.append('----')
-                            remarks.append(msg)
-
-                        # If the original does but the copy does not produce .out 'Fail'
-                        else:
-                            msg = prefix + '_copy.out does not exist, ' \
-                                           'original ran but modified did not \n'
-                            examples.append(original_)
-                            status.append('Fail')
-                            remarks.append(msg)
-
                         # Compare two rpt files
-                        exempted_strings = ["Analysis begun on", "Analysis ended on",
-                                            "Total elapsed time", "ERROR"]
+                        exempted_strings = ["Analysis begun", "Analysis ended",
+                                            "Total elapsed time", "ERROR",
+                                            "Input Data File", "Page 1"]
                         original_ = os.path.join(example_path, prefix + '.rpt')
                         copy_ = os.path.join(example_path, prefix + '_copy'+ '.rpt')
                         if os.path.isfile(original_) and os.path.isfile(copy_):
-                            diff_msg = ProjectTest.compare_two_files(original_, copy_, exempted_strings)
+                            # diff_msg = ProjectTest.compare_two_files(original_, copy_, exempted_strings)
+                            diff_msg = compare_two_analysis_blocks(original_, copy_, exempted_strings)
                             if diff_msg:
                                 msg = prefix + '.rpt:'\
                                       +'results of modified differ from results of original'+'\n'\
@@ -288,7 +172,7 @@ class ProjectTest(unittest.TestCase):
 
             # Do clean-up in the example directory:
             # try:
-            #     # Remove swmm5.exe from the example path
+            #     # Remove epanet2d.exe from the example path
             #     # os.remove(exe_to_example_path)
             #     # Keep the outputs for examining them.
             #     # os.remove(original_)
@@ -316,9 +200,3 @@ class ProjectTest(unittest.TestCase):
             webbrowser.open_new_tab('file://' + html_file)
         except:
             print("Error writing test results to " + html_file)
-
-
-if __name__ == '__main__':
-    my_test = ProjectTest()
-    my_test.setUp()
-    my_test.runTest()

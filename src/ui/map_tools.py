@@ -785,10 +785,14 @@ try:
             return None
 
         def addVectorLayer(self, filename):
+            if not os.path.isfile(filename):
+                return
+            layer_name, fext = os.path.splitext(os.path.basename(filename))
             layers = self.canvas.layers()
             layer_count = len(layers)
             #if filename.lower().endswith('.shp'):
-            layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
+            #layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
+            layer = QgsVectorLayer(filename, layer_name, "ogr")
             #elif filename.lower().endswith('.json'):
             #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
             if layer:

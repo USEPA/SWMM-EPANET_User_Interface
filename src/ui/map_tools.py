@@ -794,9 +794,57 @@ try:
             #layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
             layer = QgsVectorLayer(filename, layer_name, "ogr")
             #elif filename.lower().endswith('.json'):
-            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
-            if layer:
-                self.add_layer(layer)
+            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson"o)
+            sep_layers = []
+            if fext.lower().endswith('.json'):
+                sep_layers = self.parse_geojson(layer)
+                for lyr in sep_layers:
+                    self.add_layer(lyr)
+            else:
+                if layer:
+                    self.add_layer(layer)
+
+        def parse_geojson(self, agjLayer):
+            layers = []
+            geom_types = []
+            elem_types = []
+            elem_geom = {}
+            ind = agjLayer.fieldNameIndex(u'element_type')
+            if ind >= 0:
+                elem_types = agjLayer.uniqueValues(ind, 20)
+            for f in agjLayer.getFeatures():
+                geom = f.geometry()
+                if not geom_types.__contains__(geom.type()):
+                    geom_types.append(geom.type())
+                    if geom.type() == QGis.Point:
+                        elem_geom[f.attributes()[ind]] = "Point"
+                    elif geom.type() == QGis.Line:
+                        elem_geom[f.attributes()[ind]] = "LineString"
+                    elif geom.type() == QGis.Polygon:
+                        elem_geom[f.attributes()[ind]] = "Polygon"
+
+            if len(elem_types) > 0:
+                for et in elem_types:
+                    try:
+                        new_layer = QgsVectorLayer(elem_geom[et], agjLayer.name() + str(et), "memory")
+                        layers.append(new_layer)
+                    except:
+                        pass
+            elif len(geom_types) > 0:
+                for gt in geom_types:
+                    new_layer = None
+                    if gt == QGis.Point:
+                        new_layer = QgsVectorLayer("Point", agjLayer.name() + "_point", "memory")
+                    elif gt == QGis.Line:
+                        new_layer = QgsVectorLayer("LineString", agjLayer.name() + "_line", "memory")
+                    elif gt == QGis.Polygon:
+                        new_layer = QgsVectorLayer("Polygon", agjLayer.name() + "_polygon", "memory")
+
+                    if new_layer is not None:
+                        layers.append(new_layer)
+
+            return layers
+            pass
 
         def set_extent(self, extent):
             buffered_extent = extent.buffer(extent.height() / 20)

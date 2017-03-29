@@ -814,8 +814,8 @@ try:
                 elem_types = agjLayer.uniqueValues(ind, 20)
             for f in agjLayer.getFeatures():
                 geom = f.geometry()
-                if not geom_types.__contains__(geom.type()):
-                    geom_types.append(geom.type())
+                if not elem_geom.__contains__(f.attributes()[ind]):
+                    if not geom_types.__contains__(geom.type()): geom_types.append(geom.type())
                     if geom.type() == QGis.Point:
                         elem_geom[f.attributes()[ind]] = "Point"
                     elif geom.type() == QGis.Line:
@@ -824,9 +824,26 @@ try:
                         elem_geom[f.attributes()[ind]] = "Polygon"
 
             if len(elem_types) > 0:
+                expr_text = "\"element_type\"='ZZZZ'"
+                expr = None
                 for et in elem_types:
+                    attributes_added = False
                     try:
-                        new_layer = QgsVectorLayer(elem_geom[et], agjLayer.name() + str(et), "memory")
+                        new_layer = QgsVectorLayer(elem_geom[et], agjLayer.name() + "_" + str(et), "memory")
+                        expr = QgsExpression(expr_text.replace("ZZZZ", et))
+                        it = agjLayer.getFeatures(QgsFeatureRequest(expr))
+                        #ids = [sf.id() for sf in it]
+                        #agjLayer.setSelectedFeatures(ids)
+                        new_layer.startEditing()
+                        for sf in it:
+                            if not attributes_added:
+                                for fld in sf.fields():
+                                    new_layer.addAttribute(fld)
+                                attributes_added = True
+                            if not new_layer.addFeature(sf, False):
+                                stderr = "problem adding feature"
+                        new_layer.commitChanges()
+                        new_layer.updateExtents()
                         layers.append(new_layer)
                     except:
                         pass
@@ -835,14 +852,24 @@ try:
                     new_layer = None
                     if gt == QGis.Point:
                         new_layer = QgsVectorLayer("Point", agjLayer.name() + "_point", "memory")
+                        for f in agjLayer.getFeatures():
+                            geom = f.geometry()
+                            if geom.type() == QGis.Point:
+                                new_layer.addFeature(f, True)
                     elif gt == QGis.Line:
                         new_layer = QgsVectorLayer("LineString", agjLayer.name() + "_line", "memory")
+                        for f in agjLayer.getFeatures():
+                            geom = f.geometry()
+                            if geom.type() == QGis.Line:
+                                new_layer.addFeature(f, True)
                     elif gt == QGis.Polygon:
                         new_layer = QgsVectorLayer("Polygon", agjLayer.name() + "_polygon", "memory")
+                        for f in agjLayer.getFeatures():
+                            geom = f.geometry()
+                            if geom.type() == QGis.Polygon:
+                                new_layer.addFeature(f, True)
 
-                    if new_layer is not None:
-                        layers.append(new_layer)
-
+                    layers.append(new_layer)
             return layers
             pass
 

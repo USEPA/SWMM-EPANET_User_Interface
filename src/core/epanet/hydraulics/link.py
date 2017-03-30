@@ -97,9 +97,9 @@ class Pump(EpanetLink):
         ("speed",            '', "Speed",              "0.0", '', '', "Relative speed setting (normal speed is 1.0, 0 means pump is off)"),
         ("pattern",          '', "Pattern",            "",    '', '', "Time pattern that describes how speed setting varies with time"),
         ("initial_status",   '', "Initial Status",     "",    '', '', "Initial status of a pump"),
-        ("PumpEnergy.value", '', "Effic. Curve",       "",    '', '', "Efficiency curve name"),
-        ("PumpEnergy.value", '', "Energy Price",       "0.0", '', '', "Energy price for this pump"),
-        ("PumpEnergy.value", '', "Price Pattern",      "",    '', '', "ID of price pattern for this pump"),
+        ("efficiency_curve_name", '', "Effic. Curve",       "",    '', '', "Efficiency curve name"),
+        ("energy_price", '', "Energy Price",       "0.0", '', '', "Energy price for this pump"),
+        ("price_pattern", '', "Price Pattern",      "",    '', '', "ID of price pattern for this pump"),
     ))
 
     def __init__(self):

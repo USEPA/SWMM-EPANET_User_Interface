@@ -36,6 +36,7 @@ try:
             self.project_group = root.addGroup("Project Objects")
             self.nodes_group = self.project_group.addGroup("Nodes")
             self.links_group = self.project_group.addGroup("Links")
+            self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
 
             # first thoughts about adding a legend - may be barking up wrong tree...
@@ -798,14 +799,27 @@ try:
             sep_layers = []
             if fext.lower().endswith('.json'):
                 sep_layers = self.parse_geojson(layer)
-                for lyr in sep_layers:
-                    self.add_layer(lyr)
+                for lyr_key in sep_layers:
+                    lyr = sep_layers[lyr_key]
+                    # pelem_type = lyr.name()[lyr.name().rindex("_") + 1:]
+                    self.add_layer(lyr, self.other_group)
             else:
                 if layer:
-                    self.add_layer(layer)
+                    self.add_layer(layer, self.other_group)
+
+        def replace_model_layer(self, alyr, group=None):
+            alyr_name = alyr.name()
+            for lyr in self.session.model_layers.all_layers:
+                pelem_type = alyr_name[alyr_name().rindex("_") + 1:]
+                if pelem_type == lyr.name() or lyr.name().startswith(pelem_type):
+                    if lyr.featureCount() == 0:
+                        orig_fields = []
+                        #for fld in lyr.fields():
+                        pass
+            pass
 
         def parse_geojson(self, agjLayer):
-            layers = []
+            layers = {}
             geom_types = []
             elem_types = []
             elem_geom = {}
@@ -844,32 +858,38 @@ try:
                                 stderr = "problem adding feature"
                         new_layer.commitChanges()
                         new_layer.updateExtents()
-                        layers.append(new_layer)
+                        layers[et] = new_layer
                     except:
                         pass
             elif len(geom_types) > 0:
                 for gt in geom_types:
                     new_layer = None
+                    geom_type = ""
                     if gt == QGis.Point:
+                        geom_type = "Point"
                         new_layer = QgsVectorLayer("Point", agjLayer.name() + "_point", "memory")
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Point:
                                 new_layer.addFeature(f, True)
                     elif gt == QGis.Line:
+                        geom_type = "LineString"
                         new_layer = QgsVectorLayer("LineString", agjLayer.name() + "_line", "memory")
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Line:
                                 new_layer.addFeature(f, True)
                     elif gt == QGis.Polygon:
+                        geom_type = "Polygon"
                         new_layer = QgsVectorLayer("Polygon", agjLayer.name() + "_polygon", "memory")
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Polygon:
                                 new_layer.addFeature(f, True)
 
-                    layers.append(new_layer)
+                    if len(geom_type) > 0:
+                        layers[geom_type] = new_layer
+
             return layers
             pass
 

@@ -1,3 +1,5 @@
+# TODO: has trouble with cov.exclude using api, api generated coverage report under htmlcov is not used
+
 import os
 import webbrowser
 import unittest

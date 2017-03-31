@@ -1,18 +1,6 @@
-##  This section is needed to run coverage from the command line
-## >> Run coverage from command line, navigate to test_all.py
-## >> coverage run all_unit_regress_cmd.py
-## >> coverage report >> Report_coverage_all.txt
-import sys
+# TODO: has trouble with cov.exclude using coverageapi, api generated coverage report under htmlcov is not used
 import os
-current_path = os.getcwd()
-project_path = os.path.split(os.path.split(current_path)[0])[0]
-src_path = os.path.join(project_path, "src")
-sys.path.append(project_path)
-sys.path.append(src_path)
-sp = sorted(sys.path)
-dnames = ', '.join(sp)
-print(dnames)
-## ----------------------------------------------------------------------
+import coverage
 import webbrowser
 import unittest
 import test.HTMLTestRunner
@@ -34,6 +22,12 @@ if __name__ == "__main__":
         title='SWMM-EPANET Core Test Report',
         description='Unit test results')
 
+    # Create a coverage instance
+    cov = coverage.Coverage()
+    cov.exclude('^\s*(import|from)\s')  # exclude import statements
+
+    cov.start()
+
     # Run unit tests
     runner.run(my_suite)
 
@@ -52,6 +46,19 @@ if __name__ == "__main__":
     # Run SWMM regression test
     reg_swmm = test.core.swmm.swmmregressiontest.SWMMRegressionTest()
     reg_swmm.runTest()
+
+    cov.stop()
+    cov.save()
+    cov.html_report()
+
+    # Open coverage report
+    current_path = os.getcwd()
+    full_file_path = os.path.join(current_path, 'htmlcov')
+    full_file_name = os.path.join(full_file_path, 'index.html')
+    try:
+        webbrowser.open_new_tab(full_file_name)
+    except:
+        print("Error opening coverage results")
 
     # Open unit_test reports
     try:

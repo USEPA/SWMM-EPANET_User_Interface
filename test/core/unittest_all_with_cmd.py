@@ -1,7 +1,7 @@
-##  This section is needed to run coverage from the command line ------TODO: change
+##  This section is needed to run coverage from the command line
 ## >> Run coverage from command line, navigate to test_all.py
-## >> coverage run test_all.py
-## >> coverage report >> Report_coverage_SWMM.txt
+## >> coverage unittest_all_with_cmd.py
+## >> coverage report >> Report_coverage_unittest.txt
 import sys
 import os
 current_path = os.getcwd()
@@ -13,7 +13,6 @@ sp = sorted(sys.path)
 dnames = ', '.join(sp)
 print(dnames)
 ## ----------------------------------------------------------------------
-
 import webbrowser
 import unittest
 import test.HTMLTestRunner
@@ -34,7 +33,6 @@ if __name__ == "__main__":
         description='Unit test results')
 
     runner.run(my_suite)
-
     fp.close()
 
     # Open unit_test reports
@@ -42,9 +40,3 @@ if __name__ == "__main__":
         webbrowser.open_new_tab(report_filename)
     except:
         print("Test results written to " + report_filename)
-
-
-
-
-
-

@@ -1,3 +1,5 @@
+# TODO: has trouble with cov.exclude using api, api generated coverage report under htmlcov is not used
+
 import os
 import webbrowser
 import unittest
@@ -22,7 +24,6 @@ if __name__ == "__main__":
     # Create a coverage instance
     cov = coverage.Coverage()
     cov.exclude('^\s*(import|from)\s')  # exclude import statements
-    # cov.exclude('^\s*(class)\s')  # regex does not work for class names
 
     cov.start()
 

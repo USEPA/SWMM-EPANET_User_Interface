@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM-EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2017-03-28 17:46:10</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.251000</p>
-<p class='attribute'><strong>Status:</strong> Pass 159 Failure 4</p>
+<p class='attribute'><strong>Start Time:</strong> 2017-03-31 15:20:13</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.884000</p>
+<p class='attribute'><strong>Status:</strong> Pass 160</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -706,13 +706,13 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test.core.swmm.test_temperature.TemperatureTest: Test TEMPERATURE section</td>
-    <td>11</td>
     <td>8</td>
-    <td>3</td>
+    <td>8</td>
     <td>0</td>
-    <td><a href="javascript:showClassDetail('c21',11)">Detail</a></td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c21',8)">Detail</a></td>
 </tr>
 
 <tr id='pt21.1' class='hiddenRow'>
@@ -745,133 +745,14 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft21.7' class='none'>
-    <td class='failCase'><div class='testcase'>test_windspeed_file_fail: Test windspeed file - 2</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.7')" >
-        fail</a>
-
-    <div id='div_ft21.7' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.7').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.7: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 126, in test_windspeed_file_fail
-    self.assertTrue(find_error, msg)
-AssertionError: 
-Set:
-        [TEMPERATURE]
-        ;;Parameter  TimeSeries
-        TIMESERIES TS1
-        WINDSPEED FILE
-        
-Get:[TEMPERATURE]
-;;Parameter  TimeSeries
-TIMESERIES        	TS1
-WINDSPEED         	FILE
-SNOWMELT          		0.5	0.6	0	0.0	0
-
-Rule not enforced: Windspeed file should be the same climate file used for air temperature
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
-</tr>
-
-<tr id='pt21.8' class='hiddenRow'>
+<tr id='pt21.7' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_snowmelt: Test snowmelt</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft21.9' class='none'>
-    <td class='failCase'><div class='testcase'>test_snowmelt_fail: Test snowmelt wo one ADC PERVIOUS, assert failed</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.9')" >
-        fail</a>
-
-    <div id='div_ft21.9' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.9').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.9: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 165, in test_snowmelt_fail
-    self.assertTrue(find_error, msg)
-AssertionError: 
-Set:
-        [TEMPERATURE]
-        ;;Parameter  TimeSeries
-        TIMESERIES daily_temperature.txt
-        WINDSPEED FILE
-        SNOWMELT 2 0.5 0.6 0.0 50 0
-        ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
-        
-Get:[TEMPERATURE]
-;;Parameter  TimeSeries
-TIMESERIES        	daily_temperature.txt
-WINDSPEED         	FILE
-SNOWMELT          	2	0.5	0.6	0.0	50	0
-ADC IMPERVIOUS	0.1	0.2	0.3	0.4	0.5	0.6	0.7	0.8	0.9	1.0
-ADC PERVIOUS	
-Rule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one.
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
-</tr>
-
-<tr id='pt21.10' class='hiddenRow'>
+<tr id='pt21.8' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_snowmelt_wo_adc: Test snowmelt -- Remove both ADCs</div></td>
     <td colspan='5' align='center'>pass</td>
-</tr>
-
-<tr id='ft21.11' class='none'>
-    <td class='failCase'><div class='testcase'>test_snowmelt_wo_temperature: Test snowmelt -- without temperature</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.11')" >
-        fail</a>
-
-    <div id='div_ft21.11' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.11').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft21.11: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_temperature.py", line 193, in test_snowmelt_wo_temperature
-    self.assertTrue(match(actual_text, test_text), msg)
-AssertionError: 
-Set:
-        [TEMPERATURE]
-        ;;Parameter  TimeSeries
-        SNOWMELT 2 0.5 0.6 0.0 50 0
-        
-Get:
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1436,11 +1317,11 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test.core.swmm.test_pollutants.SimplePollutantTest: Test POLLUTANTS section</td>
     <td>2</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c45',2)">Detail</a></td>
 </tr>
@@ -1450,47 +1331,9 @@ Get:
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft45.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_pollutant_section: Test POLLUTANTS section through Project</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft45.2')" >
-        fail</a>
-
-    <div id='div_ft45.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft45.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft45.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\swmm\test_pollutants.py", line 40, in test_pollutant_section
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-
-[POLLUTANTS]
-;;                 Mass   Rain       GW         I&amp;I        Decay      Snow
-;;Name             Units  Conc.      Conc.      Conc.      Coeff.     Only  Co-Pollutant
-;;------------------------------------------------------------------------------------------
-  TSS              MG/L   0.0        0.0        0          0.0        NO
-  Lead             UG/L   0.0        0.0        0          0.0        NO    TSS 0.2
-Get:
-[POLLUTANTS]
-;;                 Mass   Rain       GW         I&amp;I        Decay      Snow
-;;Name             Units  Conc.      Conc.      Conc.      Coeff.     Only  Co-Pollutant
-;;------------------------------------------------------------------------------------------
- TSS             	MG/L  	0.0       	0.0       	0         	0.0       	NO        	*               	0.0       	0.0       	0.0       
- Lead            	UG/L  	0.0       	0.0       	0         	0.0       	NO        	TSS             	0.2       	0.0       	0.0       
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt45.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_pollutant_section: Test POLLUTANTS section through Project</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1688,9 +1531,9 @@ Get:
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>163</td>
-    <td>159</td>
-    <td>4</td>
+    <td>160</td>
+    <td>160</td>
+    <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

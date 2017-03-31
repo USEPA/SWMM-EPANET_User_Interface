@@ -278,7 +278,7 @@ try:
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
-            self.set_extent(self.canvas.extent())
+            #self.set_extent(self.canvas.extent())
 
 
         def setMouseTracking(self, flag):

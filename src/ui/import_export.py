@@ -24,26 +24,68 @@ pipe_model_attributes = [
 pipe_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
     "loss_coefficient"]
+pipe_import_attributes = [
+    "element_type", "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
+    "loss_coefficient", "bulk_reaction_coefficient", "wall_reaction_coefficient", "initial_status"]
 
 pumps_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
 pumps_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+pumps_import_attributes = [ "element_type", "id", "description", "inlet_node", "outlet_node",
+                            "power", "head_curve_name", "speed", "pattern", "initial_status",
+                            "efficiency_curve_name", "energy_price", "price_pattern"]
 
 valves_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
 valves_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+valves_import_attributes = [
+    "element_type", "id", "description", "inlet_node", "outlet_node", "type", "diameter", "setting",
+    "minor_loss_coefficient", "status"]
 
 junctions_model_attributes = [
     "element_type", "name", "elevation", "base_demand_flow", "demand_pattern_name"]
 junctions_gis_attributes = [
     "element_type", "id", "elevation", "base_demand_flow", "demand_pattern"]
+junctions_import_attributes = [ "element_type", "id", "elevation", "emitter_coefficient",
+                                "initial_quality",
+                                "source_quality_amount", "source_quality_type", "source_quality_pattern",
+                                "base_demand_flow", "demand_pattern_name"]
 
 labels_model_attributes = [
     "element_type", "name", "anchor_name", "font", "size", "bold", "italic"]
 labels_gis_attributes = [
     "element_type", "id", "anchor_name", "font", "size", "bold", "italic"]
+labels_import_attributes = [
+    "element_type", "id", "description", "meter_type", "meter_id",
+    "anchor_name", "font", "size", "bold", "italic"
+]
+
+reservoir_import_attributes = ["element_type", "id", "tag", "total_head", "head_pattern_name",
+                               "initial_quality",
+                               "source_quality_amount", "source_quality_type", "source_quality_pattern"]
+tank_import_attributes = [
+ "element_type",
+ "id",
+ "description",
+ "inlet_node",
+ "outlet_node",
+ "elevation",
+ "diameter",
+ "initial_level",
+ "minimum_level",
+ "maximum_level",
+ "minimum_volume",
+ "volume_curve",
+ "mixing_model",
+ "mixing_fraction",
+ "reaction_coeff",
+ "initial_quality",
+ "source_quality_amount",
+ "source_quality_type",
+ "source_quality_pattern"
+]
 
 conduit_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "length", "roughness",

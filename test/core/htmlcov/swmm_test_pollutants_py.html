@@ -109,11 +109,12 @@
 <p id="n40" class="stm run hide_run"><a href="#n40">40</a></p>
 <p id="n41" class="pln"><a href="#n41">41</a></p>
 <p id="n42" class="pln"><a href="#n42">42</a></p>
-<p id="n43" class="stm mis"><a href="#n43">43</a></p>
+<p id="n43" class="pln"><a href="#n43">43</a></p>
 <p id="n44" class="stm mis"><a href="#n44">44</a></p>
-<p id="n45" class="pln"><a href="#n45">45</a></p>
-<p id="n46" class="stm mis"><a href="#n46">46</a></p>
+<p id="n45" class="stm mis"><a href="#n45">45</a></p>
+<p id="n46" class="pln"><a href="#n46">46</a></p>
 <p id="n47" class="stm mis"><a href="#n47">47</a></p>
+<p id="n48" class="stm mis"><a href="#n48">48</a></p>
 
             </td>
             <td class="text">
@@ -123,7 +124,7 @@
 <p id="t4" class="exc"><span class="key">from</span> <span class="nam">core</span><span class="op">.</span><span class="nam">swmm</span><span class="op">.</span><span class="nam">quality</span> <span class="key">import</span> <span class="nam">Pollutant</span><span class="strut">&nbsp;</span></p>
 <p id="t5" class="exc"><span class="key">from</span> <span class="nam">core</span><span class="op">.</span><span class="nam">swmm</span><span class="op">.</span><span class="nam">inp_reader_project</span> <span class="key">import</span> <span class="nam">ProjectReader</span><span class="strut">&nbsp;</span></p>
 <p id="t6" class="exc"><span class="key">from</span> <span class="nam">core</span><span class="op">.</span><span class="nam">swmm</span><span class="op">.</span><span class="nam">inp_writer_project</span> <span class="key">import</span> <span class="nam">ProjectWriter</span><span class="strut">&nbsp;</span></p>
-<p id="t7" class="exc"><span class="key">from</span> <span class="nam">test</span><span class="op">.</span><span class="nam">core</span><span class="op">.</span><span class="nam">section_match</span> <span class="key">import</span> <span class="nam">match</span><span class="op">,</span> <span class="nam">match_omit</span><span class="strut">&nbsp;</span></p>
+<p id="t7" class="exc"><span class="key">from</span> <span class="nam">test</span><span class="op">.</span><span class="nam">core</span><span class="op">.</span><span class="nam">section_match</span> <span class="key">import</span> <span class="nam">match</span><span class="op">,</span> <span class="nam">match_omit</span><span class="op">,</span> <span class="nam">match_keyword_lines</span><span class="strut">&nbsp;</span></p>
 <p id="t8" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t9" class="stm mis"><span class="key">class</span> <span class="nam">SimplePollutantTest</span><span class="op">(</span><span class="nam">unittest</span><span class="op">.</span><span class="nam">TestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t10" class="pln">    <span class="str">"""Test POLLUTANTS section"""</span><span class="strut">&nbsp;</span></p>
@@ -134,7 +135,7 @@
 <p id="t15" class="pln"><span class="str">;;                 Mass   Rain       GW         I&amp;I        Decay      Snow</span><span class="strut">&nbsp;</span></p>
 <p id="t16" class="pln"><span class="str">;;Name             Units  Conc.      Conc.      Conc.      Coeff.     Only  Co-Pollutant</span><span class="strut">&nbsp;</span></p>
 <p id="t17" class="pln"><span class="str">;;------------------------------------------------------------------------------------------</span><span class="strut">&nbsp;</span></p>
-<p id="t18" class="pln"><span class="str">  TSS              MG/L   0.0        0.0        0          0.0        NO</span><span class="strut">&nbsp;</span></p>
+<p id="t18" class="pln"><span class="str">  TSS              MG/L   0.0        0.0        0          0.0        NO    *</span><span class="strut">&nbsp;</span></p>
 <p id="t19" class="pln"><span class="str">  Lead             UG/L   0.0        0.0        0          0.0        NO    TSS 0.2"""</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
 <p id="t20" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t21" class="stm mis">    <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -156,14 +157,15 @@
 <p id="t37" class="stm run hide_run">            <span class="nam">section_from_text</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">project_reader</span><span class="op">.</span><span class="nam">read_pollutants</span><span class="op">.</span><span class="nam">read</span><span class="op">(</span><span class="nam">source_text</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t38" class="stm run hide_run">            <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">project_writer</span><span class="op">.</span><span class="nam">write_pollutants</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">section_from_text</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t39" class="stm run hide_run">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet:\n'</span> <span class="op">+</span> <span class="nam">source_text</span> <span class="op">+</span> <span class="str">'\nGet:\n'</span> <span class="op">+</span> <span class="nam">actual_text</span><span class="strut">&nbsp;</span></p>
-<p id="t40" class="stm run hide_run">            <span class="nam">self</span><span class="op">.</span><span class="nam">assertTrue</span><span class="op">(</span><span class="nam">match</span><span class="op">(</span><span class="nam">actual_text</span><span class="op">,</span> <span class="nam">source_text</span><span class="op">)</span><span class="op">,</span> <span class="nam">msg</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t41" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t40" class="stm run hide_run">            <span class="nam">self</span><span class="op">.</span><span class="nam">assertTrue</span><span class="op">(</span><span class="nam">match_keyword_lines</span><span class="op">(</span><span class="nam">source_text</span><span class="op">,</span> <span class="nam">actual_text</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t41" class="pln">                                                <span class="nam">keywords_</span><span class="op">=</span><span class="nam">None</span><span class="op">,</span> <span class="nam">skipped_keywords</span><span class="op">=</span><span class="nam">None</span><span class="op">,</span> <span class="nam">ignore_trailing_0</span><span class="op">=</span><span class="nam">True</span><span class="op">)</span><span class="op">,</span> <span class="nam">msg</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t42" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t43" class="stm mis"><span class="key">def</span> <span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t44" class="stm mis">    <span class="nam">unittest</span><span class="op">.</span><span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t45" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t46" class="stm mis"><span class="key">if</span> <span class="nam">__name__</span> <span class="op">==</span> <span class="str">"__main__"</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t47" class="stm mis">    <span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t43" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t44" class="stm mis"><span class="key">def</span> <span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t45" class="stm mis">    <span class="nam">unittest</span><span class="op">.</span><span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t46" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t47" class="stm mis"><span class="key">if</span> <span class="nam">__name__</span> <span class="op">==</span> <span class="str">"__main__"</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t48" class="stm mis">    <span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 
             </td>
         </tr>
@@ -174,7 +176,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
-            created at 2017-03-28 17:46
+            created at 2017-03-31 13:18
         </p>
     </div>
 </div>

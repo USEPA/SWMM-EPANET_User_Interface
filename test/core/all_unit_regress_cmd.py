@@ -39,7 +39,6 @@ if __name__ == "__main__":
     # Create a coverage instance
     cov = coverage.Coverage()
     cov.exclude('^\s*(import|from)\s')  # exclude import statements
-    cov.exclude('^\s*(def|class)\s')  # exclude def statements
 
     cov.start()
 

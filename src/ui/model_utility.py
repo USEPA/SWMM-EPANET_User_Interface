@@ -161,14 +161,20 @@ class ParseData:
     @staticmethod
     def intTryParse(value):
         try:
-            return int(value), True
+            if value:
+                return int(value), True
+            else:
+                return None, False
         except ValueError:
             return value, False
 
     @staticmethod
     def floatTryParse(value):
         try:
-            return float(value), True
+            if value:
+                return float(value), True
+            else:
+                return None, False
         except ValueError:
             return value, False
 

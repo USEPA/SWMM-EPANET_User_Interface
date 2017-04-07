@@ -108,6 +108,25 @@ generic_model_attributes = [
 generic_gis_attributes = [
     "element_type", "id"]
 
+subcatchment_model_attributes = [
+    "element_type",
+    "name",
+    "description",
+    "rain_gage",
+    "outlet",
+    "area",
+    "width",
+    "percent_slope",
+    "percent_impervious",
+    "n_imperv",
+    "n_perv",
+    "storage_depth_imperv",
+    "storage_depth_perv",
+    "percent_zero_impervious",
+    "subarea_routing",
+    "initial_loadings",
+    "curb_length"]
+
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
     extension = extension.lower()
@@ -254,6 +273,10 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     if one_file:
         write_layer(layer, session.crs, file_name, driver_name, layer_options)
 
+    layer_file_name = path_file + "_subcatchments" + extension
+    one_file = False
+    export_subcatchment_layer(session.project, session.model_layers.subcatchments, subcatchment_model_attributes,
+                              session.crs, one_file, layer_file_name, driver_name, layer_options)
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
@@ -298,6 +321,32 @@ def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_at
         write_layer(layer, crs, layer_file_name, driver_name, layer_options)
     return layer
 
+def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_file, layer_file_name, driver_name,
+                              layer_options):
+    if not src_layer or src_layer.featureCount() == 0:
+        return None
+    ind = src_layer.fieldNameIndex(u'name')
+    if ind < 0:
+        return None
+    layer = QgsVectorLayer("Polygon", "Subcatchment", "memory")
+    provider = layer.dataProvider()
+    provider.addAttributes(make_gis_fields(model_attributes))
+    layer.startEditing()  # changes are only possible when editing the layer
+    # src_layer = QgsVectorLayer()
+    for f in src_layer.getFeatures():
+        obj_sub = project.subcatchments.get_item(u'name', f.attributes()[ind])
+        if obj_sub:
+            new_f = QgsFeature()
+            new_f.setGeometry(f.geometry())
+            values = gis_values_from_model(obj_sub, model_attributes, model_attributes, model_attributes)
+            new_f.setAttributes(values)
+            layer.addFeature(new_f, False)
+    layer.commitChanges()
+    layer.updateExtents()
+
+    if not one_file:
+        write_layer(layer, crs, layer_file_name, driver_name, layer_options)
+    return layer
 
 def make_gis_fields(gis_attributes):
     # create GIS fields
@@ -306,7 +355,6 @@ def make_gis_fields(gis_attributes):
         if gis_attribute:
             fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
     return fields
-
 
 def make_links_layer(coordinates, links, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []

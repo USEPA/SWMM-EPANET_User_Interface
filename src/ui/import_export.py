@@ -97,12 +97,36 @@ conduit_model_attributes = [
 conduit_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "length", "roughness",
     "inlet_offset", "outlet_offset", "maximum_flow", "loss_coefficient", "flap_gate", "seepage"]
+conduit_import_attributes = [
+    "id",
+    "description",
+    "inlet_node",
+    "outlet_node",
+    "length",
+    "roughness",
+    "inlet_offset",
+    "outlet_offset",
+    "maximum_flow",
+    "loss_coefficient",
+    "entry_loss_coefficient",
+    "exit_loss_coefficient",
+    "flap_gate",
+    "seepage",
+    "max_depth"]
 
 junctions_model_attributes_swmm = [
     "element_type", "name", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junctions_gis_attributes_swmm = [
     "element_type", "id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
-
+junction_import_attributes_swmm = [
+    "id",
+    "description",
+    "elevation",
+    "max_depth",
+    "initial_depth",
+    "surcharge_depth",
+    "ponded_area"
+]
 generic_model_attributes = [
     "element_type", "name"]
 generic_gis_attributes = [
@@ -126,6 +150,50 @@ subcatchment_model_attributes = [
     "subarea_routing",
     "initial_loadings",
     "curb_length"]
+
+subcatchment_import_attributes = [
+    "id",
+    "description",
+    "rain_gage",
+    "outlet",
+    "area",
+    "width",
+    "percent_slope",
+    "percent_impervious",
+    "n_imperv",
+    "n_perv",
+    "storage_depth_imperv",
+    "storage_depth_perv",
+    "percent_zero_impervious",
+    "subarea_routing",
+    "initial_loadings",
+    "curb_length"
+]
+
+raingage_import_attributes = [
+    "id",
+    "description",
+    "rain_format",
+    "rain_interval",
+    "snow_catch_factor",
+    "data_source",
+    "timeseries",
+    "data_file_name",
+    "data_file_station_id",
+    "data_file_rain_units",
+]
+
+outfall_import_attributes = [
+    "id",
+    "description",
+    "elevation",
+    "tide_gate",
+    "route_to",
+    "outfall_type",
+    "fixed_stage",
+    "tidal_curve",
+    "time_series_name"
+]
 
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)

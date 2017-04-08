@@ -11,7 +11,11 @@ from core.epanet.hydraulics.node import SourceType, MixingModel
 from core.epanet.hydraulics.link import Pipe, Pump, Valve, FixedStatus, ValveType
 from core.epanet.labels import Label, MeterType
 from core.swmm.hydraulics.node import Junction as SwmmJunction
-from core.swmm.hydraulics.link import Conduit
+from core.swmm.hydraulics.node import Outfall, OutfallType
+from core.swmm.hydraulics.node import SubCentroid
+from core.swmm.hydraulics.link import Conduit, SubLink
+from core.swmm.hydrology.raingage import RainGage, RainFormat, RainFileUnits, RainDataSource
+from core.swmm.hydrology.subcatchment import Subcatchment
 from ui.model_utility import ParseData
 
 """Export (save) model elements as GIS data or Import (read) model elements from existing GIS data."""
@@ -792,6 +796,152 @@ def import_epanet_from_geojson(session, file_name):
         model_layer.updateExtents()
 
     layer.rollBack(True)
+    session.model_layers.set_lists()
+    session.map_widget.zoomfull()
+    return import_items_count
+
+def import_swmm_from_geojson(session, file_name):
+    project = session.project
+    layer = QgsVectorLayer(file_name, "temp", "ogr")
+    ind = layer.fieldNameIndex(u'element_type')
+    if ind < 0:
+        return
+    elem_types = layer.uniqueValues(ind, 20)
+    import_items_count = {}
+    for et in elem_types:
+        import_items_count[et.lower()] = 0
+    model_item = None
+    model_layer = None
+    # layer.startEditing()
+    adding_subcatchment = False
+    sub_outlet = ""
+    for f in layer.getFeatures():
+        adding_subcatchment = False
+        sub_outlet = ""
+        geom = f.geometry()
+        elem_type = f.attributes()[ind]
+        if not elem_type:
+            continue
+        if elem_type.lower().startswith("junction"):
+            model_layer = session.model_layers.junctions
+            model_item = SwmmJunction()
+            build_model_object_per_geojson_record(project, f, junction_import_attributes, model_item)
+            project.junctions.value.append(model_item)
+            import_items_count["junction"] += 1
+        elif elem_type.lower().startswith("conduit"):
+            model_layer = session.model_layers.conduits
+            model_item = Conduit()
+            build_model_object_per_geojson_record(project, f, conduit_import_attributes, model_item)
+            project.conduits.value.append(model_item)
+            import_items_count["conduit"] += 1
+        elif elem_type.lower().startswith("raingage"):
+            model_layer = session.model_layers.raingages
+            model_item = RainGage()
+            build_model_object_per_geojson_record(project, f, raingage_import_attributes, model_item)
+            project.raingages.value.append(model_item)
+            import_items_count["raingage"] += 1
+        elif elem_type.lower().startswith("label"):
+            model_layer = session.model_layers.labels
+            model_item = Label()
+            build_model_object_per_geojson_record(project, f, label_import_attributes, model_item)
+            project.labels.value.append(model_item)
+            import_items_count["label"] += 1
+        elif elem_type.lower().startswith("outfall"):
+            model_layer = session.model_layers.outfalls
+            model_item = Outfall()
+            build_model_object_per_geojson_record(project, f, outfall_import_attributes, model_item)
+            project.outfalls.value.append(model_item)
+            import_items_count["outfall"] += 1
+        elif elem_type.lower().startswith("subcatchment"):
+            adding_subcatchment = True
+            sub_outlet = f["outlet"]
+            model_layer = session.model_layers.subcatchments
+            model_item = Subcatchment()
+            build_model_object_per_geojson_record(project, f, subcatchment_import_attributes, model_item)
+            project.subcatchments.value.append(model_item)
+            import_items_count["subcatchment"] += 1
+
+        # add gis feature
+        new_feature = QgsFeature()
+        new_feature.setGeometry(geom)
+        if geom.type() == QGis.Point:
+            new_feature.setAttributes([model_item.name, 0.0])
+            model_item.x = geom.asPoint().x()
+            model_item.y = geom.asPoint().y()
+        elif geom.type() == QGis.Line:
+            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
+            line = geom.asPolyline()
+            if len(line) > 2:
+                for i in xrange(1, len(line)):
+                    coord = Coordinate()
+                    coord.x = str(line[i].x())
+                    coord.y = str(line[i].y())
+                    model_item.vertices.append(coord)
+                    pass
+        elif geom.type() == QGis.Polygon:
+            new_feature.setAttributes([model_item.name, 0.0, 0, "0"])
+        #model_layer = QgsVectorLayer()
+        model_layer.startEditing()
+        model_layer.addFeature(new_feature)
+        model_layer.commitChanges()
+        model_layer.updateExtents()
+
+        if adding_subcatchment:
+            centroid_layer = session.model_layers.subcentroids
+            sublink_layer = session.model_layers.sublinks
+            if centroid_layer and sublink_layer:
+                pt = f.geometry().centroid().asPoint()
+                c_item = SubCentroid()
+                c_item.centroid.x = str(pt.x())
+                c_item.centroid.y = str(pt.y())
+                c_item.name = u'subcentroid-' + model_item.name
+                session.project.subcentroids.value.add(c_item)
+                fc = QgsFeature()
+                centroid_layer.startEditing()
+                pf = session.map_widget.point_feature_from_item(c_item.centroid)
+                pf.setAttributes([c_item.name, 0.0, new_feature.id(), model_item.name])
+                added_centroid = centroid_layer.dataProvider().addFeatures([pf])
+                if added_centroid[0]:
+                    added_centroid_id = added_centroid[1][0].id()
+                    model_layer.changeAttributeValue(new_feature.id(), 2, added_centroid[1][0].id())
+                    model_layer.changeAttributeValue(new_feature.id(), 3, c_item.name)
+                    centroid_layer.updateExtents()
+                    centroid_layer.commitChanges()
+                    centroid_layer.triggerRepaint()
+
+                l_item = SubLink()
+                l_item.name = u'sublink-' + model_item.name
+                l_item.inlet_node = c_item.name
+                l_item.outlet_node = sub_outlet
+                session.project.sublinks.value.append(l_item)
+                inlet_sub = model_item.centroid
+                lf = session.map_widget.line_feature_from_item(l_item,
+                                                               session.project.all_nodes(),
+                                                               None, None)
+                sublink_layer.startEditing()
+                added_lf = sublink_layer.dataProvider().addFeatures([lf])
+                if added_lf[0]:
+                    # set subcatchment's outlet nodal/subcatch id
+                    #if self.inlet_sub and self.inlet_sub_id:
+                    #    for s in self.session.project.subcatchments.value:
+                    #        if s.name == self.inlet_sub_id:
+                    #            s.outlet = self.item.outlet_node
+                    #            break
+                    # set sublink's attributes
+                    # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                    # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+                    # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 2, l_item.inlet_node)
+                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 3, l_item.outlet_node)
+                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 4, 0)
+                    sublink_layer.updateExtents()
+                    sublink_layer.commitChanges()
+                    sublink_layer.triggerRepaint()
+                    session.map_widget.canvas.refresh()
+
+                break
+
+    # layer.rollBack(True)
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return import_items_count

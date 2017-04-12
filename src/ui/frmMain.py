@@ -156,7 +156,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         print("Try path = " + os.environ["Path"])
                         from qgis.core import QgsApplication
                         from qgis.gui import QgsMapCanvas
-                        from map_tools import EmbedMap
+                        from map_tools import EmbedMap, LegendMenuProvider
                         QgsApplication.setPrefixPath(qgis_home, True)
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
@@ -198,6 +198,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.gis_layer_tree = QgsLayerTreeView()
                             self.gis_layer_tree.setModel(self.gis_layer_model)
                             self.gis_layer_bridge = QgsLayerTreeMapCanvasBridge(self.gis_layer_root, self.canvas, self.tabGIS)
+                            self.legend_menu_provider = LegendMenuProvider(self.gis_layer_tree, self.map_widget)
+                            self.gis_layer_tree.setMenuProvider(self.legend_menu_provider)
+
                             mlayout = QVBoxLayout(self.tabGIS)
                             mlayout.setContentsMargins(0, 0, 0, 0)
                             mlayout.addWidget(self.gis_layer_tree)

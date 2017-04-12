@@ -9,6 +9,7 @@ try:
     import traceback
     import math
     import os
+    import sys
     from enum import Enum
     from map_edit import EditTool
 
@@ -1716,6 +1717,65 @@ try:
         arrow = 11
         fillarrowhead = 12
         x = 13
+
+
+    class LegendMenuProvider(QgsLayerTreeViewMenuProvider):
+        def __init__(self, view, map_control):
+            QgsLayerTreeViewMenuProvider.__init__(self)
+            self.view = view
+            self.map_control = map_control
+
+        def createContextMenu(self):
+            if not self.view.currentLayer():
+                return None
+            m = QMenu()
+            # m.addAction("Show Extent", self.showExtent)
+            m.addAction("Zoom to layer", self.zoom_to_layer)
+            return m
+
+        def showExtent(self):
+            r = self.view.currentLayer().extent()
+            QMessageBox.information(None, "Extent", r.toString())
+
+        def zoom_to_layer(self):
+            # self.map_control.set_extent(self.view.currentLayer().extent())
+            r = self.view.currentLayer().extent()
+            xmin = sys.float_info.max
+            xmax = sys.float_info.min
+            ymin = sys.float_info.max
+            ymax = sys.float_info.min
+            if r.height() > 0:
+                xmin = r.xMinimum()
+                xmax = r.xMaximum()
+                ymin = r.yMinimum()
+                ymax = r.yMaximum()
+            else:
+                pt = None
+                for f in self.view.currentLayer().getFeatures():
+                    geom = f.geometry()
+                    if geom.wkbType() == QGis.WKBPoint:
+                        pt = geom.asPoint()
+                        if pt.x() < xmin: xmin = pt.x()
+                        if pt.x() > xmax: xmax = pt.x()
+                        if pt.y() < ymin: ymin = pt.y()
+                        if pt.y() > ymax: ymax = pt.y()
+                    elif geom.wkbType() == QGis.WKBPolygon:
+                        for pt in geom.asPolygon()[0]:
+                            if pt.x() < xmin: xmin = pt.x()
+                            if pt.x() > xmax: xmax = pt.x()
+                            if pt.y() < ymin: ymin = pt.y()
+                            if pt.y() > ymax: ymax = pt.y()
+                    elif geom.wkbType() == QGis.WKBLineString:
+                        geom = QgsGeometry()
+                        for pt in geom.asPolyline():
+                            if pt.x() < xmin: xmin = pt.x()
+                            if pt.x() > xmax: xmax = pt.x()
+                            if pt.y() < ymin: ymin = pt.y()
+                            if pt.y() > ymax: ymax = pt.y()
+            r_new = QgsRectangle(xmin, ymin, xmax, ymax)
+            self.map_control.set_extent(r_new)
+            pass
+
 
 except:
     print "Skipping map_tools"

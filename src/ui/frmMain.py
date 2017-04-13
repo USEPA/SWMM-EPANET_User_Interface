@@ -1685,6 +1685,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
+        self.clear_object_listing()
         if hasattr(self, "project_settings"):
             del self.project_settings
         self.project_settings = None
@@ -1857,6 +1858,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def clear_object_listing(self):
         self.tree_section = ''
+        self.obj_tree.selectionModel().clearSelection()
         self.listViewObjects.clear()
 
     def list_objects(self):

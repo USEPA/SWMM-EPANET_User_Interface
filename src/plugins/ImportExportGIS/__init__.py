@@ -45,7 +45,17 @@ try:
                     if choice == 1:
                         result = import_export.export_to_gis(session, file_name)
                     elif choice == 2:
-                        result = import_export.import_from_gis(session, file_name)
+                        # result = import_export.import_from_gis(session, file_name)
+                        if session.model == "EPANET":
+                            import_summary = import_export.import_epanet_from_geojson(session, file_name)
+                            result = "imported objects:" + os.linesep
+                            for et in import_summary:
+                                result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+                        elif session.model == "SWMM":
+                            import_summary = import_export.import_swmm_from_geojson(session, file_name)
+                            result = "imported objects:" + os.linesep
+                            for et in import_summary:
+                                result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
                 else:
                     result = "Selected operation not yet implemented."
                 QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)

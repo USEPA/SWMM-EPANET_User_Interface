@@ -15,7 +15,7 @@ from core.swmm.hydraulics.node import Outfall, OutfallType
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import Conduit, SubLink
 from core.swmm.hydrology.raingage import RainGage, RainFormat, RainFileUnits, RainDataSource
-from core.swmm.hydrology.subcatchment import Subcatchment
+from core.swmm.hydrology.subcatchment import Subcatchment, Routing
 from ui.model_utility import ParseData
 from core.indexed_list import IndexedList
 
@@ -565,13 +565,8 @@ def import_from_gis(session, file_name):
     return result
 
 def import_epanet_from_geojson(session, file_name):
-    # importable_sections = [session.project.pipes, session.project.pumps, session.project.valves]
-    # already_populated_sections = [section for section in importable_sections if len(section.value) > 0]
     project = session.project
     layer = QgsVectorLayer(file_name, "temp", "ogr")
-    # elif filename.lower().endswith('.json'):
-    #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson"o)
-    sep_layers = []
     ind = layer.fieldNameIndex(u'element_type')
     if ind < 0:
         return
@@ -581,213 +576,72 @@ def import_epanet_from_geojson(session, file_name):
         import_items_count[et.lower()] = 0
     model_item = None
     model_layer = None
-    layer.startEditing()
-    element_name = ""
+    # layer.startEditing()
     for f in layer.getFeatures():
-        # f = QgsFeature()
         geom = f.geometry()
         elem_type = f.attributes()[ind]
         if not elem_type:
             continue
         if elem_type.lower().startswith("junction"):
-            import_items_count["junction"] += 1
             model_layer = session.model_layers.junctions
             model_item = EpanetJunction()
-            new_source_quality = None
-            new_demand = None
-            for attr_name in junction_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    elif attr_name.startswith("source_quality_amount"):
-                        val, val_is_good = ParseData.floatTryParse(attr_value)
-                        if val_is_good:
-                            new_source_quality = Source()
-                            new_source_quality.name = model_item.name
-                            new_source_quality.baseline_strength = attr_value
-                            project.sources.value.append(new_source_quality)
-                    elif attr_name.startswith("source_quality_pattern"):
-                        if new_source_quality:
-                            new_source_quality.pattern_name = attr_value
-                    elif attr_name.startswith("source_quality_type"):
-                        if new_source_quality:
-                            for et in SourceType:
-                                if et.name == attr_value:
-                                    new_source_quality.pattern_name = attr_value
-                                    break
-                    elif attr_name.startswith("base_demand"):
-                        new_demand = Demand()
-                        new_demand.junction_name = model_item.name
-                        val, val_is_good = ParseData.floatTryParse(attr_value)
-                        if val_is_good:
-                            new_demand.base_demand = attr_value
-                        ctr = attr_name[attr_name.rindex("_") + 1:]
-                        val, val_is_good = ParseData.intTryParse(ctr)
-                        if val_is_good:
-                            project.demands.value.append(new_demand)
-                    elif attr_name.startswith("demand_pattern"):
-                        if new_demand:
-                            ctr = attr_name[attr_name.rindex("_") + 1:]
-                            val, val_is_good = ParseData.intTryParse(ctr)
-                            if val_is_good:
-                                new_demand = project.demands.value[val - 1]
-                                new_demand.demand_pattern = attr_value
-                    elif attr_name.startswith("demand_category"):
-                        if new_demand:
-                            ctr = attr_name[attr_name.rindex("_") + 1:]
-                            val, val_is_good = ParseData.intTryParse(ctr)
-                            if val_is_good:
-                                new_demand = project.demands.value[val - 1]
-                                new_demand.category = attr_value
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, junction_import_attributes, model_item)
             project.junctions.value.append(model_item)
+            import_items_count["junction"] += 1
         elif elem_type.lower().startswith("tank"):
-            import_items_count["tank"] += 1
             model_layer = session.model_layers.tanks
             model_item = EpanetTank()
-            new_source_quality = None
-            for attr_name in tank_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    elif attr_name.startswith("source_quality_amount"):
-                        val, val_is_good = ParseData.floatTryParse(attr_value)
-                        if val_is_good:
-                            new_source_quality = Source()
-                            new_source_quality.name = model_item.name
-                            new_source_quality.baseline_strength = attr_value
-                            project.sources.value.append(new_source_quality)
-                    elif attr_name.startswith("source_quality_pattern"):
-                        if new_source_quality:
-                            new_source_quality.pattern_name = attr_value
-                    elif attr_name.startswith("source_quality_type"):
-                        if new_source_quality:
-                            for et in SourceType:
-                                if et.name == attr_value:
-                                    new_source_quality.pattern_name = attr_value
-                                    break
-                    elif attr_name.startswith("mixing_"):
-                        if attr_value:
-                            for mm in MixingModel:
-                                if mm.name == attr_value.upper():
-                                    model_item.mixing_model = mm
-                                    break
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, tank_import_attributes, model_item)
             project.tanks.value.append(model_item)
+            import_items_count["tank"] += 1
         elif elem_type.lower().startswith("reservoir"):
-            import_items_count["reservoir"] += 1
             model_layer = session.model_layers.reservoirs
             model_item = Reservoir()
-            new_source_quality = None
-            for attr_name in reservoir_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    elif attr_name.startswith("source_quality_amount"):
-                        val, val_is_good = ParseData.floatTryParse(attr_value)
-                        if val_is_good:
-                            new_source_quality = Source()
-                            new_source_quality.name = model_item.name
-                            new_source_quality.baseline_strength = attr_value
-                            project.sources.value.append(new_source_quality)
-                    elif attr_name.startswith("source_quality_pattern"):
-                        if new_source_quality:
-                            new_source_quality.pattern_name = attr_value
-                    elif attr_name.startswith("source_quality_type"):
-                        if new_source_quality:
-                            for et in SourceType:
-                                if et.name == attr_value:
-                                    new_source_quality.pattern_name = attr_value
-                                    break
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, reservoir_import_attributes, model_item)
             project.reservoirs.value.append(model_item)
+            import_items_count["reservoir"] += 1
         elif elem_type.lower().startswith("label"):
-            import_items_count["label"] += 1
             model_layer = session.model_layers.labels
             model_item = Label()
-            for attr_name in label_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "description":
-                        model_item.name = attr_value
-                    elif attr_name.startswith("meter_type"):
-                        for mt in MeterType:
-                            if mt.name == attr_value:
-                                model_item.meter_type = mt
-                                break
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            if hasattr(model_item, attr_name):
-                                setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, label_import_attributes, model_item)
             project.labels.value.append(model_item)
-
+            import_items_count["label"] += 1
         elif elem_type.lower().startswith("pipe"):
-            import_items_count["pipe"] += 1
             model_layer = session.model_layers.pipes
             model_item = Pipe()
-            for attr_name in pipe_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, pipe_import_attributes, model_item)
             project.pipes.value.append(model_item)
-
+            import_items_count["pipe"] += 1
         elif elem_type.lower().startswith("pump"):
-            import_items_count["pump"] += 1
             model_layer = session.model_layers.pumps
             model_item = Pump()
-            for attr_name in pump_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            if attr_value.lower() == "open":
-                                model_item.initial_status = FixedStatus.OPEN
-                            elif attr_value.lower() == "closed":
-                                model_item.initial_status = FixedStatus.CLOSED
-                            else:
-                                setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, pump_import_attributes, model_item)
             project.pumps.value.append(model_item)
+            import_items_count["pump"] += 1
         elif elem_type.lower().startswith("valve"):
-            import_items_count["valve"] += 1
             model_layer = session.model_layers.valves
             model_item = Valve()
-            for attr_name in valve_import_attributes:
-                if layer.fieldNameIndex(attr_name) >=0:
-                    attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-                    if attr_name == "id":
-                        model_item.name = attr_value
-                    else:
-                        if attr_value and not attr_value == NULL:
-                            if attr_value.lower() == "open":
-                                model_item.status = FixedStatus.OPEN
-                            elif attr_value.lower() == "closed":
-                                model_item.status = FixedStatus.CLOSED
-                            else:
-                                setattr(model_item, attr_name, attr_value)
+            build_model_object_per_geojson_record(project, f, valve_import_attributes, model_item)
             project.valves.value.append(model_item)
+            import_items_count["valve"] += 1
 
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
         if geom.type() == QGis.Point:
             new_feature.setAttributes([model_item.name, 0.0])
+            model_item.x = geom.asPoint().x()
+            model_item.y = geom.asPoint().y()
         elif geom.type() == QGis.Line:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
+            line = geom.asPolyline()
+            if len(line) > 2:
+                for i in xrange(1, len(line)):
+                    coord = Coordinate()
+                    coord.x = str(line[i].x())
+                    coord.y = str(line[i].y())
+                    model_item.vertices.append(coord)
+                    pass
         elif geom.type() == QGis.Polygon:
             new_feature.setAttributes([model_item.name, 0.0])
         #model_layer = QgsVectorLayer()
@@ -796,7 +650,7 @@ def import_epanet_from_geojson(session, file_name):
         model_layer.commitChanges()
         model_layer.updateExtents()
 
-    layer.rollBack(True)
+    # layer.rollBack(True)
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return import_items_count
@@ -904,6 +758,12 @@ def import_swmm_from_geojson(session, file_name):
                     pass
         elif geom.type() == QGis.Polygon:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0"])
+            for pt in geom.asPolygon()[0]:
+                coord = Coordinate()
+                coord.x = str(pt.x())
+                coord.y = str(pt.y())
+                model_item.vertices.append(coord)
+
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
         added_sub = model_layer.dataProvider().addFeatures([new_feature])
@@ -1040,6 +900,36 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
                     for mm in MixingModel:
                         if mm.name == attr_value.upper():
                             model_item.mixing_model = mm
+                            break
+            elif attr_name.startswith("subarea_routing"):
+                if attr_value:
+                    for r in Routing:
+                        if r.name == attr_value.upper():
+                            model_item.subarea_routing = r
+                            break
+            elif attr_name.startswith("outfall_type"):
+                if attr_value:
+                    for ot in OutfallType:
+                        if ot.name == attr_value.upper():
+                            model_item.outfall_type = ot
+                            break
+            elif attr_name.startswith("rain_format"):
+                if attr_value:
+                    for rf in RainFormat:
+                        if rf.name == attr_value.upper():
+                            model_item.rain_format = rf
+                            break
+            elif attr_name.startswith("rain_file_units"):
+                if attr_value:
+                    for rf in RainFileUnits:
+                        if rf.name == attr_value.upper():
+                            model_item.data_file_rain_units = rf
+                            break
+            elif attr_name.startswith("rain_data_source"):
+                if attr_value:
+                    for rf in RainDataSource:
+                        if rf.name == attr_value.upper():
+                            model_item.data_source = rf
                             break
             else:
                 if attr_value and not attr_value == NULL:

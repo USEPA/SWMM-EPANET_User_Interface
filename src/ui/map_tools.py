@@ -76,6 +76,7 @@ try:
 
             self.qgisNewFeatureTool = None
             self.measureTool = None
+            self.selectRegionTool = None
             self.map_linear_unit = self.map_unit_names[7]  # Unknown
             self.coord_origin = Coordinate()
             self.coord_fext = Coordinate()
@@ -211,6 +212,14 @@ try:
                 self.canvas.setMapTool(self.measureTool)
             else:
                 self.canvas.unsetMapTool(self.measureTool)
+
+        def setSelectByRegionMode(self):
+            if self.session.select_region_checked:
+                if self.selectRegionTool is None:
+                    self.selectRegionTool = CaptureRegionTool(self.canvas, None, None, None, self.session)
+                self.canvas.setMapTool(self.selectRegionTool)
+            else:
+                self.canvas.unsetMapTool(self.selectRegionTool)
 
         def clearSelectableObjects(self):
             self.layer_spatial_indexes = []
@@ -563,6 +572,18 @@ try:
             QgsMapLayerRegistry.instance().removeMapLayers(layer_names)
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in canvas_layers])
             self.set_extent(self.canvas.fullExtent())
+
+        def select_all_map_features(self):
+            if not self.session and not self.session.model_layers:
+                return
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                   (lyr_name.lower().startswith("label") or
+                   lyr_name.lower().startswith("subcentroid") or
+                   lyr_name.lower().startswith("sublink")):
+                    continue
+                mlyr.selectAll()
 
         @staticmethod
         def set_default_line_renderer(layer):
@@ -1197,6 +1218,134 @@ try:
             del msgBox
             self.stopCapturing()
             pass
+
+
+    class CaptureRegionTool(CaptureTool):
+        CAPTURE_LINE = 1
+        CAPTURE_POLYGON = 2
+        def __init__(self, canvas, layer, layer_name, object_type, session, layers=None):
+            CaptureTool.__init__(self, canvas, layer, layer_name, object_type, session)
+            self.layers          = layers
+            self.captureMode = CaptureTool.CAPTURE_POLYGON
+            self.measuring = True
+            self.ruler = QgsDistanceArea()
+            self.selected_model_objects = {} # "Junction": [J1, j2, P3 etc]
+            self.selected_map_objects = {} # "Junction": [feature_id1, feature_id2, etc]
+            self.region_layer = None
+            self.region_geometry = None
+            self.region_feature_id = None
+
+        def update_region_layer(self, layerCoords):
+            if not self.session and not self.session.model_layers:
+                return
+            self.region_geometry = QgsGeometry.fromPolygon([layerCoords])
+            if not self.region_layer:
+                self.region_layer = QgsVectorLayer("Polygon", "select_region", "memory")
+                self.region_layer.startEditing()
+                self.region_layer.dataProvider().addAttributes([QgsField("name", QtCore.QVariant.String)])
+                feature = QgsFeature()
+                feature.setGeometry(self.region_geometry)
+                feature.setAttributes(["select_region"])
+                added = self.region_layer.dataProvider().addFeatures([feature])
+                if added[0]:
+                    self.region_feature_id = added[1][0].id()
+            else:
+                if self.region_feature_id:
+                    self.region_layer.startEditing()
+                    self.region_layer.changeGeometry(self.region_feature_id, self.region_geometry)
+            self.region_layer.commitChanges()
+            self.region_layer.updateExtents()
+            self.region_layer.triggerRepaint()
+
+        def select_by_region(self):
+            total_selected = 0
+            if self.region_layer and self.region_feature_id:
+                # region_geom = self.region_layer.getFeature(self.region_feature_id).geometry()
+                for rf in self.region_layer.getFeatures():
+                    region_geom = rf.geometry()
+                    break
+                if not region_geom:
+                    return total_selected
+                for mlyr in self.session.model_layers.all_layers:
+                    lyr_name = mlyr.name()
+                    if lyr_name and \
+                       (lyr_name.lower().startswith("label") or
+                       lyr_name.lower().startswith("subcentroid") or
+                       lyr_name.lower().startswith("sublink")):
+                        continue
+                    mlyr.removeSelection()
+                    selected_ids = []
+                    for f in mlyr.getFeatures():
+                        geom = f.geometry()
+                        if geom.type() == QGis.Point:
+                            if region_geom.contains(geom):
+                                selected_ids.append(f.id())
+                        elif geom.type() == QGis.Line:
+                            if region_geom.intersects(geom):
+                                selected_ids.append(f.id())
+                        elif geom.type() == QGis.Polygon:
+                            if region_geom.intersects(geom):
+                                selected_ids.append(f.id())
+                    if len(selected_ids) > 0:
+                        self.selected_map_objects[lyr_name] = selected_ids
+                        mlyr.setSelectedFeatures(selected_ids)
+                        total_selected = total_selected + len(selected_ids)
+
+            return total_selected
+
+        def geometryCaptured(self):
+            points = self.capturedPoints
+            if self.measuring:
+                self.measureCaptured(points)
+                return
+
+            if self.captureMode == CaptureTool.CAPTURE_LINE:
+                if len(points) < 2:
+                    points = None
+            if self.captureMode == CaptureTool.CAPTURE_POLYGON:
+                if len(points) < 3:
+                    points = None
+            if self.captureMode == CaptureTool.CAPTURE_POLYGON:
+                if points is not None:
+                    points.append(points[0]) # Close polygon.
+
+            self.stopCapturing()
+
+            if points:
+                if self.session.auto_length and self.session.crs and self.session.crs.isValid():
+                    try:
+                        map_widget = self.session.map_widget
+                        unit_index = map_widget.map_unit_names.index(map_widget.map_linear_unit)
+                        u = map_widget.map_unit_abbrev[unit_index]
+                    except:
+                        pass
+                self.update_region_layer(points)
+                self.select_by_region()
+                self.region_layer.updateExtents()
+                self.canvas.refresh()
+                self.session.setQgsMapToolSelectRegion()
+
+        def measureCaptured(self, layerCoords):
+            self.captureMode = CaptureTool.CAPTURE_LINE
+            if len(layerCoords) < 2:
+                return
+            elif len(layerCoords) >= 3:
+                if self.closedPolygon():
+                    self.captureMode = CaptureTool.CAPTURE_POLYGON
+
+            if self.captureMode == CaptureTool.CAPTURE_LINE:
+                d = self.ruler.measureLine(layerCoords)
+                return
+            elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
+                self.update_region_layer(layerCoords)
+                self.select_by_region()
+                self.region_layer.updateExtents()
+                self.canvas.refresh()
+
+            self.stopCapturing()
+            self.session.setQgsMapToolSelectRegion()
+            pass
+
 
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):

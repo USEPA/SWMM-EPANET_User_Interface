@@ -7,6 +7,7 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
         self.session = main_form
+        self.icon = main_form.windowIcon()
         self.map_widget = self.session.map_widget
         self.options = None
         if args is not None and len(args) > 0:
@@ -57,6 +58,29 @@ class frmMapDimensions(QtGui.QDialog):
                 if self.session.project is not None:
                     if self.session.project.map is not None:
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
+                if self.session.project is not None:
+                    if self.session.project.backdrop is not None:
+                        self.session.project.backdrop.dimensions = (self.ui.txtULx.text(), self.ui.txtLRy.text(), self.ui.txtLRx.text(), self.ui.txtULy.text())
+                        if self.ui.rdoUnitFeet.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.FEET
+                            else:
+                                self.session.project.backdrop.units = "FEET"
+                        elif self.ui.rdoUnitMeters.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.METERS
+                            else:
+                                self.session.project.backdrop.units = "METERS"
+                        elif self.ui.rdoUnitDegrees.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.DEGREES
+                            else:
+                                self.session.project.backdrop.units = "DEGREES"
+                        else:
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.NONE
+                            else:
+                                self.session.project.backdrop.units = ""
         pass
 
     def setupOptions(self):
@@ -64,12 +88,17 @@ class frmMapDimensions(QtGui.QDialog):
             return
         if self.map_widget is None:
             return
-        lu = self.map_widget.map_linear_unit
-        if lu == self.map_widget.map_unit_names[2]:  # feet
+
+        if not isinstance(self.session.project.backdrop.units, basestring):
+            units = self.session.project.backdrop.units.name
+        else:
+            units = self.session.project.backdrop.units.upper()
+
+        if units == "FEET":  # feet
             self.ui.rdoUnitFeet.setChecked(True)
-        elif lu == self.map_widget.map_unit_names[0]:  # meters
+        elif units == "METERS":  # meters
             self.ui.rdoUnitMeters.setChecked(True)
-        elif lu == self.map_widget.map_unit_names[6]:  # degrees
+        elif units == "DEGREES":  # degrees
             self.ui.rdoUnitDegrees.setChecked(True)
         else:
             self.ui.rdoUnitNone.setChecked(True)
@@ -78,10 +107,12 @@ class frmMapDimensions(QtGui.QDialog):
         #self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
         #self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
         #self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        self.ui.txtULx.setText(self.map_widget.coord_origin.x)
-        self.ui.txtULy.setText(self.map_widget.coord_origin.y)
-        self.ui.txtLRx.setText(str(self.map_widget.coord_fext.x))
-        self.ui.txtLRy.setText(str(self.map_widget.coord_fext.x))
+        self.ui.txtULx.setText(str(self.session.project.backdrop.dimensions[0]))
+        self.ui.txtULy.setText(str(self.session.project.backdrop.dimensions[3]))
+        self.ui.txtLRx.setText(str(self.session.project.backdrop.dimensions[2]))
+        self.ui.txtLRy.setText(str(self.session.project.backdrop.dimensions[1]))
+
+        self.setWindowIcon(self.icon)
 
     def floatTryParse(self, value):
         try:

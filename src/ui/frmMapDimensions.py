@@ -16,10 +16,10 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui.rdoUnitNone.toggled.connect(self.changeLinearMapUnit)
         self.ui.rdoUnitFeet.toggled.connect(self.changeLinearMapUnit)
         self.ui.rdoUnitMeters.toggled.connect(self.changeLinearMapUnit)
-        self.ui.txtULx.textChanged.connect(lambda:self.checkCoords(self.ui.txtULx.text()))
-        self.ui.txtULy.textChanged.connect(lambda:self.checkCoords(self.ui.txtULy.text()))
-        self.ui.txtLRx.textChanged.connect(lambda:self.checkCoords(self.ui.txtLRx.text()))
-        self.ui.txtLRy.textChanged.connect(lambda:self.checkCoords(self.ui.txtLRy.text()))
+        self.ui.txtLLx.textChanged.connect(lambda:self.checkCoords(self.ui.txtLLx.text()))
+        self.ui.txtLLy.textChanged.connect(lambda:self.checkCoords(self.ui.txtLLy.text()))
+        self.ui.txtURx.textChanged.connect(lambda:self.checkCoords(self.ui.txtURx.text()))
+        self.ui.txtURy.textChanged.connect(lambda:self.checkCoords(self.ui.txtURy.text()))
         self.ui.btnAutoSize.clicked.connect(self.autoSetMapDimensions)
         self.ui.buttonBox.accepted.connect(self.setExtent)
         self.setupOptions()
@@ -40,10 +40,10 @@ class frmMapDimensions(QtGui.QDialog):
             return
         if self.map_widget is None:
             return
-        val1, is_val_good1 = self.floatTryParse(self.ui.txtULx.text())
-        val2, is_val_good2 = self.floatTryParse(self.ui.txtULy.text())
-        val3, is_val_good3 = self.floatTryParse(self.ui.txtLRx.text())
-        val4, is_val_good4 = self.floatTryParse(self.ui.txtLRy.text())
+        val1, is_val_good1 = self.floatTryParse(self.ui.txtLLx.text())
+        val2, is_val_good2 = self.floatTryParse(self.ui.txtLLy.text())
+        val3, is_val_good3 = self.floatTryParse(self.ui.txtURx.text())
+        val4, is_val_good4 = self.floatTryParse(self.ui.txtURy.text())
 
         if is_val_good1 and is_val_good2 and is_val_good3 and is_val_good4:
             if val1 == val3 or val2 == val4:
@@ -60,7 +60,7 @@ class frmMapDimensions(QtGui.QDialog):
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
                 if self.session.project is not None:
                     if self.session.project.backdrop is not None:
-                        self.session.project.backdrop.dimensions = (self.ui.txtULx.text(), self.ui.txtLRy.text(), self.ui.txtLRx.text(), self.ui.txtULy.text())
+                        self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtURy.text(), self.ui.txtURx.text(), self.ui.txtLLy.text())
                         if self.ui.rdoUnitFeet.isChecked():
                             if not isinstance(self.session.project.backdrop.units, basestring):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.FEET
@@ -89,6 +89,42 @@ class frmMapDimensions(QtGui.QDialog):
         if self.map_widget is None:
             return
 
+        llx = 9e99
+        lly = 9e99
+        urx = -9e99
+        ury = -9e99
+        if self.session.model_layers:
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                        (lyr_name.lower().startswith("label") or
+                             lyr_name.lower().startswith("subcentroid") or
+                             lyr_name.lower().startswith("sublink")):
+                    continue
+                r = mlyr.extent()
+                if llx > r.xMinimum():
+                    llx = r.xMinimum()
+                if urx < r.xMaximum():
+                    urx = r.xMaximum()
+                if lly > r.yMinimum():
+                    lly = r.yMinimum()
+                if ury < r.yMaximum():
+                    ury = r.yMaximum()
+            self.ui.txtLLx.setText(str(llx))
+            self.ui.txtLLy.setText(str(lly))
+            self.ui.txtURx.setText(str(urx))
+            self.ui.txtURy.setText(str(ury))
+        else:
+            #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
+            #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
+            #self.ui.txtURx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+            #self.ui.txtURy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+            self.ui.txtLLx.setText(str(self.session.project.backdrop.dimensions[0]))
+            self.ui.txtLLy.setText(str(self.session.project.backdrop.dimensions[3]))
+            self.ui.txtURx.setText(str(self.session.project.backdrop.dimensions[2]))
+            self.ui.txtURy.setText(str(self.session.project.backdrop.dimensions[1]))
+
+
         if not isinstance(self.session.project.backdrop.units, basestring):
             units = self.session.project.backdrop.units.name
         else:
@@ -102,15 +138,6 @@ class frmMapDimensions(QtGui.QDialog):
             self.ui.rdoUnitDegrees.setChecked(True)
         else:
             self.ui.rdoUnitNone.setChecked(True)
-
-        #self.ui.txtULx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
-        #self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
-        #self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        #self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        self.ui.txtULx.setText(str(self.session.project.backdrop.dimensions[0]))
-        self.ui.txtULy.setText(str(self.session.project.backdrop.dimensions[3]))
-        self.ui.txtLRx.setText(str(self.session.project.backdrop.dimensions[2]))
-        self.ui.txtLRy.setText(str(self.session.project.backdrop.dimensions[1]))
 
         self.setWindowIcon(self.icon)
 
@@ -157,10 +184,10 @@ class frmMapDimensions(QtGui.QDialog):
         pass
 
     def coordsInGoodFormat(self):
-        val1, is_val_good1 = self.floatTryParse(self.ui.txtULx.text())
-        val2, is_val_good2 = self.floatTryParse(self.ui.txtULy.text())
-        val3, is_val_good3 = self.floatTryParse(self.ui.txtLRx.text())
-        val4, is_val_good4 = self.floatTryParse(self.ui.txtLRy.text())
+        val1, is_val_good1 = self.floatTryParse(self.ui.txtLLx.text())
+        val2, is_val_good2 = self.floatTryParse(self.ui.txtLLy.text())
+        val3, is_val_good3 = self.floatTryParse(self.ui.txtURx.text())
+        val4, is_val_good4 = self.floatTryParse(self.ui.txtURy.text())
         if is_val_good1 and is_val_good2 and is_val_good3 and is_val_good4:
             if val1 == val3 or val2 == val4:
                 #MSG_ILLEGAL_MAP_LIMITS

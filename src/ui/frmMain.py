@@ -183,6 +183,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
                             self.actionStdSelect_Region.triggered.connect(self.setQgsMapToolSelectRegion)
+                            self.actionStdSelect_All.triggered.connect(self.select_all_map_features)
 
                             self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
                             self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
@@ -286,7 +287,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         self.actionStdImportNetwork.setVisible(False)
         # self.actionStdSelect_Region.setEnabled(False)
-        self.actionStdSelect_All.setEnabled(False)
+        # self.actionStdSelect_All.setEnabled(False)
         self.actionAdd_Feature.setCheckable(True)
         self.actionAdd_Feature.setVisible(False)
         self.actionMapFindObj.setVisible(False)
@@ -1174,6 +1175,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.program_settings.sync()
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
+
+
+    def select_all_map_features(self):
+        if self.map_widget:
+            self.map_widget.select_all_map_features()
 
     def on_load(self, tree_top_item_list):
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)

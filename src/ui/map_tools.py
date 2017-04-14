@@ -573,6 +573,18 @@ try:
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in canvas_layers])
             self.set_extent(self.canvas.fullExtent())
 
+        def select_all_map_features(self):
+            if not self.session and not self.session.model_layers:
+                return
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                   (lyr_name.lower().startswith("label") or
+                   lyr_name.lower().startswith("subcentroid") or
+                   lyr_name.lower().startswith("sublink")):
+                    continue
+                mlyr.selectAll()
+
         @staticmethod
         def set_default_line_renderer(layer):
             if layer is None:

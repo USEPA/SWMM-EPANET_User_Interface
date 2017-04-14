@@ -84,6 +84,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionRun_SimulationMenu.triggered.connect(self.run_simulation)
         self.actionStdProjCalibration_Data.triggered.connect(self.calibration_data)
         self.actionStdProjDefault.triggered.connect(self.edit_defaults)
+        self.actionStdLegends.triggered.connect(self.legends_menu)
+        self.actionStdMapOptions.triggered.connect(self.map_options_menu)
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
@@ -321,6 +323,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def alignBasemap(self):
         pass
+
+    def legends_menu(self):
+        QMessageBox.information(None, self.model,
+                                "The 'Legends' functionality is available through the 'Map' tab in the 'Project Explorer.",
+                                QMessageBox.Ok)
+
+    def map_options_menu(self):
+        QMessageBox.information(None, self.model,
+                                "The 'Map Options' functionality is available through the 'Layers' tab in the 'Project Explorer.",
+                                QMessageBox.Ok)
 
     def cbAutoLength_currentIndexChanged(self):
         self.auto_length = (self.cbAutoLength.currentIndex() == 1)

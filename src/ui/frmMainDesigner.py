@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
 #
-# Created: Tue Mar 21 13:53:08 2017
+# Created: Fri Apr 14 14:00:34 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -90,10 +90,6 @@ class Ui_frmMain(object):
         self.menuBackdrop.setObjectName(_fromUtf8("menuBackdrop"))
         self.menuObjects = QtGui.QMenu(self.menuView)
         self.menuObjects.setObjectName(_fromUtf8("menuObjects"))
-        self.menuLegends = QtGui.QMenu(self.menuView)
-        self.menuLegends.setObjectName(_fromUtf8("menuLegends"))
-        self.menuModifyLeg = QtGui.QMenu(self.menuLegends)
-        self.menuModifyLeg.setObjectName(_fromUtf8("menuModifyLeg"))
         self.menuToolbars = QtGui.QMenu(self.menuView)
         self.menuToolbars.setObjectName(_fromUtf8("menuToolbars"))
         self.menuProject = QtGui.QMenu(self.menubar)
@@ -729,6 +725,8 @@ class Ui_frmMain(object):
         self.actionOpen.setObjectName(_fromUtf8("actionOpen"))
         self.actionStdMapFind = QtGui.QAction(frmMain)
         self.actionStdMapFind.setObjectName(_fromUtf8("actionStdMapFind"))
+        self.actionStdLegends = QtGui.QAction(frmMain)
+        self.actionStdLegends.setObjectName(_fromUtf8("actionStdLegends"))
         self.menuImport.addAction(self.actionStdImportMap)
         self.menuImport.addAction(self.actionStdImportScenario)
         self.menuImport.addAction(self.actionStdImportNetwork)
@@ -772,15 +770,6 @@ class Ui_frmMain(object):
         self.menuObjects.addAction(self.actionStdMapShowLinks)
         self.menuObjects.addAction(self.actionStdMapShowLabels)
         self.menuObjects.addAction(self.actionStdMapShowBackdrop)
-        self.menuModifyLeg.addAction(self.actionStdLegModSubcatchment)
-        self.menuModifyLeg.addAction(self.actionStdLegModNode)
-        self.menuModifyLeg.addAction(self.actionStdLegModLink)
-        self.menuLegends.addAction(self.actionStdLegSubcatchment)
-        self.menuLegends.addAction(self.actionStdLegNode)
-        self.menuLegends.addAction(self.actionStdLegLink)
-        self.menuLegends.addAction(self.actionStdLegTime)
-        self.menuLegends.addSeparator()
-        self.menuLegends.addAction(self.menuModifyLeg.menuAction())
         self.menuToolbars.addAction(self.actionToolbarShowStandard)
         self.menuToolbars.addAction(self.actionToolbarShowMap)
         self.menuToolbars.addAction(self.actionToolbarShowObject)
@@ -797,7 +786,7 @@ class Ui_frmMain(object):
         self.menuView.addAction(self.actionStdMapOverview)
         self.menuView.addSeparator()
         self.menuView.addAction(self.menuObjects.menuAction())
-        self.menuView.addAction(self.menuLegends.menuAction())
+        self.menuView.addAction(self.actionStdLegends)
         self.menuView.addAction(self.menuToolbars.menuAction())
         self.menuView.addSeparator()
         self.menuView.addAction(self.actionStdMapOptions)
@@ -895,8 +884,6 @@ class Ui_frmMain(object):
         self.menuView.setTitle(_translate("frmMain", "View", None))
         self.menuBackdrop.setTitle(_translate("frmMain", "Backdrop", None))
         self.menuObjects.setTitle(_translate("frmMain", "Objects", None))
-        self.menuLegends.setTitle(_translate("frmMain", "Legends", None))
-        self.menuModifyLeg.setTitle(_translate("frmMain", "Modify", None))
         self.menuToolbars.setTitle(_translate("frmMain", "Toolbars", None))
         self.menuProject.setTitle(_translate("frmMain", "Project", None))
         self.menuReport.setTitle(_translate("frmMain", "Report", None))
@@ -1090,5 +1077,6 @@ class Ui_frmMain(object):
         self.actionRun_Script.setText(_translate("frmMain", "Run Script", None))
         self.actionOpen.setText(_translate("frmMain", "File0", None))
         self.actionStdMapFind.setText(_translate("frmMain", "Find...", None))
+        self.actionStdLegends.setText(_translate("frmMain", "Legends", None))
 
 import swmm_rc

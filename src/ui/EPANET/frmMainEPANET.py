@@ -170,7 +170,6 @@ class frmMainEPANET(frmMain):
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
         self.menuTools.removeAction(self.actionStdProgPrefer)
-        self.menuLegends.removeAction(self.actionStdLegSubcatchment)
         self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
 

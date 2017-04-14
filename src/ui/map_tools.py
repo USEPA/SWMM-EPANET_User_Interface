@@ -1262,8 +1262,6 @@ try:
                        lyr_name.lower().startswith("sublink")):
                         continue
                     mlyr.removeSelection()
-                    # while len(mlyr.selectedFeatures()) > 0:
-                    #     mlyr.selectedFeatures().pop()
                     selected_ids = []
                     for f in mlyr.getFeatures():
                         geom = f.geometry()
@@ -1316,7 +1314,6 @@ try:
                 self.session.setQgsMapToolSelectRegion()
 
         def measureCaptured(self, layerCoords):
-            # msgBox = QMessageBox()
             self.captureMode = CaptureTool.CAPTURE_LINE
             if len(layerCoords) < 2:
                 return
@@ -1326,7 +1323,6 @@ try:
 
             if self.captureMode == CaptureTool.CAPTURE_LINE:
                 d = self.ruler.measureLine(layerCoords)
-                # msgBox.setText("Line Distance: " + str(d))
                 return
             elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 self.update_region_layer(layerCoords)
@@ -1334,14 +1330,9 @@ try:
                 self.region_layer.updateExtents()
                 self.canvas.refresh()
 
-            # msgBox.setWindowTitle("Measure Dimension")
-            # msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-            # msgBox.exec_()
-            # del msgBox
             self.stopCapturing()
             self.session.setQgsMapToolSelectRegion()
             pass
-
 
 
     class AddLinkTool(CaptureTool):

@@ -216,25 +216,6 @@
      <addaction name="actionStdMapShowLabels"/>
      <addaction name="actionStdMapShowBackdrop"/>
     </widget>
-    <widget class="QMenu" name="menuLegends">
-     <property name="title">
-      <string>Legends</string>
-     </property>
-     <widget class="QMenu" name="menuModifyLeg">
-      <property name="title">
-       <string>Modify</string>
-      </property>
-      <addaction name="actionStdLegModSubcatchment"/>
-      <addaction name="actionStdLegModNode"/>
-      <addaction name="actionStdLegModLink"/>
-     </widget>
-     <addaction name="actionStdLegSubcatchment"/>
-     <addaction name="actionStdLegNode"/>
-     <addaction name="actionStdLegLink"/>
-     <addaction name="actionStdLegTime"/>
-     <addaction name="separator"/>
-     <addaction name="menuModifyLeg"/>
-    </widget>
     <widget class="QMenu" name="menuToolbars">
      <property name="title">
       <string>Toolbars</string>
@@ -256,7 +237,7 @@
     <addaction name="actionStdMapOverview"/>
     <addaction name="separator"/>
     <addaction name="menuObjects"/>
-    <addaction name="menuLegends"/>
+    <addaction name="actionStdLegends"/>
     <addaction name="menuToolbars"/>
     <addaction name="separator"/>
     <addaction name="actionStdMapOptions"/>
@@ -1902,6 +1883,11 @@
   <action name="actionStdMapFind">
    <property name="text">
     <string>Find...</string>
+   </property>
+  </action>
+  <action name="actionStdLegends">
+   <property name="text">
+    <string>Legends</string>
    </property>
   </action>
  </widget>

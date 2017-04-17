@@ -931,7 +931,7 @@ try:
                 self.add_layer(layer, self.base_group)
 
         @staticmethod
-        def get_extent(self, layers):
+        def get_extent(layers):
             '''
             Get the extent of layers by examing the coordinates of vertices
             Args:

@@ -89,41 +89,40 @@ class frmMapDimensions(QtGui.QDialog):
         if self.map_widget is None:
             return
 
-        llx = 9e99
-        lly = 9e99
-        urx = -9e99
-        ury = -9e99
-        if self.session.model_layers:
-            for mlyr in self.session.model_layers.all_layers:
-                lyr_name = mlyr.name()
-                if lyr_name and \
-                        (lyr_name.lower().startswith("label") or
-                             lyr_name.lower().startswith("subcentroid") or
-                             lyr_name.lower().startswith("sublink")):
-                    continue
-                r = mlyr.extent()
-                if llx > r.xMinimum():
-                    llx = r.xMinimum()
-                if urx < r.xMaximum():
-                    urx = r.xMaximum()
-                if lly > r.yMinimum():
-                    lly = r.yMinimum()
-                if ury < r.yMaximum():
-                    ury = r.yMaximum()
-            self.ui.txtLLx.setText(str(llx))
-            self.ui.txtLLy.setText(str(lly))
-            self.ui.txtURx.setText(str(urx))
-            self.ui.txtURy.setText(str(ury))
-        else:
+        model_dim = self.session.project.backdrop.dimensions
+        if model_dim and model_dim[0] and model_dim[1] and model_dim[2] and model_dim[3]:
             #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
             #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
             #self.ui.txtURx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
             #self.ui.txtURy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-            self.ui.txtLLx.setText(str(self.session.project.backdrop.dimensions[0]))
-            self.ui.txtLLy.setText(str(self.session.project.backdrop.dimensions[3]))
-            self.ui.txtURx.setText(str(self.session.project.backdrop.dimensions[2]))
-            self.ui.txtURy.setText(str(self.session.project.backdrop.dimensions[1]))
-
+            self.ui.txtLLx.setText(str(model_dim[0]))
+            self.ui.txtLLy.setText(str(model_dim[1]))
+            self.ui.txtURx.setText(str(model_dim[2]))
+            self.ui.txtURy.setText(str(model_dim[3]))
+        else:
+            if self.session.model_layers:
+                llx = 0
+                lly = 0
+                urx = 10000
+                ury = 10000
+                layers = []
+                for mlyr in self.session.model_layers.all_layers:
+                    lyr_name = mlyr.name()
+                    if lyr_name and \
+                            (lyr_name.lower().startswith("label") or
+                                 lyr_name.lower().startswith("subcentroid") or
+                                 lyr_name.lower().startswith("sublink")):
+                        continue
+                    layers.append(mlyr)
+                r = self.session.map_widget.get_extent(layers)
+                llx = r.xMinimum()
+                lly = r.yMinimum()
+                urx = r.xMaximum()
+                ury = r.yMaximum()
+                self.ui.txtLLx.setText(str(llx))
+                self.ui.txtLLy.setText(str(lly))
+                self.ui.txtURx.setText(str(urx))
+                self.ui.txtURy.setText(str(ury))
 
         if not isinstance(self.session.project.backdrop.units, basestring):
             units = self.session.project.backdrop.units.name

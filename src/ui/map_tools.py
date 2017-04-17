@@ -819,7 +819,7 @@ try:
             #elif filename.lower().endswith('.json'):
             #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson"o)
             sep_layers = []
-            if fext.lower().endswith('.json'):
+            if fext.lower().endswith('.json') or fext.lower().endswith('.geojson'):
                 sep_layers = self.parse_geojson(layer)
                 for lyr_key in sep_layers:
                     lyr = sep_layers[lyr_key]
@@ -850,14 +850,16 @@ try:
                 elem_types = agjLayer.uniqueValues(ind, 20)
             for f in agjLayer.getFeatures():
                 geom = f.geometry()
-                if not elem_geom.__contains__(f.attributes()[ind]):
+                if ind < 0 or \
+                   (ind >= 0 and not elem_geom.__contains__(f.attributes()[ind])):
                     if not geom_types.__contains__(geom.type()): geom_types.append(geom.type())
-                    if geom.type() == QGis.Point:
-                        elem_geom[f.attributes()[ind]] = "Point"
-                    elif geom.type() == QGis.Line:
-                        elem_geom[f.attributes()[ind]] = "LineString"
-                    elif geom.type() == QGis.Polygon:
-                        elem_geom[f.attributes()[ind]] = "Polygon"
+                    if ind >=0:
+                        if geom.type() == QGis.Point:
+                            elem_geom[f.attributes()[ind]] = "Point"
+                        elif geom.type() == QGis.Line:
+                            elem_geom[f.attributes()[ind]] = "LineString"
+                        elif geom.type() == QGis.Polygon:
+                            elem_geom[f.attributes()[ind]] = "Polygon"
 
             if len(elem_types) > 0:
                 expr_text = "\"element_type\"='ZZZZ'"
@@ -890,6 +892,7 @@ try:
                     if gt == QGis.Point:
                         geom_type = "Point"
                         new_layer = QgsVectorLayer("Point", agjLayer.name() + "_point", "memory")
+                        new_layer.startEditing()
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Point:
@@ -897,6 +900,7 @@ try:
                     elif gt == QGis.Line:
                         geom_type = "LineString"
                         new_layer = QgsVectorLayer("LineString", agjLayer.name() + "_line", "memory")
+                        new_layer.startEditing()
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Line:
@@ -904,10 +908,15 @@ try:
                     elif gt == QGis.Polygon:
                         geom_type = "Polygon"
                         new_layer = QgsVectorLayer("Polygon", agjLayer.name() + "_polygon", "memory")
+                        new_layer.startEditing()
                         for f in agjLayer.getFeatures():
                             geom = f.geometry()
                             if geom.type() == QGis.Polygon:
                                 new_layer.addFeature(f, True)
+
+                    if new_layer:
+                        new_layer.commitChanges()
+                        new_layer.updateExtents()
 
                     if len(geom_type) > 0:
                         layers[geom_type] = new_layer

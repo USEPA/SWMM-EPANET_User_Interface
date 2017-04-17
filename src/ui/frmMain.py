@@ -1138,8 +1138,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def map_addvector(self):
         directory = self.program_settings.value("GISDataDir", "/")
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory,
-                                                     'Shapefiles (*.shp);;GeoJSON (*.json);;All files (*.*)')
+        file_filter = "Shapefile (*.shp);;" \
+                      "GeoJSON (*.json);;" \
+                      "GeoJSON (*.geojson);;" \
+                      "All files (*.*)"
+        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
         if filename:
             try:
                 self.map_widget.addVectorLayer(filename)

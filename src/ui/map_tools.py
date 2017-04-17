@@ -920,6 +920,10 @@ try:
             self.canvas.setExtent(buffered_extent)
             self.canvas.refresh()
 
+        def set_extent_by_corners(self, corners):
+            r = QgsRectangle(corners[0], corners[1], corners[2], corners[3])
+            self.set_extent(r)
+
         def addRasterLayer(self, filename, *args):
             if len(filename.strip()) > 0:
                 layer_name = os.path.basename(filename.strip())

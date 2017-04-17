@@ -25,15 +25,12 @@ class frmMapDimensions(QtGui.QDialog):
         self.setupOptions()
 
     def autoSetMapDimensions(self):
+        # Determines map dimensions based on range of vertices' coordinates
         MAXDEGDIGITS = 4 # Max.decimal digits for lat - long degrees pass
         sigDigit = 2
         if self.ui.rdoUnitDegrees.isChecked():
             sigDigit = MAXDEGDIGITS
-
-    def setMapDimensions(self):
-        #Determines map dimensions based on range of nodal coordinates
-
-        pass
+        self.display_layers_extent()
 
     def setExtent(self):
         if self.session is None:
@@ -58,6 +55,7 @@ class frmMapDimensions(QtGui.QDialog):
                 if self.session.project is not None:
                     if self.session.project.map is not None:
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
+                        self.session.map_widget.set_extent_by_corners(self.session.project.map.dimensions)
                 if self.session.project is not None:
                     if self.session.project.backdrop is not None:
                         self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtURy.text(), self.ui.txtURx.text(), self.ui.txtLLy.text())
@@ -100,29 +98,7 @@ class frmMapDimensions(QtGui.QDialog):
             self.ui.txtURx.setText(str(model_dim[2]))
             self.ui.txtURy.setText(str(model_dim[3]))
         else:
-            if self.session.model_layers:
-                llx = 0
-                lly = 0
-                urx = 10000
-                ury = 10000
-                layers = []
-                for mlyr in self.session.model_layers.all_layers:
-                    lyr_name = mlyr.name()
-                    if lyr_name and \
-                            (lyr_name.lower().startswith("label") or
-                                 lyr_name.lower().startswith("subcentroid") or
-                                 lyr_name.lower().startswith("sublink")):
-                        continue
-                    layers.append(mlyr)
-                r = self.session.map_widget.get_extent(layers)
-                llx = r.xMinimum()
-                lly = r.yMinimum()
-                urx = r.xMaximum()
-                ury = r.yMaximum()
-                self.ui.txtLLx.setText(str(llx))
-                self.ui.txtLLy.setText(str(lly))
-                self.ui.txtURx.setText(str(urx))
-                self.ui.txtURy.setText(str(ury))
+            self.display_layers_extent()
 
         if not isinstance(self.session.project.backdrop.units, basestring):
             units = self.session.project.backdrop.units.name
@@ -139,6 +115,31 @@ class frmMapDimensions(QtGui.QDialog):
             self.ui.rdoUnitNone.setChecked(True)
 
         self.setWindowIcon(self.icon)
+
+    def display_layers_extent(self):
+        if self.session.model_layers:
+            llx = 0
+            lly = 0
+            urx = 10000
+            ury = 10000
+            layers = []
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                        (lyr_name.lower().startswith("label") or
+                             lyr_name.lower().startswith("subcentroid") or
+                             lyr_name.lower().startswith("sublink")):
+                    continue
+                layers.append(mlyr)
+            r = self.session.map_widget.get_extent(layers)
+            llx = r.xMinimum()
+            lly = r.yMinimum()
+            urx = r.xMaximum()
+            ury = r.yMaximum()
+            self.ui.txtLLx.setText(str(llx))
+            self.ui.txtLLy.setText(str(lly))
+            self.ui.txtURx.setText(str(urx))
+            self.ui.txtURy.setText(str(ury))
 
     def floatTryParse(self, value):
         try:

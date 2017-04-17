@@ -930,6 +930,49 @@ try:
                         self.session.backdrop_name = layer.name()
                 self.add_layer(layer, self.base_group)
 
+        @staticmethod
+        def get_extent(self, layers):
+            '''
+            Get the extent of layers by examing the coordinates of vertices
+            Args:
+                self: EmbedMap
+                layers: [] of QgsVectorLayers
+            Returns: QgsRectangle
+            '''
+            xmin = sys.float_info.max
+            xmax = sys.float_info.min
+            ymin = sys.float_info.max
+            ymax = sys.float_info.min
+            if not layers or len(layers) == 0:
+                return None
+            for lyr in layers:
+                if not isinstance(lyr, QgsVectorLayer):
+                    continue
+                pt = None
+                for f in lyr.getFeatures():
+                    geom = f.geometry()
+                    if geom.wkbType() == QGis.WKBPoint:
+                        pt = geom.asPoint()
+                        if pt.x() < xmin: xmin = pt.x()
+                        if pt.x() > xmax: xmax = pt.x()
+                        if pt.y() < ymin: ymin = pt.y()
+                        if pt.y() > ymax: ymax = pt.y()
+                    elif geom.wkbType() == QGis.WKBPolygon:
+                        for pt in geom.asPolygon()[0]:
+                            if pt.x() < xmin: xmin = pt.x()
+                            if pt.x() > xmax: xmax = pt.x()
+                            if pt.y() < ymin: ymin = pt.y()
+                            if pt.y() > ymax: ymax = pt.y()
+                    elif geom.wkbType() == QGis.WKBLineString:
+                        geom = QgsGeometry()
+                        for pt in geom.asPolyline():
+                            if pt.x() < xmin: xmin = pt.x()
+                            if pt.x() > xmax: xmax = pt.x()
+                            if pt.y() < ymin: ymin = pt.y()
+                            if pt.y() > ymax: ymax = pt.y()
+            r = QgsRectangle(xmin, ymin, xmax, ymax)
+            return r
+
         def drawVertexMarker(self, layer):
             """
             implement the drawVertexMarker routine to highlight the vertices of polygon
@@ -1899,32 +1942,14 @@ try:
                 ymin = r.yMinimum()
                 ymax = r.yMaximum()
             else:
-                pt = None
-                for f in self.view.currentLayer().getFeatures():
-                    geom = f.geometry()
-                    if geom.wkbType() == QGis.WKBPoint:
-                        pt = geom.asPoint()
-                        if pt.x() < xmin: xmin = pt.x()
-                        if pt.x() > xmax: xmax = pt.x()
-                        if pt.y() < ymin: ymin = pt.y()
-                        if pt.y() > ymax: ymax = pt.y()
-                    elif geom.wkbType() == QGis.WKBPolygon:
-                        for pt in geom.asPolygon()[0]:
-                            if pt.x() < xmin: xmin = pt.x()
-                            if pt.x() > xmax: xmax = pt.x()
-                            if pt.y() < ymin: ymin = pt.y()
-                            if pt.y() > ymax: ymax = pt.y()
-                    elif geom.wkbType() == QGis.WKBLineString:
-                        geom = QgsGeometry()
-                        for pt in geom.asPolyline():
-                            if pt.x() < xmin: xmin = pt.x()
-                            if pt.x() > xmax: xmax = pt.x()
-                            if pt.y() < ymin: ymin = pt.y()
-                            if pt.y() > ymax: ymax = pt.y()
+                r_new = self.map_control.get_extent([self.view.currentLayer()])
+                xmin = r_new.xMinimum()
+                xmax = r_new.xMaximum()
+                ymin = r_new.yMinimum()
+                ymax = r_new.yMaximum()
             r_new = QgsRectangle(xmin, ymin, xmax, ymax)
             self.map_control.set_extent(r_new)
             pass
-
 
 except:
     print "Skipping map_tools"

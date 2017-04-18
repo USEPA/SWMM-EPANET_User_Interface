@@ -551,11 +551,11 @@ try:
                 dp = layer.dataProvider()
                 crs = dp.crs()
                 if crs.isValid():
-                    if not self.session.crs:
-                        self.session.set_crs(crs)
-                        print("CRS = " + crs.toWkt())
-                    else:  # TODO: compare to existing CRS?
-                        pass
+                    # if not self.session.crs:
+                    self.session.set_crs(crs)
+                    print("CRS = " + crs.toWkt())
+                    # else:  # TODO: compare to existing CRS?
+                    #     pass
             except Exception as ex:
                 print str(ex)
 
@@ -841,6 +841,12 @@ try:
             pass
 
         def parse_geojson(self, agjLayer):
+            src_crs = agjLayer.crs()
+            src_authid = ""
+            src_Wkt = ""
+            if src_crs.isValid():
+                src_authid = src_crs.authid()
+                src_Wkt = src_crs.toWkt()
             layers = {}
             geom_types = []
             elem_types = []
@@ -867,7 +873,10 @@ try:
                 for et in elem_types:
                     attributes_added = False
                     try:
-                        new_layer = QgsVectorLayer(elem_geom[et], agjLayer.name() + "_" + str(et), "memory")
+                        layer_type = elem_geom[et]
+                        if src_authid:
+                            layer_type = layer_type + "?crs=" + src_authid
+                        new_layer = QgsVectorLayer(layer_type, agjLayer.name() + "_" + str(et), "memory")
                         expr = QgsExpression(expr_text.replace("ZZZZ", et))
                         it = agjLayer.getFeatures(QgsFeatureRequest(expr))
                         #ids = [sf.id() for sf in it]
@@ -889,30 +898,37 @@ try:
                 for gt in geom_types:
                     new_layer = None
                     geom_type = ""
+                    layer_name_postfix = ""
+                    field = QgsField("id", QtCore.QVariant.Int)
                     if gt == QGis.Point:
                         geom_type = "Point"
-                        new_layer = QgsVectorLayer("Point", agjLayer.name() + "_point", "memory")
-                        new_layer.startEditing()
-                        for f in agjLayer.getFeatures():
-                            geom = f.geometry()
-                            if geom.type() == QGis.Point:
-                                new_layer.addFeature(f, True)
+                        layer_name_postfix = "_point"
                     elif gt == QGis.Line:
                         geom_type = "LineString"
-                        new_layer = QgsVectorLayer("LineString", agjLayer.name() + "_line", "memory")
-                        new_layer.startEditing()
-                        for f in agjLayer.getFeatures():
-                            geom = f.geometry()
-                            if geom.type() == QGis.Line:
-                                new_layer.addFeature(f, True)
+                        layer_name_postfix = "_line"
                     elif gt == QGis.Polygon:
                         geom_type = "Polygon"
-                        new_layer = QgsVectorLayer("Polygon", agjLayer.name() + "_polygon", "memory")
-                        new_layer.startEditing()
-                        for f in agjLayer.getFeatures():
-                            geom = f.geometry()
-                            if geom.type() == QGis.Polygon:
-                                new_layer.addFeature(f, True)
+                        layer_name_postfix = "_polygon"
+
+                    layer_type = geom_type
+                    if src_authid:
+                        layer_type = geom_type + "?crs=" + src_authid
+                    new_layer = QgsVectorLayer(layer_type, agjLayer.name() + layer_name_postfix, "memory")
+                    # layer_type = layer_type + "&field=id:integer&index=yes"
+                    # epsg_id = int(src_authid[5:])
+                    # dst_crs = QgsCoordinateReferenceSystem(epsg_id, QgsCoordinateReferenceSystem.EpsgCrsId)
+                    # new_layer.setCrs(dst_crs)
+                    new_layer.dataProvider().addAttributes([field])
+                    new_layer.startEditing()
+                    new_id = 0
+                    for f in agjLayer.getFeatures():
+                        geom = f.geometry()
+                        new_feature = QgsFeature()
+                        new_feature.setGeometry(geom)
+                        new_feature.setAttributes([new_id])
+                        if geom.type() == gt:
+                            new_layer.addFeature(new_feature, True)
+                            new_id = new_id + 1
 
                     if new_layer:
                         new_layer.commitChanges()

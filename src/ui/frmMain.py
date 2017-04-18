@@ -163,6 +163,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
                         self.canvas.setMouseTracking(True)
+                        self.canvas.mapRenderer().setProjectionsEnabled(True)
                         self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
                         self.select_region_checked = False
@@ -1763,12 +1764,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if crs and crs.isValid():
             self.crs = crs
             try:
-                self.txtCrs.setText(unicode(crs.ellipsoidAcronym()))
+                self.txtCrs.setText(crs.authid())
+                self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
             except:
                 pass
         else:
             self.crs = None
+        pass
 
     def save_project(self, file_name=None):
         if not file_name:

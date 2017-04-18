@@ -170,7 +170,8 @@ class frmMainEPANET(frmMain):
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
-        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'), self.translate_coordinates)
+        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
+                               self.setQgsMapToolTranslateCoords)
 
         self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
         QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
@@ -627,7 +628,9 @@ class frmMainEPANET(frmMain):
         frmF = frmFind(self, self.project)
         frmF.show()
 
-    def translate_coordinates(self):
+    def translate_model_coordinates(self, pt_src_ll, pt_src_ur):
+        # translate EPANET coords
+        self.setQgsMapToolTranslateCoords()
         pass
 
     def edit_simulation_options(self):

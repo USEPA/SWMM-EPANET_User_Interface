@@ -77,6 +77,7 @@ try:
             self.qgisNewFeatureTool = None
             self.measureTool = None
             self.selectRegionTool = None
+            self.translateCoordTool = None
             self.map_linear_unit = self.map_unit_names[7]  # Unknown
             self.coord_origin = Coordinate()
             self.coord_fext = Coordinate()
@@ -1579,7 +1580,7 @@ try:
                     tmp = self.pt_ll.y
                     self.pt_ll.y = self.pt_ur.y
                     self.pt_ur.y = tmp
-                self.session.map_widget.translate_model_coordinates(self.pt_ll, self.pt_ur)
+                self.session.translate_model_coordinates(self.pt_ll, self.pt_ur)
 
 
     class SelectMapTool(QgsMapToolEmitPoint):

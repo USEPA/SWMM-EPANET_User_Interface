@@ -165,6 +165,13 @@ class frmMainEPANET(frmMain):
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
 
+        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
+        self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
+        self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
+        self.menuView.addAction(self.actionTranslate_Coordinates)
+        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'), self.translate_coordinates)
+
         self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
         QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
@@ -619,6 +626,9 @@ class frmMainEPANET(frmMain):
         from ui.EPANET.frmFind import frmFind
         frmF = frmFind(self, self.project)
         frmF.show()
+
+    def translate_coordinates(self):
+        pass
 
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))

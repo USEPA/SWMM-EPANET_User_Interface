@@ -167,6 +167,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
                         self.select_region_checked = False
+                        self.translating_coordinates = False
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
@@ -1088,6 +1089,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.select_region_checked = not self.select_region_checked
         self.setQgsMapTool()
 
+    def setQgsMapToolTranslateCoords(self):
+        self.translating_coordinates = not self.translating_coordinates
+        self.setQgsMapTool()
+        # do translating
+
     def setQgsMapTool(self):
         if self.canvas:
             from map_tools import AddPointTool, AddLinkTool, CaptureTool
@@ -1098,6 +1104,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setEditVertexMode()
             self.map_widget.setMeasureMode()
             self.map_widget.setSelectByRegionMode()
+            self.map_widget.setTranslateCoordinatesMode()
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:

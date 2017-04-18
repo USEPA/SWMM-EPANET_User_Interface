@@ -221,6 +221,14 @@ try:
             else:
                 self.canvas.unsetMapTool(self.selectRegionTool)
 
+        def setTranslateCoordinatesMode(self):
+            if self.session.translating_coordinates:
+                if self.translateCoordTool is None:
+                    self.translateCoordTool = ModelCoordinatesTranslationTool(self.canvas, self.session)
+                self.canvas.setMapTool(self.translateCoordTool)
+            else:
+                self.canvas.unsetMapTool(self.translateCoordTool)
+
         def clearSelectableObjects(self):
             self.layer_spatial_indexes = []
             for layer in self.canvas.layers():
@@ -1002,6 +1010,15 @@ try:
             r = QgsRectangle(xmin, ymin, xmax, ymax)
             return r
 
+        def calculate_new_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur, src_pt, anew):
+            if anew:
+                self.x_unit_ratio = (dst_pt_ur.x - dst_pt_ll.x) / (src_pt_ur.x - src_pt_ll.x)
+                self.y_unit_ratio = (dst_pt_ur.y - dst_pt_ll.y) / (src_pt_ur.y - src_pt_ll.y)
+            new_pt = Coordinate()
+            new_pt.x = dst_pt_ll.x + (src_pt.x - src_pt_ll.x) * abs(self.x_unit_ratio)
+            new_pt.y = dst_pt_ll.y + (src_pt.y - src_pt_ll.y) * abs(self.y_unit_ratio)
+            return new_pt
+
         def drawVertexMarker(self, layer):
             """
             implement the drawVertexMarker routine to highlight the vertices of polygon
@@ -1535,6 +1552,35 @@ try:
                 self.session.show_edit_window(
                     self.session.make_editor_from_tree(self.session.tree_section,
                                                        self.session.tree_top_items, [new_object.name]))
+
+
+    class ModelCoordinatesTranslationTool(QgsMapTool):
+        def __init__(self, canvas, session):
+            QgsMapTool.__init__(self, canvas)
+            self.canvas = canvas
+            self.session = session
+            self.pt_ll = None
+            self.pt_ur = None
+            self.layer = None
+            if self.session and len(self.session.model_layers.nodes_layers) > 0:
+                self.layer = self.session.model_layers.nodes_layers[0]
+            # self.setCursor(Qt.CrossCursor)
+
+        def canvasReleaseEvent(self, event):
+            if not self.pt_ll:
+                self.pt_ll = self.toLayerCoordinates(self.layer, event.pos())
+            elif not self.pt_ur:
+                self.pt_ur = self.toLayerCoordinates(self.layer, event.pos())
+            if self.pt_ll and self.pt_ur:
+                if self.pt_ll.x > self.pt_ur.x or self.pt_ll.y > self.pt_ur.y:
+                    tmp = self.pt_ll.x
+                    self.pt_ll.x = self.pt_ur.x
+                    self.pt_ur.x = tmp
+                    tmp = self.pt_ll.y
+                    self.pt_ll.y = self.pt_ur.y
+                    self.pt_ur.y = tmp
+                self.session.map_widget.translate_model_coordinates(self.pt_ll, self.pt_ur)
+
 
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.

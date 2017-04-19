@@ -1091,8 +1091,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def setQgsMapToolTranslateCoords(self):
         self.translating_coordinates = not self.translating_coordinates
+        if self.map_widget.translateCoordTool:
+            self.map_widget.translateCoordTool.clear()
         self.setQgsMapTool()
-        # do translating
 
     def setQgsMapTool(self):
         if self.canvas:

@@ -631,7 +631,11 @@ class frmMainEPANET(frmMain):
     def translate_model_coordinates(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
         self.setQgsMapToolTranslateCoords()
-        pass
+        from ui.frmTranslateCoordinates import frmTranslateCoordinates
+        frm = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
+        result = frm.exec_()
+        if result:
+            pass
 
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))

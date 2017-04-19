@@ -1011,14 +1011,20 @@ try:
             r = QgsRectangle(xmin, ymin, xmax, ymax)
             return r
 
-        def calculate_new_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur, src_pt, anew):
-            if anew:
-                self.x_unit_ratio = (dst_pt_ur.x - dst_pt_ll.x) / (src_pt_ur.x - src_pt_ll.x)
-                self.y_unit_ratio = (dst_pt_ur.y - dst_pt_ll.y) / (src_pt_ur.y - src_pt_ll.y)
+        def calculate_units_ratio(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
+            self.x_unit_ratio = (dst_pt_ur.x - dst_pt_ll.x) / (src_pt_ur.x - src_pt_ll.x)
+            self.y_unit_ratio = (dst_pt_ur.y - dst_pt_ll.y) / (src_pt_ur.y - src_pt_ll.y)
+
+        def calculate_new_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur, src_pt):
             new_pt = Coordinate()
             new_pt.x = dst_pt_ll.x + (src_pt.x - src_pt_ll.x) * abs(self.x_unit_ratio)
             new_pt.y = dst_pt_ll.y + (src_pt.y - src_pt_ll.y) * abs(self.y_unit_ratio)
             return new_pt
+
+        def translate_layers_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
+            if not self.session.project or not self.session.model_layers:
+                return
+            self.calculate_units_ratio(src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur)
 
         def drawVertexMarker(self, layer):
             """
@@ -1581,6 +1587,10 @@ try:
                     self.pt_ll.y = self.pt_ur.y
                     self.pt_ur.y = tmp
                 self.session.translate_model_coordinates(self.pt_ll, self.pt_ur)
+
+        def clear(self):
+            self.pt_ll = None
+            self.pt_ur = None
 
 
     class SelectMapTool(QgsMapToolEmitPoint):

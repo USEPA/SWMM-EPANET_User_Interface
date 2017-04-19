@@ -21,6 +21,7 @@ from ui.EPANET.frmTimesOptions import frmTimesOptions
 from ui.EPANET.frmTitle import frmTitle
 
 from ui.EPANET.frmAbout import frmAbout
+from ui.EPANET.frmSummary import frmSummary
 from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmJunction import frmJunction
 from ui.EPANET.frmReservoir import frmReservior
@@ -173,7 +174,7 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
                                self.setQgsMapToolTranslateCoords)
 
-        self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
+        self.actionStdProjSummary.triggered.connect(self.show_summary)
         QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
@@ -831,6 +832,10 @@ class frmMainEPANET(frmMain):
     def help_about(self):
         self._frmAbout = frmAbout(self)
         self._frmAbout.show()
+
+    def show_summary(self):
+        self._frmSummary = frmSummary(self)
+        self._frmSummary.show()
 
     def open_project_quiet(self, file_name):
         """ Set wait cursor during open to show operation is in progress.

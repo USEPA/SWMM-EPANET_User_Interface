@@ -1,4 +1,4 @@
-class Coordinate:
+class Coordinate(object):
     """An (x, y) coordinate pair representing a geographic location.
         Measurement units are not stored in or enforced by this class.
         Any units can be used such as lat/long degrees, feet, or meters."""
@@ -13,7 +13,7 @@ class Coordinate:
         self.y = ''
 
 
-class Link:
+class Link(object):
     """A link between nodes in a model"""
 
     def __init__(self):
@@ -37,7 +37,7 @@ class Link:
         self.vertices = []
 
 
-class Polygon:
+class Polygon(object):
     def __init__(self):
         ## Name/Identifier
         self.name = ''

@@ -12,6 +12,7 @@ try:
     import sys
     from enum import Enum
     from map_edit import EditTool
+    from ui.model_utility import ParseData
 
 
     class EmbedMap(QWidget):
@@ -1015,16 +1016,33 @@ try:
             self.x_unit_ratio = (dst_pt_ur.x - dst_pt_ll.x) / (src_pt_ur.x - src_pt_ll.x)
             self.y_unit_ratio = (dst_pt_ur.y - dst_pt_ll.y) / (src_pt_ur.y - src_pt_ll.y)
 
-        def calculate_new_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur, src_pt):
-            new_pt = Coordinate()
-            new_pt.x = dst_pt_ll.x + (src_pt.x - src_pt_ll.x) * abs(self.x_unit_ratio)
-            new_pt.y = dst_pt_ll.y + (src_pt.y - src_pt_ll.y) * abs(self.y_unit_ratio)
-            return new_pt
+        def calculate_new_coordinates(self, src_pt_ll, dst_pt_ll, src_pt):
+            src_x, xval_is_good = ParseData.floatTryParse(src_pt.x)
+            src_y, yval_is_good = ParseData.floatTryParse(src_pt.y)
+            if xval_is_good and yval_is_good:
+                new_pt = Coordinate()
+                new_pt.x = dst_pt_ll.x + (src_x - src_pt_ll.x) * abs(self.x_unit_ratio)
+                new_pt.y = dst_pt_ll.y + (src_y - src_pt_ll.y) * abs(self.y_unit_ratio)
+                return new_pt
+            else:
+                return None
 
         def translate_layers_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
             if not self.session.project or not self.session.model_layers:
                 return
             self.calculate_units_ratio(src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur)
+            sects = self.session.project.nodes_groups()
+            sects.append(self.session.project.labels)
+            for sect in sects:
+                if sect.value and len(sect.value) > 0:
+                    for mobj in sect.value:
+                        new_coord = self.calculate_new_coordinates(src_pt_ll, dst_pt_ll, mobj)
+                        if new_coord:
+                            mobj.x = str(new_coord.x)
+                            mobj.y = str(new_coord.y)
+                        else:
+                            # save a log of bad coords
+                            pass
 
         def drawVertexMarker(self, layer):
             """
@@ -1574,6 +1592,8 @@ try:
             # self.setCursor(Qt.CrossCursor)
 
         def canvasReleaseEvent(self, event):
+            if not self.layer:
+                self.layer = self.session.model_layers.nodes_layers[0]
             if not self.pt_ll:
                 self.pt_ll = self.toLayerCoordinates(self.layer, event.pos())
             elif not self.pt_ur:
@@ -1589,6 +1609,7 @@ try:
                 self.session.translate_model_coordinates(self.pt_ll, self.pt_ur)
 
         def clear(self):
+            self.layer = None
             self.pt_ll = None
             self.pt_ur = None
 

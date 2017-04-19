@@ -39,6 +39,7 @@ from ui.EPANET.frmEnergyReport import frmEnergyReport
 from ui.EPANET.frmCalibrationData import frmCalibrationData
 from ui.EPANET.frmCalibrationReportOptions import frmCalibrationReportOptions
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
+from ui.frmTranslateCoordinates import frmTranslateCoordinates
 
 from core.epanet.epanet_project import EpanetProject as Project
 from core.epanet.inp_reader_project import ProjectReader
@@ -135,6 +136,7 @@ class frmMainEPANET(frmMain):
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
         self.project_settings = DefaultsEPANET("", self.project)
+        self.translate_coord_dialog = None
         self.tree_types = {
             self.tree_Patterns[0]: Pattern,
             self.tree_Curves[0]: Curve,
@@ -632,11 +634,16 @@ class frmMainEPANET(frmMain):
     def translate_model_coordinates(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
         self.setQgsMapToolTranslateCoords()
-        from ui.frmTranslateCoordinates import frmTranslateCoordinates
-        frm = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
-        result = frm.exec_()
-        if result:
-            pass
+        if not self.translate_coord_dialog:
+            self.translate_coord_dialog = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
+        else:
+            self.translate_coord_dialog.set_coords_source_ll(pt_src_ll)
+            self.translate_coord_dialog.set_coords_source_ur(pt_src_ur)
+
+        self.translate_coord_dialog.show()
+        # result = frm.exec_()
+        # if result:
+        #     pass
 
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))

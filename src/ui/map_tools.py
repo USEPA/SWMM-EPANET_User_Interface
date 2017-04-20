@@ -1044,6 +1044,29 @@ try:
                             # save a log of bad coords
                             pass
 
+        def update_links_length(self):
+            if not self.session.project or not self.session.model_layers:
+                return
+            ruler = QgsDistanceArea()
+            nodes = self.session.project.nodes_groups()
+            for p in self.session.project.pipes.value:
+                for og in nodes:
+                    node0 = og.find_item(p.inlet_node)
+                    if node0: break
+                for og in nodes:
+                    node1 = og.find_item(p.outlet_node)
+                    if node1: break
+                if node0 and node1:
+                    node0x, val_is_good0x = ParseData.floatTryParse(node0.x)
+                    node0y, val_is_good0y = ParseData.floatTryParse(node0.y)
+                    node1x, val_is_good1x = ParseData.floatTryParse(node1.x)
+                    node1y, val_is_good1y = ParseData.floatTryParse(node1.y)
+                    if val_is_good0x and val_is_good0y and \
+                        val_is_good1x and val_is_good1y:
+                        pt0 = QgsPoint(node0x, node0y)
+                        pt1 = QgsPoint(node1x, node1y)
+                        p.length = str(ruler.measureLine(pt0, pt1))
+
         def drawVertexMarker(self, layer):
             """
             implement the drawVertexMarker routine to highlight the vertices of polygon
@@ -1606,7 +1629,7 @@ try:
                     tmp = self.pt_ll.y
                     self.pt_ll.y = self.pt_ur.y
                     self.pt_ur.y = tmp
-                self.session.translate_model_coordinates(self.pt_ll, self.pt_ur)
+                self.session.open_translate_coord_dialog(self.pt_ll, self.pt_ur)
 
         def clear(self):
             self.layer = None

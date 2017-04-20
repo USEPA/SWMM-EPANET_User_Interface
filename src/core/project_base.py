@@ -158,7 +158,7 @@ class Section(object):
     def find_item(self, aName):
         if isinstance(self.value, list):
             for obj in self.value:
-                if aName.upper() in obj.name.upper():
+                if aName.upper() == obj.name.upper():
                     return obj
         return None
 
@@ -183,7 +183,7 @@ class SectionAsList(Section):
 
     def find_item(self, aName):
         for obj in self.value:
-            if aName.upper() in obj.name.upper():
+            if aName.upper() == obj.name.upper():
                 return obj
         return None
 

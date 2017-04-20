@@ -631,7 +631,7 @@ class frmMainEPANET(frmMain):
         frmF = frmFind(self, self.project)
         frmF.show()
 
-    def translate_model_coordinates(self, pt_src_ll, pt_src_ur):
+    def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
         self.setQgsMapToolTranslateCoords()
         if not self.translate_coord_dialog:

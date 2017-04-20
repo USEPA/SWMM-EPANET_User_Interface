@@ -1027,24 +1027,8 @@ try:
             else:
                 return None
 
-        def translate_layers_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
-            if not self.session.project or not self.session.model_layers:
-                return
-            self.calculate_units_ratio(src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur)
-            sects = self.session.project.nodes_groups()
-            sects.append(self.session.project.labels)
-            for sect in sects:
-                if sect.value and len(sect.value) > 0:
-                    for mobj in sect.value:
-                        new_coord = self.calculate_new_coordinates(src_pt_ll, dst_pt_ll, mobj)
-                        if new_coord:
-                            mobj.x = str(new_coord.x)
-                            mobj.y = str(new_coord.y)
-                        else:
-                            # save a log of bad coords
-                            pass
-            # update links vertices
-            for vpt in self.session.project.all_vertices():
+        def translate_vertices_coordinates(self, src_pt_ll, dst_pt_ll, vertices):
+            for vpt in vertices:
                 new_coord = self.calculate_new_coordinates(src_pt_ll, dst_pt_ll, vpt)
                 if new_coord:
                     vpt.x = str(new_coord.x)
@@ -1052,6 +1036,27 @@ try:
                 else:
                     # save a log of bad coords
                     pass
+
+        def translate_layers_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
+            if not self.session.project or not self.session.model_layers:
+                return
+            self.calculate_units_ratio(src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur)
+            # update nodal coordinates
+            sects = self.session.project.nodes_groups()
+            sects.append(self.session.project.labels)
+            if self.session.model == "SWMM":
+                sects.append(self.session.project.raingages)
+            for sect in sects:
+                if sect.value and len(sect.value) > 0:
+                    self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sect.value)
+
+            # update links vertices
+            self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, self.session.project.all_vertices())
+
+            # update SWMM polygons' vertices
+            if self.session.model == "SWMM":
+                for sub in self.session.project.subcatchments.value:
+                    self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sub.vertices)
 
         def update_links_length(self):
             if not self.session.project or not self.session.model_layers:

@@ -1043,6 +1043,15 @@ try:
                         else:
                             # save a log of bad coords
                             pass
+            # update links vertices
+            for vpt in self.session.project.all_vertices():
+                new_coord = self.calculate_new_coordinates(src_pt_ll, dst_pt_ll, vpt)
+                if new_coord:
+                    vpt.x = str(new_coord.x)
+                    vpt.y = str(new_coord.y)
+                else:
+                    # save a log of bad coords
+                    pass
 
         def update_links_length(self):
             if not self.session.project or not self.session.model_layers:
@@ -1054,18 +1063,26 @@ try:
                     node0 = og.find_item(p.inlet_node)
                     if node0: break
                 for og in nodes:
-                    node1 = og.find_item(p.outlet_node)
-                    if node1: break
-                if node0 and node1:
+                    noden = og.find_item(p.outlet_node)
+                    if noden: break
+                if node0 and noden:
                     node0x, val_is_good0x = ParseData.floatTryParse(node0.x)
                     node0y, val_is_good0y = ParseData.floatTryParse(node0.y)
-                    node1x, val_is_good1x = ParseData.floatTryParse(node1.x)
-                    node1y, val_is_good1y = ParseData.floatTryParse(node1.y)
+                    nodenx, val_is_goodnx = ParseData.floatTryParse(noden.x)
+                    nodeny, val_is_goodny = ParseData.floatTryParse(noden.y)
                     if val_is_good0x and val_is_good0y and \
-                        val_is_good1x and val_is_good1y:
+                        val_is_goodnx and val_is_goodny:
                         pt0 = QgsPoint(node0x, node0y)
-                        pt1 = QgsPoint(node1x, node1y)
-                        p.length = str(ruler.measureLine(pt0, pt1))
+                        ptn = QgsPoint(nodenx, nodeny)
+                        list_pts = [pt0]
+                        if p.vertices and len(p.vertices) > 0:
+                            for v in p.vertices:
+                                xval, xval_is_good = ParseData.floatTryParse(v.x)
+                                yval, yval_is_good = ParseData.floatTryParse(v.y)
+                                if xval_is_good and yval_is_good:
+                                    list_pts.append(QgsPoint(xval, yval))
+                        list_pts.append(ptn)
+                        p.length = str(ruler.measureLine(list_pts))
 
         def drawVertexMarker(self, layer):
             """

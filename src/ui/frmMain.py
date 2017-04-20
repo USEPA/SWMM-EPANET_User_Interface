@@ -26,6 +26,7 @@ import traceback
 from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
+from ui.frmTranslateCoordinates import frmTranslateCoordinates
 from ui.inifile import ini_setting
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
@@ -108,6 +109,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         self.setAcceptDrops(True)
         self.tree_section = ''
+        self.translate_coord_dialog = None
 
         # Map attributes will be set below if possible or will remain None to indicate map is not present.
         self.canvas = None
@@ -978,6 +980,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     coord.x = str(v.x())
                     coord.y = str(v.y())
                     m_target.vertices.append(coord)
+
+    def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
+        # translate EPANET coords
+        self.setQgsMapToolTranslateCoords()
+        if not self.translate_coord_dialog:
+            self.translate_coord_dialog = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
+        else:
+            self.translate_coord_dialog.set_coords_source_ll(pt_src_ll)
+            self.translate_coord_dialog.set_coords_source_ur(pt_src_ur)
+
+        self.translate_coord_dialog.show()
 
     def edited_name(self, edited_list):
         """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""

@@ -333,6 +333,14 @@ class frmMainSWMM(frmMain):
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
 
+        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
+        self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
+        self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
+        self.menuView.addAction(self.actionTranslate_Coordinates)
+        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
+                               self.setQgsMapToolTranslateCoords)
+
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))

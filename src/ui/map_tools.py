@@ -1063,31 +1063,32 @@ try:
                 return
             ruler = QgsDistanceArea()
             nodes = self.session.project.nodes_groups()
-            for p in self.session.project.pipes.value:
-                for og in nodes:
-                    node0 = og.find_item(p.inlet_node)
-                    if node0: break
-                for og in nodes:
-                    noden = og.find_item(p.outlet_node)
-                    if noden: break
-                if node0 and noden:
-                    node0x, val_is_good0x = ParseData.floatTryParse(node0.x)
-                    node0y, val_is_good0y = ParseData.floatTryParse(node0.y)
-                    nodenx, val_is_goodnx = ParseData.floatTryParse(noden.x)
-                    nodeny, val_is_goodny = ParseData.floatTryParse(noden.y)
-                    if val_is_good0x and val_is_good0y and \
-                        val_is_goodnx and val_is_goodny:
-                        pt0 = QgsPoint(node0x, node0y)
-                        ptn = QgsPoint(nodenx, nodeny)
-                        list_pts = [pt0]
-                        if p.vertices and len(p.vertices) > 0:
-                            for v in p.vertices:
-                                xval, xval_is_good = ParseData.floatTryParse(v.x)
-                                yval, yval_is_good = ParseData.floatTryParse(v.y)
-                                if xval_is_good and yval_is_good:
-                                    list_pts.append(QgsPoint(xval, yval))
-                        list_pts.append(ptn)
-                        p.length = str(ruler.measureLine(list_pts))
+            for link_sect in self.session.project.links_groups():
+                for lnk in link_sect.value:
+                    for og in nodes:
+                        node0 = og.find_item(lnk.inlet_node)
+                        if node0: break
+                    for og in nodes:
+                        noden = og.find_item(lnk.outlet_node)
+                        if noden: break
+                    if node0 and noden:
+                        node0x, val_is_good0x = ParseData.floatTryParse(node0.x)
+                        node0y, val_is_good0y = ParseData.floatTryParse(node0.y)
+                        nodenx, val_is_goodnx = ParseData.floatTryParse(noden.x)
+                        nodeny, val_is_goodny = ParseData.floatTryParse(noden.y)
+                        if val_is_good0x and val_is_good0y and \
+                            val_is_goodnx and val_is_goodny:
+                            pt0 = QgsPoint(node0x, node0y)
+                            ptn = QgsPoint(nodenx, nodeny)
+                            list_pts = [pt0]
+                            if lnk.vertices and len(lnk.vertices) > 0:
+                                for v in lnk.vertices:
+                                    xval, xval_is_good = ParseData.floatTryParse(v.x)
+                                    yval, yval_is_good = ParseData.floatTryParse(v.y)
+                                    if xval_is_good and yval_is_good:
+                                        list_pts.append(QgsPoint(xval, yval))
+                            list_pts.append(ptn)
+                            lnk.length = str(ruler.measureLine(list_pts))
 
         def drawVertexMarker(self, layer):
             """

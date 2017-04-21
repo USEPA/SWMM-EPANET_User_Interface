@@ -1058,6 +1058,7 @@ try:
                 for sub in self.session.project.subcatchments.value:
                     self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sub.vertices)
 
+
         def update_links_length(self):
             if not self.session.project or not self.session.model_layers:
                 return
@@ -1089,6 +1090,32 @@ try:
                                         list_pts.append(QgsPoint(xval, yval))
                             list_pts.append(ptn)
                             lnk.length = str(ruler.measureLine(list_pts))
+                            del list_pts[:]
+                            del list_pts
+
+        def update_subcatchments_area(self, dst_unit):
+            # update SWMM polygons' areas
+            if self.session.model == "SWMM":
+                ruler = QgsDistanceArea()
+                list_pts = []
+                for sub in self.session.project.subcatchments.value:
+                    for v in sub.vertices:
+                        valx, val_is_goodx = ParseData.floatTryParse(v.x)
+                        valy, val_is_goody = ParseData.floatTryParse(v.y)
+                        if val_is_goodx and val_is_goody:
+                            list_pts.append(QgsPoint(valx, valy))
+                    if len(list_pts) > 0:
+                        try:
+                            geometry = QgsGeometry.fromPolygon([list_pts])
+                            a = ruler.measureArea(geometry)
+                            if dst_unit.lower() == "feet":
+                                sub.area = EmbedMap.round_to_n(a / 43560, 5)
+                            elif dst_unit.lower() == "meters":
+                                sub.area = EmbedMap.round_to_n(a / 10000, 5)
+                        except:
+                            # skip this sub
+                            pass
+                        del list_pts[:]
 
         def drawVertexMarker(self, layer):
             """
@@ -1327,12 +1354,15 @@ try:
                                 new_object.length = map_widget.round_to_n(ruler.measureLine(points) * unit_conversion, 5)
 
                             if hasattr(new_object, "area"):
-                                ruler = QgsDistanceArea()
+                                if not self.ruler:
+                                    self.ruler = QgsDistanceArea()
                                 if self.session.project.metric:
                                     unit_conversion = map_widget.map_unit_to_hectares[unit_index]
                                 else:
                                     unit_conversion = map_widget.map_unit_to_acres[unit_index]
-                                new_object.area = map_widget.round_to_n(ruler.measureArea(points) * unit_conversion, 5)
+                                geom = QgsGeometry.fromPolygon([points])
+                                a = self.ruler.measureArea(geom)
+                                new_object.area = map_widget.round_to_n(a * unit_conversion, 5)
                     except:
                         pass
 
@@ -1645,13 +1675,13 @@ try:
             elif not self.pt_ur:
                 self.pt_ur = self.toLayerCoordinates(self.layer, event.pos())
             if self.pt_ll and self.pt_ur:
-                if self.pt_ll.x > self.pt_ur.x or self.pt_ll.y > self.pt_ur.y:
-                    tmp = self.pt_ll.x
-                    self.pt_ll.x = self.pt_ur.x
-                    self.pt_ur.x = tmp
-                    tmp = self.pt_ll.y
-                    self.pt_ll.y = self.pt_ur.y
-                    self.pt_ur.y = tmp
+                if self.pt_ll.x() > self.pt_ur.x() or self.pt_ll.y() > self.pt_ur.y():
+                    tmp = self.pt_ll.x()
+                    self.pt_ll.setX(self.pt_ur.x())
+                    self.pt_ur.setX(tmp)
+                    tmp = self.pt_ll.y()
+                    self.pt_ll.setY(self.pt_ur.y())
+                    self.pt_ur.setY(tmp)
                 self.session.open_translate_coord_dialog(self.pt_ll, self.pt_ur)
 
         def clear(self):

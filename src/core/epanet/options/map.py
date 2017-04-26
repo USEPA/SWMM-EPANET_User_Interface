@@ -12,3 +12,6 @@ class MapOptions(Section):
         ## Name of a file containing coordinates of the network's nodes;
         ## Don't write by default
         self.map = ""
+        ## crs information
+        self.crs_name = None
+        self.crs_unit = None

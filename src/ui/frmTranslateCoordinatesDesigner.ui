@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmTranslateCoordinatesDesigner</class>
+ <widget class="QDialog" name="frmTranslateCoordinatesDesigner">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>482</width>
+    <height>258</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Translate Model Coordinates</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0" colspan="7">
+    <widget class="QGroupBox" name="gbLL">
+     <property name="title">
+      <string>A point selected in the LOWER LEFT corner: specify current and destination coordinates</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblLL_src_x">
+        <property name="text">
+         <string>Current x-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtLL_src_x"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="lblLL_dst_x">
+        <property name="text">
+         <string>Destination x-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="txtLL_dst_x"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblLL_src_y">
+        <property name="text">
+         <string>Current y-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtLL_src_y"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="lblLL_dst_y">
+        <property name="text">
+         <string>Destination y-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="txtLL_dst_y"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="7">
+    <widget class="QGroupBox" name="gb_UR">
+     <property name="title">
+      <string>A point selected in the UPPER RIGHT corner: specify current and destination coordinates</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblUR_src_x">
+        <property name="text">
+         <string>Current x-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtUR_src_x"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="lblUR_dst_x">
+        <property name="text">
+         <string>Destination x-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="txtUR_dst_x"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblUR_src_y">
+        <property name="text">
+         <string>Current y-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtUR_src_y"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="lblUR_dst_y">
+        <property name="text">
+         <string>Destination y-coordinate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="txtUR_dst_y"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblUnit">
+     <property name="text">
+      <string>Destination Coordinate Unit:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QRadioButton" name="rdoUnitFeet">
+     <property name="text">
+      <string>Feet</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QRadioButton" name="rdoUnitMeters">
+     <property name="text">
+      <string>Meters</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>115</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="5" colspan="2">
+    <widget class="QPushButton" name="btnSelectCRS">
+     <property name="text">
+      <string>Set Destination CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkAutoUpdate">
+     <property name="text">
+      <string>Re-calculate length and area</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" colspan="2">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>96</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="4" colspan="2">
+    <widget class="QPushButton" name="btnTranslate">
+     <property name="text">
+      <string>Translate Coordinates</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <widget class="QPushButton" name="btnCancel">
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

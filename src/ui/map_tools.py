@@ -1117,6 +1117,16 @@ try:
                             pass
                         del list_pts[:]
 
+        def update_project_map_crs_info(self, crs_name):
+            new_crs = None
+            try:
+                new_crs = QgsCoordinateReferenceSystem(crs_name)
+            except:
+                pass
+            if new_crs:
+                self.session.project.map.crs_name = crs_name
+                self.session.project.map.crs_unit = self.QGis_UnitType[new_crs.mapUnits()]
+
         def drawVertexMarker(self, layer):
             """
             implement the drawVertexMarker routine to highlight the vertices of polygon

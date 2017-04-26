@@ -89,8 +89,15 @@ class ProjectWriter(InputFileWriterBase):
 
         coordinates = SectionAsList("[COORDINATES]")
         coordinates.value = project.all_nodes()
-        coordinates_writer = SectionWriterAsList("[COORDINATES]", CoordinateWriter,
-                                                 ";Node            \tX-Coord   \tY-Coord")
+        coord_comment = ";Node            \tX-Coord   \tY-Coord"
+        if project.map.crs_name:
+            coord_crs_comment = ";CRS=" + project.map.crs_name
+            if project.map.crs_unit:
+                coord_crs_comment = coord_crs_comment + "|CRS_UNIT=" + project.map.crs_unit
+            if coord_crs_comment:
+                coord_comment = coord_crs_comment + "\n" + coord_comment
+
+        coordinates_writer = SectionWriterAsList("[COORDINATES]", CoordinateWriter, coord_comment)
         coordinates_text = coordinates_writer.as_text(coordinates)
         if coordinates_text:
             derived_sections[coordinates_writer.SECTION_NAME] = coordinates_text

@@ -28,6 +28,10 @@ class MapOptions(Section):
         ## map units
         self.units = MapUnits.NONE
 
+        ## crs information
+        self.crs_name = None
+        self.crs_unit = None
+
     def setMapUnits(self, unit):
         if unit.upper() == 'FEET':
             self.units = MapUnits.FEET

@@ -21,6 +21,7 @@ from ui.EPANET.frmTimesOptions import frmTimesOptions
 from ui.EPANET.frmTitle import frmTitle
 
 from ui.EPANET.frmAbout import frmAbout
+from ui.EPANET.frmSummary import frmSummary
 from ui.EPANET.frmControls import frmControls
 from ui.EPANET.frmJunction import frmJunction
 from ui.EPANET.frmReservoir import frmReservior
@@ -54,12 +55,14 @@ from core.epanet.patterns import Pattern
 from core.epanet.curves import Curve
 
 import core.epanet.reports as reports
+from core.epanet.options.quality import QualityAnalysisType
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
 from frmRunEPANET import frmRunEPANET
 
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
+from ui.EPANET.inifile import DefaultsEPANET
 
 
 class frmMainEPANET(frmMain):
@@ -131,6 +134,7 @@ class frmMainEPANET(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
+        self.project_settings = DefaultsEPANET("", self.project)
         self.tree_types = {
             self.tree_Patterns[0]: Pattern,
             self.tree_Curves[0]: Curve,
@@ -162,7 +166,22 @@ class frmMainEPANET(frmMain):
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
 
-        self.actionStdProjSummary.triggered.connect(lambda: self.show_edit_window(self.get_editor("Title/Notes")))
+        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
+        self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
+        self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
+        self.menuView.addAction(self.actionTranslate_Coordinates)
+        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
+                               self.setQgsMapToolTranslateCoords)
+
+        self.actionStdProjSummary.triggered.connect(self.show_summary)
+        QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
+        self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
+        self.menuTools.removeAction(self.actionStdConfigTools)
+        self.menuTools.removeAction(self.actionStdProgPrefer)
+        self.menuTools.deleteLater()
+        self.menuObjects.deleteLater()
+
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
@@ -216,6 +235,9 @@ class frmMainEPANET(frmMain):
         self.menuReport.addAction(self.actionTable_ReportMenu)
         QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
         self.actionProjTableTimeseries.triggered.connect(self.report_table)
+
+        self.actionStdMapQuery.triggered.connect(self.map_query)
+        self.actionStdMapFind.triggered.connect(self.map_finder)
 
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
@@ -533,46 +555,53 @@ class frmMainEPANET(frmMain):
 
     def reaction_report(self):
         # Reaction Report'
+
         if self.output:
             # Find conversion factor to kilograms/day
             ucf = 1.0e6/24
             quality_options = self.project.options.quality
-            if 'ug' in str(quality_options.mass_units):
-                ucf = 1.0e9/24
+            if quality_options.quality != QualityAnalysisType.NONE:
+                if 'ug' in str(quality_options.mass_units):
+                    ucf = 1.0e9/24
 
-            # Get average reaction rates from output file
-            bulk, wall, tank, source = self.output.get_reaction_summary()
-            bulk /= ucf
-            wall /= ucf
-            tank /= ucf
-            source /= ucf
+                # Get average reaction rates from output file
+                bulk, wall, tank, source = self.output.get_reaction_summary()
+                bulk /= ucf
+                wall /= ucf
+                tank /= ucf
+                source /= ucf
 
-            if bulk > 0 or wall > 0 or tank > 0 or source > 0:
-                footer_text = "Inflow Rate = " + format(source,'0.1f')
+                if bulk > 0 or wall > 0 or tank > 0 or source > 0:
+                    footer_text = "Inflow Rate = " + format(source,'0.1f')
+                else:
+                    footer_text = 'No reactions occurred'
+
+                import matplotlib.pyplot as plt
+
+                labels = "%10.1f Tanks" % tank, "%10.1f Bulk" % bulk, "%10.1f Wall" % wall
+                sum_reaction = bulk + wall + tank
+                size_bulk = bulk / sum_reaction
+                size_wall = wall / sum_reaction
+                size_tank = tank / sum_reaction
+                sizes = [size_tank, size_bulk, size_wall]
+                colors = ['green', 'blue', 'red']
+                explode = (0, 0, 0)
+
+                plt.figure("Reaction Report")
+
+                plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+                        autopct='%1.2f%%', shadow=True, startangle=180)
+
+                plt.axis('equal')
+                plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
+                plt.text(0.9,-0.9,footer_text)
+
+                plt.show()
             else:
-                footer_text = 'No reactions occurred'
-
-            import matplotlib.pyplot as plt
-
-            labels = "%10.1f Tanks" % tank, "%10.1f Bulk" % bulk, "%10.1f Wall" % wall
-            sum_reaction = bulk + wall + tank
-            size_bulk = bulk / sum_reaction
-            size_wall = wall / sum_reaction
-            size_tank = tank / sum_reaction
-            sizes = [size_tank, size_bulk, size_wall]
-            colors = ['green', 'blue', 'red']
-            explode = (0, 0, 0)
-
-            plt.figure("Reaction Report")
-
-            plt.pie(sizes, explode=explode, labels=labels, colors=colors,
-                    autopct='%1.2f%%', shadow=True, startangle=180)
-
-            plt.axis('equal')
-            plt.suptitle("Average Reaction Rates (kg/day)", fontsize=16)
-            plt.text(0.9,-0.9,footer_text)
-
-            plt.show()
+                QMessageBox.information(None, self.model,
+                                    "No water quality analysis is specified.\n"
+                                    "See Options --> Quality.",
+                                    QMessageBox.Ok)
         else:
             QMessageBox.information(None, self.model,
                                     "Model output not found.\n"
@@ -583,6 +612,25 @@ class frmMainEPANET(frmMain):
         self._frmCalibrationData = frmCalibrationData(self)
         self._frmCalibrationData.show()
         pass
+
+    def edit_defaults(self):
+        directory = self.program_settings.value("ProjectDir", "")
+        from frmDefaultsEditor import frmDefaultsEditor
+        fd = frmDefaultsEditor(self, self.project, self.project_settings)
+        fd.show()
+
+    def map_query(self):
+        from ui.EPANET.frmQuery import frmQuery
+        frmQ = frmQuery(self, self.project)
+        frmQ.show()
+
+    def map_finder(self):
+        from ui.EPANET.frmFind import frmFind
+        frmF = frmFind(self, self.project)
+        frmF.show()
+
+    def edit_simulation_options(self):
+        self.show_edit_window(self.get_editor('Hydraulics'))
 
     def get_editor(self, edit_name):
         frm = None
@@ -642,6 +690,8 @@ class frmMainEPANET(frmMain):
         item_type = self.tree_types[tree_text]
         new_item = item_type()
         new_item.name = self.new_item_name(item_type)
+        if self.project_settings:
+            self.project_settings.apply_default_attributes(new_item)
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
     def delete_named_object(self, tree_text, item_name):
@@ -773,6 +823,10 @@ class frmMainEPANET(frmMain):
     def help_about(self):
         self._frmAbout = frmAbout(self)
         self._frmAbout.show()
+
+    def show_summary(self):
+        self._frmSummary = frmSummary(self)
+        self._frmSummary.show()
 
     def open_project_quiet(self, file_name):
         """ Set wait cursor during open to show operation is in progress.

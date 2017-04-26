@@ -29,28 +29,28 @@ class Report(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Whether report includes a summary of the input data
         self.input = False
-        """Whether report includes a summary of the input data"""
 
+        ## Whether to report continuity checks
         self.continuity = True
-        """Whether to report continuity checks"""
 
+        ## Whether to report summary flow statistics
         self.flow_stats = True
-        """Whether to report summary flow statistics"""
 
+        ## Whether to list all control actions taken during a simulation
         self.controls = False
-        """Whether to list all control actions taken during a simulation"""
 
+        ## List of subcatchments whose results are to be reported, or ALL or NONE
         self.subcatchments = Report.ALL_LIST
-        """List of subcatchments whose results are to be reported, or ALL or NONE"""
 
+        ## List of nodes whose results are to be reported, or ALL or NONE
         self.nodes = Report.ALL_LIST
-        """List of nodes whose results are to be reported, or ALL or NONE"""
 
+        ## List of links whose results are to be reported, or ALL or NONE
         self.links = Report.ALL_LIST
-        """List of links whose results are to be reported, or ALL or NONE"""
 
+        ## List of lid specifications whose results are to be reported.
+        ## Includes LID control name, subcatchment id and file name.
         self.lids = []
-        """List of lid specifications whose results are to be reported.
-        Includes LID control name, subcatchment id and file name."""
 

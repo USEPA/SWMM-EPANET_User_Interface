@@ -1,9 +1,6 @@
 var classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#ac62921eb54d7eda97d25bad495b60fd7", null ],
-    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a4f0e23d6f0fe78a542bff53e74e23436", null ],
-    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a85a6797443f839301b4891996b7cf5ed", null ],
-    [ "control_name", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a63c3a1843318a7c5be3a9feb2d7b3753", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a7fe9415e3cce0a3e45d936646b399b74", null ],
     [ "drain_coefficient", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#acdda2733b6e1bd9d264d296c64ad6fa4", null ],
     [ "drain_delay", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a85b5c12ad973e5eaba428f069aabf3b9", null ],
     [ "drain_exponent", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a469d02a2222281acb908244d00c00dd1", null ],
@@ -18,6 +15,7 @@ var classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control =
     [ "has_surface_layer", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#af629ad47361908d36354c454c468061a", null ],
     [ "has_underdrain_system", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a7fef8bf0833106c837f74db9e4f306a4", null ],
     [ "lid_type", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a257a5563ae71412766b37393290bab9c", null ],
+    [ "name", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a1b5cb3a122083364bd8931b17c147fb0", null ],
     [ "pavement_layer_clogging_factor", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a1ada38792116ec6f50c568db647f85de", null ],
     [ "pavement_layer_impervious_surface_fraction", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a9520fd5c7fd75b8155a37bbeb80198fe", null ],
     [ "pavement_layer_permeability", "classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html#a15d56e24bd3dda41dbeaf854763dbedb", null ],

@@ -52,35 +52,35 @@ class RainGage(Section, Coordinate):
         Section.__init__(self)
         Coordinate.__init__(self)
 
+        ## Optional description of the gage
         self.description = ''
-        """Optional description of the gage"""
 
+        ## Optional label used to categorize the gage
         self.tag = ''
-        """Optional label used to categorize the gage"""
 
+        ## Format in which the rain data are supplied:
+        ## INTENSITY, VOLUME, CUMULATIVE (see also self.rain_units)
         self.rain_format = RainFormat.VOLUME
-        """Format in which the rain data are supplied:
-            INTENSITY, VOLUME, CUMULATIVE (see also self.rain_units)"""
 
+        ## Recording time interval between gage readings in either decimal
+        ## hours or hours:minutes format.
         self.rain_interval = "1:00"
-        """Recording time interval between gage readings in either decimal
-            hours or hours:minutes format."""
 
+        ## Factor that corrects gage readings for snowfall
         self.snow_catch_factor = 1.0
-        """Factor that corrects gage readings for snowfall"""
 
+        ## Source of rainfall data; This can be set to a
+        ## TimeSeries or a TimeSeriesFile.
         self.data_source = RainDataSource.TIMESERIES
-        """Source of rainfall data; This can be set to a
-            TimeSeries or a TimeSeriesFile."""
 
+        ## name of time series with rainfall data if Data Source selection was TIMESERIES
         self.timeseries = "None"
-        """name of time series with rainfall data if Data Source selection was TIMESERIES"""
 
+        ## Name of external file containing rainfall data
         self.data_file_name = "None"
-        """Name of external file containing rainfall data"""
 
+        ## Recording gage station number
         self.data_file_station_id = "StationID"
-        """Recording gage station number"""
 
+        ## Depth units (IN or MM) for rainfall values in the file
         self.data_file_rain_units = RainFileUnits.IN
-        """Depth units (IN or MM) for rainfall values in the file"""

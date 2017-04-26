@@ -45,32 +45,33 @@ class ReportOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## sets the number of lines written per page of the output report
         self.pagesize = ''
-        """sets the number of lines written per page of the output report"""
 
+        ## supplies the name of a file to which the output report will be written;
+        ## don't write by default"""
         self.file = ''                  # string
-        """supplies the name of a file to which the output report will be written"""
-        """don't write by default"""
 
+        ## determines whether a hydraulic status report should be generated
         self.status = StatusWrite.NO    # YES/NO/FULL
-        """determines whether a hydraulic status report should be generated"""
 
+        ## determines whether a summary table of number of network components and key analysis options is generated
         self.summary = True             # YES/NO
-        """determines whether a summary table of number of network components and key analysis options is generated"""
 
+        ## determines if a table reporting average energy usage and cost for each pump is provided;
+        ## don't write by default"""
         self.energy = False             # YES/NO
-        """determines if a table reporting average energy usage and cost for each pump is provided"""
-        """don't write by default"""
 
+        ## identifies which nodes will be reported on. List individual IDs or use NONE or ALL
         self.nodes = []
-        """identifies which nodes will be reported on. List individual IDs or use NONE or ALL"""
 
+        ## identifies which links will be reported on. List individual IDs or use NONE or ALL
         self.links = []
-        """identifies which links will be reported on. List individual IDs or use NONE or ALL"""
 
+        ## used to identify which quantities are reported on;
+        ## don't write if blank
         self.parameters = []            # list of strings
-        """used to identify which quantities are reported on"""
-        """don't write if blank"""
+
 
     @property
     def page(self):

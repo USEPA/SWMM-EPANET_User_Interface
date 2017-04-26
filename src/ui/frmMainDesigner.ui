@@ -97,16 +97,19 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnZoom100">
+       <widget class="QPushButton" name="btnCoord">
         <property name="text">
-         <string>Zoom Level: 100%</string>
+         <string>x,y</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnCoord">
-        <property name="text">
-         <string>x,y</string>
+       <widget class="QLineEdit" name="txtCrs">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -154,15 +157,8 @@
      </property>
      <addaction name="actionStdExportMap"/>
     </widget>
-    <widget class="QMenu" name="menuRecent">
-     <property name="title">
-      <string>Recent</string>
-     </property>
-     <addaction name="actionOpen"/>
-    </widget>
     <addaction name="actionStdNewProjectMenu"/>
     <addaction name="actionStdOpenProjMenu"/>
-    <addaction name="menuRecent"/>
     <addaction name="actionStdSaveMenu"/>
     <addaction name="actionStdSave_As"/>
     <addaction name="actionSave_Map_As_Image"/>
@@ -220,25 +216,6 @@
      <addaction name="actionStdMapShowLabels"/>
      <addaction name="actionStdMapShowBackdrop"/>
     </widget>
-    <widget class="QMenu" name="menuLegends">
-     <property name="title">
-      <string>Legends</string>
-     </property>
-     <widget class="QMenu" name="menuModifyLeg">
-      <property name="title">
-       <string>Modify</string>
-      </property>
-      <addaction name="actionStdLegModSubcatchment"/>
-      <addaction name="actionStdLegModNode"/>
-      <addaction name="actionStdLegModLink"/>
-     </widget>
-     <addaction name="actionStdLegSubcatchment"/>
-     <addaction name="actionStdLegNode"/>
-     <addaction name="actionStdLegLink"/>
-     <addaction name="actionStdLegTime"/>
-     <addaction name="separator"/>
-     <addaction name="menuModifyLeg"/>
-    </widget>
     <widget class="QMenu" name="menuToolbars">
      <property name="title">
       <string>Toolbars</string>
@@ -255,11 +232,12 @@
     <addaction name="actionStdMapZoomOut"/>
     <addaction name="actionStdMapFullExtent"/>
     <addaction name="separator"/>
+    <addaction name="actionStdMapFind"/>
     <addaction name="actionStdMapQuery"/>
     <addaction name="actionStdMapOverview"/>
     <addaction name="separator"/>
     <addaction name="menuObjects"/>
-    <addaction name="menuLegends"/>
+    <addaction name="actionStdLegends"/>
     <addaction name="menuToolbars"/>
     <addaction name="separator"/>
     <addaction name="actionStdMapOptions"/>
@@ -529,7 +507,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -555,7 +533,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -581,7 +559,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -607,7 +585,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -633,7 +611,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -659,7 +637,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="swmm.qrc">
+          <iconset>
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">
@@ -1900,6 +1878,16 @@
   <action name="actionOpen">
    <property name="text">
     <string>File0</string>
+   </property>
+  </action>
+  <action name="actionStdMapFind">
+   <property name="text">
+    <string>Find...</string>
+   </property>
+  </action>
+  <action name="actionStdLegends">
+   <property name="text">
+    <string>Legends</string>
    </property>
   </action>
  </widget>

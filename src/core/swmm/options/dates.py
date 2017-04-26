@@ -27,29 +27,29 @@ class Dates(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Date when the simulation begins
         self.start_date = "1/1/2002"
-        """Date when the simulation begins"""
 
+        ## Time of day on the starting date when the simulation begins
         self.start_time = "0:00"
-        """Time of day on the starting date when the simulation begins"""
 
+        ## Date when the simulation is to end
         self.end_date = "1/1/2002"
-        """Date when the simulation is to end"""
 
+        ## Time of day on the ending date when the simulation will end
         self.end_time = "24:00"
-        """Time of day on the ending date when the simulation will end"""
 
+        ## Date when reporting of results is to begin
         self.report_start_date = "1/1/2002"
-        """Date when reporting of results is to begin"""
 
+        ## Time of day on the report starting date when reporting is to begin
         self.report_start_time = "0:00"
-        """Time of day on the report starting date when reporting is to begin"""
 
+        ## Day of the year (month/day) when street sweeping operations begin
         self.sweep_start = "1/1"
-        """Day of the year (month/day) when street sweeping operations begin"""
 
+        ## Day of the year (month/day) when street sweeping operations end
         self.sweep_end = "12/31"
-        """Day of the year (month/day) when street sweeping operations end"""
 
+        ## Number of days with no rainfall prior to the start of the simulation
         self.dry_days = 0.0
-        """Number of days with no rainfall prior to the start of the simulation"""

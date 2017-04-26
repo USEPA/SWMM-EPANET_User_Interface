@@ -185,12 +185,13 @@ class LabelReader(SectionReader):
     @staticmethod
     def read(new_text):
         label = Label()
-        fields = shlex.split(new_text)
+        fields = shlex.split(new_text.encode('utf8'))
         if len(fields) > 2:
-            label.x, label.y, label.name = fields[0:3]
+            (label.x, label.y) = fields[0:2]
+            label.name = fields[2].decode('UTF8')
 
             if len(fields) > 3:
-                label.anchor_name = fields[3]  # name of an anchor node (optional)
+                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
             if len(fields) > 4:
                 label.font = fields[4]
             if len(fields) > 5:
@@ -230,7 +231,7 @@ class PatternReader(SectionReader):
     def read(new_text):
         pattern = Pattern()
         for line in new_text.splitlines():
-            comment_split = unicode.split(line, ';', 1)
+            comment_split = line.split(';', 1)
             if len(comment_split) > 1:
                 pattern.description += line[1:].strip()
                 line = comment_split[0].strip()
@@ -769,6 +770,8 @@ class CrossSectionReader(SectionReader):
                 cross_section.barrels = fields[4]
                 if len(fields) > 6 and fields[6].isdigit():  # Old interface saves CUSTOM barrels in this field.
                     cross_section.barrels = fields[6]
+        elif cross_section.shape == CrossSectionShape.NotSet:
+            return None
         # elif cross_section.shape == CrossSectionShape.IRREGULAR:
         #     if len(fields) > 2:
         #         cross_section.transect = fields[2]
@@ -823,7 +826,7 @@ class TransectsReader(SectionReader):
                 comment = Section()
                 comment.name = "Comment"
                 comment.value = ''
-                transects.value.append(comment)
+                # transects.value.append(comment)
             else:
                 fields = line.split()
                 if len(fields) > 2:
@@ -1230,7 +1233,7 @@ class LIDControlReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) == 2:
-                    if lid_control.name:
+                    if lid_control.name and lid_control.name != 'Unnamed':
                         raise ValueError("LIDControlReader.read: LID name already set: " +
                                          lid_control.name + ", then found 2-element line: " + line)
                     lid_control.name = fields[0]
@@ -1304,7 +1307,7 @@ class SnowPackReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) > 2:
-                    if not snow_pack.name:                      # If we have not found a name yet, use the first one we find
+                    if not snow_pack.name or snow_pack.name == 'Unnamed':                      # If we have not found a name yet, use the first one we find
                         snow_pack.name = fields[0]
                     elif fields[0] != snow_pack.name:           # If we find a different name, complain
                         raise ValueError("SnowPackReader.read: name: " + fields[0] + " != " + snow_pack.name)
@@ -1331,6 +1334,7 @@ class SubcatchmentReader(SectionReader):
         fields = new_text.split()
         if len(fields) > 0:
             subcatchment.name = fields[0]
+            subcatchment.infiltration_parameters.subcatchment = subcatchment.name
         if len(fields) > 1:
             subcatchment.rain_gage = fields[1]
         if len(fields) > 2:
@@ -1359,6 +1363,8 @@ class HortonInfiltrationReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(horton_infiltration, new_text)
         fields = new_text.split()
         if len(fields) > 0:
+            if "none" in fields[0].lower():
+                return None
             horton_infiltration.subcatchment = fields[0]
         if len(fields) > 1:
             horton_infiltration.max_rate = fields[1]
@@ -1420,6 +1426,8 @@ class GroundwaterReader(SectionReader):
         new_text = SectionReader.set_comment_check_section(groundwater, new_text)
         fields = new_text.split()
         if len(fields) > 0:
+            if "none" in fields[0].lower():
+                return None
             groundwater.subcatchment = fields[0]
         if len(fields) > 1:
             groundwater.aquifer = fields[1]

@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-09-13 17:51:21</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.004000</p>
-<p class='attribute'><strong>Status:</strong> Pass 24 Failure 1</p>
+<p class='attribute'><strong>Start Time:</strong> 2017-03-27 15:01:37</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.011000</p>
+<p class='attribute'><strong>Status:</strong> Pass 25</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -298,11 +298,11 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test_patterns.SimplePatternTest: Test one pattern</td>
     <td>2</td>
-    <td>1</td>
-    <td>1</td>
+    <td>2</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c4',2)">Detail</a></td>
 </tr>
@@ -312,49 +312,9 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft4.2' class='none'>
-    <td class='failCase'><div class='testcase'>test_patterns: Test one Pattern section</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft4.2')" >
-        fail</a>
-
-    <div id='div_ft4.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft4.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft4.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\test\core\epanet\test_patterns.py", line 59, in test_patterns
-    self.assertTrue(match(actual_text, source_text), msg)
-AssertionError: 
-Set:
-[PATTERNS]
-;ID	Multipliers
-;Demand Pattern
- 1	1.0	1.2	1.4	1.6	1.4	1.2
- 1	1.0	0.8	0.6	0.4	0.6	0.8
- 2	2.0	2.2	2.4	2.6	2.4	2.2
- 2	2.0	2.8	2.6	2.4	2.6	2.8
-Get:
-[PATTERNS]
-;;Name          	Type      	Multipliers
-;;--------------	----------	-----------
-;Demand Pattern
- 1               MONTHLY   	1.0  	1.2  	1.4  	1.6  	1.4  	1.2  
- 1                         	1.0  	0.8  	0.6  	0.4  	0.6  	0.8  
- 2               MONTHLY   	2.0  	2.2  	2.4  	2.6  	2.4  	2.2  
- 2                         	2.0  	2.8  	2.6  	2.4  	2.6  	2.8  
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt4.2' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_patterns: Test one Pattern section</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -444,7 +404,47 @@ Get:
 
 <tr id='pt9.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
-    <td colspan='5' align='center'>pass</td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt9.2')" >
+        pass</a>
+
+    <div id='div_pt9.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt9.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+pt9.2: Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
+    setattr(self, attr_name, int(attr_value))
+ValueError: invalid literal for int() with base 10: '1.3'
+Exception setting order_tank: invalid literal for int() with base 10: '1.3'
+None
+order_tank now = 1.3
+Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
+    setattr(self, attr_name, int(attr_value))
+ValueError: invalid literal for int() with base 10: '1.1'
+Exception setting order_bulk: invalid literal for int() with base 10: '1.1'
+None
+order_bulk now = 1.1
+Traceback (most recent call last):
+  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
+    setattr(self, attr_name, int(attr_value))
+ValueError: invalid literal for int() with base 10: '1.2'
+Exception setting order_wall: invalid literal for int() with base 10: '1.2'
+None
+order_wall now = 1.2
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -488,8 +488,8 @@ Get:
 <tr id='total_row'>
     <td>Total</td>
     <td>25</td>
-    <td>24</td>
-    <td>1</td>
+    <td>25</td>
+    <td>0</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

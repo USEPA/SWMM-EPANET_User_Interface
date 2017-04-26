@@ -1,8 +1,6 @@
 var classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#aa36bfb1c62d532ee2ebddb737f303e3f", null ],
-    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#a874d351a3baf396ae7f1cee9554dea0c", null ],
-    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#a25dfc294948aa74df36bb5379d133df8", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#a11b093059da27c78d42d60baa352853d", null ],
     [ "aquifer", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#a8d9f1a02ccee9ea8597dfcc9475a166b", null ],
     [ "bottom_elevation", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#aeb60c17f4a30583b1312f7c135f0d932", null ],
     [ "custom_deep_flow_equation", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html#ac52d2abe91fefb9da92ad33c97b2cbc7", null ],

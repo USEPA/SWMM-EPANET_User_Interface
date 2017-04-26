@@ -7,6 +7,7 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
         self.session = main_form
+        self.icon = main_form.windowIcon()
         self.map_widget = self.session.map_widget
         self.options = None
         if args is not None and len(args) > 0:
@@ -15,34 +16,31 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui.rdoUnitNone.toggled.connect(self.changeLinearMapUnit)
         self.ui.rdoUnitFeet.toggled.connect(self.changeLinearMapUnit)
         self.ui.rdoUnitMeters.toggled.connect(self.changeLinearMapUnit)
-        self.ui.txtULx.textChanged.connect(lambda:self.checkCoords(self.ui.txtULx.text()))
-        self.ui.txtULy.textChanged.connect(lambda:self.checkCoords(self.ui.txtULy.text()))
-        self.ui.txtLRx.textChanged.connect(lambda:self.checkCoords(self.ui.txtLRx.text()))
-        self.ui.txtLRy.textChanged.connect(lambda:self.checkCoords(self.ui.txtLRy.text()))
+        self.ui.txtLLx.textChanged.connect(lambda:self.checkCoords(self.ui.txtLLx.text()))
+        self.ui.txtLLy.textChanged.connect(lambda:self.checkCoords(self.ui.txtLLy.text()))
+        self.ui.txtURx.textChanged.connect(lambda:self.checkCoords(self.ui.txtURx.text()))
+        self.ui.txtURy.textChanged.connect(lambda:self.checkCoords(self.ui.txtURy.text()))
         self.ui.btnAutoSize.clicked.connect(self.autoSetMapDimensions)
         self.ui.buttonBox.accepted.connect(self.setExtent)
         self.setupOptions()
 
     def autoSetMapDimensions(self):
+        # Determines map dimensions based on range of vertices' coordinates
         MAXDEGDIGITS = 4 # Max.decimal digits for lat - long degrees pass
         sigDigit = 2
         if self.ui.rdoUnitDegrees.isChecked():
             sigDigit = MAXDEGDIGITS
-
-    def setMapDimensions(self):
-        #Determines map dimensions based on range of nodal coordinates
-
-        pass
+        self.display_layers_extent()
 
     def setExtent(self):
         if self.session is None:
             return
         if self.map_widget is None:
             return
-        val1, is_val_good1 = self.floatTryParse(self.ui.txtULx.text())
-        val2, is_val_good2 = self.floatTryParse(self.ui.txtULy.text())
-        val3, is_val_good3 = self.floatTryParse(self.ui.txtLRx.text())
-        val4, is_val_good4 = self.floatTryParse(self.ui.txtLRy.text())
+        val1, is_val_good1 = self.floatTryParse(self.ui.txtLLx.text())
+        val2, is_val_good2 = self.floatTryParse(self.ui.txtLLy.text())
+        val3, is_val_good3 = self.floatTryParse(self.ui.txtURx.text())
+        val4, is_val_good4 = self.floatTryParse(self.ui.txtURy.text())
 
         if is_val_good1 and is_val_good2 and is_val_good3 and is_val_good4:
             if val1 == val3 or val2 == val4:
@@ -57,6 +55,30 @@ class frmMapDimensions(QtGui.QDialog):
                 if self.session.project is not None:
                     if self.session.project.map is not None:
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
+                        self.session.map_widget.set_extent_by_corners(self.session.project.map.dimensions)
+                if self.session.project is not None:
+                    if self.session.project.backdrop is not None:
+                        self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtURy.text(), self.ui.txtURx.text(), self.ui.txtLLy.text())
+                        if self.ui.rdoUnitFeet.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.FEET
+                            else:
+                                self.session.project.backdrop.units = "FEET"
+                        elif self.ui.rdoUnitMeters.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.METERS
+                            else:
+                                self.session.project.backdrop.units = "METERS"
+                        elif self.ui.rdoUnitDegrees.isChecked():
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.DEGREES
+                            else:
+                                self.session.project.backdrop.units = "DEGREES"
+                        else:
+                            if not isinstance(self.session.project.backdrop.units, basestring):
+                                self.session.project.backdrop.units = self.session.project.backdrop.units.NONE
+                            else:
+                                self.session.project.backdrop.units = ""
         pass
 
     def setupOptions(self):
@@ -64,24 +86,60 @@ class frmMapDimensions(QtGui.QDialog):
             return
         if self.map_widget is None:
             return
-        lu = self.map_widget.map_linear_unit
-        if lu == self.map_widget.map_unit_names[2]:  # feet
+
+        model_dim = self.session.project.backdrop.dimensions
+        if model_dim and model_dim[0] and model_dim[1] and model_dim[2] and model_dim[3]:
+            #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
+            #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
+            #self.ui.txtURx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+            #self.ui.txtURy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
+            self.ui.txtLLx.setText(str(model_dim[0]))
+            self.ui.txtLLy.setText(str(model_dim[1]))
+            self.ui.txtURx.setText(str(model_dim[2]))
+            self.ui.txtURy.setText(str(model_dim[3]))
+        else:
+            self.display_layers_extent()
+
+        if not isinstance(self.session.project.backdrop.units, basestring):
+            units = self.session.project.backdrop.units.name
+        else:
+            units = self.session.project.backdrop.units.upper()
+
+        if units == "FEET":  # feet
             self.ui.rdoUnitFeet.setChecked(True)
-        elif lu == self.map_widget.map_unit_names[0]:  # meters
+        elif units == "METERS":  # meters
             self.ui.rdoUnitMeters.setChecked(True)
-        elif lu == self.map_widget.map_unit_names[6]:  # degrees
+        elif units == "DEGREES":  # degrees
             self.ui.rdoUnitDegrees.setChecked(True)
         else:
             self.ui.rdoUnitNone.setChecked(True)
 
-        #self.ui.txtULx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
-        #self.ui.txtULy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
-        #self.ui.txtLRx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        #self.ui.txtLRy.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
-        self.ui.txtULx.setText(self.map_widget.coord_origin.x)
-        self.ui.txtULy.setText(self.map_widget.coord_origin.y)
-        self.ui.txtLRx.setText(str(self.map_widget.coord_fext.x))
-        self.ui.txtLRy.setText(str(self.map_widget.coord_fext.x))
+        self.setWindowIcon(self.icon)
+
+    def display_layers_extent(self):
+        if self.session.model_layers:
+            llx = 0
+            lly = 0
+            urx = 10000
+            ury = 10000
+            layers = []
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                        (lyr_name.lower().startswith("label") or
+                             lyr_name.lower().startswith("subcentroid") or
+                             lyr_name.lower().startswith("sublink")):
+                    continue
+                layers.append(mlyr)
+            r = self.session.map_widget.get_extent(layers)
+            llx = r.xMinimum()
+            lly = r.yMinimum()
+            urx = r.xMaximum()
+            ury = r.yMaximum()
+            self.ui.txtLLx.setText(str(llx))
+            self.ui.txtLLy.setText(str(lly))
+            self.ui.txtURx.setText(str(urx))
+            self.ui.txtURy.setText(str(ury))
 
     def floatTryParse(self, value):
         try:
@@ -126,10 +184,10 @@ class frmMapDimensions(QtGui.QDialog):
         pass
 
     def coordsInGoodFormat(self):
-        val1, is_val_good1 = self.floatTryParse(self.ui.txtULx.text())
-        val2, is_val_good2 = self.floatTryParse(self.ui.txtULy.text())
-        val3, is_val_good3 = self.floatTryParse(self.ui.txtLRx.text())
-        val4, is_val_good4 = self.floatTryParse(self.ui.txtLRy.text())
+        val1, is_val_good1 = self.floatTryParse(self.ui.txtLLx.text())
+        val2, is_val_good2 = self.floatTryParse(self.ui.txtLLy.text())
+        val3, is_val_good3 = self.floatTryParse(self.ui.txtURx.text())
+        val4, is_val_good4 = self.floatTryParse(self.ui.txtURy.text())
         if is_val_good1 and is_val_good2 and is_val_good3 and is_val_good4:
             if val1 == val3 or val2 == val4:
                 #MSG_ILLEGAL_MAP_LIMITS

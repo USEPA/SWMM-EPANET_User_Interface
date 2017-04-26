@@ -36,24 +36,24 @@ class Label(Section, Coordinate):
 
         """Text of label is saved in name attribute defined in Coordinate base class."""
 
+        ## ID label of an anchor node (optional)
         self.anchor_name = ''  # string
-        """ID label of an anchor node (optional)"""
 
+        ## type of object being metered by the label
         self.meter_type = MeterType.NONE
-        """type of object being metered by the label"""
 
+        ## ID of the object (Node or Link) being metered
         self.meter_name = ''
-        """ID of the object (Node or Link) being metered"""
 
+        ## label font
         self.font = ""
-        """label font"""
 
+        ## label size
         self.size = 10.0
-        """label size"""
 
+        ## True to use bold
         self.bold = False
-        """True to use bold"""
 
+        ## True to use italics
         self.italic = False
-        """True to use italics"""
 

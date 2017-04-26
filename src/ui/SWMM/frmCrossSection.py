@@ -11,7 +11,7 @@ from core.swmm.curves import CurveType
 
 class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
 
-    def __init__(self, main_form=None):
+    def __init__(self, main_form=None, **kwargs):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/cross_sectioneditordialog.htm"
         self.units = main_form.project.options.flow_units.value
@@ -23,6 +23,12 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(main_form.project)
         self._main_form = main_form
+        self.defaults = None
+        if kwargs.has_key("defaults"):
+            self.defaults = kwargs["defaults"]
+        #self.default_key = "obj_def_xsection"
+        #if kwargs.has_key("default_key"):
+        #    self.default_key = kwargs["default_key"]
         self.link_name = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
         self.ellipse_major_axis_in = (23,30,34,38,42,45,49,53,60,68,76,83,91,98,106,113,121,128,136,143,151,166,180)
@@ -92,12 +98,29 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                               '137','139','142','148','150','152','154','161','167','169','171','178','184','186',
                               '188','190','197','199','159','162','168','170','173','179','184','187','190','195',
                               '198','204','206','209','215','217','223','225','231','234','236','239','245','247')
-        # set for first link for now
-        self.set_link(main_form.project, '1')
+        if self.defaults is not None:
+            self.set_default()
+        else:
+            # set for first link for now
+            #self.set_link(main_form.project, '1')
+            pass
 
     def set_link(self, project, link_name):
         # assume we want to edit the first one
         self.link_name = link_name
+        value = None
+        try:
+            value = self._main_form.project.xsections.get_item("link", self.link_name)
+        except:  # This must be a new one we need to add
+            value = None
+
+        if not value:
+            value = core.swmm.hydraulics.link.CrossSection()
+            value.link = self.link_name
+            if self._main_form and self._main_form.project_settings:
+                self._main_form.project_settings.apply_default_attributes(value)
+            self._main_form.project.xsections.value.append(value)
+
         for value in project.xsections.value:
             if value.link == link_name:
                 # this is the link we want to edit
@@ -128,10 +151,10 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                     elif str(list_item.text()) == 'Semi-Circular' and value.shape.name == 'SEMICIRCULAR':
                         self.listWidget.setCurrentItem(list_item)
                 self.sbxNumber.setValue(int(value.barrels))
-                self.txt1.setText(value.geometry1)
-                self.txt2.setText(value.geometry2)
-                self.txt3.setText(value.geometry3)
-                self.txt4.setText(value.geometry4)
+                self.txt1.setText(str(value.geometry1))
+                self.txt2.setText(str(value.geometry2))
+                self.txt3.setText(str(value.geometry3))
+                self.txt4.setText(str(value.geometry4))
 
                 # for rect_open sidewalls, set geom3 to 0,1,2 for None, One, Both
                 if value.shape.name == 'RECTANGULAR':
@@ -158,6 +181,75 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                             self.cboCombo.setCurrentIndex(index)
 
                 # section.culvert_code not used in ui
+
+    def set_default(self):
+        """
+        Set cross-section choice from default in qsetting
+        Returns:
+        """
+        if self.defaults is None: return
+        #value = self.qsettings.value("Defaults/" + self.properties[len(self.properties) - 1],
+        #value = self.qsettings.value(self.default_key, None)
+        xs_name = self.defaults.parameters_values[self.defaults.xsection_key]
+        value = self.defaults.xsection
+        if not value: return
+        for list_index in range(0,self.listWidget.count()):
+            list_item = self.listWidget.item(list_index)
+            if str(list_item.text()).upper() == value.shape.name:
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Force Main' and value.shape.name == 'FORCE_MAIN':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Filled Circular' and value.shape.name == 'FILLED_CIRCULAR':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Closed Rectangular' and value.shape.name == 'RECT_CLOSED':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Rectangular' and value.shape.name == 'RECT_OPEN':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Horizontal Elliptical' and value.shape.name == 'HORIZ_ELLIPSE':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Vertical Elliptical' and value.shape.name == 'VERT_ELLIPSE':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Rectangular Triangular' and value.shape.name == 'RECT_TRIANGULAR':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Rectangular Round' and value.shape.name == 'RECT_ROUND':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Modified Baskethandle' and value.shape.name == 'MODBASKETHANDLE':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Semi-Elliptical' and value.shape.name == 'SEMIELLIPTICAL':
+                self.listWidget.setCurrentItem(list_item)
+            elif str(list_item.text()) == 'Semi-Circular' and value.shape.name == 'SEMICIRCULAR':
+                self.listWidget.setCurrentItem(list_item)
+        self.sbxNumber.setValue(int(value.barrels))
+        self.txt1.setText(str(value.geometry1))
+        self.txt2.setText(str(value.geometry2))
+        self.txt3.setText(str(value.geometry3))
+        self.txt4.setText(str(value.geometry4))
+
+        # for rect_open sidewalls, set geom3 to 0,1,2 for None, One, Both
+        if value.shape.name == 'RECTANGULAR':
+            self.cboCombo.setCurrentIndex(int(value.geometry3))
+
+        # for horizontal and vertical elliptical and arch, combo gets standard sizes
+        if value.shape.name == 'HORIZ_ELLIPSE':
+            self.cboCombo.setCurrentIndex(int(value.geometry3))
+        if value.shape.name == 'VERT_ELLIPSE':
+            self.cboCombo.setCurrentIndex(int(value.geometry3))
+        if value.shape.name == 'ARCH':
+            self.cboCombo.setCurrentIndex(int(value.geometry3))
+
+        if value.shape.name == 'IRREGULAR':
+            # for irregular, combo needs transect names, dialog opens transect buttons
+            for index in range(0,self.cboCombo.count):
+                if value.transect == self.cboCombo.itemText(index):
+                    self.cboCombo.setCurrentIndex(index)
+
+        if value.shape.name == 'CUSTOM':
+            # for custom, combo needs shape curves, dialog opens shape curve editor
+            for index in range(0,self.cboCombo.count):
+                if value.curve == self.cboCombo.itemText(index):
+                    self.cboCombo.setCurrentIndex(index)
+
+        # section.culvert_code not used in ui
 
 
     def set_from(self, project):
@@ -204,12 +296,17 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         if cur:
             current_selection = str(cur.text())
 
-        try:
-            value = self._main_form.project.xsections.value[self.link_name]
-        except:  # This must be a new one we need to add
-            value = core.swmm.hydraulics.link.CrossSection()
-            value.link = self.link_name
-            self._main_form.project.xsections.value.append(value)
+        value = None
+        if self.defaults is not None:
+            #value = core.swmm.hydraulics.link.CrossSection()
+            value = self.defaults.xsection
+        else:
+            try:
+                value = self._main_form.project.xsections.get_item("link", self.link_name)
+            except:  # This must be a new one we need to add
+                value = core.swmm.hydraulics.link.CrossSection()
+                value.link = self.link_name
+                self._main_form.project.xsections.value.append(value)
 
         value.barrels = self.sbxNumber.text()
         value.geometry1 = self.txt1.text()
@@ -271,8 +368,11 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'CUSTOM'
             value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Dummy':
-            XType = 'DUMMY'
+            XType = 'NotSet'
         value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
+        if self.defaults is not None:
+            #self.qsettings.setValue(self.default_key, value)
+            self.defaults.parameters_values[self.defaults.xsection_key] = value.shape.name
         self.close()
 
     def cmdCancel_Clicked(self):

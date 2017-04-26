@@ -1,8 +1,6 @@
 var classcore_1_1swmm_1_1quality_1_1_pollutant =
 [
-    [ "__init__", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#a8623ccf77b94706aef2aa6a295848015", null ],
-    [ "get_text", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#ac7431e7079f9251364331dc0a0c6228b", null ],
-    [ "set_text", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#abf31d184cfda58165341089b05a042ca", null ],
+    [ "__init__", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#a34128133ac7336bbcd90d512f698462c", null ],
     [ "co_fraction", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#a34b92c259b6a6d150a3d020b69cb18b9", null ],
     [ "co_pollutant", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#a88b6b999d37e326d8d33f4dc86d3f432", null ],
     [ "decay_coefficient", "classcore_1_1swmm_1_1quality_1_1_pollutant.html#ac5e6eaf242be947634f358ec30ab2a36", null ],

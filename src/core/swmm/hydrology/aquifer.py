@@ -41,53 +41,53 @@ class Aquifer(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## User-assigned name
         self.name = "Unnamed"
-        """User-assigned name."""
 
+        ## Volume of voids / total soil volume (volumetric fraction)
         self.porosity = "0.5"
-        """Volume of voids / total soil volume (volumetric fraction)."""
 
+        ## Soil moisture content at which plants cannot survive
+        ## (volumetric fraction)
         self.wilting_point = "0.15"
-        """Soil moisture content at which plants cannot survive
-            (volumetric fraction). """
 
+        ## Soil moisture content after all free water has drained off
+        ## (volumetric fraction)
         self.field_capacity = "0.30"
-        """Soil moisture content after all free water has drained off
-            (volumetric fraction)."""
 
+        ## Soil's saturated hydraulic conductivity (in/hr or mm/hr)
         self.conductivity = "5.0"
-        """Soil's saturated hydraulic conductivity (in/hr or mm/hr)."""
 
+        ## Average slope of log(conductivity) versus soil moisture deficit
+        ## (porosity minus moisture content) curve (unitless)
         self.conductivity_slope = "10.0"
-        """Average slope of log(conductivity) versus soil moisture deficit
-            (porosity minus moisture content) curve (unitless)."""
 
+        ## Average slope of soil tension versus soil moisture content curve
+        ## (inches or mm)
         self.tension_slope = "15.0"
-        """Average slope of soil tension versus soil moisture content curve
-            (inches or mm)."""
 
+        ## Fraction of total evaporation available for evapotranspiration
+        ## in the upper unsaturated zone
         self.upper_evaporation_fraction = "0.35"
-        """Fraction of total evaporation available for evapotranspiration
-            in the upper unsaturated zone."""
 
+        ## Maximum depth into the lower saturated zone over which
+        ## evapotranspiration can occur (ft or m)
         self.lower_evaporation_depth = "14.0"
-        """Maximum depth into the lower saturated zone over which
-            evapotranspiration can occur (ft or m)."""
 
+        ## Rate of percolation from saturated zone to deep groundwater (in/hr or mm/hr)
         self.lower_groundwater_loss_rate = "0.002"
-        """Rate of percolation from saturated zone to deep groundwater (in/hr or mm/hr)."""
 
+        ## Elevation of the bottom of the aquifer (ft or m)
         self.bottom_elevation = "0.0"
-        """Elevation of the bottom of the aquifer (ft or m)."""
 
+        ## Elevation of the water table in the aquifer
+        ## at the start of the simulation (ft or m)
         self.water_table_elevation = "10.0"
-        """Elevation of the water table in the aquifer
-            at the start of the simulation (ft or m)."""
 
+        ## Moisture content of the unsaturated upper zone of the aquifer
+        ## at the start of the simulation (volumetric fraction)
+        ## (cannot exceed soil porosity)
         self.unsaturated_zone_moisture = "0.30"
-        """Moisture content of the unsaturated upper zone of the aquifer
-            at the start of the simulation (volumetric fraction)
-            (cannot exceed soil porosity)."""
 
+        ## ID of monthly pattern of adjustments to upper evaporation fraction (optional)
         self.upper_evaporation_pattern = ''
-        """ID of monthly pattern of adjustments to upper evaporation fraction (optional)"""

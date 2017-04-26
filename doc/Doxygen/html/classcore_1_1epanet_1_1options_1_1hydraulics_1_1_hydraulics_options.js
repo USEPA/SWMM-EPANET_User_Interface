@@ -1,8 +1,6 @@
 var classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options =
 [
     [ "__init__", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a0fd54ee5ba6dfc5cf56709d5e3c241f7", null ],
-    [ "get_text", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a5b82a939d26eb51ce4f90bbe7947734f", null ],
-    [ "set_text", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#aafffc75e7f80f87f210ca5e050973cd0", null ],
     [ "accuracy", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a9c0493ed503b64dc95bcbad6119af96f", null ],
     [ "check_frequency", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#af6eee64cea546fb893ff397e101ff16f", null ],
     [ "damp_limit", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a1a9796325e7f70ced6bd1f46fe56a4db", null ],

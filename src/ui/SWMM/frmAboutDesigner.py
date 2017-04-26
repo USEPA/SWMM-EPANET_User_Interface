@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\SWMM\frmAboutDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Wed Mar 15 13:49:36 2017
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,16 +33,12 @@ class Ui_frmAbout(object):
         self.centralWidget = QtGui.QWidget(frmAbout)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout_2.setMargin(11)
-        self.verticalLayout_2.setSpacing(6)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.frame = QtGui.QFrame(self.centralWidget)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
         self.frame.setObjectName(_fromUtf8("frame"))
         self.verticalLayout = QtGui.QVBoxLayout(self.frame)
-        self.verticalLayout.setMargin(11)
-        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.lblSwmm = QtGui.QLabel(self.frame)
         self.lblSwmm.setObjectName(_fromUtf8("lblSwmm"))
@@ -51,8 +48,6 @@ class Ui_frmAbout(object):
         self.tabDescription = QtGui.QWidget()
         self.tabDescription.setObjectName(_fromUtf8("tabDescription"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.tabDescription)
-        self.verticalLayout_4.setMargin(11)
-        self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
         self.lblAbout = QtGui.QLabel(self.tabDescription)
         self.lblAbout.setWordWrap(True)
@@ -62,8 +57,6 @@ class Ui_frmAbout(object):
         self.tabDisclaimer = QtGui.QWidget()
         self.tabDisclaimer.setObjectName(_fromUtf8("tabDisclaimer"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.tabDisclaimer)
-        self.verticalLayout_3.setMargin(11)
-        self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.lblAbout_2 = QtGui.QLabel(self.tabDisclaimer)
         self.lblAbout_2.setWordWrap(True)
@@ -77,8 +70,6 @@ class Ui_frmAbout(object):
         self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
-        self.horizontalLayout.setMargin(11)
-        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.label = QtGui.QLabel(self.fraOKCancel)
         self.label.setLineWidth(0)
@@ -101,7 +92,7 @@ class Ui_frmAbout(object):
 
     def retranslateUi(self, frmAbout):
         frmAbout.setWindowTitle(_translate("frmAbout", "About SWMM", None))
-        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP3, FOR TESTING ONLY. Not for production use.</span></p></body></html>", None))
+        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP4r1Dev, Using Python 2.7.5</span></p></body></html>", None))
         self.lblAbout.setText(_translate("frmAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

@@ -1,8 +1,7 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a206b23b6defb773422c6ad23a275848e", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a93edbe83e697de72b9ba55a74b98412b", null ],
     [ "can_surcharge", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a11a280ffa58b4875055dbb87efe11b65", null ],
-    [ "cross_section", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#aee8ca47bb6a7b3d287da36c9302f77e1", null ],
     [ "discharge_coefficient", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a5d5531dfb6b98ba75cbc810ae7241fd9", null ],
     [ "end_coefficient", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a79973f742d2749576bb541912092b616", null ],
     [ "end_contractions", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html#a4e624366ea984bc6b14461c6d52b8595", null ],

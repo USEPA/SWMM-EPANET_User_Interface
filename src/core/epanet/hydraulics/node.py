@@ -27,26 +27,27 @@ class Node(Section, Coordinate):
     def __init__(self):
         Coordinate.__init__(self)
         Section.__init__(self)
+
+        ## Unique name or number identifying this node
         # self.name, inherited from Coordinate
-        """Unique name or number identifying this node"""
 
+        ## Node location for mapping
         # self.x, self.y, inherited from Coordinate
-        """Node location for mapping"""
 
+#         ## Optional description of the Node
 #         self.description = ""
-#         """Optional description of the Node"""
 
+        ## Optional label used to categorize or classify the Node
         self.tag = ""
-        """Optional label used to categorize or classify the Node"""
 
+        ## concentration for chemicals, hours for water age, or percent for source tracing
         self.initial_quality = 0.0
-        """concentration for chemicals, hours for water age, or percent for source tracing"""
 
+#         ## defines characteristics of water quality source
 #         self.source_quality = Source()
-#         """defines characteristics of water quality source"""
-#
+
+#         ## Indicates whether reporting is desired at this node
 #         self.report_flag = ""
-#         """Indicates whether reporting is desired at this node"""
 
 
 class Junction(Node):
@@ -70,19 +71,19 @@ class Junction(Node):
     def __init__(self):
         Node.__init__(self)
 
+        ## elevation of junction
         self.elevation = '0.0'
-        """elevation of junction"""
 
+        ## Base demand flow, characteristic of all demands at this node
         self.base_demand_flow = '0.0'
-        """Base demand flow, characteristic of all demands at this node"""
 
+        ## Demand pattern ID, optional
         self.demand_pattern_name = ''
-        """Demand pattern ID, optional"""
 
+        ## Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
+        ## the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which
+        ## defaults to 0.5 and can be set in OPTIONS section.
         self.emitter_coefficient = ''
-        """ Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
-            the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which
-            defaults to 0.5 and can be set in OPTIONS section."""
 
 
 class Reservoir(Node):
@@ -103,11 +104,11 @@ class Reservoir(Node):
     def __init__(self):
         Node.__init__(self)
 
+        ## Head is the hydraulic head (elevation + pressure head) of water in the reservoir
         self.total_head = "0.0"
-        """Head is the hydraulic head (elevation + pressure head) of water in the reservoir"""
 
+        ## head pattern can be used to make the reservoir head vary with time
         self.head_pattern_name = ''
-        """head pattern can be used to make the reservoir head vary with time"""
 
 
 class Tank(Node):
@@ -136,36 +137,36 @@ class Tank(Node):
     def __init__(self):
         Node.__init__(self)
 
+        ## Bottom elevation, ft (m)
         self.elevation = "0.0"
-        """Bottom elevation, ft (m)"""
 
+        ## Initial water level, ft (m)
         self.initial_level = "0.0"
-        """Initial water level, ft (m)"""
 
+        ## Minimum water level, ft (m)
         self.minimum_level = "0.0"
-        """Minimum water level, ft (m)"""
 
+        ## Maximum water level, ft (m)
         self.maximum_level = "0.0"
-        """Maximum water level, ft (m)"""
 
+        ## Nominal diameter, ft (m)
         self.diameter = "0.0"
-        """Nominal diameter, ft (m)"""
 
+        ## Minimum volume, cubic ft (cubic meters)
         self.minimum_volume = "0.0"
-        """Minimum volume, cubic ft (cubic meters)"""
 
+        ## If a volume curve is supplied the diameter value can be any non-zero number
         self.volume_curve = ''
-        """If a volume curve is supplied the diameter value can be any non-zero number"""
 
+        ## Mixing models include:
+        ## Completely Mixed (MIXED);
+        ## Two-Compartment Mixing (2COMP);
+        ## Plug Flow (FIFO);
+        ## Stacked Plug Flow (LIFO);
         self.mixing_model = MixingModel.MIXED
-        """Mixing models include:
-            Completely Mixed (MIXED)
-            Two-Compartment Mixing (2COMP)
-            Plug Flow (FIFO)
-            Stacked Plug Flow (LIFO)"""
 
+        ## fraction of the total tank volume devoted to the inlet/outlet compartment
         self.mixing_fraction = "0.0"
-        """fraction of the total tank volume devoted to the inlet/outlet compartment"""
 
         # refer to [REACTIONS] section for reaction coefficient
 
@@ -195,14 +196,14 @@ class Source(Node):
     def __init__(self):
         Node.__init__(self)
 
+        ## Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)
         self.source_type = SourceType.CONCEN # TRATION
-        """Source type (CONCEN, MASS, FLOWPACED, or SETPOINT)"""
 
+        ## Baseline source strength
         self.baseline_strength = '0.0'                  # real, stored as string
-        """Baseline source strength"""
 
+        ## Time pattern ID (optional)
         self.pattern_name = ""                          # string
-        """Time pattern ID (optional)"""
 
 
 class Demand(Section):
@@ -211,14 +212,14 @@ class Demand(Section):
     def __init__(self):
         Section.__init__(self)
 
+        ## Junction this demand applies to
         self.junction_name = ''
-        """Junction this demand applies to"""
 
+        ## Base demand (flow units)
         self.base_demand = "0.0"     # real, stored as string
-        """Base demand (flow units)"""
 
+        ## Demand pattern ID (optional)
         self.demand_pattern = ''     # string
-        """Demand pattern ID (optional)"""
 
+        ## Name of demand category preceded by a semicolon (optional)
         self.category = ''           # string
-        """Name of demand category preceded by a semicolon (optional)"""

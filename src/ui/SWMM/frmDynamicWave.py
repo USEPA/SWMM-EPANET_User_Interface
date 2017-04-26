@@ -2,6 +2,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.options.dynamic_wave
 from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
+from ui.model_utility import ParseData
 
 
 class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
@@ -41,8 +42,10 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         if section.normal_flow_limited == core.swmm.options.dynamic_wave.NormalFlowLimited.BOTH:
             self.cboNormal.setCurrentIndex(2)
 
-        self.cboThreads.setCurrentIndex(int(section.threads) - 1)
-        if section.variable_step > 0:
+        val, val_is_good = ParseData.intTryParse(section.threads)
+        if val_is_good:
+            self.cboThreads.setCurrentIndex(val - 1)
+        if float(section.variable_step) > 0:
             self.cbxUseVariable.setChecked(True)
         self.sbxAdjusted.setValue(float(section.variable_step) * 100)
         self.txtMinimum.setText(str(section.minimum_step))

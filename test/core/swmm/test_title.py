@@ -12,7 +12,7 @@ class SimpleTitleTest(unittest.TestCase):
         """Bare section read/write"""
         my_title = Title()
         default_text = TitleWriter.as_text(my_title)
-        test_text = "[TITLE]"
+        test_text = "[TITLE]\n" + "SWMM Project"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
@@ -20,7 +20,7 @@ class SimpleTitleTest(unittest.TestCase):
 
     def test_empty(self):
         """Empty section read/write"""
-        test_text = "[TITLE]\n"
+        test_text = "[TITLE]\n" + "SWMM Project"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text
@@ -28,7 +28,7 @@ class SimpleTitleTest(unittest.TestCase):
 
     def test_empty_wo_return(self):
         """Empty section read/write wo ending carriage return"""
-        test_text = "[TITLE]"
+        test_text = "[TITLE]\n" + "SWMM Project"
         my_title = TitleReader.read(test_text)
         actual_text = TitleWriter.as_text(my_title)
         msg = '\nSet:'+test_text+'\nGet:'+actual_text

@@ -4,7 +4,7 @@ from core.swmm.inp_reader_sections import TemperatureReader
 from core.swmm.inp_writer_sections import TemperatureWriter
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit
+from test.core.section_match import match, match_omit, match_keyword_lines
 
 
 class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
@@ -22,16 +22,18 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
         """Test daily temperature in time series
          Must have SNOW_MELT, otherwise will fail
          because SNOW_MELT default values are written """
-        test_time_series = "[TEMPERATURE]\n" \
-                           " ;;Parameter  TSeries\n" \
-                           " TIMESERIES TS1\n" \
-                           " SNOWMELT 2 0.5 0.6 0.0 50 0\n" \
-                           " ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0\n" \
-                           " ADC PERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0"
-        my_options = TemperatureReader.read(test_time_series)
+        test_text = "[TEMPERATURE]\n" \
+                    " ;;Parameter  TSeries\n" \
+                    " TIMESERIES TS1\n" \
+                    " SNOWMELT 2 0.5 0.6 0.0 50 0\n" \
+                    " ADC IMPERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0\n" \
+                    " ADC PERVIOUS 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0"
+        my_options = TemperatureReader.read(test_text)
         actual_text = TemperatureWriter.as_text(my_options)
-        msg = '\nSet:' + test_time_series + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_time_series), msg)
+        msg = '\nSet:' + test_text + '\nGet:' + actual_text
+        # self.assertTrue(match(actual_text, test_text), msg)
+        keywords_ = ["[TEMPERATURE]", "TIMESERIES", "SNOWMELT", "ADC IMPERVIOUS", "ADC PERVIOUS"]
+        self.assertTrue(match_keyword_lines(actual_text, test_text, keywords_), msg)
 
     def test_file(self):
         """Test daily temperature in file daily_temperature.txt"""
@@ -45,7 +47,9 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
         my_options = TemperatureReader.read(test_text)
         actual_text = TemperatureWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        keywords_ = ["[TEMPERATURE]", "FILE", "SNOWMELT", "ADC IMPERVIOUS", "ADC PERVIOUS"]
+        self.assertTrue(match_keyword_lines(actual_text, test_text, keywords_), msg)
+        # self.assertTrue(match(actual_text, test_text), msg)
         # self.assertTrue(self.my_options.matches(test_file),
         #                 'Failed because SNOW_MELT default values are written')
 
@@ -61,7 +65,9 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
         my_options = TemperatureReader.read(test_text)
         actual_text = TemperatureWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match(actual_text, test_text), msg)
+        # self.assertTrue(match(actual_text, test_text), msg)
+        keywords_ = ["[TEMPERATURE]", "FILE", "SNOWMELT", "ADC IMPERVIOUS", "ADC PERVIOUS"]
+        self.assertTrue(match_keyword_lines(actual_text, test_text, keywords_), msg)
 
     def test_windspeed_monthly(self):
         """Test WindSpeed monthly"""
@@ -112,7 +118,7 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
             my_options = TemperatureReader.read(test_text)
             actual_text = TemperatureWriter.as_text(my_options)
             msg = '\nSet:' + test_text + '\nGet:' + actual_text
-            msg = "\nRule not enforced: Windspeed file should be the same climate file used for air temperature"
+            msg += "\nRule not enforced: Windspeed file should be the same climate file used for air temperature"
             find_error = False
         except Exception as e:
             msg = "\nSet:" + test_text + '\nGet:' + str(e)
@@ -151,7 +157,7 @@ class TemperatureTest(unittest.TestCase):  # TODO: go over the tests
             my_options = TemperatureReader.read(test_text)
             actual_text = TemperatureWriter.as_text(my_options)
             msg = '\nSet:' + test_text + '\nGet:' + actual_text
-            msg = "\nRule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one."
+            msg += "\nRule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one."
             find_error = False
         except Exception as e:
             msg = "\nSet:" + test_text + '\nGet:' + str(e)

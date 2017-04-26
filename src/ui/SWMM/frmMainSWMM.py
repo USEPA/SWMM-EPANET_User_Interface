@@ -90,6 +90,7 @@ from frmRunSWMM import frmRunSWMM
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
 from core.indexed_list import IndexedList
 import ui.convenience
+from ui.SWMM.inifile import DefaultsSWMM
 
 
 class frmMainSWMM(frmMain):
@@ -266,6 +267,7 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
+        self.project_settings = DefaultsSWMM("", self.project)
         self.tree_types = {
             self.tree_hydrology_Subcatchments[0]: Subcatchment,
             self.tree_hydrology_RainGages[0]: RainGage,
@@ -330,6 +332,14 @@ class frmMainSWMM(frmMain):
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
+
+        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
+        self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
+        self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
+        self.menuView.addAction(self.actionTranslate_Coordinates)
+        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
+                               self.setQgsMapToolTranslateCoords)
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
@@ -782,6 +792,15 @@ class frmMainSWMM(frmMain):
         self._frmCalibrationData.show()
         pass
 
+    def edit_defaults(self):
+        directory = self.program_settings.value("ProjectDir", "")
+        qsettings = self.project_settings
+        if qsettings is None:
+            qsettings = self.program_settings
+        from frmDefaultsEditor import frmDefaultsEditor
+        fd = frmDefaultsEditor(self, self.project, qsettings)
+        fd.show()
+
     def get_editor(self, edit_name):
         frm = None
         # First handle special cases where forms need more than simply being created
@@ -887,6 +906,8 @@ class frmMainSWMM(frmMain):
             # need to add corresponding cross section
             new_xsection = CrossSection()
             new_xsection.name = new_item.name
+            if self.project_settings:
+                self.project_settings.apply_default_attributes(new_xsection)
             if len(self.project.xsections.value) == 0:
                 edit_these = [new_xsection]
                 self.project.xsections.value = edit_these
@@ -907,6 +928,8 @@ class frmMainSWMM(frmMain):
         elif tree_text == self.tree_curves_TidalCurves[0]:
             new_item.curve_type = CurveType.TIDAL
 
+        if self.project_settings:
+            self.project_settings.apply_default_attributes(new_item)
         self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, [], new_item))
 
     def delete_named_object(self, tree_text, item_name):
@@ -978,50 +1001,51 @@ class frmMainSWMM(frmMain):
             if self.output:
                 self.output.close()
                 self.output = None
-            # if not os.path.exists(self.model_path):
-            #     if 'darwin' in sys.platform:
-            #         lib_name = 'libswmm.dylib'
-            #     elif 'win' in sys.platform:
-            #         lib_name = 'swmm5_x64.dll'
-            #     else:  # Linux
-            #         lib_name = 'libswmm_amd64.so'
-            #     self.model_path = self.find_external(lib_name)
-            #
-            # if os.path.exists(self.model_path):
-            #     try:
-            #         from Externals.swmm.model.swmm5 import pyswmm
-            #         model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
-            #         frmRun = frmRunSWMM(model_api, self.project, self)
-            #         self._forms.append(frmRun)
-            #         if not use_existing:
-            #             # Read this project so we can refer to it while running
-            #             frmRun.progressBar.setVisible(False)
-            #             frmRun.lblTime.setVisible(False)
-            #             frmRun.fraTime.setVisible(False)
-            #             frmRun.fraBottom.setVisible(False)
-            #             frmRun.showNormal()
-            #             frmRun.set_status_text("Reading " + file_name)
-            #
-            #             self.project = Project()
-            #             self.project.read_file(file_name)
-            #             frmRun.project = self.project
-            #
-            #         frmRun.Execute()
-            #         self.add_map_constituents()
-            #         return
-            #     except Exception as e1:
-            #         print(str(e1) + '\n' + str(traceback.print_exc()))
-            #         QMessageBox.information(None, self.model,
-            #                                 "Error running model with library:\n {0}\n{1}\n{2}".format(
-            #                                     self.model_path, str(e1), str(traceback.print_exc())),
-            #                                 QMessageBox.Ok)
-                # finally:
-                #     try:
-                #         if model_api and model_api.isOpen():
-                #             model_api.ENclose()
-                #     except:
-                #         pass
-                #     return
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libswmm.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'swmm5_x64.dll'
+                else:  # Linux
+                    lib_name = 'libswmm_amd64.so'
+                self.model_path = self.find_external(lib_name)
+
+            if os.path.exists(self.model_path):
+                print('Model Path ' + self.model_path + '\n')
+                try:
+                    from Externals.swmm.model.swmm5 import pyswmm
+                    model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunSWMM(model_api, self.project, self)
+                    self._forms.append(frmRun)
+                    if not use_existing:
+                        # Read this project so we can refer to it while running
+                        frmRun.progressBar.setVisible(False)
+                        frmRun.lblTime.setVisible(False)
+                        frmRun.fraTime.setVisible(False)
+                        frmRun.fraBottom.setVisible(False)
+                        frmRun.showNormal()
+                        frmRun.set_status_text("Reading " + file_name)
+
+                        self.project = Project()
+                        self.project.read_file(file_name)
+                        frmRun.project = self.project
+
+                    frmRun.Execute()
+                    # self.add_map_constituents()
+                    return
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                finally:
+                    try:
+                        if model_api and model_api.isOpen():
+                            model_api.ENclose()
+                    except:
+                        pass
+                    return
 
             # Could not run with library, try running with executable
             args = []

@@ -4,6 +4,7 @@ from enum import Enum
 from core.indexed_list import IndexedList
 from utility import ParseData
 
+
 class ProjectBase(object):
     """
     Base class of SWMM and EPANET project classes that hold the data in an input sequence.
@@ -130,6 +131,7 @@ class Section(object):
                 if val_is_good:
                     setattr(self, attr_name, val)
             elif isinstance(old_value, Enum):
+                val_is_good = True
                 if not isinstance(attr_value, Enum):
                     enum_type = type(old_value)
                     try:
@@ -138,8 +140,10 @@ class Section(object):
                         try:
                             attr_value = enum_type[attr_value.upper().replace('-', '_')]
                         except KeyError:
+                            val_is_good = False
                             print("Did not find value '" + attr_value + "' in valid values for '" + attr_name + "'")
-                setattr(self, attr_name, attr_value)
+                if val_is_good:
+                    setattr(self, attr_name, attr_value)
             elif type(old_value) == bool:
                 if not isinstance(attr_value, bool):
                     attr_value = str(attr_value).upper() not in ("NO", "FALSE")
@@ -154,8 +158,17 @@ class Section(object):
     def find_item(self, aName):
         if isinstance(self.value, list):
             for obj in self.value:
-                if aName.upper() in obj.name.upper():
+                if aName.upper() == obj.name.upper():
                     return obj
+        return None
+
+    def get_item(self, fname, fvalue):
+        if not isinstance(self.value, list): return None
+        if not self.value or len(self.value) == 0: return None
+        if not hasattr(self.value[0], fname): return None
+        for obj in self.value:
+            if obj.__dict__[fname] == fvalue:
+                return obj
         return None
 
 class SectionAsList(Section):
@@ -170,7 +183,15 @@ class SectionAsList(Section):
 
     def find_item(self, aName):
         for obj in self.value:
-            if aName.upper() in obj.name.upper():
+            if aName.upper() == obj.name.upper():
+                return obj
+        return None
+
+    def get_item(self, fname, fvalue):
+        if not self.value or len(self.value) == 0: return None
+        if not hasattr(self.value[0], fname): return None
+        for obj in self.value:
+            if obj.__dict__[fname] == fvalue:
                 return obj
         return None
 

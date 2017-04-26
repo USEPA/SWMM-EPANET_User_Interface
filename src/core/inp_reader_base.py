@@ -132,8 +132,7 @@ class SectionReader(object):
                 # elif hasattr(section, "DEFAULT_COMMENT") and section.comment == section.DEFAULT_COMMENT:
                 #     section.comment = ''  # Replace default comment with the one we are reading
                 # else:
-                if not this_comment.lower() in section.comment.lower():
-                    section.comment += '\n' + this_comment  # Separate from existing comment with newline
+                section.comment += '\n' + this_comment  # Separate from existing comment with newline
             else:
                 section.comment = this_comment
         if line.startswith('['):
@@ -256,16 +255,11 @@ class SectionReaderAsList(SectionReader):
     def read(self, new_text):
         section = self._init_section()
         comment = ''
-        new_text = new_text.lstrip()  # xw20170328, remove heading white spaces indluing /n /t and spaces
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():
                 if section.value:  # If we have already added items to this section, add comment as a Section
-                    # comment += line  xw20170327
-                    if len(comment) > 0:  # xw20170327, added \n for multiple lines of comments within a section
-                        comment += "\n" + line
-                    else:
-                        comment += line
+                    comment += line
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
                     self.set_comment_check_section(section, line)
             else:
@@ -285,8 +279,7 @@ class SectionReaderAsList(SectionReader):
             else:
                 make_one = text
 
-            if make_one is not None:
-                section.value.append(make_one)
+            section.value.append(make_one)
         except Exception as e:
             print("Could not create object from: " + text + '\n' + str(e) + '\n' + str(traceback.print_exc()))
 

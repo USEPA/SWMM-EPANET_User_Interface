@@ -9,17 +9,12 @@ try:
     import traceback
     import math
     import os
-    import sys
     from enum import Enum
-    from map_edit import EditTool
-    from ui.model_utility import ParseData
 
 
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
 
-        QGis_UnitType = ["Meters", "Feet", "Degrees", "Unknown", "DecimalDegree", "DegreesMinutesSeconds",
-                         "DegreesDecimalMinutes"]
         map_unit_names       = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
         map_unit_abbrev      = ["m",      "km",         "ft",   "nmi",           "yd",    "mi",    "deg",     ""]
         map_unit_to_meters   = [1.0,         1000.0,    0.3048,   1852,          0.9144,  1609.34, 0,         0]
@@ -38,7 +33,6 @@ try:
             self.project_group = root.addGroup("Project Objects")
             self.nodes_group = self.project_group.addGroup("Nodes")
             self.links_group = self.project_group.addGroup("Links")
-            self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
 
             # first thoughts about adding a legend - may be barking up wrong tree...
@@ -77,8 +71,6 @@ try:
 
             self.qgisNewFeatureTool = None
             self.measureTool = None
-            self.selectRegionTool = None
-            self.translateCoordTool = None
             self.map_linear_unit = self.map_unit_names[7]  # Unknown
             self.coord_origin = Coordinate()
             self.coord_fext = Coordinate()
@@ -159,53 +151,6 @@ try:
                 self.canvas.unsetMapTool(self.selectVertexTool)
                 self.selectVertexTool = None
 
-        def setEditVertexMode(self):
-            layer = None
-            if self.canvas.layers():
-                for lyr in self.canvas.layers():
-                    if "subcatchment" in lyr.name().lower():
-                        layer = lyr
-                        break
-            if layer is None:
-                return
-            if self.session.actionMapSelectVertices.isChecked():
-                if self.canvas.layers():
-                    layer.startEditing()
-                    self.canvas.refresh()
-                    self.selectVertexTool = EditTool(self.canvas, layer, self.session, self.session.onGeometryChanged)
-                    self.selectVertexTool.setAction(self.session.actionMapSelectVertices)
-                else:
-                    self.selectVertexTool = None
-                if self.selectVertexTool:
-                    self.canvas.setMapTool(self.selectVertexTool)
-            else:
-                self.canvas.unsetMapTool(self.selectVertexTool)
-                self.selectVertexTool = None
-                #layer.commitChanges()
-                if layer.isEditable():
-                    buf = layer.editBuffer()
-                    if len(buf.changedGeometries()) > 0:
-                        reply = QMessageBox.question(None, "Confirm",
-                                                 "Save changes to subcatchments?",
-                                                 QMessageBox.Yes | QMessageBox.No,
-                                                 QMessageBox.Yes)
-                        if reply == QMessageBox.Yes:
-                            for fid in buf.changedGeometries():
-                                iterator = layer.getFeatures(QgsFeatureRequest().setFilterFid(fid))
-                                ftarget = None
-                                if iterator:
-                                    ftarget = next(iterator)
-                                if ftarget is not None:
-                                    self.session.update_model_object_vertices("subcatchment",
-                                                                              ftarget.attributes()[0],
-                                                                              ftarget.geometry().asPolygon()[0])
-                                    pass
-                            layer.commitChanges()
-                        else:
-                            layer.rollBack()
-                #else:
-                #    layer.rollBack()
-
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():
                 if self.measureTool is None:
@@ -214,22 +159,6 @@ try:
                 self.canvas.setMapTool(self.measureTool)
             else:
                 self.canvas.unsetMapTool(self.measureTool)
-
-        def setSelectByRegionMode(self):
-            if self.session.select_region_checked:
-                if self.selectRegionTool is None:
-                    self.selectRegionTool = CaptureRegionTool(self.canvas, None, None, None, self.session)
-                self.canvas.setMapTool(self.selectRegionTool)
-            else:
-                self.canvas.unsetMapTool(self.selectRegionTool)
-
-        def setTranslateCoordinatesMode(self):
-            if self.session.translating_coordinates:
-                if self.translateCoordTool is None:
-                    self.translateCoordTool = ModelCoordinatesTranslationTool(self.canvas, self.session)
-                self.canvas.setMapTool(self.translateCoordTool)
-            else:
-                self.canvas.unsetMapTool(self.translateCoordTool)
 
         def clearSelectableObjects(self):
             self.layer_spatial_indexes = []
@@ -298,7 +227,7 @@ try:
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()
-            #self.set_extent(self.canvas.extent())
+            self.set_extent(self.canvas.extent())
 
 
         def setMouseTracking(self, flag):
@@ -418,7 +347,7 @@ try:
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer, coordinates=None, size=3.5):
+        def set_default_point_renderer(layer, coordinates=None, size=4.0):
             """ Create and set the default appearance of layer.
                 If specified, coordinates will be used to check for whether there are too many to label. """
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
@@ -427,16 +356,14 @@ try:
             # Label the coordinates if there are not too many of them
             do_labels = True
             if coordinates and len(coordinates) > 500:
-                size = 1.5
+                size = 2.0
                 do_labels = False
 
             layer_name_upper = layer.name().upper()
 
             if "JUNCTION" in layer_name_upper:
-                size = 1.5
                 symbol_layer.setName(MapSymbol.circle.name)
             elif "OUT" in layer_name_upper:
-                size = 2.5
                 symbol_layer.setName(MapSymbol.triangle.name)
                 symbol_layer.setAngle(180.0)
             elif "DIVIDER" in layer_name_upper:
@@ -561,11 +488,11 @@ try:
                 dp = layer.dataProvider()
                 crs = dp.crs()
                 if crs.isValid():
-                    # if not self.session.crs:
-                    self.session.set_crs(crs)
-                    print("CRS = " + crs.toWkt())
-                    # else:  # TODO: compare to existing CRS?
-                    #     pass
+                    if not self.session.crs:
+                        self.session.set_crs(crs)
+                        print("CRS = " + crs.toWkt())
+                    else:  # TODO: compare to existing CRS?
+                        pass
             except Exception as ex:
                 print str(ex)
 
@@ -583,18 +510,6 @@ try:
             self.canvas.setLayerSet([QgsMapCanvasLayer(lyr) for lyr in canvas_layers])
             self.set_extent(self.canvas.fullExtent())
 
-        def select_all_map_features(self):
-            if not self.session and not self.session.model_layers:
-                return
-            for mlyr in self.session.model_layers.all_layers:
-                lyr_name = mlyr.name()
-                if lyr_name and \
-                   (lyr_name.lower().startswith("label") or
-                   lyr_name.lower().startswith("subcentroid") or
-                   lyr_name.lower().startswith("sublink")):
-                    continue
-                mlyr.selectAll()
-
         @staticmethod
         def set_default_line_renderer(layer):
             if layer is None:
@@ -602,14 +517,14 @@ try:
             symbol = QgsLineSymbolV2.createSimple({})
             symbol.deleteSymbolLayer(0)
             slayer = QgsSimpleLineSymbolLayerV2()
-            slayer.setWidth(1.0)
+            slayer.setWidth(3.0)
             slayer.setColor(QColor("dark gray"))
             symbol.appendSymbolLayer(slayer)
             layer_name_upper = layer.name().upper()
             if "CONDUIT" in layer_name_upper or \
                "PIPE" in layer_name_upper:
                 slayer = QgsSimpleLineSymbolLayerV2()
-                slayer.setWidth(0.5)
+                slayer.setWidth(1.5)
                 slayer.setColor(QColor("light gray"))
                 symbol.appendSymbolLayer(slayer)
                 renderer = QgsSingleSymbolRendererV2(symbol)
@@ -625,7 +540,7 @@ try:
                 layer.setRendererV2(renderer)
             else:
                 slayer.setWidth(1.0)
-                slayer = QgsMarkerLineSymbolLayerV2(True, 1.5)
+                slayer = QgsMarkerLineSymbolLayerV2(True, 3)
                 mlayer = slayer.subSymbol()
                 anewlayer = None
                 if "PUMP" in layer_name_upper:
@@ -647,7 +562,7 @@ try:
                 else:
                     sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
                     sym.setColor(QColor('gray'))
-                    sym.setWidth(0.5)
+                    sym.setWidth(3.5)
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
@@ -818,315 +733,26 @@ try:
             return None
 
         def addVectorLayer(self, filename):
-            if not os.path.isfile(filename):
-                return
-            layer_name, fext = os.path.splitext(os.path.basename(filename))
             layers = self.canvas.layers()
             layer_count = len(layers)
             #if filename.lower().endswith('.shp'):
-            #layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
-            layer = QgsVectorLayer(filename, layer_name, "ogr")
+            layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
             #elif filename.lower().endswith('.json'):
-            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson"o)
-            sep_layers = []
-            if fext.lower().endswith('.json') or fext.lower().endswith('.geojson'):
-                sep_layers = self.parse_geojson(layer)
-                for lyr_key in sep_layers:
-                    lyr = sep_layers[lyr_key]
-                    # pelem_type = lyr.name()[lyr.name().rindex("_") + 1:]
-                    self.add_layer(lyr, self.other_group)
-            else:
-                if layer:
-                    self.add_layer(layer, self.other_group)
-
-        def replace_model_layer(self, alyr, group=None):
-            alyr_name = alyr.name()
-            for lyr in self.session.model_layers.all_layers:
-                pelem_type = alyr_name[alyr_name().rindex("_") + 1:]
-                if pelem_type == lyr.name() or lyr.name().startswith(pelem_type):
-                    if lyr.featureCount() == 0:
-                        orig_fields = []
-                        #for fld in lyr.fields():
-                        pass
-            pass
-
-        def parse_geojson(self, agjLayer):
-            src_crs = agjLayer.crs()
-            src_authid = ""
-            src_Wkt = ""
-            if src_crs.isValid():
-                src_authid = src_crs.authid()
-                src_Wkt = src_crs.toWkt()
-            layers = {}
-            geom_types = []
-            elem_types = []
-            elem_geom = {}
-            ind = agjLayer.fieldNameIndex(u'element_type')
-            if ind >= 0:
-                elem_types = agjLayer.uniqueValues(ind, 20)
-            for f in agjLayer.getFeatures():
-                geom = f.geometry()
-                if ind < 0 or \
-                   (ind >= 0 and not elem_geom.__contains__(f.attributes()[ind])):
-                    if not geom_types.__contains__(geom.type()): geom_types.append(geom.type())
-                    if ind >=0:
-                        if geom.type() == QGis.Point:
-                            elem_geom[f.attributes()[ind]] = "Point"
-                        elif geom.type() == QGis.Line:
-                            elem_geom[f.attributes()[ind]] = "LineString"
-                        elif geom.type() == QGis.Polygon:
-                            elem_geom[f.attributes()[ind]] = "Polygon"
-
-            if len(elem_types) > 0:
-                expr_text = "\"element_type\"='ZZZZ'"
-                expr = None
-                for et in elem_types:
-                    attributes_added = False
-                    try:
-                        layer_type = elem_geom[et]
-                        if src_authid:
-                            layer_type = layer_type + "?crs=" + src_authid
-                        new_layer = QgsVectorLayer(layer_type, agjLayer.name() + "_" + str(et), "memory")
-                        expr = QgsExpression(expr_text.replace("ZZZZ", et))
-                        it = agjLayer.getFeatures(QgsFeatureRequest(expr))
-                        #ids = [sf.id() for sf in it]
-                        #agjLayer.setSelectedFeatures(ids)
-                        new_layer.startEditing()
-                        for sf in it:
-                            if not attributes_added:
-                                for fld in sf.fields():
-                                    new_layer.addAttribute(fld)
-                                attributes_added = True
-                            if not new_layer.addFeature(sf, False):
-                                stderr = "problem adding feature"
-                        new_layer.commitChanges()
-                        new_layer.updateExtents()
-                        layers[et] = new_layer
-                    except:
-                        pass
-            elif len(geom_types) > 0:
-                for gt in geom_types:
-                    new_layer = None
-                    geom_type = ""
-                    layer_name_postfix = ""
-                    field = QgsField("id", QtCore.QVariant.Int)
-                    if gt == QGis.Point:
-                        geom_type = "Point"
-                        layer_name_postfix = "_point"
-                    elif gt == QGis.Line:
-                        geom_type = "LineString"
-                        layer_name_postfix = "_line"
-                    elif gt == QGis.Polygon:
-                        geom_type = "Polygon"
-                        layer_name_postfix = "_polygon"
-
-                    layer_type = geom_type
-                    if src_authid:
-                        layer_type = geom_type + "?crs=" + src_authid
-                    new_layer = QgsVectorLayer(layer_type, agjLayer.name() + layer_name_postfix, "memory")
-                    # layer_type = layer_type + "&field=id:integer&index=yes"
-                    # epsg_id = int(src_authid[5:])
-                    # dst_crs = QgsCoordinateReferenceSystem(epsg_id, QgsCoordinateReferenceSystem.EpsgCrsId)
-                    # new_layer.setCrs(dst_crs)
-                    new_layer.dataProvider().addAttributes([field])
-                    new_layer.startEditing()
-                    new_id = 0
-                    for f in agjLayer.getFeatures():
-                        geom = f.geometry()
-                        new_feature = QgsFeature()
-                        new_feature.setGeometry(geom)
-                        new_feature.setAttributes([new_id])
-                        if geom.type() == gt:
-                            new_layer.addFeature(new_feature, True)
-                            new_id = new_id + 1
-
-                    if new_layer:
-                        new_layer.commitChanges()
-                        new_layer.updateExtents()
-
-                    if len(geom_type) > 0:
-                        layers[geom_type] = new_layer
-
-            return layers
-            pass
+            #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson")
+            if layer:
+                self.add_layer(layer)
 
         def set_extent(self, extent):
             buffered_extent = extent.buffer(extent.height() / 20)
             self.canvas.setExtent(buffered_extent)
             self.canvas.refresh()
 
-        def set_extent_by_corners(self, corners):
-            r = QgsRectangle(corners[0], corners[1], corners[2], corners[3])
-            self.set_extent(r)
-
-        def addRasterLayer(self, filename, *args):
+        def addRasterLayer(self, filename):
             if len(filename.strip()) > 0:
                 layer_name = os.path.basename(filename.strip())
                 #layer = QgsRasterLayer(filename, "layer_r_" + str(self.canvas.layerCount() + 1))
                 layer = QgsRasterLayer(filename, layer_name)
-                if args and len(args) > 0:
-                    if args[0] == 'backdrop':
-                        self.session.backdrop_name = layer.name()
                 self.add_layer(layer, self.base_group)
-
-        @staticmethod
-        def get_extent(layers):
-            '''
-            Get the extent of layers by examing the coordinates of vertices
-            Args:
-                self: EmbedMap
-                layers: [] of QgsVectorLayers
-            Returns: QgsRectangle
-            '''
-            xmin = sys.float_info.max
-            xmax = sys.float_info.min
-            ymin = sys.float_info.max
-            ymax = sys.float_info.min
-            if not layers or len(layers) == 0:
-                return None
-            for lyr in layers:
-                if not isinstance(lyr, QgsVectorLayer):
-                    continue
-                pt = None
-                for f in lyr.getFeatures():
-                    geom = f.geometry()
-                    if geom.wkbType() == QGis.WKBPoint:
-                        pt = geom.asPoint()
-                        if pt.x() < xmin: xmin = pt.x()
-                        if pt.x() > xmax: xmax = pt.x()
-                        if pt.y() < ymin: ymin = pt.y()
-                        if pt.y() > ymax: ymax = pt.y()
-                    elif geom.wkbType() == QGis.WKBPolygon:
-                        for pt in geom.asPolygon()[0]:
-                            if pt.x() < xmin: xmin = pt.x()
-                            if pt.x() > xmax: xmax = pt.x()
-                            if pt.y() < ymin: ymin = pt.y()
-                            if pt.y() > ymax: ymax = pt.y()
-                    elif geom.wkbType() == QGis.WKBLineString:
-                        geom = QgsGeometry()
-                        for pt in geom.asPolyline():
-                            if pt.x() < xmin: xmin = pt.x()
-                            if pt.x() > xmax: xmax = pt.x()
-                            if pt.y() < ymin: ymin = pt.y()
-                            if pt.y() > ymax: ymax = pt.y()
-            r = QgsRectangle(xmin, ymin, xmax, ymax)
-            return r
-
-        def calculate_units_ratio(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
-            self.x_unit_ratio = (dst_pt_ur.x - dst_pt_ll.x) / (src_pt_ur.x - src_pt_ll.x)
-            self.y_unit_ratio = (dst_pt_ur.y - dst_pt_ll.y) / (src_pt_ur.y - src_pt_ll.y)
-
-        def calculate_new_coordinates(self, src_pt_ll, dst_pt_ll, src_pt):
-            src_x, xval_is_good = ParseData.floatTryParse(src_pt.x)
-            src_y, yval_is_good = ParseData.floatTryParse(src_pt.y)
-            if xval_is_good and yval_is_good:
-                new_pt = Coordinate()
-                new_pt.x = dst_pt_ll.x + (src_x - src_pt_ll.x) * abs(self.x_unit_ratio)
-                new_pt.y = dst_pt_ll.y + (src_y - src_pt_ll.y) * abs(self.y_unit_ratio)
-                return new_pt
-            else:
-                return None
-
-        def translate_vertices_coordinates(self, src_pt_ll, dst_pt_ll, vertices):
-            for vpt in vertices:
-                new_coord = self.calculate_new_coordinates(src_pt_ll, dst_pt_ll, vpt)
-                if new_coord:
-                    vpt.x = str(new_coord.x)
-                    vpt.y = str(new_coord.y)
-                else:
-                    # save a log of bad coords
-                    pass
-
-        def translate_layers_coordinates(self, src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur):
-            if not self.session.project or not self.session.model_layers:
-                return
-            self.calculate_units_ratio(src_pt_ll, src_pt_ur, dst_pt_ll, dst_pt_ur)
-            # update nodal coordinates
-            sects = self.session.project.nodes_groups()
-            sects.append(self.session.project.labels)
-            if self.session.model == "SWMM":
-                sects.append(self.session.project.raingages)
-            for sect in sects:
-                if sect.value and len(sect.value) > 0:
-                    self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sect.value)
-
-            # update links vertices
-            self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, self.session.project.all_vertices())
-
-            # update SWMM polygons' vertices
-            if self.session.model == "SWMM":
-                for sub in self.session.project.subcatchments.value:
-                    self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sub.vertices)
-
-
-        def update_links_length(self):
-            if not self.session.project or not self.session.model_layers:
-                return
-            ruler = QgsDistanceArea()
-            nodes = self.session.project.nodes_groups()
-            for link_sect in self.session.project.links_groups():
-                for lnk in link_sect.value:
-                    for og in nodes:
-                        node0 = og.find_item(lnk.inlet_node)
-                        if node0: break
-                    for og in nodes:
-                        noden = og.find_item(lnk.outlet_node)
-                        if noden: break
-                    if node0 and noden:
-                        node0x, val_is_good0x = ParseData.floatTryParse(node0.x)
-                        node0y, val_is_good0y = ParseData.floatTryParse(node0.y)
-                        nodenx, val_is_goodnx = ParseData.floatTryParse(noden.x)
-                        nodeny, val_is_goodny = ParseData.floatTryParse(noden.y)
-                        if val_is_good0x and val_is_good0y and \
-                            val_is_goodnx and val_is_goodny:
-                            pt0 = QgsPoint(node0x, node0y)
-                            ptn = QgsPoint(nodenx, nodeny)
-                            list_pts = [pt0]
-                            if lnk.vertices and len(lnk.vertices) > 0:
-                                for v in lnk.vertices:
-                                    xval, xval_is_good = ParseData.floatTryParse(v.x)
-                                    yval, yval_is_good = ParseData.floatTryParse(v.y)
-                                    if xval_is_good and yval_is_good:
-                                        list_pts.append(QgsPoint(xval, yval))
-                            list_pts.append(ptn)
-                            lnk.length = str(ruler.measureLine(list_pts))
-                            del list_pts[:]
-                            del list_pts
-
-        def update_subcatchments_area(self, dst_unit):
-            # update SWMM polygons' areas
-            if self.session.model == "SWMM":
-                ruler = QgsDistanceArea()
-                list_pts = []
-                for sub in self.session.project.subcatchments.value:
-                    for v in sub.vertices:
-                        valx, val_is_goodx = ParseData.floatTryParse(v.x)
-                        valy, val_is_goody = ParseData.floatTryParse(v.y)
-                        if val_is_goodx and val_is_goody:
-                            list_pts.append(QgsPoint(valx, valy))
-                    if len(list_pts) > 0:
-                        try:
-                            geometry = QgsGeometry.fromPolygon([list_pts])
-                            a = ruler.measureArea(geometry)
-                            if dst_unit.lower() == "feet":
-                                sub.area = EmbedMap.round_to_n(a / 43560, 5)
-                            elif dst_unit.lower() == "meters":
-                                sub.area = EmbedMap.round_to_n(a / 10000, 5)
-                        except:
-                            # skip this sub
-                            pass
-                        del list_pts[:]
-
-        def drawVertexMarker(self, layer):
-            """
-            implement the drawVertexMarker routine to highlight the vertices of polygon
-            for editing purpose
-            Args:
-                layer:
-
-            Returns:
-
-            """
 
         # def saveVectorLayers(self, folder):
         #     layer_index = 0
@@ -1354,15 +980,12 @@ try:
                                 new_object.length = map_widget.round_to_n(ruler.measureLine(points) * unit_conversion, 5)
 
                             if hasattr(new_object, "area"):
-                                if not self.ruler:
-                                    self.ruler = QgsDistanceArea()
+                                ruler = QgsDistanceArea()
                                 if self.session.project.metric:
                                     unit_conversion = map_widget.map_unit_to_hectares[unit_index]
                                 else:
                                     unit_conversion = map_widget.map_unit_to_acres[unit_index]
-                                geom = QgsGeometry.fromPolygon([points])
-                                a = self.ruler.measureArea(geom)
-                                new_object.area = map_widget.round_to_n(a * unit_conversion, 5)
+                                new_object.area = map_widget.round_to_n(ruler.measureArea(points) * unit_conversion, 5)
                     except:
                         pass
 
@@ -1408,134 +1031,6 @@ try:
             del msgBox
             self.stopCapturing()
             pass
-
-
-    class CaptureRegionTool(CaptureTool):
-        CAPTURE_LINE = 1
-        CAPTURE_POLYGON = 2
-        def __init__(self, canvas, layer, layer_name, object_type, session, layers=None):
-            CaptureTool.__init__(self, canvas, layer, layer_name, object_type, session)
-            self.layers          = layers
-            self.captureMode = CaptureTool.CAPTURE_POLYGON
-            self.measuring = True
-            self.ruler = QgsDistanceArea()
-            self.selected_model_objects = {} # "Junction": [J1, j2, P3 etc]
-            self.selected_map_objects = {} # "Junction": [feature_id1, feature_id2, etc]
-            self.region_layer = None
-            self.region_geometry = None
-            self.region_feature_id = None
-
-        def update_region_layer(self, layerCoords):
-            if not self.session and not self.session.model_layers:
-                return
-            self.region_geometry = QgsGeometry.fromPolygon([layerCoords])
-            if not self.region_layer:
-                self.region_layer = QgsVectorLayer("Polygon", "select_region", "memory")
-                self.region_layer.startEditing()
-                self.region_layer.dataProvider().addAttributes([QgsField("name", QtCore.QVariant.String)])
-                feature = QgsFeature()
-                feature.setGeometry(self.region_geometry)
-                feature.setAttributes(["select_region"])
-                added = self.region_layer.dataProvider().addFeatures([feature])
-                if added[0]:
-                    self.region_feature_id = added[1][0].id()
-            else:
-                if self.region_feature_id:
-                    self.region_layer.startEditing()
-                    self.region_layer.changeGeometry(self.region_feature_id, self.region_geometry)
-            self.region_layer.commitChanges()
-            self.region_layer.updateExtents()
-            self.region_layer.triggerRepaint()
-
-        def select_by_region(self):
-            total_selected = 0
-            if self.region_layer and self.region_feature_id:
-                # region_geom = self.region_layer.getFeature(self.region_feature_id).geometry()
-                for rf in self.region_layer.getFeatures():
-                    region_geom = rf.geometry()
-                    break
-                if not region_geom:
-                    return total_selected
-                for mlyr in self.session.model_layers.all_layers:
-                    lyr_name = mlyr.name()
-                    if lyr_name and \
-                       (lyr_name.lower().startswith("label") or
-                       lyr_name.lower().startswith("subcentroid") or
-                       lyr_name.lower().startswith("sublink")):
-                        continue
-                    mlyr.removeSelection()
-                    selected_ids = []
-                    for f in mlyr.getFeatures():
-                        geom = f.geometry()
-                        if geom.type() == QGis.Point:
-                            if region_geom.contains(geom):
-                                selected_ids.append(f.id())
-                        elif geom.type() == QGis.Line:
-                            if region_geom.intersects(geom):
-                                selected_ids.append(f.id())
-                        elif geom.type() == QGis.Polygon:
-                            if region_geom.intersects(geom):
-                                selected_ids.append(f.id())
-                    if len(selected_ids) > 0:
-                        self.selected_map_objects[lyr_name] = selected_ids
-                        mlyr.setSelectedFeatures(selected_ids)
-                        total_selected = total_selected + len(selected_ids)
-
-            return total_selected
-
-        def geometryCaptured(self):
-            points = self.capturedPoints
-            if self.measuring:
-                self.measureCaptured(points)
-                return
-
-            if self.captureMode == CaptureTool.CAPTURE_LINE:
-                if len(points) < 2:
-                    points = None
-            if self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                if len(points) < 3:
-                    points = None
-            if self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                if points is not None:
-                    points.append(points[0]) # Close polygon.
-
-            self.stopCapturing()
-
-            if points:
-                if self.session.auto_length and self.session.crs and self.session.crs.isValid():
-                    try:
-                        map_widget = self.session.map_widget
-                        unit_index = map_widget.map_unit_names.index(map_widget.map_linear_unit)
-                        u = map_widget.map_unit_abbrev[unit_index]
-                    except:
-                        pass
-                self.update_region_layer(points)
-                self.select_by_region()
-                self.region_layer.updateExtents()
-                self.canvas.refresh()
-                self.session.setQgsMapToolSelectRegion()
-
-        def measureCaptured(self, layerCoords):
-            self.captureMode = CaptureTool.CAPTURE_LINE
-            if len(layerCoords) < 2:
-                return
-            elif len(layerCoords) >= 3:
-                if self.closedPolygon():
-                    self.captureMode = CaptureTool.CAPTURE_POLYGON
-
-            if self.captureMode == CaptureTool.CAPTURE_LINE:
-                d = self.ruler.measureLine(layerCoords)
-                return
-            elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
-                self.update_region_layer(layerCoords)
-                self.select_by_region()
-                self.region_layer.updateExtents()
-                self.canvas.refresh()
-
-            self.stopCapturing()
-            self.session.setQgsMapToolSelectRegion()
-            pass
-
 
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
@@ -1653,42 +1148,6 @@ try:
                 self.session.show_edit_window(
                     self.session.make_editor_from_tree(self.session.tree_section,
                                                        self.session.tree_top_items, [new_object.name]))
-
-
-    class ModelCoordinatesTranslationTool(QgsMapTool):
-        def __init__(self, canvas, session):
-            QgsMapTool.__init__(self, canvas)
-            self.canvas = canvas
-            self.session = session
-            self.pt_ll = None
-            self.pt_ur = None
-            self.layer = None
-            if self.session and len(self.session.model_layers.nodes_layers) > 0:
-                self.layer = self.session.model_layers.nodes_layers[0]
-            # self.setCursor(Qt.CrossCursor)
-
-        def canvasReleaseEvent(self, event):
-            if not self.layer:
-                self.layer = self.session.model_layers.nodes_layers[0]
-            if not self.pt_ll:
-                self.pt_ll = self.toLayerCoordinates(self.layer, event.pos())
-            elif not self.pt_ur:
-                self.pt_ur = self.toLayerCoordinates(self.layer, event.pos())
-            if self.pt_ll and self.pt_ur:
-                if self.pt_ll.x() > self.pt_ur.x() or self.pt_ll.y() > self.pt_ur.y():
-                    tmp = self.pt_ll.x()
-                    self.pt_ll.setX(self.pt_ur.x())
-                    self.pt_ur.setX(tmp)
-                    tmp = self.pt_ll.y()
-                    self.pt_ll.setY(self.pt_ur.y())
-                    self.pt_ur.setY(tmp)
-                self.session.open_translate_coord_dialog(self.pt_ll, self.pt_ur)
-
-        def clear(self):
-            self.layer = None
-            self.pt_ll = None
-            self.pt_ur = None
-
 
     class SelectMapTool(QgsMapToolEmitPoint):
         """ Select an object by clicking it.
@@ -2092,47 +1551,6 @@ try:
         arrow = 11
         fillarrowhead = 12
         x = 13
-
-
-    class LegendMenuProvider(QgsLayerTreeViewMenuProvider):
-        def __init__(self, view, map_control):
-            QgsLayerTreeViewMenuProvider.__init__(self)
-            self.view = view
-            self.map_control = map_control
-
-        def createContextMenu(self):
-            if not self.view.currentLayer():
-                return None
-            m = QMenu()
-            # m.addAction("Show Extent", self.showExtent)
-            m.addAction("Zoom to layer", self.zoom_to_layer)
-            return m
-
-        def showExtent(self):
-            r = self.view.currentLayer().extent()
-            QMessageBox.information(None, "Extent", r.toString())
-
-        def zoom_to_layer(self):
-            # self.map_control.set_extent(self.view.currentLayer().extent())
-            r = self.view.currentLayer().extent()
-            xmin = sys.float_info.max
-            xmax = sys.float_info.min
-            ymin = sys.float_info.max
-            ymax = sys.float_info.min
-            if r.height() > 0:
-                xmin = r.xMinimum()
-                xmax = r.xMaximum()
-                ymin = r.yMinimum()
-                ymax = r.yMaximum()
-            else:
-                r_new = self.map_control.get_extent([self.view.currentLayer()])
-                xmin = r_new.xMinimum()
-                xmax = r_new.xMaximum()
-                ymin = r_new.yMinimum()
-                ymax = r_new.yMaximum()
-            r_new = QgsRectangle(xmin, ymin, xmax, ymax)
-            self.map_control.set_extent(r_new)
-            pass
 
 except:
     print "Skipping map_tools"

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SWMM\frmCurveEditorDesigner.ui'
 #
-# Created: Wed Jan 04 15:11:33 2017
+# Created: Tue Dec 20 18:06:02 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -60,9 +60,9 @@ class Ui_frmCurveEditor(object):
         self.gridLayout.addWidget(self.lblCurveType, 0, 1, 1, 1)
         spacerItem = QtGui.QSpacerItem(231, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 0, 2, 1, 1)
-        self.txtCurveName = QtGui.QLineEdit(self.fraParms)
-        self.txtCurveName.setObjectName(_fromUtf8("txtCurveName"))
-        self.gridLayout.addWidget(self.txtCurveName, 1, 0, 1, 1)
+        self.txtCurveID = QtGui.QLineEdit(self.fraParms)
+        self.txtCurveID.setObjectName(_fromUtf8("txtCurveID"))
+        self.gridLayout.addWidget(self.txtCurveID, 1, 0, 1, 1)
         self.cboCurveType = QtGui.QComboBox(self.fraParms)
         self.cboCurveType.setObjectName(_fromUtf8("cboCurveType"))
         self.gridLayout.addWidget(self.cboCurveType, 1, 1, 1, 1)

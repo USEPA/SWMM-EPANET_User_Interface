@@ -64,7 +64,7 @@ class CurveWriter(SectionWriter):
 class LabelWriter(SectionWriter):
     """A label on the map with location, text, and optional anchor node ID"""
 
-    field_format = u'{:16}\t{:16}\t"{}"\t{:16}'
+    field_format = '{:16}\t{:16}\t"{}"\t{:16}'
 
     @staticmethod
     def as_text(label):
@@ -523,10 +523,9 @@ class ReactionsWriter(SectionWriter):
     def as_text(reactions):
         """format contents of this item for writing to file"""
         #site-specific coefficients first
-        txt = ''
+        txt = "[REACTIONS]\n"
+        txt += ";Type     	Pipe/Tank       	Coefficient\n"
         if reactions.value is not None and len(reactions.value) > 0:
-            txt = "[REACTIONS]\n"
-            txt += ";Type     	Pipe/Tank       	Coefficient\n"
             for loc_spec in reactions.value:
                 txt += str(loc_spec) + "\n"
         #global defaults next
@@ -534,8 +533,8 @@ class ReactionsWriter(SectionWriter):
         if reactions.comment and reactions.comment.lower().startswith(";type"):
             reactions.comment = ""
         txt += "\n" + SectionWriter.as_text(reactions)
-
         reactions.comment = comment_orig
+
         # if reactions.comment and reactions.comment.upper().startswith(";TYPE"):
         #     # TODO: implement reactions table as list of reactions
         #     return reactions.value

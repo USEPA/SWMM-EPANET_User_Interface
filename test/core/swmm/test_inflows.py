@@ -4,7 +4,7 @@ from core.swmm.inp_writer_sections import DirectInflowWriter
 from core.swmm.hydraulics.node import DirectInflow
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit, match_keyword_lines
+from test.core.section_match import match, match_omit
 
 class SimpleInflowTest(unittest.TestCase):
     """Test INFLOWS section"""
@@ -21,7 +21,7 @@ class SimpleInflowTest(unittest.TestCase):
         my_options = DirectInflowReader.read(test_text)
         actual_text = DirectInflowWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        # self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match(actual_text, test_text), msg)
         assert my_options.node == 'NODE2'
         assert my_options.constituent == 'FLOW'
         assert my_options.timeseries == 'N2FLOW'
@@ -39,11 +39,10 @@ class SimpleInflowTest(unittest.TestCase):
         my_options = DirectInflowReader.read(test_text)
         actual_text = DirectInflowWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        # self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match(actual_text, test_text), msg)
         assert my_options.node == 'NODE65'
         assert my_options.constituent == 'BOD'       # Default
         assert my_options.timeseries == 'N65BOD'
-        assert (actual_text.find("MASS") is not -1)  # must has the mass type
         # assert self.my_options.format.name == 'MASS'
         assert my_options.conversion_factor == '126'  # Default
         assert my_options.scale_factor == '1.0'       # Default
@@ -58,7 +57,7 @@ class SimpleInflowTest(unittest.TestCase):
         my_options = DirectInflowReader.read(test_text)
         actual_text = DirectInflowWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        # self.assertTrue(match(actual_text, test_text), msg)
+        self.assertTrue(match(actual_text, test_text), msg)
         assert my_options.node == 'N176'
         assert my_options.constituent == 'FLOW'
         assert my_options.timeseries == 'FLOW176'
@@ -81,7 +80,7 @@ class SimpleInflowTest(unittest.TestCase):
         section_from_text = self.project_reader.read_inflows.read(source_text)
         actual_text = self.project_writer.write_inflows.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        # self.assertTrue(match(actual_text, source_text), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
         project_section = section_from_text
 
@@ -129,8 +128,7 @@ Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
         section_from_text = self.project_reader.read_inflows.read(source_text)
         actual_text = self.project_writer.write_inflows.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_keyword_lines(source_text, actual_text,
-                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
+        self.assertTrue(match(actual_text, source_text), msg)
 
         project_section = section_from_text
         msg = "Expected 1 item in INFLOWS, found " + str(len(project_section.value))

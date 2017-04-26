@@ -32,17 +32,17 @@ class Temperature(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## source of temperature data; timeseries or file
         self.source = TemperatureSource.UNSET
+        """source of temperature data; timeseries or file"""
 
-        ## name of time series in [TIMESERIES] section
         self.timeseries = "None"
+        """name of time series in [TIMESERIES] section"""
 
-        ## name of external Climate file with temperature data.
         self.filename = "None"
+        """name of external Climate file with temperature data."""
 
-        ## date to begin reading from the file m/d/y. If unset, read all
         self.start_date = ''
+        """date to begin reading from the file m/d/y. If unset, read all"""
 
         self.wind_speed = WindSpeed()
 
@@ -59,31 +59,31 @@ class Evaporation(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## format used for evaporation data
         self.format = EvaporationFormat.UNSET
+        """format used for evaporation data"""
 
-        ## a constant evaporation rate
         self.constant = '0'
+        """a constant evaporation rate"""
 
-        ## twelve monthly evaporation rates
         self.monthly = ()
+        """twelve monthly evaporation rates"""
 
-        ## name of time series in [TIMESERIES] section with evaporation data
         self.timeseries = ''
+        """name of time series in [TIMESERIES] section with evaporation data"""
 
-        ## twelve monthly pan coefficients used with file option and file name in temperature section
         self.monthly_pan_coefficients = ()
+        """twelve monthly pan coefficients used with file option and file name in temperature section"""
 
-        ## name of a monthly time pattern
         self.recovery_pattern = ''  # time pattern ID
+        """name of a monthly time pattern"""
 
-        ## determines if evaporation only occurs during periods with no precipitation.
         self.dry_only = False
+        """determines if evaporation only occurs during periods with no precipitation."""
 
-        ##  True if DRY_ONLY was included when read from text;
-        ##  If dry_only_specified == False, then DRY_ONLY is skipped in get_text if self.dry_only_specified == False;
-        ##  If dry_only_specified == True, DRY_ONLY will be included in get_text even if self.dry_only == False.
         self.dry_only_specified = False
+        """ True if DRY_ONLY was included when read from text.
+            If dry_only_specified == False, then DRY_ONLY is skipped in get_text if self.dry_only_specified == False.
+            If dry_only_specified == True, DRY_ONLY will be included in get_text even if self.dry_only == False. """
 
 
 class WindSpeed:
@@ -92,13 +92,11 @@ class WindSpeed:
     SECTION_NAME = "WINDSPEED"
 
     def __init__(self):
-
-        ## Whether wind speed is entered from the climate file or as monthly values
         self.source = WindSource.MONTHLY
+        """Whether wind speed is entered from the climate file or as monthly values"""
 
-        ## Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)
-        self.wind_speed_monthly = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        self.wind_speed_monthly = ()
+        """Average wind speed each month (Jan, Feb ... Dec) (mph or km/hr)"""
 
 
 class SnowMelt:
@@ -107,23 +105,23 @@ class SnowMelt:
     SECTION_NAME = "SNOWMELT"
 
     def __init__(self):
-        ## air temperature at which precipitation falls as snow (deg F or C)
         self.snow_temp = ''
+        """air temperature at which precipitation falls as snow (deg F or C)"""
 
-        ## antecedent temperature index weight (default is 0.5)
         self.ati_weight = '0.5'
+        """antecedent temperature index weight (default is 0.5)"""
 
-        ## negative melt ratio (default is 0.6)
         self.negative_melt_ratio = '0.6'
+        """negative melt ratio (default is 0.6)"""
 
-        ## average elevation of study area above mean sea level (ft or m)
         self.elevation = '0'
+        """average elevation of study area above mean sea level (ft or m)"""
 
-        ## latitude of the study area in degrees North (default is 50).
         self.latitude = '0.0'
+        """latitude of the study area in degrees North (default is 50)."""
 
-        ## correction, in minutes of time, between true solar time and the standard clock time (default is 0).
         self.time_correction = '0'
+        """correction, in minutes of time, between true solar time and the standard clock time (default is 0)."""
 
 
 class ArealDepletion:
@@ -132,11 +130,11 @@ class ArealDepletion:
     SECTION_NAME = "ADC"
 
     def __init__(self):
-        ## fraction of area covered by snow when ratio of snow depth to depth for impervious area
         self.adc_impervious = ()
+        """fraction of area covered by snow when ratio of snow depth to depth for impervious area"""
 
-        ## fraction of area covered by snow when ratio of snow depth to depth for pervious area
         self.adc_pervious = ()
+        """fraction of area covered by snow when ratio of snow depth to depth for pervious area"""
 
 
 class Adjustments(Section):
@@ -148,15 +146,14 @@ class Adjustments(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## monthly temperature adjustments as plus or minus degrees F (degrees C)
         self.temperature = []
+        """monthly temperature adjustments as plus or minus degrees F (degrees C)"""
 
-        ## monthly evaporation adjustments as plus or minus in/day (mm/day)
         self.evaporation = []
+        """monthly evaporation adjustments as plus or minus in/day (mm/day)"""
 
-        ## monthly rain adjustments as multipliers applied to precipitation rate
         self.rainfall = []
+        """monthly rain adjustments as multipliers applied to precipitation rate"""
 
-        ## "monthly soil_conductivity adjustments as multipliers applied to soil hydraulic conductivity
         self.soil_conductivity = []
-
+        """monthly soil_conductivity adjustments as multipliers applied to soil hydraulic conductivity"""

@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['initconditions',['InitConditions',['../classcore_1_1swmm_1_1stats_1_1_statistic_utility.html#a85b845454e0d80bc39d2b0775e02c896',1,'core::swmm::stats::StatisticUtility']]],
-  ['insert',['insert',['../classcore_1_1indexed__list_1_1_indexed_list.html#a01defb9ab8e014f9dcaded0c02d1d886',1,'core::indexed_list::IndexedList']]],
-  ['inttryparse',['intTryParse',['../classcore_1_1epanet_1_1calibration_1_1_calibration.html#aa6118318da3d9d9a8727f9dc11dfc683',1,'core.epanet.calibration.Calibration.intTryParse()'],['../classcore_1_1utility_1_1_parse_data.html#a5651252919f43ada7b48f0cf22b64d41',1,'core.utility.ParseData.intTryParse()']]],
-  ['is_5fdate',['is_date',['../classcore_1_1swmm_1_1timeseries_1_1_time_series.html#af395acf314e5a423c1b33ace45d46ea4',1,'core::swmm::timeseries::TimeSeries']]],
-  ['isneweventperiod',['IsNewEventPeriod',['../classcore_1_1swmm_1_1stats_1_1_statistic_utility.html#ae20d6db5e45cb59b98f5fff56e5fab87',1,'core::swmm::stats::StatisticUtility']]]
+  ['match_5fomit',['match_omit',['../classcore_1_1inputfile_1_1_section.html#a9d5c2c675747eb39be983cd7414c7b7d',1,'core::inputfile::Section']]],
+  ['match_5fomit_5fnocase',['match_omit_nocase',['../classcore_1_1inputfile_1_1_section.html#a4d0a575f4d0a6dd470e28f7308d09a93',1,'core::inputfile::Section']]],
+  ['matches',['matches',['../classcore_1_1inputfile_1_1_section.html#a47c0bbe30b147d986ac4f491ddf37ec1',1,'core::inputfile::Section']]],
+  ['meta_5fitem_5fof',['meta_item_of',['../classcore_1_1metadata_1_1_metadata.html#a9e222816823d6575de7141aa588d9bc9',1,'core::metadata::Metadata']]]
 ];

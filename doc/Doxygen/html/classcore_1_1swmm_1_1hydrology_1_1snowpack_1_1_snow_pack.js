@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a54cf64d27ef8ab75fee12a90e1c1ca36", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a6914777e2b5aaf9f8bdb423ce66d6c43", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a9892a47f8a84afd8ad53223a90dcf787", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#a2dc1174c02ff2c661a498a816ce8c31e", null ],
     [ "depth_snow_removal_begins", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#af46d537b084cc6856d32562bf9c4440a", null ],
     [ "fraction_converted_immediate_melt", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#ab0b241d59284869f340fdc516d8ef15a", null ],
     [ "fraction_moved_another_subcatchment", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html#aabc59223ccafd292b7d6d8e59babc100", null ],

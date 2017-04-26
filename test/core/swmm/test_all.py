@@ -78,6 +78,7 @@ from test_timeseries import SimpleTimeSeriesTest
 
 # Mislaneous
 # from test_energy import SimpleEnergyTest
+from test_project import ProjectTest
 from test_title import SimpleTitleTest
 
 my_suite = unittest.TestSuite()
@@ -121,11 +122,11 @@ my_suite.addTest(TemperatureTest('test_file'))
 my_suite.addTest(TemperatureTest('test_file_wt_date'))
 my_suite.addTest(TemperatureTest('test_windspeed_monthly'))
 my_suite.addTest(TemperatureTest('test_windspeed_file_wt_temperature'))
-# my_suite.addTest(TemperatureTest('test_windspeed_file_fail'))
+my_suite.addTest(TemperatureTest('test_windspeed_file_fail'))
 my_suite.addTest(TemperatureTest('test_snowmelt'))
-# my_suite.addTest(TemperatureTest('test_snowmelt_fail'))
+my_suite.addTest(TemperatureTest('test_snowmelt_fail'))
 my_suite.addTest(TemperatureTest('test_snowmelt_wo_adc'))
-# my_suite.addTest(TemperatureTest('test_snowmelt_wo_temperature'))
+my_suite.addTest(TemperatureTest('test_snowmelt_wo_temperature'))
 my_suite.addTest(AdjustmentsTest('test_default'))
 my_suite.addTest(AdjustmentsTest('test_all_opts'))
 my_suite.addTest(AdjustmentsTest('test_miss_col'))

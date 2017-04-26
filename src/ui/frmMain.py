@@ -26,8 +26,6 @@ import traceback
 from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
-from ui.frmTranslateCoordinates import frmTranslateCoordinates
-from ui.inifile import ini_setting
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -84,9 +82,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdRun_Simulation.triggered.connect(self.run_simulation)
         self.actionRun_SimulationMenu.triggered.connect(self.run_simulation)
         self.actionStdProjCalibration_Data.triggered.connect(self.calibration_data)
-        self.actionStdProjDefault.triggered.connect(self.edit_defaults)
-        self.actionStdLegends.triggered.connect(self.legends_menu)
-        self.actionStdMapOptions.triggered.connect(self.map_options_menu)
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
@@ -98,24 +93,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             lambda: self.toggle_toolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
             lambda: self.toggle_toolbar('standard,' + str(self.actionToolbarShowStandard.isChecked())))
-        self.actionStdMapBackLoad.triggered.connect(lambda: self.map_addraster('backdrop'))
+        self.actionStdMapBackLoad.triggered.connect(self.map_addraster)
         self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
-        self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
+        self.actionAdd_Raster.triggered.connect(self.map_addraster)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
         self.auto_length = (self.cbAutoLength.currentIndex == 1)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
-        self.translate_coord_dialog = None
 
         # Map attributes will be set below if possible or will remain None to indicate map is not present.
         self.canvas = None
         self.map_widget = None
         self.selecting = Lock()
-        self.backdrop_name = ''
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
@@ -160,16 +153,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         print("Try path = " + os.environ["Path"])
                         from qgis.core import QgsApplication
                         from qgis.gui import QgsMapCanvas
-                        from map_tools import EmbedMap, LegendMenuProvider
+                        from map_tools import EmbedMap
                         QgsApplication.setPrefixPath(qgis_home, True)
                         QgsApplication.initQgis()
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
                         self.canvas.setMouseTracking(True)
-                        self.canvas.mapRenderer().setProjectionsEnabled(True)
                         self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
-                        self.select_region_checked = False
-                        self.translating_coordinates = False
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
@@ -186,8 +176,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionMapMeasure.triggered.connect(self.setQgsMapTool)
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
-                            self.actionStdSelect_Region.triggered.connect(self.setQgsMapToolSelectRegion)
-                            self.actionStdSelect_All.triggered.connect(self.select_all_map_features)
 
                             self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
                             self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
@@ -207,9 +195,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.gis_layer_tree = QgsLayerTreeView()
                             self.gis_layer_tree.setModel(self.gis_layer_model)
                             self.gis_layer_bridge = QgsLayerTreeMapCanvasBridge(self.gis_layer_root, self.canvas, self.tabGIS)
-                            self.legend_menu_provider = LegendMenuProvider(self.gis_layer_tree, self.map_widget)
-                            self.gis_layer_tree.setMenuProvider(self.legend_menu_provider)
-
                             mlayout = QVBoxLayout(self.tabGIS)
                             mlayout.setContentsMargins(0, 0, 0, 0)
                             mlayout.addWidget(self.gis_layer_tree)
@@ -290,8 +275,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.action_redo.triggered.connect(self.redo)
 
         self.actionStdImportNetwork.setVisible(False)
-        # self.actionStdSelect_Region.setEnabled(False)
-        # self.actionStdSelect_All.setEnabled(False)
+        self.actionStdSelect_Region.setEnabled(False)
+        self.actionStdSelect_All.setEnabled(False)
         self.actionAdd_Feature.setCheckable(True)
         self.actionAdd_Feature.setVisible(False)
         self.actionMapFindObj.setVisible(False)
@@ -306,38 +291,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def loadBasemap(self):
         pass
-
     def unloadBasemap(self):
-        back_layers = []
-        back_node = None
-        for tlayer in self.map_widget.base_group.findLayers():
-            if tlayer.layer().name() == self.backdrop_name:
-                back_node = tlayer
-                back_layers.append(tlayer.layer())
-                break
-        if len(back_layers) == 0:
-            for layer in self.map_widget.canvas.layers():
-                if layer.name() == self.backdrop_name:
-                    back_layers.append(layer)
-                    break
-        if len(back_layers) > 0:
-            self.map_widget.remove_layers(back_layers)
-            if back_node:
-                self.map_widget.base_group.removeChildNode(tlayer)
         pass
-
     def alignBasemap(self):
         pass
-
-    def legends_menu(self):
-        QMessageBox.information(None, self.model,
-                                "The 'Legends' functionality is available through the 'Map' tab in the 'Project Explorer.",
-                                QMessageBox.Ok)
-
-    def map_options_menu(self):
-        QMessageBox.information(None, self.model,
-                                "The 'Map Options' functionality is available through the 'Layers' tab in the 'Project Explorer.",
-                                QMessageBox.Ok)
 
     def cbAutoLength_currentIndexChanged(self):
         self.auto_length = (self.cbAutoLength.currentIndex() == 1)
@@ -480,14 +437,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         break
 
             if self.item.name == '' or self.item.name == 'Unnamed' or self.item.name in self.section.value:
-                if self.layer and "sublink" in self.layer.name().lower():
+                if "sublink" in self.layer.name().lower():
                     self.item.name = u'sublink-' + self.item.inlet_node
                 else:
                     self.item.name = self.session.new_item_name(type(self.item))
             if len(self.section.value) == 0 and not isinstance(self.section, list):
                 self.section.value = IndexedList([], ['name'])
-            if self.session and self.session.project_settings:
-                self.session.project_settings.apply_default_attributes(self.item)
             self.section.value.append(self.item)
             if not self.isSubLink:
                 # self.session.list_objects()  # Refresh the list of items on the form
@@ -935,63 +890,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.undo_stack.push(self._MoveVertex(self, layer, feature, point_index,
                                                   from_x, from_y, to_x, to_y))
 
-    def edit_vertex(self, layer, feature, edit_type, *args):
-        if layer:
-            from map_edit import MoveVertexz
-            from map_edit import AddDeleteVertexz
-            if "move" in edit_type.lower():
-                pind = args[0]
-                fx = args[1]
-                fy = args[2]
-                tx = args[3]
-                ty = args[4]
-                self.undo_stack.push(MoveVertexz(self, layer, feature, pind, fx, fy, tx, ty))
-            elif "delete" in edit_type.lower():
-                pind = args[0]
-                pt_deleted = args[1]
-                fx = args[2]
-                fy = args[3]
-                self.undo_stack.push(AddDeleteVertexz(self, layer, feature, pind, edit_type,
-                                                            pt_deleted, fx, fy))
-            elif "add" in edit_type.lower():
-                pind = args[0]
-                pt_added = args[1]
-                fx = args[2]
-                fy = args[3]
-                self.undo_stack.push(AddDeleteVertexz(self, layer, feature, pind, edit_type,
-                                                            pt_added, fx, fy))
-
-    def update_model_object_vertices(self, model_obj_type, model_obj_name, new_vertices):
-        """
-        update model object's vertices after editing
-        Args:
-            model_obj_type: e.g. subcatchment
-            model_obj_name: e.g. name of a subcatchment, u'1'
-            new_vertices: list of vertices' coordinates (map coordinate, e.g. list of QgsPoint)
-        Returns:
-        """
-        m_target = None
-        if "subcatch" in model_obj_type:
-            m_target = self.project.subcatchments.find_item(model_obj_name)
-            if m_target is not None:
-                del m_target.vertices[:]
-                for v in new_vertices:
-                    coord = Coordinate()
-                    coord.x = str(v.x())
-                    coord.y = str(v.y())
-                    m_target.vertices.append(coord)
-
-    def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
-        # translate EPANET coords
-        self.setQgsMapToolTranslateCoords()
-        if not self.translate_coord_dialog:
-            self.translate_coord_dialog = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
-        else:
-            self.translate_coord_dialog.set_coords_source_ll(pt_src_ll)
-            self.translate_coord_dialog.set_coords_source_ur(pt_src_ur)
-
-        self.translate_coord_dialog.show()
-
     def edited_name(self, edited_list):
         """Name of item was edited, need to make sure indexed_list is updated. TODO: check whether name is unique."""
         for old_name, item in edited_list:
@@ -1006,7 +904,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
-        self.list_objects()
         if self.model_layers:
             self.model_layers.create_layers_from_project(self.project)
             try:
@@ -1041,13 +938,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         if self.project_settings:
             item_type_name = item_type.__name__
-            prefix = unicode(self.project_settings.config.value("Labels/" + item_type_name, ""))
+            prefix = unicode(self.project_settings.value("Labels/" + item_type_name, ""))
             try:
-                increment = int(self.project_settings.config.value("Labels/ID Increment", 1))
+                increment = int(self.project_settings.value("Labels/Increment", 1))
             except:
                 pass
             try:
-                number = int(self.project_settings.config.value("Labels/" + item_type_name + "_NextID", 1))
+                number = int(self.project_settings.value("Labels/" + item_type_name + "_NextID", 1))
             except:
                 pass
 
@@ -1098,16 +995,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
 
-    def setQgsMapToolSelectRegion(self):
-        self.select_region_checked = not self.select_region_checked
-        self.setQgsMapTool()
-
-    def setQgsMapToolTranslateCoords(self):
-        self.translating_coordinates = not self.translating_coordinates
-        if self.map_widget.translateCoordTool:
-            self.map_widget.translateCoordTool.clear()
-        self.setQgsMapTool()
-
     def setQgsMapTool(self):
         if self.canvas:
             from map_tools import AddPointTool, AddLinkTool, CaptureTool
@@ -1115,10 +1002,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
             self.map_widget.setSelectMode()
-            self.map_widget.setEditVertexMode()
+            self.map_widget.setSelectVertexMode()
             self.map_widget.setMeasureMode()
-            self.map_widget.setSelectByRegionMode()
-            self.map_widget.setTranslateCoordinatesMode()
             for act, name in self.add_point_tools:
                 self.map_widget.setAddObjectMode(act, name, AddPointTool)
             for act, name in self.add_link_tools:
@@ -1134,9 +1019,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def onGeometryAdded(self):
         print 'Geometry Added'
-
-    def onGeometryChanged(self):
-        print 'Geometry Changed'
 
     # def mouseMoveEvent(self, event):
     #     pass
@@ -1160,11 +1042,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def map_addvector(self):
         directory = self.program_settings.value("GISDataDir", "/")
-        file_filter = "Shapefile (*.shp);;" \
-                      "GeoJSON (*.json);;" \
-                      "GeoJSON (*.geojson);;" \
-                      "All files (*.*)"
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
+        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory,
+                                                     'Shapefiles (*.shp);;All files (*.*)')
         if filename:
             try:
                 self.map_widget.addVectorLayer(filename)
@@ -1186,25 +1065,20 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #     if filename.lower().endswith('.shp'):
         #         self.map_widget.addVectorLayer(filename)
 
-    def map_addraster(self, eventArg):
+    def map_addraster(self):
         directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
                                                      "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
-                self.map_widget.addRasterLayer(filename, eventArg)
+                self.map_widget.addRasterLayer(filename)
                 path_only, file_only = os.path.split(filename)
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)
                     self.program_settings.sync()
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
-
-
-    def select_all_map_features(self):
-        if self.map_widget:
-            self.map_widget.select_all_map_features()
 
     def on_load(self, tree_top_item_list):
         self.obj_tree = ObjectTreeView(self, tree_top_item_list)
@@ -1394,9 +1268,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         file_name = QtGui.QFileDialog.getSaveFileName(self, browse_title, directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
-            # Append extension if not there yet
-            if not str(file_name).lower().endswith(".py"):
-                file_name += ".py"
             self.add_recent_script(file_name)
             path_only, file_only = os.path.split(file_name)
             if path_only != directory:
@@ -1599,13 +1470,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             pass
         return None
 
-    def set_current_map_layer(self, input_tree_section):
-        try:
-            return getattr(self.model_layers, self.section_types[self.tree_types[input_tree_section]])
-        except:
-            pass
-        return None
-
     def list_selection_changed(self):
         try:
             layer = self.current_map_layer()
@@ -1735,7 +1599,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
-        self.clear_object_listing()
         if hasattr(self, "project_settings"):
             del self.project_settings
         self.project_settings = None
@@ -1751,17 +1614,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.setWindowTitle(self.model + " - " + file_only)
                 self.no_items = False
                 ini_file_name = file_name[:-3] + "ini"
-                try:
-                    if "EPANET" in self.model.upper():
-                        from ui.EPANET.inifile import DefaultsEPANET
-                        self.project_settings = DefaultsEPANET(ini_file_name, self.project)
-                    elif "SWMM" in self.model.upper():
-                        from ui.SWMM.inifile import DefaultsSWMM
-                        self.project_settings = DefaultsSWMM(ini_file_name, self.project)
-                except Exception as exINI:
-                    self.project_settings = None
-                    print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
-                        traceback.print_exc()))
+                if os.path.isfile(ini_file_name):
+                    try:
+                        self.project_settings = QtCore.QSettings(ini_file_name, QtCore.QSettings.IniFormat)
+                        print("Read project settings from " + self.project_settings.fileName())
+                    except Exception as exINI:
+                        self.project_settings = None
+                        print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
+                            traceback.print_exc()))
+
             except Exception as ex:
                 print("open_project_quiet error opening " + file_name + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
                 self.project = ProjectBase()
@@ -1785,14 +1646,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if crs and crs.isValid():
             self.crs = crs
             try:
-                self.txtCrs.setText(crs.authid())
-                self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
-                self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
+                self.map_widget.map_linear_unit = self.map_widget.map_unit_names[self.crs.mapUnits()]
             except:
                 pass
         else:
             self.crs = None
-        pass
 
     def save_project(self, file_name=None):
         if not file_name:
@@ -1895,7 +1753,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         del self.program_settings
-        del self.project_settings
         if self.q_application:
             try:
                 self.q_application.quit()
@@ -1910,7 +1767,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def clear_object_listing(self):
         self.tree_section = ''
-        self.obj_tree.selectionModel().clearSelection()
         self.listViewObjects.clear()
 
     def list_objects(self):
@@ -1921,14 +1777,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.dockw_more.setWindowTitle('')
         if self.project is None or not selected_text:
             return
-        names = self.get_object_list(selected_text)
+        ids = self.get_object_list(selected_text)
         self.tree_section = selected_text
-        if names is None:
+        if ids is None:
             self.dockw_more.setEnabled(False)
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            self.listViewObjects.addItems(names)
+            self.listViewObjects.addItems(ids)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

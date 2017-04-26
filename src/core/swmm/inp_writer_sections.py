@@ -103,7 +103,7 @@ class PolygonWriter(SectionWriter):
 
 
 class LabelWriter(SectionWriter):
-    field_format = u' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
+    field_format = ' {:16}\t{:16}\t"{}"\t"{}"\t"{}"\t{}\t{}\t{}'
 
     @staticmethod
     def as_text(label):
@@ -297,7 +297,7 @@ class TemperatureWriter(SectionWriter):
         elif temperature.source == TemperatureSource.FILE and temperature.filename:
             text_list.append(field_start + temperature.filename + '\t' + temperature.start_date)
 
-        text_list.append(WindSpeedWriter.as_text(temperature.wind_speed))
+        text_list.append(WindSpeedWriter.as_text(temperature.wind_speed))  #xw9/13/2016 bug here, not fixed
         text_list.append(SnowMeltWriter.as_text(temperature.snow_melt))   #xw bug here
         text_list.append(ArealDepletionWriter.as_text(temperature.areal_depletion))   #xw bug here
         return '\n'.join(text_list)
@@ -316,7 +316,7 @@ class EvaporationWriter(SectionWriter):
         if evaporation.format != EvaporationFormat.UNSET:
             format_line = evaporation.format.name + '\t'
             if evaporation.format == EvaporationFormat.CONSTANT:
-                format_line += str(evaporation.constant)
+                format_line += evaporation.constant
             elif evaporation.format == EvaporationFormat.MONTHLY:
                 format_line += '\t'.join(evaporation.monthly)
             elif evaporation.format == EvaporationFormat.TIMESERIES:
@@ -347,7 +347,7 @@ class WindSpeedWriter(SectionWriter):
         inp = TemperatureWriter.field_format.format(WindSpeed.SECTION_NAME) + '\t' + wind_speed.source.name
         if wind_speed.source == WindSource.MONTHLY:
             if len(wind_speed.wind_speed_monthly) > 0:
-                inp += '\t' + '\t'.join(map(str, wind_speed.wind_speed_monthly))
+                inp += '\t' + '\t'.join(wind_speed.wind_speed_monthly)
             else:
                 inp = ''
         elif wind_speed.source == WindSource.FILE:
@@ -786,11 +786,7 @@ class DryWeatherInflowWriter(SectionWriter):
         inp = ''
         if dry_weather_inflow.comment:
             inp = dry_weather_inflow.comment + '\n'
-        if "none" in dry_weather_inflow.node.lower() or \
-                len(dry_weather_inflow.node) == 0:
-            pass
-        else:
-            inp += DryWeatherInflowWriter.field_format.format(dry_weather_inflow.node,
+        inp += DryWeatherInflowWriter.field_format.format(dry_weather_inflow.node,
                                         dry_weather_inflow.constituent,
                                         dry_weather_inflow.average) + '\t' + '\t'.join(dry_weather_inflow.time_patterns)
         return inp
@@ -806,12 +802,7 @@ class RDIInflowWriter(SectionWriter):
         inp = ''
         if rdi_inflow.comment:
             inp = rdi_inflow.comment + '\n'
-        if "none" in rdi_inflow.node.lower() or \
-            len(rdi_inflow.node) == 0 or \
-            "none" in rdi_inflow.hydrograph_group.lower():
-            pass
-        else:
-            inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
+        inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
                                         rdi_inflow.hydrograph_group,
                                         rdi_inflow.sewershed_area)
         return inp

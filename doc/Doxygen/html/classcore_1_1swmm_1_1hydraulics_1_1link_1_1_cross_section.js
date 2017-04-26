@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#a824be41ff635487c33a8ce8efa34883b", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#a8904c2fda4adccbe0bbaaaac1ec5d4a4", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#ac9272a7e8f88c67dd0952ba2d0862dfa", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#aaac2da429dc384eefd9e5a3916a500bd", null ],
     [ "barrels", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#a398028c7acae8667250f26b5a588e599", null ],
     [ "culvert_code", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#a10ef649bec0e97e6b1e29d9b3a138585", null ],
     [ "curve", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_cross_section.html#a682accf62905dc9a8134468090619bd7", null ],

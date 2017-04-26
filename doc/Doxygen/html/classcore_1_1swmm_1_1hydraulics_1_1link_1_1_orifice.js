@@ -1,6 +1,6 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#ac68b0c6238d17a315fecc419475a2799", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#a9b128318d3031f3ec12e085fd5b25e2d", null ],
     [ "cross_section", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#a7b5dfce975f437fb82427f844d6557d9", null ],
     [ "discharge_coefficient", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#a7df78f58107bdfec0cf2a7b14b87cb8e", null ],
     [ "flap_gate", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html#a58c1909ded2220886602e4d7015eb600", null ],

@@ -66,54 +66,53 @@ class HydraulicsOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## FlowUnits: units in use for flow values
         self.flow_units = FlowUnits.CFS
+        """FlowUnits: units in use for flow values"""
 
-        ## HeadLoss: formula to use for computing head loss
         self.head_loss = HeadLoss.H_W
+        """HeadLoss: formula to use for computing head loss"""
 
-        ## Ratio of the density of the fluid being modeled to that of water at 4 deg. C
         self.specific_gravity = 1.0
+        """Ratio of the density of the fluid being modeled to that of water at 4 deg. C"""
 
-        ## Kinematic viscosity of the fluid being modeled relative to that of water at 20 deg. C
         self.viscosity = 1.0
+        """Kinematic viscosity of the fluid being modeled relative to that of water at 20 deg. C"""
 
-        ## Maximum number of trials used to solve network hydraulics at each hydraulic time step of a simulation
         self.maximum_trials = 40
+        """Maximum number of trials used to solve network hydraulics at each hydraulic time step of a simulation"""
 
-        ## Prescribes the convergence criterion that determines when a hydraulic solution has been reached
         self.accuracy = 0.001
+        """Prescribes the convergence criterion that determines when a hydraulic solution has been reached"""
 
-        ## Determines what happens if a hydraulic solution cannot be reached within the prescribed number of TRIALS
         self.unbalanced = Unbalanced.STOP
+        """Determines what happens if a hydraulic solution cannot be reached within the prescribed number of TRIALS"""
 
-        ## If continuing after n trials, continue this many more trials with links held fixed
         self.unbalanced_continue = ''
+        """If continuing after n trials, continue this many more trials with links held fixed"""
 
-        ## Default demand pattern to be applied to all junctions where no demand pattern was specified
         self.default_pattern = "1"
+        """Default demand pattern to be applied to all junctions where no demand pattern was specified"""
 
-        ## Used to adjust the values of baseline demands for all junctions and all demand categories
         self.demand_multiplier = 1.0
+        """Used to adjust the values of baseline demands for all junctions and all demand categories"""
 
-        ## Specifies the power to which the pressure is raised when computing the flow issuing from an emitter
         self.emitter_exponent = 0.5
+        """Specifies the power to which the pressure is raised when computing the flow issuing from an emitter"""
 
-        ## Undocumented
         self.check_frequency = 2
+        """Undocumented"""
 
-        ## Undocumented
         self.max_check = 10
+        """Undocumented"""
 
-        ## Undocumented
         self.damp_limit = 0.0
+        """Undocumented"""
 
-        ## Either SAVE the current hydraulics solution to a file or USE a previously saved hydraulics solution;
-        ## By default do not write this line
         self.hydraulics = Hydraulics.SAVE
+        """Either SAVE the current hydraulics solution to a file or USE a previously saved hydraulics solution"""
+        """By default do not write this line"""
 
-        ## Hydraulics file to either use or save;
-        ## By default do not write this line
         self.hydraulics_file = ""
-
+        """Hydraulics file to either use or save"""
+        """By default do not write this line"""
 

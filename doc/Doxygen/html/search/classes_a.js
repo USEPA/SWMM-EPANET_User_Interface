@@ -1,20 +1,12 @@
 var searchData=
 [
-  ['label',['Label',['../classcore_1_1swmm_1_1labels_1_1_label.html',1,'core.swmm.labels.Label'],['../classcore_1_1epanet_1_1labels_1_1_label.html',1,'core.epanet.labels.Label']]],
-  ['labelreader',['LabelReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_label_reader.html',1,'core.swmm.inp_reader_sections.LabelReader'],['../classcore_1_1epanet_1_1inp__reader__sections_1_1_label_reader.html',1,'core.epanet.inp_reader_sections.LabelReader']]],
-  ['labelwriter',['LabelWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_label_writer.html',1,'core.swmm.inp_writer_sections.LabelWriter'],['../classcore_1_1epanet_1_1inp__writer__sections_1_1_label_writer.html',1,'core.epanet.inp_writer_sections.LabelWriter']]],
+  ['label',['Label',['../classcore_1_1epanet_1_1labels_1_1_label.html',1,'core::epanet::labels']]],
+  ['label',['Label',['../classcore_1_1swmm_1_1labels_1_1_label.html',1,'core::swmm::labels']]],
   ['landuse',['Landuse',['../classcore_1_1swmm_1_1quality_1_1_landuse.html',1,'core::swmm::quality']]],
-  ['landusereader',['LanduseReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_landuse_reader.html',1,'core::swmm::inp_reader_sections']]],
-  ['landusewriter',['LanduseWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_landuse_writer.html',1,'core::swmm::inp_writer_sections']]],
   ['lidcontrol',['LIDControl',['../classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_control.html',1,'core::swmm::hydrology::lidcontrol']]],
-  ['lidcontrolreader',['LIDControlReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_l_i_d_control_reader.html',1,'core::swmm::inp_reader_sections']]],
-  ['lidcontrolwriter',['LIDControlWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_l_i_d_control_writer.html',1,'core::swmm::inp_writer_sections']]],
   ['lidtype',['LIDType',['../classcore_1_1swmm_1_1hydrology_1_1lidcontrol_1_1_l_i_d_type.html',1,'core::swmm::hydrology::lidcontrol']]],
   ['lidusage',['LIDUsage',['../classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html',1,'core::swmm::hydrology::subcatchment']]],
-  ['lidusagereader',['LIDUsageReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_l_i_d_usage_reader.html',1,'core::swmm::inp_reader_sections']]],
-  ['lidusagewriter',['LIDUsageWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_l_i_d_usage_writer.html',1,'core::swmm::inp_writer_sections']]],
-  ['link',['Link',['../classcore_1_1coordinate_1_1_link.html',1,'core::coordinate']]],
-  ['linkoffsets',['LinkOffsets',['../classcore_1_1swmm_1_1options_1_1general_1_1_link_offsets.html',1,'core::swmm::options::general']]],
-  ['lossesreader',['LossesReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_losses_reader.html',1,'core::swmm::inp_reader_sections']]],
-  ['losswriter',['LossWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_loss_writer.html',1,'core::swmm::inp_writer_sections']]]
+  ['link',['Link',['../classcore_1_1epanet_1_1hydraulics_1_1link_1_1_link.html',1,'core::epanet::hydraulics::link']]],
+  ['link',['Link',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_link.html',1,'core::swmm::hydraulics::link']]],
+  ['linkoffsets',['LinkOffsets',['../classcore_1_1swmm_1_1options_1_1general_1_1_link_offsets.html',1,'core::swmm::options::general']]]
 ];

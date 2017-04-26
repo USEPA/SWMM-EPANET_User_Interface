@@ -39,7 +39,7 @@ class frmPipe(frmGenericPropertyEditor):
             combobox.addItem('OPEN')
             combobox.addItem('CLOSED')
             combobox.addItem('CV')
-            if not edit_these[column].initial_status or edit_these[column].initial_status.upper() == 'OPEN':
+            if edit_these[column].initial_status and (edit_these[column].initial_status.upper() == 'OPEN' or edit_these[column].initial_status == ''):
                 combobox.setCurrentIndex(0)
             elif edit_these[column].initial_status.upper() == 'CLOSED':
                 combobox.setCurrentIndex(1)

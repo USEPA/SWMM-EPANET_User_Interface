@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1options_1_1general_1_1_general =
 [
     [ "__init__", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#aea0e04a64da5915bd912de9e024e1643", null ],
+    [ "get_text", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#a54e1ad7d6c09e4fdf84ffd717786de84", null ],
+    [ "set_text", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#a5c13bb51af508f8de74871b7effc0fe5", null ],
     [ "allow_ponding", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#abb1a0ebf6e881d953b5b1eea95b921b7", null ],
     [ "compatibility", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#a74aea7e16bfaccee3ea80806ed1406ca", null ],
     [ "dates", "classcore_1_1swmm_1_1options_1_1general_1_1_general.html#ac97f3a0a17f7ceab156cfc88a4a758c2", null ],

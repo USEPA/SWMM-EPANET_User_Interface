@@ -82,13 +82,13 @@ class LabelReader(SectionReader):
     def read(new_text):
         label = Label()
         new_text = SectionReader.set_comment_check_section(label, new_text)
-        fields = shlex.split(new_text.encode('utf8'))
+        fields = shlex.split(new_text)
         if len(fields) > 2:
             (label.x, label.y) = fields[0:2]
-            label.name = fields[2].decode('UTF8')
+            label.name = fields[2]
 
             if len(fields) > 3:
-                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
+                label.anchor_name = fields[3]  # name of an anchor node (optional)
         return label
 
 

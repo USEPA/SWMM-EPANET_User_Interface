@@ -13,13 +13,12 @@ class Options(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## HydraulicsOptions: Hydraulics options
         self.hydraulics = HydraulicsOptions()
+        """HydraulicsOptions: Hydraulics options"""
 
-        ## QualityOptions: Water quality options
         self.quality = QualityOptions()
+        """QualityOptions: Water quality options"""
 
-        ## str: Name of a file containing coordinates of the network's nodes, not written if not set
         self.map = ""
-
+        """str: Name of a file containing coordinates of the network's nodes, not written if not set"""
 

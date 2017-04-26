@@ -43,8 +43,10 @@ class SimpleReportTest(unittest.TestCase):
                      "CONTROLS NO\n" \
                      "SUBCATCHMENTS S1 S2 S3\n" \
                      "NODES J1\n" \
-                     "LINKS C1 C2\n" \
-                     "LID L1 S1 L1SUB1.txt L2 S1 L2SUB1.txt"
+                     "LINKS C1\n" \
+                     "LINKS C2\n" \
+                     "LID L1 S1 L1SUB1.txt\n" \
+                     "LID L2 S1 L2SUB1.txt"
         my_report = ReportReader.read(test_text)
         assert my_report.input == False
         assert my_report.continuity == False

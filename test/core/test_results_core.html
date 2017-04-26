@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM-EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2017-03-31 15:20:13</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.884000</p>
-<p class='attribute'><strong>Status:</strong> Pass 160</p>
+<p class='attribute'><strong>Start Time:</strong> 2016-10-21 14:24:02</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.244000</p>
+<p class='attribute'><strong>Status:</strong> Pass 147 Failure 13 Error 3</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -404,47 +404,7 @@ function showOutput(id, name) {
 
 <tr id='pt9.2' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt9.2')" >
-        pass</a>
-
-    <div id='div_pt9.2' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt9.2').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-pt9.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.3'
-Exception setting order_tank: invalid literal for int() with base 10: '1.3'
-None
-order_tank now = 1.3
-Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.1'
-Exception setting order_bulk: invalid literal for int() with base 10: '1.1'
-None
-order_bulk now = 1.1
-Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.2'
-Exception setting order_wall: invalid literal for int() with base 10: '1.2'
-None
-order_wall now = 1.2
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -614,11 +574,11 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_report.SimpleReportTest: Test REPORT Section</td>
     <td>2</td>
-    <td>2</td>
-    <td>0</td>
+    <td>1</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c18',2)">Detail</a></td>
 </tr>
@@ -628,9 +588,53 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt18.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_more: Test Report options regarding subcatchments, nodes, links and LID lists</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft18.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_more: Test Report options regarding subcatchments, nodes, links and LID lists</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft18.2')" >
+        fail</a>
+
+    <div id='div_ft18.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft18.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft18.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_report.py", line 61, in test_more
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:[REPORT]
+INPUT NO
+CONTINUITY NO
+FLOWSTATS NO
+CONTROLS NO
+SUBCATCHMENTS S1 S2 S3
+NODES J1
+LINKS C1
+LINKS C2
+LID L1 S1 L1SUB1.txt
+LID L2 S1 L2SUB1.txt
+Get:[REPORT]
+;;Reporting Options
+ INPUT              	NO
+ CONTINUITY         	NO
+ FLOWSTATS          	NO
+ CONTROLS           	NO
+ SUBCATCHMENTS      	S1 S2 S3
+ NODES              	J1
+ LINKS              	C1 C2
+ LID                	L1 S1 L1SUB1.txt L2 S1 L2SUB1.txt
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -706,13 +710,13 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_temperature.TemperatureTest: Test TEMPERATURE section</td>
+    <td>11</td>
     <td>8</td>
-    <td>8</td>
+    <td>3</td>
     <td>0</td>
-    <td>0</td>
-    <td><a href="javascript:showClassDetail('c21',8)">Detail</a></td>
+    <td><a href="javascript:showClassDetail('c21',11)">Detail</a></td>
 </tr>
 
 <tr id='pt21.1' class='hiddenRow'>
@@ -745,14 +749,106 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt21.7' class='hiddenRow'>
+<tr id='ft21.7' class='none'>
+    <td class='failCase'><div class='testcase'>test_windspeed_file_fail: Test windspeed file - 2</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.7')" >
+        fail</a>
+
+    <div id='div_ft21.7' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.7').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.7: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_temperature.py", line 120, in test_windspeed_file_fail
+    self.assertTrue(find_error, msg)
+AssertionError: 
+Should detected error and not read/write
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt21.8' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_snowmelt: Test snowmelt</div></td>
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt21.8' class='hiddenRow'>
+<tr id='ft21.9' class='none'>
+    <td class='failCase'><div class='testcase'>test_snowmelt_fail: Test snowmelt wo one ADC PERVIOUS, assert failed</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.9')" >
+        fail</a>
+
+    <div id='div_ft21.9' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.9').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.9: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_temperature.py", line 159, in test_snowmelt_fail
+    self.assertTrue(find_error, msg)
+AssertionError: 
+Should detected error and not read/write
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt21.10' class='hiddenRow'>
     <td class='none'><div class='testcase'>test_snowmelt_wo_adc: Test snowmelt -- Remove both ADCs</div></td>
     <td colspan='5' align='center'>pass</td>
+</tr>
+
+<tr id='ft21.11' class='none'>
+    <td class='failCase'><div class='testcase'>test_snowmelt_wo_temperature: Test snowmelt -- without temperature</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft21.11')" >
+        fail</a>
+
+    <div id='div_ft21.11' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft21.11').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft21.11: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_temperature.py", line 187, in test_snowmelt_wo_temperature
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:
+        [TEMPERATURE]
+        ;;Parameter  TimeSeries
+        SNOWMELT 2 0.5 0.6 0.0 50 0
+        
+Get:
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -995,11 +1091,11 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_loadings.SimpleLoadingTest: Test LOADINGS section</td>
     <td>2</td>
-    <td>2</td>
-    <td>0</td>
+    <td>1</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c32',2)">Detail</a></td>
 </tr>
@@ -1009,9 +1105,43 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt32.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_loading_section: Test LOADINGS section</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft32.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_loading_section: Test LOADINGS section</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft32.2')" >
+        fail</a>
+
+    <div id='div_ft32.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft32.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft32.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_loadings.py", line 36, in test_loading_section
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[LOADINGS]
+;;Subcatchment     Pollutant   Loading  Pollutant   Loading
+;;----------------------------------------------------------
+SB1                TSS         0.1      Lead         0.01
+        
+Get:[LOADINGS]
+;;Subcatchment  	Pollutant       	Buildup
+;;--------------	----------------	----------
+SB1             	TSS             	0.1       
+SB1             	Lead            	0.01      
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1110,11 +1240,11 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_transects.SimpleTransectTest: Test TRANSECTS section</td>
     <td>3</td>
-    <td>3</td>
-    <td>0</td>
+    <td>1</td>
+    <td>2</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c37',3)">Detail</a></td>
 </tr>
@@ -1124,22 +1254,96 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt37.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_transects: Test transects:Example-7-final inp</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft37.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_transects: Test transects:Example-7-final inp</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft37.2')" >
+        fail</a>
+
+    <div id='div_ft37.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft37.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft37.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_transects.py", line 42, in test_transects
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[TRANSECTS]
+NC 0.015    0.015    0.015
+X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20
+GR 0.5      20       1.3      40
+NC 0.016    0.016    0.016
+X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0
+Get:
+[TRANSECTS]
+;;Transect Data in HEC-2 format
+&lt;core.swmm.hydraulics.link.Transect object at 0x0000000009513390&gt;
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt37.3' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_transect_section: Test transects: using Project</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft37.3' class='none'>
+    <td class='failCase'><div class='testcase'>test_transect_section: Test transects: using Project</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft37.3')" >
+        fail</a>
+
+    <div id='div_ft37.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft37.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft37.3: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_transects.py", line 59, in test_transect_section
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[TRANSECTS]
+        NC 0.015    0.015    0.015
+        X1 Full_Street       7        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        0        20
+        GR 0.5      20       1.3      40
+        NC 0.016    0.016    0.016
+        X1 Half_Street       5        0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        GR 1.3      -40      0.5      -20      0        -20      0.8      0        1.3      0
+        
+Get:
+[TRANSECTS]
+;;Transect Data in HEC-2 format
+&lt;core.project_base.Section object at 0x0000000009518668&gt;
+&lt;core.swmm.hydraulics.link.Transect object at 0x0000000009518630&gt;
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr class='passClass'>
+<tr class='errorClass'>
     <td>test.core.swmm.test_junctions.SimpleJunctionTest: Test JUNCTIONS section</td>
     <td>3</td>
-    <td>3</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c38',3)">Detail</a></td>
 </tr>
 
@@ -1153,9 +1357,38 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt38.3' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_junctions: Test JUNCTIONS section through Project class</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft38.3' class='none'>
+    <td class='errorCase'><div class='testcase'>test_junctions: Test JUNCTIONS section through Project class</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft38.3')" >
+        error</a>
+
+    <div id='div_ft38.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft38.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft38.3: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_junctions.py", line 58, in test_junctions
+    section_from_text = self.project_reader.read_junctions.read(source_text)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\inp_reader_base.py", line 245, in read
+    section.value.append(comment)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 103, in append
+    self._addindex(obj)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 28, in _addindex
+    _idx[getattr(obj, attr)] = obj
+AttributeError: 'Section' object has no attribute 'name'
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1211,23 +1444,73 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_inflows.SimpleInflowTest: Test INFLOWS section</td>
     <td>5</td>
-    <td>5</td>
-    <td>0</td>
+    <td>1</td>
+    <td>4</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c41',5)">Detail</a></td>
 </tr>
 
-<tr id='pt41.1' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_flow_type: Test inflow: FLOW type</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft41.1' class='none'>
+    <td class='failCase'><div class='testcase'>test_flow_type: Test inflow: FLOW type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft41.1')" >
+        fail</a>
+
+    <div id='div_ft41.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft41.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft41.1: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_inflows.py", line 24, in test_flow_type
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:NODE2  FLOW  N2FLOW 
+Get:NODE2           	FLOW            	N2FLOW          	FLOW    	1.0     	1.0     	0.0     	        
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt41.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_mass_type: Test inflow: mass type</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft41.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_mass_type: Test inflow: mass type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft41.2')" >
+        fail</a>
+
+    <div id='div_ft41.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft41.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft41.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_inflows.py", line 42, in test_mass_type
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: 
+Set:NODE65 BOD N65BOD MASS 126
+Get:NODE65          	BOD             	N65BOD          	MASS    	126     	1.0     	0.0     	        
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr id='pt41.3' class='hiddenRow'>
@@ -1235,14 +1518,96 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt41.4' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft41.4' class='none'>
+    <td class='failCase'><div class='testcase'>test_inflows_flow: Test INFLOWS section with flow type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft41.4')" >
+        fail</a>
+
+    <div id='div_ft41.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft41.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft41.4: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_inflows.py", line 83, in test_inflows_flow
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+
+[INFLOWS]
+;;                                                   Concen   Conversion
+;;Node             Parameter        Time Series      /Mass    Factor
+;;----------------------------------------------------------------------
+  80408            FLOW             80408
+  81009            FLOW             81009
+  82309            FLOW             82310
+Get:
+[INFLOWS]
+;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
+;;--------------	----------------	----------------	--------	--------	--------	--------	--------
+                	                	                	CONCEN  	1.0     	1.0     	0.0     	        
+;;                                                   Concen   Conversion
+;;Node             Parameter        Time Series      /Mass    Factor
+;;----------------------------------------------------------------------
+80408           	FLOW            	80408           	FLOW    	1.0     	1.0     	0.0     	        
+81009           	FLOW            	81009           	FLOW    	1.0     	1.0     	0.0     	        
+82309           	FLOW            	82310           	FLOW    	1.0     	1.0     	0.0     	        
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr id='pt41.5' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft41.5' class='none'>
+    <td class='failCase'><div class='testcase'>test_inflows_flowts: Test INFLOWS section with FLOW TS type</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft41.5')" >
+        fail</a>
+
+    <div id='div_ft41.5' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft41.5').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft41.5: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_inflows.py", line 131, in test_inflows_flowts
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+
+[INFLOWS]
+;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
+;;--------------	----------------	----------------	--------	--------	--------	--------	--------
+Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0
+        
+Get:
+[INFLOWS]
+;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
+;;--------------	----------------	----------------	--------	--------	--------	--------	--------
+                	                	                	CONCEN  	1.0     	1.0     	0.0     	        
+;;Node          	Constituent     	Time Series     	Type    	Mfactor 	Sfactor 	Baseline	Pattern
+;;--------------	----------------	----------------	--------	--------	--------	--------	--------
+Inlet           	FLOW            	Inflow          	FLOW    	1.0     	1.0     	0.0     	        
+        
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1317,12 +1682,12 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='errorClass'>
     <td>test.core.swmm.test_pollutants.SimplePollutantTest: Test POLLUTANTS section</td>
     <td>2</td>
-    <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>0</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c45',2)">Detail</a></td>
 </tr>
 
@@ -1331,9 +1696,38 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt45.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_pollutant_section: Test POLLUTANTS section through Project</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft45.2' class='none'>
+    <td class='errorCase'><div class='testcase'>test_pollutant_section: Test POLLUTANTS section through Project</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft45.2')" >
+        error</a>
+
+    <div id='div_ft45.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft45.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft45.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_pollutants.py", line 37, in test_pollutant_section
+    section_from_text = self.project_reader.read_pollutants.read(source_text)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\inp_reader_base.py", line 245, in read
+    section.value.append(comment)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 103, in append
+    self._addindex(obj)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 28, in _addindex
+    _idx[getattr(obj, attr)] = obj
+AttributeError: 'Section' object has no attribute 'name'
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1355,11 +1749,11 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_washoff.SimpleWashoffTest: Test WASHOFF section</td>
     <td>2</td>
-    <td>2</td>
-    <td>0</td>
+    <td>1</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c47',2)">Detail</a></td>
 </tr>
@@ -1369,17 +1763,64 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt47.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_washoff_section: Test WASHOFF section</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft47.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_washoff_section: Test WASHOFF section</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft47.2')" >
+        fail</a>
+
+    <div id='div_ft47.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft47.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft47.2: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_washoff.py", line 41, in test_washoff_section
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+
+[WASHOFF]
+;;                                                               Clean.   BMP
+;;LandUse          Pollutant        Function   Coeff1   Coeff2   Effic.   Effic.
+;;------------------------------------------------------------------------------
+  Residential      TSS              EXP        0.1      1        0        0
+  Residential      Lead             EMC        0        0        0        0
+  Undeveloped      TSS              EXP        0.1      0.7      0        0
+  Undeveloped      Lead             EMC        0        0        0        0
+        
+Get:
+[WASHOFF]
+;;Land Use      	Pollutant       	Function  	Coeff1    	Coeff2    	SweepRmvl 	BmpRmvl
+;;--------------	----------------	----------	----------	----------	----------	----------
+                	                	EXP       	0.0       	0.0       	0.0       	0.0       
+;;                                                               Clean.   BMP
+;;LandUse          Pollutant        Function   Coeff1   Coeff2   Effic.   Effic.
+;;------------------------------------------------------------------------------
+Residential     	TSS             	EXP       	0.1       	1         	0         	0         
+Residential     	Lead            	EMC       	0         	0         	0         	0         
+Undeveloped     	TSS             	EXP       	0.1       	0.7       	0         	0         
+Undeveloped     	Lead            	EMC       	0         	0         	0         	0         
+        
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
-<tr class='passClass'>
+<tr class='errorClass'>
     <td>test.core.swmm.test_landuses.SimpleLanduseTest: Test LANDUSES section</td>
     <td>3</td>
-    <td>3</td>
+    <td>2</td>
     <td>0</td>
-    <td>0</td>
+    <td>1</td>
     <td><a href="javascript:showClassDetail('c48',3)">Detail</a></td>
 </tr>
 
@@ -1393,9 +1834,38 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt48.3' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_landuses: Test LANDUSES section</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft48.3' class='none'>
+    <td class='errorCase'><div class='testcase'>test_landuses: Test LANDUSES section</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft48.3')" >
+        error</a>
+
+    <div id='div_ft48.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft48.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft48.3: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_landuses.py", line 45, in test_landuses
+    section_from_text = self.project_reader.read_landuses.read(source_text)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\inp_reader_base.py", line 245, in read
+    section.value.append(comment)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 103, in append
+    self._addindex(obj)
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\src\core\indexed_list.py", line 28, in _addindex
+    _idx[getattr(obj, attr)] = obj
+AttributeError: 'Section' object has no attribute 'name'
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1466,11 +1936,11 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
+<tr class='failClass'>
     <td>test.core.swmm.test_patterns.SimplePatternTest: Test PATTERNS section</td>
     <td>6</td>
-    <td>6</td>
-    <td>0</td>
+    <td>5</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c51',6)">Detail</a></td>
 </tr>
@@ -1500,9 +1970,46 @@ order_wall now = 1.2
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt51.6' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_pattern_section: test PATTERNS section</div></td>
-    <td colspan='5' align='center'>pass</td>
+<tr id='ft51.6' class='none'>
+    <td class='failCase'><div class='testcase'>test_pattern_section: test PATTERNS section</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft51.6')" >
+        fail</a>
+
+    <div id='div_ft51.6' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft51.6').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft51.6: Traceback (most recent call last):
+  File "C:\devNotMW\GitHub\SWMM-EPANET_User_Interface_dev_ui\test\core\swmm\test_patterns.py", line 133, in test_pattern_section
+    self.assertTrue(match(actual_text, source_text), msg)
+AssertionError: 
+Set:
+[PATTERNS]
+;ID              	Multipliers
+;Demand Pattern
+1               	1.0         	1.2         	1.4         	1.6         	1.4         	1.2
+1               	1.0         	0.8         	0.6         	0.4         	0.6         	0.8
+
+Get:
+[PATTERNS]
+;;Name          	Type      	Multipliers
+;;--------------	----------	-----------
+;Demand Pattern
+ 1               MONTHLY   	1.0  	1.2  	1.4  	1.6  	1.4  	1.2  
+ 1                         	1.0  	0.8  	0.6  	0.4  	0.6  	0.8  
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
 </tr>
 
 <tr class='passClass'>
@@ -1531,10 +2038,10 @@ order_wall now = 1.2
 
 <tr id='total_row'>
     <td>Total</td>
-    <td>160</td>
-    <td>160</td>
-    <td>0</td>
-    <td>0</td>
+    <td>163</td>
+    <td>147</td>
+    <td>13</td>
+    <td>3</td>
     <td>&nbsp;</td>
 </tr>
 </table>

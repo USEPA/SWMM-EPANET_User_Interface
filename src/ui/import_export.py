@@ -3,21 +3,11 @@ from enum import Enum
 from qgis.core import *
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox
-from core.coordinate import Coordinate
 from core.epanet.hydraulics.node import Junction as EpanetJunction
 from core.epanet.hydraulics.node import Tank as EpanetTank
-from core.epanet.hydraulics.node import Reservoir, Source, Demand
-from core.epanet.hydraulics.node import SourceType, MixingModel
-from core.epanet.hydraulics.link import Pipe, Pump, Valve, FixedStatus, ValveType
-from core.epanet.labels import Label, MeterType
 from core.swmm.hydraulics.node import Junction as SwmmJunction
-from core.swmm.hydraulics.node import Outfall, OutfallType
-from core.swmm.hydraulics.node import SubCentroid
-from core.swmm.hydraulics.link import Conduit, SubLink
-from core.swmm.hydrology.raingage import RainGage, RainFormat, RainFileUnits, RainDataSource
-from core.swmm.hydrology.subcatchment import Subcatchment, Routing
-from ui.model_utility import ParseData
-from core.indexed_list import IndexedList
+from core.swmm.hydraulics.link import Conduit
+from core.epanet.hydraulics.link import Pipe, Pump, Valve
 
 """Export (save) model elements as GIS data or Import (read) model elements from existing GIS data."""
 
@@ -34,67 +24,26 @@ pipe_model_attributes = [
 pipe_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
     "loss_coefficient"]
-pipe_import_attributes = [
-    "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
-    "loss_coefficient", "bulk_reaction_coefficient", "wall_reaction_coefficient", "initial_status"]
 
 pumps_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
 pumps_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
-pump_import_attributes = [ "id", "description", "inlet_node", "outlet_node",
-                            "power", "head_curve_name", "speed", "pattern", "initial_status",
-                            "efficiency_curve_name", "energy_price", "price_pattern"]
 
 valves_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
 valves_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
-valve_import_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "type", "diameter", "setting",
-    "minor_loss_coefficient", "status"]
 
 junctions_model_attributes = [
     "element_type", "name", "elevation", "base_demand_flow", "demand_pattern_name"]
 junctions_gis_attributes = [
     "element_type", "id", "elevation", "base_demand_flow", "demand_pattern"]
-junction_import_attributes = [ "id", "elevation", "emitter_coefficient",
-                               "initial_quality",
-                               "source_quality_amount", "source_quality_type", "source_quality_pattern",
-                               "base_demand_flow", "demand_pattern_name"]
 
 labels_model_attributes = [
     "element_type", "name", "anchor_name", "font", "size", "bold", "italic"]
 labels_gis_attributes = [
     "element_type", "id", "anchor_name", "font", "size", "bold", "italic"]
-label_import_attributes = [
-    "id", "description", "meter_type", "meter_name",
-    "anchor_name", "font", "size", "bold", "italic"
-]
-
-reservoir_import_attributes = ["id", "tag", "total_head", "head_pattern_name",
-                               "initial_quality",
-                               "source_quality_amount", "source_quality_type", "source_quality_pattern"]
-tank_import_attributes = [
- "id",
- "description",
- "inlet_node",
- "outlet_node",
- "elevation",
- "diameter",
- "initial_level",
- "minimum_level",
- "maximum_level",
- "minimum_volume",
- "volume_curve",
- "mixing_model",
- "mixing_fraction",
- "reaction_coeff",
- "initial_quality",
- "source_quality_amount",
- "source_quality_type",
- "source_quality_pattern"
-]
 
 conduit_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "length", "roughness",
@@ -102,103 +51,16 @@ conduit_model_attributes = [
 conduit_gis_attributes = [
     "element_type", "id", "description", "inlet_node", "outlet_node", "length", "roughness",
     "inlet_offset", "outlet_offset", "maximum_flow", "loss_coefficient", "flap_gate", "seepage"]
-conduit_import_attributes = [
-    "id",
-    "description",
-    "inlet_node",
-    "outlet_node",
-    "length",
-    "roughness",
-    "inlet_offset",
-    "outlet_offset",
-    "maximum_flow",
-    "loss_coefficient",
-    "entry_loss_coefficient",
-    "exit_loss_coefficient",
-    "flap_gate",
-    "seepage",
-    "max_depth"]
 
 junctions_model_attributes_swmm = [
     "element_type", "name", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junctions_gis_attributes_swmm = [
     "element_type", "id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
-junction_import_attributes_swmm = [
-    "id",
-    "description",
-    "elevation",
-    "max_depth",
-    "initial_depth",
-    "surcharge_depth",
-    "ponded_area"
-]
+
 generic_model_attributes = [
     "element_type", "name"]
 generic_gis_attributes = [
     "element_type", "id"]
-
-subcatchment_model_attributes = [
-    "element_type",
-    "name",
-    "description",
-    "rain_gage",
-    "outlet",
-    "area",
-    "width",
-    "percent_slope",
-    "percent_impervious",
-    "n_imperv",
-    "n_perv",
-    "storage_depth_imperv",
-    "storage_depth_perv",
-    "percent_zero_impervious",
-    "subarea_routing",
-    "initial_loadings",
-    "curb_length"]
-
-subcatchment_import_attributes = [
-    "id",
-    "description",
-    "rain_gage",
-    "outlet",
-    "area",
-    "width",
-    "percent_slope",
-    "percent_impervious",
-    "n_imperv",
-    "n_perv",
-    "storage_depth_imperv",
-    "storage_depth_perv",
-    "percent_zero_impervious",
-    "subarea_routing",
-    "initial_loadings",
-    "curb_length"
-]
-
-raingage_import_attributes = [
-    "id",
-    "description",
-    "rain_format",
-    "rain_interval",
-    "snow_catch_factor",
-    "data_source",
-    "timeseries",
-    "data_file_name",
-    "data_file_station_id",
-    "data_file_rain_units",
-]
-
-outfall_import_attributes = [
-    "id",
-    "description",
-    "elevation",
-    "tide_gate",
-    "route_to",
-    "outfall_type",
-    "fixed_stage",
-    "tidal_curve",
-    "time_series_name"
-]
 
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
@@ -346,10 +208,6 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     if one_file:
         write_layer(layer, session.crs, file_name, driver_name, layer_options)
 
-    layer_file_name = path_file + "_subcatchments" + extension
-    one_file = False
-    export_subcatchment_layer(session.project, session.model_layers.subcatchments, subcatchment_model_attributes,
-                              session.crs, one_file, layer_file_name, driver_name, layer_options)
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
@@ -394,32 +252,6 @@ def export_links_layer(model_links, model_attributes, gis_attributes, all_gis_at
         write_layer(layer, crs, layer_file_name, driver_name, layer_options)
     return layer
 
-def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_file, layer_file_name, driver_name,
-                              layer_options):
-    if not src_layer or src_layer.featureCount() == 0:
-        return None
-    ind = src_layer.fieldNameIndex(u'name')
-    if ind < 0:
-        return None
-    layer = QgsVectorLayer("Polygon", "Subcatchment", "memory")
-    provider = layer.dataProvider()
-    provider.addAttributes(make_gis_fields(model_attributes))
-    layer.startEditing()  # changes are only possible when editing the layer
-    # src_layer = QgsVectorLayer()
-    for f in src_layer.getFeatures():
-        obj_sub = project.subcatchments.get_item(u'name', f.attributes()[ind])
-        if obj_sub:
-            new_f = QgsFeature()
-            new_f.setGeometry(f.geometry())
-            values = gis_values_from_model(obj_sub, model_attributes, model_attributes, model_attributes)
-            new_f.setAttributes(values)
-            layer.addFeature(new_f, False)
-    layer.commitChanges()
-    layer.updateExtents()
-
-    if not one_file:
-        write_layer(layer, crs, layer_file_name, driver_name, layer_options)
-    return layer
 
 def make_gis_fields(gis_attributes):
     # create GIS fields
@@ -428,6 +260,7 @@ def make_gis_fields(gis_attributes):
         if gis_attribute:
             fields.append(QgsField(gis_attribute, QtCore.QVariant.String))
     return fields
+
 
 def make_links_layer(coordinates, links, model_attributes, gis_attributes, all_gis_attributes, layer):
     features = []
@@ -564,377 +397,6 @@ def import_from_gis(session, file_name):
     session.map_widget.zoomfull()
     return result
 
-def import_epanet_from_geojson(session, file_name):
-    project = session.project
-    layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
-    if ind < 0:
-        return
-    elem_types = layer.uniqueValues(ind, 20)
-    import_items_count = {}
-    for et in elem_types:
-        import_items_count[et.lower()] = 0
-    model_item = None
-    model_layer = None
-    # layer.startEditing()
-    for f in layer.getFeatures():
-        geom = f.geometry()
-        elem_type = f.attributes()[ind]
-        if not elem_type:
-            continue
-        if elem_type.lower().startswith("junction"):
-            model_layer = session.model_layers.junctions
-            model_item = EpanetJunction()
-            build_model_object_per_geojson_record(project, f, junction_import_attributes, model_item)
-            project.junctions.value.append(model_item)
-            import_items_count["junction"] += 1
-        elif elem_type.lower().startswith("tank"):
-            model_layer = session.model_layers.tanks
-            model_item = EpanetTank()
-            build_model_object_per_geojson_record(project, f, tank_import_attributes, model_item)
-            project.tanks.value.append(model_item)
-            import_items_count["tank"] += 1
-        elif elem_type.lower().startswith("reservoir"):
-            model_layer = session.model_layers.reservoirs
-            model_item = Reservoir()
-            build_model_object_per_geojson_record(project, f, reservoir_import_attributes, model_item)
-            project.reservoirs.value.append(model_item)
-            import_items_count["reservoir"] += 1
-        elif elem_type.lower().startswith("label"):
-            model_layer = session.model_layers.labels
-            model_item = Label()
-            build_model_object_per_geojson_record(project, f, label_import_attributes, model_item)
-            project.labels.value.append(model_item)
-            import_items_count["label"] += 1
-        elif elem_type.lower().startswith("pipe"):
-            model_layer = session.model_layers.pipes
-            model_item = Pipe()
-            build_model_object_per_geojson_record(project, f, pipe_import_attributes, model_item)
-            project.pipes.value.append(model_item)
-            import_items_count["pipe"] += 1
-        elif elem_type.lower().startswith("pump"):
-            model_layer = session.model_layers.pumps
-            model_item = Pump()
-            build_model_object_per_geojson_record(project, f, pump_import_attributes, model_item)
-            project.pumps.value.append(model_item)
-            import_items_count["pump"] += 1
-        elif elem_type.lower().startswith("valve"):
-            model_layer = session.model_layers.valves
-            model_item = Valve()
-            build_model_object_per_geojson_record(project, f, valve_import_attributes, model_item)
-            project.valves.value.append(model_item)
-            import_items_count["valve"] += 1
-
-        # add gis feature
-        new_feature = QgsFeature()
-        new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
-            new_feature.setAttributes([model_item.name, 0.0])
-            model_item.x = geom.asPoint().x()
-            model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
-            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
-            line = geom.asPolyline()
-            if len(line) > 2:
-                for i in xrange(1, len(line)):
-                    coord = Coordinate()
-                    coord.x = str(line[i].x())
-                    coord.y = str(line[i].y())
-                    model_item.vertices.append(coord)
-                    pass
-        elif geom.type() == QGis.Polygon:
-            new_feature.setAttributes([model_item.name, 0.0])
-        #model_layer = QgsVectorLayer()
-        model_layer.startEditing()
-        model_layer.addFeature(new_feature)
-        model_layer.commitChanges()
-        model_layer.updateExtents()
-
-    # layer.rollBack(True)
-    session.model_layers.set_lists()
-    session.map_widget.zoomfull()
-    return import_items_count
-
-def import_swmm_from_geojson(session, file_name):
-    project = session.project
-    layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
-    if ind < 0:
-        return
-    elem_types = layer.uniqueValues(ind, 20)
-    import_items_count = {}
-    for et in elem_types:
-        import_items_count[et.lower()] = 0
-    model_item = None
-    model_layer = None
-    # layer.startEditing()
-    adding_subcatchment = False
-    sub_outlet = ""
-    for f in layer.getFeatures():
-        adding_subcatchment = False
-        sub_outlet = None
-        geom = f.geometry()
-        elem_type = f.attributes()[ind]
-        if not elem_type:
-            continue
-        p_section = None
-        if elem_type.lower().startswith("junction"):
-            model_layer = session.model_layers.junctions
-            model_item = SwmmJunction()
-            build_model_object_per_geojson_record(project, f, junction_import_attributes, model_item)
-            p_section = project.junctions
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["junction"] += 1
-        elif elem_type.lower().startswith("conduit"):
-            model_layer = session.model_layers.conduits
-            model_item = Conduit()
-            build_model_object_per_geojson_record(project, f, conduit_import_attributes, model_item)
-            p_section = project.conduits
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["conduit"] += 1
-        elif elem_type.lower().startswith("raingage"):
-            model_layer = session.model_layers.raingages
-            model_item = RainGage()
-            build_model_object_per_geojson_record(project, f, raingage_import_attributes, model_item)
-            p_section = project.raingages
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["raingage"] += 1
-        elif elem_type.lower().startswith("label"):
-            model_layer = session.model_layers.labels
-            model_item = Label()
-            build_model_object_per_geojson_record(project, f, label_import_attributes, model_item)
-            p_section = project.labels
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["label"] += 1
-        elif elem_type.lower().startswith("outfall"):
-            model_layer = session.model_layers.outfalls
-            model_item = Outfall()
-            build_model_object_per_geojson_record(project, f, outfall_import_attributes, model_item)
-            p_section = project.outfalls
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["outfall"] += 1
-        elif elem_type.lower().startswith("subcatchment"):
-            adding_subcatchment = True
-            # sub_outlet = session.project.all_nodes()[f["outlet"]]
-            sub_outlet = f["outlet"]
-            model_layer = session.model_layers.subcatchments
-            model_item = Subcatchment()
-            build_model_object_per_geojson_record(project, f, subcatchment_import_attributes, model_item)
-            pt = f.geometry().centroid().asPoint()
-            model_item.centroid.x = str(pt.x())
-            model_item.centroid.y = str(pt.y())
-            p_section = project.subcatchments
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["subcatchment"] += 1
-
-        # add gis feature
-        new_feature = QgsFeature()
-        new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
-            new_feature.setAttributes([model_item.name, 0.0])
-            model_item.x = geom.asPoint().x()
-            model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
-            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
-            line = geom.asPolyline()
-            if len(line) > 2:
-                for i in xrange(1, len(line)):
-                    coord = Coordinate()
-                    coord.x = str(line[i].x())
-                    coord.y = str(line[i].y())
-                    model_item.vertices.append(coord)
-                    pass
-        elif geom.type() == QGis.Polygon:
-            new_feature.setAttributes([model_item.name, 0.0, 0, "0"])
-            for pt in geom.asPolygon()[0]:
-                coord = Coordinate()
-                coord.x = str(pt.x())
-                coord.y = str(pt.y())
-                model_item.vertices.append(coord)
-
-        #model_layer = QgsVectorLayer()
-        model_layer.startEditing()
-        added_sub = model_layer.dataProvider().addFeatures([new_feature])
-
-        if adding_subcatchment and added_sub[0]:
-            centroid_layer = session.model_layers.subcentroids
-            sublink_layer = session.model_layers.sublinks
-            if centroid_layer and sublink_layer:
-                c_item = SubCentroid()
-                c_item.name = u'subcentroid-' + model_item.name
-                c_item.subname = model_item.name
-                p_section = session.project.subcentroids
-                if len(p_section.value) == 0 and not isinstance(p_section, list):
-                    p_section.value = IndexedList([], ['name'])
-                p_section.value.append(c_item)
-                fc = QgsFeature()
-                centroid_layer.startEditing()
-                pf = session.map_widget.point_feature_from_item(model_item.centroid)
-                pf.setAttributes([c_item.name, 0.0, added_sub[1][0].id(), model_item.name])
-                added_centroid = centroid_layer.dataProvider().addFeatures([pf])
-                if added_centroid[0]:
-                    added_centroid_id = added_centroid[1][0].id()
-                    model_layer.changeAttributeValue(added_sub[1][0].id(), 2, added_centroid[1][0].id())
-                    model_layer.changeAttributeValue(added_sub[1][0].id(), 3, c_item.name)
-                    centroid_layer.updateExtents()
-                    centroid_layer.commitChanges()
-                    centroid_layer.triggerRepaint()
-
-                l_item = SubLink()
-                l_item.name = u'sublink-' + c_item.name
-                l_item.inlet_node = c_item.name
-                l_item.outlet_node = sub_outlet
-                p_section = session.project.sublinks
-                if len(p_section.value) == 0 and not isinstance(p_section, list):
-                    p_section.value = IndexedList([], ['name'])
-                p_section.value.append(l_item)
-                inlet_sub = model_item.centroid
-                lf = session.map_widget.line_feature_from_item(l_item,
-                                                               session.project.all_nodes(),
-                                                               inlet_sub, None)
-                sublink_layer.startEditing()
-                added_lf = sublink_layer.dataProvider().addFeatures([lf])
-                if added_lf[0]:
-                    # set subcatchment's outlet nodal/subcatch id
-                    # if inlet_sub and model_item.name:
-                    #    for s in session.project.subcatchments.value:
-                    #        if s.name == model_item.name:
-                    #            s.outlet = model_item.outlet_node
-                    #            break
-                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 2, l_item.inlet_node)
-                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 3, l_item.outlet_node)
-                    sublink_layer.changeAttributeValue(added_lf[1][0].id(), 4, 0)
-                    sublink_layer.updateExtents()
-                    sublink_layer.commitChanges()
-                    sublink_layer.triggerRepaint()
-                    session.map_widget.canvas.refresh()
-
-                pass
-        model_layer.commitChanges()
-
-    # layer.rollBack(True)
-    session.model_layers.set_lists()
-    session.map_widget.zoomfull()
-    return import_items_count
-
-def build_model_object_per_geojson_record(project, f, import_attributes, model_item):
-    new_source_quality = None
-    new_demand = None
-    for attr_name in import_attributes:
-        if f.fieldNameIndex(attr_name) >=0:
-            attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-            if attr_name == "id":
-                model_item.name = attr_value
-            elif attr_name == "description" and attr_value:
-                if isinstance(model_item, Label):
-                    model_item.name = attr_value
-                else:
-                    if hasattr(model_item, attr_name):
-                        setattr(model_item, attr_name, attr_value)
-            elif attr_name.startswith("source_quality_amount"):
-                val, val_is_good = ParseData.floatTryParse(attr_value)
-                if val_is_good:
-                    new_source_quality = Source()
-                    new_source_quality.name = model_item.name
-                    new_source_quality.baseline_strength = attr_value
-                    project.sources.value.append(new_source_quality)
-            elif attr_name.startswith("source_quality_pattern"):
-                if new_source_quality:
-                    new_source_quality.pattern_name = attr_value
-            elif attr_name.startswith("source_quality_type"):
-                if new_source_quality:
-                    for et in SourceType:
-                        if et.name == attr_value:
-                            new_source_quality.pattern_name = attr_value
-                            break
-            elif attr_name.startswith("base_demand"):
-                new_demand = Demand()
-                new_demand.junction_name = model_item.name
-                val, val_is_good = ParseData.floatTryParse(attr_value)
-                if val_is_good:
-                    new_demand.base_demand = attr_value
-                ctr = attr_name[attr_name.rindex("_") + 1:]
-                val, val_is_good = ParseData.intTryParse(ctr)
-                if val_is_good:
-                    project.demands.value.append(new_demand)
-            elif attr_name.startswith("demand_pattern"):
-                if new_demand:
-                    ctr = attr_name[attr_name.rindex("_") + 1:]
-                    val, val_is_good = ParseData.intTryParse(ctr)
-                    if val_is_good:
-                        new_demand = project.demands.value[val - 1]
-                        new_demand.demand_pattern = attr_value
-            elif attr_name.startswith("demand_category"):
-                if new_demand:
-                    ctr = attr_name[attr_name.rindex("_") + 1:]
-                    val, val_is_good = ParseData.intTryParse(ctr)
-                    if val_is_good:
-                        new_demand = project.demands.value[val - 1]
-                        new_demand.category = attr_value
-            elif attr_name.startswith("initial_status") or attr_name.startswith("status"):
-                if attr_value and not attr_value == NULL:
-                    if hasattr(model_item, attr_name):
-                        if attr_value.lower() == "open":
-                            model_item.initial_status = FixedStatus.OPEN
-                        elif attr_value.lower() == "closed":
-                            model_item.initial_status = FixedStatus.CLOSED
-            elif attr_name.startswith("meter_type"):
-                for mt in MeterType:
-                    if mt.name == attr_value:
-                        model_item.meter_type = mt
-                        break
-            elif attr_name.startswith("mixing_"):
-                if attr_value:
-                    for mm in MixingModel:
-                        if mm.name == attr_value.upper():
-                            model_item.mixing_model = mm
-                            break
-            elif attr_name.startswith("subarea_routing"):
-                if attr_value:
-                    for r in Routing:
-                        if r.name == attr_value.upper():
-                            model_item.subarea_routing = r
-                            break
-            elif attr_name.startswith("outfall_type"):
-                if attr_value:
-                    for ot in OutfallType:
-                        if ot.name == attr_value.upper():
-                            model_item.outfall_type = ot
-                            break
-            elif attr_name.startswith("rain_format"):
-                if attr_value:
-                    for rf in RainFormat:
-                        if rf.name == attr_value.upper():
-                            model_item.rain_format = rf
-                            break
-            elif attr_name.startswith("rain_file_units"):
-                if attr_value:
-                    for rf in RainFileUnits:
-                        if rf.name == attr_value.upper():
-                            model_item.data_file_rain_units = rf
-                            break
-            elif attr_name.startswith("rain_data_source"):
-                if attr_value:
-                    for rf in RainDataSource:
-                        if rf.name == attr_value.upper():
-                            model_item.data_source = rf
-                            break
-            else:
-                if attr_value and not attr_value == NULL:
-                    if hasattr(model_item, attr_name):
-                        setattr(model_item, attr_name, attr_value)
 
 def import_links(session, links, file_name, model_attributes, gis_attributes, model_type, junction_type):
     """ Read GIS vector layer in file_name into links list.
@@ -955,9 +417,6 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
     try:
         layer = QgsVectorLayer(file_name, "import", "ogr")
         if layer:
-            field_len = 20
-            if layer.storageType() == u'ESRI Shapefile':
-                field_len = 10
             session.map_widget.set_crs_from_layer(layer)
             project = session.project
             attributes = zip(model_attributes, gis_attributes)
@@ -969,7 +428,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
                         if model_attribute == "name":
-                            item_name = feature[gis_attribute[:field_len]]
+                            item_name = feature[gis_attribute]
                             break
                     try:
                         model_item = links[item_name]
@@ -978,7 +437,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
                         links.append(model_item)
                     for model_attribute, gis_attribute in attributes:
                         try:
-                            attr_value = feature[gis_attribute[:field_len]]
+                            attr_value = feature[gis_attribute]
                             setattr(model_item, model_attribute, attr_value)
 
                             # If this attribute is the inlet or outlet node, make sure project has its coordinates

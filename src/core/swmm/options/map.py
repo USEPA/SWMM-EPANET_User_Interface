@@ -18,15 +18,17 @@ class MapOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## Coordinates of the map extent:
-        ## X1 lower-left X coordinate of full map extent
-        ## Y1 lower-left Y coordinate of full map extent
-        ## X2 upper-right X coordinate of full map extent
-        ## Y2 upper-right Y coordinate of full map extent
         self.dimensions = (0.0, 0.0, 0.0, 0.0)  # real
+        """
+        Coordinates of the map extent:
+        X1 lower-left X coordinate of full map extent
+        Y1 lower-left Y coordinate of full map extent
+        X2 upper-right X coordinate of full map extent
+        Y2 upper-right Y coordinate of full map extent
+        """
 
-        ## map units
         self.units = MapUnits.NONE
+        """map units"""
 
     def setMapUnits(self, unit):
         if unit.upper() == 'FEET':

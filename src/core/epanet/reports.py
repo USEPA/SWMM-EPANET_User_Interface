@@ -6,9 +6,9 @@
 
 import sys
 import traceback
+from datetime import datetime
 from core.epanet.epanet_project import EpanetProject
 from Externals.epanet.outputapi.ENOutputWrapper import *
-from datetime import datetime
 # See Also: from core.epanet.options.report import ReportOptions
 
 
@@ -290,9 +290,8 @@ class Reports:
                 self.write_logo()
                 #     Application.ProcessMessages
                 self.write_link_info()
-                if self.project.pumps:
-                    if self.project.pumps.value.count > 0:
-                        self.write_energy()
+                if self.output.pumpCount > 0:
+                    self.write_energy()
                 self.write_results()
                 return True
             finally:

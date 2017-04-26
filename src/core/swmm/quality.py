@@ -50,18 +50,17 @@ class Landuse(Section):
 
     def __init__(self):
         Section.__init__(self)
-
-        ## Name assigned to the land use
         self.name = "Unnamed"
+        """Name assigned to the land use"""
 
-        ## Days between street sweeping within the land use
         self.street_sweeping_interval = ''
+        """Days between street sweeping within the land use"""
 
-        ## Fraction of the buildup of all pollutants that is available for removal by sweeping
         self.street_sweeping_availability = ''
+        """Fraction of the buildup of all pollutants that is available for removal by sweeping"""
 
-        ## Number of days since last swept at the start of the simulation
         self.last_swept = ''
+        """Number of days since last swept at the start of the simulation"""
 
 
 class Buildup(Section):
@@ -104,34 +103,33 @@ class Buildup(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## land use name
         self.land_use_name = "None"
+        """land use name"""
 
-        ## str: Pollutant name
         self.pollutant = "None"
+        """str: Pollutant name"""
 
-        ## BuildupFunction: Type of buildup function to use for the pollutant
         self.function = BuildupFunction.POW
+        """BuildupFunction: Type of buildup function to use for the pollutant"""
 
-        ## float: Time constant that governs the rate of pollutant buildup
         self.rate_constant = '0.0'
+        """float: Time constant that governs the rate of pollutant buildup"""
 
-        ## float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
-        ## Saturation buildup formula
         self.power_sat_constant = '0.0'
+        """float: Exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the
+            Saturation buildup formula"""
 
-        ## float: Maximum buildup that can occur
         self.max_buildup = '0.0'
+        """float: Maximum buildup that can occur"""
 
-        ## float: Multiplier used to adjust the buildup rates listed in the time series
         self.scaling_factor = '1.0'
+        """float: Multiplier used to adjust the buildup rates listed in the time series"""
 
-        ## str: ID of Time Series that contains buildup rates
         self.timeseries = "None"
+        """str: ID of Time Series that contains buildup rates"""
 
-        ## Variable to which buildup is normalized on a per unit basis
         self.normalizer = Normalizer.AREA
-
+        """Variable to which buildup is normalized on a per unit basis"""
 
 class Washoff(Section):
     """Specifies the rate at which pollutants are washed off from different land uses during rain events."""
@@ -154,26 +152,26 @@ class Washoff(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## land use name
         self.land_use_name = "None"
+        """land use name"""
 
-        ## Pollutant name
         self.pollutant = "None"
+        """Pollutant name"""
 
-        ## Choice of washoff function to use for the pollutant
         self.function = WashoffFunction.EXP
+        """Choice of washoff function to use for the pollutant"""
 
-        ## Value of C1 in the exponential and rating curve formulas
         self.coefficient = '0.0'
+        """Value of C1 in the exponential and rating curve formulas"""
 
-        ## Exponent used in the exponential and rating curve washoff formulas
         self.exponent = '0.0'
+        """Exponent used in the exponential and rating curve washoff formulas"""
 
-        ## Street cleaning removal efficiency (percent) for the pollutant
         self.cleaning_efficiency = '0.0'
+        """Street cleaning removal efficiency (percent) for the pollutant"""
 
-        ## Removal efficiency (percent) associated with any Best Management Practice that might have been implemented
         self.bmp_efficiency = '0.0'
+        """Removal efficiency (percent) associated with any Best Management Practice that might have been implemented"""
 
 
 class Pollutant(Section):
@@ -208,37 +206,37 @@ class Pollutant(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## str: Name assigned to the pollutant
         self.name = "Unnamed"
+        """str: Name assigned to the pollutant"""
 
-        ## ConcentrationUnits: Units in which the pollutant concentration is expressed
         self.units = ConcentrationUnits.MG_per_L
+        """ConcentrationUnits: Units in which the pollutant concentration is expressed"""
 
-        ## float: Concentration of the pollutant in rain water
         self.rain_concentration = '0.0'
+        """float: Concentration of the pollutant in rain water"""
 
-        ## float: Concentration of the pollutant in ground water
         self.gw_concentration = '0.0'
+        """float: Concentration of the pollutant in ground water"""
 
-        ## float: Concentration of the pollutant in any Infiltration/Inflow
         self.ii_concentration = '0.0'
+        """float: Concentration of the pollutant in any Infiltration/Inflow"""
 
-        ## float: Concentration of the pollutant in any dry weather sanitary flow
         self.dwf_concentration = '0.0'
+        """float: Concentration of the pollutant in any dry weather sanitary flow"""
 
-        ## pollutant concentration throughout the conveyance system at the start of the simulation (default is 0)
         self.initial_concentration = '0.0'
-
-        ## float: First-order decay coefficient of the pollutant (1/days)
+        """pollutant concentration throughout the conveyance system at the start of the simulation (default is 0)"""
+        
         self.decay_coefficient = '0.0'
+        """float: First-order decay coefficient of the pollutant (1/days)"""
 
-        ## bool: buildup occurs only when there is snow cover
         self.snow_only = False
+        """bool: buildup occurs only when there is snow cover"""
 
-        ## str: Name of another pollutant whose runoff concentration contributes to the
-        ## runoff concentration of the current pollutant
         self.co_pollutant = '*'
+        """str: Name of another pollutant whose runoff concentration contributes to the
+            runoff concentration of the current pollutant"""
 
-        ## float: Fraction of the co-pollutant's runoff concentration that contributes to the
-        ## runoff concentration of the current pollutant
         self.co_fraction = '0.0'
+        """float: Fraction of the co-pollutant's runoff concentration that contributes to the
+            runoff concentration of the current pollutant"""

@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a002c6b4fef0dd0cc7d84679afad41760", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ae2b378fa4ec487c6b9a96a32e837556b", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a99151371c544261cb0008aea45ee5f13", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#ae7c308108155b4d2da47d2283939bf7c", null ],
     [ "elevations_modifier", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a0476dbb00d88bee5d138a2e38bb58f18", null ],
     [ "meander_modifier", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#aff13129e53afe8cbc0b1eceb3ffdb110", null ],
     [ "n_channel", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html#a405088f800492e67f95eb243e8be414a", null ],

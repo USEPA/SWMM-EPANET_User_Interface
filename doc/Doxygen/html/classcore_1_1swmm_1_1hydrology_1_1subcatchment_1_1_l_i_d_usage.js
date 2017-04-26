@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a513998a96624f0b951a47df8d90949fe", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#ac65d59f82483e779932fa0c7f169536e", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a4631deee7c4efb59c4ed5562562a2a84", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a264e5d1a9c190d40b1d436ff8425c39e", null ],
     [ "area_each_unit", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a2712f2b7ad9f6b7ff04c6859ae289f50", null ],
     [ "control_name", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a09a7d5697c37ab7de44c58d28f28a931", null ],
     [ "detailed_report_file", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_l_i_d_usage.html#a378d9c0dec0db762cb36037abec53866", null ],

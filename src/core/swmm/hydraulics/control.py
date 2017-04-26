@@ -9,12 +9,11 @@ class Controls(Section):
         """Initialize or reset section"""
         Section.__init__(self)
 
-        ## Current value of the item as it appears in an InputFile
         self.value = ""
+        """Current value of the item as it appears in an InputFile"""
 
-        ## A user-specified header and/or comment about the section
         self.comment = ""
-
+        """A user-specified header and/or comment about the section"""
 
     def setattr_keep_type(self, attr_name, attr_value):
         # Not currently setting any attributes for this section

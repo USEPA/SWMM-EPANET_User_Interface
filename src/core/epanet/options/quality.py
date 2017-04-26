@@ -19,60 +19,49 @@ class QualityOptions(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## Type of water quality analysis to perform
         self.quality = QualityAnalysisType.NONE
+        """Type of water quality analysis to perform"""
 
-        ## Name of chemical to be analyzed in quality section
         self.chemical_name = ""
+        """Name of chemical to be analyzed in quality section"""
 
-        ## Units of chemical to be analyzed in quality section
         self.mass_units = ""
+        """Units of chemical to be analyzed in quality section"""
 
-        ## Molecular diffusivity of the chemical being analyzed relative to that of chlorine in water
         self.diffusivity = 1.0
+        """Molecular diffusivity of the chemical being analyzed relative to that of chlorine in water"""
 
-        ## Node id to use in a quality trace
         self.trace_node = ""
+        """Node id to use in a quality trace"""
 
-        ## Difference in water quality level below one parcel of water is essentially the same as another
         self.tolerance = 0.0
+        """Difference in water quality level below one parcel of water is essentially the same as another"""
 
         #things to come for multispecies
-        ## Surface concentration is mass/m2
         self.AREA_UNITS = 'M2'
-
-        ## Reaction rates are concentration/hour
+        """Surface concentration is mass/m2"""
         self.RATE_UNITS = 'HR'
-
-        ## 5-th order Runge-Kutta integrator
+        """Reaction rates are concentration/hour"""
         self.SOLVER = 'RK5'
-
-        ## 360 sec (5 min) solution time step
+        """5-th order Runge-Kutta integrator"""
         self.TIMESTEP = 360
-
-        ## Relative concentration tolerance
+        """360 sec (5 min) solution time step"""
         self.RTOL = 0.001
-
-        ## Absolute concentration tolerance
+        """Relative concentration tolerance"""
         self.ATOL = 0.0001
-
+        """Absolute concentration tolerance"""
 
 class QualitySpecies:
     """EPANET Quality Species"""
     def __init__(self):
-
-        ## Type of water quality analysis to perform
         self.quality = QualityAnalysisType.NONE
-
-        ## common name
+        """Type of water quality analysis to perform"""
         self.name = ""
-
-        ## Chemical name
+        """common name"""
         self.chemical_name = self.name
-
-        ## Units of chemical to be analyzed in quality section
+        """Chemical name"""
         self.mass_units = ""
-
+        """Units of chemical to be analyzed in quality section"""
 
 class QualityEquation:
     const_ka = 10.0

@@ -1,8 +1,6 @@
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 from core.swmm.hydraulics.link import Conduit
-from core.swmm.hydraulics.link import CrossSection
-from core.swmm.hydraulics.link import CrossSectionShape
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmCrossSection import frmCrossSection
@@ -62,32 +60,10 @@ class frmConduits(frmGenericPropertyEditor):
     def set_cross_section_cell(self, column):
         # text plus button for cross section
         tb = TextPlusButton(self)
-        xsection = None
-        link_id = self.tblGeneric.item(0,column).text()
-        if len(self.project.xsections.value) > 0:
-            for value in self.project.xsections.value:
-                if value.link == link_id:
-                    tb.textbox.setText(value.shape.name)
-                    self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
-                    xsection = value
-                    break
-        else:
-            if self._main_form and self._main_form.project_settings and \
-                    self._main_form.project_settings.xsection:
-                value = self._main_form.project_settings.xsection
+        for value in self.project.xsections.value:
+            if value.link == str(self.tblGeneric.item(0,column).text()):
                 tb.textbox.setText(value.shape.name)
                 self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
-
-        if not xsection:
-            # create new xsection
-            xsection = CrossSection()
-            if self._main_form and self._main_form.project_settings and \
-                    self._main_form.project_settings.xsection:
-                value = self._main_form.project_settings.apply_default_attributes(xsection)
-                xsection.link = link_id
-                if self._main_form.project:
-                    self._main_form.project.xsections.value.append(xsection)
-
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.show_cross_section(column))

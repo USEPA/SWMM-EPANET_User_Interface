@@ -7,21 +7,20 @@ class TimeSeries(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## name of timeseries
         self.name = "Unnamed"
+        """name of timeseries"""
 
-        ## file name if timeseries read from file
         self.file = ''
+        """file name if timeseries read from file"""
 
-        ## List of Dates
         self.dates = []
+        """List of Dates"""
 
-        ## List of Times
         self.times = []
+        """List of Times"""
 
-        ## List of Values
         self.values = []
-
+        """List of Values"""
 
     @staticmethod
     def is_date(test_string):

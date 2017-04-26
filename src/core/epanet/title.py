@@ -8,9 +8,7 @@ class Title(Section):
 
     def __init__(self):
         Section.__init__(self)
-
-        ## str: Descriptive title
         self.title = ""
-
         self.notes = ""
+        """str: Descriptive title"""
 

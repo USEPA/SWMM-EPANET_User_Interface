@@ -96,7 +96,7 @@ class EpanetProject(ProjectBase):
         self.add_sections_from_attributes()  # Add any sections not added in the line above, should not be any left.
 
     def nodes_groups(self):
-        return [self.junctions, self.reservoirs, self.tanks]
+        return [self.junctions, self.reservoirs, self.tanks, self.sources]
 
     def links_groups(self):
         return [self.pipes, self.pumps, self.valves]

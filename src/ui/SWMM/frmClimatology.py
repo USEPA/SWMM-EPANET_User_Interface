@@ -7,7 +7,6 @@ from core.swmm.climatology import WindSource
 from ui.SWMM.frmClimatologyDesigner import Ui_frmClimatology
 from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmTimeseries import frmTimeseries
-from ui.model_utility import ParseData
 
 
 # from PyQt4.QtGui import *
@@ -154,45 +153,31 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             for value in monthly_list:
                 point_count += 1
                 led = QtGui.QLineEdit(str(value))
-                self.tblWind.setItem(0, point_count, QtGui.QTableWidgetItem(led.text()))
+                self.tblWind.setItem(0,point_count,QtGui.QTableWidgetItem(led.text()))
         elif temp_section.wind_speed.source == WindSource.FILE:
             self.rbnUseClimate.setChecked(True)
 
         # snow melt tab
-        val, val_is_good = ParseData.floatTryParse(temp_section.snow_melt.snow_temp)
-        if not val_is_good:
-            val = 34
-        self.txtSnowDivide.setText(str(val))
+        self.txtSnowDivide.setText(str(temp_section.snow_melt.snow_temp))
         self.txtSnowATI.setText(str(temp_section.snow_melt.ati_weight))
         self.txtSnowMelt.setText(str(temp_section.snow_melt.negative_melt_ratio))
         self.txtSnowElevation.setText(str(temp_section.snow_melt.elevation))
-        val, val_is_good = ParseData.floatTryParse(temp_section.snow_melt.latitude)
-        if not val_is_good or val == 0.0:
-            val = 50.0
-        self.txtSnowLatitude.setText(str(val))
+        self.txtSnowLatitude.setText(str(temp_section.snow_melt.latitude))
         self.txtSnowLongitude.setText(str(temp_section.snow_melt.time_correction))
 
         # areal depletion
         areal_list = temp_section.areal_depletion.adc_impervious
-        if len(areal_list) > 0:
-            point_count = -1
-            for value in areal_list:
-                point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblAreal.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-        else:
-            self.btnImpNo_Clicked()
-
+        point_count = -1
+        for value in areal_list:
+            point_count += 1
+            led = QtGui.QLineEdit(str(value))
+            self.tblAreal.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
         areal_list = temp_section.areal_depletion.adc_pervious
-        if len(areal_list) > 0:
-            point_count = -1
-            for value in areal_list:
-                point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblAreal.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
-            pass
-        else:
-            self.btnPerNo_Clicked()
+        point_count = -1
+        for value in areal_list:
+            point_count += 1
+            led = QtGui.QLineEdit(str(value))
+            self.tblAreal.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
         # self.tblAreal.resizeColumnsToContents()
 
         # adjustments for temp, evap, rain, cond

@@ -4,7 +4,6 @@ import core.epanet.options.hydraulics
 from enum import Enum
 from ui.EPANET.frmHydraulicsOptionsDesigner import Ui_frmHydraulicsOptions
 import ui.convenience
-from ui.model_utility import ParseData
 
 
 class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
@@ -20,10 +19,6 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
-        self.config = None
-        if self._main_form:
-            if self._main_form.project_settings:
-                self.config = self._main_form.project_settings
 
     def set_from(self, project):
         hydraulics_options = project.options.hydraulics
@@ -44,12 +39,9 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.STOP:
             self.rbnStop.setChecked(True)
         if hydraulics_options.unbalanced == core.epanet.options.hydraulics.Unbalanced.CONTINUE:
-            val, val_is_good = ParseData.intTryParse(hydraulics_options.unbalanced_continue)
-            if not val_is_good:
-                val = 0
-            if val == 0:
+            if int(hydraulics_options.unbalanced_continue) == 0:
                 self.rbnContinue.setChecked(True)
-            elif val > 0:
+            elif int(hydraulics_options.unbalanced_continue) > 0:
                 self.rbnContinueN.setChecked(True)
         self.txtContinueN.setText(str(hydraulics_options.unbalanced_continue))
 
@@ -77,48 +69,7 @@ class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
         elif self.rbnContinueN.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.CONTINUE
             hydraulics_options.unbalanced_continue = self.txtContinueN.text()
-
-        if self.config:
-            self.sync_hydraulic_settings()
         self.close()
-
-    def sync_hydraulic_settings(self):
-        """
-        sync hydraulic options into project settings
-        """
-        if not self.config: return
-        #from ui.EPANET.inifile import DefaultsEPANET
-        #self.config = DefaultsEPANET()
-        hydraulics_options = self._main_form.project.options.hydraulics
-        for key in self.config.parameters_keys:
-            if "flow units" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.flow_units.name
-            elif "headloss" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.head_loss.name
-            elif "unbalanced" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.unbalanced.name
-            elif "accuracy" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.accuracy
-            elif "check freq" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.check_frequency
-            elif "damp" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.damp_limit
-            elif "pattern" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.default_pattern
-            elif "demand" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.demand_multiplier
-            elif "emitter" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.emitter_exponent
-            elif "max check" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.max_check
-            elif "trial" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.maximum_trials
-            elif "viscosity" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.viscosity
-            elif "gravity" in key.lower():
-                self.config.parameters_values[key] = hydraulics_options.specific_gravity
-            #elif "continue n" in key.lower():
-            #    hydraulics_options.unbalanced_continue = 0
 
     def cmdCancel_Clicked(self):
         self.close()

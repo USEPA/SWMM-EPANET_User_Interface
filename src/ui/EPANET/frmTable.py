@@ -15,11 +15,9 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         self.help_topic = "epanet/src/src/Table_Op.htm"
         self.setupUi(self)
         self.tabWidget.setCurrentIndex(0)
-        self.cboCompare.addItems(('Below', 'Equal To', 'Above'))
+        self.cboFilter.addItems(('Below', 'Equal To', 'Above'))
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
-        self.cmdAdd.clicked.connect(self.cmdAdd_Clicked)
-        self.cmdDelete.clicked.connect(self.cmdDelete_Clicked)
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
         self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
         self.rbnTimeseriesNode.clicked.connect(self.rbnTimeseriesNode_Clicked)
@@ -191,21 +189,3 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
 
     def cmdCancel_Clicked(self):
         self.close()
-
-    def cmdAdd_Clicked(self):
-        qty = self.cboFilter.currentText()
-        comp = self.cboCompare.currentText()
-        val = self.txtValue.text()
-        entry = qty + " " + comp + " " + val
-        if self.lstFilter.count() == 0:
-            self.lstFilter.addItem(entry)
-        else:
-            if not self.lstFilter.findItems(entry, QtCore.Qt.MatchCaseSensitive):
-                self.lstFilter.addItem(entry)
-        pass
-
-    def cmdDelete_Clicked(self):
-        if not self.lstFilter.selectedItems(): return
-        for wi in self.lstFilter.selectedItems():
-            self.lstFilter.takeItem(self.lstFilter.row(wi))
-        pass

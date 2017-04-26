@@ -2,7 +2,6 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 import core.swmm.options.dates
 from ui.SWMM.frmDatesDesigner import Ui_frmDates
-from ui.model_utility import ParseData
 
 
 class frmDates(QtGui.QMainWindow, Ui_frmDates):
@@ -38,9 +37,7 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         section.end_time = self.tmeEnd.time().toString(section.TIME_FORMAT)
         section.sweep_end = self.dedSweepEnd.date().toString(section.DATE_SWEEP_FORMAT)
         section.sweep_start = self.dedSweepStart.date().toString(section.DATE_SWEEP_FORMAT)
-        val, val_is_good = ParseData.floatTryParse(self.txtAntecedent.text())
-        if val_is_good and val >= 0:
-            section.dry_days = val
+        section.dry_days = int(self.txtAntecedent.text())
         self.close()
 
     def cmdCancel_Clicked(self):

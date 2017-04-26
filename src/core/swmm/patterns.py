@@ -15,16 +15,15 @@ class Pattern(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## Pattern name
         self.name = "Unnamed"
+        """Pattern name"""
 
-        ## Pattern type
         self.pattern_type = PatternType.MONTHLY
+        """Pattern type"""
 
-        ## Pattern description
         self.description = ''
+        """Pattern description"""
 
-        ## Array of multipliers for this pattern
         self.multipliers = []
-
+        """Array of multipliers for this pattern"""
 

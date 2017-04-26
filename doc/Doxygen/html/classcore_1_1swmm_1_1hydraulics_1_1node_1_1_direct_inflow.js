@@ -1,6 +1,8 @@
 var classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow =
 [
-    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#af652472ec1a428baefaa8441d25de56f", null ],
+    [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#a3e356a24791f394e4df1a1fb018f7df3", null ],
+    [ "get_text", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#ad167ac862b88cec002592a6e4e88f207", null ],
+    [ "set_text", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#a7c72572a74ec3ea3b3a8b80b19e13519", null ],
     [ "baseline", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#a4c79aff500f998b0e1aacdad2309d02d", null ],
     [ "baseline_pattern", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#a802c599c4262ab51ca22fcd0ed2ac779", null ],
     [ "constituent", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_direct_inflow.html#a7dd54b1b42ab98a516ad93829848f48a", null ],

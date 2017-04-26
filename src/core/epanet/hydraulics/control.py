@@ -19,11 +19,11 @@ class Control(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## Current value of the item as it appears in an InputFile
         self.value = ""
+        """Current value of the item as it appears in an InputFile"""
 
-        ## A user-specified header and/or comment about the section
         self.comment = ""
+        """A user-specified header and/or comment about the section"""
 
         # self.name = ""		# string
         # """Name of link modified by this control"""
@@ -57,8 +57,8 @@ class Rule(Section):
     def __init__(self):
         Section.__init__(self)
 
-        ## Current value of the item as it appears in an InputFile
         self.value = ""
+        """Current value of the item as it appears in an InputFile"""
 
-        ## A user-specified header and/or comment about the section"
         self.comment = ""
+        """A user-specified header and/or comment about the section"""

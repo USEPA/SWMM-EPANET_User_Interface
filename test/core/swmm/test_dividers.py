@@ -4,7 +4,7 @@ from core.swmm.inp_reader_sections import DividerReader
 from core.swmm.inp_writer_sections import DividerWriter
 from core.swmm.inp_reader_project import ProjectReader
 from core.swmm.inp_writer_project import ProjectWriter
-from test.core.section_match import match, match_omit, match_keyword_lines
+from test.core.section_match import match, match_omit
 
 
 class SimpleDividerTest(unittest.TestCase):
@@ -25,12 +25,12 @@ class SimpleDividerTest(unittest.TestCase):
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
         self.assertTrue(match(actual_text, test_text), msg)
         assert my_options.name == 'NODE10'
-        assert my_options.elevation == 0
+        assert my_options.elevation == '0'
         assert my_options.diverted_link == 'LK1'
-        assert my_options.max_depth == 0
-        assert my_options.initial_depth == 0
-        assert my_options.surcharge_depth == 0
-        assert my_options.ponded_area == 0
+        assert my_options.max_depth == '0'
+        assert my_options.initial_depth == '0'
+        assert my_options.surcharge_depth == '0'
+        assert my_options.ponded_area == '0'
 
     def test_cutoff_divider(self):
         """Test divider: CUTOFF created according to Manual
@@ -62,8 +62,7 @@ class SimpleDividerTest(unittest.TestCase):
         my_options = DividerReader.read(test_text)
         actual_text = DividerWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
-        self.assertTrue(match_keyword_lines(test_text, actual_text,
-                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
+        self.assertTrue(match(actual_text, test_text), msg)
 
     def test_dividers(self):
         """Test DIVIDERS section from Example-1b"""
@@ -75,10 +74,7 @@ class SimpleDividerTest(unittest.TestCase):
         section_from_text = self.project_reader.read_dividers.read(source_text)
         actual_text = self.project_writer.write_dividers.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text
-        self.assertTrue(match_keyword_lines(source_text, actual_text,
-                                            keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
-        # self.assertTrue(match(actual_text, source_text), msg)
-
+        self.assertTrue(match(actual_text, source_text), msg)
 
 def main():
     unittest.main()

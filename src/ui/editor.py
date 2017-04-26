@@ -3,7 +3,6 @@
 import os, sys
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMessageBox
 
 ICON_FOLDER = "icons/editor/"
 MAX_RECENT_FILES = 8
@@ -222,47 +221,32 @@ class EditorWindow(QtGui.QMainWindow):
         self.setGeometry(100, 100, 1030, 800)
         self.setWindowTitle("Script Editor")
         self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_FOLDER, "icon.png")))
-        # TODO: implement syntax highlighting
         # try:
-        #     import highlighting
         #     import highlighting
         #     highlighting.PythonHighlighter(self.text.document())
         # except Exception as ex_highlight:
         #     print(ex_highlight.message)
         #     pass
 
-    def confirm_discard_changes(self):
-        """ Returns True if there are no changes to save.
-            If there are changes, user is asked whether to save, cancel, or discard changes.
-            If save is selected, file is saved and returns True.
-            If discard is selected, returns True.
-            If cancel is selected, returns False.
-        """
-        if self.text.toPlainText() == self.saved_text:
-            return True
-        popup = QMessageBox(self)
-        popup.setIcon(QtGui.QMessageBox.Warning)
-        popup.setWindowTitle(self.windowTitle())
-        popup.setText("The script has been modified")
-        popup.setInformativeText("Do you want to save your changes?")
-        popup.setStandardButtons(QtGui.QMessageBox.Save |
-                                 QtGui.QMessageBox.Cancel |
-                                 QtGui.QMessageBox.Discard)
-        popup.setDefaultButton(QtGui.QMessageBox.Save)
-        answer = popup.exec_()
-        if answer == QtGui.QMessageBox.Save:
-            self.save()
-            return True
-        elif answer == QtGui.QMessageBox.Discard:
-            return True
-        else:
-            return False
-
     def closeEvent(self, event):
-        if self.confirm_discard_changes():
+        if self.text.toPlainText() == self.saved_text:
             event.accept()
         else:
-            event.ignore()
+            popup = QtGui.QMessageBox(self)
+            popup.setIcon(QtGui.QMessageBox.Warning)
+            popup.setText("The script has been modified")
+            popup.setInformativeText("Do you want to save your changes?")
+            popup.setStandardButtons(QtGui.QMessageBox.Save |
+                                     QtGui.QMessageBox.Cancel |
+                                     QtGui.QMessageBox.Discard)
+            popup.setDefaultButton(QtGui.QMessageBox.Save)
+            answer = popup.exec_()
+            if answer == QtGui.QMessageBox.Save:
+                self.save()
+            elif answer == QtGui.QMessageBox.Discard:
+                event.accept()
+            else:
+                event.ignore()
 
     def context(self, pos):
         # Grab the cursor
@@ -288,19 +272,15 @@ class EditorWindow(QtGui.QMainWindow):
 
     def run(self):
         if self.session:
-            if not self.file_name or self.saved_text != self.text.toPlainText():
-                if not self.save():
-                    return False
+            self.save()
             self.session.script_run(self.file_name)
 
     def open(self):
-        if self.confirm_discard_changes():
-            self.saved_text = self.text.toPlainText()
-            if self.session:
-                file_name = self.session.script_browse_open()
-            else:
-                file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script", ".", "(*.py)")
-            self.open_file(file_name)
+        if self.session:
+            file_name = self.session.script_browse_open()
+        else:
+            file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script", ".", "(*.py)")
+        self.open_file(file_name)
 
     def open_recent_script(self):
         action = self.sender()
@@ -309,11 +289,10 @@ class EditorWindow(QtGui.QMainWindow):
 
     def open_file(self, file_name):
         if file_name:
-            if self.confirm_discard_changes():
-                with open(file_name, "rt") as open_file:
-                    self.saved_text = open_file.read()
-                    self.text.setText(self.saved_text)
-                self.set_file_name(file_name)
+            with open(file_name, "rt") as open_file:
+                self.saved_text = open_file.read()
+                self.text.setText(self.saved_text)
+            self.set_file_name(file_name)
 
     def save_as(self):
         self.save(True)
@@ -321,38 +300,21 @@ class EditorWindow(QtGui.QMainWindow):
     def save(self, must_ask=False):
         # Open dialog if there is no file name yet or if Save As needs a new name
         file_name = self.file_name
-        saved = False
-        while not saved:
-            try:
-                if must_ask or not file_name:
-                    if self.session:
-                        file_name = self.session.script_browse_save()
-                    else:
-                        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Script As...")
+        if must_ask or not file_name:
+            if self.session:
+                file_name = self.session.script_browse_save()
+            else:
+                file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Script As...")
 
-                if not file_name:
-                    return False
+        if file_name:
+            # Append extension if not there yet
+            if not str(self.file_name).lower().endswith(".py"):
+                self.file_name += ".py"
 
-                with open(file_name, "wt") as save_file:
-                    self.saved_text = self.text.toPlainText()
-                    save_file.write(self.saved_text)
-                self.set_file_name(file_name)
-                saved = True
-            except Exception as ex:
-                popup = QMessageBox(self)
-                popup.setIcon(QtGui.QMessageBox.Warning)
-                popup.setWindowTitle("Unable to Save")
-                popup.setText("Could not save as: \n" + file_name + '\n' +
-                              "Please save in a folder you can write to.")
-                popup.setDetailedText(str(ex))
-                popup.setStandardButtons(QtGui.QMessageBox.Retry |
-                                         QtGui.QMessageBox.Cancel)
-                popup.setDefaultButton(QtGui.QMessageBox.Save)
-                answer = popup.exec_()
-                if answer == QtGui.QMessageBox.Cancel:
-                    break
-                must_ask = True
-        return saved
+            with open(file_name, "wt") as save_file:
+                self.saved_text = self.text.toPlainText()
+                save_file.write(self.saved_text)
+            self.set_file_name(file_name)
 
     def set_file_name(self, file_name):
         self.file_name = file_name

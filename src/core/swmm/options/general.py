@@ -63,52 +63,64 @@ class General(Section):
         self.time_steps = TimeSteps()
         self.dynamic_wave = DynamicWave()
 
-        ## FlowUnits: units in use for flow values
         self.flow_units = FlowUnits.CFS
+        """FlowUnits: units in use for flow values"""
 
-        ## Infiltration computation model of rainfall into the
-        ## upper soil zone of subcatchments. Use one of the following:
-        ## HORTON, MODIFIED_HORTON, GREEN_AMPT, MODIFIED_GREEN_AMPT, CURVE_NUMBER
         self.infiltration = "HORTON"
+        """
+        Infiltration computation model of rainfall into the 
+        upper soil zone of subcatchments. Use one of the following:
+        HORTON, MODIFIED_HORTON, GREEN_AMPT, MODIFIED_GREEN_AMPT, CURVE_NUMBER
+        """
 
-        ## Method used to route flows through the drainage system
         self.flow_routing = FlowRouting.KINWAVE
+        """Method used to route flows through the drainage system"""
 
-        ## Convention used to specify the position of a link offset
-        ## above the invert of its connecting node
         self.link_offsets = LinkOffsets.DEPTH
+        """
+        Convention used to specify the position of a link offset
+        above the invert of its connecting node
+        """
 
-        ## True to ignore all rainfall data and runoff calculations
         self.ignore_rainfall = False
+        """True to ignore all rainfall data and runoff calculations"""
 
-        ## True to ignore all rdii calculations
         self.ignore_rdii = False
+        """True to ignore all rdii calculations"""
 
-        ## True to ignore snowmelt calculations
-        ## even if a project contains snow pack objects
         self.ignore_snowmelt = False
+        """
+        True to ignore snowmelt calculations 
+        even if a project contains snow pack objects
+        """
 
-        ## True to ignored groundwater calculations
-        ## even if the project contains aquifer objects
         self.ignore_groundwater = False
+        """
+        True to ignored groundwater calculations 
+        even if the project contains aquifer objects
+        """
 
-        ## True to only compute runoff even if the project contains drainage system links and nodes
         self.ignore_routing = False
+        """True to only compute runoff even if the project contains drainage system links and nodes"""
 
-        ## True to ignore pollutant washoff, routing, and treatment
-        ## even in a project that has pollutants defined
         self.ignore_quality = False
+        """
+        True to ignore pollutant washoff, routing, and treatment 
+        even in a project that has pollutants defined
+        """
 
-        ## True to allow excess water to collect atop nodes
-        ## and be re-introduced into the system as conditions permit
         self.allow_ponding = False
+        """
+        True to allow excess water to collect atop nodes
+        and be re-introduced into the system as conditions permit
+        """
 
-        ## Minimum value allowed for a conduit slope
         self.min_slope = "0.0"
+        """Minimum value allowed for a conduit slope"""
 
-        ## Directory where model writes its temporary files
         self.temp_dir = ""
+        """Directory where model writes its temporary files"""
 
-        ## SWMM Version compatibility
         self.compatibility = "5"
+        """SWMM Version compatibility"""
 

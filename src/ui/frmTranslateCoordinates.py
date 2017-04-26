@@ -4,6 +4,7 @@ from ui.help import HelpHandler
 from ui.frmTranslateCoordinatesDesigner import Ui_frmTranslateCoordinatesDesigner
 from ui.model_utility import ParseData
 from core.coordinate import Coordinate
+from ui.selectCrsDlg import SelectCrsDlg
 import os, sys
 
 
@@ -20,7 +21,7 @@ class frmTranslateCoordinates(QtGui.QDialog):
         # QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked()"), self.toolButton_Clicked)
         self.ui.btnTranslate.clicked.connect(self.translate)
         self.ui.btnCancel.clicked.connect(self.cancel)
-        self.destination_coordinate_unit = ""
+        self.ui.btnSelectCRS.clicked.connect(self.set_dst_crs)
         self.msg = ""
         self.model_layers = []
         self.pt_src_ll = Coordinate()
@@ -42,6 +43,10 @@ class frmTranslateCoordinates(QtGui.QDialog):
             if len(args) > 1:
                 self.GISDataFiles = args[1]
         self._main_form = main_form
+        self.model_map_crs_name = ""
+        self.model_map_crs_unit = ""
+        self.destination_crs_name = ""
+        self.destination_crs_unit = ""
         self.set_from()
 
     def set_from(self):
@@ -52,6 +57,10 @@ class frmTranslateCoordinates(QtGui.QDialog):
             pass
         elif self.model == "SWMM":
             pass
+
+        if self._main_form and self._main_form.project:
+            self.model_map_crs_name = self._main_form.project.map.crs_name
+            self.model_map_crs_unit = self._main_form.project.map.crs_unit
 
         if self.pt_src_ll:
             self.ui.txtLL_src_x.setText(str(self.pt_src_ll.x))
@@ -192,15 +201,22 @@ class frmTranslateCoordinates(QtGui.QDialog):
 
         return True
 
+    def set_dst_crs(self):
+        frmCRS = SelectCrsDlg("Select Destination CRS", self)
+        if frmCRS.exec_():
+            # 0: close, 1: OK
+            self.destination_crs_name = frmCRS.getProjection()
+            self._main_form.map_widget.update_project_map_crs_info(self.destination_crs_name)
+
     def translate(self):
         if not self.check_coords():
             QtGui.QMessageBox.information(None, "Bad Coordinates", "Invalid coordinates.")
             return
 
         if self.ui.rdoUnitFeet.isChecked():
-            self.destination_coordinate_unit = "feet"
+            self.destination_crs_unit = "feet"
         elif self.ui.rdoUnitFeet.isChecked():
-            self.destination_coordinate_unit = "meters"
+            self.destination_crs_unit = "meters"
 
         try:
 
@@ -226,7 +242,7 @@ class frmTranslateCoordinates(QtGui.QDialog):
                 if ret == QMessageBox.Ok:
                     self._main_form.map_widget.update_links_length()
                     if self._main_form.model == "SWMM":
-                        self._main_form.map_widget.update_subcatchments_area(self.destination_coordinate_unit)
+                        self._main_form.map_widget.update_subcatchments_area(self.destination_crs_unit)
                     pass
 
             self._main_form.save_project_as()
@@ -237,4 +253,7 @@ class frmTranslateCoordinates(QtGui.QDialog):
             return
 
     def cancel(self):
+        if self._main_form and self._main_form.project:
+            self._main_form.project.map.crs_name = self.model_map_crs_name
+            self._main_form.project.map.crs_unit = self.model_map_crs_unit
         self.reject()

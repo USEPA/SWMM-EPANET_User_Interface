@@ -44,7 +44,7 @@ class SelectCrsDlg(QDialog):
         return str(self.selector.selectedAuthId())
 
     def proj4string(self):
-        return self.selector.selectedProj4String()
+        return str(self.selector.selectedProj4String())
 
     def getProjection(self):
         if self.selector.selectedAuthId():
@@ -53,5 +53,5 @@ class SelectCrsDlg(QDialog):
         if self.selector.selectedProj4String():
             return self.proj4string()
 
-        return QString()
+        return ""
 

@@ -11,8 +11,9 @@ from core.epanet.hydraulics.node import SourceType, MixingModel
 from core.epanet.hydraulics.link import Pipe, Pump, Valve, FixedStatus, ValveType
 from core.epanet.labels import Label, MeterType
 from core.swmm.hydraulics.node import Junction as SwmmJunction
-from core.swmm.hydraulics.node import Outfall, OutfallType
+from core.swmm.hydraulics.node import Outfall, OutfallType, StorageUnit, StorageCurveType
 from core.swmm.hydraulics.node import SubCentroid
+from core.swmm.hydraulics.link import Pump as SwmmPump
 from core.swmm.hydraulics.link import Conduit, SubLink
 from core.swmm.hydrology.raingage import RainGage, RainFormat, RainFileUnits, RainDataSource
 from core.swmm.hydrology.subcatchment import Subcatchment, Routing
@@ -45,6 +46,15 @@ pumps_gis_attributes = [
 pump_import_attributes = [ "id", "description", "inlet_node", "outlet_node",
                             "power", "head_curve_name", "speed", "pattern", "initial_status",
                             "efficiency_curve_name", "energy_price", "price_pattern"]
+pump_import_attributes_swmm = [
+    "id",
+    "description",
+    "inlet_node",
+    "outlet_node",
+    "initial_status",
+    "startup_depth",
+    "shutoff_depth"
+]
 
 valves_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
@@ -62,6 +72,15 @@ junction_import_attributes = [ "id", "elevation", "emitter_coefficient",
                                "initial_quality",
                                "source_quality_amount", "source_quality_type", "source_quality_pattern",
                                "base_demand_flow", "demand_pattern_name"]
+junction_import_attributes_swmm = [
+    "id",
+    "description",
+    "elevation",
+    "initial_depth",
+    "max_depth",
+    "surcharge_depth",
+    "ponded_area"
+]
 
 labels_model_attributes = [
     "element_type", "name", "anchor_name", "font", "size", "bold", "italic"]
@@ -198,6 +217,19 @@ outfall_import_attributes = [
     "fixed_stage",
     "tidal_curve",
     "time_series_name"
+]
+
+storage_import_attributes = [
+    "id",
+    "description",
+    "elevation",
+    "max_depth",
+    "initial_depth",
+    "evaporation_factor",
+    "storage_curve",
+    "coefficient",
+    "exponent",
+    "constant"
 ]
 
 def export_to_gis(session, file_name):
@@ -667,6 +699,7 @@ def import_swmm_from_geojson(session, file_name):
         import_items_count[et.lower()] = 0
     model_item = None
     model_layer = None
+    p_section = None
     # layer.startEditing()
     adding_subcatchment = False
     sub_outlet = ""
@@ -681,48 +714,28 @@ def import_swmm_from_geojson(session, file_name):
         if elem_type.lower().startswith("junction"):
             model_layer = session.model_layers.junctions
             model_item = SwmmJunction()
-            build_model_object_per_geojson_record(project, f, junction_import_attributes, model_item)
+            build_model_object_per_geojson_record(project, f, junction_import_attributes_swmm, model_item)
             p_section = project.junctions
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["junction"] += 1
         elif elem_type.lower().startswith("conduit"):
             model_layer = session.model_layers.conduits
             model_item = Conduit()
             build_model_object_per_geojson_record(project, f, conduit_import_attributes, model_item)
             p_section = project.conduits
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["conduit"] += 1
         elif elem_type.lower().startswith("raingage"):
             model_layer = session.model_layers.raingages
             model_item = RainGage()
             build_model_object_per_geojson_record(project, f, raingage_import_attributes, model_item)
             p_section = project.raingages
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["raingage"] += 1
         elif elem_type.lower().startswith("label"):
             model_layer = session.model_layers.labels
             model_item = Label()
             build_model_object_per_geojson_record(project, f, label_import_attributes, model_item)
             p_section = project.labels
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["label"] += 1
         elif elem_type.lower().startswith("outfall"):
             model_layer = session.model_layers.outfalls
             model_item = Outfall()
             build_model_object_per_geojson_record(project, f, outfall_import_attributes, model_item)
             p_section = project.outfalls
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["outfall"] += 1
         elif elem_type.lower().startswith("subcatchment"):
             adding_subcatchment = True
             # sub_outlet = session.project.all_nodes()[f["outlet"]]
@@ -734,10 +747,26 @@ def import_swmm_from_geojson(session, file_name):
             model_item.centroid.x = str(pt.x())
             model_item.centroid.y = str(pt.y())
             p_section = project.subcatchments
-            if len(p_section.value) == 0 and not isinstance(p_section, list):
-                p_section.value = IndexedList([], ['name'])
-            p_section.value.append(model_item)
-            import_items_count["subcatchment"] += 1
+        elif elem_type.lower().startswith("storageunit"):
+            model_layer = session.model_layers.storage
+            model_item = StorageUnit()
+            build_model_object_per_geojson_record(project, f, storage_import_attributes, model_item)
+            if model_item.storage_curve and model_item.storage_curve.lower() <> 'none':
+                model_item.storage_curve_type = StorageCurveType.TABULAR
+            else:
+                if model_item.coefficient or model_item.constant or model_item.exponent:
+                    model_item.storage_curve_type = StorageCurveType.FUNCTIONAL
+            p_section = project.storage
+        elif elem_type.lower().startswith("pump"):
+            model_layer = session.model_layers.pumps
+            model_item = SwmmPump()
+            build_model_object_per_geojson_record(project, f, pump_import_attributes_swmm, model_item)
+            p_section = project.pumps
+
+        if len(p_section.value) == 0 and not isinstance(p_section, list):
+            p_section.value = IndexedList([], ['name'])
+        p_section.value.append(model_item)
+        import_items_count[elem_type.lower()] += 1
 
         # add gis feature
         new_feature = QgsFeature()
@@ -825,6 +854,9 @@ def import_swmm_from_geojson(session, file_name):
         model_layer.commitChanges()
 
     # layer.rollBack(True)
+    session.model_layers.junctions.updateExtents()
+    session.model_layers.junctions.triggerRepaint()
+    session.map_widget.canvas.refresh()
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return import_items_count
@@ -890,6 +922,8 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
                             model_item.initial_status = FixedStatus.OPEN
                         elif attr_value.lower() == "closed":
                             model_item.initial_status = FixedStatus.CLOSED
+                        else:
+                            model_item.initial_status = attr_value
             elif attr_name.startswith("meter_type"):
                 for mt in MeterType:
                     if mt.name == attr_value:

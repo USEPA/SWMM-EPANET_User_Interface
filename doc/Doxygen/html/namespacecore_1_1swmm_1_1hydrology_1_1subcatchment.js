@@ -3,6 +3,7 @@ var namespacecore_1_1swmm_1_1hydrology_1_1subcatchment =
     [ "Coverage", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverage.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverage" ],
     [ "Coverages", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverages.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_coverages" ],
     [ "CurveNumberInfiltration", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_curve_number_infiltration.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_curve_number_infiltration" ],
+    [ "E_InfilModel", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_e___infil_model.html", null ],
     [ "GreenAmptInfiltration", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_green_ampt_infiltration.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_green_ampt_infiltration" ],
     [ "Groundwater", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_groundwater" ],
     [ "HortonInfiltration", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration" ],

@@ -18,6 +18,7 @@ var dir_0c5973ca11ecff7618567859b9400188 =
       [ "SnowPack", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack.html", "classcore_1_1swmm_1_1hydrology_1_1snowpack_1_1_snow_pack" ]
     ] ],
     [ "subcatchment.py", "subcatchment_8py.html", [
+      [ "E_InfilModel", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_e___infil_model.html", null ],
       [ "Routing", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_routing.html", null ],
       [ "Subcatchment", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_subcatchment.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_subcatchment" ],
       [ "HortonInfiltration", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration.html", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_horton_infiltration" ],

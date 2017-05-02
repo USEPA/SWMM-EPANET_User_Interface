@@ -639,6 +639,7 @@ class frmMainEPANET(frmMain):
         # the following items will respond to a click on a node form, not the tree diagram
         if edit_name == 'Labels':
             edit_these = []
+            new_item = None
             if self.project and self.project.labels:
                 if not isinstance(self.project.labels.value, basestring):
                     if isinstance(self.project.labels.value, list):
@@ -650,7 +651,7 @@ class frmMainEPANET(frmMain):
                     self.project.labels.value = edit_these
                 else:
                     self.new_item = False
-            frm = frmGenericPropertyEditor(self, edit_these, new_item, "EPANET Map Label Editor")
+            frm = frmGenericPropertyEditor(self, self.project.labels, edit_these, new_item, "EPANET Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "epanet/src/src/maplabeleditordialog.htm"
         elif edit_name == 'Patterns' or edit_name == 'Curves':

@@ -10,7 +10,7 @@ class frmValve(frmGenericPropertyEditor):
     SECTION_TYPE = Valve
 
     def __init__(self, session, edit_these, new_item):
-        self.help_topic = "epanet/src/src/valveproperties.htm"
+        self.help_topic = "epanet/src/src/Valve_Pr.htm"
         self._main_form = session
         self.project = session.project
         self.refresh_column = -1

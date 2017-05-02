@@ -172,7 +172,7 @@ class frmMainEPANET(frmMain):
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
         QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               self.setQgsMapToolTranslateCoords)
+                               lambda: self.open_translate_coord_dialog(None, None))
 
         self.actionStdProjSummary.triggered.connect(self.show_summary)
         QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)

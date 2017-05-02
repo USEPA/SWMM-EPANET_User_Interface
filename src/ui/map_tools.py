@@ -318,12 +318,18 @@ try:
                 u = self.map_unit_abbrev[unit_index]
             except:
                 u = ''
+            # x = '%g' % self.round_to_n(p.x(), 5)
+            # y = '%g' % self.round_to_n(p.y(), 5)
+            x = '%.3f' % p.x()
+            y = '%.3f' % p.y()
             # pm = self.canvas.getCoordinateTransform().toMapCoordinates(p.x(), p.y())
-            x = '%g' % self.round_to_n(p.x(), 5)
-            y = '%g' % self.round_to_n(p.y(), 5)
             # x = ('%.5f' % pm.x()).rstrip('0').rstrip('.')
             # y = ('%.5f' % pm.y()).rstrip('0').rstrip('.')
-            self.session.btnCoord.setText('{:s}, {:s} {:s}'.format(x, y, u))
+            # coord_str = '{:s}, {:s} {:s}'.format(x, y, u)
+            coord_btn = self.session.btnCoord
+            coord_btn.setText('{:s}, {:s} {:s}'.format(x, y, u))
+            btn_width = coord_btn.fontMetrics().boundingRect(coord_btn.text()).width() + 10.0
+            coord_btn.setFixedWidth(btn_width)
 
         @staticmethod
         def round_to_n(x, n):

@@ -11,7 +11,7 @@ from core.epanet.hydraulics.node import SourceType, MixingModel
 from core.epanet.hydraulics.link import Pipe, Pump, Valve, FixedStatus, ValveType
 from core.epanet.labels import Label, MeterType
 from core.swmm.hydraulics.node import Junction as SwmmJunction
-from core.swmm.hydraulics.node import Outfall, OutfallType, StorageUnit, StorageCurveType
+from core.swmm.hydraulics.node import Outfall, OutfallType, StorageUnit, StorageCurveType, Divider, FlowDividerType
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import Pump as SwmmPump
 from core.swmm.hydraulics.link import Conduit, SubLink, Weir, WeirType, Orifice, OrificeType, RoadSurfaceType
@@ -223,6 +223,22 @@ storage_import_attributes = [
     "coefficient",
     "exponent",
     "constant"
+]
+
+divider_import_attributes = [
+    "id",
+    "Description",
+    "tag",
+    "elevation",
+    "max_depth",
+    "initial_depth",
+    "surcharge_depth",
+    "ponded_area",
+    "diverted_link",
+    "flow_divider_type",
+    "min_diversion_flow",
+    "weir_height",
+    "weir_coefficient"
 ]
 
 #"can_surcharge", '', "Can Surcharge", "False", '', '', "True if weir can surcharge"),
@@ -782,6 +798,11 @@ def import_swmm_from_geojson(session, file_name):
             model_item = Outfall()
             build_model_object_per_geojson_record(project, f, outfall_import_attributes, model_item)
             p_section = project.outfalls
+        elif elem_type.lower().startswith("divider"):
+            model_layer = session.model_layers.dividers
+            model_item = Divider()
+            build_model_object_per_geojson_record(project, f, divider_import_attributes, model_item)
+            p_section = project.dividers
         elif elem_type.lower().startswith("subcatchment"):
             adding_subcatchment = True
             # sub_outlet = session.project.all_nodes()[f["outlet"]]
@@ -1042,6 +1063,12 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
                     for oct in OutletCurveType:
                         if oct.name == attr_value.upper():
                             model_item.curve_type = oct
+                            break
+            elif attr_name == "flow_divider_type":
+                if attr_value and isinstance(model_item, Divider):
+                    for fdt in FlowDividerType:
+                        if fdt.name == attr_value.upper():
+                            model_item.flow_divider_type = fdt
                             break
             else:
                 if attr_value and not attr_value == NULL:

@@ -1003,7 +1003,6 @@ try:
                             if pt.y() < ymin: ymin = pt.y()
                             if pt.y() > ymax: ymax = pt.y()
                     elif geom.wkbType() == QGis.WKBLineString:
-                        geom = QgsGeometry()
                         for pt in geom.asPolyline():
                             if pt.x() < xmin: xmin = pt.x()
                             if pt.x() > xmax: xmax = pt.x()

@@ -14,7 +14,8 @@ from core.swmm.hydraulics.node import Junction as SwmmJunction
 from core.swmm.hydraulics.node import Outfall, OutfallType, StorageUnit, StorageCurveType
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import Pump as SwmmPump
-from core.swmm.hydraulics.link import Conduit, SubLink
+from core.swmm.hydraulics.link import Conduit, SubLink, Weir, WeirType, Orifice, OrificeType, RoadSurfaceType
+from core.swmm.hydraulics.link import Outlet, OutletCurveType
 from core.swmm.hydrology.raingage import RainGage, RainFormat, RainFileUnits, RainDataSource
 from core.swmm.hydrology.subcatchment import Subcatchment, Routing
 from ui.model_utility import ParseData
@@ -72,15 +73,6 @@ junction_import_attributes = [ "id", "elevation", "emitter_coefficient",
                                "initial_quality",
                                "source_quality_amount", "source_quality_type", "source_quality_pattern",
                                "base_demand_flow", "demand_pattern_name"]
-junction_import_attributes_swmm = [
-    "id",
-    "description",
-    "elevation",
-    "initial_depth",
-    "max_depth",
-    "surcharge_depth",
-    "ponded_area"
-]
 
 labels_model_attributes = [
     "element_type", "name", "anchor_name", "font", "size", "bold", "italic"]
@@ -151,6 +143,7 @@ junction_import_attributes_swmm = [
     "surcharge_depth",
     "ponded_area"
 ]
+
 generic_model_attributes = [
     "element_type", "name"]
 generic_gis_attributes = [
@@ -230,6 +223,59 @@ storage_import_attributes = [
     "coefficient",
     "exponent",
     "constant"
+]
+
+#"can_surcharge", '', "Can Surcharge", "False", '', '', "True if weir can surcharge"),
+#"flap_gate", '', "Flap Gate", "False", '', '', "True if weir contains a flap gate to prevent backflow"),
+#"road_surface", '', "Road Surface", "", '', '', "Type of road surface if roadway weir")
+weir_import_attributes = [
+    "id",
+    "description",
+    "inlet_node",
+    "outlet_node",
+    "tag",
+    "type",
+    "height",
+    "length",
+    "side_slope",
+    "inlet_offset",
+    "discharge_coefficient",
+    "flap_gate",
+    "end_contractions",
+    "end_coefficient",
+    "can_surcharge",
+    "road_width",
+    "road_surface"
+]
+
+#"type", '', "Type", "", '', '', "Type of orifice"),
+#"cross_section", '', "Shape", "", '', '', "Orifice shape"),
+orifice_import_attributes = [
+    "id",
+    "description",
+    "inlet_node",
+    "outlet_node",
+    "tag",
+    "height",
+    "width",
+    "inlet_offset",
+    "discharge_coefficient",
+    "flap_gate",
+    "o_rate"
+]
+
+outlet_import_attributes = [
+    "id",
+    "inlet_node",
+    "outlet_node",
+    "description",
+    "tag",
+    "inlet_offset",
+    "flap_gate",
+    "curve_type",
+    "coefficient",
+    "exponent",
+    "rating_curve"
 ]
 
 def export_to_gis(session, file_name):
@@ -753,15 +799,29 @@ def import_swmm_from_geojson(session, file_name):
             build_model_object_per_geojson_record(project, f, storage_import_attributes, model_item)
             if model_item.storage_curve and model_item.storage_curve.lower() <> 'none':
                 model_item.storage_curve_type = StorageCurveType.TABULAR
-            else:
-                if model_item.coefficient or model_item.constant or model_item.exponent:
-                    model_item.storage_curve_type = StorageCurveType.FUNCTIONAL
+            #if model_item.coefficient or model_item.constant or model_item.exponent:
+            #    model_item.storage_curve_type = StorageCurveType.FUNCTIONAL
             p_section = project.storage
         elif elem_type.lower().startswith("pump"):
             model_layer = session.model_layers.pumps
             model_item = SwmmPump()
             build_model_object_per_geojson_record(project, f, pump_import_attributes_swmm, model_item)
             p_section = project.pumps
+        elif elem_type.lower().startswith("orifice"):
+            model_layer = session.model_layers.orifices
+            model_item = Orifice()
+            build_model_object_per_geojson_record(project, f, orifice_import_attributes, model_item)
+            p_section = project.orifices
+        elif elem_type.lower().startswith("weir"):
+            model_layer = session.model_layers.weirs
+            model_item = Weir()
+            build_model_object_per_geojson_record(project, f, weir_import_attributes, model_item)
+            p_section = project.weirs
+        elif elem_type.lower().startswith("outlet"):
+            model_layer = session.model_layers.outlets
+            model_item = Outlet()
+            build_model_object_per_geojson_record(project, f, outlet_import_attributes, model_item)
+            p_section = project.outlets
 
         if len(p_section.value) == 0 and not isinstance(p_section, list):
             p_section.value = IndexedList([], ['name'])
@@ -964,6 +1024,24 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
                     for rf in RainDataSource:
                         if rf.name == attr_value.upper():
                             model_item.data_source = rf
+                            break
+            elif attr_name == "type":
+                if attr_value and isinstance(model_item, Weir):
+                    for wf in WeirType:
+                        if wf.name == attr_value.upper():
+                            model_item.type = wf
+                            break
+            elif attr_name == "road_surface":
+                if attr_value:
+                    for rsf in RoadSurfaceType:
+                        if rsf.name == attr_value.upper():
+                            model_item.road_surface = rsf
+                            break
+            elif attr_name == "curve_type":
+                if attr_value and isinstance(model_item, Outlet):
+                    for oct in OutletCurveType:
+                        if oct.name == attr_value.upper():
+                            model_item.curve_type = oct
                             break
             else:
                 if attr_value and not attr_value == NULL:

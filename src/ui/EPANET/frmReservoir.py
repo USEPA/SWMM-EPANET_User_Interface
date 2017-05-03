@@ -13,7 +13,7 @@ class frmReservior(frmGenericPropertyEditor):
     SECTION_TYPE = Reservoir
 
     def __init__(self, session, edit_these, new_item):
-        self.help_topic = "epanet/src/src/reservoirproperties.htm"
+        self.help_topic = "epanet/src/src/Rese0029.htm"
         self.session = session
         self.project = session.project
         self.refresh_column = -1

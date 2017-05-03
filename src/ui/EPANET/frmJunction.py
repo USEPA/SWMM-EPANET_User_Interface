@@ -14,7 +14,7 @@ class frmJunction(frmGenericPropertyEditor):
     SECTION_TYPE = Junction
 
     def __init__(self, session, edit_these, new_item):
-        self.help_topic = "epanet/src/src/junctionproperties.htm"
+        self.help_topic = "epanet/src/src/Junc0028.htm"
         self.session = session
         self.project = session.project
         self.refresh_column = -1

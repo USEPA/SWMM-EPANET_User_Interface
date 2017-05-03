@@ -13,7 +13,7 @@ class frmTank(frmGenericPropertyEditor):
     SECTION_TYPE = Tank
 
     def __init__(self, session, edit_these, new_item):
-        self.help_topic = "epanet/src/src/tankproperties.htm"
+        self.help_topic = "epanet/src/src/Tank_Pro.htm"
         self.session = session
         self.project = session.project
         self.refresh_column = -1

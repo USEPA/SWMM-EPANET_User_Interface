@@ -339,7 +339,7 @@ class frmMainSWMM(frmMain):
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
         QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               self.setQgsMapToolTranslateCoords)
+                               lambda: self.open_translate_coord_dialog(None, None))
 
         self.actionStatus_ReportMenu = QtGui.QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
@@ -805,6 +805,7 @@ class frmMainSWMM(frmMain):
         frm = None
         # First handle special cases where forms need more than simply being created
 
+        new_item = None
         if edit_name == self.tree_quality_Pollutants[0]:
             edit_these = []
             if self.project and self.project.pollutants:
@@ -815,7 +816,7 @@ class frmMainSWMM(frmMain):
                     new_item = Pollutant()
                     new_item.name = self.new_item_name(Pollutant)
                     edit_these.append(new_item)
-            frm = frmGenericPropertyEditor(self, edit_these, new_item, "SWMM Pollutant Editor")
+            frm = frmGenericPropertyEditor(self, self.project.pollutants, edit_these, new_item, "SWMM Pollutant Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/pollutanteditordialog.htm"
         elif edit_name == self.tree_MapLabels[0]:
@@ -828,7 +829,7 @@ class frmMainSWMM(frmMain):
                     new_item = Label()
                     new_item.name = self.new_item_name(Label)
                     edit_these.append(new_item)
-            frm = frmGenericPropertyEditor(self, edit_these, new_item, "SWMM Map Label Editor")
+            frm = frmGenericPropertyEditor(self, self.project.labels, edit_these, new_item, "SWMM Map Label Editor")
             frm.helper = HelpHandler(frm)
             frm.help_topic = "swmm/src/src/maplabeleditordialog.htm"
         elif edit_name in [item[0] for item in self.tree_items_using_name]:

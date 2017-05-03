@@ -10,7 +10,7 @@ class frmPipe(frmGenericPropertyEditor):
     SECTION_TYPE = Pipe
 
     def __init__(self, session, edit_these, new_item):
-        self.help_topic = "epanet/src/src/pipeproperties.htm"
+        self.help_topic = "epanet/src/src/Pipe_Pro.htm"
         self._main_form = session
         self.project = session.project
         self.refresh_column = -1

@@ -59,6 +59,7 @@ class ProjectReader(InputFileReader):
         self.defer_mixing = None
         self.defer_emitters = None
         self.defer_status = None
+        self.defer_calibrations = None
 
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
@@ -82,6 +83,9 @@ class ProjectReader(InputFileReader):
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[STATUS]":
             self.defer_status = section_text
+            return
+        elif section_name_upper == "[CALIBRATIONS]":
+            self.defer_calibrations = section_text
             return
         InputFileReader.read_section(self, project, section_name, section_text)
 

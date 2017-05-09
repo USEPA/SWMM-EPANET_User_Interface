@@ -6,6 +6,7 @@ class ini_setting:
     """
     class for managing .ini file and project defaults
     """
+    release_mode = False
     def __init__(self, file_name):
         """
         constructor: read setting values into a QSetting object

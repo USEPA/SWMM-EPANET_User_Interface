@@ -39,6 +39,10 @@ class InputFileWriterBase(object):
                     if "subcentroid" in section_name.lower() or "sublink" in section_name.lower():
                         continue
                     attr_name = "write_" + project.format_as_attribute_name(section_name)
+                if section_name and "CALIBRATION" in section_name.upper():
+                    # EPANET doesn't recognize [CALIBRATIONS] section
+                    # it is for internal use at run time
+                    continue
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)
                 elif hasattr(section, "value") and isinstance(section.value, basestring):

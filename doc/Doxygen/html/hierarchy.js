@@ -5,42 +5,7 @@ var hierarchy =
     [ "core.epanet.calibration.CalibrationDataset", "classcore_1_1epanet_1_1calibration_1_1_calibration_dataset.html", null ],
     [ "core.swmm.inp_reader_sections.ConduitReader", "classcore_1_1swmm_1_1inp__reader__sections_1_1_conduit_reader.html", null ],
     [ "core.epanet.inp_reader_sections.ControlReader", "classcore_1_1epanet_1_1inp__reader__sections_1_1_control_reader.html", null ],
-    [ "core.coordinate.Coordinate", "classcore_1_1coordinate_1_1_coordinate.html", [
-      [ "core.epanet.hydraulics.node.Node", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_node.html", [
-        [ "core.epanet.hydraulics.node.Junction", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_junction.html", null ],
-        [ "core.epanet.hydraulics.node.Reservoir", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html", null ],
-        [ "core.epanet.hydraulics.node.Source", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_source.html", null ],
-        [ "core.epanet.hydraulics.node.Tank", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html", null ]
-      ] ],
-      [ "core.epanet.labels.Label", "classcore_1_1epanet_1_1labels_1_1_label.html", null ],
-      [ "core.epanet.vertex.Vertex", "classcore_1_1epanet_1_1vertex_1_1_vertex.html", null ],
-      [ "core.swmm.hydraulics.node.Node", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_node.html", [
-        [ "core.swmm.hydraulics.node.Junction", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_junction.html", [
-          [ "core.swmm.hydraulics.node.Divider", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_divider.html", null ],
-          [ "core.swmm.hydraulics.node.Outfall", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html", null ],
-          [ "core.swmm.hydraulics.node.StorageUnit", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_storage_unit.html", null ]
-        ] ],
-        [ "core.swmm.hydraulics.node.SubCentroid", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_sub_centroid.html", null ]
-      ] ],
-      [ "core.swmm.hydrology.raingage.RainGage", "classcore_1_1swmm_1_1hydrology_1_1raingage_1_1_rain_gage.html", null ],
-      [ "core.swmm.labels.Label", "classcore_1_1swmm_1_1labels_1_1_label.html", null ]
-    ] ],
     [ "core.graph.EPANET", "classcore_1_1graph_1_1_e_p_a_n_e_t.html", null ],
-    [ "core.coordinate.Link", "classcore_1_1coordinate_1_1_link.html", [
-      [ "core.epanet.hydraulics.link.EpanetLink", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_epanet_link.html", [
-        [ "core.epanet.hydraulics.link.Pipe", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html", null ],
-        [ "core.epanet.hydraulics.link.Pump", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html", null ],
-        [ "core.epanet.hydraulics.link.Valve", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html", null ]
-      ] ],
-      [ "core.swmm.hydraulics.link.SwmmLink", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_swmm_link.html", [
-        [ "core.swmm.hydraulics.link.Conduit", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html", null ],
-        [ "core.swmm.hydraulics.link.Orifice", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html", null ],
-        [ "core.swmm.hydraulics.link.Outlet", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_outlet.html", null ],
-        [ "core.swmm.hydraulics.link.Pump", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_pump.html", null ],
-        [ "core.swmm.hydraulics.link.SubLink", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_sub_link.html", null ],
-        [ "core.swmm.hydraulics.link.Weir", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html", null ]
-      ] ]
-    ] ],
     [ "list", null, [
       [ "core.indexed_list.IndexedList", "classcore_1_1indexed__list_1_1_indexed_list.html", null ],
       [ "core.metadata.Metadata", "classcore_1_1metadata_1_1_metadata.html", null ]
@@ -48,6 +13,44 @@ var hierarchy =
     [ "core.metadata.MetadataItem", "classcore_1_1metadata_1_1_metadata_item.html", null ],
     [ "core.swmm.stats.MiscConstants", "classcore_1_1swmm_1_1stats_1_1_misc_constants.html", null ],
     [ "object", null, [
+      [ "core.coordinate.Coordinate", "classcore_1_1coordinate_1_1_coordinate.html", [
+        [ "core.epanet.hydraulics.node.Node", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_node.html", [
+          [ "core.epanet.hydraulics.node.Junction", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_junction.html", null ],
+          [ "core.epanet.hydraulics.node.Reservoir", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html", null ],
+          [ "core.epanet.hydraulics.node.Source", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_source.html", null ],
+          [ "core.epanet.hydraulics.node.Tank", "classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html", null ]
+        ] ],
+        [ "core.epanet.labels.Label", "classcore_1_1epanet_1_1labels_1_1_label.html", null ],
+        [ "core.epanet.vertex.Vertex", "classcore_1_1epanet_1_1vertex_1_1_vertex.html", null ],
+        [ "core.swmm.hydraulics.node.Node", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_node.html", [
+          [ "core.swmm.hydraulics.node.Junction", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_junction.html", [
+            [ "core.swmm.hydraulics.node.Divider", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_divider.html", null ],
+            [ "core.swmm.hydraulics.node.Outfall", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html", null ],
+            [ "core.swmm.hydraulics.node.StorageUnit", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_storage_unit.html", null ]
+          ] ],
+          [ "core.swmm.hydraulics.node.SubCentroid", "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_sub_centroid.html", null ]
+        ] ],
+        [ "core.swmm.hydrology.raingage.RainGage", "classcore_1_1swmm_1_1hydrology_1_1raingage_1_1_rain_gage.html", null ],
+        [ "core.swmm.labels.Label", "classcore_1_1swmm_1_1labels_1_1_label.html", null ]
+      ] ],
+      [ "core.coordinate.Link", "classcore_1_1coordinate_1_1_link.html", [
+        [ "core.epanet.hydraulics.link.EpanetLink", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_epanet_link.html", [
+          [ "core.epanet.hydraulics.link.Pipe", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pipe.html", null ],
+          [ "core.epanet.hydraulics.link.Pump", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html", null ],
+          [ "core.epanet.hydraulics.link.Valve", "classcore_1_1epanet_1_1hydraulics_1_1link_1_1_valve.html", null ]
+        ] ],
+        [ "core.swmm.hydraulics.link.SwmmLink", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_swmm_link.html", [
+          [ "core.swmm.hydraulics.link.Conduit", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html", null ],
+          [ "core.swmm.hydraulics.link.Orifice", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_orifice.html", null ],
+          [ "core.swmm.hydraulics.link.Outlet", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_outlet.html", null ],
+          [ "core.swmm.hydraulics.link.Pump", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_pump.html", null ],
+          [ "core.swmm.hydraulics.link.SubLink", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_sub_link.html", null ],
+          [ "core.swmm.hydraulics.link.Weir", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_weir.html", null ]
+        ] ]
+      ] ],
+      [ "core.coordinate.Polygon", "classcore_1_1coordinate_1_1_polygon.html", [
+        [ "core.swmm.hydrology.subcatchment.Subcatchment", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_subcatchment.html", null ]
+      ] ],
       [ "core.inp_reader_base.InputFileReader", "classcore_1_1inp__reader__base_1_1_input_file_reader.html", [
         [ "core.epanet.inp_reader_project.ProjectReader", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html", null ],
         [ "core.swmm.inp_reader_project.ProjectReader", "classcore_1_1swmm_1_1inp__reader__project_1_1_project_reader.html", null ]
@@ -301,9 +304,6 @@ var hierarchy =
     [ "core.epanet.inp_writer_sections.PatternWriter", "classcore_1_1epanet_1_1inp__writer__sections_1_1_pattern_writer.html", null ],
     [ "core.epanet.inp_reader_sections.PipeReader", "classcore_1_1epanet_1_1inp__reader__sections_1_1_pipe_reader.html", null ],
     [ "core.epanet.inp_writer_sections.PipeWriter", "classcore_1_1epanet_1_1inp__writer__sections_1_1_pipe_writer.html", null ],
-    [ "core.coordinate.Polygon", "classcore_1_1coordinate_1_1_polygon.html", [
-      [ "core.swmm.hydrology.subcatchment.Subcatchment", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_subcatchment.html", null ]
-    ] ],
     [ "core.epanet.inp_reader_sections.PumpReader", "classcore_1_1epanet_1_1inp__reader__sections_1_1_pump_reader.html", null ],
     [ "core.swmm.inp_reader_sections.PumpReader", "classcore_1_1swmm_1_1inp__reader__sections_1_1_pump_reader.html", null ],
     [ "core.epanet.inp_writer_sections.PumpWriter", "classcore_1_1epanet_1_1inp__writer__sections_1_1_pump_writer.html", null ],
@@ -363,6 +363,7 @@ var hierarchy =
       [ "core.swmm.hydrology.raingage.RainDataSource", "classcore_1_1swmm_1_1hydrology_1_1raingage_1_1_rain_data_source.html", null ],
       [ "core.swmm.hydrology.raingage.RainFileUnits", "classcore_1_1swmm_1_1hydrology_1_1raingage_1_1_rain_file_units.html", null ],
       [ "core.swmm.hydrology.raingage.RainFormat", "classcore_1_1swmm_1_1hydrology_1_1raingage_1_1_rain_format.html", null ],
+      [ "core.swmm.hydrology.subcatchment.E_InfilModel", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_e___infil_model.html", null ],
       [ "core.swmm.hydrology.subcatchment.Routing", "classcore_1_1swmm_1_1hydrology_1_1subcatchment_1_1_routing.html", null ],
       [ "core.swmm.options.dynamic_wave.ForceMainEquation", "classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_force_main_equation.html", null ],
       [ "core.swmm.options.dynamic_wave.InertialDamping", "classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_inertial_damping.html", null ],

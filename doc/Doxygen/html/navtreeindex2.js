@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"classcore_1_1inp__reader__base_1_1_section_reader.html":[1,0,0,4,1],
+"classcore_1_1inp__reader__base_1_1_section_reader.html#a018d40280fea3a18911572d4d59db7cf":[1,0,0,4,1,2],
 "classcore_1_1inp__reader__base_1_1_section_reader.html#a3d01bbff51b41cf5122b44f947d2a0ed":[1,0,0,4,1,0],
 "classcore_1_1inp__reader__base_1_1_section_reader.html#ad44de89155dedf0c64a9d3131358decc":[1,0,0,4,1,1],
 "classcore_1_1inp__reader__base_1_1_section_reader_as_list.html":[1,0,0,4,2],
@@ -54,16 +56,18 @@ var NAVTREEINDEX2 =
 "classcore_1_1project__base_1_1_project_base.html#ae9da545c33ff1b5d5011b9ccac531d80":[1,0,0,7,0,6],
 "classcore_1_1project__base_1_1_project_base.html#afe01b110b197a620bcafe249ec349030":[1,0,0,7,0,2],
 "classcore_1_1project__base_1_1_section.html":[1,0,0,7,1],
-"classcore_1_1project__base_1_1_section.html#a0c7211043b444898c487524612695612":[1,0,0,7,1,3],
+"classcore_1_1project__base_1_1_section.html#a0c7211043b444898c487524612695612":[1,0,0,7,1,4],
+"classcore_1_1project__base_1_1_section.html#a233690576ec9cb59903dbb399d839464":[1,0,0,7,1,2],
 "classcore_1_1project__base_1_1_section.html#a76803429debf83e3129a14b658a48b3d":[1,0,0,7,1,0],
 "classcore_1_1project__base_1_1_section.html#a8a48cc73de67bca2be16fc5680931e5e":[1,0,0,7,1,1],
-"classcore_1_1project__base_1_1_section.html#a9bcf606b6c9504945012ce69f0fa8404":[1,0,0,7,1,2],
-"classcore_1_1project__base_1_1_section.html#ace49e19ca50fe6e07369a1d050658a94":[1,0,0,7,1,4],
+"classcore_1_1project__base_1_1_section.html#a9bcf606b6c9504945012ce69f0fa8404":[1,0,0,7,1,3],
+"classcore_1_1project__base_1_1_section.html#ace49e19ca50fe6e07369a1d050658a94":[1,0,0,7,1,5],
 "classcore_1_1project__base_1_1_section_as_list.html":[1,0,0,7,2],
-"classcore_1_1project__base_1_1_section_as_list.html#a18a1d312689b2ac5995cdfbd719f4ba4":[1,0,0,7,2,4],
+"classcore_1_1project__base_1_1_section_as_list.html#a18a1d312689b2ac5995cdfbd719f4ba4":[1,0,0,7,2,5],
 "classcore_1_1project__base_1_1_section_as_list.html#a2104649df8d07fbdb43347835222ec39":[1,0,0,7,2,0],
-"classcore_1_1project__base_1_1_section_as_list.html#a3ca819d8ce5dc3229e8449a70b2da903":[1,0,0,7,2,2],
-"classcore_1_1project__base_1_1_section_as_list.html#a84c98c5659d0bf4c3af1565db7b66605":[1,0,0,7,2,3],
+"classcore_1_1project__base_1_1_section_as_list.html#a3ca819d8ce5dc3229e8449a70b2da903":[1,0,0,7,2,3],
+"classcore_1_1project__base_1_1_section_as_list.html#a84c98c5659d0bf4c3af1565db7b66605":[1,0,0,7,2,4],
+"classcore_1_1project__base_1_1_section_as_list.html#a8c1f98017ea0e3f8ee0ad9d5f673abcb":[1,0,0,7,2,2],
 "classcore_1_1project__base_1_1_section_as_list.html#aa2dea5eddbce7f1a42c2b2a355fc8eb3":[1,0,0,7,2,1],
 "classcore_1_1swmm_1_1climatology_1_1_adjustments.html":[1,0,0,8,0,0],
 "classcore_1_1swmm_1_1climatology_1_1_adjustments.html#a192f0ff6830429832a7b69264d05782a":[1,0,0,8,0,0,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX2 =
 "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html#a7783c2cedabb48e614682e7b318c2072":[1,0,0,8,2,2,7,1],
 "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html#ac9a66629ba833e1264da9b018779ddd1":[1,0,0,8,2,2,7,0],
 "classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall.html#ad5907f98fd7b2acccc113a6b7bd43856":[1,0,0,8,2,2,7,2],
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall_type.html":[1,0,0,8,2,2,8],
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html":[1,0,0,8,2,2,9],
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html#a3a00dbaea4d958e656bb285f64fcd874":[1,0,0,8,2,2,9,0],
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html#a42318e8d1d4a0384e5d00d0630c3b491":[1,0,0,8,2,2,9,3],
-"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_r_d_i_inflow.html#a55572a3645fb7b49dfc7ebef86ad9bf9":[1,0,0,8,2,2,9,2]
+"classcore_1_1swmm_1_1hydraulics_1_1node_1_1_outfall_type.html":[1,0,0,8,2,2,8]
 };

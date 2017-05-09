@@ -121,6 +121,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             orig_path = os.environ["Path"]
             print("Original Path = " + orig_path)
             search_paths = []
+            install_dir_base = os.path.basename(INSTALL_DIR)
+            if ini_setting.release_mode or \
+               install_dir_base == "EPANET-UI" or \
+               install_dir_base == "SWMM-UI":
+                search_paths.append(INSTALL_DIR)
             if os.environ.has_key("QGIS_PREFIX_PATH"):
                 search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
             if os.environ.has_key("QGIS_HOME"):
@@ -158,11 +163,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 path = add_path + ';' + path
                         os.environ["Path"] = path
                         print("Try path = " + os.environ["Path"])
-                        from qgis.core import QgsApplication
+                        from qgis.core import QgsApplication, QgsVectorLayer
                         from qgis.gui import QgsMapCanvas
                         from map_tools import EmbedMap, LegendMenuProvider
                         QgsApplication.setPrefixPath(qgis_home, True)
                         QgsApplication.initQgis()
+                        tmp_lyr = QgsVectorLayer("Point", "Test", "memory")
+                        if not tmp_lyr.dataProvider():
+                            del tmp_lyr
+                            raise Exception("Loading QGIS data provider failed.")
+                        else:
+                            del tmp_lyr
                         self.canvas = QgsMapCanvas(self, 'mapCanvas')
                         self.canvas.setMouseTracking(True)
                         self.canvas.mapRenderer().setProjectionsEnabled(True)
@@ -220,6 +231,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 except Exception as e1:
                     msg = "Did not load QGIS from " + qgis_home + " (" + str(e1) + ")\n" # + str(traceback.print_exc())
                     print(msg)
+                    break
                     # QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
         except Exception as eImport:
             self.canvas = None

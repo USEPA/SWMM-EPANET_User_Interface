@@ -65,9 +65,16 @@ class frmTranslateCoordinates(QtGui.QDialog):
         if self.pt_src_ll:
             self.ui.txtLL_src_x.setText(str(self.pt_src_ll.x))
             self.ui.txtLL_src_y.setText(str(self.pt_src_ll.y))
+        else:
+            self.ui.txtLL_src_x.setText("")
+            self.ui.txtLL_src_y.setText("")
+
         if self.pt_src_ur:
             self.ui.txtUR_src_x.setText(str(self.pt_src_ur.x))
             self.ui.txtUR_src_y.setText(str(self.pt_src_ur.y))
+        else:
+            self.ui.txtUR_src_x.setText("")
+            self.ui.txtUR_src_y.setText("")
 
         # testing data for EPANET Net1 model
         # self.ui.txtLL_dst_x.setText(str(48116663.4021))
@@ -81,6 +88,8 @@ class frmTranslateCoordinates(QtGui.QDialog):
         # self.ui.txtUR_dst_y.setText(str(-10177851.1660))
 
     def set_coords_source_ll(self, pt_ll):
+        if not pt_ll:
+            return
         if isinstance(pt_ll, Coordinate):
             self.pt_src_ll.x = pt_ll.x
             self.pt_src_ll.y = pt_ll.y
@@ -95,6 +104,8 @@ class frmTranslateCoordinates(QtGui.QDialog):
         self.ui.txtLL_src_y.setText(str(self.pt_src_ll.y))
 
     def set_coords_source_ur(self, pt_ur):
+        if not pt_ur:
+            return
         if isinstance(pt_ur, Coordinate):
             self.pt_src_ur.x = pt_ur.x
             self.pt_src_ur.y = pt_ur.y
@@ -109,6 +120,8 @@ class frmTranslateCoordinates(QtGui.QDialog):
         self.ui.txtUR_src_y.setText(str(self.pt_src_ur.y))
 
     def set_coords_destination_ll(self, pt_ll):
+        if not pt_ll:
+            return
         if isinstance(pt_ll, Coordinate):
             self.pt_dst_ll.x = pt_ll.x
             self.pt_dst_ll.y = pt_ll.y
@@ -121,6 +134,8 @@ class frmTranslateCoordinates(QtGui.QDialog):
                 pass
 
     def set_coords_destination_ur(self, pt_ur):
+        if not pt_ur:
+            return
         if isinstance(pt_ur, Coordinate):
             self.pt_dst_ur.x = pt_ur.x
             self.pt_dst_ur.y = pt_ur.y

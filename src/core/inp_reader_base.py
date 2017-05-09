@@ -74,7 +74,8 @@ class InputFileReader(object):
             print("Default Section for " + section_name)
             new_section = Section()
             new_section.SECTION_NAME = section_name
-            new_section.value = section_text
+            if not section_name == section_text:
+                new_section.value = section_text
 
         if "REACTION" in new_section.SECTION_NAME.upper() and old_section:
             for vmdata in old_section.metadata:

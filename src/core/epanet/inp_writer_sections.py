@@ -289,10 +289,16 @@ class MixingWriter(SectionWriter):
     @staticmethod
     def as_text(tank):
         """format contents of this item for writing to file"""
-        return MixingWriter.field_format.format(tank.name,
-                                        tank.mixing_model.name.replace("TWO_", "2"),
-                                        tank.mixing_fraction,
+        mix_model = tank.mixing_model.name.replace("TWO_", "2")
+        if mix_model.startswith("2"):
+            return MixingWriter.field_format.format(tank.name, mix_model, tank.mixing_fraction,
                                         tank.comment)
+        elif mix_model == "FIFO" or mix_model == "LIFO":
+            return MixingWriter.field_format.format(tank.name, mix_model, "", tank.comment)
+        else:
+            # The [MIXING] section is optional.
+            # Tanks not described in this section are assumed to be completely mixed.
+            return ""
 
 
 class EmittersWriter(SectionWriter):

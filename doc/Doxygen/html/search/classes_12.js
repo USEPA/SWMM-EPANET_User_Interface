@@ -1,7 +1,7 @@
 var searchData=
 [
   ['tagsreader',['TagsReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_tags_reader.html',1,'core.swmm.inp_reader_sections.TagsReader'],['../classcore_1_1epanet_1_1inp__reader__sections_1_1_tags_reader.html',1,'core.epanet.inp_reader_sections.TagsReader']]],
-  ['tagswriter',['TagsWriter',['../classcore_1_1epanet_1_1inp__writer__sections_1_1_tags_writer.html',1,'core.epanet.inp_writer_sections.TagsWriter'],['../classcore_1_1swmm_1_1inp__writer__sections_1_1_tags_writer.html',1,'core.swmm.inp_writer_sections.TagsWriter']]],
+  ['tagswriter',['TagsWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_tags_writer.html',1,'core.swmm.inp_writer_sections.TagsWriter'],['../classcore_1_1epanet_1_1inp__writer__sections_1_1_tags_writer.html',1,'core.epanet.inp_writer_sections.TagsWriter']]],
   ['tank',['Tank',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_tank.html',1,'core::epanet::hydraulics::node']]],
   ['tankreader',['TankReader',['../classcore_1_1epanet_1_1inp__reader__sections_1_1_tank_reader.html',1,'core::epanet::inp_reader_sections']]],
   ['tankwriter',['TankWriter',['../classcore_1_1epanet_1_1inp__writer__sections_1_1_tank_writer.html',1,'core::epanet::inp_writer_sections']]],
@@ -15,10 +15,10 @@ var searchData=
   ['timesoptions',['TimesOptions',['../classcore_1_1epanet_1_1options_1_1times_1_1_times_options.html',1,'core::epanet::options::times']]],
   ['timesoptionsreader',['TimesOptionsReader',['../classcore_1_1epanet_1_1inp__reader__sections_1_1_times_options_reader.html',1,'core::epanet::inp_reader_sections']]],
   ['timesteps',['TimeSteps',['../classcore_1_1swmm_1_1options_1_1time__steps_1_1_time_steps.html',1,'core::swmm::options::time_steps']]],
-  ['title',['Title',['../classcore_1_1swmm_1_1title_1_1_title.html',1,'core.swmm.title.Title'],['../classcore_1_1epanet_1_1title_1_1_title.html',1,'core.epanet.title.Title']]],
+  ['title',['Title',['../classcore_1_1epanet_1_1title_1_1_title.html',1,'core.epanet.title.Title'],['../classcore_1_1swmm_1_1title_1_1_title.html',1,'core.swmm.title.Title']]],
   ['titlereader',['TitleReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_title_reader.html',1,'core.swmm.inp_reader_sections.TitleReader'],['../classcore_1_1epanet_1_1inp__reader__sections_1_1_title_reader.html',1,'core.epanet.inp_reader_sections.TitleReader']]],
-  ['titlewriter',['TitleWriter',['../classcore_1_1swmm_1_1inp__writer__sections_1_1_title_writer.html',1,'core.swmm.inp_writer_sections.TitleWriter'],['../classcore_1_1epanet_1_1inp__writer__sections_1_1_title_writer.html',1,'core.epanet.inp_writer_sections.TitleWriter']]],
-  ['transect',['Transect',['../classcore_1_1swmm_1_1hydraulics_1_1transect_1_1_transect.html',1,'core.swmm.hydraulics.transect.Transect'],['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html',1,'core.swmm.hydraulics.link.Transect']]],
+  ['titlewriter',['TitleWriter',['../classcore_1_1epanet_1_1inp__writer__sections_1_1_title_writer.html',1,'core.epanet.inp_writer_sections.TitleWriter'],['../classcore_1_1swmm_1_1inp__writer__sections_1_1_title_writer.html',1,'core.swmm.inp_writer_sections.TitleWriter']]],
+  ['transect',['Transect',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transect.html',1,'core.swmm.hydraulics.link.Transect'],['../classcore_1_1swmm_1_1hydraulics_1_1transect_1_1_transect.html',1,'core.swmm.hydraulics.transect.Transect']]],
   ['transectreader',['TransectReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_transect_reader.html',1,'core::swmm::inp_reader_sections']]],
   ['transects',['Transects',['../classcore_1_1swmm_1_1hydraulics_1_1link_1_1_transects.html',1,'core::swmm::hydraulics::link']]],
   ['transectsreader',['TransectsReader',['../classcore_1_1swmm_1_1inp__reader__sections_1_1_transects_reader.html',1,'core::swmm::inp_reader_sections']]],

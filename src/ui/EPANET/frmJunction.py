@@ -35,7 +35,7 @@ class frmJunction(frmGenericPropertyEditor):
                 edit_these.extend(self.project_section.value)
 
         frmGenericPropertyEditor.__init__(self, session, session.project.junctions,
-                                          edit_these, new_item, "SWMM Junction Editor")
+                                          edit_these, new_item, "EPANET Junction Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns

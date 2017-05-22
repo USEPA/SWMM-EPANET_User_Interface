@@ -90,6 +90,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
+        self.actionStdImportScenario.triggered.connect(self.import_scenario)
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
         self.actionToolbarShowMap.triggered.connect(
@@ -353,6 +354,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def cbAutoLength_currentIndexChanged(self):
         self.auto_length = (self.cbAutoLength.currentIndex() == 1)
+
+    def import_scenario(self):
+        QMessageBox.information(None, self.model,
+                                "Import Scenario is not yet implemented",
+                                QMessageBox.Ok)
 
     def import_from_gis(self):
         import import_export

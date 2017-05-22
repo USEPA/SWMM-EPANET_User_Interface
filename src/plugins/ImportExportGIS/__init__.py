@@ -12,7 +12,7 @@ try:
     plugin_name = "ImportExportGIS"
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
-               "Import from GIS": 2}
+               "Import from GIS to create model": 2}
     file_filter = "GeoJSON (*.json *.geojson);;" \
                   "Shapefile (*.shp);;" \
                   "Comma-separated text (*.csv);;" \
@@ -46,16 +46,19 @@ try:
                         result = import_export.export_to_gis(session, file_name)
                     elif choice == 2:
                         # result = import_export.import_from_gis(session, file_name)
-                        if session.model == "EPANET":
-                            import_summary = import_export.import_epanet_from_geojson(session, file_name)
-                            result = "imported objects:" + os.linesep
-                            for et in import_summary:
-                                result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
-                        elif session.model == "SWMM":
-                            import_summary = import_export.import_swmm_from_geojson(session, file_name)
-                            result = "imported objects:" + os.linesep
-                            for et in import_summary:
-                                result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+                        if str(file_name).lower().endswith("json"):
+                            if session.model == "EPANET":
+                                import_summary = import_export.import_epanet_from_geojson(session, file_name)
+                                result = "imported objects:" + os.linesep
+                                for et in import_summary:
+                                    result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+                            elif session.model == "SWMM":
+                                import_summary = import_export.import_swmm_from_geojson(session, file_name)
+                                result = "imported objects:" + os.linesep
+                                for et in import_summary:
+                                    result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+                        else:
+                            result = "Create Model from GIS data supports GeoJSON data only"
                 else:
                     result = "Selected operation not yet implemented."
                 QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)

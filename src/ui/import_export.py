@@ -611,7 +611,7 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
         layer.updateExtents()
     return layer
 
-def import_from_gis(session, file_name):
+def import_from_gis_piecemeal(session, file_name):
     # importable_sections = [session.project.pipes, session.project.pumps, session.project.valves]
     # already_populated_sections = [section for section in importable_sections if len(section.value) > 0]
     project = session.project
@@ -657,6 +657,31 @@ def import_from_gis(session, file_name):
     session.model_layers.set_lists()
     session.map_widget.zoomfull()
     return result
+
+def import_from_gis(session, file_name):
+    try:
+        directory = session.program_settings.value("GISPath", os.path.dirname(session.project.file_name))
+        if file_name and str(file_name).lower().endswith("json"):
+            path_only, file_only = os.path.split(file_name)
+            if path_only != directory:  # Save path as default for next import/export operation
+                session.program_settings.setValue("GISPath", path_only)
+                session.program_settings.sync()
+
+            if session.model == "EPANET":
+                import_summary = import_epanet_from_geojson(session, file_name)
+                result = "imported objects:" + os.linesep
+                for et in import_summary:
+                    result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+            elif session.model == "SWMM":
+                import_summary = import_swmm_from_geojson(session, file_name)
+                result = "imported objects:" + os.linesep
+                for et in import_summary:
+                    result = result + et + ": " + str(import_summary[et]) + " objects" + os.linesep
+        else:
+            result = "Create Model from GIS data supports GeoJSON data only"
+        QMessageBox.information(None, "Create Model from GIS data", result, QMessageBox.Ok)
+    except Exception as ex:
+        print str(ex)
 
 def import_epanet_from_geojson(session, file_name):
     project = session.project

@@ -91,6 +91,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
         self.actionStdImportScenario.triggered.connect(self.import_scenario)
+        self.actionStdImportMap.setToolTip(u'Import GeoJSON data and Create Model')
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
         self.actionToolbarShowMap.triggered.connect(
@@ -363,13 +364,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def import_from_gis(self):
         import import_export
 
-        file_filter = "GeoJSON (*.json);;" \
-                      "Shapefile (*.shp);;" \
-                      "Comma-separated text (*.csv);;" \
+        file_filter = "GeoJSON (*.json *.geojson);;"  \
                       "All files (*.*)"
         directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select GIS file to import",
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Create Model from GeoJSON file",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)

@@ -13,7 +13,7 @@ try:
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
                "Import from GIS": 2}
-    file_filter = "GeoJSON (*.json);;" \
+    file_filter = "GeoJSON (*.json *.geojson);;" \
                   "Shapefile (*.shp);;" \
                   "Comma-separated text (*.csv);;" \
                   "File Geodatabase (*.gdb);;" \

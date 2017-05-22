@@ -1173,8 +1173,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def map_addvector(self):
         directory = self.program_settings.value("GISDataDir", "/")
         file_filter = "Shapefile (*.shp);;" \
-                      "GeoJSON (*.json);;" \
-                      "GeoJSON (*.geojson);;" \
+                      "GeoJSON (*.json *.geojson);;" \
                       "All files (*.*)"
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
         if filename:
@@ -1201,7 +1200,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def map_addraster(self, eventArg):
         directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
-                                                     "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
+                                                     "GeoTiff files (*.tif *tiff);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:

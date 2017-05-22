@@ -203,8 +203,9 @@ try:
                             layer.commitChanges()
                         else:
                             layer.rollBack()
-                #else:
-                #    layer.rollBack()
+                    else:
+                        layer.rollBack()
+                        self.canvas.refresh()
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():

@@ -144,6 +144,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                     self.local_baseline_pattern[local_column] = value.baseline_pattern
 
         # dry_section = core.swmm.project.DryWeatherInflow()
+        pat_id = ''
         for value in self.project.dwf.value:
             if value.node == self.node_name:
                 index = -1
@@ -154,14 +155,34 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                         local_column = index
                 if local_column > -1:
                     self.local_average_list[local_column] = value.average
-                    if value.time_patterns.count(0) > 0:
-                        self.local_dry_pattern_1_list[local_column] = value.time_patterns[0]
-                    if value.time_patterns.count(0) > 1:
-                        self.local_dry_pattern_2_list[local_column] = value.time_patterns[1]
-                    if value.time_patterns.count(0) > 2:
-                        self.local_dry_pattern_3_list[local_column] = value.time_patterns[2]
-                    if value.time_patterns.count(0) > 3:
-                        self.local_dry_pattern_4_list[local_column] = value.time_patterns[3]
+                    if len(value.time_patterns) > 0:
+                        if value.time_patterns[0]:
+                            pat_id = value.time_patterns[0].strip("\"")
+                        else:
+                            pat_id = u''
+                        self.local_dry_pattern_1_list[local_column] = pat_id
+                        self.cboDryPattern1.setCurrentIndex(self.cboDryPattern1.findText(pat_id))
+                    if len(value.time_patterns) > 1:
+                        if value.time_patterns[1]:
+                            pat_id = value.time_patterns[1].strip("\"")
+                        else:
+                            pat_id = u''
+                        self.local_dry_pattern_2_list[local_column] = pat_id
+                        self.cboDryPattern2.setCurrentIndex(self.cboDryPattern2.findText(pat_id))
+                    if len(value.time_patterns) > 2:
+                        if value.time_patterns[2]:
+                            pat_id = value.time_patterns[2].strip("\"")
+                        else:
+                            pat_id = u''
+                        self.local_dry_pattern_3_list[local_column] = pat_id
+                        self.cboDryPattern3.setCurrentIndex(self.cboDryPattern3.findText(pat_id))
+                    if len(value.time_patterns) > 3:
+                        if value.time_patterns[3]:
+                            pat_id = value.time_patterns[3].strip("\"")
+                        else:
+                            pat_id = u''
+                        self.local_dry_pattern_4_list[local_column] = pat_id
+                        self.cboDryPattern4.setCurrentIndex(self.cboDryPattern4.findText(pat_id))
 
         # rdii_section = core.swmm.project.RDIInflow()
         rdii_section = project.find_section("RDII")

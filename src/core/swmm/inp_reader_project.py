@@ -230,6 +230,7 @@ class ProjectReader(InputFileReader):
             PolygonsReader.read(self.defer_polygons, project)
             self.defer_polygons = None
         project.metric = project.options.flow_units in flow_units_metric
+        project.set_pattern_object_references()
 
 
 

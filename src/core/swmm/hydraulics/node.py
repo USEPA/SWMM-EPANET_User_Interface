@@ -360,6 +360,9 @@ class DirectInflow(Section):
         ## str: ID of Time Pattern whose factors adjust the baseline inflow on an hourly, daily, or monthly basis
         self.baseline_pattern = ''
 
+        ## pattern object
+        self.baseline_pattern_object = None
+
 
 class DryWeatherInflow(Section):
     """Specifies dry weather flow and its quality entering the drainage system at a specific node"""
@@ -378,6 +381,9 @@ class DryWeatherInflow(Section):
 
         ## str: ID of time pattern used to allow the dry weather flow to vary in a periodic fashion
         self.time_patterns = []
+
+        ## pattern object list
+        self.time_pattern_objects = []
 
 
 class RDIInflow(Section):

@@ -43,7 +43,20 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                 self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
-        # TODO: IF pattern id changed, ask about replacing all occurrences
+        edited_names = []
+        if self.editing_item.name != self.txtPatternID.text():
+            # check if the new pattern name is unique
+            section_field_name = self._main_form.section_types[type(self.editing_item)]
+            if hasattr(self._main_form.project, section_field_name):
+                section = getattr(self._main_form.project, section_field_name)
+                if section.value:
+                    for itm in section.value:
+                        if itm.name == self.txtPatternID.text():
+                            QtGui.QMessageBox.information(None, "Pattern name is already in use.",
+                                                          "SWMM Pattern Editor", QtGui.QMessageBox.Ok)
+                            return
+            edited_names.append((self.editing_item.name, self.editing_item))
+
         self.editing_item.name = self.txtPatternID.text()
         self.editing_item.description = self.txtDescription.text()
         self.editing_item.pattern_type = PatternType[self.cboType.currentText()]
@@ -57,7 +70,11 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
             self._main_form.add_item(self.new_item)
         else:
             pass
-            # TODO: self._main_form.edited_?
+            if len(edited_names) > 0:
+                self._main_form.edited_name(edited_names)
+
+        # regardless if pattern id is changed, refresh pattern references at all places
+        self._main_form.project.refresh_pattern_object_references()
         self.close()
 
     def cmdCancel_Clicked(self):

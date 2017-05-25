@@ -33,7 +33,10 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
 
         self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        QtCore.QObject.connect(self.lstToGraph, QtCore.SIGNAL("itemSelectionChanged()"), self.select_on_map)
         self._main_form = main_form
+        self.onObjectSelected = self._main_form.objectsSelected
+        self.onObjectSelected.connect(self.set_selected_object)
         self.time_linked_graphs = []
 
     def set_from(self, project, output):
@@ -127,6 +130,42 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             for graph in self.time_linked_graphs:
                 graph[-1] = time_index
                 graph[0](*graph[1:])
+
+    def select_on_map(self):
+        obj_lyr_group = None
+        selected_items = []
+        if self.rbnNodes.isChecked():
+            obj_lyr_group = self._main_form.model_layers.nodes_layers
+        elif self.rbnLinks.isChecked():
+            obj_lyr_group = self._main_form.model_layers.links_layers
+        if obj_lyr_group:
+            del selected_items[:]
+            for sitm in self.lstToGraph.selectedItems():
+                selected_items.append(sitm.text())
+            for lyr in obj_lyr_group:
+                self._main_form.select_named_items(lyr, selected_items)
+
+    def set_selected_object(self, layer_name, object_ids):
+        if layer_name and object_ids:
+            can_select = False
+            if (layer_name.lower().startswith("junction") or \
+                  layer_name.lower().startswith("reserv") or \
+                  layer_name.lower().startswith("tank") or \
+                  layer_name.lower().startswith("source")) and \
+                  self.rbnNodes.isChecked():
+                can_select = True
+            elif (layer_name.lower().startswith("pump") or \
+                  layer_name.lower().startswith("valve") or \
+                  layer_name.lower().startswith("pipe")) and \
+                  self.rbnLinks.isChecked():
+                can_select = True
+
+            if can_select:
+                for id in object_ids:
+                    itms = self.lstToGraph.findItems(id, QtCore.Qt.MatchExactly)
+                    if itms and len(itms) > 0:
+                        for itm in itms:
+                            itm.setSelected(True)
 
     def cmdOK_Clicked(self):
         parameter_label = self.cboParameter.currentText()

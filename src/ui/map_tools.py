@@ -203,8 +203,9 @@ try:
                             layer.commitChanges()
                         else:
                             layer.rollBack()
-                #else:
-                #    layer.rollBack()
+                    else:
+                        layer.rollBack()
+                        self.canvas.refresh()
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():
@@ -427,6 +428,10 @@ try:
         def set_default_point_renderer(layer, coordinates=None, size=3.5):
             """ Create and set the default appearance of layer.
                 If specified, coordinates will be used to check for whether there are too many to label. """
+            if layer is None:
+                return
+            symbol = QgsMarkerSymbolV2.createSimple({})
+            symbol.deleteSymbolLayer(0)
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
             symbol_layer.setColor(QColor(130, 180, 255, 255))
 
@@ -485,8 +490,10 @@ try:
                 pal_layer.writeToLayer(layer)
 
             symbol_layer.setSize(size)
-
-            layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
+            symbol.appendSymbolLayer(symbol_layer)
+            renderer = QgsSingleSymbolRendererV2(symbol)
+            layer.setRendererV2(renderer)
+            # layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:

@@ -221,3 +221,54 @@ class SwmmProject(ProjectBase):
 
     def links_groups(self):
         return [self.conduits, self.pumps, self.orifices, self.weirs, self.outlets]
+
+    def set_pattern_object_references(self):
+        """
+        setup node <-> pattern object reference
+        which can be used for handling pattern name changes
+        Returns:
+        """
+        if self.inflows.value:
+            for obj_inflow in self.inflows.value:
+                obj_inflow.baseline_pattern_object = self.patterns.find_item(obj_inflow.baseline_pattern)
+
+        if self.aquifers.value:
+            for obj_aquifer in self.aquifers.value:
+                obj_aquifer.upper_evaporation_pattern_object = \
+                    self.patterns.find_item(obj_aquifer.upper_evaporation_pattern)
+
+        if self.dwf.value:
+            for obj_dwf in self.dwf.value:
+                del obj_dwf.time_pattern_objects[:]
+                # order of patterns should be kept intact
+                for i in range(0, len(obj_dwf.time_patterns)):
+                    if obj_dwf.time_patterns[i]:
+                        pat = self.patterns.find_item(obj_dwf.time_patterns[i].strip("\""))
+                        obj_dwf.time_pattern_objects.append(pat)
+                    else:
+                        obj_dwf.time_pattern_objects.append(None)
+
+    def refresh_pattern_object_references(self):
+        """
+        refresh pattern object id references of various model objects
+        Returns:
+        """
+        if self.inflows.value:
+            for obj_inflow in self.inflows.value:
+                if obj_inflow.baseline_pattern_object:
+                    obj_inflow.baseline_pattern = obj_inflow.baseline_pattern_object.name
+
+        if self.aquifers.value:
+            for obj_aquifer in self.aquifers.value:
+                if obj_aquifer.upper_evaporation_pattern_object:
+                    obj_aquifer.upper_evaporation_pattern = obj_aquifer.upper_evaporation_pattern_object.name
+
+        if self.dwf.value:
+            for obj_dwf in self.dwf.value:
+                del obj_dwf.time_patterns[:]
+                # order of patterns should be kept intact
+                for i in range(0, len(obj_dwf.time_pattern_objects)):
+                    if obj_dwf.time_pattern_objects[i]:
+                        obj_dwf.time_patterns.append(u'"' + obj_dwf.time_pattern_objects[i].name + u'"')
+                    else:
+                        obj_dwf.time_patterns.append(u'""')

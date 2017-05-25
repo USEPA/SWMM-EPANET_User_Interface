@@ -91,3 +91,6 @@ class Aquifer(Section):
 
         ## ID of monthly pattern of adjustments to upper evaporation fraction (optional)
         self.upper_evaporation_pattern = ''
+
+        ## monthly pattern object
+        self.upper_evaporation_pattern_object = None

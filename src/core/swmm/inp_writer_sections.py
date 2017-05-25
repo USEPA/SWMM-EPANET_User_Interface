@@ -765,14 +765,16 @@ class DirectInflowWriter(SectionWriter):
             inp_format = "FLOW"
         else:
             inp_format = direct_inflow.format.name
-        inp += DirectInflowWriter.field_format.format(direct_inflow.node,
-                                        direct_inflow.constituent,
-                                        direct_inflow.timeseries,
-                                        inp_format,
-                                        direct_inflow.conversion_factor,
-                                        direct_inflow.scale_factor,
-                                        direct_inflow.baseline,
-                                        direct_inflow.baseline_pattern)
+
+        if direct_inflow.baseline or direct_inflow.timeseries:
+            inp += DirectInflowWriter.field_format.format(direct_inflow.node,
+                                            direct_inflow.constituent,
+                                            direct_inflow.timeseries,
+                                            inp_format,
+                                            direct_inflow.conversion_factor,
+                                            direct_inflow.scale_factor,
+                                            direct_inflow.baseline,
+                                            direct_inflow.baseline_pattern)
         return inp
 
 
@@ -811,9 +813,10 @@ class RDIInflowWriter(SectionWriter):
             "none" in rdi_inflow.hydrograph_group.lower():
             pass
         else:
-            inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
-                                        rdi_inflow.hydrograph_group,
-                                        rdi_inflow.sewershed_area)
+            if rdi_inflow.hydrograph_group:
+                inp += RDIInflowWriter.field_format.format(rdi_inflow.node,
+                                            rdi_inflow.hydrograph_group,
+                                            rdi_inflow.sewershed_area)
         return inp
 
 

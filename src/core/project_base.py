@@ -182,9 +182,10 @@ class SectionAsList(Section):
         Section.__init__(self)
 
     def find_item(self, aName):
-        for obj in self.value:
-            if aName.upper() == obj.name.upper():
-                return obj
+        if aName:
+            for obj in self.value:
+                if aName.upper() == obj.name.upper():
+                    return obj
         return None
 
     def get_item(self, fname, fvalue):

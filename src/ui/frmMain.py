@@ -36,6 +36,7 @@ MAX_RECENT_FILES = 8
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     signalTimeChanged = QtCore.pyqtSignal()
+    objectsSelected = QtCore.pyqtSignal(str, list)
 
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
@@ -90,6 +91,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
+        self.actionStdImportScenario.triggered.connect(self.import_scenario)
+        self.actionStdImportMap.setToolTip(u'Import GeoJSON data and Create Model')
         self.actionStdImportMap.triggered.connect(self.import_from_gis)
         self.actionStdExportMap.triggered.connect(self.export_to_gis)
         self.actionToolbarShowMap.triggered.connect(
@@ -354,16 +357,19 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def cbAutoLength_currentIndexChanged(self):
         self.auto_length = (self.cbAutoLength.currentIndex() == 1)
 
+    def import_scenario(self):
+        QMessageBox.information(None, self.model,
+                                "Import Scenario is not yet implemented",
+                                QMessageBox.Ok)
+
     def import_from_gis(self):
         import import_export
 
-        file_filter = "GeoJSON (*.json);;" \
-                      "Shapefile (*.shp);;" \
-                      "Comma-separated text (*.csv);;" \
+        file_filter = "GeoJSON (*.json *.geojson);;"  \
                       "All files (*.*)"
         directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select GIS file to import",
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Create Model from GeoJSON file",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)
@@ -1173,8 +1179,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def map_addvector(self):
         directory = self.program_settings.value("GISDataDir", "/")
         file_filter = "Shapefile (*.shp);;" \
-                      "GeoJSON (*.json);;" \
-                      "GeoJSON (*.geojson);;" \
+                      "GeoJSON (*.json *.geojson);;" \
                       "All files (*.*)"
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
         if filename:
@@ -1201,7 +1206,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def map_addraster(self, eventArg):
         directory = self.program_settings.value("GISDataDir", "/")
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
-                                                     "GeoTiff files (*.tif);;Bitmap (*.bmp);;All files (*.*)")
+                                                     "GeoTiff files (*.tif *tiff);;Bitmap (*.bmp);;All files (*.*)")
         #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
@@ -1697,6 +1702,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         print("Did not find layer in tree:\n" + str(ex))
 
                 if selected_list:
+                    self.objectsSelected.emit(layer.name(), selected_list)
                     for i in range(self.listViewObjects.count()):
                         item = self.listViewObjects.item(i)
                         if item.text() in selected_list:

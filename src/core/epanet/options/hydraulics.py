@@ -93,6 +93,9 @@ class HydraulicsOptions(Section):
         ## Default demand pattern to be applied to all junctions where no demand pattern was specified
         self.default_pattern = "1"
 
+        ## Default demand pattern object
+        self.default_pattern_object = None
+
         ## Used to adjust the values of baseline demands for all junctions and all demand categories
         self.demand_multiplier = 1.0
 

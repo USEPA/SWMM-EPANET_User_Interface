@@ -1618,7 +1618,7 @@
     <string>MapSelectVertices</string>
    </property>
    <property name="toolTip">
-    <string>Select vertex</string>
+    <string>Edit vertex</string>
    </property>
   </action>
   <action name="actionStdEditObject">

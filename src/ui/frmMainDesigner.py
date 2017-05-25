@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\frmMainDesigner.ui'
+# Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Fri Apr 14 14:00:34 2017
+# Created: Mon May 22 14:29:21 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -1034,7 +1034,7 @@ class Ui_frmMain(object):
         self.actionMapMeasure.setText(_translate("frmMain", "MapMeasure", None))
         self.actionMapMeasure.setToolTip(_translate("frmMain", "Measure distance or area", None))
         self.actionMapSelectVertices.setText(_translate("frmMain", "MapSelectVertices", None))
-        self.actionMapSelectVertices.setToolTip(_translate("frmMain", "Select vertex", None))
+        self.actionMapSelectVertices.setToolTip(_translate("frmMain", "Edit vertex", None))
         self.actionStdEditObject.setText(_translate("frmMain", "Edit Object...", None))
         self.actionStdDeleteObject.setText(_translate("frmMain", "Delete Object", None))
         self.actionStdMapDimensions.setText(_translate("frmMain", "Dimensions...", None))

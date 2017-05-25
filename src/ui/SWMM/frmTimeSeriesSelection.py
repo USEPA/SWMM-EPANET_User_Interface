@@ -15,7 +15,11 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
         self.cboObjectType.currentIndexChanged.connect(self.cboObjectType_currentIndexChanged)
+        self.cboVariable.currentIndexChanged.connect(self.cboVariable_currentIndexChanged)
+        self.txtObject.textChanged.connect(self.txtObject_textChanged)
         self.rbnLeft.setChecked(True)
+        self.onObjectSelected = self._main_form.objectsSelected
+        self.onObjectSelected.connect(self.set_selected_object)
 
     def set_from(self, project, output, listener):
         self.project = project
@@ -28,6 +32,9 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
                 if label == SMO.SwmmOutputSystem.type_label or self.output.get_items(label):
                     self.cboObjectType.addItem(label)
             self.cboObjectType.setCurrentIndex(0)
+
+    def txtObject_textChanged(self):
+        self.cboVariable_currentIndexChanged()
 
     def cboObjectType_currentIndexChanged(self):
         has_objects = False
@@ -47,6 +54,42 @@ class frmTimeSeriesSelection(QtGui.QMainWindow, Ui_frmTimeSeriesSelection):
             self.lblSpecify.setText(self.cboObjectType.currentText() + " Name")
         else:
             self.lblSpecify.setText(self.cboObjectType.currentText() + " does not need a name")
+
+    def cboVariable_currentIndexChanged(self):
+        """
+        set default legend text for the data serie
+        Returns:
+        """
+        otype = self.cboObjectType.currentText()
+        if otype.startswith("Sub"):
+            otype = "Sub"
+        elif otype.startswith("Sys"):
+            otype = "Sys"
+        vartype = self.cboVariable.currentText()
+        self.txtLegend.setText(otype + "-" + self.txtObject.text() + "-" + vartype)
+        pass
+
+    def set_selected_object(self, layer_name, object_ids):
+        if layer_name and object_ids:
+            otype = self.cboObjectType.currentText()
+            if layer_name.lower()[:3] == otype.lower()[:3]:
+                if object_ids[0].startswith("subcentroid"):
+                    self.txtObject.setText(object_ids[0][len("subcentroid-"):])
+                else:
+                    self.txtObject.setText(object_ids[0])
+            elif (layer_name.lower().startswith("junction") or \
+                  layer_name.lower().startswith("outfall") or \
+                  layer_name.lower().startswith("divider") or \
+                  layer_name.lower().startswith("storage")) and \
+                  otype.lower().startswith("node"):
+                self.txtObject.setText(object_ids[0])
+            elif (layer_name.lower().startswith("conduit") or \
+                  layer_name.lower().startswith("pump") or \
+                  layer_name.lower().startswith("orifice") or \
+                  layer_name.lower().startswith("weir") or \
+                  layer_name.lower().startswith("outlet")) and \
+                    otype.lower().startswith("link"):
+                self.txtObject.setText(object_ids[0])
 
     def cmdOK_Clicked(self):
         if self.txtObject.isVisible():

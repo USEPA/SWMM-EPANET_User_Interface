@@ -36,6 +36,7 @@ MAX_RECENT_FILES = 8
 class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     signalTimeChanged = QtCore.pyqtSignal()
+    objectsSelected = QtCore.pyqtSignal(str, list)
 
     def __init__(self, q_application):
         QtGui.QMainWindow.__init__(self, None)
@@ -1701,6 +1702,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         print("Did not find layer in tree:\n" + str(ex))
 
                 if selected_list:
+                    self.objectsSelected.emit(layer.name(), selected_list)
                     for i in range(self.listViewObjects.count()):
                         item = self.listViewObjects.item(i)
                         if item.text() in selected_list:

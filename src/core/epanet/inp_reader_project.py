@@ -112,3 +112,4 @@ class ProjectReader(InputFileReader):
             StatusReader.read(self.defer_status, project)
             self.defer_status = None
         project.metric = project.options.hydraulics.flow_units in flow_units_metric
+        project.set_pattern_object_references()

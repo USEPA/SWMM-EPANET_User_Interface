@@ -100,3 +100,58 @@ class EpanetProject(ProjectBase):
 
     def links_groups(self):
         return [self.pipes, self.pumps, self.valves]
+
+    def set_pattern_object_references(self):
+        """
+        setup node <-> pattern object reference
+        which can be used for handling pattern name changes
+        Returns:
+        """
+        if self.junctions.value:
+            for obj_junction in self.junctions.value:
+                obj_junction.demand_pattern_object = \
+                    self.patterns.find_item(obj_junction.demand_pattern_name)
+
+        if self.reservoirs.value:
+            for obj_res in self.reservoirs.value:
+                obj_res.head_pattern_object = self.patterns.find_item(obj_res.head_pattern_name)
+
+        if self.demands.value:
+            for obj_demand in self.demands.value:
+                obj_demand.demand_pattern_object = self.patterns.find_item(obj_demand.demand_pattern)
+
+        if self.sources.value:
+            for obj_src in self.sources.value:
+                obj_src.pattern_object = self.patterns.find_item(obj_src.pattern_name)
+
+        # self.options.hydraulics.default_pattern = "1"
+        self.options.hydraulics.default_pattern_object = \
+            self.patterns.find_item(self.options.hydraulics.default_pattern)
+
+    def refresh_pattern_object_references(self):
+        """
+        refresh pattern object id references of various model objects
+        Returns:
+        """
+        if self.junctions.value:
+            for obj_junction in self.junctions.value:
+                if obj_junction.demand_pattern_object:
+                    obj_junction.demand_pattern_name = obj_junction.demand_pattern_object.name
+
+        if self.reservoirs.value:
+            for obj_res in self.reservoirs.value:
+                if obj_res.head_pattern_object:
+                    obj_res.head_pattern_name = obj_res.head_pattern_object.name
+
+        if self.demands.value:
+            for obj_demand in self.demands.value:
+                if obj_demand.demand_pattern_object:
+                    obj_demand.demand_pattern = obj_demand.demand_pattern_object.name
+
+        if self.sources.value:
+            for obj_src in self.sources.value:
+                if obj_src.pattern_object:
+                    obj_src.pattern_name = obj_src.pattern_object.name
+
+        if self.options.hydraulics.default_pattern_object:
+            self.options.hydraulics.default_pattern = self.options.hydraulics.default_pattern_object.name

@@ -80,6 +80,9 @@ class Junction(Node):
         ## Demand pattern ID, optional
         self.demand_pattern_name = ''
 
+        ## Demand pattern object, optional
+        self.demand_pattern_object = None
+
         ## Emitters are used to model flow through sprinkler heads or pipe leaks. Flow out of the emitter equals
         ## the product of the flow coefficient and the junction pressure raised to EMITTER EXPONENT, which
         ## defaults to 0.5 and can be set in OPTIONS section.
@@ -110,6 +113,8 @@ class Reservoir(Node):
         ## head pattern can be used to make the reservoir head vary with time
         self.head_pattern_name = ''
 
+        ## head pattern object
+        self.head_pattern_object = None
 
 class Tank(Node):
     """Tank properties"""
@@ -204,6 +209,7 @@ class Source(Node):
 
         ## Time pattern ID (optional)
         self.pattern_name = ""                          # string
+        self.pattern_object = None
 
 
 class Demand(Section):
@@ -220,6 +226,7 @@ class Demand(Section):
 
         ## Demand pattern ID (optional)
         self.demand_pattern = ''     # string
+        self.demand_pattern_object = None
 
         ## Name of demand category preceded by a semicolon (optional)
         self.category = ''           # string

@@ -230,35 +230,21 @@ class SwmmProject(ProjectBase):
         """
         if self.inflows.value:
             for obj_inflow in self.inflows.value:
-                if obj_inflow.baseline_pattern:
-                    for pat in self.patterns.value:
-                        if pat.name == obj_inflow.baseline_pattern:
-                            obj_inflow.baseline_pattern_object = pat
-                            break
+                obj_inflow.baseline_pattern_object = self.patterns.find_item(obj_inflow.baseline_pattern)
 
         if self.aquifers.value:
             for obj_aquifer in self.aquifers.value:
-                if obj_aquifer.upper_evaporation_pattern:
-                    for pat in self.patterns.value:
-                        if pat.name == obj_aquifer.upper_evaporation_pattern:
-                            obj_aquifer.upper_evaporation_pattern_object = pat
-                            break
+                obj_aquifer.upper_evaporation_pattern_object = \
+                    self.patterns.find_item(obj_aquifer.upper_evaporation_pattern)
 
         if self.dwf.value:
-            found_match = False
             for obj_dwf in self.dwf.value:
                 del obj_dwf.time_pattern_objects[:]
                 # order of patterns should be kept intact
                 for i in range(0, len(obj_dwf.time_patterns)):
                     if obj_dwf.time_patterns[i]:
-                        found_match = False
-                        for pat in self.patterns.value:
-                            if pat.name == obj_dwf.time_patterns[i].strip("\""):
-                                obj_dwf.time_pattern_objects.append(pat)
-                                found_match = True
-                                break
-                        if not found_match:
-                            obj_dwf.time_pattern_objects.append(None)
+                        pat = self.patterns.find_item(obj_dwf.time_patterns[i].strip("\""))
+                        obj_dwf.time_pattern_objects.append(pat)
                     else:
                         obj_dwf.time_pattern_objects.append(None)
 

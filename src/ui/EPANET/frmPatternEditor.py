@@ -40,7 +40,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
     def cmdOK_Clicked(self):
         # TODO: IF pattern id changed, ask about replacing all occurrences
         edited_names = []
-        if self.editing_item.name != self.txtPatternID.text():
+        if not self.new_item and self.editing_item.name != self.txtPatternID.text():
             # check if the new pattern name is unique
             section_field_name = self._main_form.section_types[type(self.editing_item)]
             if hasattr(self._main_form.project, section_field_name):
@@ -52,6 +52,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                                                           "Pattern name " + self.txtPatternID.text() +
                                                           " is already in use.",
                                                           QtGui.QMessageBox.Ok)
+                            self.txtPatternID.setText(self.editing_item.name)
                             return
             edited_names.append((self.editing_item.name, self.editing_item))
             QtGui.QMessageBox.information(None,"EPANET Pattern Editor",

@@ -44,7 +44,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
 
     def cmdOK_Clicked(self):
         edited_names = []
-        if self.editing_item.name != self.txtPatternID.text():
+        if not self.new_item and self.editing_item.name != self.txtPatternID.text():
             # check if the new pattern name is unique
             section_field_name = self._main_form.section_types[type(self.editing_item)]
             if hasattr(self._main_form.project, section_field_name):
@@ -52,10 +52,18 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                 if section.value:
                     for itm in section.value:
                         if itm.name == self.txtPatternID.text():
-                            QtGui.QMessageBox.information(None, "Pattern name is already in use.",
-                                                          "SWMM Pattern Editor", QtGui.QMessageBox.Ok)
+                            QtGui.QMessageBox.information(None,"SWMM Pattern Editor",
+                                                          "Pattern name " + self.txtPatternID.text() +
+                                                          " is already in use.",
+                                                           QtGui.QMessageBox.Ok)
+                            self.txtPatternID.setText(self.editing_item.name)
                             return
             edited_names.append((self.editing_item.name, self.editing_item))
+            QtGui.QMessageBox.information(None,"SWMM Pattern Editor",
+                                          "All references to Pattern " +
+                                          self.editing_item.name +
+                                          " will be replaced with " + self.txtPatternID.text(),
+                                          QtGui.QMessageBox.Ok)
 
         self.editing_item.name = self.txtPatternID.text()
         self.editing_item.description = self.txtDescription.text()

@@ -7,6 +7,8 @@ import traceback
 import webbrowser
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from threading import Lock, Thread
+from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
@@ -459,6 +461,12 @@ class frmMainEPANET(frmMain):
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 
+    def animate_e(self):
+        if self.output:
+            for self.time_index in range(1, self.output.num_periods):
+                self.horizontalTimeSlider.setSliderPosition(self.time_index)
+                sleep(2)
+
     def cboMap_currentIndexChanged(self):
         pass
 
@@ -466,7 +474,6 @@ class frmMainEPANET(frmMain):
         import core.epanet.options.hydraulics
         self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
-
 
     def report_status(self):
         print "report_status"
@@ -707,6 +714,9 @@ class frmMainEPANET(frmMain):
         self.delete_item(item)
 
     def run_simulation(self):
+        # self.open_output()
+        # return
+
         # Find input file to run
         # TODO: decide whether to automatically save to temp location as previous version did.
         use_existing = self.project and self.project.file_name
@@ -815,6 +825,67 @@ class frmMainEPANET(frmMain):
             # status = model_utility.StatusMonitor0(program, args, self, model='EPANET')
             # status.show()
             # os.chdir(current_directory)
+        else:
+            QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
+
+    def open_output(self):
+        inp_file_name = ''
+        if self.project:
+            inp_file_name = self.project.file_name
+
+        if os.path.exists(inp_file_name):
+            current_directory = os.getcwd()
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libepanet.dylib.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'epanet2_amd64.dll'
+                else:  # Linux
+                    lib_name = 'libepanet2_amd64.so'
+                self.model_path = self.find_external(lib_name)
+            if os.path.exists(self.model_path):
+                try:
+                    prefix, extension = os.path.splitext(inp_file_name)
+                    self.status_file_name = prefix + self.status_suffix
+                    self.output_filename = prefix + '.out'
+                    working_dir = os.path.abspath(os.path.dirname(inp_file_name))
+                    if os.path.isdir(working_dir):
+                        print("Changing into directory containing input file: " + working_dir)
+                        os.chdir(working_dir)
+                    else:
+                        try:
+                            import tempfile
+                            working_dir = tempfile.gettempdir()
+                            print("Changing into temporary directory: " + working_dir)
+                            os.chdir(working_dir)
+                        except Exception as err_temp:
+                            print("Could not change into temporary directory: " + str(err_temp))
+                    if self.output:
+                        self.output.close()
+                        self.output = None
+                    try:
+                        if os.path.exists(self.output_filename):
+                            self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                            self.set_thematic_controls()
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                    self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                finally:
+                    try:
+                        os.chdir(current_directory)
+                    except:
+                        pass
+                    return
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 

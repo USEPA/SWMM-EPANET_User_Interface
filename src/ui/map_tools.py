@@ -737,7 +737,6 @@ try:
         @staticmethod
         def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None):
             provider = layer.dataProvider()
-            layer.startEditing()
             calculate_min_max = False
             if min is None or max is None:
                 calculate_min_max = True
@@ -745,7 +744,7 @@ try:
                 try:
                     feature_name = feature[0]
                     val = color_by[feature_name]
-                    layer.changeAttributeValue(feature.id(), 1, val, True)
+                    provider.changeAttributeValues({feature.id() : {1 : val}})
                     # feature[1] = val
                     if calculate_min_max:
                         if min is None or val < min:
@@ -754,8 +753,7 @@ try:
                             max = val
                 except Exception as ex:
                     print str(ex)
-                    layer.changeAttributeValue(feature.id(), 1, 0.0, True)
-            layer.commitChanges()
+                    provider.changeAttributeValues({feature.id() : {1 : 0.0}})
 
             # colorRamp = QgsVectorGradientColorRampV2.create(
             #     {'color1': '155,155,0,255', 'color2': '0,0,255,255',

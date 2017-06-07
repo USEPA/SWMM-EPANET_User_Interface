@@ -7,7 +7,8 @@ from cStringIO import StringIO
 if sys.version_info >= (3,):
     unicode = str
 # from embed_ipython_new import EmbedIPython
-from threading import Lock
+from threading import Lock, Thread
+from time import sleep
 from PyQt4.Qsci import QsciScintilla
 
 #from ui.ui_utility import EmbedMap
@@ -283,6 +284,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         self.time_index = 0
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+        self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
 
         self.onLoad()
         self.undo_stack = QUndoStack(self)
@@ -1093,6 +1095,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
         self.signalTimeChanged.emit()
+
+    def btnPlay_clicked(self):
+        nt = Thread(target=self.animate_e, args=[])
+        nt.start()
 
     def setQgsMapToolSelect(self):
         self.actionMapSelectObj.setChecked(True)

@@ -285,6 +285,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.time_index = 0
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
         self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
+        self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
+        self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
 
         self.onLoad()
         self.undo_stack = QUndoStack(self)
@@ -1095,6 +1097,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
         self.signalTimeChanged.emit()
+
+    def btnPlayForward_clicked(self):
+        if self.output:
+            if self.time_index + 1 <= self.output.num_periods:
+                ltime_index = self.time_index + 1
+                self.horizontalTimeSlider.setSliderPosition(ltime_index)
+            else:
+                return
+
+    def btnPlayBack_clicked(self):
+        if self.output:
+            if self.time_index - 1 >= 1:
+                ltime_index = self.time_index - 1
+                self.horizontalTimeSlider.setSliderPosition(ltime_index)
+            else:
+                return
 
     def btnPlay_clicked(self):
         nt = Thread(target=self.animate_e, args=[])

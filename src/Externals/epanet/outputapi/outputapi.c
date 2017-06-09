@@ -116,7 +116,8 @@ int DLLEXPORT ENR_open(ENResultsAPI* enrapi, const char* path)
     // Perform checks to insure the file is valid
     else if ((err = validateFile(enrapi)) != 0) errorcode = err;
 
-    else {
+    // If a warning is encountered read file header
+    if (errorcode < 400) {
     	// read network size
     	fseek(enrapi->file, 2*WORDSIZE, SEEK_SET);
     	fread(&(enrapi->nodeCount), WORDSIZE, 1, enrapi->file);
@@ -141,8 +142,8 @@ int DLLEXPORT ENR_open(ENResultsAPI* enrapi, const char* path)
     	enrapi->bytesPerPeriod = NNODERESULTS*WORDSIZE*enrapi->nodeCount +
     			NLINKRESULTS*WORDSIZE*enrapi->linkCount;
     }
-
-    if (errorcode) ENR_close(enrapi);
+    // If error encountered close the binary file
+    if (errorcode > 400) ENR_close(enrapi);
 
     return errorcode;
 }
@@ -750,6 +751,8 @@ int DLLEXPORT ENR_errMessage(int errcode, char* errmsg, int n)
 {
     switch (errcode)
     {
+    case 10: strncpy(errmsg, WARN10, n); 
+        break;
     case 411: strncpy(errmsg, ERR411, n);
     	break;
     case 412: strncpy(errmsg, ERR412, n);
@@ -765,8 +768,6 @@ int DLLEXPORT ENR_errMessage(int errcode, char* errmsg, int n)
     case 435: strncpy(errmsg, ERR435, n);
     	break;
     case 436: strncpy(errmsg, ERR436, n);
-    	break;
-    case 437: strncpy(errmsg, ERR437, n);
     	break;
     default: return -1;
     }
@@ -798,7 +799,7 @@ int validateFile(ENResultsAPI* enrapi)
 	// Does the binary file contain results?
 	else if (filepos < MINNREC*WORDSIZE || enrapi->nPeriods == 0) errorcode = 436;
 	// Were there any problems with the model run?
-	else if (hydcode != 0) errorcode = 437;
+	else if (hydcode != 0) errorcode = 10;
 
 	return errorcode;
 }

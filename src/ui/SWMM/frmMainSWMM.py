@@ -7,6 +7,7 @@ import webbrowser
 import traceback
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
 from ui.help import HelpHandler
@@ -695,6 +696,12 @@ class frmMainSWMM(frmMain):
                         layer.triggerRepaint()
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
+
+    def animate_e(self):
+        if self.output:
+            for self.time_index in range(1, self.output.num_periods):
+                self.horizontalTimeSlider.setSliderPosition(self.time_index)
+                sleep(2)
 
     def get_output(self):
         if not self.output:

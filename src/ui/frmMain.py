@@ -202,6 +202,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
                             self.actionMapOption.triggered.connect(self.map_addfeature)
                             self.actionStdSelect_Region.triggered.connect(self.setQgsMapToolSelectRegion)
+                            self.actionMapSelectRegion.triggered.connect(self.setQgsMapToolSelectRegion)
                             self.actionStdSelect_All.triggered.connect(self.select_all_map_features)
 
                             self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
@@ -1141,8 +1142,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setPanMode()
 
     def setQgsMapToolSelectRegion(self):
-        self.select_region_checked = not self.select_region_checked
+        if self.actionMapSelectRegion.isChecked():
+            self.select_region_checked = True
+        else:
+            self.select_region_checked = not self.select_region_checked
         self.setQgsMapTool()
+        self.model_layers.get_selected_model_ids()
+        if self.model_layers.total_selected > 0:
+            self.actionStdEditObject.setEnabled(True)
+        else:
+            self.actionStdEditObject.setEnabled(False)
 
     def setQgsMapToolTranslateCoords(self):
         self.translating_coordinates = not self.translating_coordinates
@@ -1995,6 +2004,8 @@ class ModelLayers:
         self.links_layers = []
         self.all_layers = []
         self.map_widget.remove_all_layers()
+        self.selected_model_ids = {}
+        self.total_selected = 0
 
     def create_layers_from_project(self, project):
         # First remove old ModelLayers already on the map
@@ -2023,6 +2034,25 @@ class ModelLayers:
         except:
             return None
 
+    def get_selected_model_ids(self):
+        self.total_selected = 0
+        for mlyr in self.all_layers:
+            lyr_name = mlyr.name()
+            if lyr_name and \
+               (lyr_name.lower().startswith("label") or
+               lyr_name.lower().startswith("subcentroid") or
+               lyr_name.lower().startswith("sublink")):
+                continue
+            if self.selected_model_ids.has_key(lyr_name):
+                if isinstance(self.selected_model_ids[lyr_name], list):
+                    del self.selected_model_ids[lyr_name][:]
+                else:
+                    self.selected_model_ids[lyr_name] = []
+            else:
+                self.selected_model_ids[lyr_name] = []
+            for f in mlyr.selectedFeatures():
+                self.selected_model_ids[lyr_name].append(f['name'])
+                self.total_selected = self.total_selected + 1
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

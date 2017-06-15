@@ -29,6 +29,7 @@ from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
 from ui.frmTranslateCoordinates import frmTranslateCoordinates
 from ui.inifile import ini_setting
+from ui.model_utility import ParseData
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -2001,7 +2002,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if is_node_item:
                 for n in names:
                     oj = self.project.junctions.find_item(n)
-                    if oj.x and oj.y:
+                    xc, x_c_good = ParseData.floatTryParse(oj.x)
+                    yc, y_c_good = ParseData.floatTryParse(oj.y)
+                    if x_c_good and y_c_good:
                         self.listViewObjects.addItem(n)
                     else:
                         oj_item = QListWidgetItem('%s' % n)

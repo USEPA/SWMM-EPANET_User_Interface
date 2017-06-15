@@ -234,7 +234,7 @@ class SectionWriterAsList(SectionWriter):
                                 item_str = item.value
                             else:
                                 item_str = self.list_type_writer.as_text(item)
-                        if item_str is not None:
+                        if item_str is not None and item_str:
                             # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank
                             # if item_str.strip() or isinstance(item, basestring) or
                             #  (isinstance(item, Section) and item.SECTION_NAME == "Comment"):

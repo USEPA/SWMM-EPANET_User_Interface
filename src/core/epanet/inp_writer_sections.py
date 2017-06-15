@@ -41,6 +41,7 @@ from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import StatusWrite
 from core.epanet.options.report import ReportOptions
 from core.inp_writer_base import SectionWriter
+from core.utility import ParseData
 
 
 class CurveWriter(SectionWriter):
@@ -237,6 +238,10 @@ class CoordinateWriter(SectionWriter):
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
+        xc, xc_good = ParseData.floatTryParse(coordinate.x)
+        yc, yc_good = ParseData.floatTryParse(coordinate.y)
+        if not (xc_good and yc_good):
+            return ""
         inp = CoordinateWriter.field_format.format(coordinate.name, str(coordinate.x), str(coordinate.y))
         if hasattr(coordinate, "comment") and coordinate.comment:
             inp += "\t"

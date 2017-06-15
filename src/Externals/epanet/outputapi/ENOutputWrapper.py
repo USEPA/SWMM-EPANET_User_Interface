@@ -314,7 +314,7 @@ class OutputObject(object):
         self.output_file_name = str(output_file_name)
         self.ptrapi = _lib.ENR_init()
         ret = _lib.ENR_open(self.ptrapi, self.output_file_name)
-        if ret != 0:
+        if ret > 400:
             self._raise_error(ret)
         file_version = self._call_int(_lib.ENR_getVersion)
         print("ENR opened {} Version {}".format(output_file_name, str(file_version)))

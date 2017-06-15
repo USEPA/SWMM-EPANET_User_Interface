@@ -1676,9 +1676,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.project or not hasattr(self, "get_editor"):
             return
         if len(self.listViewObjects.selectedItems()) == 0:
-            return
-        selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
-        self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
+            self.model_layers.get_selected_model_ids()
+            if self.model_layers.total_selected > 0:
+                otypes = []
+                for otype in self.model_layers.selected_model_ids.keys():
+                    if len(self.model_layers.selected_model_ids[otype]):
+                        otypes.append(otype)
+                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+                if otype and otype[1]:
+                    mobjects = self.model_layers.selected_model_ids[otype[0]]
+                    self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
+                pass
+            else:
+                return
+        else:
+            selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+            self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
 
     def add_object_clicked(self):
         if self.project and self.get_editor:

@@ -1992,7 +1992,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            self.listViewObjects.addItems(names)
+            # self.listViewObjects.addItems(names)
+            is_node_item = False
+            for nt in self.tree_nodes_items:
+                if selected_text in nt[0]:
+                    is_node_item = True
+                    break
+            if is_node_item:
+                for n in names:
+                    oj = self.project.junctions.find_item(n)
+                    if oj.x and oj.y:
+                        self.listViewObjects.addItem(n)
+                    else:
+                        oj_item = QListWidgetItem('%s' % n)
+                        oj_item.setBackground(QColor('yellow'))
+                        self.listViewObjects.addItem(oj_item)
+            else:
+                self.listViewObjects.addItems(names)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

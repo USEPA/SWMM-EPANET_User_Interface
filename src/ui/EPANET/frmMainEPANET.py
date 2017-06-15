@@ -118,6 +118,10 @@ class frmMainEPANET(frmMain):
                       tree_Patterns,
                       tree_Curves,
                       tree_Controls]
+    tree_nodes_items = [
+        tree_Junctions,
+        tree_Reservoirs,
+        tree_Tanks]
 
     def __init__(self, q_application):
         self.model = "EPANET"

@@ -1125,12 +1125,14 @@ class frmMainSWMM(frmMain):
         """
         if self.project.map and self.project.map.dimensions:
             if self.map_widget:
-                rect = self.map_widget.get_extent(self.model_layers.nodes_layers)
+                rect = self.map_widget.get_extent(self.model_layers.all_layers)
                 if rect:
-                    self.project.map.dimensions = (rect.xMinimum() * 0.8,
-                                                   rect.yMinimum() * 0.8,
-                                                   rect.xMaximum() * 1.2,
-                                                   rect.yMaximum() * 1.2)
+                    x_setback = (rect.xMaximum() - rect.xMinimum()) * 5.0 / 100.0
+                    y_setback = (rect.yMaximum() - rect.yMinimum()) * 5.0 / 100.0
+                    self.project.map.dimensions = (rect.xMinimum() - x_setback,
+                                                   rect.yMinimum() - y_setback,
+                                                   rect.xMaximum() + x_setback,
+                                                   rect.yMaximum() + y_setback)
 
 
 class ModelLayersSWMM(ModelLayers):
@@ -1255,16 +1257,23 @@ class ModelLayersSWMM(ModelLayers):
         if fc is None:
             return
 
-        #assume we only handle sub-node connection
-        #ToDo: need to handle sub-sub connection perhaps
-        subcent_section = getattr(self.map_widget.session.project, "subcentroids")
         isSub2Sub = 0 #False
+        # subcent_section = getattr(self.map_widget.session.project, "subcentroids")
+        outlet_sub = None
+        if self.project.subcatchments and self.project.subcatchments.value:
+            outlet_sub = self.project.subcatchments.find_item(ms.outlet)
+            if outlet_sub:
+                for outlet_sub_fc in self.subcentroids.getFeatures():
+                    if ms.outlet == outlet_sub_fc["sub_modelid"]:
+                        outlet_sub = self.project.subcentroids.find_item("subcentroid-" + ms.outlet)
+                        isSub2Sub = 1
+                        break
+
         link_item = SubLink()
         link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
         link_item.inlet_node = fc["name"]
         link_item.outlet_node = ms.outlet
         inlet_sub = ms.centroid
-        outlet_sub = None
         f = self.map_widget.line_feature_from_item(link_item,
                                                    self.map_widget.session.project.all_nodes(),
                                                    inlet_sub, outlet_sub)

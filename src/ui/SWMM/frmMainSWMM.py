@@ -1116,6 +1116,22 @@ class frmMainSWMM(frmMain):
             self.map_widget.setVisible(True)
         self.restoreCursor()
 
+    def set_project_map_extent(self):
+        """
+        This routine is for backward compatibility to ensure
+        [MAP] section dimension is valid, such that it can be
+        displayed correctly in the original software.
+        Returns:
+        """
+        if self.project.map and self.project.map.dimensions:
+            if self.map_widget:
+                rect = self.map_widget.get_extent(self.model_layers.nodes_layers)
+                if rect:
+                    self.project.map.dimensions = (rect.xMinimum() * 0.8,
+                                                   rect.yMinimum() * 0.8,
+                                                   rect.xMaximum() * 1.2,
+                                                   rect.yMaximum() * 1.2)
+
 
 class ModelLayersSWMM(ModelLayers):
     """

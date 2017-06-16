@@ -1862,6 +1862,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def save_project(self, file_name=None):
         if not file_name:
             file_name = self.project.file_name
+        if self.model == "SWMM":
+            self.set_project_map_extent()
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.

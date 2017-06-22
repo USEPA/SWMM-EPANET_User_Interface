@@ -225,8 +225,15 @@ class StatusWriter(SectionWriter):
     @staticmethod
     def as_text(link):
         """format contents of this item for writing to file"""
-        if isinstance(link, Pump):
-            if hasattr(link, "initial_status") and len(link.initial_status) > 0:
+        if isinstance(link, Pump) or isinstance(link, Pipe):
+            if hasattr(link, "initial_status") and \
+               len(link.initial_status) > 0 and \
+               link.initial_status.upper() == 'CLOSED':
+                return StatusWriter.field_format.format(link.name, link.initial_status)
+        elif isinstance(link, Valve):
+            if hasattr(link, "initial_status") and \
+               len(link.initial_status) > 0 and \
+               link.initial_status.upper() <> 'ACTIVE':
                 return StatusWriter.field_format.format(link.name, link.initial_status)
         #elif status.comment:
         #    return status.comment

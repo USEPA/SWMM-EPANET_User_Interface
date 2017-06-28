@@ -414,7 +414,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tabProject">
         <attribute name="title">
@@ -507,7 +507,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_add.png</normaloff>:/icons/obj_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -533,7 +533,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_delete.png</normaloff>:/icons/obj_delete.png</iconset>
          </property>
          <property name="iconSize">
@@ -559,7 +559,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_property.png</normaloff>:/icons/obj_property.png</iconset>
          </property>
          <property name="iconSize">
@@ -585,7 +585,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_moveup.png</normaloff>:/icons/obj_moveup.png</iconset>
          </property>
          <property name="iconSize">
@@ -611,7 +611,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_movedown.png</normaloff>:/icons/obj_movedown.png</iconset>
          </property>
          <property name="iconSize">
@@ -637,7 +637,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="swmm.qrc">
            <normaloff>:/icons/obj_sort.png</normaloff>:/icons/obj_sort.png</iconset>
          </property>
          <property name="iconSize">
@@ -668,8 +668,8 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>78</height>
+     <width>310</width>
+     <height>82</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -680,7 +680,65 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
+     <item row="0" column="0" rowspan="2" colspan="2">
+      <widget class="QLabel" name="labelStartTime">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>not set</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" rowspan="2" colspan="7">
+      <widget class="QSlider" name="horizontalTimeSlider">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="9" rowspan="2">
+      <widget class="QLabel" name="labelEndTime">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>not set</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="8" rowspan="2">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>250</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="0">
       <widget class="QPushButton" name="pushButtonBack">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -718,37 +776,21 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="3">
-      <widget class="QSlider" name="horizontalTimeSlider">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>12</height>
-        </size>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="btnPause">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="pushButtonForward">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>12</horstretch>
-         <verstretch>12</verstretch>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="maximumSize">
         <size>
-         <width>12</width>
-         <height>12</height>
+         <width>18</width>
+         <height>18</height>
         </size>
        </property>
        <property name="text">
@@ -756,14 +798,20 @@
        </property>
        <property name="icon">
         <iconset resource="swmm.qrc">
-         <normaloff>:/icons/forward.png</normaloff>:/icons/forward.png</iconset>
+         <normaloff>:/icons/pause.png</normaloff>:/icons/pause.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
        <property name="flat">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="2">
       <widget class="QPushButton" name="pushButtonPlay">
        <property name="enabled">
         <bool>true</bool>
@@ -798,44 +846,57 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="labelStartTime">
+     <item row="2" column="3">
+      <widget class="QPushButton" name="pushButtonForward">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>12</horstretch>
+         <verstretch>12</verstretch>
+        </sizepolicy>
+       </property>
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
-         <height>18</height>
+         <width>12</width>
+         <height>12</height>
         </size>
        </property>
        <property name="text">
-        <string>not set</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="swmm.qrc">
+         <normaloff>:/icons/forward.png</normaloff>:/icons/forward.png</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
+     <item row="2" column="4">
+      <widget class="QDoubleSpinBox" name="dsbPlaySpeed"/>
+     </item>
+     <item row="2" column="5">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>689</width>
-         <height>13</height>
+         <width>266</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="1" column="3">
-      <widget class="QLabel" name="labelEndTime">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>18</height>
-        </size>
-       </property>
+     <item row="2" column="6">
+      <widget class="QLabel" name="lblAnimateTime">
        <property name="text">
-        <string>not set</string>
+        <string>Time</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="7">
+      <widget class="QComboBox" name="cboTime"/>
      </item>
     </layout>
    </widget>

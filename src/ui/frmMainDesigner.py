@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Tue Jun 27 22:09:00 2017
+# Created: Thu Jun 29 10:43:34 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_frmMain(object):
     def setupUi(self, frmMain):
         frmMain.setObjectName(_fromUtf8("frmMain"))
-        frmMain.resize(832, 646)
+        frmMain.resize(832, 650)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icon_swmm.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         frmMain.setWindowIcon(icon)
@@ -346,6 +346,7 @@ class Ui_frmMain(object):
         self.pushButtonPlay.setText(_fromUtf8(""))
         icon9 = QtGui.QIcon()
         icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/pause.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.pushButtonPlay.setIcon(icon9)
         self.pushButtonPlay.setCheckable(True)
         self.pushButtonPlay.setChecked(False)

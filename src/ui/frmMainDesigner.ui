@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>832</width>
-    <height>646</height>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -833,7 +833,8 @@
        </property>
        <property name="icon">
         <iconset resource="swmm.qrc">
-         <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+         <normaloff>:/icons/play.png</normaloff>
+         <normalon>:/icons/pause.png</normalon>:/icons/play.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>

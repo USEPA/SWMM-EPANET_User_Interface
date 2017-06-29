@@ -285,10 +285,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 act.triggered.connect(self.setQgsMapTool)
 
         self.time_index = 0
+        self.animating = False
+        self.animate_thread = None
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
         self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
         self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
         self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
+        self.btnPause.clicked.connect(self.btnPause_clicked)
 
         self.onLoad()
         self.undo_stack = QUndoStack(self)
@@ -1116,9 +1119,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             else:
                 return
 
+    def btnPause_clicked(self):
+        if self.animate_thread:
+            self.animate_thread.pause()
+
     def btnPlay_clicked(self):
-        nt = Thread(target=self.animate_e, args=[])
-        nt.start()
+        if not self.animate_thread:
+            self.animate_thread = MyProcess(self.animate_e_step, self.output.num_periods)
+            self.animate_thread.start()
+            self.animating = True
+        else:
+            if self.animate_thread and self.animate_thread.isAlive():
+                if self.animating:
+                    self.animate_thread.pause()
+                    self.animating = False
+                else:
+                    self.animate_thread.resume(self.time_index)
+                    self.animating = True
 
     def setQgsMapToolSelect(self):
         self.actionMapSelectObj.setChecked(True)
@@ -1965,6 +1982,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         del self.project_settings
         if self.q_application:
             try:
+                if self.animate_thread:
+                    # if self.output:
+                    #     self.animate_thread.resume(self.output.num_periods)
+                    self.animate_thread.stop()
+                    # self.animate_thread.join()
                 self.q_application.quit()
             except:
                 try:

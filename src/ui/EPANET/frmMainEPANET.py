@@ -471,6 +471,11 @@ class frmMainEPANET(frmMain):
                 self.horizontalTimeSlider.setSliderPosition(self.time_index)
                 sleep(2)
 
+    def animate_e_step(self, i):
+        if self.output:
+            if i >= 0 and i <= self.output.num_periods:
+                self.horizontalTimeSlider.setSliderPosition(i)
+
     def cboMap_currentIndexChanged(self):
         pass
 

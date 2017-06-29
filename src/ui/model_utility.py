@@ -23,6 +23,8 @@ process_events = QtGui.QApplication.processEvents
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+from threading import Thread, Event, Condition, Lock
+from time import sleep
 
 class ObjectTreeView(QtGui.QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
@@ -219,3 +221,89 @@ class BasePlot(FigureCanvas):
         if self.axes is not None:
             self.axes.set_ylabel(aLabel, fontsize=self.label_size)
         pass
+
+class MyProcess0(Thread):
+    def __init__(self, wfunc, loop_steps):
+        Thread.__init__(self)
+        #flag to pause thread
+        self.wfunc = wfunc
+        self.loop_steps = loop_steps
+        self.can_run = Event()
+        self.thing_done = Event()
+        self.can_run.set()
+        self.thing_done.set()
+        self.istart = 1
+        self._is_running = True
+
+    def run(self):
+        while self._is_running:
+            self.can_run.wait()
+            try:
+                self.thing_done.clear()
+                for i in range(self.istart, self.loop_steps):
+                    self.wfunc(i)
+                    sleep(1)
+                pass
+            finally:
+                self.thing_done.set()
+                pass
+
+    def pause(self):
+        self.can_run.clear()
+        self.thing_done.wait()
+        # process_events()
+
+    def resume(self, istart):
+        self.istart = istart
+        self.can_run.set()
+
+    def stop(self):
+        self._is_running = False
+
+
+class MyProcess(Thread):
+    def __init__(self, wfunc, loop_steps):
+        Thread.__init__(self)
+        #flag to pause thread
+        self.wfunc = wfunc
+        self.paused = False
+        self.loop_steps = loop_steps
+        self.pause_cond = Condition(Lock())
+        self.istart = 1
+        self._is_running = True
+
+    def run(self):
+        while True:
+            with self.pause_cond:
+                try:
+                    for i in range(self.istart, self.loop_steps):
+                        while self.paused:
+                            self.pause_cond.wait()
+                        if self._is_running:
+                            self.wfunc(i)
+                            sleep(1)
+                        else:
+                            return
+                except:
+                    pass
+                finally:
+                    return
+        return
+
+    def pause(self):
+        self.paused = True
+        self.pause_cond.acquire()
+        # process_events()
+
+    def resume(self, istart):
+        # self.istart = istart
+        self.paused = False
+        self.pause_cond.notify()
+        self.pause_cond.release()
+
+    def stop(self):
+        self._is_running = False
+        self.paused = False
+        self.pause_cond.notify()
+        self.pause_cond.release()
+

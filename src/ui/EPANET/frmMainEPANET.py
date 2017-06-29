@@ -335,6 +335,7 @@ class frmMainEPANET(frmMain):
                 if attribute:
                     enable_time_widget = True
                     # find min and max values over entire run
+                    # ToDo: this needs to be sped up!!!
                     for time_increment in range(0, self.output.num_periods-1):
                         values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
                         for value in values:

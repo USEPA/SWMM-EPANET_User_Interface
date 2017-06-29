@@ -1754,7 +1754,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 self.obj_tree.setCurrentItem(tree_node)
 
                         if selected_list:
-                            qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
+                            # qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
+                            qgis_ids = []
+                            for moname in selected_list:
+                                f = self.map_widget.find_feature(layer, moname)
+                                if f:
+                                    qgis_ids.append(f.id())
                             layer.setSelectedFeatures(qgis_ids)
 
                     except Exception as ex:

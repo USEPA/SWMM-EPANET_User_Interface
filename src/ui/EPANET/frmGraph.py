@@ -142,8 +142,8 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             del selected_items[:]
             for sitm in self.lstToGraph.selectedItems():
                 selected_items.append(sitm.text())
-            for lyr in obj_lyr_group:
-                self._main_form.select_named_items(lyr, selected_items)
+            # for lyr in obj_lyr_group:
+            #     self._main_form.select_named_items(lyr, selected_items)
 
     def set_selected_object(self, layer_name, object_ids):
         if layer_name and object_ids:

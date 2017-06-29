@@ -281,14 +281,14 @@ class MyProcess(Thread):
                             self.pause_cond.wait()
                         if self._is_running:
                             self.wfunc(i)
-                            sleep(1)
+                            sleep(2)
                         else:
                             return
                 except:
                     pass
                 finally:
-                    return
-        return
+                    pass
+        pass
 
     def pause(self):
         self.paused = True
@@ -303,7 +303,8 @@ class MyProcess(Thread):
 
     def stop(self):
         self._is_running = False
-        self.paused = False
-        self.pause_cond.notify()
-        self.pause_cond.release()
+        if self.paused:
+            self.paused = False
+            self.pause_cond.notify()
+            self.pause_cond.release()
 

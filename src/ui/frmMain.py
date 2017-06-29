@@ -291,7 +291,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
         self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
         self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
-        self.btnPause.clicked.connect(self.btnPause_clicked)
 
         self.onLoad()
         self.undo_stack = QUndoStack(self)
@@ -1118,10 +1117,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.horizontalTimeSlider.setSliderPosition(ltime_index)
             else:
                 return
-
-    def btnPause_clicked(self):
-        if self.animate_thread:
-            self.animate_thread.pause()
 
     def btnPlay_clicked(self):
         if not self.animate_thread:

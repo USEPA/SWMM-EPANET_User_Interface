@@ -275,6 +275,7 @@ class frmMainEPANET(frmMain):
             self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
             self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
             self.signalTimeChanged.connect(self.update_thematic_map_time)
+            # self.signalTimeChanged.connect(self.update_time_display)
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -462,6 +463,13 @@ class frmMainEPANET(frmMain):
                         else:
                             self.map_widget.set_default_line_renderer(layer)
                         layer.triggerRepaint()
+            if self.cboTime.count() > 0:
+                if self.time_index >=0 and self.time_index < self.cboTime.count():
+                    # self.cboTime.disconnect(self.cboTime, "currentIndexChanged()",
+                    #                         self.update_thematic_map_time)
+                    self.cboTime.setCurrentIndex(self.time_index)
+                    # self.cboTime.connect(self.cboTime, "currentIndexChanged()",
+                    #                         self.update_thematic_map_time)
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 
@@ -783,6 +791,15 @@ class frmMainEPANET(frmMain):
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
                         self.set_thematic_controls()
+                        self.labelStartTime.setText('0:00')
+                        if self.output:
+                            time_labels = []
+                            self.cboTime.clear()
+                            for i in range(1, self.output.num_periods):
+                                time_labels.append(self.output.get_time_string(i))
+                            self.cboTime.addItems(time_labels)
+                            # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
+                        self.labelEndTime.setText(self.project.times.duration)
                         return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))

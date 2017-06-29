@@ -266,6 +266,11 @@ class frmMainEPANET(frmMain):
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.setVisible(False)
 
+        self.cboDate.setVisible(False)
+        self.lblDate.setVisible(False)
+        self.sbETime.setVisible(False)
+        self.lblETime.setVisible(False)
+
         if self.map_widget:
             self.map_widget.applyLegend()
             self.map_widget.LegendDock.setVisible(False)

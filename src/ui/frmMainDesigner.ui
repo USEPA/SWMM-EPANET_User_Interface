@@ -668,7 +668,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>310</width>
+     <width>510</width>
      <height>82</height>
     </size>
    </property>
@@ -680,7 +680,7 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0" rowspan="2" colspan="2">
+     <item row="0" column="0">
       <widget class="QLabel" name="labelStartTime">
        <property name="maximumSize">
         <size>
@@ -693,7 +693,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="2" colspan="7">
+     <item row="0" column="1" colspan="13">
       <widget class="QSlider" name="horizontalTimeSlider">
        <property name="minimumSize">
         <size>
@@ -712,7 +712,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="9" rowspan="2">
+     <item row="0" column="14">
       <widget class="QLabel" name="labelEndTime">
        <property name="maximumSize">
         <size>
@@ -725,20 +725,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="8" rowspan="2">
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>250</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="2" column="0">
+     <item row="1" column="0">
       <widget class="QPushButton" name="pushButtonBack">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -776,7 +763,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
+     <item row="1" column="1">
       <widget class="QPushButton" name="pushButtonPlay">
        <property name="enabled">
         <bool>true</bool>
@@ -812,7 +799,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="3">
+     <item row="1" column="2">
       <widget class="QPushButton" name="pushButtonForward">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -838,10 +825,10 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="4">
+     <item row="1" column="3">
       <widget class="QDoubleSpinBox" name="dsbPlaySpeed"/>
      </item>
-     <item row="2" column="5">
+     <item row="1" column="4">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -854,15 +841,74 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="6">
+     <item row="1" column="5">
+      <widget class="QLabel" name="lblDate">
+       <property name="text">
+        <string>Date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="6">
+      <widget class="QComboBox" name="cboDate"/>
+     </item>
+     <item row="1" column="7">
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>3</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="8">
       <widget class="QLabel" name="lblAnimateTime">
        <property name="text">
         <string>Time</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="7">
+     <item row="1" column="9">
       <widget class="QComboBox" name="cboTime"/>
+     </item>
+     <item row="1" column="10">
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>2</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="11">
+      <widget class="QLabel" name="lblETime">
+       <property name="text">
+        <string>Elapsed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="12">
+      <widget class="QSpinBox" name="sbETime"/>
+     </item>
+     <item row="1" column="13" colspan="2">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>250</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </widget>

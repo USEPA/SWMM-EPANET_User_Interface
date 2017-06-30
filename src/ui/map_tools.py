@@ -6,6 +6,7 @@ try:
     from PyQt4.Qt import *
     from core.coordinate import Coordinate, Polygon
     from svgs_rc import *
+    from qgis_icons_rc import *
     import traceback
     import math
     import os
@@ -2138,6 +2139,8 @@ try:
             m = QMenu()
             # m.addAction("Show Extent", self.showExtent)
             m.addAction("Zoom to layer", self.zoom_to_layer)
+            m.addAction("Change Style...", self.edit_style)
+            m.addAction("Default Style", self.default_style)
             return m
 
         def showExtent(self):
@@ -2166,5 +2169,33 @@ try:
             self.map_control.set_extent(r_new)
             pass
 
+        def edit_style(self):
+            # s = QgsMapLayerStyle()
+            # s.readFromLayer(self.view.currentLayer())
+            lyr = self.view.currentLayer()
+            lyr = QgsVectorLayer()
+            ed = None
+            if isinstance(lyr.rendererV2(), QgsGraduatedSymbolRendererV2):
+                ed = QgsRendererV2PropertiesDialog(lyr,)
+            else:
+                ed = QgsSymbolV2SelectorDialog(self.view.currentLayer().rendererV2().symbol(),
+                                           QgsStyleV2.defaultStyle(),
+                                           self.view.currentLayer(), None, False)
+            ed.exec_()
+            self.view.currentLayer().triggerRepaint()
+            pass
+
+        def default_style(self):
+            if not self.view.currentLayer() in self.map_control.session.model_layers.all_layers:
+                return
+            gtype = self.view.currentLayer().geometryType()
+            if gtype == 0:
+                EmbedMap.set_default_point_renderer(self.view.currentLayer())
+            elif gtype == 1:
+                EmbedMap.set_default_line_renderer(self.view.currentLayer())
+            elif gtype == 2:
+                EmbedMap.set_default_polygon_renderer(self.view.currentLayer())
+            self.view.currentLayer().triggerRepaint()
+            pass
 except:
     print "Skipping map_tools"

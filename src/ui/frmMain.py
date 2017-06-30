@@ -1987,6 +1987,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     #     self.animate_thread.resume(self.output.num_periods)
                     self.animate_thread.stop()
                     # self.animate_thread.join()
+                    # if self.model == "EPANET":
+                    #     # a hack here to allow large model to quit
+                    #     if self.output and len(self.output.nodes) > 500:
+                    #         self.map_widget.zoom_to_one_feature()
+                    #         sleep(2)
+                    #     pass
                 self.q_application.quit()
             except:
                 try:

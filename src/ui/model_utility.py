@@ -283,6 +283,7 @@ class MyProcess(Thread):
                             self.wfunc(i)
                             sleep(2)
                         else:
+                            # self._reset_internal_locks()
                             return
                 except:
                     pass

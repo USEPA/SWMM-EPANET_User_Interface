@@ -349,15 +349,15 @@ class frmMainEPANET(frmMain):
                         color_by[node.name] = values[index]
                         index += 1
 
-            for layer in self.model_layers.nodes_layers:
-                if layer.isValid():
-                    if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                            self.thematic_node_min,
-                                                                            self.thematic_node_max)
-                    else:
-                        self.map_widget.set_default_point_renderer(layer)
-                    layer.triggerRepaint()
+            # for layer in self.model_layers.nodes_layers:
+            #     if layer.isValid():
+            #         if color_by:
+            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+            #                                                                 self.thematic_node_min,
+            #                                                                 self.thematic_node_max)
+            #         else:
+            #             self.map_widget.set_default_point_renderer(layer)
+            #         layer.triggerRepaint()
 
         if self.model_layers.links_layers:
             selected_attribute = self.cboMapLinks.currentText()
@@ -403,15 +403,15 @@ class frmMainEPANET(frmMain):
                     for link in self.output.links.values():
                         color_by[link.name] = values[index]
                         index += 1
-            for layer in self.model_layers.links_layers:
-                if layer.isValid():
-                    if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                            self.thematic_link_min,
-                                                                            self.thematic_link_max)
-                    else:
-                        self.map_widget.set_default_line_renderer(layer)
-                    layer.triggerRepaint()
+            # for layer in self.model_layers.links_layers:
+            #     if layer.isValid():
+            #         if color_by:
+            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+            #                                                                 self.thematic_link_min,
+            #                                                                 self.thematic_link_max)
+            #         else:
+            #             self.map_widget.set_default_line_renderer(layer)
+            #         layer.triggerRepaint()
         self.time_widget.setVisible(enable_time_widget)
         if enable_time_widget:
             self.update_thematic_map_time()

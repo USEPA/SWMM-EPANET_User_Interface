@@ -301,6 +301,18 @@ try:
             self.canvas.zoomToFullExtent()
             #self.set_extent(self.canvas.extent())
 
+        def zoom_to_one_feature(self):
+            for lyr in self.canvas.layers():
+                if isinstance(lyr, QgsVectorLayer):
+                    try:
+                        for f in lyr.getFeatures():
+                            lyr.setSelectedFeatures([f.id()])
+                            box = lyr.boundingBoxOfSelected()
+                            self.canvas.setExtent(box)
+                            lyr.triggerRepaint()
+                            return
+                    except:
+                        pass
 
         def setMouseTracking(self, flag):
             def recursive_set(parent):

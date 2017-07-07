@@ -2170,20 +2170,20 @@ try:
             pass
 
         def edit_style(self):
-            # s = QgsMapLayerStyle()
-            # s.readFromLayer(self.view.currentLayer())
             lyr = self.view.currentLayer()
-            lyr = QgsVectorLayer()
             ed = None
             if isinstance(lyr.rendererV2(), QgsGraduatedSymbolRendererV2):
-                ed = QgsRendererV2PropertiesDialog(lyr,)
+                ed = GraduatedSymbolV2(lyr, None)
+                if ed.exec_():
+                    new_renderer = QgsGraduatedSymbolRendererV2.convertFromRenderer(ed.get_renderer())
+                    lyr.setRendererV2(new_renderer)
             else:
                 ed = QgsSymbolV2SelectorDialog(self.view.currentLayer().rendererV2().symbol(),
                                            QgsStyleV2.defaultStyle(),
                                            self.view.currentLayer(), None, False)
-            ed.exec_()
-            self.view.currentLayer().triggerRepaint()
-            pass
+
+                ed.exec_()
+            lyr.triggerRepaint()
 
         def default_style(self):
             if not self.view.currentLayer() in self.map_control.session.model_layers.all_layers:
@@ -2197,5 +2197,30 @@ try:
                 EmbedMap.set_default_polygon_renderer(self.view.currentLayer())
             self.view.currentLayer().triggerRepaint()
             pass
+
+    class GraduatedSymbolV2(QtGui.QDialog):
+        def __init__(self, layer, parent=None, **kwargs):
+            QDialog.__init__(self)
+            self.layer = layer
+            self.keepGoing = True
+
+            self.setWindowTitle('Graduated Symbol Editor')
+            layout = QtGui.QVBoxLayout()
+            self.editor = QgsGraduatedSymbolRendererV2Widget(layer, QgsStyleV2.defaultStyle(),
+                                                             layer.rendererV2())
+            buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+
+            layout.addWidget(self.editor)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+            self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+
+            layout.setContentsMargins(10, 10, 10, 10)
+            self.setLayout(layout)
+
+        def get_renderer(self):
+            return self.editor.renderer()
+
 except:
     print "Skipping map_tools"

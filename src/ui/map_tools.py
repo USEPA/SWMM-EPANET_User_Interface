@@ -778,29 +778,33 @@ try:
             # renderer.setSizeScaleField("LABELRANK")
             # layer.setRendererV2(QgsSingleSymbolRendererV2(symbol))
 
-            if min is None or max is None:
-                min = 0
-                max = 5
-            increment = (max - min) / 5
-            ramp_val = [round(min + index*increment, 2) for index in [0, 1, 2, 3, 4]]
-            colorRamp = ((str(ramp_val[0]) + ' to ' + str(ramp_val[1]), ramp_val[0], ramp_val[1], '#0000ff'), \
-                         (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#00ffff'), \
-                         (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#00ff00'), \
-                         (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#ffff00'), \
-                         (str(ramp_val[4]) + ' to ' + str(round(max, 2)), ramp_val[4], max, '#ff0000'))
-            ranges = []
-            for label, lower, upper, color in colorRamp:
-                symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
-                if layer.geometryType() == 0:
-                    symbol.setSize(1.5)
-                elif layer.geometryType() == 1:
-                    symbol.setWidth(0.5)
-                symbol.setColor(QtGui.QColor(color))
-                rng = QgsRendererRangeV2(lower, upper, symbol, label)
-                ranges.append(rng)
-            renderer = QgsGraduatedSymbolRendererV2("color", ranges)
+            if arenderer:
+                pass
+            else:
+                if min is None or max is None:
+                    min = 0
+                    max = 5
+                increment = (max - min) / 5
+                ramp_val = [round(min + index*increment, 2) for index in [0, 1, 2, 3, 4]]
+                colorRamp = ((str(ramp_val[0]) + ' to ' + str(ramp_val[1]), ramp_val[0], ramp_val[1], '#0000ff'), \
+                             (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#00ffff'), \
+                             (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#00ff00'), \
+                             (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#ffff00'), \
+                             (str(ramp_val[4]) + ' to ' + str(round(max, 2)), ramp_val[4], max, '#ff0000'))
+                ranges = []
+                for label, lower, upper, color in colorRamp:
+                    symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
+                    if layer.geometryType() == 0:
+                        symbol.setSize(1.5)
+                    elif layer.geometryType() == 1:
+                        symbol.setWidth(0.5)
+                    symbol.setColor(QtGui.QColor(color))
+                    rng = QgsRendererRangeV2(lower, upper, symbol, label)
+                    ranges.append(rng)
+                arenderer = QgsGraduatedSymbolRendererV2("color", ranges)
+                pass
 
-            layer.setRendererV2(renderer)
+            layer.setRendererV2(arenderer)
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()

@@ -2031,7 +2031,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     break
             if is_node_item:
                 for n in names:
-                    oj = self.project.junctions.find_item(n)
+                    if not (n in self.project.all_nodes()):
+                        continue
+                    # oj = self.project.junctions.find_item(n)
+                    oj = self.project.all_nodes()[n]
+                    if not oj:
+                        continue
                     xc, x_c_good = ParseData.floatTryParse(oj.x)
                     yc, y_c_good = ParseData.floatTryParse(oj.y)
                     if x_c_good and y_c_good:

@@ -41,6 +41,7 @@ try:
             self.links_group = self.project_group.addGroup("Links")
             self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
+            self.layer_styles = {}
 
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
@@ -444,6 +445,7 @@ try:
             if layer is None:
                 return
             symbol = QgsMarkerSymbolV2.createSimple({})
+            # symbol = QgsMarkerSymbolV2.defaultSymbol(layer.geometryType())
             symbol.deleteSymbolLayer(0)
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
             symbol_layer.setColor(QColor(130, 180, 255, 255))
@@ -748,7 +750,7 @@ try:
             return symbol
 
         @staticmethod
-        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None):
+        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None, arenderer=None):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
@@ -2172,30 +2174,38 @@ try:
         def edit_style(self):
             lyr = self.view.currentLayer()
             ed = None
+            new_renderer = None
             if isinstance(lyr.rendererV2(), QgsGraduatedSymbolRendererV2):
                 ed = GraduatedSymbolV2(lyr, None)
                 if ed.exec_():
                     new_renderer = QgsGraduatedSymbolRendererV2.convertFromRenderer(ed.get_renderer())
-                    lyr.setRendererV2(new_renderer)
             else:
-                ed = QgsSymbolV2SelectorDialog(self.view.currentLayer().rendererV2().symbol(),
+                old_renderer = self.view.currentLayer().rendererV2()
+                ed = QgsSymbolV2SelectorDialog(old_renderer.symbol(),
                                            QgsStyleV2.defaultStyle(),
-                                           self.view.currentLayer(), None, False)
+                                           lyr, None, False)
 
-                ed.exec_()
-            lyr.triggerRepaint()
+                if ed.exec_():
+                    new_renderer = old_renderer.clone()
+            if new_renderer:
+                lyr.setRendererV2(new_renderer)
+                lyr.triggerRepaint()
+                self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
+            self.view.setCurrentLayer(None)
 
         def default_style(self):
             if not self.view.currentLayer() in self.map_control.session.model_layers.all_layers:
                 return
-            gtype = self.view.currentLayer().geometryType()
+            lyr = self.view.currentLayer()
+            gtype = lyr.geometryType()
             if gtype == 0:
-                EmbedMap.set_default_point_renderer(self.view.currentLayer())
+                EmbedMap.set_default_point_renderer(lyr)
             elif gtype == 1:
-                EmbedMap.set_default_line_renderer(self.view.currentLayer())
+                EmbedMap.set_default_line_renderer(lyr)
             elif gtype == 2:
-                EmbedMap.set_default_polygon_renderer(self.view.currentLayer())
-            self.view.currentLayer().triggerRepaint()
+                EmbedMap.set_default_polygon_renderer(lyr)
+            lyr.triggerRepaint()
+            self.view.setCurrentLayer(None)
             pass
 
     class GraduatedSymbolV2(QtGui.QDialog):

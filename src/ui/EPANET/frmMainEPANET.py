@@ -441,7 +441,10 @@ class frmMainEPANET(frmMain):
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()):
+                                layer.setRendererV2(self.map_widget.layer_styles[layer.id()])
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
                                                                                 self.thematic_node_max)
                         else:
@@ -463,7 +466,10 @@ class frmMainEPANET(frmMain):
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()):
+                                layer.setRendererV2(self.map_widget.layer_styles[layer.id()])
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max)
                         else:

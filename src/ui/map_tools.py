@@ -42,6 +42,8 @@ try:
             self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
             self.layer_styles = {}
+            self.display_flowdir = False
+            # self.flowdir_symlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
 
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
@@ -378,7 +380,7 @@ try:
             points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
             feature.setGeometry(QgsGeometry.fromPolyline(points))
-            feature.setAttributes([item.name, 0.0, "", "", 0])
+            feature.setAttributes([item.name, 0.0, "", "", 0, 0.0])
             return feature
 
         @staticmethod
@@ -532,7 +534,8 @@ try:
                                         QgsField("color", QtCore.QVariant.Double),
                                         QgsField("inlet", QtCore.QVariant.String),
                                         QgsField("outlet", QtCore.QVariant.String),
-                                        QgsField("sub2sub", QtCore.QVariant.Int)])
+                                        QgsField("sub2sub", QtCore.QVariant.Int),
+                                        QgsField("angle", QtCore.QVariant.Double)])
 
                 layer.updateFields()
                 features = []
@@ -750,17 +753,30 @@ try:
             return symbol
 
         @staticmethod
-        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None, arenderer=None):
+        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None, arenderer=None, aflow_dir=True):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
                 calculate_min_max = True
+            geom_type = layer.geometryType()
+            # angle_idx = -1
             for feature in provider.getFeatures():
                 try:
                     feature_name = feature[0]
+                    geom = feature.geometry()
                     val = color_by[feature_name]
                     provider.changeAttributeValues({feature.id() : {1 : val}})
                     # feature[1] = val
+                    if geom_type == QGis.Line:
+                        angle_idx = feature.fieldNameIndex('angle')
+                        if angle_idx >= 0:
+                            points = geom.asPolyline()
+                            angle_0 = points[0].azimuth(points[len(points) - 1]) + 90.0
+                            if val < 0:
+                                provider.changeAttributeValues({feature.id() : {angle_idx : angle_0 + 180.0}})
+                            else:
+                                provider.changeAttributeValues({feature.id() : {angle_idx : angle_0}})
+
                     if calculate_min_max:
                         if min is None or val < min:
                             min = val
@@ -798,9 +814,30 @@ try:
                         symbol.setSize(1.5)
                     elif layer.geometryType() == 1:
                         symbol.setWidth(0.5)
+                        if aflow_dir:
+                            slayer = QgsMarkerLineSymbolLayerV2(True, 1.0)
+                            mlayer = slayer.subSymbol()
+                            anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
+                            anewlayer.setSize(2.8)
+                            # lDataDefined = QgsDataDefined(True, True,
+                            #                               'CASE WHEN "color" < 0 THEN 180.0 ELSE 0.0 END',
+                            #                               'color')
+                            lDataDefined = QgsDataDefined(True, False, '', 'angle')
+                            # anewlayer.setDataDefinedProperty('angle', lDataDefined)
+                            # anewlayer.setAngle(180.0)
+                            if anewlayer:
+                                mlayer.changeSymbolLayer(0, anewlayer)
+                                mlayer.setDataDefinedAngle(lDataDefined)
+                                slayer.setPlacement(QgsMarkerLineSymbolLayerV2.CentralPoint)
+                                symbol.appendSymbolLayer(slayer)
+                                # symbol.setDataDefinedAngle(lDataDefined)
+                                # renderer = QgsSingleSymbolRendererV2(symbol)
+                                # layer.setRendererV2(renderer)
+
                     symbol.setColor(QtGui.QColor(color))
                     rng = QgsRendererRangeV2(lower, upper, symbol, label)
                     ranges.append(rng)
+
                 arenderer = QgsGraduatedSymbolRendererV2("color", ranges)
                 pass
 

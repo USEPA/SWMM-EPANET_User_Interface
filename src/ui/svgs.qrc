@@ -8,5 +8,6 @@
         <file>icons/svg/obj_storage.svg</file>
         <file>icons/svg/obj_tank.svg</file>
         <file>icons/svg/obj_valve.svg</file>
+        <file>icons/svg/flow_dir.svg</file>
     </qresource>
 </RCC>

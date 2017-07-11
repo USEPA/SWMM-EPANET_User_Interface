@@ -799,8 +799,43 @@ try:
             # renderer.setSizeScaleField("LABELRANK")
             # layer.setRendererV2(QgsSingleSymbolRendererV2(symbol))
 
+            slayer = None
+            if do_flowdir:
+                slayer = QgsMarkerLineSymbolLayerV2(True, 1.0)
+                mlayer = slayer.subSymbol()
+                anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
+                anewlayer.setSize(2.8)
+                # lDataDefined = QgsDataDefined(True, True,
+                #                               'CASE WHEN "color" < 0 THEN 180.0 ELSE 0.0 END',
+                #                               'color')
+                lDataDefined = QgsDataDefined(True, False, '', 'angle')
+                # anewlayer.setDataDefinedProperty('angle', lDataDefined)
+                # anewlayer.setAngle(180.0)
+                if anewlayer:
+                    mlayer.changeSymbolLayer(0, anewlayer)
+                    mlayer.setDataDefinedAngle(lDataDefined)
+                    slayer.setPlacement(QgsMarkerLineSymbolLayerV2.CentralPoint)
+                    # symbol.appendSymbolLayer(slayer)
+                    # symbol.setDataDefinedAngle(lDataDefined)
+                    # renderer = QgsSingleSymbolRendererV2(symbol)
+                    # layer.setRendererV2(renderer)
+
             if arenderer:
-                pass
+                if do_flowdir and slayer:
+                    # arenderer = QgsGraduatedSymbolRendererV2()
+                    ranges = []
+                    for rng in arenderer.ranges():
+                        # rng = QgsRendererRangeV2()
+                        ns = rng.symbol().clone()
+                        ns.appendSymbolLayer(slayer.clone())
+                        ns.setColor(QtGui.QColor(rng.symbol().color().name()))
+                        nrng = QgsRendererRangeV2(rng.lowerValue(), rng.upperValue(), ns, rng.label())
+                        ranges.append(nrng)
+
+                    nr = QgsGraduatedSymbolRendererV2("color", ranges)
+                    layer.setRendererV2(nr)
+                else:
+                    layer.setRendererV2(arenderer.clone())
             else:
                 if min is None or max is None:
                     min = 0
@@ -819,34 +854,15 @@ try:
                         symbol.setSize(1.5)
                     elif layer.geometryType() == 1:
                         symbol.setWidth(0.5)
-                        if do_flowdir:
-                            slayer = QgsMarkerLineSymbolLayerV2(True, 1.0)
-                            mlayer = slayer.subSymbol()
-                            anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
-                            anewlayer.setSize(2.8)
-                            # lDataDefined = QgsDataDefined(True, True,
-                            #                               'CASE WHEN "color" < 0 THEN 180.0 ELSE 0.0 END',
-                            #                               'color')
-                            lDataDefined = QgsDataDefined(True, False, '', 'angle')
-                            # anewlayer.setDataDefinedProperty('angle', lDataDefined)
-                            # anewlayer.setAngle(180.0)
-                            if anewlayer:
-                                mlayer.changeSymbolLayer(0, anewlayer)
-                                mlayer.setDataDefinedAngle(lDataDefined)
-                                slayer.setPlacement(QgsMarkerLineSymbolLayerV2.CentralPoint)
-                                symbol.appendSymbolLayer(slayer)
-                                # symbol.setDataDefinedAngle(lDataDefined)
-                                # renderer = QgsSingleSymbolRendererV2(symbol)
-                                # layer.setRendererV2(renderer)
+                        if do_flowdir and slayer:
+                            symbol.appendSymbolLayer(slayer.clone())
 
                     symbol.setColor(QtGui.QColor(color))
                     rng = QgsRendererRangeV2(lower, upper, symbol, label)
                     ranges.append(rng)
 
                 arenderer = QgsGraduatedSymbolRendererV2("color", ranges)
-                pass
-
-            layer.setRendererV2(arenderer)
+                layer.setRendererV2(arenderer)
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()

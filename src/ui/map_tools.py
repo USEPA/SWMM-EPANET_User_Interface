@@ -2249,10 +2249,11 @@ try:
 
                 if ed.exec_():
                     new_renderer = old_renderer.clone()
+
             if new_renderer:
                 lyr.setRendererV2(new_renderer)
-                lyr.triggerRepaint()
                 self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
+                self.map_control.session.update_thematic_map()
             self.view.setCurrentLayer(None)
 
         def default_style(self):

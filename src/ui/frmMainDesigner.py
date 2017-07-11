@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Thu Jun 29 13:52:31 2017
+# Created: Tue Jul 11 10:52:32 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -166,6 +166,9 @@ class Ui_frmMain(object):
         self.cboMapLinks = QtGui.QComboBox(self.tabMap)
         self.cboMapLinks.setObjectName(_fromUtf8("cboMapLinks"))
         self.verticalLayout_2.addWidget(self.cboMapLinks)
+        self.chkDisplayFlowDir = QtGui.QCheckBox(self.tabMap)
+        self.chkDisplayFlowDir.setObjectName(_fromUtf8("chkDisplayFlowDir"))
+        self.verticalLayout_2.addWidget(self.chkDisplayFlowDir)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem1)
         self.tabProjMap.addTab(self.tabMap, _fromUtf8(""))
@@ -928,6 +931,7 @@ class Ui_frmMain(object):
         self.lblMapSubcatchments.setText(_translate("frmMain", "Subcatchments", None))
         self.lblMapNodes.setText(_translate("frmMain", "Nodes", None))
         self.lblMapLinks.setText(_translate("frmMain", "Links", None))
+        self.chkDisplayFlowDir.setText(_translate("frmMain", "Show Flow Direction", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabMap), _translate("frmMain", "Map", None))
         self.tabProjMap.setTabText(self.tabProjMap.indexOf(self.tabGIS), _translate("frmMain", "Layers", None))
         self.dockw_more.setWindowTitle(_translate("frmMain", "Object Explorer", None))

@@ -292,6 +292,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
         self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
 
+        self.chkDisplayFlowDir.stateChanged.connect(self.chkDisplayFlowDir_stateChanged)
+
         self.onLoad()
         self.undo_stack = QUndoStack(self)
         # self.undo_view = QUndoView(self.undo_stack)
@@ -1131,6 +1133,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 else:
                     self.animate_thread.resume(self.time_index)
                     self.animating = True
+
+    def chkDisplayFlowDir_stateChanged(self):
+        if not self.output:
+            return
+        self.update_thematic_map()
 
     def setQgsMapToolSelect(self):
         self.actionMapSelectObj.setChecked(True)

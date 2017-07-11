@@ -466,6 +466,21 @@ class frmMainEPANET(frmMain):
                         for link in self.output.links.values():
                             color_by[link.name] = values[index]
                             index += 1
+
+                color_by_flow = None
+                if selected_attribute and selected_attribute.lower() == "flow":
+                    color_by_flow = color_by
+                elif self.chkDisplayFlowDir.isChecked():
+                    color_by_flow = {}
+                    selected_attribute = "Flow"
+                    attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                        index = 0
+                        for link in self.output.links.values():
+                            color_by_flow[link.name] = values[index]
+                            index += 1
+
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
@@ -473,11 +488,16 @@ class frmMainEPANET(frmMain):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_link_min,
                                                                                     self.thematic_link_max,
-                                                                             self.map_widget.layer_styles[layer.id()])
+                                                                             self.map_widget.layer_styles[layer.id()],
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
-                                                                                self.thematic_link_max)
+                                                                                self.thematic_link_max,
+                                                                                    None,
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
                         else:
                             self.map_widget.set_default_line_renderer(layer)
                         layer.triggerRepaint()

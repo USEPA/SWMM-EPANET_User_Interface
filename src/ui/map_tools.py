@@ -42,7 +42,6 @@ try:
             self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
             self.layer_styles = {}
-            self.display_flowdir = False
             # self.flowdir_symlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
 
             # first thoughts about adding a legend - may be barking up wrong tree...
@@ -753,13 +752,19 @@ try:
             return symbol
 
         @staticmethod
-        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None, arenderer=None, aflow_dir=True):
+        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None,
+                                                arenderer=None, aflow_dir=True, acolor_by_flow=None):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
                 calculate_min_max = True
             geom_type = layer.geometryType()
             # angle_idx = -1
+            do_flowdir = False
+            if aflow_dir and acolor_by_flow and geom_type == QGis.Line:
+                if len(acolor_by_flow) == len(color_by):
+                    do_flowdir = True
+
             for feature in provider.getFeatures():
                 try:
                     feature_name = feature[0]
@@ -767,12 +772,12 @@ try:
                     val = color_by[feature_name]
                     provider.changeAttributeValues({feature.id() : {1 : val}})
                     # feature[1] = val
-                    if geom_type == QGis.Line:
+                    if do_flowdir:
                         angle_idx = feature.fieldNameIndex('angle')
                         if angle_idx >= 0:
                             points = geom.asPolyline()
                             angle_0 = points[0].azimuth(points[len(points) - 1]) + 90.0
-                            if val < 0:
+                            if acolor_by_flow[feature_name] < 0:
                                 provider.changeAttributeValues({feature.id() : {angle_idx : angle_0 + 180.0}})
                             else:
                                 provider.changeAttributeValues({feature.id() : {angle_idx : angle_0}})
@@ -814,7 +819,7 @@ try:
                         symbol.setSize(1.5)
                     elif layer.geometryType() == 1:
                         symbol.setWidth(0.5)
-                        if aflow_dir:
+                        if do_flowdir:
                             slayer = QgsMarkerLineSymbolLayerV2(True, 1.0)
                             mlayer = slayer.subSymbol()
                             anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')

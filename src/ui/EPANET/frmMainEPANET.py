@@ -299,6 +299,8 @@ class frmMainEPANET(frmMain):
             if object_type:
                 attribute_names = [attribute.name for attribute in object_type.Attributes]
                 for item in attribute_names:
+                    if item == "Status" or item == "Setting":
+                        continue
                     self.cboMapLinks.addItem(item)
             self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
 
@@ -450,6 +452,7 @@ class frmMainEPANET(frmMain):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
                                                                                 self.thematic_node_max)
+                            self.annotate_layername(selected_attribute, "node", layer)
                         else:
                             self.map_widget.set_default_point_renderer(layer)
                         layer.triggerRepaint()
@@ -498,6 +501,7 @@ class frmMainEPANET(frmMain):
                                                                                     None,
                                                                                     self.chkDisplayFlowDir.isChecked(),
                                                                                     color_by_flow)
+                            self.annotate_layername(selected_attribute, "link", layer)
                         else:
                             self.map_widget.set_default_line_renderer(layer)
                         layer.triggerRepaint()
@@ -510,6 +514,52 @@ class frmMainEPANET(frmMain):
                     #                         self.update_thematic_map_time)
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
+
+    def annotate_layername(self, selected_attribute, obj_type, layer):
+        """
+        Append attribute and its unit to layer name in legend
+        Args:
+            selected_attribute: node/link attribute name
+            obj_type: either 'node' or 'link'
+            layer: map layer to be applied with graduated symbols
+        Returns: None
+        """
+        unit_text = ""
+        if obj_type == "node":
+            if self.output.nodes_units.has_key(selected_attribute):
+                unit_text = self.output.nodes_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "link":
+            if self.output.links_units.has_key(selected_attribute):
+                unit_text = self.output.links_units[selected_attribute]
+            else:
+                if selected_attribute == "Length":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Diameter":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "in"
+
+        layer_name = layer.name()
+        if " [" in layer_name:
+            layer_name = layer_name[0:layer_name.index(" [")]
+        if unit_text:
+            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+        else:
+            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
 
     def animate_e(self):
         if self.output:
@@ -828,6 +878,7 @@ class frmMainEPANET(frmMain):
                     # self.report_status()
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                        self.output.build_units_dictionary()
                         self.set_thematic_controls()
                         self.labelStartTime.setText('0:00')
                         if self.output:

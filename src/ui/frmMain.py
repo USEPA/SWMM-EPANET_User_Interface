@@ -221,6 +221,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeRename)
                             self.gis_layer_tree = QgsLayerTreeView()
                             self.gis_layer_tree.setModel(self.gis_layer_model)
                             self.gis_layer_bridge = QgsLayerTreeMapCanvasBridge(self.gis_layer_root, self.canvas, self.tabGIS)

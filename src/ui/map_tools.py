@@ -357,9 +357,8 @@ try:
         @staticmethod
         def point_feature_from_item(item):
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(item.x),
-                                                               float(item.y))))
-            feature.setAttributes([item.name, 0.0])
+            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(item.x), float(item.y))))
+            feature.setAttributes([item.name, '0, 0, 0', 0.0])
             return feature
 
         @staticmethod
@@ -379,7 +378,7 @@ try:
             points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
             feature.setGeometry(QgsGeometry.fromPolyline(points))
-            feature.setAttributes([item.name, 0.0, "", "", 0, 0.0])
+            feature.setAttributes([item.name, '0, 0, 0', "", "", 0, 0.0, 0.0])
             return feature
 
         @staticmethod
@@ -400,13 +399,14 @@ try:
                 # add fields
                 if is_centroid:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double),
+                                            QgsField("color", QtCore.QVariant.String),
                                             QgsField("sub_mapid", QtCore.QVariant.Int),
                                             QgsField("sub_modelid", QtCore.QVariant.String)])
                     pass
                 else:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double)])
+                                            QgsField("color", QtCore.QVariant.String),
+                                            QgsField("value", QtCore.QVariant.Double)])
                 layer.updateFields()
 
                 features = []
@@ -503,6 +503,8 @@ try:
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size
+                # pal_layer.textColor = None
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
                 pal_layer.writeToLayer(layer)
 
             symbol_layer.setSize(size)
@@ -530,11 +532,12 @@ try:
                 self.set_default_line_renderer(layer)
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double),
+                                        QgsField("color", QtCore.QVariant.String),
                                         QgsField("inlet", QtCore.QVariant.String),
                                         QgsField("outlet", QtCore.QVariant.String),
                                         QgsField("sub2sub", QtCore.QVariant.Int),
-                                        QgsField("angle", QtCore.QVariant.Double)])
+                                        QgsField("angle", QtCore.QVariant.Double),
+                                        QgsField("value", QtCore.QVariant.Double)])
 
                 layer.updateFields()
                 features = []
@@ -680,6 +683,49 @@ try:
                     sym.setWidth(0.5)
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
+            do_labels = True
+            if do_labels:
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fontSizeInMapUnits = False
+                pal_layer.labelOffsetInMapUnits = False
+                pal_layer.fieldName = 'name'
+                pal_layer.placement = QgsPalLayerSettings.AboveLine
+                # expr = "case when size < 3 then size * 2 else size end case"
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+                if "LABELS" in layer_name_upper:
+                    # size = coordinates[0].size
+                    size = 10.0
+                    # symbol_layer.setOutlineColor(QColor('transparent'))
+                    # symbol_layer.setColor(QColor('transparent'))
+                else:
+                    pal_layer.xOffset = 0.5
+                    pal_layer.yOffset = -0.5
+                # pal_layer.textColor = QColor('blue')
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+                pal_layer.writeToLayer(layer)
+
+        def label_layer(self, layer, fieldname, color=QColor('black')):
+            if "LABELS" in layer.name().upper():
+                return
+            pal_layer = QgsPalLayerSettings()
+            pal_layer.readFromLayer(layer)
+            pal_layer.enabled = True
+            pal_layer.fontSizeInMapUnits = False
+            pal_layer.labelOffsetInMapUnits = False
+            pal_layer.fieldName = fieldname
+            if layer.geometryType == QGis.Point:
+                pal_layer.placement = QgsPalLayerSettings.OverPoint
+            elif layer.geometryType == QGis.Line:
+                pal_layer.placement = QgsPalLayerSettings.AboveLine
+            # expr = "case when size < 3 then size * 2 else size end case"
+            # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+            pal_layer.xOffset = 0.5
+            pal_layer.yOffset = -0.5
+            pal_layer.textColor = color
+            pal_layer.writeToLayer(layer)
+
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             try:
                 layer = QgsVectorLayer("Polygon", layer_name, "memory")
@@ -766,11 +812,14 @@ try:
                     do_flowdir = True
 
             for feature in provider.getFeatures():
+                vfi = 1
                 try:
                     feature_name = feature[0]
                     geom = feature.geometry()
                     val = color_by[feature_name]
-                    provider.changeAttributeValues({feature.id() : {1 : val}})
+                    vfi = feature.fieldNameIndex('value')
+                    provider.changeAttributeValues({feature.id() : {vfi : round(val, 2)}})
+                    # provider.changeAttributeValues({feature.id() : {1 : '100, 255, 50'}})
                     # feature[1] = val
                     if do_flowdir:
                         angle_idx = feature.fieldNameIndex('angle')
@@ -789,7 +838,7 @@ try:
                             max = val
                 except Exception as ex:
                     print str(ex)
-                    provider.changeAttributeValues({feature.id() : {1 : 0.0}})
+                    provider.changeAttributeValues({feature.id() : {vfi : 0.0}})
 
             # colorRamp = QgsVectorGradientColorRampV2.create(
             #     {'color1': '155,155,0,255', 'color2': '0,0,255,255',
@@ -832,7 +881,7 @@ try:
                         nrng = QgsRendererRangeV2(rng.lowerValue(), rng.upperValue(), ns, rng.label())
                         ranges.append(nrng)
 
-                    nr = QgsGraduatedSymbolRendererV2("color", ranges)
+                    nr = QgsGraduatedSymbolRendererV2("value", ranges)
                     layer.setRendererV2(nr)
                 else:
                     layer.setRendererV2(arenderer.clone())
@@ -861,8 +910,22 @@ try:
                     rng = QgsRendererRangeV2(lower, upper, symbol, label)
                     ranges.append(rng)
 
-                arenderer = QgsGraduatedSymbolRendererV2("color", ranges)
+                arenderer = QgsGraduatedSymbolRendererV2("value", ranges)
                 layer.setRendererV2(arenderer)
+
+            for feature in provider.getFeatures():
+                val = feature['value']
+                for rng in layer.rendererV2().ranges():
+                    if val >= rng.lowerValue() and val <= rng.upperValue():
+                        c = rng.symbol().color()
+                        provider.changeAttributeValues({feature.id() : {1 : str(c.red()) + "," +
+                                                                            str(c.green()) + "," +
+                                                                            str(c.blue())}})
+                        break
+            pal_layer = QgsPalLayerSettings.fromLayer(layer)
+            pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+            pal_layer.fieldName = "value"
+            pal_layer.writeToLayer(layer)
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()
@@ -2267,9 +2330,17 @@ try:
                 EmbedMap.set_default_line_renderer(lyr)
             elif gtype == 2:
                 EmbedMap.set_default_polygon_renderer(lyr)
+            self.remove_layer_annotation()
             lyr.triggerRepaint()
             self.view.setCurrentLayer(None)
             pass
+
+        def remove_layer_annotation(self):
+            layer_name = self.view.currentLayer().name()
+            if " [" in layer_name:
+                layer_name = layer_name[0:layer_name.index(" [")]
+                self.view.currentLayer().setLayerName(layer_name)
+
 
     class GraduatedSymbolV2(QtGui.QDialog):
         def __init__(self, layer, parent=None, **kwargs):

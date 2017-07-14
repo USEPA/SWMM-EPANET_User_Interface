@@ -684,7 +684,7 @@ try:
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
             do_labels = True
-            if do_labels:
+            if do_labels and not "SUBLINK" in layer_name_upper:
                 pal_layer = QgsPalLayerSettings()
                 pal_layer.readFromLayer(layer)
                 pal_layer.enabled = True
@@ -2259,6 +2259,8 @@ try:
             QgsLayerTreeViewMenuProvider.__init__(self)
             self.view = view
             self.map_control = map_control
+            self.label_by_name = None
+            self.label_by_value = None
 
         def createContextMenu(self):
             if not self.view.currentLayer():
@@ -2268,6 +2270,10 @@ try:
             m.addAction("Zoom to layer", self.zoom_to_layer)
             m.addAction("Change Style...", self.edit_style)
             m.addAction("Default Style", self.default_style)
+            lm = m.addMenu("Label")
+            lm.addAction("By Name", lambda: self.label_layer("Name"))
+            lm.addAction("By Value", lambda: self.label_layer("Value"))
+            lm.addAction("Off", lambda: self.label_layer("Off"))
             return m
 
         def showExtent(self):
@@ -2340,6 +2346,20 @@ try:
             if " [" in layer_name:
                 layer_name = layer_name[0:layer_name.index(" [")]
                 self.view.currentLayer().setLayerName(layer_name)
+
+        def label_layer(self, attribute):
+            # print "label layer by " + attribute
+            lyr = self.view.currentLayer()
+            if lyr and isinstance(lyr, QgsVectorLayer):
+                pal_layer = QgsPalLayerSettings.fromLayer(lyr)
+                if attribute.lower() in ('name', 'value'):
+                    pal_layer.fieldName = attribute.lower()
+                    pal_layer.enabled = True
+                else:
+                    pal_layer.enabled = False
+                pal_layer.writeToLayer(lyr)
+                lyr.triggerRepaint()
+            self.view.setCurrentLayer(None)
 
 
     class GraduatedSymbolV2(QtGui.QDialog):

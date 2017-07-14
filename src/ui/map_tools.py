@@ -786,6 +786,13 @@ try:
             layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
         @staticmethod
+        def validatedGraduatedSymbol(layer, arenderer):
+            if layer:
+                return isinstance(layer.rendererV2(), QgsGraduatedSymbolRendererV2)
+            if arenderer:
+                return isinstance(arenderer, QgsGraduatedSymbolRendererV2)
+
+        @staticmethod
         def validatedDefaultSymbol(geometryType):
             symbol = QgsSymbolV2.defaultSymbol(geometryType)
             if symbol is None:
@@ -2322,6 +2329,7 @@ try:
             if new_renderer:
                 lyr.setRendererV2(new_renderer)
                 self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
+                lyr.triggerRepaint()
                 self.map_control.session.update_thematic_map()
             self.view.setCurrentLayer(None)
 

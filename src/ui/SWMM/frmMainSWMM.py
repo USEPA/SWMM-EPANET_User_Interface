@@ -494,13 +494,13 @@ class frmMainSWMM(frmMain):
                                     self.thematic_subcatchment_min = value
                                 if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
                                     self.thematic_subcatchment_max = value
-                if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
-                                                                        self.thematic_subcatchment_min,
-                                                                        self.thematic_subcatchment_max)
-                else:
-                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
-                self.model_layers.subcatchments.triggerRepaint()
+                # if color_by:
+                #     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                #                                                         self.thematic_subcatchment_min,
+                #                                                         self.thematic_subcatchment_max)
+                # else:
+                #     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                # self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
@@ -534,15 +534,15 @@ class frmMainSWMM(frmMain):
                                 if self.thematic_node_max is None or value > self.thematic_node_max:
                                     self.thematic_node_max = value
 
-                for layer in self.model_layers.nodes_layers:
-                    if layer.isValid():
-                        if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_node_min,
-                                                                                self.thematic_node_max)
-                        else:
-                            self.map_widget.set_default_point_renderer(layer)
-                        layer.triggerRepaint()
+                # for layer in self.model_layers.nodes_layers:
+                #     if layer.isValid():
+                #         if color_by:
+                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                #                                                                 self.thematic_node_min,
+                #                                                                 self.thematic_node_max)
+                #         else:
+                #             self.map_widget.set_default_point_renderer(layer)
+                #         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
@@ -602,15 +602,17 @@ class frmMainSWMM(frmMain):
                                     self.thematic_link_min = value
                                 if self.thematic_link_max is None or value > self.thematic_link_max:
                                     self.thematic_link_max = value
-                for layer in self.model_layers.links_layers:
-                    if layer.isValid():
-                        if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_link_min,
-                                                                                self.thematic_link_max)
-                        else:
-                            self.map_widget.set_default_line_renderer(layer)
-                        layer.triggerRepaint()
+
+                # for layer in self.model_layers.links_layers:
+                #     if layer.isValid():
+                #         if color_by:
+                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                #                                                                 self.thematic_link_min,
+                #                                                                 self.thematic_link_max)
+                #         else:
+                #             self.map_widget.set_default_line_renderer(layer)
+                #         layer.triggerRepaint()
+
         except Exception as exBig:
             print("Exception in update_thematic_map: " + str(exBig))
 

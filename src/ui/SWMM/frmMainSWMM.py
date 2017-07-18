@@ -1274,7 +1274,10 @@ class ModelLayersSWMM(ModelLayers):
         link_item = SubLink()
         link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
         link_item.inlet_node = fc["name"]
-        link_item.outlet_node = ms.outlet
+        if outlet_sub:
+            link_item.outlet_node = outlet_sub.name
+        else:
+            link_item.outlet_node = ms.outlet
         inlet_sub = ms.centroid
         f = self.map_widget.line_feature_from_item(link_item,
                                                    self.map_widget.session.project.all_nodes(),

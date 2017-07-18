@@ -1867,7 +1867,10 @@ try:
             self.start_drag_position = None
             self.tempRubberBand = None
             QgsMapToolEmitPoint.__init__(self, self.canvas)
-            self.build_spatial_index()
+            # self.build_spatial_index()
+            self.mp_geom = None
+            self.prev_nearest_layer = None
+            self.extending_same_layer = False
 
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
@@ -1947,7 +1950,7 @@ try:
                 self.end_drag()
                 event.ignore()
 
-        def canvasPressEvent(self, mouse_event):
+        def canvasPressEvent0(self, mouse_event):
             try:
                 event_pos = mouse_event.pos()
                 extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
@@ -1981,6 +1984,53 @@ try:
                         if nearest_feature_name not in self.selected_names:
                             self.selected_names.append(nearest_feature_name)
                         self.session.select_named_items(self.nearest_layer, self.selected_names)
+            except Exception as e2:
+                print str(e2) + '\n' + str(traceback.print_exc())
+
+        def canvasPressEvent(self, mouse_event):
+            try:
+                event_pos = mouse_event.pos()
+                extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
+                if extending:
+                    self.extending_same_layer = True
+                else:
+                    self.extending_same_layer = False
+
+                self.selected_names = []
+                map_point = self.toMapCoordinates(event_pos)
+                self.mp_geom = QgsGeometry.fromPoint(map_point)
+                # self.find_nearest_feature(map_point)
+                self.find_nearest_feature_qgs()
+                if self.nearest_feature:
+                    nearest_feature_name = self.nearest_feature.attributes()[0]
+                else:
+                    nearest_feature_name = None
+
+                previously_selected = []
+                if self.nearest_layer:
+                    for feat in self.nearest_layer.selectedFeatures():
+                        previously_selected.append(feat.attributes()[0])
+
+                if not extending and nearest_feature_name and nearest_feature_name in previously_selected:
+                    # Clicking an already-selected item starts moving all selected items
+                    self.start_drag(event_pos)
+                else:
+                    # Clear selection on other layers and on this layer if not extending the selection with Ctrl or Shift
+                    for layer in self.canvas.layers():
+                        if isinstance(layer, QgsVectorLayer):
+                            if layer == self.nearest_layer and extending:
+                                # add names of already-selected features to selected_names
+                                self.selected_names.extend(previously_selected)
+                            else:
+                                layer.removeSelection()
+
+                if self.nearest_layer:
+                    if nearest_feature_name not in self.selected_names:
+                        self.selected_names.append(nearest_feature_name)
+                    self.session.select_named_items(self.nearest_layer, self.selected_names)
+                else:
+                    self.session.clear_object_listing()
+
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())
 
@@ -2032,6 +2082,71 @@ try:
             if make_distance_labels:
                 self.distance_layer = self.session.map_widget.addCoordinates(distances, "Distances")
                 self.canvas.refresh()
+
+        def find_nearest_feature_qgs(self, make_distance_labels=False):
+            """
+            Locates the closest point in self.layer_spatial_indexes and Sets:
+                self.nearest_layer = QGIS layer object
+                self.nearest_feature,
+                self.nearest_vertex,
+                self.nearest_spatial_index
+            Args:
+                map_point: user click point geometry object
+                make_distance_labels:
+            Returns:
+            """
+            if make_distance_labels:
+                if hasattr(self, "distance_layer") and self.distance_layer:
+                    self.session.map_widget.remove_layers([self.distance_layer])
+                distances = []
+
+            self.nearest_layer = None
+            self.nearest_feature = None
+            self.nearest_point_index = -1
+            self.nearest_distance = float("inf")
+            self.nearest_spatial_index = 0
+            nearest_feature_id = -1
+            layer_index = 0
+
+            if self.extending_same_layer:
+                if self.nearest_layer:
+                    for mlyr in self.session.model_layers.all_layers:
+                        if mlyr == self.nearest_layer:
+                            pass
+                        else:
+                            mlyr.removeSelection()
+            else:
+                for mlyr in self.session.model_layers.all_layers:
+                    mlyr.removeSelection()
+
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                        ("label" in lyr_name.lower() or
+                         lyr_name.lower().startswith("subcentroid") or
+                         lyr_name.lower().startswith("sublink")):
+                    continue
+                # mlyr.removeSelection()
+                selected_ids = []
+                r = 2 * self.canvas.mapUnitsPerPixel()
+                sel_rect = QgsRectangle(self.mp_geom.asPoint().x() - r,
+                                        self.mp_geom.asPoint().y() - r,
+                                        self.mp_geom.asPoint().x() + r,
+                                        self.mp_geom.asPoint().y() + r)
+                mlyr.select(sel_rect, False)
+                ids = mlyr.selectedFeaturesIds()
+                if len(ids):
+                    selected_ids.append(ids[0])
+                    self.nearest_layer = mlyr
+                    if self.nearest_layer == self.prev_nearest_layer:
+                        self.extending_same_layer = True
+                    else:
+                        self.extending_same_layer = False
+                        self.prev_nearest_layer = mlyr
+                    iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(ids[0]))
+                    if iterator:
+                        self.nearest_feature = next(iterator)
+                    return
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()

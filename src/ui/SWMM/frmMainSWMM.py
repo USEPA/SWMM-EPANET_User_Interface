@@ -457,11 +457,73 @@ class frmMainSWMM(frmMain):
         self.allow_thematic_update = True
         self.update_thematic_map()
 
+    def get_model_attributes(self, an_obj_type):
+        """
+        Get model object's attributes or parameter values
+        Args:
+            an_obj_type: "Subcatchments", "Nodes", "Links"
+        Returns:
+            color_by, a dictionary of object name and its parameter/attribute value
+        """
+        selected_attribute = ""
+        setting_index = -1
+        attribute_index_m = -1
+        model_sections = None
+        if an_obj_type:
+            color_by = {}
+            if "subcatchment" in an_obj_type.lower():
+                selected_attribute = self.cboMapSubcatchments.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapSubcatchments.currentIndex()
+                attribute_index_m = 5
+                model_sections = [self.project.subcatchments]
+                color_by[model_sections[0].SECTION_NAME] = {}
+            elif "node" in an_obj_type.lower():
+                selected_attribute = self.cboMapNodes.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapNodes.currentIndex()
+                attribute_index_m = 1
+                model_sections = self.project.nodes_groups()
+                for sect in self.project.nodes_groups():
+                    color_by[sect.SECTION_NAME] = {}
+            elif "link" in an_obj_type.lower():
+                selected_attribute = self.cboMapLinks.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapLinks.currentIndex()
+                attribute_index_m = 3
+                model_sections = self.project.links_groups()
+                for sect in self.project.links_groups():
+                    color_by[sect.SECTION_NAME] = {}
+            else:
+                return None
+
+            # not a parameter or an attribute
+            if setting_index > attribute_index_m:
+                return None
+
+            for sect in model_sections:
+                if sect.value:
+                    for mobj in sect.value:
+                        for md in mobj.metadata:
+                            if md.label == selected_attribute:
+                                color_by[sect.SECTION_NAME][mobj.name] = float(mobj.__dict__[md.attribute])
+                                break
+            return color_by
+        else:
+            return None
+
     def update_thematic_map(self):
-        enable_time_widget = False  # Flag to set if any selected attributes are time-based
+        enable_time_widget = True  # Flag to set if any selected attributes are time-based
         try:
             if not self.allow_thematic_update or not self.map_widget:
                 return
+
+            color_by = self.get_model_attributes("Subcatchments")
+            color_by = self.get_model_attributes("Nodes")
+            color_by = self.get_model_attributes("Links")
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 selected_attribute = self.cboMapSubcatchments.currentText()
@@ -1042,6 +1104,26 @@ class frmMainSWMM(frmMain):
 
                     frmRun.Execute()
                     # self.add_map_constituents()
+                    try:
+                        self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
+                        # self.output.build_units_dictionary()
+                        self.set_thematic_controls()
+                        self.labelStartTime.setText('0:00')
+                        if self.output:
+                            time_labels = []
+                            self.cboTime.clear()
+                            for i in range(1, self.output.num_periods):
+                                time_labels.append(self.output.get_time_string(i))
+                            self.cboTime.addItems(time_labels)
+                            # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
+                        # self.labelEndTime.setText(self.project.times.duration)
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))

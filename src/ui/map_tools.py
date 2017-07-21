@@ -735,7 +735,8 @@ try:
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                         QgsField("color", QtCore.QVariant.Double),
                                         QgsField("c_mapid", QtCore.QVariant.Int),
-                                        QgsField("c_modelid", QtCore.QVariant.String)])
+                                        QgsField("c_modelid", QtCore.QVariant.String),
+                                        QgsField("value", QtCore.QVariant.Double)])
                 layer.updateFields()
                 features = []
                 if polygons:
@@ -748,7 +749,7 @@ try:
                             # add a feature
                             feature = QgsFeature()
                             feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                            feature.setAttributes([polygon.name, 0.0, 0, 0])
+                            feature.setAttributes([polygon.name, 0.0, 0, 0, 0.0])
                             features.append(feature)
                 if features:
                     layer.startEditing()

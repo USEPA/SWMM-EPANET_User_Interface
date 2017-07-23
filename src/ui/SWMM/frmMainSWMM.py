@@ -516,7 +516,7 @@ class frmMainSWMM(frmMain):
             return None
 
     def update_thematic_map(self):
-        enable_time_widget = True  # Flag to set if any selected attributes are time-based
+        enable_time_widget = False  # Flag to set if any selected attributes are time-based
         try:
             if not self.allow_thematic_update or not self.map_widget:
                 return
@@ -698,7 +698,7 @@ class frmMainSWMM(frmMain):
                 if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
                     if attribute:
-                        enable_time_widget = True
+                        enable_time_widget = False
                         values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
                         index = 0
                         for subcatchment in self.output.subcatchments.values():

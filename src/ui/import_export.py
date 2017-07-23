@@ -748,11 +748,11 @@ def import_epanet_from_geojson(session, file_name):
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
         if geom.type() == QGis.Point:
-            new_feature.setAttributes([model_item.name, 0.0])
+            new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
         elif geom.type() == QGis.Line:
-            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
+            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
                 for i in xrange(1, len(line)):
@@ -762,7 +762,7 @@ def import_epanet_from_geojson(session, file_name):
                     model_item.vertices.append(coord)
                     pass
         elif geom.type() == QGis.Polygon:
-            new_feature.setAttributes([model_item.name, 0.0])
+            new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
         model_layer.addFeature(new_feature)
@@ -878,11 +878,11 @@ def import_swmm_from_geojson(session, file_name):
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
         if geom.type() == QGis.Point:
-            new_feature.setAttributes([model_item.name, 0.0])
+            new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
         elif geom.type() == QGis.Line:
-            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0])
+            new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
                 for i in xrange(1, len(line)):
@@ -892,7 +892,7 @@ def import_swmm_from_geojson(session, file_name):
                     model_item.vertices.append(coord)
                     pass
         elif geom.type() == QGis.Polygon:
-            new_feature.setAttributes([model_item.name, 0.0, 0, "0"])
+            new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
             for pt in geom.asPolygon()[0]:
                 coord = Coordinate()
                 coord.x = str(pt.x())

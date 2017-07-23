@@ -109,6 +109,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
         self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
         # self.actionGroup_Obj = QActionGroup(self)
+        self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
         self.auto_length = (self.cbAutoLength.currentIndex == 1)
 

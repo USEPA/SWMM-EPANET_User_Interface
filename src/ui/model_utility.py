@@ -167,6 +167,8 @@ class ParseData:
                 return value, True
             else:
                 if str(value):
+                    if "null" in str(value).lower():
+                        return value, False
                     return int(value), True
                 else:
                     return None, False
@@ -180,6 +182,8 @@ class ParseData:
                 return value, True
             else:
                 if str(value):
+                    if "null" in str(value).lower():
+                        return value, False
                     return float(value), True
                 else:
                     return None, False

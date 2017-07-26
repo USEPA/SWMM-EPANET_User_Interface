@@ -62,7 +62,7 @@
      id="path3439"
      inkscape:connector-curvature="0" />
   <path
-     style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.9557699px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5"
      d="m 3.2279186,10.336052 18.4113694,0.106838 0,9.562086 -18.4113694,-0.05343 z"
      id="path3445"
      inkscape:connector-curvature="0" />

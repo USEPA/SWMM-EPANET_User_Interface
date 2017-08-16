@@ -440,7 +440,7 @@ try:
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer, coordinates=None, size=3.5):
+        def set_default_point_renderer(layer, coordinates=None, size=3.5, do_labels=True):
             """ Create and set the default appearance of layer.
                 If specified, coordinates will be used to check for whether there are too many to label. """
             if layer is None:
@@ -452,7 +452,7 @@ try:
             symbol_layer.setColor(QColor(130, 180, 255, 255))
 
             # Label the coordinates if there are not too many of them
-            do_labels = True
+            # do_labels = True
             if coordinates and len(coordinates) > 500:
                 size = 1.5
                 do_labels = False
@@ -629,7 +629,7 @@ try:
                 mlyr.selectAll()
 
         @staticmethod
-        def set_default_line_renderer(layer):
+        def set_default_line_renderer(layer, do_labels=True):
             if layer is None:
                 return
             symbol = QgsLineSymbolV2.createSimple({})
@@ -683,7 +683,7 @@ try:
                     sym.setWidth(0.5)
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
-            do_labels = True
+            # do_labels = True
             if do_labels and not "SUBLINK" in layer_name_upper:
                 pal_layer = QgsPalLayerSettings()
                 pal_layer.readFromLayer(layer)
@@ -930,10 +930,14 @@ try:
                                                                             str(c.green()) + "," +
                                                                             str(c.blue())}})
                         break
+            # if layer.featureCount() <= 300:
             pal_layer = QgsPalLayerSettings.fromLayer(layer)
             pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
             pal_layer.fieldName = "value"
             pal_layer.writeToLayer(layer)
+            pal_layer.scaleMin = 1/50000
+            pal_layer.scaleMax = 1/1000
+
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()

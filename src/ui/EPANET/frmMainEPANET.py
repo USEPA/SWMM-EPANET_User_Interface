@@ -455,7 +455,10 @@ class frmMainEPANET(frmMain):
                                                                                 self.thematic_node_max)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            self.map_widget.set_default_point_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_nodes()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
                         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
@@ -505,7 +508,10 @@ class frmMainEPANET(frmMain):
                                                                                     color_by_flow)
                             self.annotate_layername(selected_attribute, "link", layer)
                         else:
-                            self.map_widget.set_default_line_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_links()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
             if self.cboTime.count() > 0:
                 if self.time_index >=0 and self.time_index < self.cboTime.count():

@@ -2021,7 +2021,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         selected_text = ''
         for item in self.obj_tree.selectedIndexes():
             selected_text = str(item.data())
-        self.clear_object_listing()
+        if self.listViewObjects.count() > 0:
+            self.clear_object_listing()
         self.dockw_more.setWindowTitle('')
         if self.project is None or not selected_text:
             return
@@ -2032,30 +2033,37 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            # self.listViewObjects.addItems(names)
-            is_node_item = False
-            for nt in self.tree_nodes_items:
-                if selected_text in nt[0]:
-                    is_node_item = True
-                    break
-            if is_node_item:
-                for n in names:
-                    if not (n in self.project.all_nodes()):
-                        continue
-                    # oj = self.project.junctions.find_item(n)
-                    oj = self.project.all_nodes()[n]
-                    if not oj:
-                        continue
-                    xc, x_c_good = ParseData.floatTryParse(oj.x)
-                    yc, y_c_good = ParseData.floatTryParse(oj.y)
-                    if x_c_good and y_c_good:
-                        self.listViewObjects.addItem(n)
-                    else:
-                        oj_item = QListWidgetItem('%s' % n)
-                        oj_item.setBackground(QColor('yellow'))
-                        self.listViewObjects.addItem(oj_item)
-            else:
-                self.listViewObjects.addItems(names)
+            self.listViewObjects.addItems(names)
+            # is_node_item = False
+            # for nt in self.tree_nodes_items:
+            #     if selected_text in nt[0]:
+            #         is_node_item = True
+            #         break
+            # if is_node_item:
+            #     q_ratetimer = QtCore.QTime()
+            #     q_ratetimer.start()
+            #     for n in names:
+            #         if not (n in self.project.all_nodes()):
+            #             continue
+            #         # oj = self.project.junctions.find_item(n)
+            #         oj = self.project.all_nodes()[n]
+            #         if not oj:
+            #             continue
+            #         xc, x_c_good = ParseData.floatTryParse(oj.x)
+            #         yc, y_c_good = ParseData.floatTryParse(oj.y)
+            #         if x_c_good and y_c_good:
+            #             self.listViewObjects.addItem(n)
+            #         else:
+            #             oj_item = QListWidgetItem('%s' % n)
+            #             oj_item.setBackground(QColor('yellow'))
+            #             self.listViewObjects.addItem(oj_item)
+            #         # Limit at 60 updates / s
+            #         if q_ratetimer.elapsed() > 1000 / 60:
+            #             self.listViewObjects.scrollToBottom()
+            #             QApplication.processEvents()
+            #             q_ratetimer.restart()
+            # else:
+            #     self.listViewObjects.addItems(names)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)

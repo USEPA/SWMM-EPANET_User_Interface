@@ -756,7 +756,10 @@ class frmMainSWMM(frmMain):
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max)
                         else:
-                            self.map_widget.set_default_line_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_links()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))

@@ -346,7 +346,7 @@ class frmMainEPANET(frmMain):
                             if self.thematic_node_max is None or value > self.thematic_node_max:
                                 self.thematic_node_max = value
                     values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                    index = 0
+                    index = 1
                     for node in self.output.nodes.values():
                         color_by[node.name] = values[index]
                         index += 1
@@ -435,10 +435,10 @@ class frmMainEPANET(frmMain):
                     attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        index = 0
+                        # index = 1
                         for node in self.output.nodes.values():
-                            color_by[node.name] = values[index]
-                            index += 1
+                            color_by[node.name] = values[node.index]
+                            # index += 1
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
@@ -469,10 +469,10 @@ class frmMainEPANET(frmMain):
                     attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        index = 0
+                        # index = 1
                         for link in self.output.links.values():
-                            color_by[link.name] = values[index]
-                            index += 1
+                            color_by[link.name] = values[link.index]
+                            # index += 1
 
                 color_by_flow = None
                 if selected_attribute and selected_attribute.lower() == "flow":
@@ -483,10 +483,10 @@ class frmMainEPANET(frmMain):
                     attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        index = 0
+                        # index = 1
                         for link in self.output.links.values():
-                            color_by_flow[link.name] = values[index]
-                            index += 1
+                            color_by_flow[link.name] = values[link.index]
+                            # index += 1
 
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():

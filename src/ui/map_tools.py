@@ -908,9 +908,13 @@ try:
                 for label, lower, upper, color in colorRamp:
                     symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
                     if layer.geometryType() == 0:
-                        symbol.setSize(1.5)
+                        EmbedMap.set_default_point_renderer(layer, None, 3.5, False)
+                        symbol = layer.rendererV2().symbols()[0].clone()
+                        # symbol.setSize(1.5)
                     elif layer.geometryType() == 1:
-                        symbol.setWidth(0.5)
+                        EmbedMap.set_default_line_renderer(layer, False)
+                        symbol = layer.rendererV2().symbols()[0].clone()
+                        # symbol.setWidth(0.5)
                         if do_flowdir and slayer:
                             symbol.appendSymbolLayer(slayer.clone())
 

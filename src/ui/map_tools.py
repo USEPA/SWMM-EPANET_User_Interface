@@ -833,7 +833,7 @@ try:
                         angle_idx = feature.fieldNameIndex('angle')
                         if angle_idx >= 0:
                             points = geom.asPolyline()
-                            angle_0 = points[0].azimuth(points[len(points) - 1]) + 90.0
+                            angle_0 = points[0].azimuth(points[len(points) - 1]) - 90.0
                             if acolor_by_flow[feature_name] < 0:
                                 provider.changeAttributeValues({feature.id() : {angle_idx : angle_0 + 180.0}})
                             else:

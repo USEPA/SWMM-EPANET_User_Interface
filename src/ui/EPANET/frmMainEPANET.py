@@ -884,6 +884,9 @@ class frmMainEPANET(frmMain):
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     # self.report_status()
+                    if frmRun.run_err_msg:
+                        raise Exception(frmRun.run_err_msg)
+
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
                         self.output.build_units_dictionary()
@@ -907,7 +910,7 @@ class frmMainEPANET(frmMain):
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
                     QMessageBox.information(None, self.model,
-                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                            "Model library:\n {0}\n{1}\n{2}".format(
                                                 self.model_path, str(e1), str(traceback.print_exc())),
                                             QMessageBox.Ok)
                 finally:

@@ -1835,6 +1835,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             try:
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
+                if project_reader.input_err_msg:
+                    self.restoreCursor()
+                    QMessageBox.information(self, self.model, project_reader.input_err_msg, QMessageBox.Ok)
+
                 if self.map_widget:
                     projection_file_name = file_name[:-3] + "prj"
                     self.open_prj(projection_file_name)

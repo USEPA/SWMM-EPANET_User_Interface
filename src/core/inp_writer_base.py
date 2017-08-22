@@ -90,7 +90,7 @@ class InputFileWriterBase(object):
         if file_name:
             with open(file_name, 'w') as writer:
                 writer.writelines(self.as_text(project).encode('utf-8'))
-                project.file_name = file_name
+                # project.file_name = file_name
 
 
 class SectionWriter(object):

@@ -834,7 +834,10 @@ class frmMainEPANET(frmMain):
         # TODO: decide whether to automatically save to temp location as previous version did.
         use_existing = self.project and self.project.file_name
         if use_existing:
-            self.save_project(self.project.file_name)
+            filename, file_extension = os.path.splitext(self.project.file_name)
+            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
+            self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
             if self.save_project_as():
@@ -846,7 +849,7 @@ class frmMainEPANET(frmMain):
 
         inp_file_name = ''
         if self.project:
-            inp_file_name = self.project.file_name
+            inp_file_name = self.project.file_name_temporary
 
         if os.path.exists(inp_file_name):
             current_directory = os.getcwd()

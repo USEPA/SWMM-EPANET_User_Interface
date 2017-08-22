@@ -1054,7 +1054,10 @@ class frmMainSWMM(frmMain):
         # First find input file to run
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
         if use_existing:
-            self.save_project(self.project.file_name)
+            filename, file_extension = os.path.splitext(self.project.file_name)
+            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
+            self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.save_project(self.project.file_name_temporary)
             # TODO: decide whether to automatically save to temp location as previous version did.
         elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
@@ -1067,7 +1070,7 @@ class frmMainSWMM(frmMain):
 
         file_name = ''
         if self.project:
-            file_name = self.project.file_name
+            file_name = self.project.file_name_temporary
 
         if os.path.exists(file_name):
             prefix, extension = os.path.splitext(file_name)

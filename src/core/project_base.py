@@ -13,6 +13,7 @@ class ProjectBase(object):
 
     def __init__(self):
         self.file_name = ""
+        self.file_name_temporary = ""
         self.sections = []
         self.metric = False  # Both project types default to CFS, so metric defaults to False
         self.add_sections_from_attributes()

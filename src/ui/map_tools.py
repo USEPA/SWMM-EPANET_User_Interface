@@ -103,6 +103,8 @@ try:
             #layout.addWidget(None)
             self.setMouseTracking(True)
 
+            self.refresh_extent_needed = True
+
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
                 self.canvas.setMapTool(self.zoomInTool)
@@ -1125,6 +1127,24 @@ try:
         def set_extent_by_corners(self, corners):
             r = QgsRectangle(corners[0], corners[1], corners[2], corners[3])
             self.set_extent(r)
+
+        def set_extent_about_point(self, item):
+            x_float = item.x
+            y_float = item.y
+            if not isinstance(x_float, float):
+                x_float = float(item.x)
+            if not isinstance(y_float, float):
+                y_float = float(item.y)
+            r = QgsRectangle(QgsPoint(x_float - 1, y_float - 1), QgsPoint(x_float + 1, y_float + 1))
+            # self.set_extent(r)
+            self.canvas.setExtent(r)
+            # self.canvas.zoomWithCenter(x_float, y_float, False)
+            self.canvas.refresh()
+
+        def set_extent_empty(self):
+            r = QgsRectangle(200.0, 200.0, 200.0, 200.0)
+            self.canvas.mapSettings().setExtent(r)
+            self.canvas.refresh()
 
         def addRasterLayer(self, filename, *args):
             if len(filename.strip()) > 0:

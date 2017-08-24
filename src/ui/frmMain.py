@@ -597,11 +597,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.layer.updateExtents()
                     self.layer.commitChanges()
                     if self.session.no_items:
-                        self.session.zoomfull()
                         self.session.no_items = False
                     else:
                         self.layer.triggerRepaint()
-                        self.session.map_widget.canvas.refresh()
+
+                    # setup initial extent for display
+                    # this is after discerning whether non-empty extent is due to
+                    # adding in a legit layer or lingering extent from previous session
+                    # (which doesn't work for a new session)
+                    if self.session.map_widget.canvas.extent().isEmpty() or \
+                       self.session.map_widget.refresh_extent_needed:
+                        self.session.map_widget.refresh_extent_needed = False
+                        if isinstance(self.item, Coordinate):
+                            self.session.map_widget.set_extent_about_point(self.item)
+                        else:
+                            self.session.map_widget.set_extent(self.layer.extent())
+
+                    self.session.map_widget.canvas.refresh()
                 else:
                     self.added_id = None
                     self.layer.rollBack()
@@ -1244,6 +1256,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)
                     self.program_settings.sync()
+                self.map_widget.refresh_extent_needed = False
             except Exception as ex:
                 print("map_addvector error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1270,6 +1283,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)
                     self.program_settings.sync()
+                self.map_widget.refresh_extent_needed = False
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1826,6 +1840,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
+        # self.map_widget.set_extent_empty()
+        self.map_widget.refresh_extent_needed = True
         self.clear_object_listing()
         if hasattr(self, "project_settings"):
             del self.project_settings

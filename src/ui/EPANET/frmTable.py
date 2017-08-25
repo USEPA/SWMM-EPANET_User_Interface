@@ -95,13 +95,29 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
         row_headers = []
         column_headers = []
         attributes = []
+        quality_name = ""
+        if hasattr(self.item_type, "AttributeQuality"):
+            quality_name = self.item_type.AttributeQuality.name
+
         for column_index in self.lstColumns.selectedIndexes():
             attribute_index = column_index.row()
             if attribute_index < len(self.item_type.Attributes):
                 attribute = self.item_type.Attributes[attribute_index]
                 attributes.append(attribute)
                 column_header = attribute.name
-                units = attribute.units(self.output.unit_system)
+                units = ""
+                if attribute.name == quality_name:
+                    if self.project.options.quality.quality.value == 2: # 'chemical'
+                        column_header = "Chemical"
+                        units = attribute.units(self.output.unit_system)
+                    elif self.project.options.quality.quality.value == 3: # 'Age'
+                        column_header = "Age"
+                        units = "hours"
+                    elif self.project.options.quality.quality.value == 4:  # 'Trace'
+                        column_header = "Trace " + self.project.options.quality.trace_node
+                        units = "percent"
+                else:
+                    units = attribute.units(self.output.unit_system)
                 if units:
                     column_header += '\n(' + units + ')'
                 column_headers.append(column_header)

@@ -54,7 +54,22 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnNodes.isChecked():
             self.gbxToGraph.setTitle(transl8("frmGraph", "Nodes to Graph", None))
             self.cboParameter.clear()
-            self.cboParameter.addItems([att.name for att in ENR_node_type.Attributes])
+            attr_list = []
+            for att in ENR_node_type.Attributes:
+                if att.name == "Quality":
+                    if self.project.options.quality.quality.value == 2: # 'chemical'
+                        attr_list.append("Chemical")
+                        # units = attribute.units(self.output.unit_system)
+                    elif self.project.options.quality.quality.value == 3: # 'Age'
+                        attr_list.append("Age")
+                        # units = "hours"
+                    elif self.project.options.quality.quality.value == 4:  # 'Trace'
+                        attr_list.append("Trace " + self.project.options.quality.trace_node)
+                        # units = "percent"
+                else:
+                    attr_list.append(att.name)
+
+            self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.nodes
             self.lstToGraph.addItems(self.list_items.keys())
@@ -63,7 +78,23 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if self.rbnLinks.isChecked():
             self.gbxToGraph.setTitle(transl8("frmGraph", "Links to Graph", None))
             self.cboParameter.clear()
-            self.cboParameter.addItems([att.name for att in ENR_link_type.Attributes])
+
+            attr_list = []
+            for att in ENR_link_type.Attributes:
+                if att.name == "Quality":
+                    if self.project.options.quality.quality.value == 2: # 'chemical'
+                        attr_list.append("Chemical")
+                        # units = attribute.units(self.output.unit_system)
+                    elif self.project.options.quality.quality.value == 3: # 'Age'
+                        attr_list.append("Age")
+                        # units = "hours"
+                    elif self.project.options.quality.quality.value == 4:  # 'Trace'
+                        attr_list.append("Trace " + self.project.options.quality.trace_node)
+                        # units = "percent"
+                else:
+                    attr_list.append(att.name)
+
+            self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.links
             self.lstToGraph.addItems(self.list_items.keys())
@@ -169,6 +200,18 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
 
     def cmdOK_Clicked(self):
         parameter_label = self.cboParameter.currentText()
+        lqual_name = ""
+        lqual_unit = ""
+        if parameter_label.startswith("Chemical") or \
+            parameter_label.startswith("Age") or \
+            parameter_label.startswith("Trace"):
+            lqual_name = parameter_label
+            if lqual_name.startswith("Age"):
+                lqual_unit = "hours"
+            elif lqual_name.startswith("Trace"):
+                lqual_unit = "percent"
+            parameter_label = "Quality"
+
         if self.rbnNodes.isChecked():
             attribute = ENR_node_type.get_attribute_by_name(parameter_label)
         else:
@@ -177,7 +220,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         time_index = self.cboTime.currentIndex()
 
         if self.rbnTime.isChecked():  # TODO: use get_series instead of get_value if it is more efficient
-            graphEPANET.plot_time(self.output, attribute, self.selected_items())
+            graphEPANET.plot_time(self.output, attribute, self.selected_items(), lqual_name, lqual_unit)
 
         if self.rbnSystem.isChecked():
             graphEPANET.plot_system_flow(self.output)
@@ -191,9 +234,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                 items = self.selected_items()
                 if len(items) < 2:  # if fewer than two items were selected, use all items
                     items = self.list_items.values()
-                self.plot_profile(attribute, time_index, items)
+                self.plot_profile(attribute, time_index, items, lqual_name, lqual_unit)
             if self.rbnFrequency.isChecked():
-                graphEPANET.plot_freq(self.output, attribute, time_index, self.list_items.values())
+                graphEPANET.plot_freq(self.output, attribute, time_index, self.list_items.values(), lqual_name, lqual_unit)
 
     def selected_items(self):
         names = selected_list_items(self.lstToGraph)
@@ -202,7 +245,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             items.append(self.list_items[name])
         return items
 
-    def plot_profile(self, attribute, time_index, items):
+    def plot_profile(self, attribute, time_index, items, aname="", aunit=""):
         fig = plt.figure()
         if self.rbnNodes.isChecked():
             x_values = self.report.node_distances(items)
@@ -211,7 +254,7 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.time_linked_graphs.append([graphEPANET.update_profile, self.output, items, x_values,
                                         attribute, fig.number, time_index])
         graphEPANET.update_profile(self.output, items, x_values,
-                                   attribute, fig.number, time_index)
+                                   attribute, fig.number, time_index, aname, aunit)
 
     def cmdCancel_Clicked(self):
         self.close()

@@ -256,7 +256,7 @@ class EPANET:
         plt.show()
 
     @staticmethod
-    def plot_system_flow(output):
+    def plot_system_flow(output, ajunctions=None, areservoirs=None):
         if not output.nodes:
             raise Exception("No node results present in output, cannot plot system flow")
         # import here to avoid SWMM depending on EPANET
@@ -274,6 +274,12 @@ class EPANET:
             consumed.append(0)
 
         for node in output.nodes.values():
+            if (ajunctions and node.name in ajunctions) or \
+               (areservoirs and node.name in areservoirs):
+                pass
+            else:
+                continue
+
             node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
             for time_index in range(0, output.num_periods):
                 flow = node_flows[time_index]
@@ -282,8 +288,8 @@ class EPANET:
                 else:
                     produced[time_index] -= flow
 
-        plt.plot(x_values, consumed, label="Consumed")
-        plt.plot(x_values, produced, label="Produced")
+        plt.plot(x_values, produced, label="Produced", color="red")
+        plt.plot(x_values, consumed, label="Consumed", color="green")
 
         # fig.suptitle("Time Series Plot")
         flow_units = ""
@@ -292,5 +298,6 @@ class EPANET:
         plt.ylabel("Flow" + flow_units)
         plt.xlabel("Time (hours)")
         plt.grid(True)
-        plt.legend()
+        plt.subplots_adjust(right=0.8)
+        plt.legend(loc='upper left', bbox_to_anchor=(1.04, 1), fontsize='9')
         plt.show()

@@ -223,7 +223,13 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             graphEPANET.plot_time(self.output, attribute, self.selected_items(), lqual_name, lqual_unit)
 
         if self.rbnSystem.isChecked():
-            graphEPANET.plot_system_flow(self.output)
+            ljuncs = []
+            lreserv = []
+            for node_j in self.project.junctions.value:
+                ljuncs.append(node_j.name)
+            for node_res in self.project.reservoirs.value:
+                lreserv.append(node_res.name)
+            graphEPANET.plot_system_flow(self.output, ljuncs, lreserv)
 
         if time_index < 0 and (self.rbnProfile.isChecked() or self.rbnFrequency.isChecked()):
             QMessageBox.information(None, self._main_form.model,

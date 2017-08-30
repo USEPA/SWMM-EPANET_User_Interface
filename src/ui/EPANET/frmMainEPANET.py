@@ -749,6 +749,9 @@ class frmMainEPANET(frmMain):
         frmF = frmFind(self, self.project)
         frmF.show()
 
+    def map_overview(self):
+        pass
+
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))
 
@@ -1100,6 +1103,27 @@ class ModelLayersEPANET(ModelLayers):
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
         self.set_lists()
 
+    def find_layer_by_name(self, aname):
+        if not aname:
+            return None
+        if aname.lower().startswith("junc"):
+            return self.junctions
+        elif aname.lower().startswith("pipe"):
+            return self.pipes
+        elif aname.lower().startswith("reser"):
+            return self.reservoirs
+        elif aname.lower().startswith("tank"):
+            return self.tanks
+        elif aname.lower().startswith("sourc"):
+            return self.sources
+        elif aname.lower().startswith("label"):
+            return self.labels
+        elif aname.lower().startswith("pump"):
+            return self.pumps
+        elif aname.lower().startswith("valve"):
+            return self.valves
+        else:
+            return None
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

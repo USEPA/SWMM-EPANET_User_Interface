@@ -1337,6 +1337,31 @@ try:
         #         except Exception as e:
         #             print str(e)
 
+        def select_model_objects_by_ids(self, adict):
+            """
+            Args: adict: a dictionary in the form of:
+                adict[junctions] = [3, 5, 25, 26 etc]
+                adict[pipes] = [4, 10 etc]
+                adict[tanks] = [1 etc]
+            Returns:
+            """
+            total_selected = 0
+            selected_ids = []
+            if adict and len(adict) > 0:
+                for obj_name in adict.keys():
+                    lyr = self.session.model_layers.find_layer_by_name(obj_name)
+                    if lyr:
+                        del selected_ids[:]
+                        for f in lyr.getFeatures():
+                            if f['name'] in adict[obj_name]:
+                                selected_ids.append(f.id())
+                        if len(selected_ids) > 0:
+                            lyr.setSelectedFeatures(selected_ids)
+                            total_selected = total_selected + len(selected_ids)
+                            lyr.triggerRepaint()
+            return total_selected
+
+
     class PanTool(QgsMapTool):
         def __init__(self, mapCanvas):
             QgsMapTool.__init__(self, mapCanvas)

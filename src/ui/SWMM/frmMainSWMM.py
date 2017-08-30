@@ -1390,6 +1390,39 @@ class ModelLayersSWMM(ModelLayers):
             self.map_widget.canvas.refresh()
         pass
 
+    def find_layer_by_name(self, aname):
+        if not aname:
+            return None
+        if aname.lower().startswith("junc"):
+            return self.junctions
+        elif aname.lower().startswith("outfall"):
+            return self.outfalls
+        elif aname.lower().startswith("divide"):
+            return self.dividers
+        elif aname.lower().startswith("storage"):
+            return self.storage
+        elif aname.lower().startswith("rain"):
+            return self.raingages
+        elif aname.lower().startswith("pump"):
+            return self.pumps
+        elif aname.lower().startswith("orifice"):
+            return self.orifices
+        elif aname.lower().startswith("weir"):
+            return self.weirs
+        elif aname.lower().startswith("conduit"):
+            return self.conduits
+        elif aname.lower().startswith("subcatch"):
+            return self.subcatchments
+        elif aname.lower().startswith("map label"):
+            return self.labels
+        elif aname.lower().startswith("subcent"):
+            return self.subcentroids
+        elif aname.lower().startswith("sublink"):
+            return self.sublinks
+        else:
+            return None
+
+
 if __name__ == '__main__':
     print("QApplication")
     application = QtGui.QApplication(sys.argv)

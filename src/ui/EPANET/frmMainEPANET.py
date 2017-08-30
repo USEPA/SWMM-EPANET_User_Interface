@@ -839,7 +839,8 @@ class frmMainEPANET(frmMain):
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
             ts = QtCore.QTime.currentTime().toString().replace(":", "_")
-            self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            if not os.path.exists(self.project.file_name_temporary):
+                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
             self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save

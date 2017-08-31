@@ -1361,6 +1361,68 @@ try:
                             lyr.triggerRepaint()
             return total_selected
 
+        def create_composition(self, layer_list, extent):
+            # New code for versions 2.4 and above
+            ms = QgsMapSettings()
+            ms.setLayers(layer_list)
+            ms.setExtent(extent)
+            comp = QgsComposition(ms)
+            return comp, ms
+
+        def print_map(self, alayerset):
+            comp, ms = self.create_composition(alayerset, QgsRectangle(140, -28, 155, -15))
+            comp.setPlotStyle(QgsComposition.Print)
+            composerMap = QgsComposerMap(comp, 5, 5, 200, 200)
+
+            # Uses mapsettings value
+            composerMap.setNewExtent(ms.extent())
+
+            comp.addItem(composerMap)
+            printer = QPrinter()
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName("out.pdf")
+            # printer.setOutputFormat(QPrinter.SmallFormat)
+            printer.setPaperSize(QSizeF(comp.paperWidth(), comp.paperHeight()), QPrinter.Millimeter)
+            printer.setFullPage(True)
+            printer.setColorMode(QPrinter.Color)
+            printer.setResolution(comp.printResolution())
+
+            pdfPainter = QPainter(printer)
+            paperRectMM = printer.pageRect(QPrinter.Millimeter)
+            paperRectPixel = printer.pageRect(QPrinter.DevicePixel)
+            comp.render(pdfPainter, paperRectPixel, paperRectMM)
+            pdfPainter.end()
+
+        def create_overview_0(self, alayerset):
+            main_window = self.session
+            new_dock_widget = QDockWidget(u"Overview")
+            layout = QVBoxLayout()
+            map_canvas_overview = QgsMapOverviewCanvas(
+                new_dock_widget,
+                self.canvas
+            )
+            map_canvas_overview.setLayerSet(alayerset)
+            map_canvas_overview.setBackgroundColor(QColor(255, 127, 0))
+            map_canvas_overview.enableAntiAliasing(True)
+            map_canvas_overview.setMinimumWidth(380)
+            map_canvas_overview.setMinimumHeight(280)
+            new_dock_widget.resize(400, 300)
+            layout.addWidget(map_canvas_overview)
+
+            new_dock_widget.setLayout(layout)
+
+            #main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+            main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+            new_dock_widget.show()
+
+            map_canvas_overview.refresh()  # Make the background color disappear?
+
+            # Layout optional playground
+            layout.setContentsMargins(0, 0, 0, 0)
+
+        def create_overview(self, alayerset):
+            ovw = MapOverview(alayerset, self.canvas)
+            ovw.exec_()
 
     class PanTool(QgsMapTool):
         def __init__(self, mapCanvas):
@@ -2562,6 +2624,50 @@ try:
 
         def get_renderer(self):
             return self.editor.renderer()
+
+
+    class MapOverview(QtGui.QDialog):
+        def __init__(self, layerset_ids, canvas, parent=None, **kwargs):
+            QDialog.__init__(self)
+            self.layerset_ids = layerset_ids
+            self.canvas = canvas
+
+            new_dock_widget = QDockWidget(u"Overview")
+            layout = QVBoxLayout()
+            map_canvas_overview = QgsMapOverviewCanvas(
+                new_dock_widget,
+                self.canvas
+            )
+            map_canvas_overview.setLayerSet(self.layerset_ids)
+            # map_canvas_overview.setBackgroundColor(QColor(255, 127, 0))
+            map_canvas_overview.setBackgroundColor(QColor(255, 255, 255))
+            map_canvas_overview.enableAntiAliasing(True)
+            map_canvas_overview.setMinimumWidth(380)
+            map_canvas_overview.setMinimumHeight(280)
+            new_dock_widget.resize(400, 300)
+            layout.addWidget(map_canvas_overview)
+
+            # new_dock_widget.setLayout(layout)
+
+            #main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+
+            map_canvas_overview.refresh()  # Make the background color disappear?
+
+            # Layout optional playground
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            self.setWindowTitle('Map Overview')
+            buttonBox = QDialogButtonBox(QDialogButtonBox.Close)
+
+            layout.addWidget(new_dock_widget)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+            self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+
+            layout.setContentsMargins(10, 10, 10, 10)
+            self.setLayout(layout)
+
 
 except:
     print "Skipping map_tools"

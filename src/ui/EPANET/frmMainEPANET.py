@@ -750,6 +750,11 @@ class frmMainEPANET(frmMain):
         frmF.show()
 
     def map_overview(self):
+        layerset = []
+        layerset.append(self.model_layers.pipes.id())
+        layerset.append(self.model_layers.pumps.id())
+        layerset.append(self.model_layers.valves.id())
+        self.map_widget.create_overview(layerset)
         pass
 
     def edit_simulation_options(self):

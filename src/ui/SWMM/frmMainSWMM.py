@@ -875,6 +875,18 @@ class frmMainSWMM(frmMain):
         fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
 
+    def map_overview(self):
+        layerset = []
+        layerset.append(self.model_layers.subcatchments.id())
+        layerset.append(self.model_layers.sublinks.id())
+        layerset.append(self.model_layers.conduits.id())
+        layerset.append(self.model_layers.pumps.id())
+        layerset.append(self.model_layers.orifices.id())
+        layerset.append(self.model_layers.weirs.id())
+        layerset.append(self.model_layers.outlets.id())
+        self.map_widget.create_overview(layerset)
+        pass
+
     def get_editor(self, edit_name):
         frm = None
         # First handle special cases where forms need more than simply being created

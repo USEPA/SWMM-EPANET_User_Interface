@@ -90,6 +90,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdProjDefault.triggered.connect(self.edit_defaults)
         self.actionStdLegends.triggered.connect(self.legends_menu)
         self.actionStdMapOptions.triggered.connect(self.map_options_menu)
+        self.actionStdMapOverview.triggered.connect(self.map_overview)
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)

@@ -1125,7 +1125,7 @@ try:
             self.canvas.refresh()
 
         def set_extent_by_corners(self, corners):
-            r = QgsRectangle(corners[0], corners[1], corners[2], corners[3])
+            r = QgsRectangle(QgsPoint(corners[0], corners[1]), QgsPoint(corners[2], corners[3]))
             self.set_extent(r)
 
         def set_extent_about_point(self, item):

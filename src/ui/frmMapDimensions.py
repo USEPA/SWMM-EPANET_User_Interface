@@ -51,14 +51,14 @@ class frmMapDimensions(QtGui.QDialog):
                 self.map_widget.coord_origin.x = val1
                 self.map_widget.coord_origin.y = val2
                 self.map_widget.coord_fext.x = val3
-                self.map_widget.coord_fext.x = val4
+                self.map_widget.coord_fext.y = val4
                 if self.session.project is not None:
                     if self.session.project.map is not None:
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
                         self.session.map_widget.set_extent_by_corners(self.session.project.map.dimensions)
                 if self.session.project is not None:
                     if self.session.project.backdrop is not None:
-                        self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtURy.text(), self.ui.txtURx.text(), self.ui.txtLLy.text())
+                        self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtLLy.text(), self.ui.txtURx.text(), self.ui.txtURy.text())
                         if self.ui.rdoUnitFeet.isChecked():
                             if not isinstance(self.session.project.backdrop.units, basestring):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.FEET

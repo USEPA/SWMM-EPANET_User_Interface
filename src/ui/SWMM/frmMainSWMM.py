@@ -403,6 +403,8 @@ class frmMainSWMM(frmMain):
         QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
         self.actionProjTableStatistics.triggered.connect(self.report_statistics)
 
+        self.actionStdMapQuery.triggered.connect(self.map_query)
+
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
@@ -874,6 +876,11 @@ class frmMainSWMM(frmMain):
         from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
+
+    def map_query(self):
+        from ui.SWMM.frmQuery import frmQuery
+        frmQ = frmQuery(self, self.project)
+        frmQ.show()
 
     def map_overview(self):
         layerset = []

@@ -1,7 +1,7 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
 from ui.help import HelpHandler
-from frmQueryDesigner import Ui_frmQuery
+from ui.frmQueryDesigner import Ui_frmQuery
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 from core.epanet.hydraulics.node import Junction
 from core.epanet.hydraulics.node import Reservoir

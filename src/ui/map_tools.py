@@ -219,6 +219,8 @@ try:
                     self.measureTool.setMeasureMode(True)
                 self.canvas.setMapTool(self.measureTool)
             else:
+                if self.measureTool:
+                    self.measureTool.stopCapturing()
                 self.canvas.unsetMapTool(self.measureTool)
 
         def setSelectByRegionMode(self):
@@ -227,6 +229,8 @@ try:
                     self.selectRegionTool = CaptureRegionTool(self.canvas, None, None, None, self.session)
                 self.canvas.setMapTool(self.selectRegionTool)
             else:
+                if self.selectRegionTool:
+                    self.selectRegionTool.stopCapturing()
                 self.canvas.unsetMapTool(self.selectRegionTool)
 
         def setTranslateCoordinatesMode(self):

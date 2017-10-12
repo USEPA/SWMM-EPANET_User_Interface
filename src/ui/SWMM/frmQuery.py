@@ -3,8 +3,10 @@ from PyQt4.QtGui import *
 from ui.help import HelpHandler
 from ui.frmQueryDesigner import Ui_frmQuery
 import Externals.swmm.outputapi.SMOutputWrapper as SWMMO
-from core.swmm.hydraulics.node import *
-from core.swmm.hydraulics.link import *
+import core.swmm.hydraulics.node as snode
+import core.swmm.hydraulics.link as slink
+import core.swmm.hydrology.subcatchment as sub
+import core.swmm.hydrology.lidcontrol as lid
 
 
 class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
@@ -83,6 +85,9 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
             model_objects = self.project.nodes_groups()
         elif otype.startswith("link"):
             model_objects = self.project.links_groups()
+        elif otype.startswith("sub"):
+            model_objects = [self.project.subcatchments]
+
         for id in ids:
             for obj_groups in model_objects:
                 model_obj = obj_groups.find_item(id)
@@ -96,118 +101,172 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                     break
 
     def cmdSubmit_Clicked(self):
-        pass
-        # val = float(self.txtNum.text())
-        # selected_attribute = self.cboProperty.currentText()
-        # setting_index = self.cboProperty.currentIndex()
-        # slist = []
-        #
-        # count = 0
-        # if self.cboFind.currentIndex() == 0:
-        #     otype = "nodes"
-        #     attribute = None
-        #     if setting_index < 3:
-        #         meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
-        #         attribute = meta_item.attribute
-        #         if attribute:  # Found an attribute of the node class to color by
-        #             for item in self.project.all_nodes():
-        #                 value = float(getattr(item, attribute, 0))
-        #                 if self.cboAbove.currentIndex() == 0:
-        #                     # below
-        #                     if value < val:
-        #                         count += 1
-        #                         slist.append(item.name)
-        #                 elif self.cboAbove.currentIndex() == 1:
-        #                     # equal to
-        #                     if value == val:
-        #                         count += 1
-        #                         slist.append(item.name)
-        #                 elif self.cboAbove.currentIndex() == 2:
-        #                     # above
-        #                     if value > val:
-        #                         count += 1
-        #                         slist.append(item.name)
-        #     elif self.session.output:  # Look for attribute to color by in the output
-        #         attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
-        #         if attribute:
-        #             values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
-        #             index = 1 # output arrays are zero-based, but value starts at index 1
-        #             for node in self.session.output.nodes.values():
-        #                 value = values[index]
-        #                 index += 1
-        #                 if self.cboAbove.currentIndex() == 0:
-        #                     # below
-        #                     if value < val:
-        #                         count += 1
-        #                         slist.append(node.name)
-        #                 elif self.cboAbove.currentIndex() == 1:
-        #                     # equal to
-        #                     if value == val:
-        #                         count += 1
-        #                         slist.append(node.name)
-        #                 elif self.cboAbove.currentIndex() == 2:
-        #                     # above
-        #                     if value > val:
-        #                         count += 1
-        #                         slist.append(node.name)
-        # else:
-        #     otype = 'links'
-        #     attribute = None
-        #     if setting_index < 5:
-        #         meta_item = Pipe.metadata.meta_item_of_label(selected_attribute)
-        #         attribute = meta_item.attribute
-        #         if attribute:  # Found an attribute of the pipe class to color by
-        #             for link in self.project.all_links():
-        #                 value = float(getattr(link, attribute, 0))
-        #                 if self.cboAbove.currentIndex() == 0:
-        #                     # below
-        #                     if value < val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #                 elif self.cboAbove.currentIndex() == 1:
-        #                     # equal to
-        #                     if value == val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #                 elif self.cboAbove.currentIndex() == 2:
-        #                     # above
-        #                     if value > val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #     elif self.session.output:  # Look for attribute to color by in the output
-        #         attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
-        #         if attribute:
-        #             values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
-        #             index = 1
-        #             for link in self.session.output.links.values():
-        #                 value = values[index]
-        #                 index += 1
-        #                 if self.cboAbove.currentIndex() == 0:
-        #                     # below
-        #                     if value < val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #                 elif self.cboAbove.currentIndex() == 1:
-        #                     # equal to
-        #                     if value == val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #                 elif self.cboAbove.currentIndex() == 2:
-        #                     # above
-        #                     if value > val:
-        #                         count += 1
-        #                         slist.append(link.name)
-        #
-        # self.identify_selected_model_objects(otype, slist)
-        #
-        # # Display number of items matching the query
-        # self.txtSummary.setText(str(count) + ' items found')
-        #
-        # self.session.map_widget.clearSelectableObjects()
-        # if len(self.selected_objects) == 1:
-        #     layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
-        #     if layer:
-        #         self.session.select_named_items(layer, slist)
-        # else:
-        #     self.session.clear_object_listing()
-        #     self.session.map_widget.select_model_objects_by_ids(self.selected_objects)
+        try:
+            val = float(self.txtNum.text())
+        except:
+            val = 0.0
+        selected_attribute = self.cboProperty.currentText()
+        setting_index = self.cboProperty.currentIndex()
+        slist = []
+
+        count = 0
+        if self.cboFind.currentIndex() == 0:
+            otype = "subcatchment"
+            attribute = None
+            if setting_index < 5:
+                if selected_attribute.startswith("% Imperv"):
+                    selected_attribute = "% Imperv"
+                elif selected_attribute.startswith("% LID"):
+                    selected_attribute = "LID Controls"
+                meta_item = sub.Subcatchment.metadata.meta_item_of_label(selected_attribute)
+                attribute = meta_item.attribute
+                if attribute:  # Found an attribute of the subcatchment class to color by
+                    for item in self.project.subcatchments.value:
+                        value = float(getattr(item, attribute, 0))
+                        if self.cboAbove.currentIndex() == 0:
+                            # below
+                            if value < val:
+                                count += 1
+                                slist.append(item.name)
+                        elif self.cboAbove.currentIndex() == 1:
+                            # equal to
+                            if value == val:
+                                count += 1
+                                slist.append(item.name)
+                        elif self.cboAbove.currentIndex() == 2:
+                            # above
+                            if value > val:
+                                count += 1
+                                slist.append(item.name)
+            elif self.session.output:  # Look for attribute to color by in the output
+                attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
+                if attribute:
+                    values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
+                    index = 1 # output arrays are zero-based, but value starts at index 1
+                    for node in self.session.output.nodes.values():
+                        value = values[index]
+                        index += 1
+                        if self.cboAbove.currentIndex() == 0:
+                            # below
+                            if value < val:
+                                count += 1
+                                slist.append(node.name)
+                        elif self.cboAbove.currentIndex() == 1:
+                            # equal to
+                            if value == val:
+                                count += 1
+                                slist.append(node.name)
+                        elif self.cboAbove.currentIndex() == 2:
+                            # above
+                            if value > val:
+                                count += 1
+                                slist.append(node.name)
+        elif self.cboFind.currentIndex() == 1: # Nodes
+            otype = "node"
+            attribute = None
+            if setting_index < 2:
+                if selected_attribute.startswith("Invert"):
+                    selected_attribute = "Invert El."
+                meta_item = snode.Junction.metadata.meta_item_of_label(selected_attribute)
+                attribute = meta_item.attribute
+                if attribute:  # Found an attribute of the subcatchment class to color by
+                    for n in self.project.nodes_groups():
+                        for item in n.value:
+                            value = float(getattr(item, attribute, 0))
+                            if self.cboAbove.currentIndex() == 0:
+                                # below
+                                if value < val:
+                                    count += 1
+                                    slist.append(item.name)
+                            elif self.cboAbove.currentIndex() == 1:
+                                # equal to
+                                if value == val:
+                                    count += 1
+                                    slist.append(item.name)
+                            elif self.cboAbove.currentIndex() == 2:
+                                # above
+                                if value > val:
+                                    count += 1
+                                    slist.append(item.name)
+        elif self.cboFind.currentIndex() == 3: # LID
+            #ToDo figure out how to search for LID's presence
+            pass
+        elif self.cboFind.currentIndex() == 4: # nodes with inflow
+            otype = "node"
+            inflows = None
+            if "Direct" in selected_attribute:
+                inflows = self.project.inflows
+            elif "DW" in selected_attribute:
+                inflows = self.project.dwf
+            elif "RD" in selected_attribute:
+                inflows = self.project.rdii
+            if inflows is not None:
+                for inflow in inflows.value:
+                    slist.append(inflow.node)
+        else:
+            otype = 'link'
+            attribute = None
+            if setting_index < 3:
+                meta_item = slink.Conduit.metadata.meta_item_of_label(selected_attribute)
+                attribute = meta_item.attribute
+                for link in self.project.conduits.value:
+                    if attribute:
+                        value = float(getattr(link, attribute, 0))
+                    else:
+                        if "Slope" in selected_attribute:
+                            value = link.get_slope()
+                        else:
+                            continue
+                    if self.cboAbove.currentIndex() == 0:
+                        # below
+                        if value < val:
+                            count += 1
+                            slist.append(link.name)
+                    elif self.cboAbove.currentIndex() == 1:
+                        # equal to
+                        if value == val:
+                            count += 1
+                            slist.append(link.name)
+                    elif self.cboAbove.currentIndex() == 2:
+                        # above
+                        if value > val:
+                            count += 1
+                            slist.append(link.name)
+            elif self.session.output:  # Look for attribute to color by in the output
+                attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
+                if attribute:
+                    values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
+                    index = 1
+                    for link in self.session.output.links.values():
+                        value = values[index]
+                        index += 1
+                        if self.cboAbove.currentIndex() == 0:
+                            # below
+                            if value < val:
+                                count += 1
+                                slist.append(link.name)
+                        elif self.cboAbove.currentIndex() == 1:
+                            # equal to
+                            if value == val:
+                                count += 1
+                                slist.append(link.name)
+                        elif self.cboAbove.currentIndex() == 2:
+                            # above
+                            if value > val:
+                                count += 1
+                                slist.append(link.name)
+
+        self.identify_selected_model_objects(otype, slist)
+
+        # Display number of items matching the query
+        self.txtSummary.setText(str(count) + ' items found')
+
+        self.session.map_widget.clearSelectableObjects()
+        if len(self.selected_objects) == 1:
+            layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
+            if layer:
+                self.session.select_named_items(layer, slist)
+        else:
+            self.session.clear_object_listing()
+            self.session.map_widget.select_model_objects_by_ids(self.selected_objects)
+

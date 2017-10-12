@@ -81,6 +81,46 @@ class Conduit(SwmmLink):
         ## Rate of seepage loss into surrounding soil (in/hr or mm/hr)
         self.seepage = 0.0
 
+    def get_slope(self):
+        lslope = 0.0
+        if self.inlet_node and self.outlet_node:
+            inlet_elevation = 0.0
+            outlet_elevation = 0.0
+            try:
+                inlet_elevation = float(self.inlet_node.elevation)
+            except:
+                inlet_elevation = None
+            try:
+                outlet_elevation = float(self.outlet_node.elevation)
+            except:
+                outlet_elevation = None
+
+            if inlet_elevation is not None and outlet_elevation is not None:
+                ioval = 0.0
+                ooval = 0.0
+                try:
+                    ioval = float(self.inlet_offset)
+                except:
+                    ioval = None
+                try:
+                    ooval = float(self.outlet_offset)
+                except:
+                    ooval = None
+                elev_diff = 0.0
+                if ioval is not None and ooval is not None:
+                    elev_diff = abs(outlet_elevation + ooval - inlet_elevation - ioval)
+                else:
+                    elev_diff = abs(outlet_elevation - inlet_elevation)
+                my_len = 0.0
+                try:
+                    my_len = float(self.length)
+                except:
+                    my_len = None
+
+                if my_len is not None:
+                    lslope = elev_diff / my_len
+        return lslope
+
 
 class Pump(SwmmLink):
     """A pump link in a SWMM model"""

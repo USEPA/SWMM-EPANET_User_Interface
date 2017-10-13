@@ -123,44 +123,18 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                 if attribute:  # Found an attribute of the subcatchment class to color by
                     for item in self.project.subcatchments.value:
                         value = float(getattr(item, attribute, 0))
-                        if self.cboAbove.currentIndex() == 0:
-                            # below
-                            if value < val:
-                                count += 1
-                                slist.append(item.name)
-                        elif self.cboAbove.currentIndex() == 1:
-                            # equal to
-                            if value == val:
-                                count += 1
-                                slist.append(item.name)
-                        elif self.cboAbove.currentIndex() == 2:
-                            # above
-                            if value > val:
-                                count += 1
-                                slist.append(item.name)
+                        if self.is_selected(item.name, value, val, slist):
+                            count += 1
             elif self.session.output:  # Look for attribute to color by in the output
-                attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
+                attribute = SWMMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
                 if attribute:
-                    values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
-                    index = 1 # output arrays are zero-based, but value starts at index 1
-                    for node in self.session.output.nodes.values():
+                    values = SWMMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
+                    index = 0 # output arrays are zero-based, but value starts at index 1
+                    for subcatch in self.session.output.subcatchments.values():
                         value = values[index]
                         index += 1
-                        if self.cboAbove.currentIndex() == 0:
-                            # below
-                            if value < val:
-                                count += 1
-                                slist.append(node.name)
-                        elif self.cboAbove.currentIndex() == 1:
-                            # equal to
-                            if value == val:
-                                count += 1
-                                slist.append(node.name)
-                        elif self.cboAbove.currentIndex() == 2:
-                            # above
-                            if value > val:
-                                count += 1
-                                slist.append(node.name)
+                        if self.is_selected(subcatch.name, value, val, slist):
+                            count += 1
         elif self.cboFind.currentIndex() == 1: # Nodes
             otype = "node"
             attribute = None
@@ -173,23 +147,24 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                     for n in self.project.nodes_groups():
                         for item in n.value:
                             value = float(getattr(item, attribute, 0))
-                            if self.cboAbove.currentIndex() == 0:
-                                # below
-                                if value < val:
-                                    count += 1
-                                    slist.append(item.name)
-                            elif self.cboAbove.currentIndex() == 1:
-                                # equal to
-                                if value == val:
-                                    count += 1
-                                    slist.append(item.name)
-                            elif self.cboAbove.currentIndex() == 2:
-                                # above
-                                if value > val:
-                                    count += 1
-                                    slist.append(item.name)
+                            if self.is_selected(item.name, value, val, slist):
+                                count += 1
+            elif self.session.output:  # Look for attribute to color by in the output
+                attribute = SWMMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
+                if attribute:
+                    values = SWMMO.SwmmOutputNode.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
+                    index = 0 # output arrays are zero-based, but value starts at index 1
+                    for node in self.session.output.nodes.values():
+                        value = values[index]
+                        index += 1
+                        if self.is_selected(node.name, value, val, slist):
+                            count += 1
         elif self.cboFind.currentIndex() == 3: # LID
             #ToDo figure out how to search for LID's presence
+            otype = "subcatchment"
+            for lid in self.project.lid_usage.value:
+                if lid.subcatchment_name:
+                    slist.append(lid.subcatchment_name)
             pass
         elif self.cboFind.currentIndex() == 4: # nodes with inflow
             otype = "node"
@@ -217,44 +192,18 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                             value = link.get_slope()
                         else:
                             continue
-                    if self.cboAbove.currentIndex() == 0:
-                        # below
-                        if value < val:
-                            count += 1
-                            slist.append(link.name)
-                    elif self.cboAbove.currentIndex() == 1:
-                        # equal to
-                        if value == val:
-                            count += 1
-                            slist.append(link.name)
-                    elif self.cboAbove.currentIndex() == 2:
-                        # above
-                        if value > val:
-                            count += 1
-                            slist.append(link.name)
+                    if self.is_selected(link.name, value, val, slist):
+                        count += 1
             elif self.session.output:  # Look for attribute to color by in the output
-                attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
+                attribute = SWMMO.SwmmOutputLink.get_attribute_by_name(selected_attribute)
                 if attribute:
-                    values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
-                    index = 1
+                    values = SWMMO.SwmmOutputLink.get_attribute_for_all_at_time(self.session.output, attribute, self.session.time_index)
+                    index = 0
                     for link in self.session.output.links.values():
                         value = values[index]
                         index += 1
-                        if self.cboAbove.currentIndex() == 0:
-                            # below
-                            if value < val:
-                                count += 1
-                                slist.append(link.name)
-                        elif self.cboAbove.currentIndex() == 1:
-                            # equal to
-                            if value == val:
-                                count += 1
-                                slist.append(link.name)
-                        elif self.cboAbove.currentIndex() == 2:
-                            # above
-                            if value > val:
-                                count += 1
-                                slist.append(link.name)
+                        if self.is_selected(link.name, value, val, slist):
+                            count += 1
 
         self.identify_selected_model_objects(otype, slist)
 
@@ -270,3 +219,21 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
             self.session.clear_object_listing()
             self.session.map_widget.select_model_objects_by_ids(self.selected_objects)
 
+    def is_selected(self, obj_name, output_value, target_value, slist):
+        selected = False
+        if self.cboAbove.currentIndex() == 0:
+            # below
+            if output_value < target_value:
+                selected = True
+                slist.append(obj_name)
+        elif self.cboAbove.currentIndex() == 1:
+            # equal to
+            if output_value == target_value:
+                selected = True
+                slist.append(obj_name)
+        elif self.cboAbove.currentIndex() == 2:
+            # above
+            if output_value > target_value:
+                selected = True
+                slist.append(obj_name)
+        return selected

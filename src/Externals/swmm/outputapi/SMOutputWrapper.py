@@ -477,6 +477,10 @@ class SwmmOutputObject(object):
     def elapsed_hours_at_index(self, report_time_index):
         return (report_time_index * self.reportStep) / 3600
 
+    def get_time(self, report_time_index):
+        elapsed_hours = self.elapsed_hours_at_index(report_time_index)
+        return self.StartDate + datetime.timedelta(hours=elapsed_hours)
+
     def get_time_string(self, report_time_index):
         total_hours = self.elapsed_hours_at_index(report_time_index)
         hours = int(total_hours)

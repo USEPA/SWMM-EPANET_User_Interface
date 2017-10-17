@@ -92,6 +92,7 @@ import Externals.swmm.outputapi.SMOutputWrapper as SMO
 from core.indexed_list import IndexedList
 import ui.convenience
 from ui.SWMM.inifile import DefaultsSWMM
+from datetime import timedelta
 
 
 class frmMainSWMM(frmMain):
@@ -456,6 +457,7 @@ class frmMainSWMM(frmMain):
                 self.cboMapNodes.addItem(attribute.name)
             for attribute in SMO.SwmmOutputLink.attributes:
                 self.cboMapLinks.addItem(attribute.name)
+            self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
         self.allow_thematic_update = True
         self.update_thematic_map()
 
@@ -518,14 +520,15 @@ class frmMainSWMM(frmMain):
             return None
 
     def update_thematic_map(self):
+        if not self.allow_thematic_update or not self.map_widget:
+            return
+
         enable_time_widget = False  # Flag to set if any selected attributes are time-based
         try:
-            if not self.allow_thematic_update or not self.map_widget:
-                return
 
-            color_by = self.get_model_attributes("Subcatchments")
-            color_by = self.get_model_attributes("Nodes")
-            color_by = self.get_model_attributes("Links")
+            # color_by = self.get_model_attributes("Subcatchments")
+            # color_by = self.get_model_attributes("Nodes")
+            # color_by = self.get_model_attributes("Links")
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 selected_attribute = self.cboMapSubcatchments.currentText()
@@ -534,17 +537,17 @@ class frmMainSWMM(frmMain):
                 if setting_index < 6:
                     meta_item = Subcatchment.metadata.meta_item_of_label(selected_attribute)
                     attribute = meta_item.attribute
-                color_by = {}
-                self.thematic_subcatchment_min = None
-                self.thematic_subcatchment_max = None
-                if attribute:  # Found an attribute of the subcatchment class to color by
-                    for subcatchment in self.project.subcatchments.value:
-                        value = float(getattr(subcatchment, attribute, 0))
-                        color_by[subcatchment.name] = value
-                        if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
-                            self.thematic_subcatchment_min = value
-                        if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
-                            self.thematic_subcatchment_max = value
+                    color_by = {}
+                    self.thematic_subcatchment_min = None
+                    self.thematic_subcatchment_max = None
+                    if attribute:  # Found an attribute of the subcatchment class to color by
+                        for subcatchment in self.project.subcatchments.value:
+                            value = float(getattr(subcatchment, attribute, 0))
+                            color_by[subcatchment.name] = value
+                            if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
+                                self.thematic_subcatchment_min = value
+                            if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
+                                self.thematic_subcatchment_max = value
 
                 elif self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
@@ -573,17 +576,17 @@ class frmMainSWMM(frmMain):
                 if setting_index < 2:
                     meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
                     attribute = meta_item.attribute
-                color_by = {}
-                self.thematic_node_min = None
-                self.thematic_node_max = None
-                if attribute:  # Found an attribute of the node class to color by
-                    for item in self.project.all_nodes():
-                        value = float(getattr(item, attribute, 0))
-                        color_by[item.name] = value
-                        if self.thematic_node_min is None or value < self.thematic_node_min:
-                            self.thematic_node_min = value
-                        if self.thematic_node_max is None or value > self.thematic_node_max:
-                            self.thematic_node_max = value
+                    color_by = {}
+                    self.thematic_node_min = None
+                    self.thematic_node_max = None
+                    if attribute:  # Found an attribute of the node class to color by
+                        for item in self.project.all_nodes():
+                            value = float(getattr(item, attribute, 0))
+                            color_by[item.name] = value
+                            if self.thematic_node_min is None or value < self.thematic_node_min:
+                                self.thematic_node_min = value
+                            if self.thematic_node_max is None or value > self.thematic_node_max:
+                                self.thematic_node_max = value
 
                 elif self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
@@ -763,6 +766,32 @@ class frmMainSWMM(frmMain):
                                 do_label = False
                             self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
+
+            if self.output and self.horizontalTimeSlider.maximum() > 0:
+                if self.time_index >= 0 and self.time_index < self.horizontalTimeSlider.maximum():
+                    dt = self.output.get_time(self.time_index)
+                    dt_str = str(dt.date())
+                    hr_min_str = self.output.get_time_string(self.time_index)
+                    for i in range(1, self.output.num_periods):
+                        time_labels.append(hr_min_str)
+                        if not str(dt.date()) in date_labels:
+                            date_labels.append(str(dt.date()))
+                    self.cboTime.addItems(time_labels)
+                    qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                    # qd1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                    self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                    # self.sbETime.setDateTimeRange(qd0, qd1)
+                    self.sbETime.setDateTime(qdt0)
+                    self.cboDate.addItems(date_labels)
+                    self.lblETime.setText('Elapsed Time')
+                    self.lblAnimateTime.setText('Time of Day')
+                    self.cboDate.setFixedWidth(100)
+
+
+
+                    # self.cboTime.disconnect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
+                    self.cboTime.setCurrentIndex(self.time_index)
+                    # self.cboTime.connect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 
@@ -1136,11 +1165,43 @@ class frmMainSWMM(frmMain):
                         self.set_thematic_controls()
                         self.labelStartTime.setText('0:00')
                         if self.output:
-                            time_labels = []
+                            self.cboDate.clear()
                             self.cboTime.clear()
+                            time_labels = []
+                            date_labels = []
+                            if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
+                                self.cboTime.addItems(["01:00:00"])
+                            else:
+                                td_rep_step = timedelta(seconds = self.output.reportStep)
+                                if td_rep_step.days > 0:
+                                    self.cboTime.addItems(["01:00:00"])
+                                else:
+                                    num_periods_in_day, rest = divmod(86400, self.output.reportStep)
+                                    for tod_index in range(1, num_periods_in_day, 1):
+                                        time_div = timedelta(seconds = self.output.reportStep * tod_index)
+                                        hours, remainder = divmod(time_div.seconds, 3600)
+                                        minutes, secs = divmod(remainder, 60)
+                                        time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
+                                    self.cboTime.addItems(time_labels)
+
+                            hr_min_str = ""
+                            dt_str = None
                             for i in range(1, self.output.num_periods):
-                                time_labels.append(self.output.get_time_string(i))
-                            self.cboTime.addItems(time_labels)
+                                # hr_min_str = self.output.get_time_string(i)
+                                # time_labels.append(hr_min_str)
+                                dt = self.output.get_time(i)
+                                if not str(dt.date()) in date_labels:
+                                    date_labels.append(str(dt.date()))
+
+                            qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                            # qd1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                            self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                            # self.sbETime.setDateTimeRange(qd0, qd1)
+                            self.sbETime.setDateTime(qdt0)
+                            self.cboDate.addItems(date_labels)
+                            self.lblETime.setText('Elapsed Time')
+                            self.lblAnimateTime.setText('Time of Day')
+                            self.cboDate.setFixedWidth(100)
                             # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
                         # self.labelEndTime.setText(self.project.times.duration)
                         return

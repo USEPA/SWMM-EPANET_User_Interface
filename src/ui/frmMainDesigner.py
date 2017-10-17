@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmMainDesigner.ui'
 #
-# Created: Tue Jul 11 10:52:32 2017
+# Created: Mon Oct 16 16:01:44 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -283,7 +283,7 @@ class Ui_frmMain(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.time_widget.sizePolicy().hasHeightForWidth())
         self.time_widget.setSizePolicy(sizePolicy)
-        self.time_widget.setMinimumSize(QtCore.QSize(510, 82))
+        self.time_widget.setMinimumSize(QtCore.QSize(602, 82))
         self.time_widget.setObjectName(_fromUtf8("time_widget"))
         self.dockWidgetContents_2 = QtGui.QWidget()
         self.dockWidgetContents_2.setObjectName(_fromUtf8("dockWidgetContents_2"))
@@ -375,11 +375,11 @@ class Ui_frmMain(object):
         self.lblETime = QtGui.QLabel(self.dockWidgetContents_2)
         self.lblETime.setObjectName(_fromUtf8("lblETime"))
         self.gridLayout_4.addWidget(self.lblETime, 1, 11, 1, 1)
-        self.sbETime = QtGui.QSpinBox(self.dockWidgetContents_2)
-        self.sbETime.setObjectName(_fromUtf8("sbETime"))
-        self.gridLayout_4.addWidget(self.sbETime, 1, 12, 1, 1)
         spacerItem5 = QtGui.QSpacerItem(250, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem5, 1, 13, 1, 2)
+        self.sbETime = QtGui.QDateTimeEdit(self.dockWidgetContents_2)
+        self.sbETime.setObjectName(_fromUtf8("sbETime"))
+        self.gridLayout_4.addWidget(self.sbETime, 1, 12, 1, 1)
         self.time_widget.setWidget(self.dockWidgetContents_2)
         frmMain.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.time_widget)
         self.actionStdNewProject = QtGui.QAction(frmMain)

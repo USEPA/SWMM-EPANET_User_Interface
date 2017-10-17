@@ -675,7 +675,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>510</width>
+     <width>602</width>
      <height>82</height>
     </size>
    </property>
@@ -901,9 +901,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="12">
-      <widget class="QSpinBox" name="sbETime"/>
-     </item>
      <item row="1" column="13" colspan="2">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
@@ -916,6 +913,9 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="1" column="12">
+      <widget class="QDateTimeEdit" name="sbETime"/>
      </item>
     </layout>
    </widget>

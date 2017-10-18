@@ -262,6 +262,8 @@ class frmMainSWMM(frmMain):
         self.status_suffix = "_status.txt"
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''  # Set this when model output is available
+        self.animation_dates = {}
+        self.animation_time_of_day = {}
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
         self.project_reader_type = ProjectReader
         self.project_writer_type = ProjectWriter
@@ -432,6 +434,21 @@ class frmMainSWMM(frmMain):
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.currentIndexChanged.connect(self.cbOffset_currentIndexChanged)
 
+        # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
+        # self.cboDate.currentIndexChanged.connect(lambda self.update_time_index("date"))
+        # self.cboTime.currentIndexChanged.connect(lambda self.update_time_index("time"))
+        # self.sbETime.valueChanged.connect(lambda self.update_time_index("datetime"))
+        QtCore.QObject.connect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), lambda: self.update_time_index("date"))
+        QtCore.QObject.connect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), lambda: self.update_time_index("time"))
+        QtCore.QObject.connect(self.sbETime, QtCore.SIGNAL('valueChanged()'), lambda: self.update_time_index("datetime"))
+        self.txtETime.setReadOnly(True)
+        self.lblETime.setText('Elapsed Time')
+        self.lblAnimateTime.setText('Time of Day')
+        self.sbETime.lineEdit().setVisible(False)
+        self.cboDate.setFixedWidth(100)
+        self.sbETime.setFixedWidth(15)
+        self.txtETime.setFixedWidth(100)
+
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
         self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
@@ -518,6 +535,14 @@ class frmMainSWMM(frmMain):
             return color_by
         else:
             return None
+
+    def update_time_index(self, aChange):
+        if aChange == "date":
+            pass
+        elif aChange == "time":
+            pass
+        elif aChange == "datetime":
+            pass
 
     def update_thematic_map(self):
         if not self.allow_thematic_update or not self.map_widget:
@@ -1169,6 +1194,8 @@ class frmMainSWMM(frmMain):
                             self.cboTime.clear()
                             time_labels = []
                             date_labels = []
+                            self.animation_dates.clear()
+                            self.animation_time_of_day.clear()
                             if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
                                 self.cboTime.addItems(["01:00:00"])
                             else:
@@ -1182,28 +1209,41 @@ class frmMainSWMM(frmMain):
                                         hours, remainder = divmod(time_div.seconds, 3600)
                                         minutes, secs = divmod(remainder, 60)
                                         time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
+                                        self.animation_time_of_day[tod_index - 1] = time_div
                                     self.cboTime.addItems(time_labels)
 
                             hr_min_str = ""
                             dt_str = None
+                            date_ctr = 0
                             for i in range(1, self.output.num_periods):
                                 # hr_min_str = self.output.get_time_string(i)
                                 # time_labels.append(hr_min_str)
                                 dt = self.output.get_time(i)
                                 if not str(dt.date()) in date_labels:
                                     date_labels.append(str(dt.date()))
+                                    self.animation_dates[date_ctr] = dt
+                                    date_ctr += 1
 
-                            qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
-                            # qd1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
-                            self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                            # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                            # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                            # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
                             # self.sbETime.setDateTimeRange(qd0, qd1)
-                            self.sbETime.setDateTime(qdt0)
+                            # self.sbETime.setDateTime(qdt0)
+                            # self.sbETime.setMinimumDateTime(qdt0)
+                            # self.sbETime.setMaximumDateTime(qdt1)
+                            t_str = str(self.output.get_time(1))
+                            self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
                             self.cboDate.addItems(date_labels)
-                            self.lblETime.setText('Elapsed Time')
-                            self.lblAnimateTime.setText('Time of Day')
-                            self.cboDate.setFixedWidth(100)
-                            # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
-                        # self.labelEndTime.setText(self.project.times.duration)
+                            self.sbETime.setMaximum(self.output.num_periods)
+                            self.sbETime.setMinimum(1)
+                            # self.labelEndTime.setText(self.project.times.duration)
+                            self.cboDate.setEnabled(True)
+                            self.cboTime.setEnabled(True)
+                            self.sbETime.setEnabled(True)
+                        else:
+                            self.cboDate.setEnabled(False)
+                            self.cboTime.setEnabled(False)
+                            self.sbETime.setEnabled(False)
                         return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))

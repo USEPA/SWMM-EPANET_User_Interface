@@ -269,6 +269,7 @@ class frmMainEPANET(frmMain):
         self.cboDate.setVisible(False)
         self.lblDate.setVisible(False)
         self.sbETime.setVisible(False)
+        self.txtETime.setVisible(False)
         self.lblETime.setVisible(False)
 
         if self.map_widget:

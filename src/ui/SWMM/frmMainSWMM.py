@@ -85,7 +85,6 @@ from core.swmm.labels import Label
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import SubLink
 
-from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
@@ -803,6 +802,7 @@ class frmMainSWMM(frmMain):
                 return
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
+                layer = self.model_layers.subcatchments
                 selected_attribute = self.cboMapSubcatchments.currentText()
                 setting_index = self.cboMapSubcatchments.currentIndex()
                 color_by = {}
@@ -816,12 +816,24 @@ class frmMainSWMM(frmMain):
                             color_by[subcatchment.name] = values[index]
                             index += 1
                 if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
-                                                                        self.thematic_subcatchment_min,
-                                                                        self.thematic_subcatchment_max)
+                    if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            self.map_widget.validatedGraduatedSymbol(None,
+                                                                     self.map_widget.layer_styles[layer.id()]):
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_node_min,
+                                                                            self.thematic_node_max,
+                                                                            self.map_widget.layer_styles[
+                                                                                layer.id()])
+                    else:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                                                                            self.thematic_subcatchment_min,
+                                                                            self.thematic_subcatchment_max)
+                    self.annotate_layername(selected_attribute, "subcatchment", layer)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
-                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                    do_label = True
+                    self.map_widget.set_default_polygon_renderer(layer, "lightgreen" , do_label)
+
                 self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
@@ -841,11 +853,25 @@ class frmMainSWMM(frmMain):
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_node_min,
-                                                                                self.thematic_node_max)
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                    self.map_widget.validatedGraduatedSymbol(None,
+                                                                             self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_node_min,
+                                                                                    self.thematic_node_max,
+                                                                                    self.map_widget.layer_styles[
+                                                                                        layer.id()])
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_node_min,
+                                                                                    self.thematic_node_max)
+                            self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            self.map_widget.set_default_point_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_nodes()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
+
                         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
@@ -860,12 +886,41 @@ class frmMainSWMM(frmMain):
                         for link in self.output.links.values():
                             color_by[link.name] = values[index]
                             index += 1
+
+                color_by_flow = None
+                if selected_attribute and selected_attribute.lower() == "flow":
+                    color_by_flow = color_by
+                elif self.chkDisplayFlowDir.isChecked():
+                    color_by_flow = {}
+                    selected_attribute = "Flow"
+                    attribute = SMO.SwmmOutputLink.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute,
+                                                                                 self.time_index)
+                        # index = 1
+                        for link in self.output.links.values():
+                            color_by_flow[link.name] = values[link.index]
+                            # index += 1
+
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_link_min,
+                                                                                    self.thematic_link_max,
+                                                                             self.map_widget.layer_styles[layer.id()],
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
-                                                                                self.thematic_link_max)
+                                                                                self.thematic_link_max,
+                                                                                    None,
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            self.annotate_layername(selected_attribute, "link", layer)
                         else:
                             do_label = True
                             if len(self.project.all_links()) > 300:
@@ -894,16 +949,80 @@ class frmMainSWMM(frmMain):
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 
+    def annotate_layername(self, selected_attribute, obj_type, layer):
+        """
+        Append attribute and its unit to layer name in legend
+        Args:
+            selected_attribute: node/link attribute name
+            obj_type: either 'node' or 'link'
+            layer: map layer to be applied with graduated symbols
+        Returns: None
+        """
+        unit_text = ""
+        if obj_type == "subcatchment":
+            if self.output.subcatchments_units.has_key(selected_attribute):
+                unit_text = self.output.subcatchments_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "node":
+            if self.output.nodes_units.has_key(selected_attribute):
+                unit_text = self.output.nodes_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "link":
+            if self.output.links_units.has_key(selected_attribute):
+                unit_text = self.output.links_units[selected_attribute]
+            else:
+                if selected_attribute == "Length":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Diameter":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "in"
+
+        layer_name = layer.name()
+        if " [" in layer_name:
+            layer_name = layer_name[0:layer_name.index(" [")]
+        if unit_text:
+            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+        else:
+            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+
     def animate_e(self):
         if self.output:
             for self.time_index in range(1, self.output.num_periods):
                 self.horizontalTimeSlider.setSliderPosition(self.time_index)
                 sleep(2)
 
+    def animate_e_step(self, i):
+        if self.output:
+            if i >= 0 and i <= self.output.num_periods:
+                self.horizontalTimeSlider.setSliderPosition(i)
+
     def get_output(self):
         if not self.output:
             if os.path.isfile(self.output_filename):
-                self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
+                self.output = SMO.SwmmOutputObject(self.output_filename)
                 self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
         return self.output
 
@@ -1259,8 +1378,8 @@ class frmMainSWMM(frmMain):
                     frmRun.Execute()
                     # self.add_map_constituents()
                     try:
-                        self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
-                        # self.output.build_units_dictionary()
+                        self.output = SMO.SwmmOutputObject(self.output_filename)
+                        self.output.build_units_dictionary()
                         self.set_thematic_controls()
                         self.labelStartTime.setText('0:00')
                         if self.output:

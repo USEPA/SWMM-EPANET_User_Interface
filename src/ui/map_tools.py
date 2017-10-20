@@ -771,7 +771,7 @@ try:
                 return None
 
         @staticmethod
-        def set_default_polygon_renderer(layer, poly_color='lightgreen'):
+        def set_default_polygon_renderer(layer, poly_color='lightgreen', do_labels=False):
             sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
             if "SUBCATCHMENT" in layer.name().upper():
                 sym.deleteSymbolLayer(0)
@@ -791,6 +791,16 @@ try:
                 sym.setColor(QColor(poly_color))
             sym.setAlpha(0.2)
             layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
+
+            if do_labels and "SUBCATCHMENT" in layer.name().upper():
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fontSizeInMapUnits = False
+                pal_layer.labelOffsetInMapUnits = False
+                pal_layer.fieldName = 'name'
+                pal_layer.placement = QgsPalLayerSettings.CentroidWhole
+                pal_layer.writeToLayer(layer)
 
         @staticmethod
         def validatedGraduatedSymbol(layer, arenderer):

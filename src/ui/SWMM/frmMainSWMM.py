@@ -433,14 +433,12 @@ class frmMainSWMM(frmMain):
 
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.currentIndexChanged.connect(self.cbOffset_currentIndexChanged)
-
-        # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
-        # self.cboDate.currentIndexChanged.connect(lambda self.update_time_index("date"))
-        # self.cboTime.currentIndexChanged.connect(lambda self.update_time_index("time"))
-        # self.sbETime.valueChanged.connect(lambda self.update_time_index("datetime"))
-        QtCore.QObject.connect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), lambda: self.update_time_index("date"))
-        QtCore.QObject.connect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), lambda: self.update_time_index("time"))
-        QtCore.QObject.connect(self.sbETime, QtCore.SIGNAL('valueChanged()'), lambda: self.update_time_index("datetime"))
+        self._animate_date = lambda: self.update_time_index("date")
+        self._animate_time = lambda: self.update_time_index("time")
+        self._animate_datetime = lambda: self.update_time_index("datetime")
+        self.cboDate.currentIndexChanged.connect(self._animate_date)
+        self.cboTime.currentIndexChanged.connect(self._animate_time)
+        self.sbETime.valueChanged.connect(self._animate_datetime)
         self.txtETime.setReadOnly(True)
         self.lblETime.setText('Elapsed Time')
         self.lblAnimateTime.setText('Time of Day')
@@ -538,11 +536,94 @@ class frmMainSWMM(frmMain):
 
     def update_time_index(self, aChange):
         if aChange == "date":
+            dt = self.animation_dates[self.cboDate.currentIndex()]
+            # time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+            time_lbl = "01:00:00"
+
+            in_range = False
+            for i in range(1, self.output.num_periods):
+                # hr_min_str = self.output.get_time_string(i)
+                # time_labels.append(hr_min_str)
+                dt_temp = self.output.get_time(i)
+                if str(dt.date()) == str(dt_temp.date()) and \
+                    '{:02d}:{:02d}:{:02d}'.format(dt_temp.hour,
+                                                  dt_temp.minute,
+                                                  dt_temp.second) == time_lbl:
+                    self.time_index = i - 1
+                    in_range = True
+                    break
+
+            if in_range:
+                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
+
+                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                self.sbETime.setValue(self.time_index)
+                self.sbETime.valueChanged.connect(self._animate_datetime)
+
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+
+                self.update_thematic_map()
             pass
         elif aChange == "time":
+            dt = self.animation_dates[self.cboDate.currentIndex()]
+            time_dt = self.animation_time_of_day[self.cboTime.currentIndex()]
+            # dt_act = dt + time_dt
+            hrs, rest = divmod(time_dt.seconds, 3600)
+            mins, secs = divmod(rest, 60)
+            time_lbl = '{:02d}:{:02d}:{:02d}'.format(hrs, mins, secs)
+
+            in_range = False
+            for i in range(1, self.output.num_periods):
+                # hr_min_str = self.output.get_time_string(i)
+                # time_labels.append(hr_min_str)
+                dt_temp = self.output.get_time(i)
+                if str(dt.date()) == str(dt_temp.date()) and \
+                    '{:02d}:{:02d}:{:02d}'.format(dt_temp.hour,
+                                                  dt_temp.minute,
+                                                  dt_temp.second) == time_lbl:
+                    self.time_index = i
+                    in_range = True
+                    break
+
+            if in_range:
+                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                self.sbETime.setValue(self.time_index)
+                self.sbETime.valueChanged.connect(self._animate_datetime)
+
+                self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
+
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+
+                self.update_thematic_map()
             pass
         elif aChange == "datetime":
-            pass
+            if self.sbETime.value() >= self.output.num_periods:
+                self.sbETime.setValue(self.output.num_periods - 1)
+            elif self.sbETime.value() < 1:
+                self.sbETime.setValue(1)
+            else:
+                self.time_index = self.sbETime.value()
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+                dt = self.output.get_time(self.time_index)
+                day_ctr = self.cboDate.findText(str(dt.date()))
+                self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                self.cboDate.setCurrentIndex(self.cboDate.findText(str(dt.date())))
+                self.cboDate.currentIndexChanged.connect(self._animate_date)
+                time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                self.txtETime.setText(str(day_ctr) + "." + time_lbl)
+                self.update_thematic_map()
 
     def update_thematic_map(self):
         if not self.allow_thematic_update or not self.map_widget:
@@ -792,10 +873,15 @@ class frmMainSWMM(frmMain):
                             self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
 
+            """
             if self.output and self.horizontalTimeSlider.maximum() > 0:
                 if self.time_index >= 0 and self.time_index < self.horizontalTimeSlider.maximum():
                     dt = self.output.get_time(self.time_index)
                     dt_str = str(dt.date())
+                    self.cboDate.setCurrentIndex(self.cboDate.findText(dt_str))
+                    time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+                    self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                    self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
                     hr_min_str = self.output.get_time_string(self.time_index)
                     for i in range(1, self.output.num_periods):
                         time_labels.append(hr_min_str)
@@ -811,12 +897,11 @@ class frmMainSWMM(frmMain):
                     self.lblETime.setText('Elapsed Time')
                     self.lblAnimateTime.setText('Time of Day')
                     self.cboDate.setFixedWidth(100)
-
-
-
                     # self.cboTime.disconnect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
                     self.cboTime.setCurrentIndex(self.time_index)
                     # self.cboTime.connect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
+                    pass
+            """
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 
@@ -1190,6 +1275,12 @@ class frmMainSWMM(frmMain):
                         self.set_thematic_controls()
                         self.labelStartTime.setText('0:00')
                         if self.output:
+                            # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
+                            # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
+                            # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
+                            self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                            self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                            self.sbETime.valueChanged.disconnect(self._animate_datetime)
                             self.cboDate.clear()
                             self.cboTime.clear()
                             time_labels = []
@@ -1240,10 +1331,14 @@ class frmMainSWMM(frmMain):
                             self.cboDate.setEnabled(True)
                             self.cboTime.setEnabled(True)
                             self.sbETime.setEnabled(True)
+                            self.cboDate.currentIndexChanged.connect(self._animate_date)
+                            self.cboTime.currentIndexChanged.connect(self._animate_time)
+                            self.sbETime.valueChanged.connect(self._animate_datetime)
                         else:
                             self.cboDate.setEnabled(False)
                             self.cboTime.setEnabled(False)
                             self.sbETime.setEnabled(False)
+
                         return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))
@@ -1251,6 +1346,9 @@ class frmMainSWMM(frmMain):
                                                 "Error opening model output:\n {0}\n{1}\n{2}".format(
                                                 self.output_filename, str(e1), str(traceback.print_exc())),
                                                 QMessageBox.Ok)
+                        self.cboDate.currentIndexChanged.connect(lambda: self.update_time_index("date"))
+                        self.cboTime.currentIndexChanged.connect(lambda: self.update_time_index("time"))
+                        self.sbETime.valueChanged.connect(lambda: self.update_time_index("datetime"))
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))

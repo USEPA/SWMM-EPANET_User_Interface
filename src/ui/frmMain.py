@@ -288,6 +288,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 act.triggered.connect(self.setQgsMapTool)
 
         self.time_index = 0
+        self.update_time_controls = False
         self.animating = False
         self.animate_thread = None
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
@@ -1117,6 +1118,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
+        self.update_time_controls = True
         self.signalTimeChanged.emit()
 
     def btnPlayForward_clicked(self):

@@ -873,35 +873,24 @@ class frmMainSWMM(frmMain):
                             self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
 
-            """
-            if self.output and self.horizontalTimeSlider.maximum() > 0:
+            if self.update_time_controls and self.output and self.horizontalTimeSlider.maximum() > 0:
                 if self.time_index >= 0 and self.time_index < self.horizontalTimeSlider.maximum():
                     dt = self.output.get_time(self.time_index)
                     dt_str = str(dt.date())
+                    self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                    self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                    self.sbETime.valueChanged.disconnect(self._animate_datetime)
                     self.cboDate.setCurrentIndex(self.cboDate.findText(dt_str))
                     time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
                     self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                    self.sbETime.setValue(self.time_index)
                     self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
-                    hr_min_str = self.output.get_time_string(self.time_index)
-                    for i in range(1, self.output.num_periods):
-                        time_labels.append(hr_min_str)
-                        if not str(dt.date()) in date_labels:
-                            date_labels.append(str(dt.date()))
-                    self.cboTime.addItems(time_labels)
-                    qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
-                    # qd1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
-                    self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
-                    # self.sbETime.setDateTimeRange(qd0, qd1)
-                    self.sbETime.setDateTime(qdt0)
-                    self.cboDate.addItems(date_labels)
-                    self.lblETime.setText('Elapsed Time')
-                    self.lblAnimateTime.setText('Time of Day')
-                    self.cboDate.setFixedWidth(100)
-                    # self.cboTime.disconnect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
-                    self.cboTime.setCurrentIndex(self.time_index)
                     # self.cboTime.connect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
+                    self.cboDate.currentIndexChanged.connect(self._animate_date)
+                    self.cboTime.currentIndexChanged.connect(self._animate_time)
+                    self.sbETime.valueChanged.connect(self._animate_datetime)
                     pass
-            """
+                self.update_time_controls = False
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
 

@@ -537,7 +537,7 @@ class frmMainSWMM(frmMain):
         if aChange == "date":
             dt = self.animation_dates[self.cboDate.currentIndex()]
             # time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
-            time_lbl = "01:00:00"
+            time_lbl = "00:00:00"
 
             in_range = False
             for i in range(1, self.output.num_periods):
@@ -1403,18 +1403,18 @@ class frmMainSWMM(frmMain):
                                     self.cboTime.addItems(["01:00:00"])
                                 else:
                                     num_periods_in_day, rest = divmod(86400, self.output.reportStep)
-                                    for tod_index in range(1, num_periods_in_day, 1):
+                                    for tod_index in range(0, num_periods_in_day, 1):
                                         time_div = timedelta(seconds = self.output.reportStep * tod_index)
                                         hours, remainder = divmod(time_div.seconds, 3600)
                                         minutes, secs = divmod(remainder, 60)
                                         time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
-                                        self.animation_time_of_day[tod_index - 1] = time_div
+                                        self.animation_time_of_day[tod_index] = time_div
                                     self.cboTime.addItems(time_labels)
 
                             hr_min_str = ""
                             dt_str = None
                             date_ctr = 0
-                            for i in range(1, self.output.num_periods):
+                            for i in range(0, self.output.num_periods):
                                 # hr_min_str = self.output.get_time_string(i)
                                 # time_labels.append(hr_min_str)
                                 dt = self.output.get_time(i)
@@ -1430,11 +1430,11 @@ class frmMainSWMM(frmMain):
                             # self.sbETime.setDateTime(qdt0)
                             # self.sbETime.setMinimumDateTime(qdt0)
                             # self.sbETime.setMaximumDateTime(qdt1)
-                            t_str = str(self.output.get_time(1))
+                            t_str = str(self.output.get_time(0))
                             self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
                             self.cboDate.addItems(date_labels)
                             self.sbETime.setMaximum(self.output.num_periods)
-                            self.sbETime.setMinimum(1)
+                            self.sbETime.setMinimum(0)
                             # self.labelEndTime.setText(self.project.times.duration)
                             self.cboDate.setEnabled(True)
                             self.cboTime.setEnabled(True)

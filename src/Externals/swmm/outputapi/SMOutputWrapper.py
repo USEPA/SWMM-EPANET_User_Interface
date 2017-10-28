@@ -494,7 +494,7 @@ class SwmmOutputObject(object):
         self._call(_lib.SMO_close)
 
     def elapsed_hours_at_index(self, report_time_index):
-        return (report_time_index * self.reportStep) / 3600
+        return (report_time_index * self.reportStep) / 3600.0
 
     def get_time(self, report_time_index):
         elapsed_hours = self.elapsed_hours_at_index(report_time_index)

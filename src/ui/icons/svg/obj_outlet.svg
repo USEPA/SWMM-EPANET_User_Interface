@@ -33,7 +33,7 @@
        height="16.085657"
        width="17.73506"
        id="rect3466"
-       style="fill:#000000" />
+       fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5" />
     <rect
        y="1034.0675"
        x="5.6593628"
@@ -47,14 +47,14 @@
        height="3.9282868"
        width="3.9860559"
        id="rect3474"
-       style="fill:#000000" />
+       fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5" />
     <rect
        y="1038.2666"
        x="21.027889"
        height="4.1015935"
        width="3.6972113"
        id="rect3476"
-       style="fill:#000000" />
+       fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5" />
     <path
        id="path3490"
        d="M 4.7706337,1047.3861 20.491319,1033.2537"

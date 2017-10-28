@@ -314,7 +314,7 @@ class OutputObject(object):
         self.output_file_name = str(output_file_name)
         self.ptrapi = _lib.ENR_init()
         ret = _lib.ENR_open(self.ptrapi, self.output_file_name)
-        if ret != 0:
+        if ret > 400:
             self._raise_error(ret)
         file_version = self._call_int(_lib.ENR_getVersion)
         print("ENR opened {} Version {}".format(output_file_name, str(file_version)))
@@ -326,6 +326,20 @@ class OutputObject(object):
         self.nodes = ENR_node_type.read_all(self)
         self.links = ENR_link_type.read_all(self)
         self.all_items = (self.nodes, self.links)
+        self.nodes_units = {}
+        self.links_units = {}
+
+    def build_units_dictionary(self):
+       # output attributes
+        for l_id in self.links.keys():
+            for attr in self.links[l_id].Attributes:
+                self.links_units[attr.name] = attr._units[self.unit_system]
+            break
+       # output attributes
+        for n_id in self.nodes.keys():
+            for attr in self.nodes[n_id].Attributes:
+                self.nodes_units[attr.name] = attr._units[self.unit_system]
+            break
 
     def get_items(self, object_type_label):
         """ Get the dictionary of items of the type whose TypeLabel attribute is object_type_label.

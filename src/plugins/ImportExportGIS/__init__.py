@@ -60,7 +60,8 @@ try:
                         else:
                             result = "Create Model from GIS data supports GeoJSON data only"
                 else:
-                    result = "Selected operation not yet implemented."
+                    # result = "Selected operation not yet implemented."
+                    result = "No file is selected."
                 QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
             except Exception as ex:
                 print str(ex)

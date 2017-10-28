@@ -48,8 +48,10 @@ class frmRunEPANET(frmRunSimulation):
 
         #  Make the ProgressPage be the active page
         # Notebook1.PageIndex = 0
+        self.run_err_msg = ""
 
     def Execute(self):
+        self.run_err_msg = ""
         self.fraRunning.setVisible(True)
         self.fraFinished.setVisible(False)
         self.fraBottom.setVisible(True)
@@ -105,10 +107,10 @@ class frmRunEPANET(frmRunSimulation):
                 self.set_status(RunStatus.rsSuccess)
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
-            msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
-            print(msg)
-            QtGui.QMessageBox.information(None, "EPANET", msg, QtGui.QMessageBox.Ok)
-            self.set_status(RunStatus.rsShutdown)
+            self.run_err_msg = "Simulation problem: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
+            print(self.run_err_msg)
+            # QtGui.QMessageBox.information(None, "EPANET", self.run_err_msg, QtGui.QMessageBox.Ok)
+            self.set_status(RunStatus.rsError)
         finally:
             try:
                 self.lblSuccessful.setText(self.StatusLabel.text())

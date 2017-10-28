@@ -7,9 +7,12 @@ from core.indexed_list import IndexedList
 
 class InputFileReader(object):
     """ Base class for reading input files """
+    def __init__(self):
+        self.input_err_msg = ""
 
     def read_file(self, project, file_name):
         """ Read the contents of file_name into project. """
+        self.input_err_msg = ""
         try:
             import codecs
             with codecs.open(file_name, 'r', "utf-8") as inp_reader:
@@ -17,13 +20,15 @@ class InputFileReader(object):
                 self.set_from_text_lines(project, iter(inp_reader))
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
-
-            try:
-                with open(file_name, 'r') as inp_reader:
-                    project.file_name = file_name
-                    self.set_from_text_lines(project, iter(inp_reader))
-            except Exception as e:
-                print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
+            self.input_err_msg = "File is probably not a valid EPANET project or input file."
+            if ".net" in file_name:
+                self.input_err_msg += "\nPlease note: binary (.net) input file is deprecated (not supported)."
+            # try:
+            #     with open(file_name, 'r') as inp_reader:
+            #         project.file_name = file_name
+            #         self.set_from_text_lines(project, iter(inp_reader))
+            # except Exception as e:
+            #     print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def set_from_text_lines(self, project, lines_iterator):
         """Read a project file from lines of text.

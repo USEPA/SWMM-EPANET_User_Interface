@@ -126,12 +126,23 @@ class SWMM:
 class EPANET:
 
     @staticmethod
-    def plot_time(output, attribute, items):
+    def plot_time(output, attribute, items, aname="", aunit=""):
         fig = plt.figure()
 
         title = "Time Series Plot of " + attribute.name
-        units = attribute.units(output.unit_system)
-        parameter_label = attribute.name
+        if aname:
+            title = "Time Series Plot of " + aname
+
+        if aname:
+            parameter_label = aname
+        else:
+            parameter_label = attribute.name
+
+        if aunit:
+            units = aunit
+        else:
+            units = attribute.units(output.unit_system)
+
         if units:
             parameter_label += ' (' + units + ')'
 
@@ -159,15 +170,20 @@ class EPANET:
             raise Exception("No lines were selected to graph")
 
     @staticmethod
-    def update_profile(output, items, x_values, attribute, fig_number, time_index):
+    def update_profile(output, items, x_values, attribute, fig_number, time_index, aname="", aunit=""):
         if time_index >= 0:
             fig = plt.figure(fig_number)
             fig.clear()
-            title = "Profile Plot of " + attribute.name + " at " + output.get_time_string(time_index)
+            parameter_label = attribute.name
+            units = attribute.units(output.unit_system)
+            if aname:
+                parameter_label = aname
+            if aunit:
+                units = aunit
+
+            title = "Profile Plot of " + parameter_label + " at " + output.get_time_string(time_index)
             fig.canvas.set_window_title(title)
             plt.title(title)
-            units = attribute.units(output.unit_system)
-            parameter_label = attribute.name
             if units:
                 parameter_label += ' (' + units + ')'
 
@@ -197,21 +213,28 @@ class EPANET:
             plt.show()
 
     @staticmethod
-    def plot_freq(output, attribute, time_index, items):
+    def plot_freq(output, attribute, time_index, items, aname="", aunit=""):
         if time_index < 0:
             raise Exception("Time index not selected, cannot plot frequency")
         count = len(items)
         if count < 1:
             raise Exception("No items in list, cannot plot frequency")
+
+        units = attribute.units(output.unit_system)
+        if aunit:
+            units = aunit
+        parameter_label = attribute.name
+        if aname:
+            parameter_label = aname
+
+
         fig = plt.figure()
-        title = "Distribution of " + attribute.name + " at " + output.get_time_string(time_index)
+        title = "Distribution of " + parameter_label + " at " + output.get_time_string(time_index)
         fig.canvas.set_window_title(title)
         plt.title(title)
-        units = attribute.units(output.unit_system)
-        parameter_label = attribute.name
+
         if units:
             parameter_label += ' (' + units + ')'
-
         all_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
 
         percent = []
@@ -233,7 +256,7 @@ class EPANET:
         plt.show()
 
     @staticmethod
-    def plot_system_flow(output):
+    def plot_system_flow(output, ajunctions=None, areservoirs=None):
         if not output.nodes:
             raise Exception("No node results present in output, cannot plot system flow")
         # import here to avoid SWMM depending on EPANET
@@ -251,6 +274,12 @@ class EPANET:
             consumed.append(0)
 
         for node in output.nodes.values():
+            if (ajunctions and node.name in ajunctions) or \
+               (areservoirs and node.name in areservoirs):
+                pass
+            else:
+                continue
+
             node_flows = node.get_series(output, ENR_node_type.AttributeDemand)
             for time_index in range(0, output.num_periods):
                 flow = node_flows[time_index]
@@ -259,8 +288,8 @@ class EPANET:
                 else:
                     produced[time_index] -= flow
 
-        plt.plot(x_values, consumed, label="Consumed")
-        plt.plot(x_values, produced, label="Produced")
+        plt.plot(x_values, produced, label="Produced", color="red")
+        plt.plot(x_values, consumed, label="Consumed", color="green")
 
         # fig.suptitle("Time Series Plot")
         flow_units = ""
@@ -269,5 +298,6 @@ class EPANET:
         plt.ylabel("Flow" + flow_units)
         plt.xlabel("Time (hours)")
         plt.grid(True)
-        plt.legend()
+        plt.subplots_adjust(right=0.8)
+        plt.legend(loc='upper left', bbox_to_anchor=(1.04, 1), fontsize='9')
         plt.show()

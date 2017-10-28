@@ -7,7 +7,8 @@ from cStringIO import StringIO
 if sys.version_info >= (3,):
     unicode = str
 # from embed_ipython_new import EmbedIPython
-from threading import Lock
+from threading import Lock, Thread
+from time import sleep
 from PyQt4.Qsci import QsciScintilla
 
 #from ui.ui_utility import EmbedMap
@@ -28,6 +29,7 @@ from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
 from ui.frmTranslateCoordinates import frmTranslateCoordinates
 from ui.inifile import ini_setting
+from ui.model_utility import ParseData
 
 INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
@@ -88,6 +90,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdProjDefault.triggered.connect(self.edit_defaults)
         self.actionStdLegends.triggered.connect(self.legends_menu)
         self.actionStdMapOptions.triggered.connect(self.map_options_menu)
+        self.actionStdMapOverview.triggered.connect(self.map_overview)
         # self.tabProjMap.currentChanged.connect(self.tabProjMapChanged)
         self.actionStdPrint.triggered.connect(self.saveMapAsImage)
         self.actionSave_Map_As_Image.triggered.connect(self.saveMapAsImage)
@@ -107,6 +110,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
         self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
         # self.actionGroup_Obj = QActionGroup(self)
+        self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
         self.auto_length = (self.cbAutoLength.currentIndex == 1)
 
@@ -199,8 +203,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionZoom_full.triggered.connect(self.zoomfull)
                             self.actionMapMeasure.triggered.connect(self.setQgsMapTool)
                             self.actionAdd_Feature.triggered.connect(self.map_addfeature)
-                            self.actionMapOption.triggered.connect(self.map_addfeature)
+                            # self.actionMapOption.triggered.connect(self.map_addfeature)
+                            self.toolBar_Map.removeAction(self.actionMapOption)
                             self.actionStdSelect_Region.triggered.connect(self.setQgsMapToolSelectRegion)
+                            self.actionMapSelectRegion.triggered.connect(self.setQgsMapToolSelectRegion)
                             self.actionStdSelect_All.triggered.connect(self.select_all_map_features)
 
                             self.actionStdMapPan.triggered.connect(lambda: self.setMenuMapTool('pan'))
@@ -218,6 +224,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
+                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeRename)
                             self.gis_layer_tree = QgsLayerTreeView()
                             self.gis_layer_tree.setModel(self.gis_layer_model)
                             self.gis_layer_bridge = QgsLayerTreeMapCanvasBridge(self.gis_layer_root, self.canvas, self.tabGIS)
@@ -282,7 +289,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 act.triggered.connect(self.setQgsMapTool)
 
         self.time_index = 0
+        self.update_time_controls = False
+        self.animating = False
+        self.animate_thread = None
         self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+        self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
+        self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
+        self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
+
+        self.chkDisplayFlowDir.stateChanged.connect(self.chkDisplayFlowDir_stateChanged)
 
         self.onLoad()
         self.undo_stack = QUndoStack(self)
@@ -585,11 +600,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     self.layer.updateExtents()
                     self.layer.commitChanges()
                     if self.session.no_items:
-                        self.session.zoomfull()
                         self.session.no_items = False
                     else:
                         self.layer.triggerRepaint()
-                        self.session.map_widget.canvas.refresh()
+
+                    # setup initial extent for display
+                    # this is after discerning whether non-empty extent is due to
+                    # adding in a legit layer or lingering extent from previous session
+                    # (which doesn't work for a new session)
+                    if self.session.map_widget.canvas.extent().isEmpty() or \
+                       self.session.map_widget.refresh_extent_needed:
+                        self.session.map_widget.refresh_extent_needed = False
+                        if isinstance(self.item, Coordinate):
+                            self.session.map_widget.set_extent_about_point(self.item)
+                        else:
+                            self.session.map_widget.set_extent(self.layer.extent())
+
+                    self.session.map_widget.canvas.refresh()
                 else:
                     self.added_id = None
                     self.layer.rollBack()
@@ -1092,7 +1119,43 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def currentTimeChanged(self, slider_val):
         self.time_index = slider_val
+        self.update_time_controls = True
         self.signalTimeChanged.emit()
+
+    def btnPlayForward_clicked(self):
+        if self.output:
+            if self.time_index + 1 <= self.output.num_periods:
+                ltime_index = self.time_index + 1
+                self.horizontalTimeSlider.setSliderPosition(ltime_index)
+            else:
+                return
+
+    def btnPlayBack_clicked(self):
+        if self.output:
+            if self.time_index - 1 >= 1:
+                ltime_index = self.time_index - 1
+                self.horizontalTimeSlider.setSliderPosition(ltime_index)
+            else:
+                return
+
+    def btnPlay_clicked(self):
+        if not self.animate_thread:
+            self.animate_thread = MyProcess(self.animate_e_step, self.output.num_periods)
+            self.animate_thread.start()
+            self.animating = True
+        else:
+            if self.animate_thread and self.animate_thread.isAlive():
+                if self.animating:
+                    self.animate_thread.pause()
+                    self.animating = False
+                else:
+                    self.animate_thread.resume(self.time_index)
+                    self.animating = True
+
+    def chkDisplayFlowDir_stateChanged(self):
+        if not self.output:
+            return
+        self.update_thematic_map()
 
     def setQgsMapToolSelect(self):
         self.actionMapSelectObj.setChecked(True)
@@ -1117,8 +1180,16 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.map_widget.setPanMode()
 
     def setQgsMapToolSelectRegion(self):
-        self.select_region_checked = not self.select_region_checked
+        if self.actionMapSelectRegion.isChecked():
+            self.select_region_checked = True
+        else:
+            self.select_region_checked = not self.select_region_checked
         self.setQgsMapTool()
+        self.model_layers.get_selected_model_ids()
+        if self.model_layers.total_selected > 0:
+            self.actionStdEditObject.setEnabled(True)
+        else:
+            self.actionStdEditObject.setEnabled(False)
 
     def setQgsMapToolTranslateCoords(self):
         self.translating_coordinates = not self.translating_coordinates
@@ -1189,6 +1260,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)
                     self.program_settings.sync()
+                self.map_widget.refresh_extent_needed = False
             except Exception as ex:
                 print("map_addvector error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1215,6 +1287,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if path_only != directory:
                     self.program_settings.setValue("GISDataDir", path_only)
                     self.program_settings.sync()
+                self.map_widget.refresh_extent_needed = False
             except Exception as ex:
                 print("map_addraster error opening " + filename + ":\n" + str(ex) + '\n' + str(traceback.print_exc()))
 
@@ -1643,9 +1716,22 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.project or not hasattr(self, "get_editor"):
             return
         if len(self.listViewObjects.selectedItems()) == 0:
-            return
-        selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
-        self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
+            self.model_layers.get_selected_model_ids()
+            if self.model_layers.total_selected > 0:
+                otypes = []
+                for otype in self.model_layers.selected_model_ids.keys():
+                    if len(self.model_layers.selected_model_ids[otype]):
+                        otypes.append(otype)
+                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+                if otype and otype[1]:
+                    mobjects = self.model_layers.selected_model_ids[otype[0]]
+                    self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
+                pass
+            else:
+                return
+        else:
+            selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
+            self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
 
     def add_object_clicked(self):
         if self.project and self.get_editor:
@@ -1695,7 +1781,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 self.obj_tree.setCurrentItem(tree_node)
 
                         if selected_list:
-                            qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
+                            # qgis_ids = [f.id() for f in layer.getFeatures() if f.attributes()[0] in selected_list]
+                            qgis_ids = []
+                            for moname in selected_list:
+                                f = self.map_widget.find_feature(layer, moname)
+                                if f:
+                                    qgis_ids.append(f.id())
                             layer.setSelectedFeatures(qgis_ids)
 
                     except Exception as ex:
@@ -1753,6 +1844,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
         self.map_widget.remove_all_layers()
+        # self.map_widget.set_extent_empty()
+        self.map_widget.refresh_extent_needed = True
         self.clear_object_listing()
         if hasattr(self, "project_settings"):
             del self.project_settings
@@ -1762,6 +1855,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             try:
                 project_reader = self.project_reader_type()
                 project_reader.read_file(self.project, file_name)
+                if project_reader.input_err_msg:
+                    self.restoreCursor()
+                    QMessageBox.information(self, self.model, project_reader.input_err_msg, QMessageBox.Ok)
+
                 if self.map_widget:
                     projection_file_name = file_name[:-3] + "prj"
                     self.open_prj(projection_file_name)
@@ -1815,6 +1912,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def save_project(self, file_name=None):
         if not file_name:
             file_name = self.project.file_name
+        if self.model == "SWMM":
+            self.set_project_map_extent()
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
@@ -1916,6 +2015,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         del self.project_settings
         if self.q_application:
             try:
+                if self.animate_thread:
+                    # if self.output:
+                    #     self.animate_thread.resume(self.output.num_periods)
+                    self.animate_thread.stop()
+                    # self.animate_thread.join()
+                    # if self.model == "EPANET":
+                    #     # a hack here to allow large model to quit
+                    #     if self.output and len(self.output.nodes) > 500:
+                    #         self.map_widget.zoom_to_one_feature()
+                    #         sleep(2)
+                    #     pass
                 self.q_application.quit()
             except:
                 try:
@@ -1935,7 +2045,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         selected_text = ''
         for item in self.obj_tree.selectedIndexes():
             selected_text = str(item.data())
-        self.clear_object_listing()
+        if self.listViewObjects.count() > 0:
+            self.clear_object_listing()
         self.dockw_more.setWindowTitle('')
         if self.project is None or not selected_text:
             return
@@ -1947,6 +2058,36 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
             self.listViewObjects.addItems(names)
+            # is_node_item = False
+            # for nt in self.tree_nodes_items:
+            #     if selected_text in nt[0]:
+            #         is_node_item = True
+            #         break
+            # if is_node_item:
+            #     q_ratetimer = QtCore.QTime()
+            #     q_ratetimer.start()
+            #     for n in names:
+            #         if not (n in self.project.all_nodes()):
+            #             continue
+            #         # oj = self.project.junctions.find_item(n)
+            #         oj = self.project.all_nodes()[n]
+            #         if not oj:
+            #             continue
+            #         xc, x_c_good = ParseData.floatTryParse(oj.x)
+            #         yc, y_c_good = ParseData.floatTryParse(oj.y)
+            #         if x_c_good and y_c_good:
+            #             self.listViewObjects.addItem(n)
+            #         else:
+            #             oj_item = QListWidgetItem('%s' % n)
+            #             oj_item.setBackground(QColor('yellow'))
+            #             self.listViewObjects.addItem(oj_item)
+            #         # Limit at 60 updates / s
+            #         if q_ratetimer.elapsed() > 1000 / 60:
+            #             self.listViewObjects.scrollToBottom()
+            #             QApplication.processEvents()
+            #             q_ratetimer.restart()
+            # else:
+            #     self.listViewObjects.addItems(names)
 
     def onLoad(self):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -1971,6 +2112,8 @@ class ModelLayers:
         self.links_layers = []
         self.all_layers = []
         self.map_widget.remove_all_layers()
+        self.selected_model_ids = {}
+        self.total_selected = 0
 
     def create_layers_from_project(self, project):
         # First remove old ModelLayers already on the map
@@ -1999,6 +2142,25 @@ class ModelLayers:
         except:
             return None
 
+    def get_selected_model_ids(self):
+        self.total_selected = 0
+        for mlyr in self.all_layers:
+            lyr_name = mlyr.name()
+            if lyr_name and \
+               (lyr_name.lower().startswith("label") or
+               lyr_name.lower().startswith("subcentroid") or
+               lyr_name.lower().startswith("sublink")):
+                continue
+            if self.selected_model_ids.has_key(lyr_name):
+                if isinstance(self.selected_model_ids[lyr_name], list):
+                    del self.selected_model_ids[lyr_name][:]
+                else:
+                    self.selected_model_ids[lyr_name] = []
+            else:
+                self.selected_model_ids[lyr_name] = []
+            for f in mlyr.selectedFeatures():
+                self.selected_model_ids[lyr_name].append(f['name'])
+                self.total_selected = self.total_selected + 1
 
 def print_process_id():
     print 'Process ID is:', os.getpid()

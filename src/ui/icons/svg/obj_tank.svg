@@ -57,28 +57,28 @@
     </rdf:RDF>
   </metadata>
   <ellipse
-     style="fill:#000000"
+     fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5"
      id="path3370"
      cx="5.4096642"
      cy="8.0882359"
      rx="4.7794118"
      ry="5.2521009" />
   <ellipse
-     style="fill:#000000"
+     fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5"
      id="path3370-8"
      cx="19.432772"
      cy="8.0882339"
      rx="4.7794118"
      ry="5.1995797" />
   <rect
-     style="fill:#000000"
+     fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5"
      id="rect3387"
      width="15.12605"
      height="10.504202"
      x="5.042017"
      y="2.8361342" />
   <rect
-     style="fill:#000000"
+     fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 1" size="param(size) 0.5"
      id="rect3389"
      width="8.6134453"
      height="9.0336132"

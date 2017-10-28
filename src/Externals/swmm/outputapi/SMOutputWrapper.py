@@ -355,8 +355,27 @@ class SwmmOutputObject(object):
         self.subcatchments = SwmmOutputSubcatchment.read_all(self)
         self.nodes = SwmmOutputNode.read_all(self)
         self.links = SwmmOutputLink.read_all(self)
+        self.nodes_units = {}
+        self.links_units = {}
+        self.subcatchments_units = {}
         self.system = {'-1': SwmmOutputSystem('-1', -1)}
         self.all_items = (self.subcatchments, self.nodes, self.links, self.system)
+
+    def build_units_dictionary(self):
+       # output attributes
+        for l_id in self.links.keys():
+            for attr in self.links[l_id].attributes:
+                self.links_units[attr.name] = attr._units[self.unit_system]
+            break
+       # output attributes
+        for n_id in self.nodes.keys():
+            for attr in self.nodes[n_id].attributes:
+                self.nodes_units[attr.name] = attr._units[self.unit_system]
+            break
+        # sub attributes
+        for s_id in self.subcatchments.keys():
+            for attr in self.subcatchments[s_id].attributes:
+                self.subcatchments_units[attr.name] = attr._units[self.unit_system]
 
     def _call(self, function, *args):
         """ Call any API method whose return value is an integer which indicates an error if != 0
@@ -475,7 +494,11 @@ class SwmmOutputObject(object):
         self._call(_lib.SMO_close)
 
     def elapsed_hours_at_index(self, report_time_index):
-        return (report_time_index * self.reportStep) / 3600
+        return (report_time_index * self.reportStep) / 3600.0
+
+    def get_time(self, report_time_index):
+        elapsed_hours = self.elapsed_hours_at_index(report_time_index)
+        return self.StartDate + datetime.timedelta(hours=elapsed_hours)
 
     def get_time_string(self, report_time_index):
         total_hours = self.elapsed_hours_at_index(report_time_index)

@@ -6,6 +6,7 @@ try:
     from PyQt4.Qt import *
     from core.coordinate import Coordinate, Polygon
     from svgs_rc import *
+    from qgis_icons_rc import *
     import traceback
     import math
     import os
@@ -40,6 +41,8 @@ try:
             self.links_group = self.project_group.addGroup("Links")
             self.other_group = root.addGroup("Others")
             self.base_group = root.addGroup("Base Maps")
+            self.layer_styles = {}
+            # self.flowdir_symlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
 
             # first thoughts about adding a legend - may be barking up wrong tree...
             # self.root = QgsProject.instance().layerTreeRoot()
@@ -99,6 +102,8 @@ try:
 
             #layout.addWidget(None)
             self.setMouseTracking(True)
+
+            self.refresh_extent_needed = True
 
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
@@ -214,6 +219,8 @@ try:
                     self.measureTool.setMeasureMode(True)
                 self.canvas.setMapTool(self.measureTool)
             else:
+                if self.measureTool:
+                    self.measureTool.stopCapturing()
                 self.canvas.unsetMapTool(self.measureTool)
 
         def setSelectByRegionMode(self):
@@ -222,6 +229,8 @@ try:
                     self.selectRegionTool = CaptureRegionTool(self.canvas, None, None, None, self.session)
                 self.canvas.setMapTool(self.selectRegionTool)
             else:
+                if self.selectRegionTool:
+                    self.selectRegionTool.stopCapturing()
                 self.canvas.unsetMapTool(self.selectRegionTool)
 
         def setTranslateCoordinatesMode(self):
@@ -301,6 +310,18 @@ try:
             self.canvas.zoomToFullExtent()
             #self.set_extent(self.canvas.extent())
 
+        def zoom_to_one_feature(self):
+            for lyr in self.canvas.layers():
+                if isinstance(lyr, QgsVectorLayer):
+                    try:
+                        for f in lyr.getFeatures():
+                            lyr.setSelectedFeatures([f.id()])
+                            box = lyr.boundingBoxOfSelected()
+                            self.canvas.setExtent(box)
+                            lyr.triggerRepaint()
+                            return
+                    except:
+                        pass
 
         def setMouseTracking(self, flag):
             def recursive_set(parent):
@@ -342,9 +363,8 @@ try:
         @staticmethod
         def point_feature_from_item(item):
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(item.x),
-                                                               float(item.y))))
-            feature.setAttributes([item.name, 0.0])
+            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(item.x), float(item.y))))
+            feature.setAttributes([item.name, '0, 0, 0', 0.0])
             return feature
 
         @staticmethod
@@ -364,7 +384,7 @@ try:
             points = [QgsPoint(float(coord.x), float(coord.y)) for coord in link_coordinates]
             feature = QgsFeature()
             feature.setGeometry(QgsGeometry.fromPolyline(points))
-            feature.setAttributes([item.name, 0.0, "", "", 0])
+            feature.setAttributes([item.name, '0, 0, 0', "", "", 0, 0.0, 0.0])
             return feature
 
         @staticmethod
@@ -385,13 +405,14 @@ try:
                 # add fields
                 if is_centroid:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double),
+                                            QgsField("color", QtCore.QVariant.String),
                                             QgsField("sub_mapid", QtCore.QVariant.Int),
                                             QgsField("sub_modelid", QtCore.QVariant.String)])
                     pass
                 else:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                            QgsField("color", QtCore.QVariant.Double)])
+                                            QgsField("color", QtCore.QVariant.String),
+                                            QgsField("value", QtCore.QVariant.Double)])
                 layer.updateFields()
 
                 features = []
@@ -425,18 +446,19 @@ try:
                 return None
 
         @staticmethod
-        def set_default_point_renderer(layer, coordinates=None, size=3.5):
+        def set_default_point_renderer(layer, coordinates=None, size=3.5, do_labels=True):
             """ Create and set the default appearance of layer.
                 If specified, coordinates will be used to check for whether there are too many to label. """
             if layer is None:
                 return
             symbol = QgsMarkerSymbolV2.createSimple({})
+            # symbol = QgsMarkerSymbolV2.defaultSymbol(layer.geometryType())
             symbol.deleteSymbolLayer(0)
             symbol_layer = QgsSimpleMarkerSymbolLayerV2()
             symbol_layer.setColor(QColor(130, 180, 255, 255))
 
             # Label the coordinates if there are not too many of them
-            do_labels = True
+            # do_labels = True
             if coordinates and len(coordinates) > 500:
                 size = 1.5
                 do_labels = False
@@ -487,6 +509,8 @@ try:
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size
+                # pal_layer.textColor = None
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
                 pal_layer.writeToLayer(layer)
 
             symbol_layer.setSize(size)
@@ -514,10 +538,12 @@ try:
                 self.set_default_line_renderer(layer)
                 # add fields
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
-                                        QgsField("color", QtCore.QVariant.Double),
+                                        QgsField("color", QtCore.QVariant.String),
                                         QgsField("inlet", QtCore.QVariant.String),
                                         QgsField("outlet", QtCore.QVariant.String),
-                                        QgsField("sub2sub", QtCore.QVariant.Int)])
+                                        QgsField("sub2sub", QtCore.QVariant.Int),
+                                        QgsField("angle", QtCore.QVariant.Double),
+                                        QgsField("value", QtCore.QVariant.Double)])
 
                 layer.updateFields()
                 features = []
@@ -609,7 +635,7 @@ try:
                 mlyr.selectAll()
 
         @staticmethod
-        def set_default_line_renderer(layer):
+        def set_default_line_renderer(layer, do_labels=True):
             if layer is None:
                 return
             symbol = QgsLineSymbolV2.createSimple({})
@@ -663,6 +689,49 @@ try:
                     sym.setWidth(0.5)
                     layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
+            # do_labels = True
+            if do_labels and not "SUBLINK" in layer_name_upper:
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fontSizeInMapUnits = False
+                pal_layer.labelOffsetInMapUnits = False
+                pal_layer.fieldName = 'name'
+                pal_layer.placement = QgsPalLayerSettings.AboveLine
+                # expr = "case when size < 3 then size * 2 else size end case"
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+                if "LABELS" in layer_name_upper:
+                    # size = coordinates[0].size
+                    size = 10.0
+                    # symbol_layer.setOutlineColor(QColor('transparent'))
+                    # symbol_layer.setColor(QColor('transparent'))
+                else:
+                    pal_layer.xOffset = 0.5
+                    pal_layer.yOffset = -0.5
+                # pal_layer.textColor = QColor('blue')
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+                pal_layer.writeToLayer(layer)
+
+        def label_layer(self, layer, fieldname, color=QColor('black')):
+            if "LABELS" in layer.name().upper():
+                return
+            pal_layer = QgsPalLayerSettings()
+            pal_layer.readFromLayer(layer)
+            pal_layer.enabled = True
+            pal_layer.fontSizeInMapUnits = False
+            pal_layer.labelOffsetInMapUnits = False
+            pal_layer.fieldName = fieldname
+            if layer.geometryType == QGis.Point:
+                pal_layer.placement = QgsPalLayerSettings.OverPoint
+            elif layer.geometryType == QGis.Line:
+                pal_layer.placement = QgsPalLayerSettings.AboveLine
+            # expr = "case when size < 3 then size * 2 else size end case"
+            # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+            pal_layer.xOffset = 0.5
+            pal_layer.yOffset = -0.5
+            pal_layer.textColor = color
+            pal_layer.writeToLayer(layer)
+
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             try:
                 layer = QgsVectorLayer("Polygon", layer_name, "memory")
@@ -672,7 +741,8 @@ try:
                 provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                         QgsField("color", QtCore.QVariant.Double),
                                         QgsField("c_mapid", QtCore.QVariant.Int),
-                                        QgsField("c_modelid", QtCore.QVariant.String)])
+                                        QgsField("c_modelid", QtCore.QVariant.String),
+                                        QgsField("value", QtCore.QVariant.Double)])
                 layer.updateFields()
                 features = []
                 if polygons:
@@ -685,7 +755,7 @@ try:
                             # add a feature
                             feature = QgsFeature()
                             feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
-                            feature.setAttributes([polygon.name, 0.0, 0, 0])
+                            feature.setAttributes([polygon.name, 0.0, 0, 0, 0.0])
                             features.append(feature)
                 if features:
                     layer.startEditing()
@@ -701,7 +771,7 @@ try:
                 return None
 
         @staticmethod
-        def set_default_polygon_renderer(layer, poly_color='lightgreen'):
+        def set_default_polygon_renderer(layer, poly_color='lightgreen', do_labels=False):
             sym = QgsSymbolV2.defaultSymbol(layer.geometryType())
             if "SUBCATCHMENT" in layer.name().upper():
                 sym.deleteSymbolLayer(0)
@@ -722,6 +792,23 @@ try:
             sym.setAlpha(0.2)
             layer.setRendererV2(QgsSingleSymbolRendererV2(sym))
 
+            if do_labels and "SUBCATCHMENT" in layer.name().upper():
+                pal_layer = QgsPalLayerSettings()
+                pal_layer.readFromLayer(layer)
+                pal_layer.enabled = True
+                pal_layer.fontSizeInMapUnits = False
+                pal_layer.labelOffsetInMapUnits = False
+                pal_layer.fieldName = 'name'
+                pal_layer.placement = QgsPalLayerSettings.CentroidWhole
+                pal_layer.writeToLayer(layer)
+
+        @staticmethod
+        def validatedGraduatedSymbol(layer, arenderer):
+            if layer:
+                return isinstance(layer.rendererV2(), QgsGraduatedSymbolRendererV2)
+            if arenderer:
+                return isinstance(arenderer, QgsGraduatedSymbolRendererV2)
+
         @staticmethod
         def validatedDefaultSymbol(geometryType):
             symbol = QgsSymbolV2.defaultSymbol(geometryType)
@@ -735,18 +822,39 @@ try:
             return symbol
 
         @staticmethod
-        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None):
+        def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None,
+                                                arenderer=None, aflow_dir=True, acolor_by_flow=None):
             provider = layer.dataProvider()
-            layer.startEditing()
             calculate_min_max = False
             if min is None or max is None:
                 calculate_min_max = True
+            geom_type = layer.geometryType()
+            # angle_idx = -1
+            do_flowdir = False
+            if aflow_dir and acolor_by_flow and geom_type == QGis.Line:
+                if len(acolor_by_flow) == len(color_by):
+                    do_flowdir = True
+
             for feature in provider.getFeatures():
+                vfi = 1
                 try:
                     feature_name = feature[0]
+                    geom = feature.geometry()
                     val = color_by[feature_name]
-                    layer.changeAttributeValue(feature.id(), 1, val, True)
+                    vfi = feature.fieldNameIndex('value')
+                    provider.changeAttributeValues({feature.id() : {vfi : round(val, 2)}})
+                    # provider.changeAttributeValues({feature.id() : {1 : '100, 255, 50'}})
                     # feature[1] = val
+                    if do_flowdir:
+                        angle_idx = feature.fieldNameIndex('angle')
+                        if angle_idx >= 0:
+                            points = geom.asPolyline()
+                            angle_0 = points[0].azimuth(points[len(points) - 1]) - 90.0
+                            if acolor_by_flow[feature_name] < 0:
+                                provider.changeAttributeValues({feature.id() : {angle_idx : angle_0 + 180.0}})
+                            else:
+                                provider.changeAttributeValues({feature.id() : {angle_idx : angle_0}})
+
                     if calculate_min_max:
                         if min is None or val < min:
                             min = val
@@ -754,8 +862,7 @@ try:
                             max = val
                 except Exception as ex:
                     print str(ex)
-                    layer.changeAttributeValue(feature.id(), 1, 0.0, True)
-            layer.commitChanges()
+                    provider.changeAttributeValues({feature.id() : {vfi : 0.0}})
 
             # colorRamp = QgsVectorGradientColorRampV2.create(
             #     {'color1': '155,155,0,255', 'color2': '0,0,255,255',
@@ -765,29 +872,92 @@ try:
             # renderer.setSizeScaleField("LABELRANK")
             # layer.setRendererV2(QgsSingleSymbolRendererV2(symbol))
 
-            if min is None or max is None:
-                min = 0
-                max = 5
-            increment = (max - min) / 5
-            ramp_val = [round(min + index*increment, 2) for index in [0, 1, 2, 3, 4]]
-            colorRamp = ((str(ramp_val[0]) + ' to ' + str(ramp_val[1]), ramp_val[0], ramp_val[1], '#0000ff'), \
-                         (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#00ffff'), \
-                         (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#00ff00'), \
-                         (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#ffff00'), \
-                         (str(ramp_val[4]) + ' to ' + str(round(max, 2)), ramp_val[4], max, '#ff0000'))
-            ranges = []
-            for label, lower, upper, color in colorRamp:
-                symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
-                if layer.geometryType() == 0:
-                    symbol.setSize(4.0)
-                elif layer.geometryType() == 1:
-                    symbol.setWidth(1.5)
-                symbol.setColor(QtGui.QColor(color))
-                rng = QgsRendererRangeV2(lower, upper, symbol, label)
-                ranges.append(rng)
-            renderer = QgsGraduatedSymbolRendererV2("color", ranges)
+            slayer = None
+            if do_flowdir:
+                slayer = QgsMarkerLineSymbolLayerV2(True, 1.0)
+                mlayer = slayer.subSymbol()
+                anewlayer = QgsSvgMarkerSymbolLayerV2(':/icons/svg/flow_dir.svg')
+                anewlayer.setSize(2.8)
+                # lDataDefined = QgsDataDefined(True, True,
+                #                               'CASE WHEN "color" < 0 THEN 180.0 ELSE 0.0 END',
+                #                               'color')
+                lDataDefined = QgsDataDefined(True, False, '', 'angle')
+                # anewlayer.setDataDefinedProperty('angle', lDataDefined)
+                # anewlayer.setAngle(180.0)
+                if anewlayer:
+                    mlayer.changeSymbolLayer(0, anewlayer)
+                    mlayer.setDataDefinedAngle(lDataDefined)
+                    slayer.setPlacement(QgsMarkerLineSymbolLayerV2.CentralPoint)
+                    # symbol.appendSymbolLayer(slayer)
+                    # symbol.setDataDefinedAngle(lDataDefined)
+                    # renderer = QgsSingleSymbolRendererV2(symbol)
+                    # layer.setRendererV2(renderer)
 
-            layer.setRendererV2(renderer)
+            if arenderer:
+                if do_flowdir and slayer:
+                    # arenderer = QgsGraduatedSymbolRendererV2()
+                    ranges = []
+                    for rng in arenderer.ranges():
+                        # rng = QgsRendererRangeV2()
+                        ns = rng.symbol().clone()
+                        ns.appendSymbolLayer(slayer.clone())
+                        ns.setColor(QtGui.QColor(rng.symbol().color().name()))
+                        nrng = QgsRendererRangeV2(rng.lowerValue(), rng.upperValue(), ns, rng.label())
+                        ranges.append(nrng)
+
+                    nr = QgsGraduatedSymbolRendererV2("value", ranges)
+                    layer.setRendererV2(nr)
+                else:
+                    layer.setRendererV2(arenderer.clone())
+            else:
+                if min is None or max is None:
+                    min = 0
+                    max = 5
+                increment = (max - min) / 5
+                ramp_val = [round(min + index*increment, 2) for index in [0, 1, 2, 3, 4]]
+                colorRamp = ((str(ramp_val[0]) + ' to ' + str(ramp_val[1]), ramp_val[0], ramp_val[1], '#0000ff'), \
+                             (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#00ffff'), \
+                             (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#00ff00'), \
+                             (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#ffff00'), \
+                             (str(ramp_val[4]) + ' to ' + str(round(max, 2)), ramp_val[4], max, '#ff0000'))
+                ranges = []
+                for label, lower, upper, color in colorRamp:
+                    symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
+                    if layer.geometryType() == 0:
+                        EmbedMap.set_default_point_renderer(layer, None, 3.5, False)
+                        symbol = layer.rendererV2().symbols()[0].clone()
+                        # symbol.setSize(1.5)
+                    elif layer.geometryType() == 1:
+                        EmbedMap.set_default_line_renderer(layer, False)
+                        symbol = layer.rendererV2().symbols()[0].clone()
+                        # symbol.setWidth(0.5)
+                        if do_flowdir and slayer:
+                            symbol.appendSymbolLayer(slayer.clone())
+
+                    symbol.setColor(QtGui.QColor(color))
+                    rng = QgsRendererRangeV2(lower, upper, symbol, label)
+                    ranges.append(rng)
+
+                arenderer = QgsGraduatedSymbolRendererV2("value", ranges)
+                layer.setRendererV2(arenderer)
+
+            for feature in provider.getFeatures():
+                val = feature['value']
+                for rng in layer.rendererV2().ranges():
+                    if val >= rng.lowerValue() and val <= rng.upperValue():
+                        c = rng.symbol().color()
+                        provider.changeAttributeValues({feature.id() : {1 : str(c.red()) + "," +
+                                                                            str(c.green()) + "," +
+                                                                            str(c.blue())}})
+                        break
+            # if layer.featureCount() <= 300:
+            pal_layer = QgsPalLayerSettings.fromLayer(layer)
+            pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+            pal_layer.fieldName = "value"
+            pal_layer.writeToLayer(layer)
+            pal_layer.scaleMin = 1/50000
+            pal_layer.scaleMax = 1/1000
+
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()
@@ -969,8 +1139,26 @@ try:
             self.canvas.refresh()
 
         def set_extent_by_corners(self, corners):
-            r = QgsRectangle(corners[0], corners[1], corners[2], corners[3])
+            r = QgsRectangle(QgsPoint(corners[0], corners[1]), QgsPoint(corners[2], corners[3]))
             self.set_extent(r)
+
+        def set_extent_about_point(self, item):
+            x_float = item.x
+            y_float = item.y
+            if not isinstance(x_float, float):
+                x_float = float(item.x)
+            if not isinstance(y_float, float):
+                y_float = float(item.y)
+            r = QgsRectangle(QgsPoint(x_float - 1, y_float - 1), QgsPoint(x_float + 1, y_float + 1))
+            # self.set_extent(r)
+            self.canvas.setExtent(r)
+            # self.canvas.zoomWithCenter(x_float, y_float, False)
+            self.canvas.refresh()
+
+        def set_extent_empty(self):
+            r = QgsRectangle(200.0, 200.0, 200.0, 200.0)
+            self.canvas.mapSettings().setExtent(r)
+            self.canvas.refresh()
 
         def addRasterLayer(self, filename, *args):
             if len(filename.strip()) > 0:
@@ -1162,6 +1350,93 @@ try:
         #                                                     driverName="GeoJson")
         #         except Exception as e:
         #             print str(e)
+
+        def select_model_objects_by_ids(self, adict):
+            """
+            Args: adict: a dictionary in the form of:
+                adict[junctions] = [3, 5, 25, 26 etc]
+                adict[pipes] = [4, 10 etc]
+                adict[tanks] = [1 etc]
+            Returns:
+            """
+            total_selected = 0
+            selected_ids = []
+            if adict and len(adict) > 0:
+                for obj_name in adict.keys():
+                    lyr = self.session.model_layers.find_layer_by_name(obj_name)
+                    if lyr:
+                        del selected_ids[:]
+                        for f in lyr.getFeatures():
+                            if f['name'] in adict[obj_name]:
+                                selected_ids.append(f.id())
+                        if len(selected_ids) > 0:
+                            lyr.setSelectedFeatures(selected_ids)
+                            total_selected = total_selected + len(selected_ids)
+                            lyr.triggerRepaint()
+            return total_selected
+
+        def create_composition(self, layer_list, extent):
+            # New code for versions 2.4 and above
+            ms = QgsMapSettings()
+            ms.setLayers(layer_list)
+            ms.setExtent(extent)
+            comp = QgsComposition(ms)
+            return comp, ms
+
+        def print_map(self, alayerset):
+            comp, ms = self.create_composition(alayerset, QgsRectangle(140, -28, 155, -15))
+            comp.setPlotStyle(QgsComposition.Print)
+            composerMap = QgsComposerMap(comp, 5, 5, 200, 200)
+
+            # Uses mapsettings value
+            composerMap.setNewExtent(ms.extent())
+
+            comp.addItem(composerMap)
+            printer = QPrinter()
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName("out.pdf")
+            # printer.setOutputFormat(QPrinter.SmallFormat)
+            printer.setPaperSize(QSizeF(comp.paperWidth(), comp.paperHeight()), QPrinter.Millimeter)
+            printer.setFullPage(True)
+            printer.setColorMode(QPrinter.Color)
+            printer.setResolution(comp.printResolution())
+
+            pdfPainter = QPainter(printer)
+            paperRectMM = printer.pageRect(QPrinter.Millimeter)
+            paperRectPixel = printer.pageRect(QPrinter.DevicePixel)
+            comp.render(pdfPainter, paperRectPixel, paperRectMM)
+            pdfPainter.end()
+
+        def create_overview_0(self, alayerset):
+            main_window = self.session
+            new_dock_widget = QDockWidget(u"Overview")
+            layout = QVBoxLayout()
+            map_canvas_overview = QgsMapOverviewCanvas(
+                new_dock_widget,
+                self.canvas
+            )
+            map_canvas_overview.setLayerSet(alayerset)
+            map_canvas_overview.setBackgroundColor(QColor(255, 127, 0))
+            map_canvas_overview.enableAntiAliasing(True)
+            map_canvas_overview.setMinimumWidth(380)
+            map_canvas_overview.setMinimumHeight(280)
+            new_dock_widget.resize(400, 300)
+            layout.addWidget(map_canvas_overview)
+
+            new_dock_widget.setLayout(layout)
+
+            #main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+            main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+            new_dock_widget.show()
+
+            map_canvas_overview.refresh()  # Make the background color disappear?
+
+            # Layout optional playground
+            layout.setContentsMargins(0, 0, 0, 0)
+
+        def create_overview(self, alayerset):
+            ovw = MapOverview(alayerset, self.canvas)
+            ovw.exec_()
 
     class PanTool(QgsMapTool):
         def __init__(self, mapCanvas):
@@ -1722,7 +1997,10 @@ try:
             self.start_drag_position = None
             self.tempRubberBand = None
             QgsMapToolEmitPoint.__init__(self, self.canvas)
-            self.build_spatial_index()
+            # self.build_spatial_index()
+            self.mp_geom = None
+            self.prev_nearest_layer = None
+            self.extending_same_layer = False
 
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
@@ -1802,7 +2080,7 @@ try:
                 self.end_drag()
                 event.ignore()
 
-        def canvasPressEvent(self, mouse_event):
+        def canvasPressEvent0(self, mouse_event):
             try:
                 event_pos = mouse_event.pos()
                 extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
@@ -1836,6 +2114,53 @@ try:
                         if nearest_feature_name not in self.selected_names:
                             self.selected_names.append(nearest_feature_name)
                         self.session.select_named_items(self.nearest_layer, self.selected_names)
+            except Exception as e2:
+                print str(e2) + '\n' + str(traceback.print_exc())
+
+        def canvasPressEvent(self, mouse_event):
+            try:
+                event_pos = mouse_event.pos()
+                extending = mouse_event.modifiers() & (QtCore.Qt.ControlModifier | QtCore.Qt.ShiftModifier)
+                if extending:
+                    self.extending_same_layer = True
+                else:
+                    self.extending_same_layer = False
+
+                self.selected_names = []
+                map_point = self.toMapCoordinates(event_pos)
+                self.mp_geom = QgsGeometry.fromPoint(map_point)
+                # self.find_nearest_feature(map_point)
+                self.find_nearest_feature_qgs()
+                if self.nearest_feature:
+                    nearest_feature_name = self.nearest_feature.attributes()[0]
+                else:
+                    nearest_feature_name = None
+
+                previously_selected = []
+                if self.nearest_layer:
+                    for feat in self.nearest_layer.selectedFeatures():
+                        previously_selected.append(feat.attributes()[0])
+
+                if not extending and nearest_feature_name and nearest_feature_name in previously_selected:
+                    # Clicking an already-selected item starts moving all selected items
+                    self.start_drag(event_pos)
+                else:
+                    # Clear selection on other layers and on this layer if not extending the selection with Ctrl or Shift
+                    for layer in self.canvas.layers():
+                        if isinstance(layer, QgsVectorLayer):
+                            if layer == self.nearest_layer and extending:
+                                # add names of already-selected features to selected_names
+                                self.selected_names.extend(previously_selected)
+                            else:
+                                layer.removeSelection()
+
+                if self.nearest_layer:
+                    if nearest_feature_name not in self.selected_names:
+                        self.selected_names.append(nearest_feature_name)
+                    self.session.select_named_items(self.nearest_layer, self.selected_names)
+                else:
+                    self.session.clear_object_listing()
+
             except Exception as e2:
                 print str(e2) + '\n' + str(traceback.print_exc())
 
@@ -1887,6 +2212,71 @@ try:
             if make_distance_labels:
                 self.distance_layer = self.session.map_widget.addCoordinates(distances, "Distances")
                 self.canvas.refresh()
+
+        def find_nearest_feature_qgs(self, make_distance_labels=False):
+            """
+            Locates the closest point in self.layer_spatial_indexes and Sets:
+                self.nearest_layer = QGIS layer object
+                self.nearest_feature,
+                self.nearest_vertex,
+                self.nearest_spatial_index
+            Args:
+                map_point: user click point geometry object
+                make_distance_labels:
+            Returns:
+            """
+            if make_distance_labels:
+                if hasattr(self, "distance_layer") and self.distance_layer:
+                    self.session.map_widget.remove_layers([self.distance_layer])
+                distances = []
+
+            self.nearest_layer = None
+            self.nearest_feature = None
+            self.nearest_point_index = -1
+            self.nearest_distance = float("inf")
+            self.nearest_spatial_index = 0
+            nearest_feature_id = -1
+            layer_index = 0
+
+            if self.extending_same_layer:
+                if self.nearest_layer:
+                    for mlyr in self.session.model_layers.all_layers:
+                        if mlyr == self.nearest_layer:
+                            pass
+                        else:
+                            mlyr.removeSelection()
+            else:
+                for mlyr in self.session.model_layers.all_layers:
+                    mlyr.removeSelection()
+
+            for mlyr in self.session.model_layers.all_layers:
+                lyr_name = mlyr.name()
+                if lyr_name and \
+                        ("label" in lyr_name.lower() or
+                         lyr_name.lower().startswith("subcentroid") or
+                         lyr_name.lower().startswith("sublink")):
+                    continue
+                # mlyr.removeSelection()
+                selected_ids = []
+                r = 2 * self.canvas.mapUnitsPerPixel()
+                sel_rect = QgsRectangle(self.mp_geom.asPoint().x() - r,
+                                        self.mp_geom.asPoint().y() - r,
+                                        self.mp_geom.asPoint().x() + r,
+                                        self.mp_geom.asPoint().y() + r)
+                mlyr.select(sel_rect, False)
+                ids = mlyr.selectedFeaturesIds()
+                if len(ids):
+                    selected_ids.append(ids[0])
+                    self.nearest_layer = mlyr
+                    if self.nearest_layer == self.prev_nearest_layer:
+                        self.extending_same_layer = True
+                    else:
+                        self.extending_same_layer = False
+                        self.prev_nearest_layer = mlyr
+                    iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(ids[0]))
+                    if iterator:
+                        self.nearest_feature = next(iterator)
+                    return
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()
@@ -2121,6 +2511,8 @@ try:
             QgsLayerTreeViewMenuProvider.__init__(self)
             self.view = view
             self.map_control = map_control
+            self.label_by_name = None
+            self.label_by_value = None
 
         def createContextMenu(self):
             if not self.view.currentLayer():
@@ -2128,6 +2520,12 @@ try:
             m = QMenu()
             # m.addAction("Show Extent", self.showExtent)
             m.addAction("Zoom to layer", self.zoom_to_layer)
+            m.addAction("Change Style...", self.edit_style)
+            m.addAction("Default Style", self.default_style)
+            lm = m.addMenu("Label")
+            lm.addAction("By Name", lambda: self.label_layer("Name"))
+            lm.addAction("By Value", lambda: self.label_layer("Value"))
+            lm.addAction("Off", lambda: self.label_layer("Off"))
             return m
 
         def showExtent(self):
@@ -2155,6 +2553,135 @@ try:
             r_new = QgsRectangle(xmin, ymin, xmax, ymax)
             self.map_control.set_extent(r_new)
             pass
+
+        def edit_style(self):
+            lyr = self.view.currentLayer()
+            ed = None
+            new_renderer = None
+            if isinstance(lyr.rendererV2(), QgsGraduatedSymbolRendererV2):
+                ed = GraduatedSymbolV2(lyr, None)
+                if ed.exec_():
+                    new_renderer = QgsGraduatedSymbolRendererV2.convertFromRenderer(ed.get_renderer())
+            else:
+                old_renderer = self.view.currentLayer().rendererV2()
+                ed = QgsSymbolV2SelectorDialog(old_renderer.symbol(),
+                                           QgsStyleV2.defaultStyle(),
+                                           lyr, None, False)
+
+                if ed.exec_():
+                    new_renderer = old_renderer.clone()
+
+            if new_renderer:
+                lyr.setRendererV2(new_renderer)
+                self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
+                lyr.triggerRepaint()
+                self.map_control.session.update_thematic_map()
+            self.view.setCurrentLayer(None)
+
+        def default_style(self):
+            if not self.view.currentLayer() in self.map_control.session.model_layers.all_layers:
+                return
+            lyr = self.view.currentLayer()
+            gtype = lyr.geometryType()
+            if gtype == 0:
+                EmbedMap.set_default_point_renderer(lyr)
+            elif gtype == 1:
+                EmbedMap.set_default_line_renderer(lyr)
+            elif gtype == 2:
+                EmbedMap.set_default_polygon_renderer(lyr)
+            self.remove_layer_annotation()
+            lyr.triggerRepaint()
+            self.view.setCurrentLayer(None)
+            pass
+
+        def remove_layer_annotation(self):
+            layer_name = self.view.currentLayer().name()
+            if " [" in layer_name:
+                layer_name = layer_name[0:layer_name.index(" [")]
+                self.view.currentLayer().setLayerName(layer_name)
+
+        def label_layer(self, attribute):
+            # print "label layer by " + attribute
+            lyr = self.view.currentLayer()
+            if lyr and isinstance(lyr, QgsVectorLayer):
+                pal_layer = QgsPalLayerSettings.fromLayer(lyr)
+                if attribute.lower() in ('name', 'value'):
+                    pal_layer.fieldName = attribute.lower()
+                    pal_layer.enabled = True
+                else:
+                    pal_layer.enabled = False
+                pal_layer.writeToLayer(lyr)
+                lyr.triggerRepaint()
+            self.view.setCurrentLayer(None)
+
+
+    class GraduatedSymbolV2(QtGui.QDialog):
+        def __init__(self, layer, parent=None, **kwargs):
+            QDialog.__init__(self)
+            self.layer = layer
+            self.keepGoing = True
+
+            self.setWindowTitle('Graduated Symbol Editor')
+            layout = QtGui.QVBoxLayout()
+            self.editor = QgsGraduatedSymbolRendererV2Widget(layer, QgsStyleV2.defaultStyle(),
+                                                             layer.rendererV2())
+            buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+
+            layout.addWidget(self.editor)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+            self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+
+            layout.setContentsMargins(10, 10, 10, 10)
+            self.setLayout(layout)
+
+        def get_renderer(self):
+            return self.editor.renderer()
+
+
+    class MapOverview(QtGui.QDialog):
+        def __init__(self, layerset_ids, canvas, parent=None, **kwargs):
+            QDialog.__init__(self)
+            self.layerset_ids = layerset_ids
+            self.canvas = canvas
+
+            new_dock_widget = QDockWidget(u"Overview")
+            layout = QVBoxLayout()
+            map_canvas_overview = QgsMapOverviewCanvas(
+                new_dock_widget,
+                self.canvas
+            )
+            map_canvas_overview.setLayerSet(self.layerset_ids)
+            # map_canvas_overview.setBackgroundColor(QColor(255, 127, 0))
+            map_canvas_overview.setBackgroundColor(QColor(255, 255, 255))
+            map_canvas_overview.enableAntiAliasing(True)
+            map_canvas_overview.setMinimumWidth(380)
+            map_canvas_overview.setMinimumHeight(280)
+            new_dock_widget.resize(400, 300)
+            layout.addWidget(map_canvas_overview)
+
+            # new_dock_widget.setLayout(layout)
+
+            #main_window.addDockWidget(Qt.RightDockWidgetArea, new_dock_widget)
+
+            map_canvas_overview.refresh()  # Make the background color disappear?
+
+            # Layout optional playground
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            self.setWindowTitle('Map Overview')
+            buttonBox = QDialogButtonBox(QDialogButtonBox.Close)
+
+            layout.addWidget(new_dock_widget)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+            self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+
+            layout.setContentsMargins(10, 10, 10, 10)
+            self.setLayout(layout)
+
 
 except:
     print "Skipping map_tools"

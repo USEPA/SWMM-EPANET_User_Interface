@@ -7,6 +7,7 @@ import webbrowser
 import traceback
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
 from ui.help import HelpHandler
@@ -84,13 +85,13 @@ from core.swmm.labels import Label
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import SubLink
 
-from Externals.swmm.outputapi import SMOutputWrapper
 from frmRunSWMM import frmRunSWMM
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
 from core.indexed_list import IndexedList
 import ui.convenience
 from ui.SWMM.inifile import DefaultsSWMM
+from datetime import timedelta
 
 
 class frmMainSWMM(frmMain):
@@ -260,6 +261,8 @@ class frmMainSWMM(frmMain):
         self.status_suffix = "_status.txt"
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''  # Set this when model output is available
+        self.animation_dates = {}
+        self.animation_time_of_day = {}
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
         self.project_reader_type = ProjectReader
         self.project_writer_type = ProjectWriter
@@ -402,6 +405,8 @@ class frmMainSWMM(frmMain):
         QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
         self.actionProjTableStatistics.triggered.connect(self.report_statistics)
 
+        self.actionStdMapQuery.triggered.connect(self.map_query)
+
         self.Help_Topics_Menu = QtGui.QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
@@ -427,6 +432,19 @@ class frmMainSWMM(frmMain):
 
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.currentIndexChanged.connect(self.cbOffset_currentIndexChanged)
+        self._animate_date = lambda: self.update_time_index("date")
+        self._animate_time = lambda: self.update_time_index("time")
+        self._animate_datetime = lambda: self.update_time_index("datetime")
+        self.cboDate.currentIndexChanged.connect(self._animate_date)
+        self.cboTime.currentIndexChanged.connect(self._animate_time)
+        self.sbETime.valueChanged.connect(self._animate_datetime)
+        self.txtETime.setReadOnly(True)
+        self.lblETime.setText('Elapsed Time')
+        self.lblAnimateTime.setText('Time of Day')
+        self.sbETime.lineEdit().setVisible(False)
+        self.cboDate.setFixedWidth(100)
+        self.sbETime.setFixedWidth(15)
+        self.txtETime.setFixedWidth(100)
 
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
@@ -453,14 +471,169 @@ class frmMainSWMM(frmMain):
                 self.cboMapNodes.addItem(attribute.name)
             for attribute in SMO.SwmmOutputLink.attributes:
                 self.cboMapLinks.addItem(attribute.name)
+            self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
         self.allow_thematic_update = True
         self.update_thematic_map()
 
+    def get_model_attributes(self, an_obj_type):
+        """
+        Get model object's attributes or parameter values
+        Args:
+            an_obj_type: "Subcatchments", "Nodes", "Links"
+        Returns:
+            color_by, a dictionary of object name and its parameter/attribute value
+        """
+        selected_attribute = ""
+        setting_index = -1
+        attribute_index_m = -1
+        model_sections = None
+        if an_obj_type:
+            color_by = {}
+            if "subcatchment" in an_obj_type.lower():
+                selected_attribute = self.cboMapSubcatchments.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapSubcatchments.currentIndex()
+                attribute_index_m = 5
+                model_sections = [self.project.subcatchments]
+                color_by[model_sections[0].SECTION_NAME] = {}
+            elif "node" in an_obj_type.lower():
+                selected_attribute = self.cboMapNodes.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapNodes.currentIndex()
+                attribute_index_m = 1
+                model_sections = self.project.nodes_groups()
+                for sect in self.project.nodes_groups():
+                    color_by[sect.SECTION_NAME] = {}
+            elif "link" in an_obj_type.lower():
+                selected_attribute = self.cboMapLinks.currentText()
+                if selected_attribute == "None":
+                    return None
+                setting_index = self.cboMapLinks.currentIndex()
+                attribute_index_m = 3
+                model_sections = self.project.links_groups()
+                for sect in self.project.links_groups():
+                    color_by[sect.SECTION_NAME] = {}
+            else:
+                return None
+
+            # not a parameter or an attribute
+            if setting_index > attribute_index_m:
+                return None
+
+            for sect in model_sections:
+                if sect.value:
+                    for mobj in sect.value:
+                        for md in mobj.metadata:
+                            if md.label == selected_attribute:
+                                color_by[sect.SECTION_NAME][mobj.name] = float(mobj.__dict__[md.attribute])
+                                break
+            return color_by
+        else:
+            return None
+
+    def update_time_index(self, aChange):
+        if aChange == "date":
+            dt = self.animation_dates[self.cboDate.currentIndex()]
+            # time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+            time_lbl = "00:00:00"
+
+            in_range = False
+            for i in range(1, self.output.num_periods):
+                # hr_min_str = self.output.get_time_string(i)
+                # time_labels.append(hr_min_str)
+                dt_temp = self.output.get_time(i)
+                if str(dt.date()) == str(dt_temp.date()) and \
+                    '{:02d}:{:02d}:{:02d}'.format(dt_temp.hour,
+                                                  dt_temp.minute,
+                                                  dt_temp.second) == time_lbl:
+                    self.time_index = i - 1
+                    in_range = True
+                    break
+
+            if in_range:
+                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
+
+                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                self.sbETime.setValue(self.time_index)
+                self.sbETime.valueChanged.connect(self._animate_datetime)
+
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+
+                self.update_thematic_map()
+            pass
+        elif aChange == "time":
+            dt = self.animation_dates[self.cboDate.currentIndex()]
+            time_dt = self.animation_time_of_day[self.cboTime.currentIndex()]
+            # dt_act = dt + time_dt
+            hrs, rest = divmod(time_dt.seconds, 3600)
+            mins, secs = divmod(rest, 60)
+            time_lbl = '{:02d}:{:02d}:{:02d}'.format(hrs, mins, secs)
+
+            in_range = False
+            for i in range(1, self.output.num_periods):
+                # hr_min_str = self.output.get_time_string(i)
+                # time_labels.append(hr_min_str)
+                dt_temp = self.output.get_time(i)
+                if str(dt.date()) == str(dt_temp.date()) and \
+                    '{:02d}:{:02d}:{:02d}'.format(dt_temp.hour,
+                                                  dt_temp.minute,
+                                                  dt_temp.second) == time_lbl:
+                    self.time_index = i
+                    in_range = True
+                    break
+
+            if in_range:
+                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                self.sbETime.setValue(self.time_index)
+                self.sbETime.valueChanged.connect(self._animate_datetime)
+
+                self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
+
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+
+                self.update_thematic_map()
+            pass
+        elif aChange == "datetime":
+            if self.sbETime.value() >= self.output.num_periods:
+                self.sbETime.setValue(self.output.num_periods - 1)
+            elif self.sbETime.value() < 1:
+                self.sbETime.setValue(1)
+            else:
+                self.time_index = self.sbETime.value()
+                self.horizontalTimeSlider.valueChanged.disconnect(self.currentTimeChanged)
+                self.horizontalTimeSlider.setValue(self.time_index)
+                self.horizontalTimeSlider.valueChanged.connect(self.currentTimeChanged)
+                dt = self.output.get_time(self.time_index)
+                day_ctr = self.cboDate.findText(str(dt.date()))
+                self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                self.cboDate.setCurrentIndex(self.cboDate.findText(str(dt.date())))
+                self.cboDate.currentIndexChanged.connect(self._animate_date)
+                time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                self.txtETime.setText(str(day_ctr) + "." + time_lbl)
+                self.update_thematic_map()
+
     def update_thematic_map(self):
+        if not self.allow_thematic_update or not self.map_widget:
+            return
+
         enable_time_widget = False  # Flag to set if any selected attributes are time-based
         try:
-            if not self.allow_thematic_update or not self.map_widget:
-                return
+
+            # color_by = self.get_model_attributes("Subcatchments")
+            # color_by = self.get_model_attributes("Nodes")
+            # color_by = self.get_model_attributes("Links")
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 selected_attribute = self.cboMapSubcatchments.currentText()
@@ -469,17 +642,17 @@ class frmMainSWMM(frmMain):
                 if setting_index < 6:
                     meta_item = Subcatchment.metadata.meta_item_of_label(selected_attribute)
                     attribute = meta_item.attribute
-                color_by = {}
-                self.thematic_subcatchment_min = None
-                self.thematic_subcatchment_max = None
-                if attribute:  # Found an attribute of the subcatchment class to color by
-                    for subcatchment in self.project.subcatchments.value:
-                        value = float(getattr(subcatchment, attribute, 0))
-                        color_by[subcatchment.name] = value
-                        if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
-                            self.thematic_subcatchment_min = value
-                        if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
-                            self.thematic_subcatchment_max = value
+                    color_by = {}
+                    self.thematic_subcatchment_min = None
+                    self.thematic_subcatchment_max = None
+                    if attribute:  # Found an attribute of the subcatchment class to color by
+                        for subcatchment in self.project.subcatchments.value:
+                            value = float(getattr(subcatchment, attribute, 0))
+                            color_by[subcatchment.name] = value
+                            if self.thematic_subcatchment_min is None or value < self.thematic_subcatchment_min:
+                                self.thematic_subcatchment_min = value
+                            if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
+                                self.thematic_subcatchment_max = value
 
                 elif self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
@@ -493,13 +666,13 @@ class frmMainSWMM(frmMain):
                                     self.thematic_subcatchment_min = value
                                 if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
                                     self.thematic_subcatchment_max = value
-                if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
-                                                                        self.thematic_subcatchment_min,
-                                                                        self.thematic_subcatchment_max)
-                else:
-                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
-                self.model_layers.subcatchments.triggerRepaint()
+                # if color_by:
+                #     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                #                                                         self.thematic_subcatchment_min,
+                #                                                         self.thematic_subcatchment_max)
+                # else:
+                #     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                # self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
@@ -508,17 +681,17 @@ class frmMainSWMM(frmMain):
                 if setting_index < 2:
                     meta_item = Junction.metadata.meta_item_of_label(selected_attribute)
                     attribute = meta_item.attribute
-                color_by = {}
-                self.thematic_node_min = None
-                self.thematic_node_max = None
-                if attribute:  # Found an attribute of the node class to color by
-                    for item in self.project.all_nodes():
-                        value = float(getattr(item, attribute, 0))
-                        color_by[item.name] = value
-                        if self.thematic_node_min is None or value < self.thematic_node_min:
-                            self.thematic_node_min = value
-                        if self.thematic_node_max is None or value > self.thematic_node_max:
-                            self.thematic_node_max = value
+                    color_by = {}
+                    self.thematic_node_min = None
+                    self.thematic_node_max = None
+                    if attribute:  # Found an attribute of the node class to color by
+                        for item in self.project.all_nodes():
+                            value = float(getattr(item, attribute, 0))
+                            color_by[item.name] = value
+                            if self.thematic_node_min is None or value < self.thematic_node_min:
+                                self.thematic_node_min = value
+                            if self.thematic_node_max is None or value > self.thematic_node_max:
+                                self.thematic_node_max = value
 
                 elif self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputNode.get_attribute_by_name(selected_attribute)
@@ -533,15 +706,15 @@ class frmMainSWMM(frmMain):
                                 if self.thematic_node_max is None or value > self.thematic_node_max:
                                     self.thematic_node_max = value
 
-                for layer in self.model_layers.nodes_layers:
-                    if layer.isValid():
-                        if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_node_min,
-                                                                                self.thematic_node_max)
-                        else:
-                            self.map_widget.set_default_point_renderer(layer)
-                        layer.triggerRepaint()
+                # for layer in self.model_layers.nodes_layers:
+                #     if layer.isValid():
+                #         if color_by:
+                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                #                                                                 self.thematic_node_min,
+                #                                                                 self.thematic_node_max)
+                #         else:
+                #             self.map_widget.set_default_point_renderer(layer)
+                #         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
@@ -601,15 +774,17 @@ class frmMainSWMM(frmMain):
                                     self.thematic_link_min = value
                                 if self.thematic_link_max is None or value > self.thematic_link_max:
                                     self.thematic_link_max = value
-                for layer in self.model_layers.links_layers:
-                    if layer.isValid():
-                        if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_link_min,
-                                                                                self.thematic_link_max)
-                        else:
-                            self.map_widget.set_default_line_renderer(layer)
-                        layer.triggerRepaint()
+
+                # for layer in self.model_layers.links_layers:
+                #     if layer.isValid():
+                #         if color_by:
+                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                #                                                                 self.thematic_link_min,
+                #                                                                 self.thematic_link_max)
+                #         else:
+                #             self.map_widget.set_default_line_renderer(layer)
+                #         layer.triggerRepaint()
+
         except Exception as exBig:
             print("Exception in update_thematic_map: " + str(exBig))
 
@@ -627,25 +802,38 @@ class frmMainSWMM(frmMain):
                 return
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
+                layer = self.model_layers.subcatchments
                 selected_attribute = self.cboMapSubcatchments.currentText()
                 setting_index = self.cboMapSubcatchments.currentIndex()
                 color_by = {}
                 if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
                     attribute = SMO.SwmmOutputSubcatchment.get_attribute_by_name(selected_attribute)
                     if attribute:
-                        enable_time_widget = True
+                        enable_time_widget = False
                         values = SMO.SwmmOutputSubcatchment.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
                         index = 0
                         for subcatchment in self.output.subcatchments.values():
                             color_by[subcatchment.name] = values[index]
                             index += 1
                 if color_by:
-                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
-                                                                        self.thematic_subcatchment_min,
-                                                                        self.thematic_subcatchment_max)
+                    if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            self.map_widget.validatedGraduatedSymbol(None,
+                                                                     self.map_widget.layer_styles[layer.id()]):
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_node_min,
+                                                                            self.thematic_node_max,
+                                                                            self.map_widget.layer_styles[
+                                                                                layer.id()])
+                    else:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                                                                            self.thematic_subcatchment_min,
+                                                                            self.thematic_subcatchment_max)
+                    self.annotate_layername(selected_attribute, "subcatchment", layer)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
-                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                    do_label = True
+                    self.map_widget.set_default_polygon_renderer(layer, "lightgreen" , do_label)
+
                 self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
@@ -665,11 +853,25 @@ class frmMainSWMM(frmMain):
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                                self.thematic_node_min,
-                                                                                self.thematic_node_max)
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                    self.map_widget.validatedGraduatedSymbol(None,
+                                                                             self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_node_min,
+                                                                                    self.thematic_node_max,
+                                                                                    self.map_widget.layer_styles[
+                                                                                        layer.id()])
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_node_min,
+                                                                                    self.thematic_node_max)
+                            self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            self.map_widget.set_default_point_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_nodes()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
+
                         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
@@ -684,22 +886,143 @@ class frmMainSWMM(frmMain):
                         for link in self.output.links.values():
                             color_by[link.name] = values[index]
                             index += 1
+
+                color_by_flow = None
+                if selected_attribute and selected_attribute.lower() == "flow":
+                    color_by_flow = color_by
+                elif self.chkDisplayFlowDir.isChecked():
+                    color_by_flow = {}
+                    selected_attribute = "Flow"
+                    attribute = SMO.SwmmOutputLink.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = SMO.SwmmOutputLink.get_attribute_for_all_at_time(self.output, attribute,
+                                                                                 self.time_index)
+                        # index = 1
+                        for link in self.output.links.values():
+                            color_by_flow[link.name] = values[link.index]
+                            # index += 1
+
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_link_min,
+                                                                                    self.thematic_link_max,
+                                                                             self.map_widget.layer_styles[layer.id()],
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
-                                                                                self.thematic_link_max)
+                                                                                self.thematic_link_max,
+                                                                                    None,
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            self.annotate_layername(selected_attribute, "link", layer)
                         else:
-                            self.map_widget.set_default_line_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_links()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
+
+            if self.update_time_controls and self.output and self.horizontalTimeSlider.maximum() > 0:
+                if self.time_index >= 0 and self.time_index < self.horizontalTimeSlider.maximum():
+                    dt = self.output.get_time(self.time_index)
+                    dt_str = str(dt.date())
+                    self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                    self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                    self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                    self.cboDate.setCurrentIndex(self.cboDate.findText(dt_str))
+                    time_lbl = '{:02d}:{:02d}:{:02d}'.format(dt.hour, dt.minute, dt.second)
+                    self.cboTime.setCurrentIndex(self.cboTime.findText(time_lbl))
+                    self.sbETime.setValue(self.time_index)
+                    self.txtETime.setText(str(self.cboDate.currentIndex()) + "." + time_lbl)
+                    # self.cboTime.connect(self.cboTime, "currentIndexChanged()", self.update_thematic_map_time)
+                    self.cboDate.currentIndexChanged.connect(self._animate_date)
+                    self.cboTime.currentIndexChanged.connect(self._animate_time)
+                    self.sbETime.valueChanged.connect(self._animate_datetime)
+                    pass
+                self.update_time_controls = False
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
+
+    def annotate_layername(self, selected_attribute, obj_type, layer):
+        """
+        Append attribute and its unit to layer name in legend
+        Args:
+            selected_attribute: node/link attribute name
+            obj_type: either 'node' or 'link'
+            layer: map layer to be applied with graduated symbols
+        Returns: None
+        """
+        unit_text = ""
+        if obj_type == "subcatchment":
+            if self.output.subcatchments_units.has_key(selected_attribute):
+                unit_text = self.output.subcatchments_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "node":
+            if self.output.nodes_units.has_key(selected_attribute):
+                unit_text = self.output.nodes_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "link":
+            if self.output.links_units.has_key(selected_attribute):
+                unit_text = self.output.links_units[selected_attribute]
+            else:
+                if selected_attribute == "Length":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Diameter":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "in"
+
+        layer_name = layer.name()
+        if " [" in layer_name:
+            layer_name = layer_name[0:layer_name.index(" [")]
+        if unit_text:
+            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+        else:
+            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+
+    def animate_e(self):
+        if self.output:
+            for self.time_index in range(1, self.output.num_periods):
+                self.horizontalTimeSlider.setSliderPosition(self.time_index)
+                sleep(2)
+
+    def animate_e_step(self, i):
+        if self.output:
+            if i >= 0 and i <= self.output.num_periods:
+                self.horizontalTimeSlider.setSliderPosition(i)
 
     def get_output(self):
         if not self.output:
             if os.path.isfile(self.output_filename):
-                self.output = SMOutputWrapper.SwmmOutputObject(self.output_filename)
+                self.output = SMO.SwmmOutputObject(self.output_filename)
                 self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
         return self.output
 
@@ -800,6 +1123,23 @@ class frmMainSWMM(frmMain):
         from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
+
+    def map_query(self):
+        from ui.SWMM.frmQuery import frmQuery
+        frmQ = frmQuery(self, self.project)
+        frmQ.show()
+
+    def map_overview(self):
+        layerset = []
+        layerset.append(self.model_layers.subcatchments.id())
+        layerset.append(self.model_layers.sublinks.id())
+        layerset.append(self.model_layers.conduits.id())
+        layerset.append(self.model_layers.pumps.id())
+        layerset.append(self.model_layers.orifices.id())
+        layerset.append(self.model_layers.weirs.id())
+        layerset.append(self.model_layers.outlets.id())
+        self.map_widget.create_overview(layerset)
+        pass
 
     def get_editor(self, edit_name):
         frm = None
@@ -980,7 +1320,11 @@ class frmMainSWMM(frmMain):
         # First find input file to run
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
         if use_existing:
-            self.save_project(self.project.file_name)
+            filename, file_extension = os.path.splitext(self.project.file_name)
+            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
+            if not os.path.exists(self.project.file_name_temporary):
+                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.save_project(self.project.file_name_temporary)
             # TODO: decide whether to automatically save to temp location as previous version did.
         elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
@@ -993,7 +1337,7 @@ class frmMainSWMM(frmMain):
 
         file_name = ''
         if self.project:
-            file_name = self.project.file_name
+            file_name = self.project.file_name_temporary
 
         if os.path.exists(file_name):
             prefix, extension = os.path.splitext(file_name)
@@ -1033,6 +1377,86 @@ class frmMainSWMM(frmMain):
 
                     frmRun.Execute()
                     # self.add_map_constituents()
+                    try:
+                        self.output = SMO.SwmmOutputObject(self.output_filename)
+                        self.output.build_units_dictionary()
+                        self.set_thematic_controls()
+                        self.labelStartTime.setText('0:00')
+                        if self.output:
+                            # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
+                            # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
+                            # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
+                            self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                            self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                            self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                            self.cboDate.clear()
+                            self.cboTime.clear()
+                            time_labels = []
+                            date_labels = []
+                            self.animation_dates.clear()
+                            self.animation_time_of_day.clear()
+                            if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
+                                self.cboTime.addItems(["01:00:00"])
+                            else:
+                                td_rep_step = timedelta(seconds = self.output.reportStep)
+                                if td_rep_step.days > 0:
+                                    self.cboTime.addItems(["01:00:00"])
+                                else:
+                                    num_periods_in_day, rest = divmod(86400, self.output.reportStep)
+                                    for tod_index in range(0, num_periods_in_day, 1):
+                                        time_div = timedelta(seconds = self.output.reportStep * tod_index)
+                                        hours, remainder = divmod(time_div.seconds, 3600)
+                                        minutes, secs = divmod(remainder, 60)
+                                        time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
+                                        self.animation_time_of_day[tod_index] = time_div
+                                    self.cboTime.addItems(time_labels)
+
+                            hr_min_str = ""
+                            dt_str = None
+                            date_ctr = 0
+                            for i in range(0, self.output.num_periods):
+                                # hr_min_str = self.output.get_time_string(i)
+                                # time_labels.append(hr_min_str)
+                                dt = self.output.get_time(i)
+                                if not str(dt.date()) in date_labels:
+                                    date_labels.append(str(dt.date()))
+                                    self.animation_dates[date_ctr] = dt
+                                    date_ctr += 1
+
+                            # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                            # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                            # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                            # self.sbETime.setDateTimeRange(qd0, qd1)
+                            # self.sbETime.setDateTime(qdt0)
+                            # self.sbETime.setMinimumDateTime(qdt0)
+                            # self.sbETime.setMaximumDateTime(qdt1)
+                            t_str = str(self.output.get_time(0))
+                            self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
+                            self.cboDate.addItems(date_labels)
+                            self.sbETime.setMaximum(self.output.num_periods)
+                            self.sbETime.setMinimum(0)
+                            # self.labelEndTime.setText(self.project.times.duration)
+                            self.cboDate.setEnabled(True)
+                            self.cboTime.setEnabled(True)
+                            self.sbETime.setEnabled(True)
+                            self.cboDate.currentIndexChanged.connect(self._animate_date)
+                            self.cboTime.currentIndexChanged.connect(self._animate_time)
+                            self.sbETime.valueChanged.connect(self._animate_datetime)
+                        else:
+                            self.cboDate.setEnabled(False)
+                            self.cboTime.setEnabled(False)
+                            self.sbETime.setEnabled(False)
+
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
+                        self.cboDate.currentIndexChanged.connect(lambda: self.update_time_index("date"))
+                        self.cboTime.currentIndexChanged.connect(lambda: self.update_time_index("time"))
+                        self.sbETime.valueChanged.connect(lambda: self.update_time_index("datetime"))
                     return
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
@@ -1108,6 +1532,24 @@ class frmMainSWMM(frmMain):
                 print(str(ex) + '\n' + str(traceback.print_exc()))
             self.map_widget.setVisible(True)
         self.restoreCursor()
+
+    def set_project_map_extent(self):
+        """
+        This routine is for backward compatibility to ensure
+        [MAP] section dimension is valid, such that it can be
+        displayed correctly in the original software.
+        Returns:
+        """
+        if self.project.map and self.project.map.dimensions:
+            if self.map_widget:
+                rect = self.map_widget.get_extent(self.model_layers.all_layers)
+                if rect:
+                    x_setback = (rect.xMaximum() - rect.xMinimum()) * 5.0 / 100.0
+                    y_setback = (rect.yMaximum() - rect.yMinimum()) * 5.0 / 100.0
+                    self.project.map.dimensions = (rect.xMinimum() - x_setback,
+                                                   rect.yMinimum() - y_setback,
+                                                   rect.xMaximum() + x_setback,
+                                                   rect.yMaximum() + y_setback)
 
 
 class ModelLayersSWMM(ModelLayers):
@@ -1232,16 +1674,26 @@ class ModelLayersSWMM(ModelLayers):
         if fc is None:
             return
 
-        #assume we only handle sub-node connection
-        #ToDo: need to handle sub-sub connection perhaps
-        subcent_section = getattr(self.map_widget.session.project, "subcentroids")
         isSub2Sub = 0 #False
+        # subcent_section = getattr(self.map_widget.session.project, "subcentroids")
+        outlet_sub = None
+        if self.project.subcatchments and self.project.subcatchments.value:
+            outlet_sub = self.project.subcatchments.find_item(ms.outlet)
+            if outlet_sub:
+                for outlet_sub_fc in self.subcentroids.getFeatures():
+                    if ms.outlet == outlet_sub_fc["sub_modelid"]:
+                        outlet_sub = self.project.subcentroids.find_item("subcentroid-" + ms.outlet)
+                        isSub2Sub = 1
+                        break
+
         link_item = SubLink()
         link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
         link_item.inlet_node = fc["name"]
-        link_item.outlet_node = ms.outlet
+        if outlet_sub:
+            link_item.outlet_node = outlet_sub.name
+        else:
+            link_item.outlet_node = ms.outlet
         inlet_sub = ms.centroid
-        outlet_sub = None
         f = self.map_widget.line_feature_from_item(link_item,
                                                    self.map_widget.session.project.all_nodes(),
                                                    inlet_sub, outlet_sub)
@@ -1264,6 +1716,39 @@ class ModelLayersSWMM(ModelLayers):
             self.sublinks.triggerRepaint()
             self.map_widget.canvas.refresh()
         pass
+
+    def find_layer_by_name(self, aname):
+        if not aname:
+            return None
+        if aname.lower().startswith("junc"):
+            return self.junctions
+        elif aname.lower().startswith("outfall"):
+            return self.outfalls
+        elif aname.lower().startswith("divide"):
+            return self.dividers
+        elif aname.lower().startswith("storage"):
+            return self.storage
+        elif aname.lower().startswith("rain"):
+            return self.raingages
+        elif aname.lower().startswith("pump"):
+            return self.pumps
+        elif aname.lower().startswith("orifice"):
+            return self.orifices
+        elif aname.lower().startswith("weir"):
+            return self.weirs
+        elif aname.lower().startswith("conduit"):
+            return self.conduits
+        elif aname.lower().startswith("subcatch"):
+            return self.subcatchments
+        elif aname.lower().startswith("map label"):
+            return self.labels
+        elif aname.lower().startswith("subcent"):
+            return self.subcentroids
+        elif aname.lower().startswith("sublink"):
+            return self.sublinks
+        else:
+            return None
+
 
 if __name__ == '__main__':
     print("QApplication")

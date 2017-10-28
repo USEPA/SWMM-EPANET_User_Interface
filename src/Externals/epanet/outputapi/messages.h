@@ -1,4 +1,6 @@
 /*------------------- Error Messages --------------------*/
+#define WARN10 "Warning: model run issued warnings"
+
 #define ERR411 "Input Error 411: no memory allocated for results"
 #define ERR412 "Input Error 412: binary file hasn't been opened"
 #define ERR421 "Input Error 421: invalid parameter code"
@@ -8,4 +10,4 @@
 #define ERR434 "File Error  434: unable to open binary file"
 #define ERR435 "File Error  435: invalid binary file type"
 #define ERR436 "File Error  436: no results in binary file"
-#define ERR437 "File Error  437: model run issued warnings"
+

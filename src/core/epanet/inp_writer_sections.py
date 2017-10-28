@@ -41,6 +41,7 @@ from core.epanet.options.reactions import Reactions
 from core.epanet.options.report import StatusWrite
 from core.epanet.options.report import ReportOptions
 from core.inp_writer_base import SectionWriter
+from core.utility import ParseData
 
 
 class CurveWriter(SectionWriter):
@@ -224,8 +225,15 @@ class StatusWriter(SectionWriter):
     @staticmethod
     def as_text(link):
         """format contents of this item for writing to file"""
-        if isinstance(link, Pump):
-            if hasattr(link, "initial_status") and len(link.initial_status) > 0:
+        if isinstance(link, Pump) or isinstance(link, Pipe):
+            if hasattr(link, "initial_status") and \
+               len(link.initial_status) > 0 and \
+               link.initial_status.upper() == 'CLOSED':
+                return StatusWriter.field_format.format(link.name, link.initial_status)
+        elif isinstance(link, Valve):
+            if hasattr(link, "initial_status") and \
+               len(link.initial_status) > 0 and \
+               link.initial_status.upper() <> 'ACTIVE':
                 return StatusWriter.field_format.format(link.name, link.initial_status)
         #elif status.comment:
         #    return status.comment
@@ -237,6 +245,10 @@ class CoordinateWriter(SectionWriter):
     @staticmethod
     def as_text(coordinate):
         """format contents of this item for writing to file"""
+        xc, xc_good = ParseData.floatTryParse(coordinate.x)
+        yc, yc_good = ParseData.floatTryParse(coordinate.y)
+        if not (xc_good and yc_good):
+            return ""
         inp = CoordinateWriter.field_format.format(coordinate.name, str(coordinate.x), str(coordinate.y))
         if hasattr(coordinate, "comment") and coordinate.comment:
             inp += "\t"

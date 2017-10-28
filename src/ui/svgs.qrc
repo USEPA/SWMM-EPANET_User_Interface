@@ -1,12 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/svg/obj_orifice.svg</file>
-        <file>icons/svg/obj_outlet.svg</file>
-        <file>icons/svg/obj_pump.svg</file>
         <file>icons/svg/obj_raingage.svg</file>
-        <file>icons/svg/obj_weir.svg</file>
-        <file>icons/svg/obj_storage.svg</file>
+        <file>icons/svg/flow_dir.svg</file>
         <file>icons/svg/obj_tank.svg</file>
         <file>icons/svg/obj_valve.svg</file>
+        <file>icons/svg/obj_weir.svg</file>
+        <file>icons/svg/obj_orifice.svg</file>
+        <file>icons/svg/obj_pump.svg</file>
+        <file>icons/svg/obj_outlet.svg</file>
+        <file>icons/svg/obj_storage.svg</file>
     </qresource>
 </RCC>

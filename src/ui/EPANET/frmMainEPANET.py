@@ -7,6 +7,8 @@ import traceback
 import webbrowser
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from threading import Lock, Thread
+from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
@@ -116,6 +118,10 @@ class frmMainEPANET(frmMain):
                       tree_Patterns,
                       tree_Curves,
                       tree_Controls]
+    tree_nodes_items = [
+        tree_Junctions,
+        tree_Reservoirs,
+        tree_Tanks]
 
     def __init__(self, q_application):
         self.model = "EPANET"
@@ -260,6 +266,12 @@ class frmMainEPANET(frmMain):
         self.cbFlowUnits.currentIndexChanged.connect(self.cbFlowUnits_currentIndexChanged)
         self.cbOffset.setVisible(False)
 
+        self.cboDate.setVisible(False)
+        self.lblDate.setVisible(False)
+        self.sbETime.setVisible(False)
+        self.txtETime.setVisible(False)
+        self.lblETime.setVisible(False)
+
         if self.map_widget:
             self.map_widget.applyLegend()
             self.map_widget.LegendDock.setVisible(False)
@@ -269,6 +281,7 @@ class frmMainEPANET(frmMain):
             self.cboMapNodes.currentIndexChanged.connect(self.update_thematic_map)
             self.cboMapLinks.currentIndexChanged.connect(self.update_thematic_map)
             self.signalTimeChanged.connect(self.update_thematic_map_time)
+            # self.signalTimeChanged.connect(self.update_time_display)
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -287,6 +300,8 @@ class frmMainEPANET(frmMain):
             if object_type:
                 attribute_names = [attribute.name for attribute in object_type.Attributes]
                 for item in attribute_names:
+                    if item == "Status" or item == "Setting":
+                        continue
                     self.cboMapLinks.addItem(item)
             self.horizontalTimeSlider.setMaximum(self.output.num_periods - 1)
 
@@ -323,6 +338,7 @@ class frmMainEPANET(frmMain):
                 if attribute:
                     enable_time_widget = True
                     # find min and max values over entire run
+                    # ToDo: this needs to be sped up!!!
                     for time_increment in range(0, self.output.num_periods-1):
                         values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute,  time_increment)
                         for value in values:
@@ -331,20 +347,20 @@ class frmMainEPANET(frmMain):
                             if self.thematic_node_max is None or value > self.thematic_node_max:
                                 self.thematic_node_max = value
                     values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                    index = 0
+                    index = 1
                     for node in self.output.nodes.values():
                         color_by[node.name] = values[index]
                         index += 1
 
-            for layer in self.model_layers.nodes_layers:
-                if layer.isValid():
-                    if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                            self.thematic_node_min,
-                                                                            self.thematic_node_max)
-                    else:
-                        self.map_widget.set_default_point_renderer(layer)
-                    layer.triggerRepaint()
+            # for layer in self.model_layers.nodes_layers:
+            #     if layer.isValid():
+            #         if color_by:
+            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+            #                                                                 self.thematic_node_min,
+            #                                                                 self.thematic_node_max)
+            #         else:
+            #             self.map_widget.set_default_point_renderer(layer)
+            #         layer.triggerRepaint()
 
         if self.model_layers.links_layers:
             selected_attribute = self.cboMapLinks.currentText()
@@ -390,15 +406,15 @@ class frmMainEPANET(frmMain):
                     for link in self.output.links.values():
                         color_by[link.name] = values[index]
                         index += 1
-            for layer in self.model_layers.links_layers:
-                if layer.isValid():
-                    if color_by:
-                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                                                                            self.thematic_link_min,
-                                                                            self.thematic_link_max)
-                    else:
-                        self.map_widget.set_default_line_renderer(layer)
-                    layer.triggerRepaint()
+            # for layer in self.model_layers.links_layers:
+            #     if layer.isValid():
+            #         if color_by:
+            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+            #                                                                 self.thematic_link_min,
+            #                                                                 self.thematic_link_max)
+            #         else:
+            #             self.map_widget.set_default_line_renderer(layer)
+            #         layer.triggerRepaint()
         self.time_widget.setVisible(enable_time_widget)
         if enable_time_widget:
             self.update_thematic_map_time()
@@ -420,19 +436,30 @@ class frmMainEPANET(frmMain):
                     attribute = ENO.ENR_node_type.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = ENO.ENR_node_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        index = 0
+                        # index = 1
                         for node in self.output.nodes.values():
-                            color_by[node.name] = values[index]
-                            index += 1
+                            color_by[node.name] = values[node.index]
+                            # index += 1
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                self.map_widget.validatedGraduatedSymbol(None, self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_node_min,
+                                                                                    self.thematic_node_max,
+                                                            self.map_widget.layer_styles[layer.id()])
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
                                                                                 self.thematic_node_max)
+                            self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            self.map_widget.set_default_point_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_nodes()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
                         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
@@ -443,21 +470,116 @@ class frmMainEPANET(frmMain):
                     attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
                     if attribute:
                         values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
-                        index = 0
+                        # index = 1
                         for link in self.output.links.values():
-                            color_by[link.name] = values[index]
-                            index += 1
+                            color_by[link.name] = values[link.index]
+                            # index += 1
+
+                color_by_flow = None
+                if selected_attribute and selected_attribute.lower() == "flow":
+                    color_by_flow = color_by
+                elif self.chkDisplayFlowDir.isChecked():
+                    color_by_flow = {}
+                    selected_attribute = "Flow"
+                    attribute = ENO.ENR_link_type.get_attribute_by_name(selected_attribute)
+                    if attribute:
+                        values = ENO.ENR_link_type.get_attribute_for_all_at_time(self.output, attribute, self.time_index)
+                        # index = 1
+                        for link in self.output.links.values():
+                            color_by_flow[link.name] = values[link.index]
+                            # index += 1
+
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                                self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                    self.thematic_link_min,
+                                                                                    self.thematic_link_max,
+                                                                             self.map_widget.layer_styles[layer.id()],
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            else:
+                                self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
-                                                                                self.thematic_link_max)
+                                                                                self.thematic_link_max,
+                                                                                    None,
+                                                                                    self.chkDisplayFlowDir.isChecked(),
+                                                                                    color_by_flow)
+                            self.annotate_layername(selected_attribute, "link", layer)
                         else:
-                            self.map_widget.set_default_line_renderer(layer)
+                            do_label = True
+                            if len(self.project.all_links()) > 300:
+                                do_label = False
+                            self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
+            if self.cboTime.count() > 0:
+                if self.time_index >=0 and self.time_index < self.cboTime.count():
+                    # self.cboTime.disconnect(self.cboTime, "currentIndexChanged()",
+                    #                         self.update_thematic_map_time)
+                    self.cboTime.setCurrentIndex(self.time_index)
+                    # self.cboTime.connect(self.cboTime, "currentIndexChanged()",
+                    #                         self.update_thematic_map_time)
         except Exception as exBig:
             print("Exception in update_thematic_map_time: " + str(exBig))
+
+    def annotate_layername(self, selected_attribute, obj_type, layer):
+        """
+        Append attribute and its unit to layer name in legend
+        Args:
+            selected_attribute: node/link attribute name
+            obj_type: either 'node' or 'link'
+            layer: map layer to be applied with graduated symbols
+        Returns: None
+        """
+        unit_text = ""
+        if obj_type == "node":
+            if self.output.nodes_units.has_key(selected_attribute):
+                unit_text = self.output.nodes_units[selected_attribute]
+            else:
+                if selected_attribute == "Elevation":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Base Demand":
+                    unit_text = self.output.links_units["Flow"]
+                elif selected_attribute == "Initial Quality":
+                    unit_text = self.output.links_units["Quality"]
+        elif obj_type == "link":
+            if self.output.links_units.has_key(selected_attribute):
+                unit_text = self.output.links_units[selected_attribute]
+            else:
+                if selected_attribute == "Length":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "ft"
+                elif selected_attribute == "Diameter":
+                    if self.output.unit_system:
+                        unit_text = "m"
+                    else:
+                        unit_text = "in"
+
+        layer_name = layer.name()
+        if " [" in layer_name:
+            layer_name = layer_name[0:layer_name.index(" [")]
+        if unit_text:
+            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+        else:
+            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+
+    def animate_e(self):
+        if self.output:
+            for self.time_index in range(1, self.output.num_periods):
+                self.horizontalTimeSlider.setSliderPosition(self.time_index)
+                sleep(2)
+
+    def animate_e_step(self, i):
+        if self.output:
+            if i >= 0 and i <= self.output.num_periods:
+                self.horizontalTimeSlider.setSliderPosition(i)
 
     def cboMap_currentIndexChanged(self):
         pass
@@ -466,7 +588,6 @@ class frmMainEPANET(frmMain):
         import core.epanet.options.hydraulics
         self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
-
 
     def report_status(self):
         print "report_status"
@@ -629,6 +750,14 @@ class frmMainEPANET(frmMain):
         frmF = frmFind(self, self.project)
         frmF.show()
 
+    def map_overview(self):
+        layerset = []
+        layerset.append(self.model_layers.pipes.id())
+        layerset.append(self.model_layers.pumps.id())
+        layerset.append(self.model_layers.valves.id())
+        self.map_widget.create_overview(layerset)
+        pass
+
     def edit_simulation_options(self):
         self.show_edit_window(self.get_editor('Hydraulics'))
 
@@ -707,11 +836,18 @@ class frmMainEPANET(frmMain):
         self.delete_item(item)
 
     def run_simulation(self):
+        # self.open_output()
+        # return
+
         # Find input file to run
         # TODO: decide whether to automatically save to temp location as previous version did.
         use_existing = self.project and self.project.file_name
         if use_existing:
-            self.save_project(self.project.file_name)
+            filename, file_extension = os.path.splitext(self.project.file_name)
+            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
+            if not os.path.exists(self.project.file_name_temporary):
+                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
             if self.save_project_as():
@@ -723,7 +859,7 @@ class frmMainEPANET(frmMain):
 
         inp_file_name = ''
         if self.project:
-            inp_file_name = self.project.file_name
+            inp_file_name = self.project.file_name_temporary
 
         if os.path.exists(inp_file_name):
             current_directory = os.getcwd()
@@ -761,9 +897,22 @@ class frmMainEPANET(frmMain):
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     # self.report_status()
+                    if frmRun.run_err_msg:
+                        raise Exception(frmRun.run_err_msg)
+
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                        self.output.build_units_dictionary()
                         self.set_thematic_controls()
+                        self.labelStartTime.setText('0:00')
+                        if self.output:
+                            time_labels = []
+                            self.cboTime.clear()
+                            for i in range(1, self.output.num_periods):
+                                time_labels.append(self.output.get_time_string(i))
+                            self.cboTime.addItems(time_labels)
+                            # self.cboTime.currentIndexChanged.connect(self.update_thematic_map)
+                        self.labelEndTime.setText(self.project.times.duration)
                         return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))
@@ -774,7 +923,7 @@ class frmMainEPANET(frmMain):
                 except Exception as e1:
                     print(str(e1) + '\n' + str(traceback.print_exc()))
                     QMessageBox.information(None, self.model,
-                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                            "Model library:\n {0}\n{1}\n{2}".format(
                                                 self.model_path, str(e1), str(traceback.print_exc())),
                                             QMessageBox.Ok)
                 finally:
@@ -815,6 +964,67 @@ class frmMainEPANET(frmMain):
             # status = model_utility.StatusMonitor0(program, args, self, model='EPANET')
             # status.show()
             # os.chdir(current_directory)
+        else:
+            QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
+
+    def open_output(self):
+        inp_file_name = ''
+        if self.project:
+            inp_file_name = self.project.file_name
+
+        if os.path.exists(inp_file_name):
+            current_directory = os.getcwd()
+            if not os.path.exists(self.model_path):
+                if 'darwin' in sys.platform:
+                    lib_name = 'libepanet.dylib.dylib'
+                elif 'win' in sys.platform:
+                    lib_name = 'epanet2_amd64.dll'
+                else:  # Linux
+                    lib_name = 'libepanet2_amd64.so'
+                self.model_path = self.find_external(lib_name)
+            if os.path.exists(self.model_path):
+                try:
+                    prefix, extension = os.path.splitext(inp_file_name)
+                    self.status_file_name = prefix + self.status_suffix
+                    self.output_filename = prefix + '.out'
+                    working_dir = os.path.abspath(os.path.dirname(inp_file_name))
+                    if os.path.isdir(working_dir):
+                        print("Changing into directory containing input file: " + working_dir)
+                        os.chdir(working_dir)
+                    else:
+                        try:
+                            import tempfile
+                            working_dir = tempfile.gettempdir()
+                            print("Changing into temporary directory: " + working_dir)
+                            os.chdir(working_dir)
+                        except Exception as err_temp:
+                            print("Could not change into temporary directory: " + str(err_temp))
+                    if self.output:
+                        self.output.close()
+                        self.output = None
+                    try:
+                        if os.path.exists(self.output_filename):
+                            self.output = ENOutputWrapper.OutputObject(self.output_filename)
+                            self.set_thematic_controls()
+                        return
+                    except Exception as e1:
+                        print(str(e1) + '\n' + str(traceback.print_exc()))
+                        QMessageBox.information(None, self.model,
+                                                "Error opening model output:\n {0}\n{1}\n{2}".format(
+                                                    self.output_filename, str(e1), str(traceback.print_exc())),
+                                                QMessageBox.Ok)
+                except Exception as e1:
+                    print(str(e1) + '\n' + str(traceback.print_exc()))
+                    QMessageBox.information(None, self.model,
+                                            "Error running model with library:\n {0}\n{1}\n{2}".format(
+                                                self.model_path, str(e1), str(traceback.print_exc())),
+                                            QMessageBox.Ok)
+                finally:
+                    try:
+                        os.chdir(current_directory)
+                    except:
+                        pass
+                    return
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
@@ -900,6 +1110,27 @@ class ModelLayersEPANET(ModelLayers):
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
         self.set_lists()
 
+    def find_layer_by_name(self, aname):
+        if not aname:
+            return None
+        if aname.lower().startswith("junc"):
+            return self.junctions
+        elif aname.lower().startswith("pipe"):
+            return self.pipes
+        elif aname.lower().startswith("reser"):
+            return self.reservoirs
+        elif aname.lower().startswith("tank"):
+            return self.tanks
+        elif aname.lower().startswith("sourc"):
+            return self.sources
+        elif aname.lower().startswith("label"):
+            return self.labels
+        elif aname.lower().startswith("pump"):
+            return self.pumps
+        elif aname.lower().startswith("valve"):
+            return self.valves
+        else:
+            return None
 
 if __name__ == '__main__':
     application = QtGui.QApplication(sys.argv)

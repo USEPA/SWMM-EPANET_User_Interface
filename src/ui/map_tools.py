@@ -2556,6 +2556,9 @@ try:
 
         def edit_style(self):
             lyr = self.view.currentLayer()
+            if isinstance(lyr, QgsRasterLayer):
+                self.edit_style_raster()
+                return
             ed = None
             new_renderer = None
             if isinstance(lyr.rendererV2(), QgsGraduatedSymbolRendererV2):
@@ -2573,6 +2576,21 @@ try:
 
             if new_renderer:
                 lyr.setRendererV2(new_renderer)
+                self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
+                lyr.triggerRepaint()
+                self.map_control.session.update_thematic_map()
+            self.view.setCurrentLayer(None)
+
+        def edit_style_raster(self):
+            lyr = self.view.currentLayer()
+            ed = None
+            new_renderer = None
+            ed = RasterStyleEditor(lyr, None)
+            if ed.exec_():
+                new_renderer = ed.get_renderer()
+
+            if new_renderer:
+                lyr.setRenderer(new_renderer)
                 self.map_control.layer_styles[lyr.id()] = new_renderer.clone()
                 lyr.triggerRepaint()
                 self.map_control.session.update_thematic_map()
@@ -2625,6 +2643,42 @@ try:
             layout = QtGui.QVBoxLayout()
             self.editor = QgsGraduatedSymbolRendererV2Widget(layer, QgsStyleV2.defaultStyle(),
                                                              layer.rendererV2())
+            buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+
+            layout.addWidget(self.editor)
+            layout.addWidget(buttonBox)
+
+            self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
+            self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
+
+            layout.setContentsMargins(10, 10, 10, 10)
+            self.setLayout(layout)
+
+        def get_renderer(self):
+            return self.editor.renderer()
+
+
+    class RasterStyleEditor(QtGui.QDialog):
+        def __init__(self, layer, parent=None, **kwargs):
+            QDialog.__init__(self)
+            self.layer = layer
+            self.keepGoing = True
+
+            self.setWindowTitle('Raster Style Editor')
+            layout = QtGui.QVBoxLayout()
+            # self.layer = QgsRasterLayer()
+            # self.editor = QgsRasterRendererWidget(layer, self.layer.extent())
+            renderer_type = ''
+            if self.layer.renderer():
+                renderer_type = self.layer.renderer().type()
+            if renderer_type:
+                if renderer_type.startswith('singlebandpseudocolor') or renderer_type.startswith('singlebandgray'):
+                    self.editor = QgsSingleBandPseudoColorRendererWidget(self.layer, self.layer.extent())
+                elif self.layer.renderer().type().startswith('multiband'):
+                    self.editor = QgsMultiBandColorRendererWidget(self.layer, self.layer.extent())
+            else:
+                QMessageBox.information(None, "Raster Style Editor", 'Unrecognized Raster Renderer.', "")
+
             buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
 
             layout.addWidget(self.editor)

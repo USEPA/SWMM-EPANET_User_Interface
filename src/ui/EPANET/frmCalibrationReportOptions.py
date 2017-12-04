@@ -16,8 +16,6 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         self.setupUi(self)
         QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
         QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"), \
-                               self.comboBox_selChanged)
         QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), \
                                self.listWidget_clicked)
         self.project = project
@@ -32,6 +30,8 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         self.selected_pipes = []
         self.isFlow = None
         self.set_from(project)
+        QtCore.QObject.connect(self.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"), \
+                               self.comboBox_selChanged)
         self.loaded = True
 
     def set_from(self, aproj):
@@ -108,6 +108,8 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
         pass
 
     def set_items(self, aCali):
+        if not aCali:
+            return
         self.listWidget.clear()
         #aCali = pcali.Calibration('') #debug only
         if aCali.is_flow:

@@ -167,11 +167,23 @@ try:
         def setEditVertexMode(self):
             layer = None
             if self.canvas.layers():
-                for lyr in self.canvas.layers():
-                    if "subcatchment" in lyr.name().lower():
-                        layer = lyr
-                        break
+                layer = self.session.gis_layer_tree.currentLayer()
+                if layer and layer.geometryType == QGis.Point:
+                    layer = None
+                # for lyr in self.canvas.layers():
+                #     if "subcatchment" in lyr.name().lower() or \
+                #             "conduit" in lyr.name().lower():
+                #         layer = lyr
+                #         break
             if layer is None:
+                if self.session.actionMapSelectVertices.isChecked():
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Information)
+                    msg.setText("Need to select a GIS layer first")
+                    msg.setWindowTitle("Edit Vertex")
+                    msg.setStandardButtons(QMessageBox.Ok)
+                    msg.exec_()
+                    self.session.actionMapSelectVertices.setChecked(False)
                 return
             if self.session.actionMapSelectVertices.isChecked():
                 if self.canvas.layers():
@@ -191,7 +203,7 @@ try:
                     buf = layer.editBuffer()
                     if len(buf.changedGeometries()) > 0:
                         reply = QMessageBox.question(None, "Confirm",
-                                                 "Save changes to subcatchments?",
+                                                 "Save changes to " + layer.name() + "?",
                                                  QMessageBox.Yes | QMessageBox.No,
                                                  QMessageBox.Yes)
                         if reply == QMessageBox.Yes:
@@ -201,9 +213,14 @@ try:
                                 if iterator:
                                     ftarget = next(iterator)
                                 if ftarget is not None:
-                                    self.session.update_model_object_vertices("subcatchment",
+                                    if layer.geometryType() == QGis.Polygon:
+                                        self.session.update_model_object_vertices(layer.name(),
                                                                               ftarget.attributes()[0],
                                                                               ftarget.geometry().asPolygon()[0])
+                                    elif layer.geometryType() == QGis.Line:
+                                        self.session.update_model_object_vertices(layer.name(),
+                                                                                  ftarget.attributes()[0],
+                                                                                  ftarget.geometry().asPolyline())
                                     pass
                             layer.commitChanges()
                         else:

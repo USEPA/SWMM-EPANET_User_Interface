@@ -1016,15 +1016,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         Returns:
         """
         m_target = None
-        if "subcatch" in model_obj_type:
-            m_target = self.project.subcatchments.find_item(model_obj_name)
-            if m_target is not None:
-                del m_target.vertices[:]
-                for v in new_vertices:
-                    coord = Coordinate()
-                    coord.x = str(v.x())
-                    coord.y = str(v.y())
-                    m_target.vertices.append(coord)
+        # if "subcatchment" in model_obj_type:
+        #     m_target = self.project.subcatchments.find_item(model_obj_name)
+        if hasattr(self.project, model_obj_type.lower()):
+            m_group = getattr(self.project, model_obj_type.lower())
+            m_target = m_group.find_item(model_obj_name)
+        if m_target is not None:
+            del m_target.vertices[:]
+            for v in new_vertices:
+                coord = Coordinate()
+                coord.x = str(v.x())
+                coord.y = str(v.y())
+                m_target.vertices.append(coord)
 
     def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
@@ -2026,7 +2029,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     #         self.map_widget.zoom_to_one_feature()
                     #         sleep(2)
                     #     pass
-                self.q_application.quit()
+                self.close()
+                #self.q_application.quit()
             except:
                 try:
                     self.close()

@@ -297,7 +297,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
             lData = []
             for e in self.statsResult.EventList:
                 lData.append(e.Value)
-            histogram.setData(lData, Nbins)
+            histogram.setData(lData, int(Nbins))
         else:
             #histogram.setData([0], None)
             pass

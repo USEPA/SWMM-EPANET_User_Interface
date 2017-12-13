@@ -104,6 +104,7 @@ try:
             self.setMouseTracking(True)
 
             self.refresh_extent_needed = True
+            self.feature_request = QgsFeatureRequest()
 
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
@@ -370,6 +371,37 @@ try:
             btn_width = coord_btn.fontMetrics().boundingRect(coord_btn.text()).width() + 10.0
             coord_btn.setFixedWidth(btn_width)
 
+        def get_features_by_attribute(self, layer, attribute, value,
+                                      no_geometry=True,
+                                      subset_attribute=True,
+                                      get_ids_only=False):
+            resultList = []
+            try:
+                ind = layer.dataProvider().fieldNameIndex(attribute)
+                expr_text = "\"" + attribute + "\"='" + value + "'"
+                expr = QgsExpression(expr_text)
+                self.feature_request.setFilterExpression(expr_text)
+                if no_geometry:
+                    self.feature_request.setFlags(QgsFeatureRequest.NoGeometry)
+                else:
+                    self.feature_request.setFlags(QgsFeatureRequest.NoFlags)
+
+                if subset_attribute:
+                    self.feature_request.setSubsetOfAttributes([ind])
+                else:
+                    self.feature_request.setSubsetOfAttributes(QgsFeatureRequest.AllAttributes)
+
+                for feat in layer.getFeatures(self.feature_request):
+                    # name = feat.attribute("some_other_field")
+                    # resultList.append(name)
+                    if get_ids_only:
+                        resultList.append(feat.id())
+                    else:
+                        resultList.append(feat)
+            except:
+                pass
+            return resultList
+
         @staticmethod
         def round_to_n(x, n):
             if not x: return 0
@@ -450,6 +482,7 @@ try:
                     provider.addFeatures(features)
                     layer.commitChanges()
                     layer.updateExtents()
+                    layer.dataProvider().createSpatialIndex()
 
                 # create a new symbol layer with default properties
                 self.set_default_point_renderer(layer, coordinates)
@@ -577,6 +610,7 @@ try:
                     provider.addFeatures(features)
                     layer.commitChanges()
                     layer.updateExtents()
+                    layer.dataProvider().createSpatialIndex()
                 # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
                 #     {'width': '0.26', 'color': '0,0,0'})
                 # layer.rendererV2().symbols()[0].appendSymbolLayer(sl)
@@ -779,6 +813,7 @@ try:
                     provider.addFeatures(features)
                     layer.commitChanges()
                     layer.updateExtents()
+                    layer.dataProvider().createSpatialIndex()
 
                 self.set_default_polygon_renderer(layer, poly_color)
                 self.add_layer(layer, self.project_group)
@@ -1026,6 +1061,9 @@ try:
             #if filename.lower().endswith('.shp'):
             #layer = QgsVectorLayer(filename, "layer_v_" + str(layer_count), "ogr")
             layer = QgsVectorLayer(filename, layer_name, "ogr")
+            if layer.featureCount() > 100:
+                layer.dataProvider().createSpatialIndex()
+
             #elif filename.lower().endswith('.json'):
             #    layer=QgsVectorLayer(filename, "layer_v_" + str(layer_count), "GeoJson"o)
             sep_layers = []
@@ -2537,6 +2575,7 @@ try:
             m = QMenu()
             # m.addAction("Show Extent", self.showExtent)
             m.addAction("Zoom to layer", self.zoom_to_layer)
+            m.addAction("Zoom to selected", self.zoom_to_layer_selected)
             m.addAction("Change Style...", self.edit_style)
             m.addAction("Default Style", self.default_style)
             lm = m.addMenu("Label")
@@ -2548,6 +2587,11 @@ try:
         def showExtent(self):
             r = self.view.currentLayer().extent()
             QMessageBox.information(None, "Extent", r.toString())
+
+        def zoom_to_layer_selected(self):
+            box = self.view.currentLayer().boundingBoxOfSelected()
+            self.map_control.canvas.setExtent(box)
+            self.map_control.canvas.refresh()
 
         def zoom_to_layer(self):
             # self.map_control.set_extent(self.view.currentLayer().extent())

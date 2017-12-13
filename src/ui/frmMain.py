@@ -1572,10 +1572,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             # except:
             #     self._editor_form = None
 
-    def run_recent_script(self):
-        action = self.sender()
-        if action and action.data():
-            self.script_run(action.data())
 
     def create_recent_menus(self, parent_menu, callback):
         """Create recent menus. All are invisible and have no text yet, that happens in update_recent."""

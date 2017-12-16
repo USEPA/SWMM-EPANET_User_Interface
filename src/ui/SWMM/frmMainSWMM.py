@@ -1581,7 +1581,7 @@ class ModelLayersSWMM(ModelLayers):
         """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
-        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids]
+        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks]
         self.all_layers.extend(self.nodes_layers)
         self.all_layers.extend(self.links_layers)
 

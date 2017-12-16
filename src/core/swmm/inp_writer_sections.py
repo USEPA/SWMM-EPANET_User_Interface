@@ -504,7 +504,7 @@ class OrificeWriter(SectionWriter):
                                                      orifice.type.name, orifice.inlet_offset,
                                                      orifice.discharge_coefficient,
                                                      SectionWriter.yes_no(orifice.flap_gate),
-                                                     orifice.initial_flow, orifice.o_rate, orifice.comment)
+                                                     orifice.o_rate, orifice.comment)
         elif orifice.comment:
             return orifice.comment
 

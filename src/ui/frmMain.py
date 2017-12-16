@@ -1902,6 +1902,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.txtCrs.setText(crs.authid())
                 self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
+                crs_id = 0
+                for mlayer in self.model_layers.all_layers:
+                    mcrs = mlayer.crs()
+                    if not mcrs.isValid() or mcrs.authid() == 'EPSG:4326':
+                        try:
+                            mlayer.setCrs(crs)
+                            # crs_id = int(crs.authid()[5:])
+                            # if mcrs.createFromId(crs_id):
+                            #     mlayer.setCrs(mcrs)
+                        except:
+                            pass
             except:
                 pass
         else:
@@ -2100,6 +2111,105 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.actionStdEditObject.setEnabled(False)
             self.actionStdDeleteObject.setEnabled(False)
+
+    """
+    below are functions for iface
+    """
+    def zoomFull(self):
+        self.zoomfull()
+
+    def zoomToPrevious(self):
+        """ Zoom to previous view extent """
+        self.canvas.zoomToPreviousExtent()
+
+    def zoomToNext(self):
+        """ Zoom to next view extent """
+        self.canvas.zoomToNextExtent()
+
+    def zoomToActiveLayer(self):
+        """ Zoom to extent of the active layer """
+        self.zoomACapaActiva()
+
+    def activeLayer(self):
+        """ Get pointer to the active layer (layer selected in the legend) """
+        return self.gis_layer_tree.currentLayer()
+
+    def addToolBarIcon(self, qAction):
+        """ Add an icon to the plugins toolbar """
+        if not self.toolBarPlugins:
+            self.toolBarPlugins = self.addToolBar("Plugins")
+        self.toolBarPlugins.addAction(qAction)
+
+    def removeToolBarIcon(self, qAction):
+        """ Remove an action (icon) from the plugin toolbar """
+        if not self.toolBarPlugins:
+            self.toolBarPlugins = self.addToolBar("Plugins")
+        self.toolBarPlugins.removeAction(qAction)
+
+    def mapCanvas(self):
+        """ Return a pointer to the map canvas """
+        return self.canvas
+
+    def mainWindow(self):
+        """ Return a pointer to the main window (instance of QgisApp in case of QGIS) """
+        return self.pyQgisApp
+
+    def addPluginToMenu(self, name, action):
+        """ Add action to the plugins menu """
+        menu = self.getPluginMenu(name)
+        menu.addAction(action)
+
+    def removePluginMenu(self, name, action):
+        """ Remove action from the plugins menu """
+        menu = self.getPluginMenu(name)
+        menu.removeAction(action)
+
+    def removeDockWidget(self, dockwidget):
+        """ Remove a dock widget from main window (doesn't delete it) """
+        self.pyQgisApp.removeDockWidget(dockwidget)
+
+        # refresh the map canvas
+        self.canvas.refresh()
+
+    def refreshLegend(self, mapLayer):
+        """ Refresh the layer legend """
+        self.pyQgisApp.refreshLayerSymbology(mapLayer)
+
+    def pluginMenu(self):
+        """ Return the main plugins menu """
+        return self.pyQgisApp.menuPlugins
+
+    def getPluginMenu(self, menuName):
+        """ Return the secondary menu which owns to a plugin """
+        before = None
+
+        if self.pluginMenu():
+            actions = self.pluginMenu().actions()
+            for action in actions:
+                comp = QString(menuName).localeAwareCompare(action.text())
+                if (comp < 0):
+                    before = action  # Add item before this one
+                    break
+                elif (comp == 0):
+                    # Plugin menu item already exists
+                    return action.menu()
+
+        # It doesn't exist, so create it
+        menu = QMenu(menuName, self.pluginMenu())
+        if before:
+            self.pluginMenu().insertMenu(before, menu)
+        else:
+            self.pluginMenu().addMenu(menu)
+        return menu
+
+        # TODO: Implement the following methods.
+        # def addVectorLayer( vectorLayerPath, baseName, providerKey ):
+        # def addRasterLayer( rasterLayerPath, baseName = QString() ):
+        # def addRasterLayer( url, layerName, providerKey, layers, styles, format, crs ):
+        # virtual bool addProject( QString theProject ) = 0;
+        # virtual void newProject( bool thePromptToSaveFlag = false ) = 0
+        # virtual QList<QgsComposerView*> activeComposers() = 0
+
 
 class ModelLayers:
     """

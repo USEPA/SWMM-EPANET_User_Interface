@@ -447,7 +447,10 @@ try:
 
         def addCoordinates(self, coordinates, layer_name):
             try:
-                layer = QgsVectorLayer("Point", layer_name, "memory")
+                if self.session.crs and self.session.crs.isValid():
+                    layer = QgsVectorLayer("Point?crs=" + self.session.crs.toWkt(), layer_name, "memory")
+                else:
+                    layer = QgsVectorLayer("Point", layer_name, "memory")
                 provider = layer.dataProvider()
                 is_centroid = "CENTROID" in layer.name().upper()
 
@@ -571,7 +574,10 @@ try:
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:
-                layer = QgsVectorLayer("LineString", layer_name, "memory")
+                if self.session.crs and self.session.crs.isValid():
+                    layer = QgsVectorLayer("LineString?crs=" + self.session.crs.toWkt(), layer_name, "memory")
+                else:
+                    layer = QgsVectorLayer("LineString", layer_name, "memory")
                 provider = layer.dataProvider()
 
                 symbol_layer = QgsSimpleLineSymbolLayerV2()
@@ -785,7 +791,10 @@ try:
 
         def addPolygons(self, polygons, layer_name, poly_color='lightgreen'):
             try:
-                layer = QgsVectorLayer("Polygon", layer_name, "memory")
+                if self.session.crs and self.session.crs.isValid():
+                    layer = QgsVectorLayer("Polygon?crs=" + self.session.crs.toWkt(), layer_name, "memory")
+                else:
+                    layer = QgsVectorLayer("Polygon", layer_name, "memory")
                 provider = layer.dataProvider()
 
                 # add fields
@@ -805,7 +814,18 @@ try:
                         if poly_points:
                             # add a feature
                             feature = QgsFeature()
-                            feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
+                            if len(poly_points) < 3:
+                                new_points=[]
+                                r = 4 * self.canvas.mapUnitsPerPixel()
+                                ctr = poly_points[0]
+                                new_points.append(QgsPoint(ctr.x()-r, ctr.y()+r))
+                                new_points.append(QgsPoint(ctr.x()+r, ctr.y()+r))
+                                new_points.append(QgsPoint(ctr.x()+r, ctr.y()-r))
+                                new_points.append(QgsPoint(ctr.x()-r, ctr.y()-r))
+                                new_points.append(QgsPoint(ctr.x()-r, ctr.y()+r))
+                                feature.setGeometry(QgsGeometry.fromPolygon([new_points]))
+                            else:
+                                feature.setGeometry(QgsGeometry.fromPolygon([poly_points]))
                             feature.setAttributes([polygon.name, 0.0, 0, 0, 0.0])
                             features.append(feature)
                 if features:
@@ -1892,6 +1912,7 @@ try:
     class AddLinkTool(CaptureTool):
         def __init__(self, canvas, layer, layer_name, object_type, session):
             CaptureTool.__init__(self, canvas, layer, layer_name, object_type, session)
+            self.mp_geom = None
             self.build_spatial_index()
 
         def build_spatial_index(self):
@@ -1955,7 +1976,7 @@ try:
 
             # return nearest_layer, nearest_feature, nearest_canvas_point, nearest_map_point, math.sqrt(nearest_distance)
 
-        def addVertex(self, canvas_point):
+        def addVertex0(self, canvas_point):
             self.find_nearest_feature(canvas_point)
             # print("Found nearest distance " + str(nearest_distance))
             if self.nearest_feature:
@@ -1972,6 +1993,94 @@ try:
                     map_point = self.nearest_map_point
                 else:
                     map_point = self.toMapCoordinates(canvas_point)
+
+            layer_point = self.toLayerCoordinates(self.layer, canvas_point)
+
+            self.rubberBand.addPoint(map_point)
+            self.capturedPoints.append(layer_point)
+            self.tempRubberBand.reset(self.bandType())
+            self.tempRubberBand.addPoint(map_point)
+
+            if self.outlet_node:
+                self.geometryCaptured()
+                self.inlet_node = None
+                self.outlet_node = None
+
+        def find_nearest_feature_qgs(self, canvas_point):
+            """
+            Locates the closest point in self.layer_spatial_indexes and Sets:
+                self.nearest_layer = QGIS layer object
+                self.nearest_feature,
+                self.nearest_vertex,
+                self.nearest_spatial_index
+            Args:
+                map_point: user click point geometry object
+                make_distance_labels:
+            Returns:
+            """
+
+            self.nearest_layer = None
+            self.nearest_feature = None
+            self.nearest_point_index = -1
+            self.nearest_distance = float("inf")
+            self.nearest_spatial_index = 0
+            nearest_feature_id = -1
+            layer_index = 0
+            index_layers = []
+            index_layers.extend(self.session.model_layers.nodes_layers)
+            for lyr in self.session.model_layers.all_layers:
+                try:
+                    if "centroid" in lyr.name().lower():
+                        index_layers.extend([lyr])
+                        break
+                except:
+                    pass
+            for mlyr in index_layers:
+                mlyr.removeSelection()
+            for mlyr in index_layers:
+                lyr_name = mlyr.name()
+                # mlyr.removeSelection()
+                selected_ids = []
+                r = 4 * self.canvas.mapUnitsPerPixel()
+                sel_rect = QgsRectangle(self.mp_geom.asPoint().x() - r,
+                                        self.mp_geom.asPoint().y() - r,
+                                        self.mp_geom.asPoint().x() + r,
+                                        self.mp_geom.asPoint().y() + r)
+                mlyr.select(sel_rect, False)
+                ids = mlyr.selectedFeaturesIds()
+                """
+                mlyr.select(self.mp_geom.boundingBox(), False)
+                ids = mlyr.selectedFeaturesIds()
+                map_point = self.toMapCoordinates(canvas_point)
+                self.mp_geom = QgsGeometry.fromPoint(map_point)
+                # featDict = {f.id(): f for (f) in mlyr.getFeatures()}
+                featIdx = QgsSpatialIndex()
+                for f in mlyr.getFeatures():
+                    featIdx.insertFeature(f)
+                ids = featIdx.intersects(self.mp_geom.boundingBox())
+                """
+
+                if len(ids):
+                    selected_ids.append(ids[0])
+                    self.nearest_layer = mlyr
+                    iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(ids[0]))
+                    if iterator:
+                        self.nearest_feature = next(iterator)
+                    return
+
+        def addVertex(self, canvas_point):
+            map_point = self.toMapCoordinates(canvas_point)
+            self.mp_geom = QgsGeometry.fromPoint(map_point)
+            self.find_nearest_feature_qgs(canvas_point)
+            # print("Found nearest distance " + str(nearest_distance))
+            if self.nearest_feature:
+                nearest_feature_name = self.nearest_feature.attributes()[0]
+                if len(self.capturedPoints) == 0:
+                    self.inlet_node = nearest_feature_name
+                elif nearest_feature_name == self.inlet_node:
+                    return
+                else:
+                    self.outlet_node = nearest_feature_name
 
             layer_point = self.toLayerCoordinates(self.layer, canvas_point)
 
@@ -2313,7 +2422,7 @@ try:
                     continue
                 # mlyr.removeSelection()
                 selected_ids = []
-                r = 2 * self.canvas.mapUnitsPerPixel()
+                r = 4 * self.canvas.mapUnitsPerPixel()
                 sel_rect = QgsRectangle(self.mp_geom.asPoint().x() - r,
                                         self.mp_geom.asPoint().y() - r,
                                         self.mp_geom.asPoint().x() + r,

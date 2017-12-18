@@ -2082,12 +2082,13 @@ try:
                 else:
                     self.outlet_node = nearest_feature_name
 
-            layer_point = self.toLayerCoordinates(self.layer, canvas_point)
+            if self.inlet_node:
+                layer_point = self.toLayerCoordinates(self.layer, canvas_point)
 
-            self.rubberBand.addPoint(map_point)
-            self.capturedPoints.append(layer_point)
-            self.tempRubberBand.reset(self.bandType())
-            self.tempRubberBand.addPoint(map_point)
+                self.rubberBand.addPoint(map_point)
+                self.capturedPoints.append(layer_point)
+                self.tempRubberBand.reset(self.bandType())
+                self.tempRubberBand.addPoint(map_point)
 
             if self.outlet_node:
                 self.geometryCaptured()

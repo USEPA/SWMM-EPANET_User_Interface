@@ -667,6 +667,55 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             else:
                 raise Exception("Section not found in project: " + section_field_name)
             self.layer = self.session.model_layers.layer_by_name(section_field_name)
+            self.delete_features = {}
+            # self.delete_features[self.layer] = [f for f in self.layer.selectedFeatures()]
+            if self.session.model == 'SWMM':
+                self.selectSubAndCentroid()
+
+        def selectSubAndCentroid(self):
+            layer_sublinks = self.session.model_layers.layer_by_name("sublinks")
+            layer_sublinks.removeSelection()
+            sel_slink_ids = []
+            if "centroid" in self.layer.name().lower():
+                layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
+                layer_subcatchments.removeSelection()
+                sel_sub_ids = []
+                sel_cen_names = []
+                for f in self.layer.selectedFeatures():
+                    sel_sub_ids.append(f['sub_mapid'])
+                    sel_cen_names.append(f['name'])
+                if sel_sub_ids:
+                    layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                    self.delete_features[layer_subcatchments] = [f for f in layer_subcatchments.selectedFeatures()]
+                for f in layer_sublinks.getFeatures():
+                    if f['inlet'] in sel_cen_names or f['outlet'] in sel_cen_names:
+                        sel_slink_ids.append(f.id())
+                if sel_slink_ids:
+                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
+            elif "subcatchment" in self.layer.name().lower():
+                layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+                layer_subcentroids.removeSelection()
+                sel_cent_ids = []
+                for f in self.layer.selectedFeatures():
+                    sel_cent_ids.append(f['c_mapid'])
+                if sel_cent_ids:
+                    layer_subcentroids.setSelectedFeatures(sel_cent_ids)
+                    self.delete_features[layer_subcentroids] =[f for f in layer_subcentroids.selectedFeatures()]
+                sel_sub_names = []
+                for f in self.layer.selectedFeatures():
+                    sel_sub_names.append(f['name'])
+                for f in layer_sublinks.getFeatures():
+                    if 'subcentroid-' in f['inlet'].lower():
+                        if f['inlet'][len('subcentroid-'):] in sel_sub_names:
+                            sel_slink_ids.append(f.id())
+                    elif 'subcentroid-' in f['outlet'].lower():
+                        if f['outlet'][len('subcentroid-'):] in sel_sub_names:
+                            sel_slink_ids.append(f.id())
+                if sel_slink_ids:
+                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
+            pass
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
@@ -686,17 +735,57 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         self.session.setQgsMapTool()
                     except:
                         pass
+            if len(self.delete_features):
+                for lyr in self.delete_features:
+                    if self.delete_features[lyr]:
+                        lyr.startEditing()
+                        lyr.dataProvider().deleteFeatures([f.id() for f in self.delete_features[lyr]])
+                        lyr.commitChanges()
+                        lyr.updateExtents()
+                        lyr.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                try:
+                    self.session.setQgsMapTool()
+                except:
+                    pass
 
         def undo(self):
-            self.section.value.insert(self.item_index, self.item)
+            if self.section.value:
+                self.section.value.insert(self.item_index, self.item)
+            else:
+                self.section.value.append(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
+            added_del = None
             if self.layer and self.delete_feature:
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
-                self.layer.dataProvider().addFeatures([self.delete_feature])
+                added_del = self.layer.dataProvider().addFeatures([self.delete_feature])
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                try:
+                    self.session.setQgsMapTool()
+                except:
+                    pass
+            if len(self.delete_features):
+                for lyr in self.delete_features:
+                    added_aux = None
+                    if self.delete_features[lyr]:
+                        lyr.startEditing()
+                        added_aux = lyr.dataProvider().addFeatures(self.delete_features[lyr])
+                        if "subcatchment" in self.layer.name().lower() and "subcentroid" in lyr.name().lower():
+                            if added_del[0] and added_aux[0]:
+                                self.layer.startEditing()
+                                self.layer.changeAttributeValue(added_del[1][0].id(), 2, added_aux[1][0].id())
+                                self.layer.commitChanges()
+                                if added_aux[0]:
+                                    lyr.changeAttributeValue(added_aux[1][0].id(), 2, added_del[1][0].id())
+                        lyr.commitChanges()
+                        lyr.updateExtents()
+                        lyr.triggerRepaint()
+                        self.layer.updateExtents()
+                        self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
                 try:
                     self.session.setQgsMapTool()
@@ -879,7 +968,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         else:  # move_outlet:
                             coord = moved_coordinates[link.outlet_node]
                             link_points[-1] = QgsPoint(coord.x, coord.y)
-                        print("Update link " + link.name)
+                        # print("Update link " + link.name)
                         link_layer.startEditing()
                         link_layer.changeGeometry(feature.id(), QgsGeometry.fromPolyline(link_points))
                         link_layer.commitChanges()
@@ -1774,7 +1863,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     try:
                         layer_name = layer.name()
                         already_selected_item = self.obj_tree.currentItem()
-                        if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                        if already_selected_item is None or \
+                           already_selected_item.text(0) != layer_name or \
+                           (already_selected_item.text(0) == layer_name and self.listViewObjects.count() == 0):
                             tree_node = self.obj_tree.find_tree_item(layer_name)
                             if tree_node:
                                 self.obj_tree.setCurrentItem(tree_node)

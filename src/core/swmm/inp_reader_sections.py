@@ -210,7 +210,7 @@ class CurveReader(SectionReader):
     def read(new_text):
         curve = Curve()
         for line in new_text.splitlines():
-            SectionReader.set_comment_check_section(curve, line)
+            line = SectionReader.set_comment_check_section(curve, line)
             if line.strip():
                 fields = line.split()
                 if len(fields) > 2:

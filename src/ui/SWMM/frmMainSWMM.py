@@ -1343,6 +1343,7 @@ class frmMainSWMM(frmMain):
             prefix, extension = os.path.splitext(file_name)
             self.status_file_name = prefix + self.status_suffix
             self.output_filename = prefix + '.out'
+            os.chdir(os.path.split(prefix)[0])
             if self.output:
                 self.output.close()
                 self.output = None

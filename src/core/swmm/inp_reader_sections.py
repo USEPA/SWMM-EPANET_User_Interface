@@ -1580,7 +1580,7 @@ class RainGageReader(SectionReader):
                 if len(fields) > 6:
                     rain_gage.data_file_station_id = fields[6]
                 if len(fields) > 7:
-                    rain_gage.data_file_rain_units = fields[7]
+                    rain_gage.setattr_keep_type("data_file_rain_units", fields[7])
         return rain_gage
 
 

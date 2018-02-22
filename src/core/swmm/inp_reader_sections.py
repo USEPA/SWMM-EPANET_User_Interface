@@ -1575,6 +1575,7 @@ class RainGageReader(SectionReader):
             if fields[4].upper() == "TIMESERIES":
                 rain_gage.timeseries = fields[5]
             else:
+                rain_gage.setattr_keep_type("data_source", fields[4])
                 rain_gage.data_file_name = fields[5]
                 if len(fields) > 6:
                     rain_gage.data_file_station_id = fields[6]

@@ -10,6 +10,7 @@ from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
 from threading import Lock, Thread
 from time import sleep
 
+
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
 from ui.frmMain import frmMain, ModelLayers

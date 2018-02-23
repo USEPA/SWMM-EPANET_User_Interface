@@ -45,6 +45,15 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
             try:
                 with open(status_file_name, 'r') as inp_reader:
                     for line in iter(inp_reader):
+                        if line.startswith('  No nodes were surcharged.'):
+                            potential_topics.remove('Node Surcharge')
+                        elif line.startswith('  No nodes were flooded.'):
+                            potential_topics.remove('Node Flooding')
+                        elif line.startswith('  No conduits were surcharged.'):
+                            potential_topics.remove('Conduit Surcharge')
+
+                with open(status_file_name, 'r') as inp_reader:
+                    for line in iter(inp_reader):
                         for potential_topic in potential_topics:
                             if line.startswith('  ' + potential_topic + ' Summary'):
                                 topics.append(potential_topic)

@@ -158,7 +158,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                     elif self.cboType.currentText() == 'Node Flooding':
                         Units1 = header_list[2]
                         Units2 = header_list[5] + ' ' + header_list[6]
-                        Units3 = header_list[7] + ' ' + header_list[8]
+                        Units3 = header_list[7]
                         column_headers = ['Node',
                                           'Hours' + '\n' + 'Flooded',
                                           'Maximum' + '\n' + 'Rate' + Units1,

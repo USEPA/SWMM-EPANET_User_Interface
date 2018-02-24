@@ -161,7 +161,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         Units3 = header_list[7]
                         column_headers = ['Node',
                                           'Hours' + '\n' + 'Flooded',
-                                          'Maximum' + '\n' + 'Rate' + Units1,
+                                          'Maximum' + '\n' + 'Rate' + '\n' + Units1,
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Hour of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Total' + '\n' + 'Flood' + '\n' + 'Volume' + '\n' + Units2,

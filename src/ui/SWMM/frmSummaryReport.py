@@ -211,7 +211,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Hours' + '\n' + 'Capacity' + '\n' + 'Limited']
                     elif self.cboType.currentText() == 'Pumping':
                         Units1 = header_list[3]
-                        Units2 = header_list[6] + header_list[7]
+                        Units2 = header_list[6] + ' ' + header_list[7]
                         Units3 = header_list[8]
                         column_headers = ['Pump',
                                           'Percent' + '\n' + 'Utilized',

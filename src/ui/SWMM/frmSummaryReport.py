@@ -165,7 +165,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Hour of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Total' + '\n' + 'Flood' + '\n' + 'Volume' + '\n' + Units2,
-                                          'Maximum' + '\n' + 'Ponded' + '\n' + 'Volume' + '\n' + Units3]
+                                          'Maximum' + '\n' + 'Ponded' + '\n' + 'Depth' + '\n' + Units3]
                     elif self.cboType.currentText() == 'Storage Volume':
                         Units1 = header_list[1]
                         Units2 = header_list[9] + ' ' + header_list[10]

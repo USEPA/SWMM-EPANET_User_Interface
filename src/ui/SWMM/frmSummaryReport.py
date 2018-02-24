@@ -114,8 +114,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Continuity Error %']
                     elif self.cboType.currentText() == 'Groundwater':
                         Units1 = header_list[3]
-                        Units2 = header_list[5] + ' ' + header_list[6]
-                        Units3 = header_list[10]
+                        Units2 = header_list[5]
+                        Units3 = header_list[6]
                         column_headers = ['Subcatchment',
                                           'Total' + '\n' + 'Infil' + '\n' + Units1,
                                           'Total' + '\n' + 'Evap' + '\n' + Units1,

@@ -167,8 +167,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Total' + '\n' + 'Flood' + '\n' + 'Volume' + '\n' + Units2,
                                           'Maximum' + '\n' + 'Ponded' + '\n' + 'Depth' + '\n' + Units3]
                     elif self.cboType.currentText() == 'Storage Volume':
-                        Units1 = header_list[1]
-                        Units2 = header_list[9] + ' ' + header_list[10]
+                        Units1 = header_list[2] + ' ' + header_list[3]
+                        Units2 = header_list[12]
                         column_headers = ['Node',
                                           'Average' + '\n' + 'Volume' + '\n' + Units1,
                                           'Average' + '\n' + 'Percent' + '\n' + 'Full',

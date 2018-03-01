@@ -237,10 +237,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                     if temp_header_list[1] == 'Node':
                                         temp_header_list.remove('Node')
                                     if temp_header_list[i+1] == '10^6':
-                                        if temp_header_list[i+2] == 'gal':
-                                            temp_header_list[i+1] = '10^6 gal'
-                                        elif temp_header_list[i+2] == 'ltr':
-                                            temp_header_list[i+1] = '10^6 ltr'
+                                        if temp_header_list[i+2] == 'gal' or temp_header_list[i+2] == 'ltr':
+                                            temp_header_list[i+1] = '10^6 ' + temp_header_list[i+2]
                                         if len(temp_header_list) > i+3:
                                             temp_header_list[i+2] = temp_header_list[i+3]
                                         if len(temp_header_list) == i+4:

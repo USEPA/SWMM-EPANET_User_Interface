@@ -449,7 +449,7 @@ class frmMainSWMM(frmMain):
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
         self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
-        self.project.metric = self.project.options.hydraulics.flow_units in core.swmm.options.general.flow_units_metric
+        self.project.metric = self.project.options.flow_units in core.swmm.options.general.flow_units_metric
 
     def cbOffset_currentIndexChanged(self):
         import core.swmm.options

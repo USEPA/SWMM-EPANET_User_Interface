@@ -934,7 +934,7 @@ class OutfallReader(SectionReader):
             else:
                 gated_field = 3
             if len(fields) > gated_field:
-                outfall.setattr_keep_type("tidal_gate", fields[gated_field])
+                outfall.setattr_keep_type("tide_gate", fields[gated_field])
             if len(fields) > gated_field + 1:
                 outfall.route_to = fields[gated_field + 1]
         else:

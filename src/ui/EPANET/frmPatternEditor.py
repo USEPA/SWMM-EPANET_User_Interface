@@ -29,6 +29,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
             pattern = self.section.value[pattern]
         if isinstance(pattern, Pattern):
             self.editing_item = pattern
+            self.tblMult.setColumnCount(max(len(pattern.multipliers) + 1, self.tblMult.columnCount()))
         self.txtPatternID.setText(str(pattern.name))
         self.txtDescription.setText(str(pattern.description))
         point_count = -1

@@ -233,7 +233,7 @@ class StatusWriter(SectionWriter):
         elif isinstance(link, Valve):
             if hasattr(link, "initial_status") and \
                len(link.initial_status) > 0 and \
-               link.initial_status.upper() <> 'ACTIVE':
+               link.initial_status.upper() != 'ACTIVE':
                 return StatusWriter.field_format.format(link.name, link.initial_status)
         #elif status.comment:
         #    return status.comment

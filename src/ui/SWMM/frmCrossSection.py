@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.hydraulics
 import core.swmm.hydraulics.link
 import core.swmm.options.dynamic_wave
@@ -9,25 +10,25 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
 
 
-class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
+class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
     def __init__(self, main_form=None, **kwargs):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/cross_sectioneditordialog.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.btnDialog, QtCore.SIGNAL("clicked()"), self.btnDialog_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnDialog.clicked.connect(self.btnDialog_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(main_form.project)
         self._main_form = main_form
         self.defaults = None
-        if kwargs.has_key("defaults"):
+        if "defaults" in kwargs:
             self.defaults = kwargs["defaults"]
         #self.default_key = "obj_def_xsection"
-        #if kwargs.has_key("default_key"):
+        #if "default_key" in kwargs:
         #    self.default_key = kwargs["default_key"]
         self.link_name = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)

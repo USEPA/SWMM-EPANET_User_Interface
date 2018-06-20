@@ -1,11 +1,12 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLineEdit, QTableWidgetItem, QFileDialog
 import core.epanet.curves
 from ui.EPANET.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.epanet.curves import CurveType
 from core.epanet.curves import Curve
-from PyQt4.QtGui import *
+from PyQt5.QtGui import *
 import numpy as np
 from ui.model_utility import ParseData
 from ui.model_utility import BasePlot
@@ -14,18 +15,18 @@ import os
 import traceback
 
 
-class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
+class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
         self.loaded = False
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.epanet.curves.CurveType, self.cboCurveType)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        #QtCore.QObject.connect(self.tblMult, QtCore.SIGNAL("cellChanged(int, int)"), self.tblMult_cellChanged(int, int))
-        #QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
+        # self.cboCurveType.clicked.connect(self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         self.btnSave.clicked.connect(self.save_curve_data)
         self.btnLoad.clicked.connect(self.load_curve_data)
@@ -35,7 +36,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.project = main_form.project
         self.section = self.project.curves
         self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
-        layout = QtGui.QVBoxLayout(self.fraPlot)
+        layout = QVBoxLayout(self.fraPlot)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.plot)
         self.fraPlot.setLayout(layout)
@@ -124,10 +125,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         point_count = -1
         for point in curve.curve_xy:
             point_count += 1
-            led = QtGui.QLineEdit(str(point[0]))
-            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(point[1]))
-            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(point[0]))
+            self.tblMult.setItem(point_count, 0, QTableWidgetItem(led.text()))
+            led = QLineEdit(str(point[1]))
+            self.tblMult.setItem(point_count, 1, QTableWidgetItem(led.text()))
         #CurveGrid.RowCount= MAXPOINTS + 1
         #CurveID.MaxLength= MAXID; // Max.chars. in a ID
         #ActiveControl= CurveID
@@ -157,8 +158,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def load_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
-        #file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.crv)")
+        #file_name, ftype = QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.crv)")
         if os.path.exists(file_name):
             self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
             self._main_form.program_settings.sync()
@@ -185,10 +186,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                         point_count = -1
                         for point in curve_xy:
                             point_count += 1
-                            led = QtGui.QLineEdit(str(point[0]))
-                            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-                            led = QtGui.QLineEdit(str(point[1]))
-                            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+                            led = QLineEdit(str(point[0]))
+                            self.tblMult.setItem(point_count, 0, QTableWidgetItem(led.text()))
+                            led = QLineEdit(str(point[1]))
+                            self.tblMult.setItem(point_count, 1, QTableWidgetItem(led.text()))
 
                         pass
                     except Exception as ex:
@@ -196,7 +197,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def save_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
         if os.path.exists(file_name):
             self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
             self._main_form.program_settings.sync()

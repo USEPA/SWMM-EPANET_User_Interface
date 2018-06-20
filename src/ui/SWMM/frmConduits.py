@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
@@ -25,7 +26,7 @@ class frmConduits(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -39,7 +40,7 @@ class frmConduits(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
             combobox.setCurrentIndex(1)
@@ -68,7 +69,7 @@ class frmConduits(frmGenericPropertyEditor):
             for value in self.project.xsections.value:
                 if value.link == link_id:
                     tb.textbox.setText(value.shape.name)
-                    self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+                    self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
                     xsection = value
                     break
         else:
@@ -76,7 +77,7 @@ class frmConduits(frmGenericPropertyEditor):
                     self._main_form.project_settings.xsection:
                 value = self._main_form.project_settings.xsection
                 tb.textbox.setText(value.shape.name)
-                self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+                self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
 
         if not xsection:
             # create new xsection

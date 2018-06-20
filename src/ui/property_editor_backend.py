@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QTableWidgetItem, QLineEdit
 from enum import Enum
 import ui.convenience
 
@@ -28,25 +29,25 @@ class PropertyEditorBackend:
                 for meta_item in self.meta:
                     value = self.meta.value(meta_item, edit_this)
                     if isinstance(value, bool):
-                        checkbox = QtGui.QCheckBox()
+                        checkbox = QCheckBox()
                         checkbox.setChecked(value)
                         self.table.setCellWidget(row, column, checkbox)
                     if isinstance(value, Enum):
-                        combobox = QtGui.QComboBox()
+                        combobox = QComboBox()
                         ui.convenience.set_combo_items(type(value), combobox)
                         ui.convenience.set_combo(combobox, value)
                         self.table.setCellWidget(row, column, combobox)
                     else:
                         # print "row " + str(row) + " col " + str(column) + " = " + str(value)
-                        self.table.setItem(row, column, QtGui.QTableWidgetItem(value))
+                        self.table.setItem(row, column, QTableWidgetItem(value))
                     row += 1
                 column += 1
         else:
             self.table.setColumnCount(1)
             self.table.setRowCount(1)
             self.table.setVerticalHeaderLabels(["Error"])
-            led = QtGui.QLineEdit("No items selected to edit")
-            self.table.setItem(-1, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit("No items selected to edit")
+            self.table.setItem(-1, 1, QTableWidgetItem(led.text()))
 
     def apply_edits(self):
         column = 0
@@ -60,14 +61,14 @@ class PropertyEditorBackend:
                         for meta_item in self.meta:
                             if meta_item.label == label:
                                 if not meta_item.attribute:
-                                    print "No attribute to set for " + label
+                                    print ("No attribute to set for " + label)
                                     break
                                 new_value = None
                                 widget = self.table.cellWidget(row, column)
                                 if widget:
-                                    if isinstance(widget, QtGui.QCheckBox):
+                                    if isinstance(widget, QCheckBox):
                                         new_value = widget.isChecked()
-                                    elif isinstance(widget, QtGui.QComboBox):
+                                    elif isinstance(widget, QComboBox):
                                         default_value = self.meta.value(meta_item, edit_this)
                                         if isinstance(default_value, Enum):
                                             try:

@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtGui import QMessageBox
 
 plugin_name = 'MyCalculations'
 plugin_create_menu = False

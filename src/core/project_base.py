@@ -2,7 +2,7 @@ import inspect
 import traceback
 from enum import Enum
 from core.indexed_list import IndexedList
-from utility import ParseData
+from .utility import ParseData
 
 
 class ProjectBase(object):

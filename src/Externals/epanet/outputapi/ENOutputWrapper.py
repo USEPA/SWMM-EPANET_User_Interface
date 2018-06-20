@@ -10,6 +10,9 @@ Refactored for inclusion in SWMM-EPANET User Interface project
 2016
 Mark Gray, RESPEC
 for US EPA
+2018
+Tong Zhai
+update to python 3
 
 """
 
@@ -44,11 +47,16 @@ class ENR_categoryBase:
         """
         items = {}
         item_count = output._call_int(_lib.ENR_getNetSize, cls._count_flag)
-        ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
+        ctypes_name = _lib.String(((_lib.MAXID + 1) * '\0').encode())
         for index in range(1, item_count + 1):
             _lib.ENR_getElementName(output.ptrapi, cls._elementType, index, ctypes_name)
-            name = str(ctypes_name)
-            items[name] = cls(name, index)
+            try:
+                # name = str(ctypes_name)
+                name = ctypes_name.data.decode('utf-8')
+                items[name] = cls(name, index)
+            except Exception as e:
+                # raise Exception("EPANET read_all output failed.")
+                pass
         return items
 
     # def get_value(self, output, attribute, time_index):
@@ -313,7 +321,7 @@ class OutputObject(object):
         self._call_double_return = c_double()  # Private variable used only inside call_double
         self.output_file_name = str(output_file_name)
         self.ptrapi = _lib.ENR_init()
-        ret = _lib.ENR_open(self.ptrapi, self.output_file_name)
+        ret = _lib.ENR_open(self.ptrapi, c_char_p(self.output_file_name.encode()))
         if ret > 400:
             self._raise_error(ret)
         file_version = self._call_int(_lib.ENR_getVersion)
@@ -566,7 +574,7 @@ class OutputObject(object):
             #return pd.Series(y_values, index=self.dates)
             return pd.Series(y_values, index=self.times)
         except Exception as ex:
-            print str(ex)
+            print (str(ex))
 
 
 class PumpEnergy:

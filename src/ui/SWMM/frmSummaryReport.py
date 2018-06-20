@@ -1,17 +1,18 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from ui.help import HelpHandler
 from ui.SWMM.frmSummaryReportDesigner import Ui_frmSummaryReport
 
 
-class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
+class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/viewing_a_summary_report.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
         self._main_form = main_form
         self.label.setVisible(False)  # since sorting seems buggy, take this off for now
@@ -247,7 +248,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         row += 1
                         for value in line_list[0:]:
                             col += 1
-                            item = QtGui.QTableWidgetItem(value)
+                            item = QTableWidgetItem(value)
                             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                             if col == 0:
                                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)

@@ -296,7 +296,7 @@ class Reports:
                 self.write_results()
                 return True
             finally:
-                print "Finished writing report " + report_file_name
+                print ("Finished writing report " + report_file_name + "\n")
                 #   MainForm.HideProgressBar
 
     def all_links_set_category(self):

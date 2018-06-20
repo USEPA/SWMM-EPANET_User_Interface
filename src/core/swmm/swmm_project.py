@@ -33,13 +33,11 @@ except NameError:
     str = str
     unicode = str
     bytes = bytes
-    basestring = (str, bytes)
 else:
     # 'unicode' exists, must be Python 2
     str = str
     unicode = unicode
     bytes = str
-    basestring = basestring
 
 
 class SwmmProject(ProjectBase):
@@ -69,7 +67,7 @@ class SwmmProject(ProjectBase):
 
         # self.subareas = [Section]               # SUBAREAS      subcatchment impervious/pervious sub-area data
 
-        self.infiltration = SectionAsList("[INFILTRATION]")  # (list of basestring)
+        self.infiltration = SectionAsList("[INFILTRATION]")  # (list of str)
         # subcatchment infiltration parameters
 
         self.lid_controls = SectionAsList("[LID_CONTROLS]")  # (list of LIDControl)

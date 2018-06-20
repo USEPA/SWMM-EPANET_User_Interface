@@ -1,8 +1,8 @@
 import os
 from enum import Enum
 from qgis.core import *
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QMessageBox
 from core.coordinate import Coordinate
 from core.epanet.hydraulics.node import Junction as EpanetJunction
 from core.epanet.hydraulics.node import Tank as EpanetTank
@@ -594,7 +594,7 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
             feature.setAttributes(values)
             features.append(feature)
         except Exception as exPoint:
-            print "Skipping point " + model_point.name + ": " + str(exPoint)
+            print ("Skipping point " + model_point.name + ": " + str(exPoint))
 
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)
@@ -681,7 +681,7 @@ def import_from_gis(session, file_name):
             result = "Create Model from GIS data supports GeoJSON data only"
         QMessageBox.information(None, "Create Model from GIS data", result, QMessageBox.Ok)
     except Exception as ex:
-        print str(ex)
+        print (str(ex))
 
 def import_epanet_from_geojson(session, file_name):
     project = session.project

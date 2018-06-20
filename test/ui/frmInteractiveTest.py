@@ -1,24 +1,25 @@
 import sys
-import PyQt4.Qt as Qt
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.Qt as Qt
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QDialog, QListView, QPushButton, QVBoxLayout, QApplication
 
 
-class frmInteractiveTest(QtGui.QDialog):
+class frmInteractiveTest(QDialog):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self._parent = parent
         self.resize(400, 800)
 
-        self.list_view = QtGui.QListView()
+        self.list_view = QListView()
         self.model = QtGui.QStandardItemModel()
-        self.ok_button = QtGui.QPushButton("OK")
-        self.skip_button = QtGui.QPushButton("Skip")
+        self.ok_button = QPushButton("OK")
+        self.skip_button = QPushButton("Skip")
 
         self.ok_button.clicked.connect(self.clicked_ok)
         self.skip_button.clicked.connect(self.clicked_skip)
 
-        layout = QtGui.QVBoxLayout()
+        layout = QVBoxLayout()
 
         layout.addWidget(self.list_view, 1)
         layout.addWidget(self.ok_button, 0)
@@ -45,7 +46,7 @@ class frmInteractiveTest(QtGui.QDialog):
         self.close()
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     MainApp = frmInteractiveTest()
     MainApp.show()
     sys.exit(app.exec_())

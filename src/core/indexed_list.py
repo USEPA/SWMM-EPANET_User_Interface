@@ -45,13 +45,13 @@ class IndexedList(list):
         return list.__delitem__(self, ind)
 
     def __delslice__(self, i, j):
-        for ind in xrange(i, j):
+        for ind in range(i, j):
             self.__delitem__(ind)
 
     def __getitem__(self, ind):
         try:
             return self._index[ind]
-        except KeyError:
+        except (KeyError, TypeError):
             if isinstance(ind, str):
                 raise
             try:
@@ -88,7 +88,7 @@ class IndexedList(list):
         _add = self._addindex
         _del = self._delindex
         # remove indexing of items to remove
-        for ind in xrange(i, j):
+        for ind in range(i, j):
             _del(_get(ind))
         # add new indexing
         if isinstance(newItems, IndexedList):

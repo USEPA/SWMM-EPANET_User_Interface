@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 from enum import Enum
 from ui.frmRunSimulationDesigner import Ui_frmRunSimulation
 from ui.model_utility import process_events, transl8
@@ -23,7 +24,7 @@ class RunStatus(Enum):
     rsWQ = 14
 
 
-class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
+class frmRunSimulation(QMainWindow, Ui_frmRunSimulation):
 
     SHORT_TERM_LIMIT = 20  # Simulations running fewer days than this will have time of day displayed while running
     context = "RunSimulation"
@@ -75,15 +76,15 @@ class frmRunSimulation(QtGui.QMainWindow, Ui_frmRunSimulation):
     }
 
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.progressBar.setValue(0)
         # It looks redundant to have both lines below, but the first is needed to establish the run_status attribute
         self.run_status = RunStatus.rsInit
         self.set_status(RunStatus.rsInit)
-        QtCore.QObject.connect(self.cmdStop, QtCore.SIGNAL("clicked()"), self.stop_clicked)
-        QtCore.QObject.connect(self.cmdMinimize, QtCore.SIGNAL("clicked()"), self.minimize_clicked)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.ok_clicked)
+        self.cmdStop.clicked.connect(self.stop_clicked)
+        self.cmdMinimize.clicked.connect(self.minimize_clicked)
+        self.cmdOK.clicked.connect(self.ok_clicked)
         self._main_form = main_form
         self._last_displayed_days = -1
 

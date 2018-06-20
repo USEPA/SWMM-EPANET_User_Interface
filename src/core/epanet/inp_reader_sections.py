@@ -82,13 +82,15 @@ class LabelReader(SectionReader):
     def read(new_text):
         label = Label()
         new_text = SectionReader.set_comment_check_section(label, new_text)
-        fields = shlex.split(new_text.encode('utf8'))
+        # fields = shlex.split(new_text.encode('utf8'))
+        fields = shlex.split(new_text)
         if len(fields) > 2:
             (label.x, label.y) = fields[0:2]
-            label.name = fields[2].decode('UTF8')
+            # label.name = fields[2].decode('UTF8')
+            label.name = fields[2]
 
             if len(fields) > 3:
-                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
+                label.anchor_name = fields[3] # name of an anchor node (optional)
         return label
 
 
@@ -143,7 +145,7 @@ class RuleReader():
         lines = new_text.replace(RuleReader.SECTION_NAME, '').strip().splitlines()
         if len(lines) > 0:
             first_line = lines[0]
-            if first_line[0] <> ' ':
+            if first_line[0] != ' ':
                 lines[0] = ' ' + lines[0]
             rules.value = '\n'.join(lines[0:])
         return rules
@@ -159,7 +161,7 @@ class ControlReader():
         lines = new_text.replace(ControlReader.SECTION_NAME, '').strip().splitlines()
         if len(lines) > 0:
             first_line = lines[0]
-            if first_line[0] <> ' ':
+            if first_line[0] != ' ':
                 lines[0] = ' ' + lines[0]
             controls.value = '\n'.join(lines[0:])
         return controls
@@ -792,9 +794,9 @@ class TagsReader(SectionReader):
                         if candidate.name.upper() == object_name:
                             candidate.tag = tag
                             found = True
-                            # print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
+                            # print ("Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag)
                             break
                     if found:
                         break
                 if not found:
-                    print "Tag not applied: " + line
+                    print ("Tag not applied: " + line + "\n")

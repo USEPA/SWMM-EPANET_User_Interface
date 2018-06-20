@@ -3,11 +3,13 @@
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\SWMM\frmAboutDesigner.ui'
 #
 # Created: Wed Mar 15 13:49:36 2017
-#      by: PyQt4 UI code generator 4.10.2
+#      by: PyQt5 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,72 +18,72 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QApplication.translate(context, text, disambig)
 
 class Ui_frmAbout(object):
     def setupUi(self, frmAbout):
         frmAbout.setObjectName(_fromUtf8("frmAbout"))
         frmAbout.resize(609, 465)
-        font = QtGui.QFont()
+        font = QFont()
         font.setPointSize(10)
         frmAbout.setFont(font)
-        self.centralWidget = QtGui.QWidget(frmAbout)
+        self.centralWidget = QWidget(frmAbout)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralWidget)
+        self.verticalLayout_2 = QVBoxLayout(self.centralWidget)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.frame = QtGui.QFrame(self.centralWidget)
-        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame = QFrame(self.centralWidget)
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
         self.frame.setObjectName(_fromUtf8("frame"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.frame)
+        self.verticalLayout = QVBoxLayout(self.frame)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.lblSwmm = QtGui.QLabel(self.frame)
+        self.lblSwmm = QLabel(self.frame)
         self.lblSwmm.setObjectName(_fromUtf8("lblSwmm"))
         self.verticalLayout.addWidget(self.lblSwmm)
-        self.tabWidget = QtGui.QTabWidget(self.frame)
+        self.tabWidget = QTabWidget(self.frame)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.tabDescription = QtGui.QWidget()
+        self.tabDescription = QWidget()
         self.tabDescription.setObjectName(_fromUtf8("tabDescription"))
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.tabDescription)
+        self.verticalLayout_4 = QVBoxLayout(self.tabDescription)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-        self.lblAbout = QtGui.QLabel(self.tabDescription)
+        self.lblAbout = QLabel(self.tabDescription)
         self.lblAbout.setWordWrap(True)
         self.lblAbout.setObjectName(_fromUtf8("lblAbout"))
         self.verticalLayout_4.addWidget(self.lblAbout)
         self.tabWidget.addTab(self.tabDescription, _fromUtf8(""))
-        self.tabDisclaimer = QtGui.QWidget()
+        self.tabDisclaimer = QWidget()
         self.tabDisclaimer.setObjectName(_fromUtf8("tabDisclaimer"))
-        self.verticalLayout_3 = QtGui.QVBoxLayout(self.tabDisclaimer)
+        self.verticalLayout_3 = QVBoxLayout(self.tabDisclaimer)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.lblAbout_2 = QtGui.QLabel(self.tabDisclaimer)
+        self.lblAbout_2 = QLabel(self.tabDisclaimer)
         self.lblAbout_2.setWordWrap(True)
         self.lblAbout_2.setObjectName(_fromUtf8("lblAbout_2"))
         self.verticalLayout_3.addWidget(self.lblAbout_2)
         self.tabWidget.addTab(self.tabDisclaimer, _fromUtf8(""))
         self.verticalLayout.addWidget(self.tabWidget)
         self.verticalLayout_2.addWidget(self.frame)
-        self.fraOKCancel = QtGui.QFrame(self.centralWidget)
-        self.fraOKCancel.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraOKCancel = QFrame(self.centralWidget)
+        self.fraOKCancel.setFrameShape(QFrame.StyledPanel)
+        self.fraOKCancel.setFrameShadow(QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
+        self.horizontalLayout = QHBoxLayout(self.fraOKCancel)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.label = QtGui.QLabel(self.fraOKCancel)
+        self.label = QLabel(self.fraOKCancel)
         self.label.setLineWidth(0)
         self.label.setTextFormat(QtCore.Qt.RichText)
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
-        spacerItem = QtGui.QSpacerItem(200, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QSpacerItem(200, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.cmdOK = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdOK = QPushButton(self.fraOKCancel)
         self.cmdOK.setObjectName(_fromUtf8("cmdOK"))
         self.horizontalLayout.addWidget(self.cmdOK)
-        spacerItem1 = QtGui.QSpacerItem(200, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QSpacerItem(200, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout_2.addWidget(self.fraOKCancel)
         frmAbout.setCentralWidget(self.centralWidget)
@@ -92,7 +94,10 @@ class Ui_frmAbout(object):
 
     def retranslateUi(self, frmAbout):
         frmAbout.setWindowTitle(_translate("frmAbout", "About SWMM", None))
-        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP4r2, Using Python 2.7.5</span></p></body></html>", None))
+        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP4r2, Using Python 3.6.0</span></p>\n"
+                                        "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">PyQGIS 3.0.3-Girona</span></p>\n"
+                                        "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">PyQt 5.9</span></p>\n"
+                                        "</body></html>", None))
         self.lblAbout.setText(_translate("frmAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

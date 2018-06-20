@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
@@ -31,7 +32,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -50,7 +51,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
 
             # for snowpacks, show available snowpacks
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in self.project.snowpacks.value:
@@ -63,7 +64,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             # show available rain gages
             raingage_section = self.project.find_section("RAINGAGES")
             raingage_list = raingage_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in raingage_list:
@@ -101,7 +102,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilt(column))
-        self.tblGeneric.setItem(row, column, QtGui.QTableWidgetItem(''))
+        self.tblGeneric.setItem(row, column, QTableWidgetItem(''))
         self.tblGeneric.setCellWidget(row, column, tb)
 
     def set_groundwater_cell(self, row, column):

@@ -1,11 +1,12 @@
 try:
     from qgis.core import *
     from qgis.gui import *
-    from PyQt4 import QtGui, QtCore, Qt
-    from PyQt4.QtGui import *
-    from PyQt4.Qt import *
+    from PyQt5 import QtGui, QtCore, Qt
+    from PyQt5.QtGui import *
+    from PyQt5.Qt import *
+    from PyQt5.QtWidgets import QUndoCommand
     from core.coordinate import Coordinate, Polygon
-    from svgs_rc import *
+    from .svgs_rc import *
     import traceback
     import math
     import os
@@ -156,11 +157,11 @@ try:
         def deleteVertex(self, feature, vertex):
             self.edit_type = "delete"
             geometry = feature.geometry()
-            if geometry.wkbType() == QGis.WKBLineString:
+            if geometry.wkbType() == QgsWkbTypes.LineString:
                 lineString = geometry.asPolyline()
                 if len(lineString) <= 2:
                     return
-            elif geometry.wkbType() == QGis.WKBPolygon:
+            elif geometry.wkbType() == QgsWkbTypes.Polygon:
                 polygon = geometry.asPolygon()
                 exterior = polygon[0]
                 if len(exterior) <= 4:
@@ -171,11 +172,16 @@ try:
                 self.onGeometryChanged()
 
         def copy_geometry(self, geometry):
-            if isinstance(geometry.asPolygon(), list):
-                lv = geometry.asPolygon()
-                vs = []
-                vs.extend(lv)
-                return QgsGeometry.fromPolygon(vs)
+            if geometry is None:
+                return None
+            vs = []
+            for v in geometry.vertices():
+                vs.append(v)
+            if len(vs) > 3:
+                new_geometry = QgsGeometry()
+                new_geometry.addPointsXY(vs, QgsWkbTypes.PolygonGeometry)
+                return new_geometry
+                # return QgsGeometry.fromPolygon(vs)
             else:
                 return None
 
@@ -201,10 +207,10 @@ try:
             self.vertex = None
 
 
-    class EditVertex(QtGui.QUndoCommand):
+    class EditVertex(QUndoCommand):
         """Private class that edit a sub or link vertices from the model and the map. Accessed via delete_item method."""
         def __init__(self, session, layer, feature):
-            QtGui.QUndoCommand.__init__(self, "Change geometry")
+            QUndoCommand.__init__(self, "Change geometry")
             self.session = session
             self.layer = layer
             self.subcentroids = self.session.model_layers.layer_by_name("subcentroids")
@@ -240,7 +246,7 @@ try:
             #     pass
 
         def update_centroidlinks(self, geom):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsPoint
             feature_name = self.feature.attributes()[0]
             for section_field_name in self.session.section_types.values():
                 try:
@@ -269,7 +275,7 @@ try:
                                 break
                         for fl in self.sublinks.dataProvider().getFeatures():
                             if fl["inlet"] == self.feature["c_modelid"]:
-                                if fl.geometry().wkbType() == QGis.WKBLineString:
+                                if fl.geometry().wkbType() == QgsWkbTypes.LineString:
                                     line = fl.geometry().asPolyline()
                                     new_l_g = QgsGeometry.fromPolyline([new_c, line[-1]])
                                     change_map = {fl.id(): new_l_g}
@@ -303,7 +309,7 @@ try:
             self.move(True)
 
         def move(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsPoint
             try:
                 if not self.layer.isEditable():
                     self.layer.startEditing()
@@ -356,7 +362,7 @@ try:
                 self.add(True)
 
         def delete(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsPoint
             try:
                 if not self.layer.isEditable():
                     self.layer.startEditing()
@@ -386,7 +392,7 @@ try:
                 pass
 
         def add(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsPoint
             try:
                 if not self.layer.isEditable():
                     self.layer.startEditing()
@@ -416,4 +422,4 @@ try:
                 pass
 
 except:
-    print "Skipping map_edit"
+    print("Skipping map_edit")

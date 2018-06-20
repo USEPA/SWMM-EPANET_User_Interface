@@ -1,22 +1,23 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QAbstractItemView
 import core.swmm.options.report
 from ui.SWMM.frmReportOptionsDesigner import Ui_frmReportOptions
 
 
-class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
+class frmReportOptions(QMainWindow, Ui_frmReportOptions):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/reportingoptionsdialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.cmdNodeAll, QtCore.SIGNAL("clicked()"), self.cmdNodeAll_Clicked)
-        QtCore.QObject.connect(self.cmdNodeNone, QtCore.SIGNAL("clicked()"), self.cmdNodeNone_Clicked)
-        QtCore.QObject.connect(self.cmdLinksAll, QtCore.SIGNAL("clicked()"), self.cmdLinksAll_Clicked)
-        QtCore.QObject.connect(self.cmdLinksNone, QtCore.SIGNAL("clicked()"), self.cmdLinksNone_Clicked)
-        QtCore.QObject.connect(self.cmdSubcatchmentsAll, QtCore.SIGNAL("clicked()"), self.cmdSubcatchmentsAll_Clicked)
-        QtCore.QObject.connect(self.cmdSubcatchmentsNone, QtCore.SIGNAL("clicked()"), self.cmdSubcatchmentsNone_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cmdNodeAll.clicked.connect(self.cmdNodeAll_Clicked)
+        self.cmdNodeNone.clicked.connect(self.cmdNodeNone_Clicked)
+        self.cmdLinksAll.clicked.connect(self.cmdLinksAll_Clicked)
+        self.cmdLinksNone.clicked.connect(self.cmdLinksNone_Clicked)
+        self.cmdSubcatchmentsAll.clicked.connect(self.cmdSubcatchmentsAll_Clicked)
+        self.cmdSubcatchmentsNone.clicked.connect(self.cmdSubcatchmentsNone_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -28,7 +29,7 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
         self.cbxFlow.setChecked(section.flow_stats)
         self.cbxInput.setChecked(section.input)
         # add nodes to list 1
-        self.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.listWidget.clear()
         counter = -1
         for node_group in project.nodes_groups():
@@ -37,29 +38,29 @@ class frmReportOptions(QtGui.QMainWindow, Ui_frmReportOptions):
                     self.listWidget.addItem(node.name)
                     counter += 1
                     if node.name in section.nodes:
-                        self.listWidget.setItemSelected(self.listWidget.item(counter), True)
+                        self.listWidget.item(counter).setSelected(True)
         if section.nodes[0] == 'ALL':
             self.listWidget.selectAll()
         # add links to list 2
-        self.listWidget_2.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listWidget_2.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.listWidget_2.clear()
         counter = -1
         for link in project.all_links():
             self.listWidget_2.addItem(link.name)
             counter += 1
             if link.name in section.links:
-                self.listWidget_2.setItemSelected(self.listWidget_2.item(counter), True)
+                self.listWidget_2.item(counter).setSelected(True)
         if section.links[0] == 'ALL':
             self.listWidget_2.selectAll()
         # add subcatchments to list 3
-        self.listWidget_3.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listWidget_3.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.listWidget_3.clear()
         counter = -1
         for subcatchment in project.subcatchments.value:
             self.listWidget_3.addItem(subcatchment.name)
             counter += 1
             if subcatchment.name in section.subcatchments:
-                self.listWidget_3.setItemSelected(self.listWidget_3.item(counter),True)
+                self.listWidget_3.item(counter).setSelected(True)
         if section.subcatchments[0] == 'ALL':
             self.listWidget_3.selectAll()
 

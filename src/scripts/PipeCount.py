@@ -1,1 +1,1 @@
-print len(session.project.pipes.value)
+print (str(len(session.project.pipes.value)))

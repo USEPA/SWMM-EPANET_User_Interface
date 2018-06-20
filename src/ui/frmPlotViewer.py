@@ -1,15 +1,16 @@
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import *
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout
 from ui.help import HelpHandler
-from frmPlotViewerDesigner import Ui_frmPlot
+from .frmPlotViewerDesigner import Ui_frmPlot
 import matplotlib.dates as mdates
-from model_utility import ParseData
-from model_utility import BasePlot
+from .model_utility import ParseData
+from .model_utility import BasePlot
 import numpy as np
 from datetime import datetime
 
 
-class frmPlotViewer(QtGui.QMainWindow, Ui_frmPlot):
+class frmPlotViewer(QMainWindow, Ui_frmPlot):
     """
     Generic plot viewer window that can copy, save, and print a plot
     - Time Series Viewer
@@ -23,12 +24,12 @@ class frmPlotViewer(QtGui.QMainWindow, Ui_frmPlot):
         Args:
             dataset: time series data as pandas data frame
         """
-        QtGui.QMainWindow.__init__(self)
+        QMainWindow.__init__(self)
         self.setupUi(self)
         self.dataset = dataset
         self.plot_type = 'timeseries'
         self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
-        layout = QtGui.QVBoxLayout(self.fraPlot)
+        layout = QVBoxLayout(self.fraPlot)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.plot)
         self.fraPlot.setLayout(layout)
@@ -46,12 +47,12 @@ class frmPlotViewer(QtGui.QMainWindow, Ui_frmPlot):
         self.TXT_CURVE_HEADER = 'EPANET Curve Data'
         self.xvals = []
         self.yvals = []
-        QtCore.QObject.connect(self.btnClose, QtCore.SIGNAL("clicked()"), self.frm_close)
-        QtCore.QObject.connect(self.btnHelp, QtCore.SIGNAL("clicked()"), self.get_help)
-        QtCore.QObject.connect(self.actionOpen, QtCore.SIGNAL("triggered()"), self.open_datafile)
-        QtCore.QObject.connect(self.actionCopy, QtCore.SIGNAL("triggered()"), self.copy_plot)
-        QtCore.QObject.connect(self.actionSave, QtCore.SIGNAL("triggered()"), self.save_plot)
-        QtCore.QObject.connect(self.actionPrint, QtCore.SIGNAL("triggered()"), self.print_plot)
+        self.btnClose.clicked.connect(self.frm_close)
+        self.btnHelp.clicked.connect(self.get_help)
+        self.actionOpen.triggered.connect(self.open_datafile)
+        self.actionCopy.triggered.connect(self.copy_plot)
+        self.actionSave.triggered.connect(self.save_plot)
+        self.actionPrint.triggered.connect(self.print_plot)
         # self.installEventFilter(self)
         self.do_plot()
 

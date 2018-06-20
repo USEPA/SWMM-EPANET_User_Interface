@@ -77,13 +77,11 @@ except NameError:
     str = str
     unicode = str
     bytes = bytes
-    basestring = (str,bytes)
 else:
     # 'unicode' exists, must be Python 2
     str = str
     unicode = unicode
     bytes = str
-    basestring = basestring
 
 class CoordinateReader(SectionReader):
     @staticmethod
@@ -185,13 +183,14 @@ class LabelReader(SectionReader):
     @staticmethod
     def read(new_text):
         label = Label()
-        fields = shlex.split(new_text.encode('utf8'))
+        # fields = shlex.split(new_text.encode('utf8'))
+        fields = shlex.split(new_text)
         if len(fields) > 2:
             (label.x, label.y) = fields[0:2]
-            label.name = fields[2].decode('UTF8')
+            label.name = fields[2]
 
             if len(fields) > 3:
-                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
+                label.anchor_name = fields[3] # name of an anchor node (optional)
             if len(fields) > 4:
                 label.font = fields[4]
             if len(fields) > 5:
@@ -1643,7 +1642,7 @@ class TagsReader(SectionReader):
                     if found:
                         break
                 if not found:
-                    print "Tag not applied: " + line
+                    print ("Tag not applied: " + line + "\n")
 
 
 class LossesReader(SectionReader):
@@ -1767,7 +1766,7 @@ class GeneralReader(SectionReader):
                         try:
                             tried_set = True
 
-                            if attr_name == "flow_routing" and GeneralReader.old_flow_routing.has_key(attr_value.upper()):
+                            if attr_name == "flow_routing" and attr_value.upper() in GeneralReader.old_flow_routing:
                                 # Translate from old flow routing name to new flow routing name
                                 attr_value = GeneralReader.old_flow_routing[attr_value.upper()]
 

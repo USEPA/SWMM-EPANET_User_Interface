@@ -1,20 +1,21 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.epanet.options.times
 from core.epanet.options.times import StatisticOptions
 from enum import Enum
 from ui.EPANET.frmTimesOptionsDesigner import Ui_frmTimesOptions
 import ui.convenience
 
-class frmTimesOptions(QtGui.QMainWindow, Ui_frmTimesOptions):
+class frmTimesOptions(QMainWindow, Ui_frmTimesOptions):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Anal0034.htm"
         self.setupUi(self)
         self.cboStatistic.clear()
         ui.convenience.set_combo_items(StatisticOptions, self.cboStatistic)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 

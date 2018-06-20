@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.swmm.hydraulics.link import Outlet
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from core.swmm.curves import CurveType
@@ -22,7 +23,7 @@ class frmOutlets(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -36,7 +37,7 @@ class frmOutlets(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
             combobox.setCurrentIndex(1)
@@ -47,7 +48,7 @@ class frmOutlets(frmGenericPropertyEditor):
             # tabular curve name
             curves_section = self.project.find_section("CURVES")
             curves_list = curves_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in curves_list:

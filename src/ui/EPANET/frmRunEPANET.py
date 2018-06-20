@@ -1,8 +1,9 @@
 import os
 from enum import Enum
 import traceback
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMessageBox
 import Externals.epanet.model.epanet2 as pyepanet
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
@@ -109,7 +110,7 @@ class frmRunEPANET(frmRunSimulation):
             self.set_status(RunStatus.rsError)
             self.run_err_msg = "Simulation problem: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(self.run_err_msg)
-            # QtGui.QMessageBox.information(None, "EPANET", self.run_err_msg, QtGui.QMessageBox.Ok)
+            # QMessageBox.information(None, "EPANET", self.run_err_msg, QMessageBox.Ok)
             self.set_status(RunStatus.rsError)
         finally:
             try:

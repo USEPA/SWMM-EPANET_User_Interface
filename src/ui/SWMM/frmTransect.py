@@ -1,17 +1,18 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.SWMM.frmTransectDesigner import Ui_frmTransect
 from core.swmm.hydraulics.link import Transect
 
 
-class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
+class frmTransect(QMainWindow, Ui_frmTransect):
     SECTION_TYPE = Transect
 
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.transects
@@ -42,10 +43,10 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
             point_count = -1
             for value in transect.stations:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value[1]))
-                self.tblTransect.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(str(value[0]))
-                self.tblTransect.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value[1]))
+                self.tblTransect.setItem(point_count,0,QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value[0]))
+                self.tblTransect.setItem(point_count,1,QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtName.text()

@@ -1,35 +1,36 @@
 import sys
-import PyQt4.Qt as Qt
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.Qt as Qt
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QDialog, QTreeWidget, QLabel, QTextEdit, QPushButton, QVBoxLayout, QTreeWidgetItem, QApplication
 
 
-class frmTreeViewUITest(QtGui.QDialog):
+class frmTreeViewUITest(QDialog):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
 
         self._parent = parent
         self.resize(400, 800)
         self.setWindowTitle('UI Tests, check if passed')
 
         # Create Tree widget
-        self.tree = QtGui.QTreeWidget()
+        self.tree = QTreeWidget()
         self.model_tests = []
         self.model_actions = []
         self.tree.setHeaderHidden(True)
 
         # Create TextEdit for tester comment section
-        self.label = QtGui.QLabel()
-        self.notes = QtGui.QTextEdit()
+        self.label = QLabel()
+        self.notes = QTextEdit()
 
         # Create Ok and skip button
-        self.ok_button = QtGui.QPushButton("OK")
-        self.skip_button = QtGui.QPushButton("Skip")
+        self.ok_button = QPushButton("OK")
+        self.skip_button = QPushButton("Skip")
         self.ok_button.clicked.connect(self.clicked_ok)
         self.skip_button.clicked.connect(self.clicked_skip)
 
         # Set lay out
-        layout = QtGui.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.tree, 1)
         layout.addWidget(self.label, 1)
         layout.addWidget(self.notes, 1)
@@ -50,7 +51,7 @@ class frmTreeViewUITest(QtGui.QDialog):
             parent_list = ['Test']
 
         for parent_text in parent_list:
-            parent_ = QtGui.QTreeWidgetItem(self.tree)
+            parent_ = QTreeWidgetItem(self.tree)
             parent_.setText(0,parent_text)
             parent_.setFlags(parent_.flags() |
                              QtCore.Qt.ItemIsTristate |
@@ -62,7 +63,7 @@ class frmTreeViewUITest(QtGui.QDialog):
                 action_end = action_start + num_actions[test_num-1]
 
             for child_text in child_list[action_start:action_end]:
-                child_ = QtGui.QTreeWidgetItem(parent_)
+                child_ = QTreeWidgetItem(parent_)
                 child_.setFlags(child_.flags() | QtCore.Qt.ItemIsUserCheckable)
                 child_.setText(0, child_text)
                 child_.setCheckState(0, QtCore.Qt.Unchecked)
@@ -79,7 +80,7 @@ class frmTreeViewUITest(QtGui.QDialog):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     MainApp = frmTreeViewUITest()
     MainApp.show()
     sys.exit(app.exec_())

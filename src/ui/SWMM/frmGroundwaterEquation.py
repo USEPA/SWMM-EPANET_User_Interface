@@ -1,21 +1,22 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from ui.SWMM.frmGroundwaterEquationDesigner import Ui_frmGroundwaterEquation
 
 
-class frmGroundwaterEquation(QtGui.QMainWindow, Ui_frmGroundwaterEquation):
+class frmGroundwaterEquation(QMainWindow, Ui_frmGroundwaterEquation):
 
     def __init__(self, main_form, subcatchment_name):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/groundwater_equation_editor.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
 
     def set_from(self, project):

@@ -1,6 +1,7 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QApplication, QTreeWidget, QTreeWidgetItem, QListWidget, QDialog, QVBoxLayout, QTextEdit, QPushButton, QSizePolicy
 try:
-    from PyQt4.QtCore import QString
+    from PyQt5.QtCore import QString
 except ImportError:
     QString = str
 
@@ -11,34 +12,35 @@ except AttributeError:
         return s
 
 try:
-    transl8_encoding = QtGui.QApplication.UnicodeUTF8
+    transl8_encoding = QApplication.UnicodeUTF8
     def transl8(context, text, disambig=None):
-        return QtGui.QApplication.translate(context, text, disambig, transl8_encoding)
+        return QApplication.translate(context, text, disambig, transl8_encoding)
 except AttributeError:
     def transl8(context, text, disambig=None):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QApplication.translate(context, text, disambig)
 
-process_events = QtGui.QApplication.processEvents
-
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+process_events = QApplication.processEvents
+import matplotlib
+matplotlib.use('agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+# from matplotlib.figure import Figure
+from matplotlib import *
 
 from threading import Thread, Event, Condition, Lock
 from time import sleep
 
-class ObjectTreeView(QtGui.QTreeWidget):
+class ObjectTreeView(QTreeWidget):
     def __init__(self, parent, tree_top_item_list):
-        QtGui.QTreeWidget.__init__(self, parent)
+        QTreeWidget.__init__(self, parent)
         # self.setEditTriggers(QAbstractItemView.EditKeyPressed | QAbstractItemView.SelectedClicked)
         # self.setExpandsOnDoubleClick(False)
-        # QtCore.QObject.connect(self, QtCore.SIGNAL('itemDoubleClicked(QTreeWidgetItem, int)'), self.edit_options)
         # self.itemDoubleClicked.connect(self.edit_options)
         self.setHeaderHidden(True)
         self.setColumnCount(1)
         for top_list in tree_top_item_list:
             top_name = top_list[0]
             top_item = self.add_tree_item(self, 0, top_name, top_name)
-            top_item.setChildIndicatorPolicy(QtGui.QTreeWidgetItem.ShowIndicator)
+            top_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
             top_item.setExpanded(True)
 
             if len(top_list) > 1:
@@ -53,7 +55,7 @@ class ObjectTreeView(QtGui.QTreeWidget):
                                     self.add_tree_item(child_control, 0, grandchild[0], grandchild[0])
 
     def add_tree_item(self, parent, column, title, data):
-        item = QtGui.QTreeWidgetItem(parent, [title])
+        item = QTreeWidgetItem(parent, [title])
         item.setData(column, QtCore.Qt.UserRole, data)
         return item
 
@@ -71,9 +73,9 @@ class ObjectTreeView(QtGui.QTreeWidget):
         return None
 
 
-class ObjectListView(QtGui.QListWidget):
+class ObjectListView(QListWidget):
     def __init__(self, parent=None, **kwargs):
-        QtGui.QListWidget.__init__(self, parent)
+        QListWidget.__init__(self, parent)
         self.model = kwargs['model']
         self.ObjRoot = kwargs['ObjRoot']
         self.ObjType = kwargs['ObjType']
@@ -102,7 +104,7 @@ class ObjectListView(QtGui.QListWidget):
                 pass
 
 
-class StatusMonitor0(QtGui.QDialog):
+class StatusMonitor0(QDialog):
     def __init__(self, cmd, args, parent=None, **kwargs):
         super(StatusMonitor0, self).__init__(parent)
         self.cmd = cmd
@@ -110,9 +112,9 @@ class StatusMonitor0(QtGui.QDialog):
         self.keepGoing = True
         self.prog = kwargs['model']
 
-        layout = QtGui.QVBoxLayout()
-        self.output = QtGui.QTextEdit()
-        self.butt = QtGui.QPushButton('Close')
+        layout = QVBoxLayout()
+        self.output = QTextEdit()
+        self.butt = QPushButton('Close')
         self.setupConnections()
         self.setWindowTitle('Running ' + self.prog)
         layout.addWidget(self.output)
@@ -206,8 +208,8 @@ class BasePlot(FigureCanvas):
         self.setParent(main_form)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def setTitle(self, aTitle):

@@ -1,13 +1,14 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.dynamic_wave
 from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
 from ui.model_utility import ParseData
 
 
-class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
+class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/simulationoptions_dynamicwave.htm"
         self.setupUi(self)
         self.cboInertial.addItems(("Keep", "Dampen", "Ignore"))
@@ -15,8 +16,8 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         self.cboForce.addItems(("Hazen-Williams", "Darcy-Weisbach"))
         self.cboNormal.addItems(("Slope", "Froude No.", "Slope & Froude"))
         self.cboThreads.addItems(("1", "2", "3", "4"))
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 

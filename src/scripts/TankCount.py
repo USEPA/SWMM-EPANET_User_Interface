@@ -1,1 +1,1 @@
-print len(session.project.tanks.value)
+print (str(len(session.project.tanks.value)))

@@ -667,6 +667,55 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             else:
                 raise Exception("Section not found in project: " + section_field_name)
             self.layer = self.session.model_layers.layer_by_name(section_field_name)
+            self.delete_features = {}
+            # self.delete_features[self.layer] = [f for f in self.layer.selectedFeatures()]
+            if self.session.model == 'SWMM':
+                self.selectSubAndCentroid()
+
+        def selectSubAndCentroid(self):
+            layer_sublinks = self.session.model_layers.layer_by_name("sublinks")
+            layer_sublinks.removeSelection()
+            sel_slink_ids = []
+            if "centroid" in self.layer.name().lower():
+                layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
+                layer_subcatchments.removeSelection()
+                sel_sub_ids = []
+                sel_cen_names = []
+                for f in self.layer.selectedFeatures():
+                    sel_sub_ids.append(f['sub_mapid'])
+                    sel_cen_names.append(f['name'])
+                if sel_sub_ids:
+                    layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                    self.delete_features[layer_subcatchments] = [f for f in layer_subcatchments.selectedFeatures()]
+                for f in layer_sublinks.getFeatures():
+                    if f['inlet'] in sel_cen_names or f['outlet'] in sel_cen_names:
+                        sel_slink_ids.append(f.id())
+                if sel_slink_ids:
+                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
+            elif "subcatchment" in self.layer.name().lower():
+                layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
+                layer_subcentroids.removeSelection()
+                sel_cent_ids = []
+                for f in self.layer.selectedFeatures():
+                    sel_cent_ids.append(f['c_mapid'])
+                if sel_cent_ids:
+                    layer_subcentroids.setSelectedFeatures(sel_cent_ids)
+                    self.delete_features[layer_subcentroids] =[f for f in layer_subcentroids.selectedFeatures()]
+                sel_sub_names = []
+                for f in self.layer.selectedFeatures():
+                    sel_sub_names.append(f['name'])
+                for f in layer_sublinks.getFeatures():
+                    if 'subcentroid-' in f['inlet'].lower():
+                        if f['inlet'][len('subcentroid-'):] in sel_sub_names:
+                            sel_slink_ids.append(f.id())
+                    elif 'subcentroid-' in f['outlet'].lower():
+                        if f['outlet'][len('subcentroid-'):] in sel_sub_names:
+                            sel_slink_ids.append(f.id())
+                if sel_slink_ids:
+                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
+            pass
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
@@ -686,17 +735,57 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         self.session.setQgsMapTool()
                     except:
                         pass
+            if len(self.delete_features):
+                for lyr in self.delete_features:
+                    if self.delete_features[lyr]:
+                        lyr.startEditing()
+                        lyr.dataProvider().deleteFeatures([f.id() for f in self.delete_features[lyr]])
+                        lyr.commitChanges()
+                        lyr.updateExtents()
+                        lyr.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                try:
+                    self.session.setQgsMapTool()
+                except:
+                    pass
 
         def undo(self):
-            self.section.value.insert(self.item_index, self.item)
+            if self.section.value:
+                self.section.value.insert(self.item_index, self.item)
+            else:
+                self.section.value.append(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
+            added_del = None
             if self.layer and self.delete_feature:
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
-                self.layer.dataProvider().addFeatures([self.delete_feature])
+                added_del = self.layer.dataProvider().addFeatures([self.delete_feature])
                 self.layer.commitChanges()
                 self.layer.updateExtents()
                 self.layer.triggerRepaint()
+                self.session.map_widget.canvas.refresh()
+                try:
+                    self.session.setQgsMapTool()
+                except:
+                    pass
+            if len(self.delete_features):
+                for lyr in self.delete_features:
+                    added_aux = None
+                    if self.delete_features[lyr]:
+                        lyr.startEditing()
+                        added_aux = lyr.dataProvider().addFeatures(self.delete_features[lyr])
+                        if "subcatchment" in self.layer.name().lower() and "subcentroid" in lyr.name().lower():
+                            if added_del[0] and added_aux[0]:
+                                self.layer.startEditing()
+                                self.layer.changeAttributeValue(added_del[1][0].id(), 2, added_aux[1][0].id())
+                                self.layer.commitChanges()
+                                if added_aux[0]:
+                                    lyr.changeAttributeValue(added_aux[1][0].id(), 2, added_del[1][0].id())
+                        lyr.commitChanges()
+                        lyr.updateExtents()
+                        lyr.triggerRepaint()
+                        self.layer.updateExtents()
+                        self.layer.triggerRepaint()
                 self.session.map_widget.canvas.refresh()
                 try:
                     self.session.setQgsMapTool()
@@ -879,7 +968,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         else:  # move_outlet:
                             coord = moved_coordinates[link.outlet_node]
                             link_points[-1] = QgsPoint(coord.x, coord.y)
-                        print("Update link " + link.name)
+                        # print("Update link " + link.name)
                         link_layer.startEditing()
                         link_layer.changeGeometry(feature.id(), QgsGeometry.fromPolyline(link_points))
                         link_layer.commitChanges()
@@ -1016,15 +1105,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         Returns:
         """
         m_target = None
-        if "subcatch" in model_obj_type:
-            m_target = self.project.subcatchments.find_item(model_obj_name)
-            if m_target is not None:
-                del m_target.vertices[:]
-                for v in new_vertices:
-                    coord = Coordinate()
-                    coord.x = str(v.x())
-                    coord.y = str(v.y())
-                    m_target.vertices.append(coord)
+        # if "subcatchment" in model_obj_type:
+        #     m_target = self.project.subcatchments.find_item(model_obj_name)
+        if hasattr(self.project, model_obj_type.lower()):
+            m_group = getattr(self.project, model_obj_type.lower())
+            m_target = m_group.find_item(model_obj_name)
+        if m_target is not None:
+            del m_target.vertices[:]
+            for v in new_vertices:
+                coord = Coordinate()
+                coord.x = str(v.x())
+                coord.y = str(v.y())
+                m_target.vertices.append(coord)
 
     def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
@@ -1569,10 +1661,6 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             # except:
             #     self._editor_form = None
 
-    def run_recent_script(self):
-        action = self.sender()
-        if action and action.data():
-            self.script_run(action.data())
 
     def create_recent_menus(self, parent_menu, callback):
         """Create recent menus. All are invisible and have no text yet, that happens in update_recent."""
@@ -1775,7 +1863,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     try:
                         layer_name = layer.name()
                         already_selected_item = self.obj_tree.currentItem()
-                        if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                        if already_selected_item is None or \
+                           already_selected_item.text(0) != layer_name or \
+                           (already_selected_item.text(0) == layer_name and self.listViewObjects.count() == 0):
                             tree_node = self.obj_tree.find_tree_item(layer_name)
                             if tree_node:
                                 self.obj_tree.setCurrentItem(tree_node)
@@ -1903,6 +1993,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.txtCrs.setText(crs.authid())
                 self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
+                crs_id = 0
+                for mlayer in self.model_layers.all_layers:
+                    mcrs = mlayer.crs()
+                    if not mcrs.isValid() or mcrs.authid() == 'EPSG:4326':
+                        try:
+                            mlayer.setCrs(crs)
+                            # crs_id = int(crs.authid()[5:])
+                            # if mcrs.createFromId(crs_id):
+                            #     mlayer.setCrs(mcrs)
+                        except:
+                            pass
             except:
                 pass
         else:
@@ -2026,7 +2127,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     #         self.map_widget.zoom_to_one_feature()
                     #         sleep(2)
                     #     pass
-                self.q_application.quit()
+                self.close()
+                #self.q_application.quit()
             except:
                 try:
                     self.close()
@@ -2100,6 +2202,105 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.actionStdEditObject.setEnabled(False)
             self.actionStdDeleteObject.setEnabled(False)
+
+    """
+    below are functions for iface
+    """
+    def zoomFull(self):
+        self.zoomfull()
+
+    def zoomToPrevious(self):
+        """ Zoom to previous view extent """
+        self.canvas.zoomToPreviousExtent()
+
+    def zoomToNext(self):
+        """ Zoom to next view extent """
+        self.canvas.zoomToNextExtent()
+
+    def zoomToActiveLayer(self):
+        """ Zoom to extent of the active layer """
+        self.zoomACapaActiva()
+
+    def activeLayer(self):
+        """ Get pointer to the active layer (layer selected in the legend) """
+        return self.gis_layer_tree.currentLayer()
+
+    def addToolBarIcon(self, qAction):
+        """ Add an icon to the plugins toolbar """
+        if not self.toolBarPlugins:
+            self.toolBarPlugins = self.addToolBar("Plugins")
+        self.toolBarPlugins.addAction(qAction)
+
+    def removeToolBarIcon(self, qAction):
+        """ Remove an action (icon) from the plugin toolbar """
+        if not self.toolBarPlugins:
+            self.toolBarPlugins = self.addToolBar("Plugins")
+        self.toolBarPlugins.removeAction(qAction)
+
+    def mapCanvas(self):
+        """ Return a pointer to the map canvas """
+        return self.canvas
+
+    def mainWindow(self):
+        """ Return a pointer to the main window (instance of QgisApp in case of QGIS) """
+        return self.pyQgisApp
+
+    def addPluginToMenu(self, name, action):
+        """ Add action to the plugins menu """
+        menu = self.getPluginMenu(name)
+        menu.addAction(action)
+
+    def removePluginMenu(self, name, action):
+        """ Remove action from the plugins menu """
+        menu = self.getPluginMenu(name)
+        menu.removeAction(action)
+
+    def removeDockWidget(self, dockwidget):
+        """ Remove a dock widget from main window (doesn't delete it) """
+        self.pyQgisApp.removeDockWidget(dockwidget)
+
+        # refresh the map canvas
+        self.canvas.refresh()
+
+    def refreshLegend(self, mapLayer):
+        """ Refresh the layer legend """
+        self.pyQgisApp.refreshLayerSymbology(mapLayer)
+
+    def pluginMenu(self):
+        """ Return the main plugins menu """
+        return self.pyQgisApp.menuPlugins
+
+    def getPluginMenu(self, menuName):
+        """ Return the secondary menu which owns to a plugin """
+        before = None
+
+        if self.pluginMenu():
+            actions = self.pluginMenu().actions()
+            for action in actions:
+                comp = QString(menuName).localeAwareCompare(action.text())
+                if (comp < 0):
+                    before = action  # Add item before this one
+                    break
+                elif (comp == 0):
+                    # Plugin menu item already exists
+                    return action.menu()
+
+        # It doesn't exist, so create it
+        menu = QMenu(menuName, self.pluginMenu())
+        if before:
+            self.pluginMenu().insertMenu(before, menu)
+        else:
+            self.pluginMenu().addMenu(menu)
+        return menu
+
+        # TODO: Implement the following methods.
+        # def addVectorLayer( vectorLayerPath, baseName, providerKey ):
+        # def addRasterLayer( rasterLayerPath, baseName = QString() ):
+        # def addRasterLayer( url, layerName, providerKey, layers, styles, format, crs ):
+        # virtual bool addProject( QString theProject ) = 0;
+        # virtual void newProject( bool thePromptToSaveFlag = false ) = 0
+        # virtual QList<QgsComposerView*> activeComposers() = 0
+
 
 class ModelLayers:
     """

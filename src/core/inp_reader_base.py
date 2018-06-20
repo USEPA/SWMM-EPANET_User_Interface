@@ -14,10 +14,15 @@ class InputFileReader(object):
         """ Read the contents of file_name into project. """
         self.input_err_msg = ""
         try:
-            import codecs
-            with codecs.open(file_name, 'r', "utf-8") as inp_reader:
+            """
+            with open(file_name, 'r') as inp_reader:
                 project.file_name = file_name
-                self.set_from_text_lines(project, iter(inp_reader))
+                self.set_from_text_lines(project, inp_reader.readlines())
+            """
+            import codecs
+            with codecs.open(file_name, 'r', 'utf-8') as inp_reader:
+                project.file_name = file_name
+                self.set_from_text_lines(project, inp_reader.readlines())
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
             self.input_err_msg = "File is probably not a valid EPANET project or input file."

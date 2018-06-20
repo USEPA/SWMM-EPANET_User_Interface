@@ -1581,7 +1581,7 @@ class ModelLayersSWMM(ModelLayers):
         """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
-        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids]
+        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks]
         self.all_layers.extend(self.nodes_layers)
         self.all_layers.extend(self.links_layers)
 
@@ -1609,11 +1609,15 @@ class ModelLayersSWMM(ModelLayers):
         self.subcatchments = self.map_widget.addPolygons(project.subcatchments.value, "Subcatchments")
         self.set_lists()
         self.create_subcatchment_links(project)
+        self.create_spatial_index()
 
     def create_subcatchment_links(self, project):
         #create centroids
         for fs in self.subcatchments.getFeatures():
-            self.create_subcatchment_centroid(fs)
+            try:
+                self.create_subcatchment_centroid(fs)
+            except:
+                print ("Failed sub centroid: " + fs['name'])
 
         #create sub links
         for fs in self.subcatchments.getFeatures():
@@ -1624,11 +1628,16 @@ class ModelLayersSWMM(ModelLayers):
     def create_subcatchment_centroid(self, fs):
         pt = fs.geometry().centroid().asPoint()
         #ms = self.map_widget.session.project.subcatchments.find_item(fs["name"])
-        for ms in self.map_widget.session.project.subcatchments.value:
-            if ms.name == fs["name"]:
-                ms.centroid.x = str(pt.x())
-                ms.centroid.y = str(pt.y())
-                break
+        ms = None
+        try:
+            ms = self.map_widget.session.project.subcatchments.value[fs['name']]
+        except:
+            ms = None
+        if ms:
+            ms.centroid.x = str(pt.x())
+            ms.centroid.y = str(pt.y())
+        else:
+            return
 
         # add centroid item
         c_item = None
@@ -1668,10 +1677,10 @@ class ModelLayersSWMM(ModelLayers):
         if not ms.outlet:
             return
         fc = None
-        for fc in self.subcentroids.getFeatures():
-            if ms.name == fc["sub_modelid"]:
-                break
-        if fc is None:
+        fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.name)
+        if fcs and len(fcs) > 0:
+            fc = fcs[0]
+        else:
             return
 
         isSub2Sub = 0 #False
@@ -1680,11 +1689,10 @@ class ModelLayersSWMM(ModelLayers):
         if self.project.subcatchments and self.project.subcatchments.value:
             outlet_sub = self.project.subcatchments.find_item(ms.outlet)
             if outlet_sub:
-                for outlet_sub_fc in self.subcentroids.getFeatures():
-                    if ms.outlet == outlet_sub_fc["sub_modelid"]:
-                        outlet_sub = self.project.subcentroids.find_item("subcentroid-" + ms.outlet)
-                        isSub2Sub = 1
-                        break
+                fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.outlet)
+                if fcs and len(fcs) > 0:
+                    outlet_sub = self.project.subcentroids.find_item("subcentroid-" + ms.outlet)
+                    isSub2Sub = 1
 
         link_item = SubLink()
         link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
@@ -1748,6 +1756,26 @@ class ModelLayersSWMM(ModelLayers):
             return self.sublinks
         else:
             return None
+
+    def create_spatial_index(self):
+        # Add new layers containing objects from this project
+        try:
+            self.junctions.dataProvider().createSpatialIndex()
+            self.conduits.dataProvider().createSpatialIndex()
+            self.subcatchments.dataProvider().createSpatialIndex()
+            self.subcentroids.dataProvider().createSpatialIndex()
+            self.sublinks.dataProvider().createSpatialIndex()
+            self.outfalls.dataProvider().createSpatialIndex()
+            self.dividers.dataProvider().createSpatialIndex()
+            self.storage.dataProvider().createSpatialIndex()
+            self.raingages.dataProvider().createSpatialIndex()
+            self.labels.dataProvider().createSpatialIndex()
+            self.pumps.dataProvider().createSpatialIndex()
+            self.orifices.dataProvider().createSpatialIndex()
+            self.outlets.dataProvider().createSpatialIndex()
+            self.weirs.dataProvider().createSpatialIndex()
+        except:
+            pass
 
 
 if __name__ == '__main__':

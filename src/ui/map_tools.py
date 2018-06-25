@@ -542,6 +542,8 @@ try:
             elif "STORAGE" in layer_name_upper or "RESERVOIR" in layer_name_upper:
                 #symbol_layer.setName(MapSymbol.rectangle.name)
                 symbol_layer = QgsSvgMarkerSymbolLayer(':/icons/svg/obj_storage.svg')
+            elif "LABEL" in layer_name_upper:
+                symbol_layer = QgsSvgMarkerSymbolLayer(':/icons/svg/obj_label.svg')
             elif "MAP" in layer_name_upper:
                 symbol_layer.setShape(QgsSimpleMarkerSymbolLayerBase.Hexagon)
             elif "CENTROID" in layer_name_upper:
@@ -556,9 +558,7 @@ try:
             if size < 1.0:
                 size = 4.0
             if do_labels:
-                # ToDO: figure out how to label a layer
                 pal_layer = QgsPalLayerSettings()
-                # pal_layer.readFromLayer(layer) #pyqgis3 removed
                 pal_layer.enabled = True
                 pal_layer.fontSizeInMapUnits = False
                 pal_layer.labelOffsetInMapUnits = False
@@ -568,9 +568,10 @@ try:
                 # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
                 if "LABELS" in layer_name_upper:
                     # size = coordinates[0].size
-                    size = 10.0
+                    # size = 10.0
                     # symbol_layer.setOutlineColor(QColor('transparent'))
-                    symbol_layer.setColor(QColor('transparent'))
+                    # symbol_layer.setColor(QColor('transparent'))
+                    symbol_layer.setEnabled(False)
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size
@@ -578,7 +579,7 @@ try:
                 # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
                 labeler = QgsVectorLayerSimpleLabeling(pal_layer)
                 layer.setLabeling(labeler)
-                # pal_layer.writeToLayer(layer) #pyqgis3 removed
+                layer.setLabelsEnabled(True)
 
             symbol_layer.setSize(size)
             symbol.appendSymbolLayer(symbol_layer)
@@ -2712,7 +2713,7 @@ try:
             self.label_by_value = None
 
         def createContextMenu(self):
-            if not self.view.currentLayer():
+            if not self.view.currentLayer().isValid():
                 return None
             m = QMenu()
             # m.addAction("Show Extent", self.showExtent)
@@ -2825,13 +2826,17 @@ try:
             # print "label layer by " + attribute
             lyr = self.view.currentLayer()
             if lyr and isinstance(lyr, QgsVectorLayer):
-                pal_layer = QgsPalLayerSettings.fromLayer(lyr)
+                pal_layer = QgsPalLayerSettings()
                 if attribute.lower() in ('name', 'value'):
                     pal_layer.fieldName = attribute.lower()
                     pal_layer.enabled = True
+                    labeler = QgsVectorLayerSimpleLabeling(pal_layer)
+                    lyr.setLabeling(labeler)
+                    lyr.setLabelsEnabled(True)
                 else:
                     pal_layer.enabled = False
-                pal_layer.writeToLayer(lyr)
+                    lyr.setLabeling(None)
+                    lyr.setLabelsEnabled(False)
                 lyr.triggerRepaint()
             self.view.setCurrentLayer(None)
 

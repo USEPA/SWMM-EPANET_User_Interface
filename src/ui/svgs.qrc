@@ -9,5 +9,6 @@
         <file>icons/svg/obj_pump.svg</file>
         <file>icons/svg/obj_outlet.svg</file>
         <file>icons/svg/obj_storage.svg</file>
+        <file>icons/svg/obj_label.svg</file>
     </qresource>
 </RCC>

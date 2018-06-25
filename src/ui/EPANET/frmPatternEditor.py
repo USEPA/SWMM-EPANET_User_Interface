@@ -36,7 +36,9 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
         for point in pattern.multipliers:
             point_count += 1
             led = QtGui.QLineEdit(str(point))
-            self.tblMult.setItem(0,point_count,QtGui.QTableWidgetItem(led.text()))
+            if point_count == self.tblMult.columnCount():
+                self.tblMult.insertColumn(self.tblMult.columnCount()+1)
+            self.tblMult.setItem(0,point_count, QtGui.QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
         # TODO: IF pattern id changed, ask about replacing all occurrences
@@ -83,3 +85,11 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            if self.tblMult.currentColumn() + 1 == self.tblMult.columnCount():
+                self.tblMult.insertColumn(self.tblMult.columnCount())
+
+
+

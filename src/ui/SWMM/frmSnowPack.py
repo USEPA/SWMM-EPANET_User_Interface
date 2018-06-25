@@ -1,17 +1,18 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.SWMM.frmSnowPackDesigner import Ui_frmSnowPack
 from core.swmm.hydrology.snowpack import SnowPack
 
 
-class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
+class frmSnowPack(QMainWindow, Ui_frmSnowPack):
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/snowpackparameterseditor.htm"
         # TODO: include help topic for snow removal (on separate tab?)
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.snowpacks
@@ -31,48 +32,48 @@ class frmSnowPack(QtGui.QMainWindow, Ui_frmSnowPack):
             self.editing_item = pack
             self.txtSnow.setText(pack.name)
 
-            led = QtGui.QLineEdit(str(pack.plowable_minimum_melt_coefficient))
-            self.tblPack.setItem(0,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.plowable_maximum_melt_coefficient))
-            self.tblPack.setItem(1,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.plowable_base_temperature))
-            self.tblPack.setItem(2,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.plowable_fraction_free_water_capacity))
-            self.tblPack.setItem(3,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.plowable_initial_snow_depth))
-            self.tblPack.setItem(4,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.plowable_initial_free_water))
-            self.tblPack.setItem(5,0,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_minimum_melt_coefficient))
+            self.tblPack.setItem(0,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_maximum_melt_coefficient))
+            self.tblPack.setItem(1,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_base_temperature))
+            self.tblPack.setItem(2,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_fraction_free_water_capacity))
+            self.tblPack.setItem(3,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_initial_snow_depth))
+            self.tblPack.setItem(4,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.plowable_initial_free_water))
+            self.tblPack.setItem(5,0,QTableWidgetItem(led.text()))
 
-            led = QtGui.QLineEdit(str(pack.impervious_minimum_melt_coefficient))
-            self.tblPack.setItem(0,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_maximum_melt_coefficient))
-            self.tblPack.setItem(1,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_base_temperature))
-            self.tblPack.setItem(2,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_fraction_free_water_capacity))
-            self.tblPack.setItem(3,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_initial_snow_depth))
-            self.tblPack.setItem(4,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_initial_free_water))
-            self.tblPack.setItem(5,1,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.impervious_depth_100_cover))
-            self.tblPack.setItem(6,1,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_minimum_melt_coefficient))
+            self.tblPack.setItem(0,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_maximum_melt_coefficient))
+            self.tblPack.setItem(1,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_base_temperature))
+            self.tblPack.setItem(2,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_fraction_free_water_capacity))
+            self.tblPack.setItem(3,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_initial_snow_depth))
+            self.tblPack.setItem(4,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_initial_free_water))
+            self.tblPack.setItem(5,1,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.impervious_depth_100_cover))
+            self.tblPack.setItem(6,1,QTableWidgetItem(led.text()))
 
-            led = QtGui.QLineEdit(str(pack.pervious_minimum_melt_coefficient))
-            self.tblPack.setItem(0,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_maximum_melt_coefficient))
-            self.tblPack.setItem(1,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_base_temperature))
-            self.tblPack.setItem(2,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_fraction_free_water_capacity))
-            self.tblPack.setItem(3,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_initial_snow_depth))
-            self.tblPack.setItem(4,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_initial_free_water))
-            self.tblPack.setItem(5,2,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(pack.pervious_depth_100_cover))
-            self.tblPack.setItem(6,2,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_minimum_melt_coefficient))
+            self.tblPack.setItem(0,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_maximum_melt_coefficient))
+            self.tblPack.setItem(1,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_base_temperature))
+            self.tblPack.setItem(2,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_fraction_free_water_capacity))
+            self.tblPack.setItem(3,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_initial_snow_depth))
+            self.tblPack.setItem(4,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_initial_free_water))
+            self.tblPack.setItem(5,2,QTableWidgetItem(led.text()))
+            led = QLineEdit(str(pack.pervious_depth_100_cover))
+            self.tblPack.setItem(6,2,QTableWidgetItem(led.text()))
 
             self.txtFraction.setText(pack.plowable_fraction_impervious_area)
 

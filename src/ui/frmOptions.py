@@ -1,15 +1,16 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QDialog, QTreeWidgetItem, QComboBox
 from frmOptionsDesigner import Ui_diagOptions
 
 
-class frmOptions(QtGui.QDialog):
+class frmOptions(QDialog):
     def __init__(self, main_form=None, *args):
         self._main_form = main_form
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.ui = Ui_diagOptions()
         self.ui.setupUi(self)
         self.options = args[0]
-        # QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("rejected()"), self.btnBox_Rejected)
+        # self.ui.btnBox.rejected.connect(self.btnBox_Rejected)
         self.ui.tableOptions.itemDoubleClicked.connect(self.itemDoubleClicked)
         self.ui.tableOptions.itemChanged.connect(self.itemChanged)
         self.setupOptions()
@@ -24,7 +25,7 @@ class frmOptions(QtGui.QDialog):
         self.add_child(p, 'exponent', self.options.emitter_exponent)
 
     def add_root(self, name, data):
-        itm = QtGui.QTreeWidgetItem(self.ui.tableOptions, [name])
+        itm = QTreeWidgetItem(self.ui.tableOptions, [name])
         itm.setFirstColumnSpanned(False)
         itm.setText(0, name)
         itm.setText(1, data)
@@ -34,7 +35,7 @@ class frmOptions(QtGui.QDialog):
         return itm
 
     def add_child(self, p_itm, name, data):
-        itm = QtGui.QTreeWidgetItem(p_itm, [name])
+        itm = QTreeWidgetItem(p_itm, [name])
         itm.setFirstColumnSpanned(False)
         itm.setText(0, name)
         itm.setText(1, str(data))
@@ -64,14 +65,14 @@ class frmOptions(QtGui.QDialog):
             return False
 
 
-class ComboBoxOptionItem(QtGui.QComboBox):
+class ComboBoxOptionItem(QComboBox):
     def __init__(self, parent_control=None, *args):
-        QtGui.QComboBox.__init__(parent_control)
-        #self.item = QtGui.QTreeWidgetItem()
+        QComboBox.__init__(parent_control)
+        #self.item = QTreeWidgetItem()
         #self.column = 1
         self.item = args[0] #assume passing in a QTreeWidgetItem
         self.column = args[1]
-        QtCore.QObject.connect(self, QtCore.SIGNAL('currentIndexChanged(int)'), self.change_item)
+        self.currentIndexChanged.connect(self.change_item)
 
     def change_item(self, value):
         self.item.setText(self.column, self.currentText())

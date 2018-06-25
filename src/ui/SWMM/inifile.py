@@ -1,5 +1,5 @@
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QSettings
+from PyQt5.Qt import Qt
+from PyQt5.Qt import QSettings
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration

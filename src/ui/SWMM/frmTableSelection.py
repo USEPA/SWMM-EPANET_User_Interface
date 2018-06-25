@@ -1,27 +1,28 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QAbstractItemView, QMessageBox
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
 from ui.SWMM.frmTableSelectionDesigner import Ui_frmTableSelection
 from ui.frmGenericListOutput import frmGenericListOutput
 
 
-class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
+class frmTableSelection(QMainWindow, Ui_frmTableSelection):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/tablebyobjectdialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
 
         # self.set_from(parent.project)
         self._main_form = main_form
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
         self.cboObject.currentIndexChanged.connect(self.cboObject_currentIndexChanged)
         self.cboObject.setCurrentIndex(0)
-        self.lstNodes.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
-        self.lstVariables.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.lstNodes.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.lstVariables.setSelectionMode(QAbstractItemView.MultiSelection)
 
     def set_from(self, project, output):
         self.project = project
@@ -37,9 +38,9 @@ class frmTableSelection(QtGui.QMainWindow, Ui_frmTableSelection):
     def cmdOK_Clicked(self):
         selected_locations = [str(location.data()) for location in self.lstNodes.selectedIndexes()]
         if not selected_locations:
-            QtGui.QMessageBox.information(None, "Table",
+            QMessageBox.information(None, "Table",
                                           "No locations are selected.",
-                                          QtGui.QMessageBox.Ok)
+                                          QMessageBox.Ok)
             return
         object_label = self.cboObject.currentText()
         start_index = self.cboStart.currentIndex()

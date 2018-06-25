@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from core.swmm.hydraulics.node import DirectInflow, DirectInflowType, RDIInflow, DryWeatherInflow
 from core.swmm.quality import ConcentrationUnitLabels
@@ -9,35 +10,35 @@ from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 
-class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
+class frmInflows(QMainWindow, Ui_frmInflows):
 
     def __init__(self, main_form, node_name):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/directinfloweditor.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.tabInflows.currentChanged.connect(self.tabInflows_currentTabChanged)
         self.cboConstituent.currentIndexChanged.connect(self.cboConstituent_currentIndexChanged)
-        QtCore.QObject.connect(self.btnBaseline, QtCore.SIGNAL("clicked()"), self.btnBaseline_Clicked)
-        QtCore.QObject.connect(self.btnTimeseriesDelete, QtCore.SIGNAL("clicked()"), self.btnTimeseriesDelete_Clicked)
-        QtCore.QObject.connect(self.btnPatternDelete, QtCore.SIGNAL("clicked()"), self.btnPatternDelete_Clicked)
-        QtCore.QObject.connect(self.btnTimeseries, QtCore.SIGNAL("clicked()"), self.btnTimeseries_Clicked)
-        QtCore.QObject.connect(self.btnPattern, QtCore.SIGNAL("clicked()"), self.btnPattern_Clicked)
+        self.btnBaseline.clicked.connect(self.btnBaseline_Clicked)
+        self.btnTimeseriesDelete.clicked.connect(self.btnTimeseriesDelete_Clicked)
+        self.btnPatternDelete.clicked.connect(self.btnPatternDelete_Clicked)
+        self.btnTimeseries.clicked.connect(self.btnTimeseries_Clicked)
+        self.btnPattern.clicked.connect(self.btnPattern_Clicked)
         self.cboDryConstituent.currentIndexChanged.connect(self.cboDryConstituent_currentIndexChanged)
-        QtCore.QObject.connect(self.btnAverage, QtCore.SIGNAL("clicked()"), self.btnAverage_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern1, QtCore.SIGNAL("clicked()"), self.btnDryPattern1_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern2, QtCore.SIGNAL("clicked()"), self.btnDryPattern2_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern3, QtCore.SIGNAL("clicked()"), self.btnDryPattern3_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern4, QtCore.SIGNAL("clicked()"), self.btnDryPattern4_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern5, QtCore.SIGNAL("clicked()"), self.btnDryPattern5_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern6, QtCore.SIGNAL("clicked()"), self.btnDryPattern6_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern7, QtCore.SIGNAL("clicked()"), self.btnDryPattern7_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern8, QtCore.SIGNAL("clicked()"), self.btnDryPattern8_Clicked)
-        QtCore.QObject.connect(self.btnUnitHydro1, QtCore.SIGNAL("clicked()"), self.btnUnitHydro1_Clicked)
-        QtCore.QObject.connect(self.btnUniHydro2, QtCore.SIGNAL("clicked()"), self.btnUniHydro2_Clicked)
+        self.btnAverage.clicked.connect(self.btnAverage_Clicked)
+        self.btnDryPattern1.clicked.connect(self.btnDryPattern1_Clicked)
+        self.btnDryPattern2.clicked.connect(self.btnDryPattern2_Clicked)
+        self.btnDryPattern3.clicked.connect(self.btnDryPattern3_Clicked)
+        self.btnDryPattern4.clicked.connect(self.btnDryPattern4_Clicked)
+        self.btnDryPattern5.clicked.connect(self.btnDryPattern5_Clicked)
+        self.btnDryPattern6.clicked.connect(self.btnDryPattern6_Clicked)
+        self.btnDryPattern7.clicked.connect(self.btnDryPattern7_Clicked)
+        self.btnDryPattern8.clicked.connect(self.btnDryPattern8_Clicked)
+        self.btnUnitHydro1.clicked.connect(self.btnUnitHydro1_Clicked)
+        self.btnUniHydro2.clicked.connect(self.btnUniHydro2_Clicked)
         self.node_name = node_name
         self._main_form = main_form
         self.project = main_form.project

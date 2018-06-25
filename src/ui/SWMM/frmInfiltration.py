@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QLabel, QTableWidgetItem
 from ui.help import HelpHandler
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 from ui.SWMM.frmInfiltrationDesigner import Ui_frmInfiltrationEditor
@@ -13,9 +14,9 @@ from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from ui.model_utility import ParseData
 
 
-class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
+class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
     def __init__(self, parent, edit_these, new_item, title, **kwargs):
-        QtGui.QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
         self.helper = HelpHandler(self)
         option_section = parent.project.find_section('OPTIONS')
         if option_section.infiltration=="HORTON" or option_section.infiltration=="MODIFIED_HORTON":
@@ -26,13 +27,12 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             self.help_topic = "swmm/src/src/curvenumberinfiltrationpara.htm"
         self.setupUi(self)
         self.setWindowTitle(title)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.cboInfilModel, QtCore.SIGNAL("currentIndexChanged(int)"),
-                               self.cboInfilModel_currentIndexChanged)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cboInfilModel.currentIndexChanged.connect(self.cboInfilModel_currentIndexChanged)
 
         self.defaults = None
-        if kwargs.has_key("defaults"):
+        if "defaults" in kwargs:
             self.defaults = kwargs["defaults"]
         enum_val = E_InfilModel.HORTON
         if self.defaults is not None:
@@ -67,13 +67,11 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
         set_combo_items(type(enum_val), self.cboInfilModel)
         set_combo(self.cboInfilModel, enum_val)
 
-        self.corner_label = QtGui.QLabel("Property", self.tblGeneric)
+        self.corner_label = QLabel("Property", self.tblGeneric)
         self.corner_label.setAlignment(QtCore.Qt.AlignCenter)
         self.corner_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        QtCore.QObject.connect(self.tblGeneric.verticalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
-        QtCore.QObject.connect(self.tblGeneric.horizontalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        self.tblGeneric.verticalHeader().geometriesChanged.connect(self.resizeCorner)
+        self.tblGeneric.horizontalHeader().geometriesChanged.connect(self.resizeCorner)
 
     def cboInfilModel_currentIndexChanged(self, currentIndex):
         #if self.infil_model is None: return
@@ -109,27 +107,27 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                 val = self.defaults.infil_model_horton.default_max_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.max_rate
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "min" in vtitle and "infil" in vtitle:
                 val = self.defaults.infil_model_horton.default_min_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.min_rate
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "decay" in vtitle:
                 val = self.defaults.infil_model_horton.default_decay()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.decay
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "dry" in vtitle:
                 val = self.defaults.infil_model_horton.default_dry_time()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.dry_time
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "max" in vtitle and "volume" in vtitle:
                 val = self.defaults.infil_model_horton.default_max_volume()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.max_volume
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
 
     def set_greenampt(self):
         #mtype = self.defaults.infil_model_ga.model_type()
@@ -149,17 +147,17 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
                 val = self.defaults.infil_model_ga.default_suction()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.suction
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "conduct" in vtitle:
                 val = self.defaults.infil_model_ga.default_conductivity()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.hydraulic_conductivity
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
             elif "deficit" in vtitle:
                 val = self.defaults.infil_model_ga.default_init_deficit()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.initial_moisture_deficit
-                self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
 
     def set_CN(self):
         props = []
@@ -178,15 +176,15 @@ class frmInfiltration(QtGui.QMainWindow, Ui_frmInfiltrationEditor):
             if "curve" in vtitle:
                 val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.curve_number)
                 if val_is_good:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_CN())))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_CN())))
             elif "dry" in vtitle:
                 val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.dry_days)
                 if val_is_good:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(val)))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_dry_time())))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_dry_time())))
 
     def resizeCorner(self):
         self.corner_label.setGeometry(0, 0, self.tblGeneric.verticalHeader().width(),

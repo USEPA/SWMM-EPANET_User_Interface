@@ -18,10 +18,11 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 
-from qgis.gui import QgsProjectionSelector
+from qgis.gui import QgsProjectionSelectionDialog
 
 
 class SelectCrsDlg(QDialog):
@@ -30,7 +31,7 @@ class SelectCrsDlg(QDialog):
         self.setWindowTitle(title)
 
         layout = QVBoxLayout()
-        self.selector = QgsProjectionSelector(self)
+        self.selector = QgsProjectionSelectionDialog(self)
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
 
         layout.addWidget(self.selector)

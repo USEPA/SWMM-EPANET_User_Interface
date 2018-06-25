@@ -1,7 +1,7 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
-from PyQt4.QtGui import QMessageBox
-import matplotlib.pyplot as plt
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QAbstractItemView
+# import matplotlib.pyplot as plt
 from core.epanet.reports import Reports
 from ui.convenience import all_list_items, selected_list_items
 from ui.model_utility import transl8
@@ -9,31 +9,30 @@ from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import OutputObject, ENR_node_type, ENR_link_type
 from core.graph import EPANET as graphEPANET
 
-class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
+class frmGraph(QMainWindow, Ui_frmGraph):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Graph_Se.htm"
         self.setupUi(self)
         self.cmdAdd.setVisible(False)
         self.cmdDelete.setVisible(False)
         self.cmdUp.setVisible(False)
         self.cmdDown.setVisible(False)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.rbnNodes, QtCore.SIGNAL("clicked()"), self.rbnNodes_Clicked)
-        QtCore.QObject.connect(self.rbnLinks, QtCore.SIGNAL("clicked()"), self.rbnLinks_Clicked)
-
-        QtCore.QObject.connect(self.rbnTime, QtCore.SIGNAL("clicked()"), self.rbnTime_Clicked)
-        QtCore.QObject.connect(self.rbnProfile, QtCore.SIGNAL("clicked()"), self.rbnProfile_Clicked)
-        QtCore.QObject.connect(self.rbnContour, QtCore.SIGNAL("clicked()"), self.rbnContour_Clicked)
-        QtCore.QObject.connect(self.rbnFrequency, QtCore.SIGNAL("clicked()"), self.rbnFrequency_Clicked)
-        QtCore.QObject.connect(self.rbnSystem, QtCore.SIGNAL("clicked()"), self.rbnSystem_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
+        self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
+        self.rbnTime.clicked.connect(self.rbnTime_Clicked)
+        self.rbnProfile.clicked.connect(self.rbnProfile_Clicked)
+        self.rbnContour.clicked.connect(self.rbnContour_Clicked)
+        self.rbnFrequency.clicked.connect(self.rbnFrequency_Clicked)
+        self.rbnSystem.clicked.connect(self.rbnSystem_Clicked)
 
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
 
-        self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        QtCore.QObject.connect(self.lstToGraph, QtCore.SIGNAL("itemSelectionChanged()"), self.select_on_map)
+        self.lstToGraph.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstToGraph.itemSelectionChanged.connect(self.select_on_map)
         self._main_form = main_form
         self.onObjectSelected = self._main_form.objectsSelected
         self.onObjectSelected.connect(self.set_selected_object)

@@ -2,7 +2,7 @@
     Handle "Help" keypress and open help viewer to the correct topic.
 """
 import os, sys
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt5 import Qt, QtCore, QtGui
 
 
 class HelpHandler(QtCore.QObject):
@@ -45,7 +45,7 @@ class HelpHandler(QtCore.QObject):
                 else:  # Linux
                     assistant_executable_full_path += "/assistant"
 
-        print "HelpHandler.help_assistant_executable = " + assistant_executable_full_path
+        print ("HelpHandler.help_assistant_executable = " + assistant_executable_full_path)
         HelpHandler.help_assistant_executable = assistant_executable_full_path
 
         if not os.path.isfile(help_filename):
@@ -60,7 +60,7 @@ class HelpHandler(QtCore.QObject):
             if search_dir:
                 help_filename = os.path.join(search_dir, help_file_name_only)
 
-        print "HelpHandler.help_assistant_arguments[1] = " + help_filename
+        print ("HelpHandler.help_assistant_arguments[1] = " + help_filename)
         HelpHandler.help_assistant_arguments[1] = help_filename
 
     def __init__(self, listen_here_for_help_key, help_topic=None):

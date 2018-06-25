@@ -1,15 +1,16 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAbstractItemView
 from ui.SWMM.frmProfilePlotDesigner import Ui_frmProfilePlot
 from ui.help import HelpHandler
 import core.swmm.hydraulics.node
 
 
-class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
+class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
     MAGIC = "SWMM_PROFILE_GRAPH_SPEC:\n"
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/profileplotoptionsdialog.htm"
         self._main_form = main_form
@@ -17,11 +18,11 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         self.cmdFind.setEnabled(False)  # TODO: Enable when functionality is ready
         self.cmdSave.setText("Copy")
         self.cmdUse.setText("Paste")
-        QtCore.QObject.connect(self.cmdSave, QtCore.SIGNAL("clicked()"), self.cmdSave_Clicked)
-        QtCore.QObject.connect(self.cmdUse, QtCore.SIGNAL("clicked()"), self.cmdUse_Clicked)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.cmdFind, QtCore.SIGNAL("clicked()"), self.cmdFind_Clicked)
+        self.cmdSave.clicked.connect(self.cmdSave_Clicked)
+        self.cmdUse.clicked.connect(self.cmdUse_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cmdFind.clicked.connect(self.cmdFind_Clicked)
 
     def set_from(self, project, output):
         self.project = project
@@ -52,23 +53,23 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
 
         current_node = start_node
         counter = 0
-        while current_node <> end_node and counter < 1000:
+        while current_node != end_node and counter < 1000:
             counter += 1
             for link_group in self.project.links_groups():
                 if link_group and link_group.value:
                     for link in link_group.value:
-                        if link.inlet_node == current_node and current_node <> end_node:
+                        if link.inlet_node == current_node and current_node != end_node:
                             self.lstData.addItem(link.name)
                             current_node = link.outlet_node
 
     def cmdSave_Clicked(self):
-        cb = QtGui.QApplication.clipboard()
+        cb = QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(self.get_text(), mode=cb.Clipboard)
 
     def cmdUse_Clicked(self):
         try:
-            self.set_from_text(QtGui.QApplication.clipboard().text())
+            self.set_from_text(QApplication.clipboard().text())
         except Exception as ex:
             print(str(ex))
             self.lstData.clear()
@@ -88,7 +89,7 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         fig_output = 1
 
         # Pass Ordered Links
-        self.lstData.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.lstData.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.lstData.selectAll()
         LKsToPlot = []
         for selected_item in self.lstData.selectedItems():

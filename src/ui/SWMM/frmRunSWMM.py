@@ -1,7 +1,8 @@
 import os
 import traceback
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMessageBox
 import Externals.swmm.model.swmm5 as pyswmm
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
@@ -171,7 +172,7 @@ class frmRunSWMM(frmRunSimulation):
             self.set_status(RunStatus.rsError)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
-            QtGui.QMessageBox.information(None, "SWMM", msg, QtGui.QMessageBox.Ok)
+            QMessageBox.information(None, "SWMM", msg, QMessageBox.Ok)
             self.set_status(RunStatus.rsShutdown)
         finally:
             try:

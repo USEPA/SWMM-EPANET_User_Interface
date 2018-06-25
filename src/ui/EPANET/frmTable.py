@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 
 from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type, ENR_link_type
 from core.epanet.reports import Reports
@@ -8,10 +9,10 @@ from ui.frmGenericListOutput import frmGenericListOutput
 from ui.model_utility import transl8, process_events
 
 
-class frmTable(QtGui.QMainWindow, Ui_frmTable):
+class frmTable(QMainWindow, Ui_frmTable):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Table_Op.htm"
         self.setupUi(self)
         self.tabWidget.setCurrentIndex(0)
@@ -168,7 +169,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
             values = this_item.get_all_attributes_at_time(self.output, time_index)
             for attribute in attributes:
                 val_str = attribute.str(values[attribute.index])
-                table_cell_widget = QtGui.QTableWidgetItem(val_str)
+                table_cell_widget = QTableWidgetItem(val_str)
                 table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                 table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                 tbl.setItem(row, col, table_cell_widget)
@@ -198,7 +199,7 @@ class frmTable(QtGui.QMainWindow, Ui_frmTable):
                 values = item.get_all_attributes_at_time(self.output, time_index)
                 for attribute in attributes:
                     val_str = attribute.str(values[attribute.index])
-                    table_cell_widget = QtGui.QTableWidgetItem(val_str)
+                    table_cell_widget = QTableWidgetItem(val_str)
                     table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
                     table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                     tbl.setItem(row, col, table_cell_widget)

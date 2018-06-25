@@ -1,5 +1,5 @@
-from PyQt4 import QtGui, QtCore, Qt
-from PyQt4.QtGui import QMessageBox
+from PyQt5 import QtGui, QtCore, Qt
+from PyQt5.QtWidgets import QMessageBox, QDialog
 from ui.help import HelpHandler
 from ui.frmTranslateCoordinatesDesigner import Ui_frmTranslateCoordinatesDesigner
 from ui.model_utility import ParseData
@@ -8,17 +8,17 @@ from ui.selectCrsDlg import SelectCrsDlg
 import os, sys
 
 
-class frmTranslateCoordinates(QtGui.QDialog):
+class frmTranslateCoordinates(QDialog):
     def __init__(self, main_form, *args):
-        QtGui.QDialog.__init__(self, main_form)
+        QDialog.__init__(self, main_form)
         #self.helper = HelpHandler(self)
         #self.help_topic = "epanet/src/src/Register.htm"
         self.ui = Ui_frmTranslateCoordinatesDesigner()
         self.ui.setupUi(self)
         self.setModal(0)
-        # QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        # QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked()"), self.toolButton_Clicked)
+        # self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        # self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.toolButton.clicked.connect(self.toolButton_Clicked)
         self.ui.btnTranslate.clicked.connect(self.translate)
         self.ui.btnCancel.clicked.connect(self.cancel)
         self.ui.btnSelectCRS.clicked.connect(self.set_dst_crs)
@@ -225,7 +225,7 @@ class frmTranslateCoordinates(QtGui.QDialog):
 
     def translate(self):
         if not self.check_coords():
-            QtGui.QMessageBox.information(None, "Bad Coordinates", "Invalid coordinates.")
+            QMessageBox.information(None, "Bad Coordinates", "Invalid coordinates.")
             return
 
         if self.ui.rdoUnitFeet.isChecked():
@@ -264,7 +264,7 @@ class frmTranslateCoordinates(QtGui.QDialog):
 
             self.accept()
         except Exception as e:
-            QtGui.QMessageBox.information(None, "Translate failed", str(e))
+            QMessageBox.information(None, "Translate failed", str(e))
             return
 
     def cancel(self):

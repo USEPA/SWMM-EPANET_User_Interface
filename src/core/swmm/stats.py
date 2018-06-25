@@ -202,7 +202,7 @@ class Uutil:
             Exponent = 10 ** OrderOfMagnitude
             R = X / Exponent
             #assume ScaleValues is sorted in ascending order
-            for I in xrange(0, len(ScaleValues)):
+            for I in range(0, len(ScaleValues)):
                 if R <= ScaleValues[I]:
                     return ScaleValues[I] * Exponent
             return Exponent
@@ -344,7 +344,7 @@ class StatisticUtility(object):
         #theObject = Uoutput.GetObject(Stats.ObjectType, Stats.ObjectID)
 
         # Examine each reporting period
-        for T in xrange(0, output.num_periods): #range last element doesn't include the last number
+        for T in range(0, output.num_periods): #range last element doesn't include the last number
             # Get the current and next reporting dates
             #Date1 = aStats.Tser.index[T]
             #Date2 = aStats.Tser.index[T + 1]
@@ -674,7 +674,7 @@ class StatisticUtility(object):
         if N > 0:
             E1 = aResults.EventList[N - 1]
             E1.Rank = N
-            for I in xrange(N - 2, -1, -1):
+            for I in range(N - 2, -1, -1):
                 E2 = aResults.EventList[I]
                 if E1.Value == E2.Value:
                     E2.Rank = E1.Rank
@@ -734,7 +734,7 @@ class StatisticUtility(object):
         aResults.EventFreq = self.EventPeriods * 1.0 / (self.TotalPeriods * 1.0)
 
         # Find sums of 1st three moments
-        for J in xrange(0, N):
+        for J in range(0, N):
             E = aResults.EventList[J]
             X = E.Value
             A[1] += X ** 1

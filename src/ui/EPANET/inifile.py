@@ -1,6 +1,6 @@
 from enum import Enum
 from ui.inifile import ini_setting
-from PyQt4.QtCore import QSettings
+from PyQt5.QtCore import QSettings
 import core.epanet.options.hydraulics as hyd
 
 class EPROPERTY_JUNCTION(Enum):
@@ -75,7 +75,7 @@ class DefaultsEPANET(ini_setting):
         self.parameters_keys = ["Flow Units", "Headloss Formula", "Specific Gravity", "Relative Viscosity",
                            "Maximum Trials", "Accuracy", "If Unbalanced", "Default Pattern", "Demand Multiplier",
                            "Emitter Exponent", "Status Report", "Check Frequency", "Max Check", "Damp Limit"]
-        self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "Continue", 1, 1.0, 0.5, "Yes",
+        self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "CONTINUE", 1, 1.0, 0.5, "Yes",
                                       2, 10, 0.0]
 
         self.model_object_prefix = {}

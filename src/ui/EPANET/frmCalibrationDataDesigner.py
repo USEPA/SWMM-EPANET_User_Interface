@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\EPANET\frmCalibrationDataDesigner.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created by: PyQt5 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -15,12 +16,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QApplication.translate(context, text, disambig)
 
 class Ui_frmCalibrationData(object):
     def setupUi(self, frmCalibrationData):
@@ -29,60 +30,60 @@ class Ui_frmCalibrationData(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         frmCalibrationData.setFont(font)
-        self.centralWidget = QtGui.QWidget(frmCalibrationData)
+        self.centralWidget = QWidget(frmCalibrationData)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralWidget)
-        self.verticalLayout_2.setMargin(11)
+        self.verticalLayout_2 = QVBoxLayout(self.centralWidget)
+        # self.verticalLayout_2.setMargin(11)
         self.verticalLayout_2.setSpacing(6)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.frame = QtGui.QFrame(self.centralWidget)
-        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame = QFrame(self.centralWidget)
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
         self.frame.setObjectName(_fromUtf8("frame"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.frame)
-        self.horizontalLayout_2.setMargin(11)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        # self.horizontalLayout_2.setMargin(11)
         self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.tableWidget = QtGui.QTableWidget(self.frame)
+        self.tableWidget = QTableWidget(self.frame)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setColumnCount(1)
         self.tableWidget.setRowCount(6)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(1, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(2, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(3, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(4, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(5, item)
-        item = QtGui.QTableWidgetItem()
+        item = QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(300)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(75)
         self.tableWidget.verticalHeader().setMinimumSectionSize(50)
         self.horizontalLayout_2.addWidget(self.tableWidget)
-        self.toolButton = QtGui.QToolButton(self.frame)
+        self.toolButton = QToolButton(self.frame)
         self.toolButton.setObjectName(_fromUtf8("toolButton"))
         self.horizontalLayout_2.addWidget(self.toolButton)
         self.verticalLayout_2.addWidget(self.frame)
-        self.fraOKCancel = QtGui.QFrame(self.centralWidget)
-        self.fraOKCancel.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraOKCancel = QFrame(self.centralWidget)
+        self.fraOKCancel.setFrameShape(QFrame.StyledPanel)
+        self.fraOKCancel.setFrameShadow(QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
-        self.horizontalLayout.setMargin(11)
+        self.horizontalLayout = QHBoxLayout(self.fraOKCancel)
+        # self.horizontalLayout.setMargin(11)
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QSpacerItem(338, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.cmdOK = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdOK = QPushButton(self.fraOKCancel)
         self.cmdOK.setObjectName(_fromUtf8("cmdOK"))
         self.horizontalLayout.addWidget(self.cmdOK)
-        self.cmdCancel = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdCancel = QPushButton(self.fraOKCancel)
         self.cmdCancel.setObjectName(_fromUtf8("cmdCancel"))
         self.horizontalLayout.addWidget(self.cmdCancel)
         self.verticalLayout_2.addWidget(self.fraOKCancel)

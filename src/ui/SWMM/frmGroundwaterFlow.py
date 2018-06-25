@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QComboBox
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 from ui.SWMM.frmGroundwaterFlowDesigner import Ui_frmGroundwaterFlow
 from ui.property_editor_backend import PropertyEditorBackend
@@ -9,9 +10,9 @@ from ui.SWMM.frmGroundwaterEquation import frmGroundwaterEquation
 from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
 
 
-class frmGroundwaterFlow(QtGui.QMainWindow, Ui_frmGroundwaterFlow):
+class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
     def __init__(self, main_form, edit_these, new_item, title):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/groundwaterfloweditordialog.htm"
         self._main_form = main_form
@@ -19,15 +20,15 @@ class frmGroundwaterFlow(QtGui.QMainWindow, Ui_frmGroundwaterFlow):
         self.refresh_column = -1
         self.setupUi(self)
         self.setWindowTitle(title)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, main_form, edit_these, new_item)
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for aquifers, show available aquifers
             aquifer_section = main_form.project.find_section("AQUIFERS")
             aquifer_list = aquifer_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in aquifer_list:

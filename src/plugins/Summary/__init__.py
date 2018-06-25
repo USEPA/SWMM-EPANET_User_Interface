@@ -2,7 +2,7 @@
 # import plugins.Summary.summarizeNodes
 # import plugins.Summary.summarizePressureHeads
 # import plugins.Summary.summarizeSubbasins
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtGui import QMessageBox
 
 plugin_name = "Summary"
 plugin_create_menu = True

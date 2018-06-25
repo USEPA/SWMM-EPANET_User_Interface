@@ -1,5 +1,5 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
 from core.swmm.hydraulics.node import Junction
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor

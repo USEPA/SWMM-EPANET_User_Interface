@@ -1,5 +1,7 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
 from core.swmm.timeseries import TimeSeries
 from ui.model_utility import ParseData
@@ -8,15 +10,15 @@ import pandas as pd
 from ui.frmPlotViewer import frmPlotViewer
 
 
-class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
+class frmTimeseries(QMainWindow, Ui_frmTimeseries):
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.btnFile, QtCore.SIGNAL("clicked()"), self.btnFile_Clicked)
-        QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnFile.clicked.connect(self.btnFile_Clicked)
+        self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.timeseries
@@ -51,12 +53,12 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                 point_count = -1
                 for value in timeseries.values:
                     point_count += 1
-                    led = QtGui.QLineEdit(str(timeseries.dates[point_count]))
-                    self.tblTime.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(timeseries.times[point_count]))
-                    self.tblTime.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(value))
-                    self.tblTime.setItem(point_count,2,QtGui.QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(timeseries.dates[point_count]))
+                    self.tblTime.setItem(point_count,0,QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(timeseries.times[point_count]))
+                    self.tblTime.setItem(point_count,1,QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(value))
+                    self.tblTime.setItem(point_count,2,QTableWidgetItem(led.text()))
 
     def GetData(self):
         """
@@ -157,7 +159,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         self.close()
 
     def btnFile_Clicked(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open a Time Series", '',
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open a Time Series", '',
                                                       "Time series files (*.DAT);;All files (*.*)")
         if file_name:
             self.txtExternalFile.setText(file_name)

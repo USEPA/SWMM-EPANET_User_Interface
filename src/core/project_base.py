@@ -2,7 +2,7 @@ import inspect
 import traceback
 from enum import Enum
 from core.indexed_list import IndexedList
-from utility import ParseData
+from .utility import ParseData
 
 
 class ProjectBase(object):
@@ -124,7 +124,9 @@ class Section(object):
             if type(old_value) == int:
                 if isinstance(attr_value, str):
                     attr_value = attr_value.replace(' ', '')
-                setattr(self, attr_name, int(attr_value))
+                val, val_is_good = ParseData.intTryParse(attr_value)
+                if val_is_good:
+                    setattr(self, attr_name, val)
             elif type(old_value) == float:
                 if isinstance(attr_value, str):
                     attr_value = attr_value.replace(' ', '')

@@ -1,21 +1,22 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QFileDialog
 from ui.help import HelpHandler
 from core.swmm.hydrology.lidcontrol import LIDType
 from ui.SWMM.frmLIDUsageDesigner import Ui_frmLIDUsage
 
 
-class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
+class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
 
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/lidusageeditor.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         self._main_form = main_form
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.cboLIDControl.currentIndexChanged.connect(self.cboLIDControl_currentIndexChanged)
         self.spxUnits.valueChanged.connect(self.spxUnits_valueChanged)
         self.txtArea.textChanged.connect(self.txtArea_textChanged)
@@ -108,15 +109,15 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
 
         if self.row_id >= 0:
             # editing an existing lid usage, put back
-            tblControls.setItem(self.row_id, 0, QtGui.QTableWidgetItem(str(lid_control)))
-            tblControls.setItem(self.row_id, 3, QtGui.QTableWidgetItem(str(percent_impervious_area_treated)))
-            tblControls.setItem(self.row_id, 4, QtGui.QTableWidgetItem(str(detailed_report_file)))
-            tblControls.setItem(self.row_id, 5, QtGui.QTableWidgetItem(str(number_replicate_units)))
-            tblControls.setItem(self.row_id, 6, QtGui.QTableWidgetItem(str(area_each_unit)))
-            tblControls.setItem(self.row_id, 7, QtGui.QTableWidgetItem(str(top_width_overland_flow_surface)))
-            tblControls.setItem(self.row_id, 8, QtGui.QTableWidgetItem(str(percent_initially_saturated)))
-            tblControls.setItem(self.row_id, 9, QtGui.QTableWidgetItem(str(send_outflow_pervious_area)))
-            tblControls.setItem(self.row_id, 10, QtGui.QTableWidgetItem(str(subcatchment_drains_to)))
+            tblControls.setItem(self.row_id, 0, QTableWidgetItem(str(lid_control)))
+            tblControls.setItem(self.row_id, 3, QTableWidgetItem(str(percent_impervious_area_treated)))
+            tblControls.setItem(self.row_id, 4, QTableWidgetItem(str(detailed_report_file)))
+            tblControls.setItem(self.row_id, 5, QTableWidgetItem(str(number_replicate_units)))
+            tblControls.setItem(self.row_id, 6, QTableWidgetItem(str(area_each_unit)))
+            tblControls.setItem(self.row_id, 7, QTableWidgetItem(str(top_width_overland_flow_surface)))
+            tblControls.setItem(self.row_id, 8, QTableWidgetItem(str(percent_initially_saturated)))
+            tblControls.setItem(self.row_id, 9, QTableWidgetItem(str(send_outflow_pervious_area)))
+            tblControls.setItem(self.row_id, 10, QTableWidgetItem(str(subcatchment_drains_to)))
 
             # recalculate area and lid name
             self._main_form.SetLongLIDName(lid_control, self.row_id)
@@ -186,7 +187,7 @@ class frmLIDUsage(QtGui.QMainWindow, Ui_frmLIDUsage):
         self.calculate_area()
 
     def btnFile_clicked(self):
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "LID Report File", '',
+        file_name = QFileDialog.getSaveFileName(self, "LID Report File", '',
                                                       "LID Report Files (*.txt);;All files (*.*)")
         if file_name:
             self.txtFile.setText(file_name)

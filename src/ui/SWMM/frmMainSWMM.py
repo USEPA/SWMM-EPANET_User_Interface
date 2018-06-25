@@ -5,8 +5,9 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 import webbrowser
 import traceback
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction, QMenu, QApplication
 from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
@@ -85,7 +86,7 @@ from core.swmm.labels import Label
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import SubLink
 
-from frmRunSWMM import frmRunSWMM
+from ui.SWMM.frmRunSWMM import frmRunSWMM
 
 import Externals.swmm.outputapi.SMOutputWrapper as SMO
 from core.indexed_list import IndexedList
@@ -336,90 +337,89 @@ class frmMainSWMM(frmMain):
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
 
-        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
-        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               lambda: self.open_translate_coord_dialog(None, None))
+        self.actionTranslate_Coordinates.triggered.connect(lambda: self.open_translate_coord_dialog(None, None))
 
-        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu = QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
-        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionStatus_ReportMenu.triggered.connect(self.report_status)
         self.actionProjStatus.triggered.connect(self.report_status)
 
-        self.actionSummary_ReportMenu = QtGui.QAction(self)
+        self.actionSummary_ReportMenu = QAction(self)
         self.actionSummary_ReportMenu.setObjectName(from_utf8("actionSummary_ReportMenu"))
         self.actionSummary_ReportMenu.setText(transl8("frmMain", "Summary", None))
         self.actionSummary_ReportMenu.setToolTip(transl8("frmMain", "Display Results Summary", None))
         self.menuReport.addAction(self.actionSummary_ReportMenu)
-        QtCore.QObject.connect(self.actionSummary_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_summary)
+        self.actionSummary_ReportMenu.triggered.connect(self.report_summary)
 
-        menu = QtGui.QMenu()
-        submenuGraph = QtGui.QMenu(self.menuReport)
+        menu = QMenu()
+        submenuGraph = QMenu(self.menuReport)
         submenuGraph.setTitle("Graph")
         self.menuReport.addMenu(submenuGraph)
 
-        self.actionGraph_ProfileMenu = QtGui.QAction(self)
+        self.actionGraph_ProfileMenu = QAction(self)
         self.actionGraph_ProfileMenu.setObjectName(from_utf8("actionGraph_ProfileMenu"))
         self.actionGraph_ProfileMenu.setText(transl8("frmMain", "Profile", None))
         self.actionGraph_ProfileMenu.setToolTip(transl8("frmMain", "Display Profile Plot", None))
         submenuGraph.addAction(self.actionGraph_ProfileMenu)
-        QtCore.QObject.connect(self.actionGraph_ProfileMenu, QtCore.SIGNAL('triggered()'), self.report_profile)
+        self.actionGraph_ProfileMenu.triggered.connect(self.report_profile)
         self.actionProjPlotProfile.triggered.connect(self.report_profile)
 
 
-        self.actionGraph_TimeSeriesMenu = QtGui.QAction(self)
+        self.actionGraph_TimeSeriesMenu = QAction(self)
         self.actionGraph_TimeSeriesMenu.setObjectName(from_utf8("actionGraph_TimeSeriesMenu"))
         self.actionGraph_TimeSeriesMenu.setText(transl8("frmMain", "Time Series", None))
         self.actionGraph_TimeSeriesMenu.setToolTip(transl8("frmMain", "Display Time Series Plot", None))
         submenuGraph.addAction(self.actionGraph_TimeSeriesMenu)
-        QtCore.QObject.connect(self.actionGraph_TimeSeriesMenu, QtCore.SIGNAL('triggered()'), self.report_timeseries)
+        self.actionGraph_TimeSeriesMenu.triggered.connect(self.report_timeseries)
         self.actionProjPlotTimeseries.triggered.connect(self.report_timeseries)
 
-        self.actionGraph_ScatterMenu = QtGui.QAction(self)
+        self.actionGraph_ScatterMenu = QAction(self)
         self.actionGraph_ScatterMenu.setObjectName(from_utf8("actionGraph_ScatterMenu"))
         self.actionGraph_ScatterMenu.setText(transl8("frmMain", "Scatter", None))
         self.actionGraph_ScatterMenu.setToolTip(transl8("frmMain", "Display Scatter Plot", None))
         submenuGraph.addAction(self.actionGraph_ScatterMenu)
-        QtCore.QObject.connect(self.actionGraph_ScatterMenu, QtCore.SIGNAL('triggered()'), self.report_scatter)
+        self.actionGraph_ScatterMenu.triggered.connect(self.report_scatter)
         self.actionProjPlotScatter.triggered.connect(self.report_scatter)
 
-        self.actionTable_VariableMenu = QtGui.QAction(self)
+        self.actionTable_VariableMenu = QAction(self)
         self.actionTable_VariableMenu.setObjectName(from_utf8("actionTable_VariableMenu"))
         self.actionTable_VariableMenu.setText(transl8("frmMain", "Table", None))
         self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table", None))
         self.menuReport.addAction(self.actionTable_VariableMenu)
-        QtCore.QObject.connect(self.actionTable_VariableMenu, QtCore.SIGNAL('triggered()'), self.report_variable)
+        self.actionTable_VariableMenu.triggered.connect(self.report_variable)
         self.actionProjTableTimeseries.triggered.connect(self.report_variable)
 
-        self.actionStatistics_ReportMenu = QtGui.QAction(self)
+        self.actionStatistics_ReportMenu = QAction(self)
         self.actionStatistics_ReportMenu.setObjectName(from_utf8("actionStatistics_ReportMenu"))
         self.actionStatistics_ReportMenu.setText(transl8("frmMain", "Statistics", None))
         self.actionStatistics_ReportMenu.setToolTip(transl8("frmMain", "Display Results Statistics", None))
         self.menuReport.addAction(self.actionStatistics_ReportMenu)
-        QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
+        self.actionStatistics_ReportMenu.triggered.connect(self.report_statistics)
         self.actionProjTableStatistics.triggered.connect(self.report_statistics)
 
         self.actionStdMapQuery.triggered.connect(self.map_query)
 
-        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu = QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
         self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
         self.menuHelp.addAction(self.Help_Topics_Menu)
-        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+        self.Help_Topics_Menu.triggered.connect(self.help_topics)
 
-        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu = QAction(self)
         self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
         self.Help_About_Menu.setText(transl8("frmMain", "About", None))
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About SWMM", None))
         self.menuHelp.addAction(self.Help_About_Menu)
-        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+        self.Help_About_Menu.triggered.connect(self.help_about)
 
         if self.map_widget:
             self.map_widget.applyLegend()
@@ -816,7 +816,7 @@ class frmMainSWMM(frmMain):
                             color_by[subcatchment.name] = values[index]
                             index += 1
                 if color_by:
-                    if self.map_widget.layer_styles.has_key(layer.id()) and \
+                    if layer.id() in self.map_widget.layer_styles and \
                             self.map_widget.validatedGraduatedSymbol(None,
                                                                      self.map_widget.layer_styles[layer.id()]):
                         self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
@@ -853,7 +853,7 @@ class frmMainSWMM(frmMain):
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                     self.map_widget.validatedGraduatedSymbol(None,
                                                                              self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
@@ -905,7 +905,7 @@ class frmMainSWMM(frmMain):
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_link_min,
@@ -960,7 +960,7 @@ class frmMainSWMM(frmMain):
         """
         unit_text = ""
         if obj_type == "subcatchment":
-            if self.output.subcatchments_units.has_key(selected_attribute):
+            if selected_attribute in self.output.subcatchments_units:
                 unit_text = self.output.subcatchments_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -973,7 +973,7 @@ class frmMainSWMM(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "node":
-            if self.output.nodes_units.has_key(selected_attribute):
+            if selected_attribute in self.output.nodes_units:
                 unit_text = self.output.nodes_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -986,7 +986,7 @@ class frmMainSWMM(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "link":
-            if self.output.links_units.has_key(selected_attribute):
+            if selected_attribute in self.output.links_units:
                 unit_text = self.output.links_units[selected_attribute]
             else:
                 if selected_attribute == "Length":
@@ -1027,7 +1027,7 @@ class frmMainSWMM(frmMain):
         return self.output
 
     def report_status(self):
-        print "report_status"
+        print ("report_status")
         if not os.path.isfile(self.status_file_name):
             prefix, extension = os.path.splitext(self.project.file_name)
             if os.path.isfile(prefix + self.status_suffix):
@@ -1149,7 +1149,7 @@ class frmMainSWMM(frmMain):
         if edit_name == self.tree_quality_Pollutants[0]:
             edit_these = []
             if self.project and self.project.pollutants:
-                if not isinstance(self.project.pollutants.value, basestring):
+                if not isinstance(self.project.pollutants.value, str):
                     if isinstance(self.project.pollutants.value, list):
                         edit_these.extend(self.project.pollutants.value)
                 if len(edit_these) == 0:
@@ -1162,7 +1162,7 @@ class frmMainSWMM(frmMain):
         elif edit_name == self.tree_MapLabels[0]:
             edit_these = []
             if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
+                if not isinstance(self.project.labels.value, str):
                     if isinstance(self.project.labels.value, list):
                         edit_these.extend(self.project.labels.value)
                 if len(edit_these) == 0:
@@ -1641,7 +1641,7 @@ class ModelLayersSWMM(ModelLayers):
 
         # add centroid item
         c_item = None
-        for obj_type, lyr_name in self.map_widget.session.section_types.iteritems():
+        for obj_type, lyr_name in self.map_widget.session.section_types.items():
             if lyr_name == "subcentroids":
                 c_item = obj_type()
                 c_item.x = str(pt.x())
@@ -1780,7 +1780,7 @@ class ModelLayersSWMM(ModelLayers):
 
 if __name__ == '__main__':
     print("QApplication")
-    application = QtGui.QApplication(sys.argv)
+    application = QApplication(sys.argv)
 
     print("internationalization")
     from ui.settings import internationalization

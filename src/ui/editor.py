@@ -1,16 +1,18 @@
 # Based on example code from https://github.com/goldsborough/Writer-Tutorial
 
 import os, sys
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QMessageBox
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog, QAction, QFontComboBox, QSpinBox
+from PyQt5.QtWidgets import QTextEdit, QDialog
+from PyQt5.QtGui import QIcon, QContextMenuEvent, QTextCursor
 
-ICON_FOLDER = "icons/editor/"
-MAX_RECENT_FILES = 8
+ICON_FOLDER_EDITOR = "icons/editor/"
+MAX_RECENT_FILES_EDITOR = 8
 
-class EditorWindow(QtGui.QMainWindow):
+class EditorWindow(QMainWindow):
     def __init__(self, parent=None, session=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
         self.file_name = ''
         self.saved_text = ''
         self.session = session
@@ -20,61 +22,61 @@ class EditorWindow(QtGui.QMainWindow):
 
     def initToolbar(self):
 
-        self.newAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "new.png")), "New", self)
+        self.newAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "new.png")), "New", self)
         self.newAction.setShortcut("Ctrl+N")
         self.newAction.setStatusTip("Create a new script from scratch.")
         self.newAction.triggered.connect(self.new)
 
-        self.runAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "play.png")), "Run", self)
+        self.runAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "play.png")), "Run", self)
         # self.playAction.setShortcut("Ctrl+N")
         self.runAction.setStatusTip("Run this script")
         self.runAction.triggered.connect(self.run)
 
-        self.openAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "open.png")), "Open file", self)
+        self.openAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "open.png")), "Open file", self)
         self.openAction.setStatusTip("Open existing script")
         self.openAction.setShortcut("Ctrl+O")
         self.openAction.triggered.connect(self.open)
 
-        self.saveAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "save.png")), "Save", self)
+        self.saveAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "save.png")), "Save", self)
         self.saveAction.setStatusTip("Save script")
         self.saveAction.setShortcut("Ctrl+S")
         self.saveAction.triggered.connect(self.save)
 
-        self.saveAsAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "save.png")), "Save As...", self)
+        self.saveAsAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "save.png")), "Save As...", self)
         self.saveAsAction.setStatusTip("Save script as...")
         self.saveAsAction.triggered.connect(self.save_as)
 
-        self.printAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "print.png")), "Print script", self)
+        self.printAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "print.png")), "Print script", self)
         self.printAction.setStatusTip("Print script")
         self.printAction.setShortcut("Ctrl+P")
         self.printAction.triggered.connect(self.printHandler)
 
-        self.previewAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "preview.png")), "Page view", self)
+        self.previewAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "preview.png")), "Page view", self)
         self.previewAction.setStatusTip("Preview page before printing")
         self.previewAction.setShortcut("Ctrl+Shift+P")
         self.previewAction.triggered.connect(self.preview)
 
-        self.cutAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "cut.png")), "Cut to clipboard", self)
+        self.cutAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "cut.png")), "Cut to clipboard", self)
         self.cutAction.setStatusTip("Delete and copy text to clipboard")
         self.cutAction.setShortcut("Ctrl+X")
         self.cutAction.triggered.connect(self.text.cut)
 
-        self.copyAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "copy.png")), "Copy to clipboard", self)
+        self.copyAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "copy.png")), "Copy to clipboard", self)
         self.copyAction.setStatusTip("Copy text to clipboard")
         self.copyAction.setShortcut("Ctrl+C")
         self.copyAction.triggered.connect(self.text.copy)
 
-        self.pasteAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "paste.png")), "Paste from clipboard", self)
+        self.pasteAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "paste.png")), "Paste from clipboard", self)
         self.pasteAction.setStatusTip("Paste text from clipboard")
         self.pasteAction.setShortcut("Ctrl+V")
         self.pasteAction.triggered.connect(self.text.paste)
 
-        self.undoAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "undo.png")), "Undo last action", self)
+        self.undoAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "undo.png")), "Undo last action", self)
         self.undoAction.setStatusTip("Undo last action")
         self.undoAction.setShortcut("Ctrl+Z")
         self.undoAction.triggered.connect(self.text.undo)
 
-        self.redoAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "redo.png")), "Redo last undone thing", self)
+        self.redoAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "redo.png")), "Redo last undone thing", self)
         self.redoAction.setStatusTip("Redo last undone thing")
         self.redoAction.setShortcut("Ctrl+Y")
         self.redoAction.triggered.connect(self.text.redo)
@@ -115,10 +117,10 @@ class EditorWindow(QtGui.QMainWindow):
         self.text.setFont(font)
 
     def initFormatbar(self):
-        self.fontBox = QtGui.QFontComboBox(self)
+        self.fontBox = QFontComboBox(self)
         self.fontBox.currentFontChanged.connect(self.set_font)
 
-        self.fontSize = QtGui.QSpinBox(self)
+        self.fontSize = QSpinBox(self)
         self.fontSize.setSuffix(" pt")        # Will display " pt" after each value
         self.fontSize.valueChanged.connect(self.set_font_size)
         try:
@@ -128,11 +130,11 @@ class EditorWindow(QtGui.QMainWindow):
         except:
             pass
 
-        indentAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "indent.png")), "Indent Area", self)
+        indentAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "indent.png")), "Indent Area", self)
         indentAction.setShortcut("Ctrl+Tab")
         indentAction.triggered.connect(self.indent)
 
-        dedentAction = QtGui.QAction(QtGui.QIcon(os.path.join(ICON_FOLDER, "dedent.png")), "Unindent Area", self)
+        dedentAction = QAction(QIcon(os.path.join(ICON_FOLDER_EDITOR, "dedent.png")), "Unindent Area", self)
         dedentAction.setShortcut("Shift+Tab")
         dedentAction.triggered.connect(self.dedent)
 
@@ -173,10 +175,10 @@ class EditorWindow(QtGui.QMainWindow):
         edit.addAction(self.pasteAction)
 
         # Toggling actions for the various bars
-        toolbarAction = QtGui.QAction("Toggle Toolbar", self)
+        toolbarAction = QAction("Toggle Toolbar", self)
         toolbarAction.triggered.connect(self.toggleToolbar)
 
-        statusbarAction = QtGui.QAction("Toggle Statusbar", self)
+        statusbarAction = QAction("Toggle Statusbar", self)
         statusbarAction.triggered.connect(self.toggleStatusbar)
 
         view.addAction(toolbarAction)
@@ -186,8 +188,8 @@ class EditorWindow(QtGui.QMainWindow):
         """Create recent menus. All are invisible and have no text yet, that happens in update_recent."""
         menus = []
         parent_menu.addSeparator()
-        for i in range(MAX_RECENT_FILES):
-            action = QtGui.QAction(self, visible=False, triggered=callback)
+        for i in range(MAX_RECENT_FILES_EDITOR):
+            action = QAction(self, visible=False, triggered=callback)
             # if parent_menu is not self.menuScripting:
             #     action.setShortcut(QKeySequence("Ctrl+" + str(i+1)))
             menus.append(action)
@@ -196,7 +198,7 @@ class EditorWindow(QtGui.QMainWindow):
 
     def initUI(self):
 
-        self.text = QtGui.QTextEdit(self)
+        self.text = QTextEdit(self)
 
         # Set the tab stop width to around 33 pixels which is
         # more or less 8 spaces
@@ -221,7 +223,7 @@ class EditorWindow(QtGui.QMainWindow):
 
         self.setGeometry(100, 100, 1030, 800)
         self.setWindowTitle("Script Editor")
-        self.setWindowIcon(QtGui.QIcon(os.path.join(ICON_FOLDER, "icon.png")))
+        self.setWindowIcon(QIcon(os.path.join(ICON_FOLDER_EDITOR, "icon.png")))
         # TODO: implement syntax highlighting
         # try:
         #     import highlighting
@@ -241,19 +243,19 @@ class EditorWindow(QtGui.QMainWindow):
         if self.text.toPlainText() == self.saved_text:
             return True
         popup = QMessageBox(self)
-        popup.setIcon(QtGui.QMessageBox.Warning)
+        popup.setIcon(QMessageBox.Warning)
         popup.setWindowTitle(self.windowTitle())
         popup.setText("The script has been modified")
         popup.setInformativeText("Do you want to save your changes?")
-        popup.setStandardButtons(QtGui.QMessageBox.Save |
-                                 QtGui.QMessageBox.Cancel |
-                                 QtGui.QMessageBox.Discard)
-        popup.setDefaultButton(QtGui.QMessageBox.Save)
+        popup.setStandardButtons(QMessageBox.Save |
+                                 QMessageBox.Cancel |
+                                 QMessageBox.Discard)
+        popup.setDefaultButton(QMessageBox.Save)
         answer = popup.exec_()
-        if answer == QtGui.QMessageBox.Save:
+        if answer == QMessageBox.Save:
             self.save()
             return True
-        elif answer == QtGui.QMessageBox.Discard:
+        elif answer == QMessageBox.Discard:
             return True
         else:
             return False
@@ -267,7 +269,7 @@ class EditorWindow(QtGui.QMainWindow):
     def context(self, pos):
         # Grab the cursor
         cursor = self.text.textCursor()
-        event = QtGui.QContextMenuEvent(QtGui.QContextMenuEvent.Mouse, QtCore.QPoint())
+        event = QContextMenuEvent(QContextMenuEvent.Mouse, QtCore.QPoint())
         self.text.contextMenuEvent(event)
 
     def toggleToolbar(self):
@@ -299,7 +301,7 @@ class EditorWindow(QtGui.QMainWindow):
             if self.session:
                 file_name = self.session.script_browse_open()
             else:
-                file_name = QtGui.QFileDialog.getOpenFileName(self, "Select script", ".", "(*.py)")
+                file_name, ftype = QFileDialog.getOpenFileName(self, "Select script", ".", "(*.py)")
             self.open_file(file_name)
 
     def open_recent_script(self):
@@ -328,7 +330,7 @@ class EditorWindow(QtGui.QMainWindow):
                     if self.session:
                         file_name = self.session.script_browse_save()
                     else:
-                        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Script As...")
+                        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Script As...")
 
                 if not file_name:
                     return False
@@ -340,16 +342,16 @@ class EditorWindow(QtGui.QMainWindow):
                 saved = True
             except Exception as ex:
                 popup = QMessageBox(self)
-                popup.setIcon(QtGui.QMessageBox.Warning)
+                popup.setIcon(QMessageBox.Warning)
                 popup.setWindowTitle("Unable to Save")
                 popup.setText("Could not save as: \n" + file_name + '\n' +
                               "Please save in a folder you can write to.")
                 popup.setDetailedText(str(ex))
-                popup.setStandardButtons(QtGui.QMessageBox.Retry |
-                                         QtGui.QMessageBox.Cancel)
-                popup.setDefaultButton(QtGui.QMessageBox.Save)
+                popup.setStandardButtons(QMessageBox.Retry |
+                                         QMessageBox.Cancel)
+                popup.setDefaultButton(QMessageBox.Save)
                 answer = popup.exec_()
-                if answer == QtGui.QMessageBox.Cancel:
+                if answer == QMessageBox.Cancel:
                     break
                 must_ask = True
         return saved
@@ -369,7 +371,7 @@ class EditorWindow(QtGui.QMainWindow):
         # Open printing dialog
         dialog = QtGui.QPrintDialog()
 
-        if dialog.exec_() == QtGui.QDialog.Accepted:
+        if dialog.exec_() == QDialog.Accepted:
             self.text.document().print_(dialog.printer())
 
     def cursorPosition(self):
@@ -395,12 +397,12 @@ class EditorWindow(QtGui.QMainWindow):
             # Calculate range of selection
             diff = cursor.blockNumber() - temp
 
-            direction = QtGui.QTextCursor.Up if diff > 0 else QtGui.QTextCursor.Down
+            direction = QTextCursor.Up if diff > 0 else QTextCursor.Down
 
             # Iterate over lines (diff absolute value)
             for n in range(abs(diff) + 1):
                 # Move to start of each line
-                cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+                cursor.movePosition(QTextCursor.StartOfLine)
 
                 # Insert tabbing
                 cursor.insertText("\t")
@@ -413,7 +415,7 @@ class EditorWindow(QtGui.QMainWindow):
             cursor.insertText("\t")
 
     def handleDedent(self, cursor):
-        cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+        cursor.movePosition(QTextCursor.StartOfLine)
 
         # Grab the current line
         line = cursor.block().text()
@@ -447,7 +449,7 @@ class EditorWindow(QtGui.QMainWindow):
             # Calculate range of selection
             diff = cursor.blockNumber() - temp
 
-            direction = QtGui.QTextCursor.Up if diff > 0 else QtGui.QTextCursor.Down
+            direction = QTextCursor.Up if diff > 0 else QTextCursor.Down
 
             # Iterate over lines
             for n in range(abs(diff) + 1):
@@ -461,7 +463,7 @@ class EditorWindow(QtGui.QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     main = EditorWindow()
     main.show()

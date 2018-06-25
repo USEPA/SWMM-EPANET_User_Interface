@@ -1,5 +1,5 @@
-from PyQt4.QtCore import QSettings
-from model_utility import ParseData
+from PyQt5.QtCore import QSettings
+from .model_utility import ParseData
 import os
 
 class ini_setting:
@@ -71,7 +71,7 @@ class ini_setting:
         rval = [None, None]
         if len(self.groups) == 0:
             return rval
-        if not self.groups.has_key(group):
+        if not group in self.groups:
             return rval
 
         self.config.beginGroup(group)
@@ -79,7 +79,7 @@ class ini_setting:
         if qvar is None:
             self.config.endGroup()
             return rval
-        str_val = unicode(qvar)
+        str_val = str(qvar)
         if len(str_val) > 0:
             tval, tval_is_good = ParseData.intTryParse(str_val)
             if tval_is_good:
@@ -148,10 +148,10 @@ class ini_setting:
             try:
                 dict1[option] = self.config.get(section, option)
                 if dict1[option] == -1:
-                    print "skip: %s" % option
+                    print ("skip: %s" % option)
                 pass
             except:
-                print "exception on %s!" % option
+                print ("exception on %s!" % option)
                 dict1[option] = None
         return dict1
 

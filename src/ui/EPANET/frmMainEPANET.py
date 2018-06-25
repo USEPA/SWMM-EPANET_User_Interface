@@ -5,8 +5,10 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 import traceback
 import webbrowser
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from PyQt5 import QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QAction
+from PyQt5.QtCore import QObject, QSettings
 from threading import Lock, Thread
 from time import sleep
 
@@ -60,7 +62,7 @@ import core.epanet.reports as reports
 from core.epanet.options.quality import QualityAnalysisType
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
-from frmRunEPANET import frmRunEPANET
+from ui.EPANET.frmRunEPANET import frmRunEPANET
 
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
@@ -125,8 +127,7 @@ class frmMainEPANET(frmMain):
 
     def __init__(self, q_application):
         self.model = "EPANET"
-        self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
-                                                 "EPA", self.model)
+        self.program_settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model)
         print("Read program settings from " + self.program_settings.fileName())
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
@@ -172,92 +173,92 @@ class frmMainEPANET(frmMain):
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
 
-        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
-        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               lambda: self.open_translate_coord_dialog(None, None))
+        #QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'), lambda: self.open_translate_coord_dialog(None, None))
+        self.actionTranslate_Coordinates.triggered.connect(lambda: self.open_translate_coord_dialog(None, None))
 
         self.actionStdProjSummary.triggered.connect(self.show_summary)
-        QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
+        self.actionStdProjSimulation_Options.triggered.connect(self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
         self.menuTools.removeAction(self.actionStdProgPrefer)
         self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
 
-        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu = QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
-        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionStatus_ReportMenu.triggered.connect(self.report_status)
         self.actionProjStatus.triggered.connect(self.report_status)
 
-        self.actionEnergy_ReportMenu = QtGui.QAction(self)
+        self.actionEnergy_ReportMenu = QAction(self)
         self.actionEnergy_ReportMenu.setObjectName(from_utf8("actionEnergy_ReportMenu"))
         self.actionEnergy_ReportMenu.setText(transl8("frmMain", "Energy", None))
         self.actionEnergy_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Energy", None))
         self.menuReport.addAction(self.actionEnergy_ReportMenu)
-        QtCore.QObject.connect(self.actionEnergy_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_energy)
+        self.actionEnergy_ReportMenu.triggered.connect(self.report_energy)
 
-        self.actionCalibration_ReportMenu = QtGui.QAction(self)
+        self.actionCalibration_ReportMenu = QAction(self)
         self.actionCalibration_ReportMenu.setObjectName(from_utf8("actionCalibration_ReportMenu"))
         self.actionCalibration_ReportMenu.setText(transl8("frmMain", "Calibration", None))
         self.actionCalibration_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Calibration", None))
         self.menuReport.addAction(self.actionCalibration_ReportMenu)
-        QtCore.QObject.connect(self.actionCalibration_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_calibration)
+        self.actionCalibration_ReportMenu.triggered.connect(self.report_calibration)
 
-        self.actionReaction_ReportMenu = QtGui.QAction(self)
+        self.actionReaction_ReportMenu = QAction(self)
         self.actionReaction_ReportMenu.setObjectName(from_utf8("actionReaction_ReportMenu"))
         self.actionReaction_ReportMenu.setText(transl8("frmMain", "Reaction", None))
         self.actionReaction_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Reaction", None))
         self.menuReport.addAction(self.actionReaction_ReportMenu)
-        QtCore.QObject.connect(self.actionReaction_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_reaction)
+        self.actionReaction_ReportMenu.triggered.connect(self.report_reaction)
 
-        self.actionFull_ReportMenu = QtGui.QAction(self)
+        self.actionFull_ReportMenu = QAction(self)
         self.actionFull_ReportMenu.setObjectName(from_utf8("actionFull_ReportMenu"))
         self.actionFull_ReportMenu.setText(transl8("frmMain", "Full...", None))
         self.actionFull_ReportMenu.setToolTip(transl8("frmMain", "Save full report as text file", None))
         self.menuReport.addAction(self.actionFull_ReportMenu)
-        QtCore.QObject.connect(self.actionFull_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_full)
+        self.actionFull_ReportMenu.triggered.connect(self.report_full)
 
-        self.actionGraph_ReportMenu = QtGui.QAction(self)
+        self.actionGraph_ReportMenu = QAction(self)
         self.actionGraph_ReportMenu.setObjectName(from_utf8("actionGraph_ReportMenu"))
         self.actionGraph_ReportMenu.setText(transl8("frmMain", "Graph...", None))
         self.actionGraph_ReportMenu.setToolTip(transl8("frmMain", "Display graph selection options", None))
         self.menuReport.addAction(self.actionGraph_ReportMenu)
-        QtCore.QObject.connect(self.actionGraph_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_graph)
+        self.actionGraph_ReportMenu.triggered.connect(self.report_graph)
         self.actionProjPlotTimeseries.triggered.connect(self.report_graph)
         self.actionProjPlotScatter.triggered.connect(self.report_graph)
         self.actionProjPlotProfile.triggered.connect(self.report_graph)
 
-        self.actionTable_ReportMenu = QtGui.QAction(self)
+        self.actionTable_ReportMenu = QAction(self)
         self.actionTable_ReportMenu.setObjectName(from_utf8("actionTable_ReportMenu"))
         self.actionTable_ReportMenu.setText(transl8("frmMain", "Table...", None))
         self.actionTable_ReportMenu.setToolTip(transl8("frmMain", "Display table selection options", None))
         self.menuReport.addAction(self.actionTable_ReportMenu)
-        QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
+        self.actionTable_ReportMenu.triggered.connect(self.report_table)
         self.actionProjTableTimeseries.triggered.connect(self.report_table)
 
         self.actionStdMapQuery.triggered.connect(self.map_query)
         self.actionStdMapFind.triggered.connect(self.map_finder)
 
-        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu = QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
         self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
         self.menuHelp.addAction(self.Help_Topics_Menu)
-        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+        self.Help_Topics_Menu.triggered.connect(self.help_topics)
 
-        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu = QAction(self)
         self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
         self.Help_About_Menu.setText(transl8("frmMain", "About", None))
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About EPANET", None))
         self.menuHelp.addAction(self.Help_About_Menu)
-        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+        self.Help_About_Menu.triggered.connect(self.help_about)
 
         self.cbFlowUnits.clear()
         self.cbFlowUnits.addItems(['Flow Units: CFS','Flow Units: GPM','Flow Units: MGD','Flow Units: IMGD',
@@ -444,7 +445,7 @@ class frmMainEPANET(frmMain):
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None, self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
@@ -492,7 +493,7 @@ class frmMainEPANET(frmMain):
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_link_min,
@@ -535,7 +536,7 @@ class frmMainEPANET(frmMain):
         """
         unit_text = ""
         if obj_type == "node":
-            if self.output.nodes_units.has_key(selected_attribute):
+            if selected_attribute in self.output.nodes_units:
                 unit_text = self.output.nodes_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -548,7 +549,7 @@ class frmMainEPANET(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "link":
-            if self.output.links_units.has_key(selected_attribute):
+            if selected_attribute in self.output.links_units:
                 unit_text = self.output.links_units[selected_attribute]
             else:
                 if selected_attribute == "Length":
@@ -590,7 +591,7 @@ class frmMainEPANET(frmMain):
         self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
 
     def report_status(self):
-        print "report_status"
+        print ("report_status")
         if not os.path.isfile(self.status_file_name):
             prefix, extension = os.path.splitext(self.project.file_name)
             if os.path.isfile(prefix + self.status_suffix):
@@ -633,7 +634,7 @@ class frmMainEPANET(frmMain):
     def report_full(self):
         if self.output:
             directory = os.path.dirname(self.project.file_name)
-            report_file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Full Report As...", directory, "Text files (*.txt)")
+            report_file_name, ftype = QFileDialog.getSaveFileName(self, "Save Full Report As...", directory, "Text files (*.txt)")
             if report_file_name:
                 try:
                     reporter = reports.Reports(self.project, self.output)
@@ -736,7 +737,7 @@ class frmMainEPANET(frmMain):
 
     def edit_defaults(self):
         directory = self.program_settings.value("ProjectDir", "")
-        from frmDefaultsEditor import frmDefaultsEditor
+        from ui.EPANET.frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, self.project_settings)
         fd.show()
 
@@ -770,7 +771,7 @@ class frmMainEPANET(frmMain):
             edit_these = []
             new_item = None
             if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
+                if not isinstance(self.project.labels.value, str):
                     if isinstance(self.project.labels.value, list):
                         edit_these.extend(self.project.labels.value)
                 if len(edit_these) == 0:
@@ -1133,7 +1134,7 @@ class ModelLayersEPANET(ModelLayers):
             return None
 
 if __name__ == '__main__':
-    application = QtGui.QApplication(sys.argv)
+    application = QApplication(sys.argv)
 
     'try out internationalization'
     from ui.settings import internationalization

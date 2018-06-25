@@ -3,11 +3,12 @@
 # Form implementation generated from reading ui file 'frmCalibrationReportDesigner.ui'
 #
 # Created: Tue Sep 27 12:34:24 2016
-#      by: PyQt4 UI code generator 4.10.2
+#      by: PyQt5 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +17,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QApplication.translate(context, text, disambig)
 
 class Ui_frmCalibrationReport(object):
     def setupUi(self, frmCalibrationReport):
@@ -30,46 +31,46 @@ class Ui_frmCalibrationReport(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         frmCalibrationReport.setFont(font)
-        self.centralWidget = QtGui.QWidget(frmCalibrationReport)
+        self.centralWidget = QWidget(frmCalibrationReport)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.verticalLayout_8 = QtGui.QVBoxLayout(self.centralWidget)
+        self.verticalLayout_8 = QVBoxLayout(self.centralWidget)
         self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
-        self.fraTop = QtGui.QFrame(self.centralWidget)
-        self.fraTop.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.fraTop.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraTop = QFrame(self.centralWidget)
+        self.fraTop.setFrameShape(QFrame.StyledPanel)
+        self.fraTop.setFrameShadow(QFrame.Raised)
         self.fraTop.setObjectName(_fromUtf8("fraTop"))
-        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.fraTop)
+        self.horizontalLayout_3 = QHBoxLayout(self.fraTop)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
-        self.tabWidget = QtGui.QTabWidget(self.fraTop)
+        self.tabWidget = QTabWidget(self.fraTop)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.tabStatistics = QtGui.QWidget()
+        self.tabStatistics = QWidget()
         self.tabStatistics.setObjectName(_fromUtf8("tabStatistics"))
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.tabStatistics)
+        self.verticalLayout_4 = QVBoxLayout(self.tabStatistics)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
-        self.txtStatistics = QtGui.QTextEdit(self.tabStatistics)
+        self.txtStatistics = QTextEdit(self.tabStatistics)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Courier New"))
         self.txtStatistics.setFont(font)
         self.txtStatistics.setObjectName(_fromUtf8("txtStatistics"))
         self.verticalLayout_4.addWidget(self.txtStatistics)
         self.tabWidget.addTab(self.tabStatistics, _fromUtf8(""))
-        self.tabCorrelation = QtGui.QWidget()
+        self.tabCorrelation = QWidget()
         self.tabCorrelation.setObjectName(_fromUtf8("tabCorrelation"))
         self.tabWidget.addTab(self.tabCorrelation, _fromUtf8(""))
-        self.tabMean = QtGui.QWidget()
+        self.tabMean = QWidget()
         self.tabMean.setObjectName(_fromUtf8("tabMean"))
         self.tabWidget.addTab(self.tabMean, _fromUtf8(""))
         self.horizontalLayout_3.addWidget(self.tabWidget)
         self.verticalLayout_8.addWidget(self.fraTop)
-        self.fraOKCancel = QtGui.QFrame(self.centralWidget)
-        self.fraOKCancel.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.fraOKCancel.setFrameShadow(QtGui.QFrame.Raised)
+        self.fraOKCancel = QFrame(self.centralWidget)
+        self.fraOKCancel.setFrameShape(QFrame.StyledPanel)
+        self.fraOKCancel.setFrameShadow(QFrame.Raised)
         self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.fraOKCancel)
+        self.horizontalLayout = QHBoxLayout(self.fraOKCancel)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem = QtGui.QSpacerItem(338, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QSpacerItem(338, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.cmdCancel = QtGui.QPushButton(self.fraOKCancel)
+        self.cmdCancel = QPushButton(self.fraOKCancel)
         self.cmdCancel.setObjectName(_fromUtf8("cmdCancel"))
         self.horizontalLayout.addWidget(self.cmdCancel)
         self.verticalLayout_8.addWidget(self.fraOKCancel)

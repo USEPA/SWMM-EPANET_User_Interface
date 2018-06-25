@@ -1,29 +1,27 @@
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QMessageBox
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QDialog
 from frmMapAddVectorDesigner import Ui_frmAddVectorLayer
 
-class frmMapAddVector(QtGui.QDialog):
+class frmMapAddVector(QDialog):
     def __init__(self, main_form=None, *args):
         self._main_form = main_form
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.ui = Ui_frmAddVectorLayer()
         self.ui.setupUi(self)
         self.specs = {}
         self.ui.cboEncoding.addItem("System")
         self.ui.cboEncoding.addItem("UTF-8")
-        QtCore.QObject.connect(self.ui.cboEncoding,
-                               QtCore.SIGNAL("currentIndexChanged(QString)"),
-                               self.cboEncoding_currentIndexChanged)
-        QtCore.QObject.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.btnBrowse_Clicked)
+        self.ui.cboEncoding.currentIndexChanged.connect(self.cboEncoding_currentIndexChanged)
+        self.ui.btnBrowse.clicked.connect(self.btnBrowse_Clicked)
         #QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("clicked(QAbstractButton)"), self.btnBox_Clicked)
-        QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("accepted()"), self.btnBox_Accepted)
-        QtCore.QObject.connect(self.ui.btnBox, QtCore.SIGNAL("rejected()"), self.btnBox_Rejected)
+        self.ui.btnBox.accepted.connect(self.btnBox_Accepted)
+        self.ui.btnBox.rejected.connect(self.btnBox_Rejected)
 
     def cboEncoding_currentIndexChanged(self):
         pass
 
     def btnBrowse_Clicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
+        filename, ftype = QFileDialog.getOpenFileName(None, 'Specify Vector Dataset', '/', 'Shapefiles (*.shp)')
         self.ui.txtDataset.setText(filename)
         self.specs['filename'] = filename
 

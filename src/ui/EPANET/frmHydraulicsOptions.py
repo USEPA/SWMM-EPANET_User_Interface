@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.epanet.options.hydraulics
 from enum import Enum
 from ui.EPANET.frmHydraulicsOptionsDesigner import Ui_frmHydraulicsOptions
@@ -7,17 +8,17 @@ import ui.convenience
 from ui.model_utility import ParseData
 
 
-class frmHydraulicsOptions(QtGui.QMainWindow, Ui_frmHydraulicsOptions):
+class frmHydraulicsOptions(QMainWindow, Ui_frmHydraulicsOptions):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Anal0040.htm"
         self.setupUi(self)
         self.cboFlow.clear()
         ui.convenience.set_combo_items(core.epanet.options.hydraulics.FlowUnits, self.cboFlow)
         self.cboHeadloss.addItems(("H-W", "D-W", "C-M"))
         # self.cboUnbalanced.addItems(("STOP", "CONTINUE"))
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
         self.config = None

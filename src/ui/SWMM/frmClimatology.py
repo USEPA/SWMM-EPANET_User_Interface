@@ -1,6 +1,7 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from core.swmm.climatology import EvaporationFormat
 from core.swmm.climatology import TemperatureSource
 from core.swmm.climatology import WindSource
@@ -10,33 +11,30 @@ from ui.SWMM.frmTimeseries import frmTimeseries
 from ui.model_utility import ParseData
 
 
-# from PyQt4.QtGui import *
-
-
-class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
+class frmClimatology(QMainWindow, Ui_frmClimatology):
     def __init__(self, main_form, climate_type):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.cboEvap.clear()
         self.cboEvap.addItems(("Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"))
         # ui.convenience.set_combo_items(core.swmm.curves.CurveType, self.cboCurveType)
         self.tabClimate.currentChanged.connect(self.tabClimate_currentTabChanged)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.rbnNoData, QtCore.SIGNAL("clicked()"), self.rbnNoData_Clicked)
-        QtCore.QObject.connect(self.rbnTimeseries, QtCore.SIGNAL("clicked()"), self.rbnTimeseries_Clicked)
-        QtCore.QObject.connect(self.rbnExternal, QtCore.SIGNAL("clicked()"), self.rbnExternal_Clicked)
-        QtCore.QObject.connect(self.btnTimeSeries, QtCore.SIGNAL("clicked()"), self.btnTimeSeries_Clicked)
-        QtCore.QObject.connect(self.btnClimate, QtCore.SIGNAL("clicked()"), self.btnClimate_Clicked)
-        QtCore.QObject.connect(self.btnImpNo, QtCore.SIGNAL("clicked()"), self.btnImpNo_Clicked)
-        QtCore.QObject.connect(self.btnImpNat, QtCore.SIGNAL("clicked()"), self.btnImpNat_Clicked)
-        QtCore.QObject.connect(self.btnPerNo, QtCore.SIGNAL("clicked()"), self.btnPerNo_Clicked)
-        QtCore.QObject.connect(self.btnPerNat, QtCore.SIGNAL("clicked()"), self.btnPerNat_Clicked)
-        QtCore.QObject.connect(self.btnEvapTS, QtCore.SIGNAL("clicked()"), self.btnEvapTS_Clicked)
-        QtCore.QObject.connect(self.btnPattern, QtCore.SIGNAL("clicked()"), self.btnPattern_Clicked)
-        QtCore.QObject.connect(self.btnDelete, QtCore.SIGNAL("clicked()"), self.btnDelete_Clicked)
-        QtCore.QObject.connect(self.btnClear, QtCore.SIGNAL("clicked()"), self.btnClear_Clicked)
-        # QtCore.QObject.connect(self.cboEvap, QtCore.SIGNAL("clicked()"), self.cboEvap_currentIndexChanged)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.rbnNoData.clicked.connect(self.rbnNoData_Clicked)
+        self.rbnTimeseries.clicked.connect(self.rbnTimeseries_Clicked)
+        self.rbnExternal.clicked.connect(self.rbnExternal_Clicked)
+        self.btnTimeSeries.clicked.connect(self.btnTimeSeries_Clicked)
+        self.btnClimate.clicked.connect(self.btnClimate_Clicked)
+        self.btnImpNo.clicked.connect(self.btnImpNo_Clicked)
+        self.btnImpNat.clicked.connect(self.btnImpNat_Clicked)
+        self.btnPerNo.clicked.connect(self.btnPerNo_Clicked)
+        self.btnPerNat.clicked.connect(self.btnPerNat_Clicked)
+        self.btnEvapTS.clicked.connect(self.btnEvapTS_Clicked)
+        self.btnPattern.clicked.connect(self.btnPattern_Clicked)
+        self.btnDelete.clicked.connect(self.btnDelete_Clicked)
+        self.btnClear.clicked.connect(self.btnClear_Clicked)
+        # self.cboEvap.clicked.connect(self.cboEvap_currentIndexChanged)
         self.cboEvap.currentIndexChanged.connect(self.cboEvap_currentIndexChanged)
         self.climate_type = climate_type
         if main_form and main_form.project:
@@ -153,8 +151,8 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             point_count = -1
             for value in monthly_list:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblWind.setItem(0, point_count, QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value))
+                self.tblWind.setItem(0, point_count, QTableWidgetItem(led.text()))
         elif temp_section.wind_speed.source == WindSource.FILE:
             self.rbnUseClimate.setChecked(True)
 
@@ -178,8 +176,8 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             point_count = -1
             for value in areal_list:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblAreal.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value))
+                self.tblAreal.setItem(point_count, 0, QTableWidgetItem(led.text()))
         else:
             self.btnImpNo_Clicked()
 
@@ -188,8 +186,8 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             point_count = -1
             for value in areal_list:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblAreal.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value))
+                self.tblAreal.setItem(point_count, 1, QTableWidgetItem(led.text()))
             pass
         else:
             self.btnPerNo_Clicked()
@@ -201,26 +199,26 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         point_count = -1
         for value in temp_list:
             point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAdjustments.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(value))
+            self.tblAdjustments.setItem(point_count,0,QTableWidgetItem(led.text()))
         evap_list = adjustments_section.evaporation
         point_count = -1
         for value in evap_list:
             point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAdjustments.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(value))
+            self.tblAdjustments.setItem(point_count,1,QTableWidgetItem(led.text()))
         rain_list = adjustments_section.rainfall
         point_count = -1
         for value in rain_list:
             point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAdjustments.setItem(point_count,2,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(value))
+            self.tblAdjustments.setItem(point_count,2,QTableWidgetItem(led.text()))
         cond_list = adjustments_section.soil_conductivity
         point_count = -1
         for value in cond_list:
             point_count += 1
-            led = QtGui.QLineEdit(str(value))
-            self.tblAdjustments.setItem(point_count,3,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(value))
+            self.tblAdjustments.setItem(point_count,3,QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
 
@@ -371,8 +369,8 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             point_count = -1
             for value in self.evap_pan_list:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblEvap.setItem(0,point_count,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value))
+                self.tblEvap.setItem(0,point_count,QTableWidgetItem(led.text()))
         elif newIndex == 3: # monthly averages
             self.lblDaily.setVisible(False)
             self.txtDaily.setVisible(False)
@@ -385,8 +383,8 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
             point_count = -1
             for value in self.evap_monthly_list:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value))
-                self.tblEvap.setItem(0,point_count,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value))
+                self.tblEvap.setItem(0,point_count,QTableWidgetItem(led.text()))
         elif newIndex == 4: # temperatures
             self.lblDaily.setVisible(False)
             self.txtDaily.setVisible(False)
@@ -424,44 +422,44 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
         self._frmTimeseries.show()
 
     def btnClimate_Clicked(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Climatological File", '',
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Climatological File", '',
                                                       "Data files (*.DAT);;Text files (*.TXT);;All files (*.*)")
         if file_name:
             self.txtClimate.setText(file_name)
 
     def btnImpNo_Clicked(self):
         for row in range(0,10):
-            led = QtGui.QLineEdit('1.0')
-            self.tblAreal.setItem(row,0,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit('1.0')
+            self.tblAreal.setItem(row,0,QTableWidgetItem(led.text()))
 
     def btnPerNo_Clicked(self):
         for row in range(0,10):
-            led = QtGui.QLineEdit('1.0')
-            self.tblAreal.setItem(row,1,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit('1.0')
+            self.tblAreal.setItem(row,1,QTableWidgetItem(led.text()))
 
     def btnImpNat_Clicked(self):
-        self.tblAreal.setItem(0,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.10').text()))
-        self.tblAreal.setItem(1,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.35').text()))
-        self.tblAreal.setItem(2,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.53').text()))
-        self.tblAreal.setItem(3,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.66').text()))
-        self.tblAreal.setItem(4,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.75').text()))
-        self.tblAreal.setItem(5,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.82').text()))
-        self.tblAreal.setItem(6,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.87').text()))
-        self.tblAreal.setItem(7,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.92').text()))
-        self.tblAreal.setItem(8,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.95').text()))
-        self.tblAreal.setItem(9,0,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.98').text()))
+        self.tblAreal.setItem(0,0,QTableWidgetItem(QLineEdit('0.10').text()))
+        self.tblAreal.setItem(1,0,QTableWidgetItem(QLineEdit('0.35').text()))
+        self.tblAreal.setItem(2,0,QTableWidgetItem(QLineEdit('0.53').text()))
+        self.tblAreal.setItem(3,0,QTableWidgetItem(QLineEdit('0.66').text()))
+        self.tblAreal.setItem(4,0,QTableWidgetItem(QLineEdit('0.75').text()))
+        self.tblAreal.setItem(5,0,QTableWidgetItem(QLineEdit('0.82').text()))
+        self.tblAreal.setItem(6,0,QTableWidgetItem(QLineEdit('0.87').text()))
+        self.tblAreal.setItem(7,0,QTableWidgetItem(QLineEdit('0.92').text()))
+        self.tblAreal.setItem(8,0,QTableWidgetItem(QLineEdit('0.95').text()))
+        self.tblAreal.setItem(9,0,QTableWidgetItem(QLineEdit('0.98').text()))
 
     def btnPerNat_Clicked(self):
-        self.tblAreal.setItem(0,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.10').text()))
-        self.tblAreal.setItem(1,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.35').text()))
-        self.tblAreal.setItem(2,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.53').text()))
-        self.tblAreal.setItem(3,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.66').text()))
-        self.tblAreal.setItem(4,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.75').text()))
-        self.tblAreal.setItem(5,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.82').text()))
-        self.tblAreal.setItem(6,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.87').text()))
-        self.tblAreal.setItem(7,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.92').text()))
-        self.tblAreal.setItem(8,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.95').text()))
-        self.tblAreal.setItem(9,1,QtGui.QTableWidgetItem(QtGui.QLineEdit('0.98').text()))
+        self.tblAreal.setItem(0,1,QTableWidgetItem(QLineEdit('0.10').text()))
+        self.tblAreal.setItem(1,1,QTableWidgetItem(QLineEdit('0.35').text()))
+        self.tblAreal.setItem(2,1,QTableWidgetItem(QLineEdit('0.53').text()))
+        self.tblAreal.setItem(3,1,QTableWidgetItem(QLineEdit('0.66').text()))
+        self.tblAreal.setItem(4,1,QTableWidgetItem(QLineEdit('0.75').text()))
+        self.tblAreal.setItem(5,1,QTableWidgetItem(QLineEdit('0.82').text()))
+        self.tblAreal.setItem(6,1,QTableWidgetItem(QLineEdit('0.87').text()))
+        self.tblAreal.setItem(7,1,QTableWidgetItem(QLineEdit('0.92').text()))
+        self.tblAreal.setItem(8,1,QTableWidgetItem(QLineEdit('0.95').text()))
+        self.tblAreal.setItem(9,1,QTableWidgetItem(QLineEdit('0.98').text()))
 
     def btnEvapTS_Clicked(self):
         # edit timeseries
@@ -492,11 +490,11 @@ class frmClimatology(QtGui.QMainWindow, Ui_frmClimatology):
     def btnClear_Clicked(self):
         # clear adjustments for temp, evap, rain, cond
         for row in range(0,12):
-            led = QtGui.QLineEdit('')
-            self.tblAdjustments.setItem(row,0,QtGui.QTableWidgetItem(led.text()))
-            self.tblAdjustments.setItem(row,1,QtGui.QTableWidgetItem(led.text()))
-            self.tblAdjustments.setItem(row,2,QtGui.QTableWidgetItem(led.text()))
-            self.tblAdjustments.setItem(row,3,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit('')
+            self.tblAdjustments.setItem(row,0,QTableWidgetItem(led.text()))
+            self.tblAdjustments.setItem(row,1,QTableWidgetItem(led.text()))
+            self.tblAdjustments.setItem(row,2,QTableWidgetItem(led.text()))
+            self.tblAdjustments.setItem(row,3,QTableWidgetItem(led.text()))
 
     def tabClimate_currentTabChanged(self):
 

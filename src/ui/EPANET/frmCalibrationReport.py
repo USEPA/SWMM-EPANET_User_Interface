@@ -1,10 +1,11 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QSizePolicy
 from ui.help import HelpHandler
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from ui.EPANET.frmCalibrationReportDesigner import Ui_frmCalibrationReport
 import core.epanet.calibration as pcali
@@ -20,14 +21,14 @@ TXT_HEADING2 = '  Location      Obs        Mean        Mean   Error   Error'
 TXT_HEADING3 = '  ---------------------------------------------------------'
 TXT_LOC_STATS = '  %-14s%3d%12.2f%12.2f%8.3f%8.3f'
 
-class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
+class frmCalibrationReport(QMainWindow, Ui_frmCalibrationReport):
     def __init__(self, main_form, project, output, aECaliType):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Cali0078.htm"
         self.setupUi(self)
-        # QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        # self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.setWindowTitle('EPANET Calibration Report - ' + aECaliType.name)
         self._main_form = main_form
         self.output = output
@@ -121,7 +122,7 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
                                       height=2,
                                       dpi=100)
             correlation_plot.setData(self.cali)
-            layout = QtGui.QVBoxLayout(self.tabCorrelation)
+            layout = QVBoxLayout(self.tabCorrelation)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.addWidget(correlation_plot)
             self.tabCorrelation.setLayout(layout)
@@ -137,7 +138,7 @@ class frmCalibrationReport(QtGui.QMainWindow, Ui_frmCalibrationReport):
                                       height=2,
                                       dpi=100)
             bar_plot.setData(self.cali)
-            layout = QtGui.QVBoxLayout(self.tabMean)
+            layout = QVBoxLayout(self.tabMean)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.addWidget(bar_plot)
             self.tabCorrelation.setLayout(layout)
@@ -157,8 +158,8 @@ class BasePlot(FigureCanvas):
         self.setParent(main_form)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def setTitle(self, aTitle):

@@ -1,25 +1,26 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
-# from PyQt4.QtGui import *
+# from PyQt5.QtGui import *
 
 
-class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
+class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form, title, curve_type, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/curveeditordialog.htm"
         self.setupUi(self)
         if title:
             self.setWindowTitle(title)
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.swmm.curves.CurveType, self.cboCurveType)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        # QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.cboCurveType.clicked.connect(self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         # self.set_from(main_form.project)   # do after init to set curve type
         self._main_form = main_form
@@ -85,10 +86,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         point_count = -1
         for point in curve.curve_xy:
              point_count += 1
-             led = QtGui.QLineEdit(str(point[0]))
-             self.tblMult.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
-             led = QtGui.QLineEdit(str(point[1]))
-             self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+             led = QLineEdit(str(point[0]))
+             self.tblMult.setItem(point_count,0,QTableWidgetItem(led.text()))
+             led = QLineEdit(str(point[1]))
+             self.tblMult.setItem(point_count,1,QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
         # TODO: Check for blank/duplicate curve name

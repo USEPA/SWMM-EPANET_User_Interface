@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QTableWidget, QGridLayout, QWidget, QComboBox
 from ui.frmGenericDefaultsEditorDesigner import Ui_frmGenericDefaultsEditor
 from ui.inifile import ini_setting
 from ui.convenience import set_combo_items
@@ -24,7 +25,7 @@ except AttributeError:
     def _fromUtf8(s):
         return s
 
-class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
+class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
     """
     Project defaults editor for setting and editing
     object id prefix (tab1)
@@ -32,7 +33,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
     hydraulic defaults (tab3)
     """
     def __init__(self, session, project, defaults):
-        QtGui.QMainWindow.__init__(self, session)
+        QMainWindow.__init__(self, session)
         self.setupUi(self)
         self.defaults = defaults
         self.session = session
@@ -44,58 +45,54 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         self.refresh_column = None
         if self.session is not None:
             self.setWindowTitle(self.session.model + " Project Defaults")
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.tabDefaults, QtCore.SIGNAL("currentChanged(int)"), self.tab_changed)
-        QtCore.QObject.connect(self.tblGeneric, QtCore.SIGNAL("cellChanged(int, int)"), self.tblGeneric_changed)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.tabDefaults.currentChanged(int).connect(self.tab_changed)
+        # self.tblGeneric.cellChanged(int, int).connect(self.tblGeneric_changed)
+        self.tabDefaults.currentChanged.connect(self.tab_changed)
+        self.tblGeneric.cellChanged.connect(self.tblGeneric_changed)
 
-        self.corner_label_tab1 = QtGui.QLabel("Object", self.tblGeneric)
+        self.corner_label_tab1 = QLabel("Object", self.tblGeneric)
         self.corner_label_tab1.setAlignment(QtCore.Qt.AlignCenter)
         self.corner_label_tab1.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        QtCore.QObject.connect(self.tblGeneric.verticalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
-        QtCore.QObject.connect(self.tblGeneric.horizontalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        self.tblGeneric.verticalHeader().geometriesChanged.connect(self.resizeCorner)
+        self.tblGeneric.horizontalHeader().geometriesChanged.connect(self.resizeCorner)
 
-        self.gridLayout_tab2 = QtGui.QGridLayout(self.tabDefaults.widget(1))
+        self.gridLayout_tab2 = QGridLayout(self.tabDefaults.widget(1))
         self.gridLayout_tab2.setObjectName(_fromUtf8("gridLayout_tab2"))
-        self.tbl_2 = QtGui.QTableWidget(self.tabDefaults.widget(1))
+        self.tbl_2 = QTableWidget(self.tabDefaults.widget(1))
         self.tbl_2.setObjectName(_fromUtf8("tbl_2"))
         self.tbl_2.setColumnCount(1)
         self.tbl_2.setRowCount(1)
         self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
-        QtCore.QObject.connect(self.tbl_2, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_2_changed)
+        # self.tbl_2.cellChanged(int, int).connec(self.tbl_2_changed)
+        self.tbl_2.cellChanged.connec(self.tbl_2_changed)
 
-        self.corner_label_tab2 = QtGui.QLabel("Property", self.tbl_2)
+        self.corner_label_tab2 = QLabel("Property", self.tbl_2)
         self.corner_label_tab2.setAlignment(QtCore.Qt.AlignCenter)
         self.corner_label_tab2.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        QtCore.QObject.connect(self.tblGeneric.verticalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
-        QtCore.QObject.connect(self.tblGeneric.horizontalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        self.tblGeneric.verticalHeader().geometriesChanged.connect(self.resizeCorner)
+        self.tblGeneric.horizontalHeader().geometriesChanged.connect(self.resizeCorner)
 
-        self.gridLayout_tab3 = QtGui.QGridLayout(self.tabDefaults.widget(2))
+        self.gridLayout_tab3 = QGridLayout(self.tabDefaults.widget(2))
         self.gridLayout_tab3.setObjectName(_fromUtf8("gridLayout_tab3"))
-        self.tbl_3 = QtGui.QTableWidget(self.tabDefaults.widget(2))
+        self.tbl_3 = QTableWidget(self.tabDefaults.widget(2))
         self.tbl_3.setObjectName(_fromUtf8("tbl_3"))
         self.tbl_3.setColumnCount(1)
         self.tbl_3.setRowCount(1)
         self.tbl_3.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab3.addWidget(self.tbl_3, 0, 0, 0, 0)
-        QtCore.QObject.connect(self.tbl_3, QtCore.SIGNAL("cellChanged(int, int)"), self.tbl_3_changed)
+        self.tbl_3.cellChanged.connect(self.tbl_3_changed)
 
-        self.corner_label_tab3 = QtGui.QLabel("Option", self.tbl_3)
+        self.corner_label_tab3 = QLabel("Option", self.tbl_3)
         self.corner_label_tab3.setAlignment(QtCore.Qt.AlignCenter)
         self.corner_label_tab3.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        QtCore.QObject.connect(self.tbl_3.verticalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
-        QtCore.QObject.connect(self.tbl_3.horizontalHeader(),
-                               QtCore.SIGNAL("geometriesChanged()"), self.resizeCorner)
+        self.tbl_3.verticalHeader().geometriesChanged.connect(self.resizeCorner)
+        self.tbl_3.horizontalHeader().geometriesChanged.connect(self.resizeCorner)
 
         self.sm_hydraulics = QtCore.QSignalMapper(self)
-        QtCore.QObject.connect(self.sm_hydraulics, QtCore.SIGNAL("mapped(int)"),
-                               self.tbl_3_combo_indexChanged)
+        self.sm_hydraulics.mapped.connect(self.tbl_3_combo_indexChanged)
 
         self.populate_defaults()
         self.installEventFilter(self)
@@ -137,7 +134,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         """
         while self.tabDefaults.count() < num_tab:
             c = self.tabDefaults.count()
-            new_tab = QtGui.QWidget(self.tabDefaults)
+            new_tab = QWidget(self.tabDefaults)
             self.tabDefaults.addTab(new_tab, "tab_" + str(c + 1))
         while self.tabDefaults.count() > num_tab:
             c = self.tabDefaults.count()
@@ -163,15 +160,15 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
                 #prefix = unicode(self.qsettings.value("Labels/" + self.model_object_keys[i], ""))
                 prefix = self.defaults.model_object_prefix[self.defaults.model_object_keys[i]]
             #self.tblGeneric.insertRow(self.tblGeneric.rowCount())
-            self.tblGeneric.setItem(i,0, QtGui.QTableWidgetItem(prefix))
+            self.tblGeneric.setItem(i,0, QTableWidgetItem(prefix))
         self.tblGeneric.insertRow(self.tblGeneric.rowCount())
         self.tblGeneric.setVerticalHeaderItem(self.tblGeneric.rowCount()- 1,
-                                              QtGui.QTableWidgetItem(self.defaults.id_increment_key))
+                                              QTableWidgetItem(self.defaults.id_increment_key))
         if self.defaults:
             #self.increment = int(self.qsettings.value("Labels/Increment", 1))
             self.increment = self.defaults.id_increment
         self.tblGeneric.setItem(self.tblGeneric.rowCount()- 1,0,
-                                QtGui.QTableWidgetItem(unicode(self.defaults.id_increment)))
+                                QTableWidgetItem(unicode(self.defaults.id_increment)))
         pass
 
     def set_sub_properties(self):
@@ -189,7 +186,7 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         for i in range(0, len(self.defaults.properties_sub_keys) - 1):
             #def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
             def_val = self.defaults.properties_sub_values[self.defaults.properties_sub_keys[i]]
-            self.tbl_2.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
+            self.tbl_2.setItem(i,0, QTableWidgetItem(unicode(def_val)))
         self.set_infilmodel_cell(0)
 
         pass
@@ -211,31 +208,30 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
             key = self.defaults.parameters_keys[i]
             def_val = self.defaults.parameters_values[key]
             if "flow units" in key.lower():
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 enum_val = FlowUnits[def_val]
             elif "link offsets" in key.lower():
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 enum_val = LinkOffsets[def_val]
             elif "routing method" in key.lower():
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 enum_val = FlowRouting[def_val.upper()]
             elif "force main" in key.lower():
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 enum_val = ForceMainEquation[def_val.upper()]
 
             if combobox is not None:
                 combobox.setObjectName(key + "|" + str(i) + "|0")
                 set_combo_items(type(enum_val), combobox)
                 set_combo(combobox, enum_val)
-                QtCore.QObject.connect(combobox, QtCore.SIGNAL("currentIndexChanged(int)"),
-                                       self.sm_hydraulics, QtCore.SLOT("map()"))
+                combobox.currentIndexChanged.connect(self.sm_hydraulics.map)
                 self.sm_hydraulics.setMapping(combobox, i)
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
                 if "conduit geometry" in key.lower():
                     self.set_channel_cell(0)
                 else:
-                    self.tbl_3.setItem(i,0, QtGui.QTableWidgetItem(unicode(def_val)))
+                    self.tbl_3.setItem(i,0, QTableWidgetItem(unicode(def_val)))
         pass
 
     def eventFilter(self, ui_object, event):
@@ -309,14 +305,14 @@ class frmDefaultsEditor(QtGui.QMainWindow, Ui_frmGenericDefaultsEditor):
         Returns:
         """
         for i in range(0, self.tabDefaults.count()):
-            controls = self.tabDefaults.widget(i).findChildren(QtGui.QTableWidget, self.tblGeneric.objectName())
+            controls = self.tabDefaults.widget(i).findChildren(QTableWidget, self.tblGeneric.objectName())
             if len(controls) > 0 and i != index:
                 layout_src = self.tabDefaults.widget(i).layout()
                 if layout_src is not None:
                     layout_src.removeWidget(self.tblGeneric)
                 layout_dest = self.tabDefaults.widget(index).layout()
                 if layout_dest is None:
-                    layout_dest = QtGui.QGridLayout(self.tabDefaults.widget(index))
+                    layout_dest = QGridLayout(self.tabDefaults.widget(index))
                     self.tabDefaults.widget(index).setLayout(layout_dest)
                 layout_dest.addChildWidget(self.tblGeneric)
                 break

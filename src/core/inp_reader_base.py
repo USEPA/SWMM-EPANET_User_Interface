@@ -61,7 +61,7 @@ class InputFileReader(object):
         self.finished_reading(project)
 
     def finished_reading(self, project):
-        print "Finished reading " + project.file_name
+        print ("Finished reading " + project.file_name)
 
     def read_section(self, project, section_name, section_text):
         """ Read the section named section_name whose complete text is section_text into project. """

@@ -3,6 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem, QMessageBox
 from ui.EPANET.frmPatternEditorDesigner import Ui_frmPatternEditor
 from core.epanet.patterns import Pattern
+from PyQt5.QtCore import *
 
 
 class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
@@ -36,6 +37,8 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
         for point in pattern.multipliers:
             point_count += 1
             led = QLineEdit(str(point))
+            if point_count == self.tblMult.columnCount():
+                self.tblMult.insertColumn(self.tblMult.columnCount()+1)
             self.tblMult.setItem(0,point_count,QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
@@ -83,3 +86,11 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            if self.tblMult.currentColumn() + 1 == self.tblMult.columnCount():
+                self.tblMult.insertColumn(self.tblMult.columnCount())
+
+
+

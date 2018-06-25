@@ -49,6 +49,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         QMainWindow.__init__(self, None)
         self.crs = None
         self.project_settings = None
+        self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
+        self.status_file_name = ''  # Set this when model status is available
+        self.output_filename = ''   # Set this when model output is available
         self.no_items = True
         self.setupUi(self)
         self.q_application = q_application
@@ -176,6 +180,7 @@ class frmMain(QMainWindow, Ui_frmMain):
                                 path = add_path + ';' + path
                         os.environ["Path"] = path
                         print("Try path = " + os.environ["Path"])
+
                         from qgis.core import QgsApplication, QgsVectorLayer, QgsProject
                         from qgis.gui import QgsMapCanvas
                         print("DBG: import qgis core gui passed.")
@@ -1960,6 +1965,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         # self.map_widget.set_extent_empty()
         self.map_widget.refresh_extent_needed = True
         self.clear_object_listing()
+        self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
+        self.status_file_name = ''  # Set this when model status is available
+        self.output_filename = ''   # Set this when model output is available
         if hasattr(self, "project_settings"):
             del self.project_settings
         self.project_settings = None

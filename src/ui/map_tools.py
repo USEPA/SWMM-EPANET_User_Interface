@@ -152,6 +152,9 @@ try:
             if self.session.actionMapSelectObj.isChecked():
                 if self.canvas.layers():
                     self.selectTool = SelectMapTool(self.canvas, self.session)
+                    if self.session.gis_layer_tree.currentLayer():
+                        self.selectTool.auto_detect = False
+                        self.selectTool.nearest_layer = self.session.gis_layer_tree.currentLayer()
                     self.selectTool.setAction(self.session.actionMapSelectObj)
                 else:
                     self.selectTool = None
@@ -646,7 +649,8 @@ try:
                 return None
 
         def add_layer(self, layer, group=None):
-            self.set_crs_from_layer(layer)
+            if not self.session.crs:
+                self.set_crs_from_layer(layer)
             if group:
                 # QgsMapLayerRegistry.instance().addMapLayer(layer, False)
                 self.qgs_project.addMapLayer(layer, False)
@@ -2235,6 +2239,7 @@ try:
             self.mp_geom = None
             self.prev_nearest_layer = None
             self.extending_same_layer = False
+            self.auto_detect = True
 
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
@@ -2464,7 +2469,8 @@ try:
                     self.session.map_widget.remove_layers([self.distance_layer])
                 distances = []
 
-            self.nearest_layer = None
+            if self.auto_detect:
+                self.nearest_layer = None
             self.nearest_feature = None
             self.nearest_point_index = -1
             self.nearest_distance = float("inf")
@@ -2491,15 +2497,19 @@ try:
                              lyr_name.lower().startswith("sublink")):
                     continue
                 # mlyr.removeSelection()
+                if not self.auto_detect:
+                    if self.nearest_layer:
+                        if mlyr.name() <> self.nearest_layer.name():
+                            continue
                 selected_ids = []
                 r = 4 * self.canvas.mapUnitsPerPixel()
-                sel_rect = QgsRectangle(self.mp_geom.asPoint().x() - r,
-                                        self.mp_geom.asPoint().y() - r,
-                                        self.mp_geom.asPoint().x() + r,
-                                        self.mp_geom.asPoint().y() + r)
-                # mlyr.select(sel_rect, False)
-                mlyr.selectByRect(sel_rect, QgsVectorLayer.SetSelection)
-                ids = mlyr.selectedFeatureIds()
+                lyr_pt = self.toLayerCoordinates(mlyr, self.mp_geom.asPoint())
+                sel_rect = QgsRectangle(lyr_pt.x() - r,
+                                        lyr_pt.y() - r,
+                                        lyr_pt.x() + r,
+                                        lyr_pt.y() + r)
+                mlyr.select(sel_rect, False)
+                ids = mlyr.selectedFeaturesIds()
                 if len(ids):
                     selected_ids.append(ids[0])
                     self.nearest_layer = mlyr

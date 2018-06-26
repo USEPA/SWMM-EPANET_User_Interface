@@ -2395,7 +2395,8 @@ try:
 
                 if self.nearest_layer:
                     if nearest_feature_name not in self.selected_names:
-                        self.selected_names.append(nearest_feature_name)
+                        if nearest_feature_name is not None:
+                            self.selected_names.append(nearest_feature_name)
                     self.session.select_named_items(self.nearest_layer, self.selected_names)
                 else:
                     self.session.clear_object_listing()
@@ -2499,7 +2500,7 @@ try:
                 # mlyr.removeSelection()
                 if not self.auto_detect:
                     if self.nearest_layer:
-                        if mlyr.name() <> self.nearest_layer.name():
+                        if mlyr.name() != self.nearest_layer.name():
                             continue
                 selected_ids = []
                 r = 4 * self.canvas.mapUnitsPerPixel()
@@ -2508,8 +2509,8 @@ try:
                                         lyr_pt.y() - r,
                                         lyr_pt.x() + r,
                                         lyr_pt.y() + r)
-                mlyr.select(sel_rect, False)
-                ids = mlyr.selectedFeaturesIds()
+                mlyr.selectByRect(sel_rect, False)
+                ids = mlyr.selectedFeatureIds()
                 if len(ids):
                     selected_ids.append(ids[0])
                     self.nearest_layer = mlyr

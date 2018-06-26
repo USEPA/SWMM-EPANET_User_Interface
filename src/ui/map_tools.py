@@ -944,7 +944,7 @@ try:
             geom_type = layer.geometryType()
             # angle_idx = -1
             do_flowdir = False
-            if aflow_dir and acolor_by_flow and geom_type == QgsWkbTypes.LineString:
+            if aflow_dir and acolor_by_flow and geom_type == QgsWkbTypes.LineGeometry:
                 if len(acolor_by_flow) == len(color_by):
                     do_flowdir = True
 
@@ -1039,11 +1039,13 @@ try:
                     symbol = EmbedMap.validatedDefaultSymbol(layer.geometryType())
                     if layer.geometryType() == 0:
                         EmbedMap.set_default_point_renderer(layer, [], 3.5, False)
-                        symbol = layer.renderer().symbols()[0].clone()
+                        rc = QgsRenderContext()
+                        symbol = layer.renderer().symbols(rc)[0].clone()
                         # symbol.setSize(1.5)
                     elif layer.geometryType() == 1:
                         EmbedMap.set_default_line_renderer(layer, False)
-                        symbol = layer.renderer().symbols()[0].clone()
+                        rc = QgsRenderContext()
+                        symbol = layer.renderer().symbols(rc)[0].clone()
                         # symbol.setWidth(0.5)
                         if do_flowdir and slayer:
                             symbol.appendSymbolLayer(slayer.clone())
@@ -1066,7 +1068,7 @@ try:
             # if layer.featureCount() <= 300:
             # pal_layer = QgsPalLayerSettings.fromLayer(layer) #pyqgis3 removed
             qgs_prop = QgsProperty()
-            qgs_prop.setField("color")
+            qgs_prop.setField("Color")
             pc = QgsPropertyCollection('ddp')
             pc.setProperty(0, qgs_prop)
             pal_layer = QgsPalLayerSettings()

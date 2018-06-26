@@ -567,9 +567,9 @@ class frmMainEPANET(frmMain):
         if " [" in layer_name:
             layer_name = layer_name[0:layer_name.index(" [")]
         if unit_text:
-            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+            layer.setName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
         else:
-            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+            layer.setName(layer_name + " [" + selected_attribute + "]")
 
     def animate_e(self):
         if self.output:

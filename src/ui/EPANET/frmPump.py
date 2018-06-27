@@ -60,10 +60,12 @@ class frmPump(frmGenericPropertyEditor):
             combobox = QComboBox()
             combobox.addItem('OPEN')
             combobox.addItem('CLOSED')
-            if edit_these[column].initial_status and (edit_these[column].initial_status.upper() == 'OPEN' or edit_these[column].initial_status == ''):
-                combobox.setCurrentIndex(0)
-            else:
-                combobox.setCurrentIndex(1)
+            combobox.setCurrentIndex(0)
+            if len(edit_these) > 0:
+                if edit_these[column].initial_status.upper() == 'OPEN':
+                    combobox.setCurrentIndex(0)
+                else:
+                    combobox.setCurrentIndex(1)
             self.tblGeneric.setCellWidget(9, column, combobox)
             # efficiency curve
             combobox = QComboBox()

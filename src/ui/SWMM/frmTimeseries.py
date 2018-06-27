@@ -41,6 +41,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             self.editing_item = timeseries
             self.txtTimeseriesName.setText(timeseries.name)
             self.txtDescription.setText(timeseries.comment)
+            self.tblTime.setRowCount(max(len(timeseries.values) + 1, self.tblTime.rowCount()))
             if timeseries.file:
                 if len(timeseries.file) > 0:
                     self.rbnExternal.setChecked(True)

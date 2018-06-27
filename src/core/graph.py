@@ -44,7 +44,7 @@ class SWMM:
         x_values = x_item.get_series(output, x_attribute, start_index, num_steps)
 
         y_item = output.get_items(object_type_label_y)[object_name_y]
-        y_attribute = x_item.get_attribute_by_name(attribute_name_y)
+        y_attribute = y_item.get_attribute_by_name(attribute_name_y)
         y_units = y_attribute.units(output.unit_system)
         y_values = y_item.get_series(output, y_attribute, start_index, num_steps)
 

@@ -209,7 +209,7 @@ class CurveReader(SectionReader):
     def read(new_text):
         curve = Curve()
         for line in new_text.splitlines():
-            SectionReader.set_comment_check_section(curve, line)
+            line = SectionReader.set_comment_check_section(curve, line)
             if line.strip():
                 fields = line.split()
                 if len(fields) > 2:
@@ -933,7 +933,7 @@ class OutfallReader(SectionReader):
             else:
                 gated_field = 3
             if len(fields) > gated_field:
-                outfall.setattr_keep_type("tidal_gate", fields[gated_field])
+                outfall.setattr_keep_type("tide_gate", fields[gated_field])
             if len(fields) > gated_field + 1:
                 outfall.route_to = fields[gated_field + 1]
         else:
@@ -1574,11 +1574,12 @@ class RainGageReader(SectionReader):
             if fields[4].upper() == "TIMESERIES":
                 rain_gage.timeseries = fields[5]
             else:
+                rain_gage.setattr_keep_type("data_source", fields[4])
                 rain_gage.data_file_name = fields[5]
                 if len(fields) > 6:
                     rain_gage.data_file_station_id = fields[6]
                 if len(fields) > 7:
-                    rain_gage.data_file_rain_units = fields[7]
+                    rain_gage.setattr_keep_type("data_file_rain_units", fields[7])
         return rain_gage
 
 

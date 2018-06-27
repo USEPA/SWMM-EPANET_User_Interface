@@ -41,6 +41,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
             curve = self.section.value[curve]
         if isinstance(curve, Curve):
             self.editing_item = curve
+            self.tblMult.setRowCount(max(len(curve.curve_xy) + 1, self.tblMult.rowCount()))
         if self.curve_type == "CONTROL":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)

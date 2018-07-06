@@ -594,7 +594,7 @@ try:
     _libs["ENOutputAPI-64"] = load_library("ENOutputAPI-64")
 except:
     print("Looking for ENOutputAPI-64...")
-    if sys.platform == "linux2":
+    if sys.platform.startswith("linux"):
         _libs["ENOutputAPI-64"] = ctypes.cdll.LoadLibrary(os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENOutputAPI-64.so"))
     else:
         search_dir = os.path.dirname(os.path.realpath(__file__))

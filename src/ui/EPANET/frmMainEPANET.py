@@ -9,7 +9,7 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QAction
 from PyQt5.QtCore import QObject, QSettings
-#from threading import linuxLock, Thread
+from threading import Lock, Thread
 from time import sleep
 
 

@@ -999,7 +999,9 @@ try:
                 #                               'CASE WHEN "color" < 0 THEN 180.0 ELSE 0.0 END',
                 #                               'color')
                 # lDataDefined = QgsDataDefined(True, False, '', 'angle')
-                lDataDefined = QgsExpressionContext(True, False, '', 'angle')
+                # lDataDefined = QgsExpressionContext(True, False, '', 'angle')
+                lDataDefined = QgsExpressionContext()
+
                 # anewlayer.setDataDefinedProperty('angle', lDataDefined)
                 # anewlayer.setAngle(180.0)
                 if anewlayer:
@@ -1074,7 +1076,7 @@ try:
             qgs_prop = QgsProperty()
             qgs_prop.setField("Color")
             pc = QgsPropertyCollection('ddp')
-            pc.setProperty(0, qgs_prop)
+            pc.setProperty(4, qgs_prop)
             pal_layer = QgsPalLayerSettings()
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
             pal_layer.setDataDefinedProperties(pc)
@@ -1082,8 +1084,10 @@ try:
             # pal_layer.writeToLayer(layer) #pyqgis3 removed
             pal_layer.scaleMin = 1/50000
             pal_layer.scaleMax = 1/1000
+            pal_layer.enabled = True
             labeler = QgsVectorLayerSimpleLabeling(pal_layer)
             layer.setLabeling(labeler)
+            layer.setLabelsEnabled(True)
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()

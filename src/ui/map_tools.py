@@ -2403,6 +2403,7 @@ try:
                             self.selected_names.append(nearest_feature_name)
                     self.session.select_named_items(self.nearest_layer, self.selected_names)
                 else:
+                    self.session.clear_section_selection()
                     self.session.clear_object_listing()
 
             except Exception as e2:

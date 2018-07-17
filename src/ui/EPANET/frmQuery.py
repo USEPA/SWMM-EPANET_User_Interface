@@ -190,5 +190,6 @@ class frmQuery(QMainWindow, Ui_frmQuery):
             if layer:
                 self.session.select_named_items(layer, slist)
         else:
+            self.session.clear_section_selection()
             self.session.clear_object_listing()
             self.session.map_widget.select_model_objects_by_ids(self.selected_objects)

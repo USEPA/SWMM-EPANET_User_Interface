@@ -24,6 +24,7 @@ class TextPlusButton(QFrame):
         self.setObjectName("TextPlusButton")
         self.horizontalLayout = QHBoxLayout(self)
         # self.horizontalLayout.setMargin(0)
+        self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setSpacing(4)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.textbox = QLineEdit(self)

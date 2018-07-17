@@ -1876,13 +1876,34 @@ class frmMain(QMainWindow, Ui_frmMain):
         currentItem = self.listViewObjects.takeItem(currentRow)
         self.listViewObjects.insertItem(currentRow - 1, currentItem)
 
+        if currentRow > 0:
+            selected_text = ''
+            for item in self.obj_tree.selectedIndexes():
+                selected_text = str(item.data())
+            if self.project is None or not selected_text:
+                return
+            self.move_object_in_list(selected_text, currentItem.text(), currentRow, currentRow - 1)
+
     def movedown_object(self):
         currentRow = self.listViewObjects.currentRow()
         currentItem = self.listViewObjects.takeItem(currentRow)
         self.listViewObjects.insertItem(currentRow + 1, currentItem)
 
+        if currentRow + 1 < self.listViewObjects.count():
+            selected_text = ''
+            for item in self.obj_tree.selectedIndexes():
+                selected_text = str(item.data())
+            if self.project is None or not selected_text:
+                return
+            self.move_object_in_list(selected_text, currentItem.text(), currentRow, currentRow)
+
     def sort_object(self):
         self.listViewObjects.sortItems()
+        # reorder objects to match sort order
+        selected_text = ''
+        for item in self.obj_tree.selectedIndexes():
+            selected_text = str(item.data())
+        self.sort_objects_in_list(selected_text)
 
     def select_named_items(self, layer, selected_list):
         if self.selecting.acquire(False):
@@ -1964,6 +1985,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.map_widget.remove_all_layers()
         # self.map_widget.set_extent_empty()
         self.map_widget.refresh_extent_needed = True
+        self.clear_section_selection()
         self.clear_object_listing()
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
@@ -2170,9 +2192,11 @@ class frmMain(QMainWindow, Ui_frmMain):
     def __unicode__(self):
         return unicode(self)
 
-    def clear_object_listing(self):
+    def clear_section_selection(self):
         self.tree_section = ''
         self.obj_tree.selectionModel().clearSelection()
+
+    def clear_object_listing(self):
         self.listViewObjects.clear()
 
     def list_objects(self):

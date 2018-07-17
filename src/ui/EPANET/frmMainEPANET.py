@@ -817,6 +817,18 @@ class frmMainEPANET(frmMain):
         else:
             return None
 
+    def move_object_in_list(self, category, item_name, old_index, new_index):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            item = section.value[item_name]
+            section.value.remove(section.value[old_index])
+            section.value.insert(new_index, item)
+
+    def sort_objects_in_list(self, category):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            section.value.sort(key=lambda x: x.name)
+
     def add_object(self, tree_text):
         item_type = self.tree_types[tree_text]
         new_item = item_type()

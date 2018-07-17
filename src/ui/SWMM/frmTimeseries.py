@@ -9,7 +9,7 @@ from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, main_form, edit_these=[], new_item=None):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
         self.setupUi(self)

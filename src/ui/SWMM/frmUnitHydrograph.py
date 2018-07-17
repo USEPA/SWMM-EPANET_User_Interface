@@ -10,7 +10,7 @@ class frmUnitHydrograph(QtGui.QMainWindow, Ui_frmUnitHydrograph):
              'July', 'August', 'September', 'October', 'November', 'December']
     month3 = ['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, main_form, edit_these=[], new_item=None):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/unithydrographeditordialog.htm"
         self.setupUi(self)

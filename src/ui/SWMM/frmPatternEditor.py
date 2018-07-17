@@ -7,7 +7,7 @@ from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
 
 
 class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, main_form, edit_these=[], new_item=None):
         QtGui.QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.setupUi(self)

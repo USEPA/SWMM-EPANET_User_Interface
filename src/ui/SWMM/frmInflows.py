@@ -472,36 +472,127 @@ class frmInflows(QMainWindow, Ui_frmInflows):
 
     def btnTimeseries_Clicked(self):
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self._main_form)
+        new_name = ''
+        if self.cboTimeSeries.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Series"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmTimeseries = frmTimeseries(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboTimeSeries.currentText())
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+        # edit timeseries
+        self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
+        if self.cboTimeSeries.currentIndex() == 0:
+            self.cboTimeSeries.addItem(new_name)
+            self.cboTimeSeries.setCurrentIndex(self.cboTimeSeries.count()-1)
 
     def btnPattern_Clicked(self):
+        new_name = ''
+        if self.cboPattern.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboPattern.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboPattern.currentIndex() == 0:
+            self.cboPattern.addItem(new_name)
+            self.cboPattern.setCurrentIndex(self.cboPattern.count()-1)
 
     def btnAverage_Clicked(self):
         self.txtAverage.setText('')
 
     def btnDryPattern1_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern1.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern1.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern1.currentIndex() == 0:
+            self.cboDryPattern1.addItem(new_name)
+            self.cboDryPattern1.setCurrentIndex(self.cboDryPattern1.count()-1)
 
     def btnDryPattern2_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern2.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern2.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern2.currentIndex() == 0:
+            self.cboDryPattern2.addItem(new_name)
+            self.cboDryPattern2.setCurrentIndex(self.cboDryPattern2.count()-1)
 
     def btnDryPattern3_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern3.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern3.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern3.currentIndex() == 0:
+            self.cboDryPattern3.addItem(new_name)
+            self.cboDryPattern3.setCurrentIndex(self.cboDryPattern3.count()-1)
 
     def btnDryPattern4_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern4.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern4.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern4.currentIndex() == 0:
+            self.cboDryPattern4.addItem(new_name)
+            self.cboDryPattern4.setCurrentIndex(self.cboDryPattern4.count()-1)
 
     def btnDryPattern5_Clicked(self):
         self.cboDryPattern1.setCurrentIndex(0)
@@ -516,9 +607,25 @@ class frmInflows(QMainWindow, Ui_frmInflows):
         self.cboDryPattern4.setCurrentIndex(0)
 
     def btnUnitHydro1_Clicked(self):
-        # edit unit hydrograph
-        self._frmUnitHydrograph = frmUnitHydrograph(self._main_form)
+        # send in currently selected UnitHydrograph
+        new_name = ''
+        if self.cboUnitHydro.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Unit Hydrographs"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmUnitHydrograph = frmUnitHydrograph(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboUnitHydro.currentText())
+            self._frmUnitHydrograph = frmUnitHydrograph(self._main_form, edit_these)
+        # edit UnitHydrograph
+        self._frmUnitHydrograph.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmUnitHydrograph.show()
+        if self.cboUnitHydro.currentIndex() == 0:
+            self.cboUnitHydro.addItem(new_name)
+            self.cboUnitHydro.setCurrentIndex(self.cboUnitHydro.count()-1)
 
     def btnUniHydro2_Clicked(self):
         self.cboUnitHydro.setCurrentIndex(0)

@@ -21,7 +21,7 @@ except AttributeError:
 
 process_events = QApplication.processEvents
 import matplotlib
-# matplotlib.use('agg')
+matplotlib.use('agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib import *

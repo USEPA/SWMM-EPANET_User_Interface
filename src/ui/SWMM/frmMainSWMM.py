@@ -1195,6 +1195,8 @@ class frmMainSWMM(frmMain):
 
     def get_object_list(self, category):
         ids = []
+        if category == 'Curves':
+            return None
         if category == self.tree_curves_ControlCurves[0]:
             for curve in self.project.curves.value:
                 if curve.curve_type == CurveType.CONTROL:

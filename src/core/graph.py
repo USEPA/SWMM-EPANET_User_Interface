@@ -4,7 +4,7 @@
     Can merge in future when output APIs are harmonized or datasets are passed in instead of selection criteria.
 """
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from matplotlib import dates
 import colorsys
 import datetime
@@ -187,7 +187,11 @@ class EPANET:
             if units:
                 parameter_label += ' (' + units + ')'
 
-            all_y_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+            # all_y_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+            for item in items:
+                all_y_values = item.get_attribute_for_all_at_time(output, attribute, time_index)
+                break
+
 
             y_values = []
             min_y = 999.9
@@ -235,7 +239,11 @@ class EPANET:
 
         if units:
             parameter_label += ' (' + units + ')'
-        all_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+        # all_values = items[0].get_attribute_for_all_at_time(output, attribute, time_index)
+        for item in items:
+            all_values = item.get_attribute_for_all_at_time(output, attribute, time_index)
+            break
+
 
         percent = []
         values = []

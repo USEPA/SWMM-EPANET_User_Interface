@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QAbstractItemView
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from core.epanet.reports import Reports
 from ui.convenience import all_list_items, selected_list_items
 from ui.model_utility import transl8

@@ -4,7 +4,7 @@
     Can merge in future when output APIs are harmonized or datasets are passed in instead of selection criteria.
 """
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from matplotlib import dates
 import colorsys
 import datetime

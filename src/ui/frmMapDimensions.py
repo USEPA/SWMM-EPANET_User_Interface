@@ -1,9 +1,15 @@
 from PyQt4 import QtCore, QtGui
 from frmMapDimensionsDesigner import Ui_frmMapDimensionsDesigner
+from ui.help import HelpHandler
 
 class frmMapDimensions(QtGui.QDialog):
     def __init__(self, main_form=None, *args):
         QtGui.QDialog.__init__(self)
+        self.helper = HelpHandler(self)
+        if main_form.model == "SWMM":
+            self.help_topic = "swmm/src/src/mapdimensionsdialog.htm"
+        elif main_form.model == "EPANET":
+            self.help_topic = "epanet/src/src/Map_Dime.htm"
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
         self.session = main_form
@@ -22,6 +28,7 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui.txtURy.textChanged.connect(lambda:self.checkCoords(self.ui.txtURy.text()))
         self.ui.btnAutoSize.clicked.connect(self.autoSetMapDimensions)
         self.ui.buttonBox.accepted.connect(self.setExtent)
+        self.ui.btnHelp.clicked.connect(self.show_help)
         self.setupOptions()
 
     def autoSetMapDimensions(self):
@@ -88,7 +95,7 @@ class frmMapDimensions(QtGui.QDialog):
             return
 
         model_dim = self.session.project.backdrop.dimensions
-        if model_dim and model_dim[0] and model_dim[1] and model_dim[2] and model_dim[3]:
+        if model_dim and model_dim[0] is not None and model_dim[1] is not None and model_dim[2] is not None and model_dim[3] is not None:
             #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
             #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
             #self.ui.txtURx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
@@ -198,4 +205,5 @@ class frmMapDimensions(QtGui.QDialog):
         else:
             return False
 
-
+    def show_help(self):
+        self.helper.show_help()

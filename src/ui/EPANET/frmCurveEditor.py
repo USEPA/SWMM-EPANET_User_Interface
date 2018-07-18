@@ -12,6 +12,7 @@ from ui.model_utility import BasePlot
 from math import isnan
 import os
 import traceback
+import matplotlib.pyplot as plt
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
@@ -415,7 +416,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         else:
             a = h0
             Result = False
-            for Iter in xrange(1, 6): # 1 to 5 do
+            for Iter in range(1, 6): # 1 to 5 do
                 h4 = a - h1
                 h5 = a - h2
                 #c = ln(h5/h4)/ln(q2/q1)
@@ -455,7 +456,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             q1 = q1/N
             self.X[1] = 0.0
             self.Y[1] = a
-            for I in xrange(2, N + 1): #2 to N do:
+            for I in range(2, N + 1): #2 to N do:
                 self.X[I] = (I-1)*q1
                 #Y[I] = a + b*Power(X[I],c)
                 self.Y[I] = a + b * (self.X[I] ** c)

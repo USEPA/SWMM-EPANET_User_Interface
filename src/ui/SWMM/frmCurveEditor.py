@@ -1,16 +1,22 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
+from ui.help import HelpHandler
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
 # from PyQt4.QtGui import *
+from ui.model_utility import ParseData
+import os
+import traceback
+import numpy as np
 
 
 class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form, title, curve_type, edit_these, new_item):
         QtGui.QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/curveeditordialog.htm"
         self.setupUi(self)
         if title:
@@ -95,7 +101,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for blank/duplicate curve name
         # TODO: Check if X-values are in ascending order
         self.editing_item.name = self.txtCurveName.text()
-        # curve.description = self.txtDescription.text()
+        self.editing_item.description = self.txtDescription.text()
         # curve.curve_type = core.swmm.curves.CurveType[self.cboCurveType.currentText()]
         if self.curve_type == "PUMP":
             if self.cboCurveType.currentIndex() == 0:
@@ -134,3 +140,72 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         elif curve_type == "TYPE4":
             self.tblMult.setHorizontalHeaderLabels(("Depth (ft)","Flow (CFS)"))
 
+    def load_curve_data(self):
+        directory = self._main_form.program_settings.value("DataDir", "")
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.dat)")
+        if os.path.exists(file_name):
+            self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
+            self._main_form.program_settings.sync()
+
+        if file_name:
+            with open(file_name, "r") as open_file:
+                lines = open_file.readlines()
+
+            if len(lines) > 1:
+                a = lines[1].split()
+                self.txtDescription.setText(a[len(a) - 1])
+            if len(lines) > 2:
+                curve_xy = []
+                for i in range(2, len(lines)):
+                    try:
+                        x, y = lines[i].split()
+                        xval, xval_is_good = ParseData.floatTryParse(x)
+                        yval, yval_is_good = ParseData.floatTryParse(y)
+                        if xval_is_good and yval_is_good:
+                            curve_xy.append((x, y))
+
+                        point_count = -1
+                        for point in curve_xy:
+                            point_count += 1
+                            led = QLineEdit(str(point[0]))
+                            self.tblMult.setItem(point_count, 0, QTableWidgetItem(led.text()))
+                            led = QLineEdit(str(point[1]))
+                            self.tblMult.setItem(point_count, 1, QTableWidgetItem(led.text()))
+
+                        pass
+                    except Exception as ex:
+                        pass
+
+    def save_curve_data(self):
+        directory = self._main_form.program_settings.value("DataDir", "")
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Curve Data File", directory, "Curve files (*.dat)")
+        if os.path.exists(file_name):
+            self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
+            self._main_form.program_settings.sync()
+        if file_name:
+            path_only, file_only = os.path.split(file_name)
+            try:
+                self.curve_data_to_file(file_name)
+            except Exception as ex:
+                print(str(ex) + '\n' + str(traceback.print_exc()))
+                QMessageBox.information(self, self._main_form.model,
+                                        "Error saving {0}\nin {1}\n{2}\n{2}".format(
+                                            file_only, path_only,
+                                            str(ex), str(traceback.print_exc())),
+                                        QMessageBox.Ok)
+
+    def curve_data_to_file(self, file_name):
+        if file_name:
+            with open(file_name, 'w') as writer:
+                #writer.writelines(self.as_text(project))
+                writer.write("EPASWMM Curve Data\n")
+                writer.write(self.txtDescription.text() + "\n")
+                for row in range(self.tblMult.rowCount()):
+                    if self.tblMult.item(row, 0) and self.tblMult.item(row, 1):
+                        x = self.tblMult.item(row, 0).text()
+                        y = self.tblMult.item(row, 1).text()
+                        if len(x) > 0 and len(y) > 0:
+                            writer.write("%s  %s\n" % (str(x), str(y)))
+
+    def show_help(self):
+        self.helper.show_help()

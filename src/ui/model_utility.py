@@ -192,7 +192,8 @@ class ParseData:
 
 class BasePlot(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
-        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        import matplotlib.pyplot as plt
+        self.fig = plt.figure(figsize=(width, height), dpi=dpi)
         self.fig.subplots_adjust(bottom=0.2)
         self.fig.subplots_adjust(left=0.15)
 

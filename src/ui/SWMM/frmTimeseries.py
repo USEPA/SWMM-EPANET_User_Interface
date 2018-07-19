@@ -163,7 +163,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Open a Time Series", '',
                                                       "Time series files (*.DAT);;All files (*.*)")
         if file_name:
-            self.txtExternalFile.setText(file_name)
+            self.txtExternalFile.setText('"' + file_name + '"')
 
     def btnView_Clicked(self):
         """

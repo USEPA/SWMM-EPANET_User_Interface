@@ -396,7 +396,7 @@ class frmMain(QMainWindow, Ui_frmMain):
                                 QMessageBox.Ok)
 
     def import_from_gis(self):
-        import import_export
+        import ui.import_export
 
         file_filter = "GeoJSON (*.json *.geojson);;"  \
                       "All files (*.*)"
@@ -410,10 +410,10 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.program_settings.setValue("GISPath", path_only)
                 self.program_settings.sync()
 
-            import_export.import_from_gis(self, file_name)
+            ui.import_export.import_from_gis(self, file_name)
 
     def export_to_gis(self):
-        import import_export
+        import ui.import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -429,7 +429,7 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.program_settings.setValue("GISPath", path_only)
                 self.program_settings.sync()
 
-            import_export.export_to_gis(self, file_name)
+            ui.import_export.export_to_gis(self, file_name)
 
     # def tabProjMapChanged(self, index):
     #     if index == 1:

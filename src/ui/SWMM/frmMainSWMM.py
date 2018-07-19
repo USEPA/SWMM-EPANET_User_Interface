@@ -23,6 +23,7 @@ from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
 from ui.SWMM.frmAbout import frmAbout
+from ui.SWMM.frmSummary import frmSummary
 from ui.SWMM.frmAquifers import frmAquifers
 from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmConduits import frmConduits
@@ -336,6 +337,10 @@ class frmMainSWMM(frmMain):
         HelpHandler.init_class(os.path.join(self.assembly_path, "swmm.qhc"))
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
+
+        self.actionStdProjSummary.triggered.connect(self.show_summary)
+        self.actionStdProjDetails.triggered.connect(self.show_details)
+        self.menuProject.removeAction(self.actionStdProjSimulation_Options)  # remove menus that are EPANET-specific
 
         self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
@@ -1508,6 +1513,13 @@ class frmMainSWMM(frmMain):
                 QMessageBox.information(None, self.model, self.model + " model executable not found", QMessageBox.Ok)
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
+
+    def show_summary(self):
+        self._frmSummary = frmSummary(self)
+        self._frmSummary.show()
+
+    def show_details(self):
+        QMessageBox.information(None, self.model, "'Details' not yet implemented.", QMessageBox.Ok)
 
     def help_topics(self):
         self.helper.show_help()

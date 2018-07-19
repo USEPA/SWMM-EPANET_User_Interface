@@ -167,7 +167,7 @@ class frmLIDControls(QtGui.QMainWindow, Ui_frmLIDControls):
 
         if len(subcatchment_area) < 1:
             subcatchment_area = 10.0
-        elif subcatchment_area <= 0:
+        elif float(subcatchment_area) <= 0:
             subcatchment_area = 10.0
 
         subcatchment_area = float(subcatchment_area) * conversion_factor

@@ -233,7 +233,7 @@ class frmMainEPANET(frmMain):
         QtCore.QObject.connect(self.actionGraph_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_graph)
         self.actionProjPlotTimeseries.triggered.connect(self.report_graph)
         self.actionProjPlotScatter.triggered.connect(self.report_graph)
-        self.actionProjPlotProfile.triggered.connect(self.report_graph)
+        self.actionProjPlotProfile.setVisible(False)
 
         self.actionTable_ReportMenu = QtGui.QAction(self)
         self.actionTable_ReportMenu.setObjectName(from_utf8("actionTable_ReportMenu"))

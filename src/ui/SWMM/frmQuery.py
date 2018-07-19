@@ -161,12 +161,18 @@ class frmQuery(QMainWindow, Ui_frmQuery):
                         if self.is_selected(node.name, value, val, slist):
                             count += 1
         elif self.cboFind.currentIndex() == 3: # LID
-            #ToDo figure out how to search for LID's presence
             otype = "subcatchment"
             for lid in self.project.lid_usage.value:
                 if lid.subcatchment_name:
-                    slist.append(lid.subcatchment_name)
-            pass
+                    if selected_attribute == "Any LIDs":
+                        slist.append(lid.subcatchment_name)
+                        count += 1
+                    else:
+                        for lid_control in self.project.lid_controls.value:
+                            if lid_control.name == lid.control_name:
+                                if lid_control.lid_type.value == self.cboProperty.currentIndex():
+                                    slist.append(lid.subcatchment_name)
+                                    count += 1
         elif self.cboFind.currentIndex() == 4: # nodes with inflow
             otype = "node"
             inflows = None
@@ -178,7 +184,9 @@ class frmQuery(QMainWindow, Ui_frmQuery):
                 inflows = self.project.rdii
             if inflows is not None:
                 for inflow in inflows.value:
-                    slist.append(inflow.node)
+                    if not inflow.node in slist:
+                        slist.append(inflow.node)
+                        count += 1
         else:
             otype = 'link'
             attribute = None
@@ -213,9 +221,11 @@ class frmQuery(QMainWindow, Ui_frmQuery):
 
         self.session.map_widget.clearSelectableObjects()
         if len(self.selected_objects) == 1:
-            layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
-            if layer:
-                self.session.select_named_items(layer, slist)
+            key_list = list(self.selected_objects.keys())
+            layer_name = key_list[0]
+            if layer_name:
+                lyr = self.session.model_layers.find_layer_by_name(layer_name)
+                self.session.select_named_items(lyr, slist)
         else:
             self.session.clear_section_selection()
             self.session.clear_object_listing()

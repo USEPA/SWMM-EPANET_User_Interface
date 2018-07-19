@@ -5,8 +5,8 @@ from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 import numpy as np
 from pandas import Series, DataFrame
-import matplotlib
-matplotlib.use('agg')
+# import matplotlib
+# matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -233,7 +233,7 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
         self.tableWidget.verticalHeader().setVisible(False)
         #column_headers = ""
         #self.tableWidget.setHorizontalHeaderLabels(column_headers)
-        for c in xrange(0, num_cols):
+        for c in range(0, num_cols):
             header_item = QTableWidgetItem(ColHeading1[c] + '\n' +
                                                  ColHeading2[c] + '\n' +
                                                  ColHeading3[c])
@@ -342,7 +342,7 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
                 M = 1
             lX = []
             lY = []
-            for I in xrange(0, N):
+            for I in range(0, N):
                 if np.mod(I, M) > 0:
                     continue
                 E = self.statsResult.EventList[I]

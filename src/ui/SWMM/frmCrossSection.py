@@ -368,7 +368,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'CUSTOM'
             value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Dummy':
-            XType = 'NotSet'
+            XType = 'DUMMY'
         value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
         if self.defaults is not None:
             #self.qsettings.setValue(self.default_key, value)

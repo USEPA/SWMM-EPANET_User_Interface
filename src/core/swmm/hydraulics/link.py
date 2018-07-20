@@ -361,6 +361,7 @@ class CrossSectionShape(Enum):
     SEMICIRCULAR = 22       # Full Height
     IRREGULAR = 23          # TransectCoordinates (Natural Channel)
     CUSTOM = 24             # Full Height, ShapeCurveCoordinates
+    DUMMY = 25
 
 
 class CrossSection(Section):

@@ -7,6 +7,7 @@ from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmInflows import frmInflows
 from ui.SWMM.frmTreatment import frmTreatment
+from ui.SWMM.frmSeepage import frmSeepage
 from core.swmm.curves import CurveType
 
 
@@ -21,6 +22,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
         self.project = main_form.project
         self.refresh_column = -1
         self.project_section = self.project.storage
+        self.new_item = new_item
 
         if self.project_section and \
                 isinstance(self.project_section.value, list) and \
@@ -52,6 +54,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(16, column, combobox)
             # also set special text plus button cells
+            self.set_seepage_loss_cell(column)
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
 
@@ -60,6 +63,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
             if self.refresh_column > -1:
+                self.set_seepage_loss_cell(self.refresh_column)
                 self.set_inflow_cell(self.refresh_column)
                 self.set_treatment_cell(self.refresh_column)
                 self.refresh_column = -1
@@ -102,6 +106,21 @@ class frmStorageUnits(frmGenericPropertyEditor):
         tb.button.clicked.connect(self.make_show_treatments(column))
         self.tblGeneric.setCellWidget(6, column, tb)
 
+    def set_seepage_loss_cell(self, column):
+        # text plus button for seepage loss editor
+        tb = TextPlusButton(self)
+        tb.textbox.setText("NO")
+        storage_section = self.project.find_section("STORAGE")
+        storage_list = storage_section.value[0:]
+        for value in storage_list:
+            if value.name == str(self.tblGeneric.item(0,column).text()):
+                if value.seepage_hydraulic_conductivity > '0':
+                    tb.textbox.setText('YES')
+        tb.textbox.setEnabled(False)
+        tb.column = column
+        tb.button.clicked.connect(self.make_show_seepage_loss(column))
+        self.tblGeneric.setCellWidget(11, column, tb)
+
     def make_show_inflows(self, column):
         def local_show():
             editor = frmInflows(self._main_form, str(self.tblGeneric.item(0, column).text()))
@@ -113,6 +132,16 @@ class frmStorageUnits(frmGenericPropertyEditor):
     def make_show_treatments(self, column):
         def local_show():
             editor = frmTreatment(self._main_form, str(self.tblGeneric.item(0, column).text()))
+            editor.setWindowModality(QtCore.Qt.ApplicationModal)
+            editor.show()
+            self.refresh_column = column
+        return local_show
+
+    def make_show_seepage_loss(self, column):
+        def local_show():
+            if self.new_item:
+                self.backend.apply_edits() # create before editing
+            editor = frmSeepage(self._main_form, str(self.tblGeneric.item(0, column).text()))
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column

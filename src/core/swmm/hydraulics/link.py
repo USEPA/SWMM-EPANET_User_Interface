@@ -36,7 +36,7 @@ class Conduit(SwmmLink):
         ("loss_coefficient",        '', "Avg. Loss Coeff.","0.0",    '', '', "Coefficient for energy losses along the length of the conduit"),
         ("seepage",                 '', "Seepage Loss Rate","0.0",   '', '', "Rate of seepage loss into surrounding soil"),
         ("flap_gate",               '', "Flap Gate",        "False", '', '', "True if a flap gate prevents reverse flow through conduit"),
-        ("culvert_code",            '', "Culvert Code",     "",      '', '', "Culvert type code (leave blank for no culvert")
+        ("culvert_code",            '', "Culvert Code",     "",      '', '', "Culvert type code (leave blank for no culvert)")
     ))
 
     def __init__(self):

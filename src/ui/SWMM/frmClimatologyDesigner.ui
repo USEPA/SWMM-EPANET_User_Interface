@@ -126,7 +126,7 @@
               <item row="1" column="0">
                <widget class="QRadioButton" name="rbnExternal">
                 <property name="text">
-                 <string>Exteral Climate File</string>
+                 <string>External Climate File</string>
                 </property>
                </widget>
               </item>
@@ -521,7 +521,7 @@
            <item row="5" column="0">
             <widget class="QLabel" name="lblSnowLongitude">
              <property name="text">
-              <string>Longitude Correciton (+/- minutes)</string>
+              <string>Longitude Correction (+/- minutes)</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>

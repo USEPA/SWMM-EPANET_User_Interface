@@ -337,10 +337,12 @@ class frmMainSWMM(frmMain):
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
 
-        self.actionTranslate_Coordinates = QtGui.QAction(self)
         self.actionStdProjSummary.triggered.connect(self.show_summary)
         self.actionStdProjDetails.triggered.connect(self.show_details)
         self.menuProject.removeAction(self.actionStdProjSimulation_Options)  # remove menus that are EPANET-specific
+        self.menuObjects.deleteLater()
+
+        self.actionTranslate_Coordinates = QtGui.QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))

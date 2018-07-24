@@ -110,7 +110,7 @@ class Ui_frmLIDControls(object):
         item = self.tblControls.horizontalHeaderItem(3)
         item.setText(_translate("frmLIDControls", "% From Imperv", None))
         item = self.tblControls.horizontalHeaderItem(4)
-        item.setText(_translate("frmLIDControls", "Report Flle", None))
+        item.setText(_translate("frmLIDControls", "Report File", None))
         self.btnAdd.setText(_translate("frmLIDControls", "Add", None))
         self.btnEdit.setText(_translate("frmLIDControls", "Edit", None))
         self.btnDelete.setText(_translate("frmLIDControls", "Delete", None))

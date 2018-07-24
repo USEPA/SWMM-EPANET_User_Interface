@@ -340,8 +340,11 @@ class frmMainSWMM(frmMain):
 
         self.actionStdProjSummary.triggered.connect(self.show_summary)
         self.actionStdProjDetails.triggered.connect(self.show_details)
-        self.menuProject.removeAction(self.actionStdProjSimulation_Options)  # remove menus that are EPANET-specific
+
+        # remove menus that are EPANET-specific
+        self.menuProject.removeAction(self.actionStdProjSimulation_Options)
         self.menuObjects.deleteLater()
+        self.menuView.removeAction(self.actionStdMapFind)
 
         self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))

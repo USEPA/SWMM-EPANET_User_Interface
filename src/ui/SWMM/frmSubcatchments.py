@@ -1,6 +1,6 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
-from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
@@ -173,11 +173,13 @@ class frmSubcatchments(frmGenericPropertyEditor):
                             edit_these.append(item)
                 if len(groundwater_section.value) == 0:
                     new_item = Groundwater()
+                    new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                     groundwater_section.value.append(new_item)
                     edit_these.append(new_item)
-            else:
+            if len(edit_these) == 0:
                 new_item = Groundwater()
                 groundwater_section.value = []
+                new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                 groundwater_section.value.append(new_item)
                 edit_these.append(new_item)
             editor = frmGroundwaterFlow(self, edit_these, None, "SWMM Groundwater Flow Editor")
@@ -224,26 +226,40 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_lid_controls(self, column):
         def local_show():
-            editor = frmLIDControls(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("LID_CONTROLS")
+            if section and len(section.value[0:]) > 0:
+                editor = frmLIDControls(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM",  "No LID controls have been defined yet for this project.", QMessageBox.Ok)
         return local_show
 
     def make_show_coverage_controls(self, column):
         def local_show():
-            editor = frmLandUseAssignment(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("LANDUSES")
+            if section and len(section.value[0:]) > 0:
+                editor = frmLandUseAssignment(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM", "No land uses have been defined yet for this project.",
+                                        QMessageBox.Ok)
         return local_show
 
     def make_show_loadings_controls(self, column):
         def local_show():
-            editor = frmInitialBuildup(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("POLLUTANTS")
+            if section and len(section.value[0:]) > 0:
+                editor = frmInitialBuildup(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM", "No pollutants have been defined yet for this project.",
+                                        QMessageBox.Ok)
         return local_show
 
     def cmdOK_Clicked(self):

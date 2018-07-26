@@ -71,6 +71,17 @@ class InputFileReader(object):
         #    project.sections.remove(old_section)
         new_section = None
         attr_name = project.format_as_attribute_name(section_name)
+
+        # special case for section 'lid_controls', because of multi-line structure, must strip out comment lines
+        if attr_name == "lid_controls":
+            # strip comment lines from section_text
+            section_text_list = section_text.split('\n')
+            string_without_comments = ""
+            for line in section_text_list:
+                if line[0] != ";":
+                    string_without_comments += line + '\n'
+            section_text = string_without_comments[:-1]
+
         reader_name = "read_" + attr_name
         if hasattr(self, reader_name):
             reader = self.__getattribute__(reader_name)
@@ -147,6 +158,7 @@ class SectionReader(object):
                     section.comment += '\n' + this_comment  # Separate from existing comment with newline
             else:
                 section.comment = this_comment
+                # section.description = this_comment
         if line.startswith('['):
             if hasattr(section, "SECTION_NAME") and line.strip().upper() != section.SECTION_NAME.upper():
                 raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())

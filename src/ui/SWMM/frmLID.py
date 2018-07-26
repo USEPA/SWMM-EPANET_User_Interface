@@ -54,40 +54,40 @@ class frmLID(QMainWindow, Ui_frmLID):
             elif lid.lid_type == LIDType.VS:
                 self.cboLIDType.setCurrentIndex(7)
 
-            # if lid.has_surface_layer:
-            self.txtSurface1.setText(lid.surface_layer_storage_depth)
-            self.txtSurface2.setText(lid.surface_layer_vegetative_cover_fraction)
-            self.txtSurface3.setText(lid.surface_layer_surface_roughness)
-            self.txtSurface4.setText(lid.surface_layer_surface_slope)
-            self.txtSurface5.setText(lid.surface_layer_swale_side_slope)
-            # if lid.has_pavement_layer:
-            self.txtPavement1.setText(lid.pavement_layer_thickness)
-            self.txtPavement2.setText(lid.pavement_layer_void_ratio)
-            self.txtPavement3.setText(lid.pavement_layer_impervious_surface_fraction)
-            self.txtPavement4.setText(lid.pavement_layer_permeability)
-            self.txtPavement5.setText(lid.pavement_layer_clogging_factor)
-            # if lid.has_soil_layer:
-            self.txtSoil1.setText(lid.soil_layer_thickness)
-            self.txtSoil2.setText(lid.soil_layer_porosity)
-            self.txtSoil3.setText(lid.soil_layer_field_capacity)
-            self.txtSoil4.setText(lid.soil_layer_wilting_point)
-            self.txtSoil5.setText(lid.soil_layer_conductivity)
-            self.txtSoil6.setText(lid.soil_layer_conductivity_slope)
-            self.txtSoil7.setText(lid.soil_layer_suction_head)
-            # if lid.has_storage_layer:
-            self.txtStorage1.setText(lid.storage_layer_height)
-            self.txtStorage2.setText(lid.storage_layer_void_ratio)
-            self.txtStorage3.setText(lid.storage_layer_filtration_rate)
-            self.txtStorage4.setText(lid.storage_layer_clogging_factor)
-            # if lid.has_underdrain_system:
-            self.txtDrain1.setText(lid.drain_coefficient)
-            self.txtDrain2.setText(lid.drain_exponent)
-            self.txtDrain3.setText(lid.drain_offset_height)
-            self.txtDrain4.setText(lid.drain_delay)
-            # if lid.has_drainmat_system:
-            self.txtDrain1.setText(lid.drainmat_thickness)
-            self.txtDrain2.setText(lid.drainmat_void_fraction)
-            self.txtDrain3.setText(lid.drainmat_roughness)
+            if lid.has_surface_layer:
+                self.txtSurface1.setText(lid.surface_layer_storage_depth)
+                self.txtSurface2.setText(lid.surface_layer_vegetative_cover_fraction)
+                self.txtSurface3.setText(lid.surface_layer_surface_roughness)
+                self.txtSurface4.setText(lid.surface_layer_surface_slope)
+                self.txtSurface5.setText(lid.surface_layer_swale_side_slope)
+            if lid.has_pavement_layer:
+                self.txtPavement1.setText(lid.pavement_layer_thickness)
+                self.txtPavement2.setText(lid.pavement_layer_void_ratio)
+                self.txtPavement3.setText(lid.pavement_layer_impervious_surface_fraction)
+                self.txtPavement4.setText(lid.pavement_layer_permeability)
+                self.txtPavement5.setText(lid.pavement_layer_clogging_factor)
+            if lid.has_soil_layer:
+                self.txtSoil1.setText(lid.soil_layer_thickness)
+                self.txtSoil2.setText(lid.soil_layer_porosity)
+                self.txtSoil3.setText(lid.soil_layer_field_capacity)
+                self.txtSoil4.setText(lid.soil_layer_wilting_point)
+                self.txtSoil5.setText(lid.soil_layer_conductivity)
+                self.txtSoil6.setText(lid.soil_layer_conductivity_slope)
+                self.txtSoil7.setText(lid.soil_layer_suction_head)
+            if lid.has_storage_layer:
+                self.txtStorage1.setText(lid.storage_layer_height)
+                self.txtStorage2.setText(lid.storage_layer_void_ratio)
+                self.txtStorage3.setText(lid.storage_layer_filtration_rate)
+                self.txtStorage4.setText(lid.storage_layer_clogging_factor)
+            if lid.has_underdrain_system:
+                self.txtDrain1.setText(lid.drain_coefficient)
+                self.txtDrain2.setText(lid.drain_exponent)
+                self.txtDrain3.setText(lid.drain_offset_height)
+                self.txtDrain4.setText(lid.drain_delay)
+            if lid.has_drainmat_system:
+                self.txtDrain1.setText(lid.drainmat_thickness)
+                self.txtDrain2.setText(lid.drainmat_void_fraction)
+                self.txtDrain3.setText(lid.drainmat_roughness)
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtName.text()
@@ -156,40 +156,40 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_underdrain_system = False
             self.editing_item.has_drainmat_system = False
 
-        # if lid.has_surface_layer:
-        self.editing_item.surface_layer_storage_depth = self.txtSurface1.text()
-        self.editing_item.surface_layer_vegetative_cover_fraction = self.txtSurface2.text()
-        self.editing_item.surface_layer_surface_roughness = self.txtSurface3.text()
-        self.editing_item.surface_layer_surface_slope = self.txtSurface4.text()
-        self.editing_item.surface_layer_swale_side_slope = self.txtSurface5.text()
-        # if lid.has_pavement_layer:
-        self.editing_item.pavement_layer_thickness = self.txtPavement1.text()
-        self.editing_item.pavement_layer_void_ratio = self.txtPavement2.text()
-        self.editing_item.pavement_layer_impervious_surface_fraction = self.txtPavement3.text()
-        self.editing_item.pavement_layer_permeability = self.txtPavement4.text()
-        self.editing_item.pavement_layer_clogging_factor = self.txtPavement5.text()
-        # if lid.has_soil_layer:
-        self.editing_item.soil_layer_thickness = self.txtSoil1.text()
-        self.editing_item.soil_layer_porosity = self.txtSoil2.text()
-        self.editing_item.soil_layer_field_capacity = self.txtSoil3.text()
-        self.editing_item.soil_layer_wilting_point = self.txtSoil4.text()
-        self.editing_item.soil_layer_conductivity = self.txtSoil5.text()
-        self.editing_item.soil_layer_conductivity_slope = self.txtSoil6.text()
-        self.editing_item.soil_layer_suction_head = self.txtSoil7.text()
-        # if lid.has_storage_layer:
-        self.editing_item.storage_layer_height = self.txtStorage1.text()
-        self.editing_item.storage_layer_void_ratio = self.txtStorage2.text()
-        self.editing_item.storage_layer_filtration_rate = self.txtStorage3.text()
-        self.editing_item.storage_layer_clogging_factor = self.txtStorage4.text()
-        # if lid.has_underdrain_system:
-        self.editing_item.drain_coefficient = self.txtDrain1.text()
-        self.editing_item.drain_exponent = self.txtDrain2.text()
-        self.editing_item.drain_offset_height = self.txtDrain3.text()
-        self.editing_item.drain_delay = self.txtDrain4.text()
-        # if lid.has_drainmat_system:
-        self.editing_item.drainmat_thickness = self.txtDrain1.text()
-        self.editing_item.drainmat_void_fraction = self.txtDrain2.text()
-        self.editing_item.drainmat_roughness = self.txtDrain3.text()
+        if self.editing_item.has_surface_layer:
+            self.editing_item.surface_layer_storage_depth = self.txtSurface1.text()
+            self.editing_item.surface_layer_vegetative_cover_fraction = self.txtSurface2.text()
+            self.editing_item.surface_layer_surface_roughness = self.txtSurface3.text()
+            self.editing_item.surface_layer_surface_slope = self.txtSurface4.text()
+            self.editing_item.surface_layer_swale_side_slope = self.txtSurface5.text()
+        if self.editing_item.has_pavement_layer:
+            self.editing_item.pavement_layer_thickness = self.txtPavement1.text()
+            self.editing_item.pavement_layer_void_ratio = self.txtPavement2.text()
+            self.editing_item.pavement_layer_impervious_surface_fraction = self.txtPavement3.text()
+            self.editing_item.pavement_layer_permeability = self.txtPavement4.text()
+            self.editing_item.pavement_layer_clogging_factor = self.txtPavement5.text()
+        if self.editing_item.has_soil_layer:
+            self.editing_item.soil_layer_thickness = self.txtSoil1.text()
+            self.editing_item.soil_layer_porosity = self.txtSoil2.text()
+            self.editing_item.soil_layer_field_capacity = self.txtSoil3.text()
+            self.editing_item.soil_layer_wilting_point = self.txtSoil4.text()
+            self.editing_item.soil_layer_conductivity = self.txtSoil5.text()
+            self.editing_item.soil_layer_conductivity_slope = self.txtSoil6.text()
+            self.editing_item.soil_layer_suction_head = self.txtSoil7.text()
+        if self.editing_item.has_storage_layer:
+            self.editing_item.storage_layer_height = self.txtStorage1.text()
+            self.editing_item.storage_layer_void_ratio = self.txtStorage2.text()
+            self.editing_item.storage_layer_filtration_rate = self.txtStorage3.text()
+            self.editing_item.storage_layer_clogging_factor = self.txtStorage4.text()
+        if self.editing_item.has_underdrain_system:
+            self.editing_item.drain_coefficient = self.txtDrain1.text()
+            self.editing_item.drain_exponent = self.txtDrain2.text()
+            self.editing_item.drain_offset_height = self.txtDrain3.text()
+            self.editing_item.drain_delay = self.txtDrain4.text()
+        if self.editing_item.has_drainmat_system:
+            self.editing_item.drainmat_thickness = self.txtDrain1.text()
+            self.editing_item.drainmat_void_fraction = self.txtDrain2.text()
+            self.editing_item.drainmat_roughness = self.txtDrain3.text()
         # self.main_form.list_objects()
 
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project

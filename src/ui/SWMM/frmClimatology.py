@@ -90,6 +90,7 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         time_series_section = project.find_section("TIMESERIES")
         time_series_list = time_series_section.value[0:]
         self.cboEvapTs.clear()
+        self.cboEvapTs.addItem('')
         selected_index = 0
         for value in time_series_list:
             self.cboEvapTs.addItem(value.name)
@@ -100,15 +101,12 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         pattern_section = project.find_section("PATTERNS")
         pattern_list = pattern_section.value[0:]
         self.cboMonthly.clear()
-        self.cboMonthly.addItem("")
+        self.cboMonthly.addItem('')
         selected_index = 0
-        previous_pattern = ""
         for value in pattern_list:
-             if value.name and value.name != previous_pattern:
-                 self.cboMonthly.addItem(value.name)
-                 previous_pattern = value.name
-                 if value.name == evap_section.recovery_pattern:
-                    selected_index = int(self.cboMonthly.count())-1
+            self.cboMonthly.addItem(value.name)
+            if value.name == evap_section.recovery_pattern:
+                selected_index = int(self.cboMonthly.count())-1
         self.cboMonthly.setCurrentIndex(selected_index)
 
         temp_section = project.temperature
@@ -137,7 +135,7 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         for value in time_series_list:
             self.cboTimeSeries.addItem(value.name)
             if value.name == temp_section.timeseries:
-                selected_index = self.cboTimeSeries.count()
+                selected_index = int(self.cboTimeSeries.count())-1
         self.cboTimeSeries.setCurrentIndex(selected_index)
         self.txtClimate.setText(temp_section.filename)
         self.dedStart.setDate(QtCore.QDate.fromString(temp_section.start_date, "MM/dd/yyyy"))
@@ -267,6 +265,9 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             temp_section.source = TemperatureSource.UNSET
         temp_section.timeseries = str(self.cboTimeSeries.currentText())
         temp_section.filename = self.txtClimate.text()
+        if len(temp_section.filename) > 0:
+            if temp_section.filename[0] != '"':
+                temp_section.filename = '"' + temp_section.filename + '"'
         if self.cbxStart.isChecked():
             temp_section.start_date = self.dedStart.date().toString("MM/dd/yyyy")
 
@@ -418,8 +419,24 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
 
     def btnTimeSeries_Clicked(self):
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self._main_form)
+        new_name = ''
+        if self.cboTimeSeries.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Series"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmTimeseries = frmTimeseries(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboTimeSeries.currentText())
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+        # edit timeseries
+        self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
+        if self.cboTimeSeries.currentIndex() == 0:
+            self.cboTimeSeries.addItem(new_name)
+            self.cboTimeSeries.setCurrentIndex(self.cboTimeSeries.count()-1)
 
     def btnClimate_Clicked(self):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Climatological File", '',
@@ -462,26 +479,57 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         self.tblAreal.setItem(9,1,QTableWidgetItem(QLineEdit('0.98').text()))
 
     def btnEvapTS_Clicked(self):
-        # edit timeseries
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self._main_form)
+        new_name = ''
+        if self.cboEvapTs.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Series"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmTimeseries = frmTimeseries(self._main_form, [], new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboEvapTs.currentText())
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+        # edit timeseries
+        self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
+        if self.cboEvapTs.currentIndex() == 0:
+            self.cboEvapTs.addItem(new_name)
+            self.cboEvapTs.setCurrentIndex(self.cboEvapTs.count() - 1)
 
     def btnPattern_Clicked(self):
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
-        self._frmPatternEditor.show()
+        # pattern_section = self._main_form.project.find_section("PATTERNS")
+        # pattern_list = pattern_section.value[0:]
+        # self.cboMonthly.clear()
+        # self.cboMonthly.addItem("")
+        # selected_index = 0
+        # previous_pattern = ""
+        # for value in pattern_list:
+        #     if value.name and value.name != previous_pattern:
+        #         self.cboMonthly.addItem(value.name)
+        #         previous_pattern = value.name
 
-        pattern_section = self._main_form.project.find_section("PATTERNS")
-        pattern_list = pattern_section.value[0:]
-        self.cboMonthly.clear()
-        self.cboMonthly.addItem("")
-        selected_index = 0
-        previous_pattern = ""
-        for value in pattern_list:
-            if value.name and value.name != previous_pattern:
-                self.cboMonthly.addItem(value.name)
-                previous_pattern = value.name
+        new_name = ''
+        if self.cboMonthly.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form, [], new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboMonthly.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
+        # edit timeseries
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
+        self._frmPatternEditor.show()
+        if self.cboMonthly.currentIndex() == 0:
+            self.cboMonthly.addItem(new_name)
+            self.cboMonthly.setCurrentIndex(self.cboMonthly.count() - 1)
 
     def btnDelete_Clicked(self):
         # remove pattern

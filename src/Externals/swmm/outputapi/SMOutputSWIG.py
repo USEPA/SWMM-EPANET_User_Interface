@@ -362,12 +362,12 @@ class SwmmOutputObject(object):
         """
         self._call_int_return = c_int()  # Private variable used only inside call_int
         self._call_double_return = c_double()  # Private variable used only inside call_double
-        self.output_file_name = str(output_file_name)
+        self.output_file_name = output_file_name
 
         self.ptrapi = _lib.smo_init()
         for attempt in [1, 2, 3, 4, 5]:  # wait to finish closing the file in case it just finished running the model
 
-            ret = _lib.smo_open(self.ptrapi, c_char_p(self.output_file_name.encode()))
+            ret = _lib.smo_open(self.ptrapi, self.output_file_name)
             if ret == 0:
                 break
             print("Error " + str(ret) + " opening " + self.output_file_name + " retrying...")

@@ -108,9 +108,9 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
             path_only, file_only = os.path.split(file_name)
             try:
                 with open(file_name, 'w') as writer:
-                    writer.write("from Externals.swmm.outputapi import SMOutputWrapper\n")
+                    writer.write("from Externals.swmm.outputapi import SMOutputSWIG\n")
                     writer.write("from core.graph import SWMM as graphSWMM\n")
-                    writer.write("output = SMOutputWrapper.SwmmOutputObject('" + self.output.output_file_name + "')\n")
+                    writer.write("output = SMOutputSWIG.SwmmOutputObject('" + self.output.output_file_name + "')\n")
                     writer.write("elapsed_flag = " + str(self.rbnElapsed.isChecked()) + "\n")
                     writer.write("start_index = " + str(self.cboStart.currentIndex()) + "\n")
                     if self.cboEnd.currentIndex() == self.output.num_periods:

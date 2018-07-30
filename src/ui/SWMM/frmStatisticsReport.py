@@ -13,7 +13,7 @@ from matplotlib.figure import Figure
 import matplotlib.ticker as mtick
 import datetime
 import core.swmm.stats as UStats
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 import core.swmm.swmm_project as SMP
 
 StatsText = \

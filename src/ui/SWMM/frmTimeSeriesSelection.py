@@ -3,7 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 from ui.SWMM.frmTimeSeriesSelectionDesigner import Ui_frmTimeSeriesSelection
 from ui.help import HelpHandler
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 
 
 class frmTimeSeriesSelection(QMainWindow, Ui_frmTimeSeriesSelection):

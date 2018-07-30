@@ -3,7 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from ui.frmQueryDesigner import Ui_frmQuery
-import Externals.swmm.outputapi.SMOutputWrapper as SWMMO
+import Externals.swmm.outputapi.SMOutputSWIG as SWMMO
 import core.swmm.hydraulics.node as snode
 import core.swmm.hydraulics.link as slink
 import core.swmm.hydrology.subcatchment as sub

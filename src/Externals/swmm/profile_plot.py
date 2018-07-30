@@ -18,7 +18,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 # sys.path.append('C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/src/Externals/swmm/outputapi')
-from Externals.swmm.outputapi.SMOutputWrapper import *
+from Externals.swmm.outputapi.SMOutputSWIG import *
 
 
 #Show Plot 1 = SHOW; 2 = Save Video Plot; 3 = Export HTML

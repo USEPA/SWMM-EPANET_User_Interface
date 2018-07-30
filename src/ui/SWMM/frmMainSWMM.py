@@ -89,7 +89,7 @@ from core.swmm.hydraulics.link import SubLink
 
 from ui.SWMM.frmRunSWMM import frmRunSWMM
 
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 from core.indexed_list import IndexedList
 import ui.convenience
 from ui.SWMM.inifile import DefaultsSWMM

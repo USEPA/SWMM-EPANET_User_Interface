@@ -7,7 +7,7 @@ from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportSelectionDesigner import Ui_frmStatisticsReportSelection
 from ui.SWMM.frmStatisticsReport import frmStatisticsReport
 from ui.help import HelpHandler
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 
 class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection):
 

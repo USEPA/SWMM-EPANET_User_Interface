@@ -2,7 +2,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QAbstractItemView, QMessageBox
 
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 from ui.SWMM.frmTableSelectionDesigner import Ui_frmTableSelection
 from ui.frmGenericListOutput import frmGenericListOutput
 

@@ -3,7 +3,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
 import pandas as pd
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 import core.swmm.swmm_project as SMP
 import core.swmm.quality as SMQ
 

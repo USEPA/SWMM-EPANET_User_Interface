@@ -32,6 +32,15 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
             self.editing_item = pack
             self.txtSnow.setText(pack.name)
 
+            if self.project.metric:
+                self.tblPack.verticalHeaderItem(0).setText('Min. Melt Coeff. (mm/hr/deg C)')
+                self.tblPack.verticalHeaderItem(1).setText('Max. Melt Coeff. (mm/hr/deg C)')
+                self.tblPack.verticalHeaderItem(2).setText('Base Temperature (deg C)')
+                self.tblPack.verticalHeaderItem(4).setText('Initial Snow Depth (mm)')
+                self.tblPack.verticalHeaderItem(5).setText('Initial Free Water (mm)')
+                self.tblPack.verticalHeaderItem(6).setText('Depth at 100% Cover (mm)')
+                self.lblRemoval1.setText('Depth at which snow removal begins (mm)')
+
             led = QLineEdit(str(pack.plowable_minimum_melt_coefficient))
             self.tblPack.setItem(0,0,QTableWidgetItem(led.text()))
             led = QLineEdit(str(pack.plowable_maximum_melt_coefficient))

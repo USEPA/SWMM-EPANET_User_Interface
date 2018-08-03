@@ -52,15 +52,15 @@ class Junction(Node):
          "Click to specify any external inflows received at the junction"),
         ('.treatment(node_name)',                '', "Treatment",       'NO', '',   '',
          "Click to specify any pollutant removal supplied at the junction"),
-        ("elevation",       '', "Invert El.",      '0', "ft",  "m", "Elevation of junction's invert"),
-        ("max_depth",       '', "Max. Depth",      '0', "ft",  "m",
+        ("elevation",       '', "Invert El.",      '0', "(ft)",  "(m)", "Elevation of junction's invert"),
+        ("max_depth",       '', "Max. Depth",      '0', "(ft)",  "(m)",
          "Maximum water depth (i.e. distance from invert to ground surface or 0 to use distance "
          "from invert to top of highest connecting link)"),
-        ("initial_depth",   '', "Initial Depth",   '0', "ft",  "m",
+        ("initial_depth",   '', "Initial Depth",   '0', "(ft)",  "(m)",
          "Initial water depth in junction"),
-        ("surcharge_depth", '', "Surcharge Depth", '0', "ft",  "m",
+        ("surcharge_depth", '', "Surcharge Depth", '0', "(ft)",  "(m)",
          "Depth in excess of maximum depth before flooding occurs"),
-        ("ponded_area",     '', "Ponded Area",     '0', "ft2", "m2", "Area of ponded water when flooded")))
+        ("ponded_area",     '', "Ponded Area",     '0', "(ft2)", "(m2)", "Area of ponded water when flooded")))
 
     def __init__(self):
         Node.__init__(self)
@@ -131,20 +131,20 @@ class Outfall(Junction):
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of outfall"),
-        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of outfall on study area map"),
-        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of outfall on study area map"),
-       #('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
-        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the outfall"),
-        ('.treatment(name)',    '', "Treatment",       'NO', '',   '',  "Click to specify any pollutant removal supplied at the outfall"),
-        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of outfall's invert"),
-        ("tide_gate",           '', "Tide Gate",       '0',  '',   '',  "True if outfall contains a tide gate to prevent backflow"),
-        ("route_to",            '', "Route To",        '',   '',   '',  "Subcatchment outfall is routed onto (blank if not applicable)"),
-        ("outfall_type",        '', "Type",            '0',  '',   '',  "Type of outfall boundary condition"),
-        ("fixed_stage",         '', "Fixed Stage",     '0',  '',   '',  "Water elevation for a FIXED boundary condition"),
-        ("tidal_curve",         '', "Curve Name",      '0',  '',   '',  "Name of tidal curve used for a TIDAL boundary condition"),
-        ("time_series_name",    '', "Series Name",     '0',  '',   '',  "Name of time series for a TIMESERIES boundary condition")))
+        ("name",                '', "Name",            '',   '',   '',      "User-assigned name of outfall"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',      "X coordinate of outfall on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',      "Y coordinate of outfall on study area map"),
+       #('',                    '', "Description",     '',   '',   '',      "Optional comment or description"),
+        ('tag',                 '', "Tag",             '',   '',   '',      "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',      "Click to specify any external inflows received at the outfall"),
+        ('.treatment(name)',    '', "Treatment",       'NO', '',   '',      "Click to specify any pollutant removal supplied at the outfall"),
+        ("elevation",           '', "Invert El.",      '0',  "(ft)", "(m)", "Elevation of outfall's invert"),
+        ("tide_gate",           '', "Tide Gate",       '0',  '',   '',      "True if outfall contains a tide gate to prevent backflow"),
+        ("route_to",            '', "Route To",        '',   '',   '',      "Subcatchment outfall is routed onto (blank if not applicable)"),
+        ("outfall_type",        '', "Type",            '0',  '',   '',      "Type of outfall boundary condition"),
+        ("fixed_stage",         '', "Fixed Stage",     '0',  '(ft)', '(m)', "Water elevation for a FIXED boundary condition"),
+        ("tidal_curve",         '', "Curve Name",      '0',  '',   '',      "Name of tidal curve used for a TIDAL boundary condition"),
+        ("time_series_name",    '', "Series Name",     '0',  '',   '',      "Name of time series for a TIMESERIES boundary condition")))
 
     def __init__(self):
         Junction.__init__(self)
@@ -209,25 +209,25 @@ class Divider(Junction):
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of divider"),
-        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of divider on study area map"),
-        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of divider on study area map"),
-        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
-        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the divider"),
-        ('.treatment(node_name)', '', "Treatment",   'NO', '',   '',  "Click to specify any pollutant removal supplied at the divider"),
-        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation of divider's invert"),
-        ("max_depth",           '', "Max Depth",       '0',  'ft', 'm',
+        ("name",                '', "Name",            '',   '',   '',        "User-assigned name of divider"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',        "X coordinate of divider on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',        "Y coordinate of divider on study area map"),
+        ('',                    '', "Description",     '',   '',   '',        "Optional comment or description"),
+        ('tag',                 '', "Tag",             '',   '',   '',        "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',        "Click to specify any external inflows received at the divider"),
+        ('.treatment(node_name)', '', "Treatment",   'NO', '',   '',          "Click to specify any pollutant removal supplied at the divider"),
+        ("elevation",           '', "Invert El.",      '0',  "(ft)", "(m)",   "Elevation of divider's invert"),
+        ("max_depth",           '', "Max Depth",       '0',  '(ft)', '(m)',
          "Maximum water depth (distance from invert to ground) or 0 to use distance from invert to top of highest connecting link"),
-        ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial water depth in junction"),
-        ("surcharge_depth",     '', "Surcharge Depth", '0',  '',   '',  "Depth in excess of maximum depth before flooding occurs"),
-        ("ponded_area",         '', "Ponded Area",     '0',  '',   '',  "Area of ponded water when flooded"),
-        ("diverted_link",       '', "Diverted Link",   '',   '',   '',  "Name of link which receives the diverted flow"),
-        ("flow_divider_type",   '', "Type",            '',   '',   '',  "Type of flow divider"),
-        ("min_diversion_flow",  '', "Diversion Flow",  '0',  '',   '',  "Minimum flow at which diversion begins"),
-        ("divider_curve",       '', "Tabular Curve Name", '', '',  '',  "Name of diversion curve used with a TABULAR divider"),
-        ("weir_height",         '', "Weir Height",      '0',  '',  '',  "Depth at maximum flow for a WEIR divider"),
-        ("weir_coefficient",    '', "Weir Coefficient", '0',  '',  '',  "Discharge coefficient for a WEIR divider")))
+        ("initial_depth",       '', "Initial Depth",   '0',  '(ft)', '(m)',   "Initial water depth in junction"),
+        ("surcharge_depth",     '', "Surcharge Depth", '0',  '(ft)', '(m)',   "Depth in excess of maximum depth before flooding occurs"),
+        ("ponded_area",         '', "Ponded Area",     '0',  '(ft2)', '(m2)', "Area of ponded water when flooded"),
+        ("diverted_link",       '', "Diverted Link",   '',   '',   '',        "Name of link which receives the diverted flow"),
+        ("flow_divider_type",   '', "Type",            '',   '',   '',        "Type of flow divider"),
+        ("min_diversion_flow",  '', "Diversion Flow",  '0',  '',   '',        "Minimum flow at which diversion begins"),
+        ("divider_curve",       '', "Tabular Curve Name", '', '',  '',        "Name of diversion curve used with a TABULAR divider"),
+        ("weir_height",         '', "Weir Height",      '0',  '(ft)', '(m)',  "Depth at maximum flow for a WEIR divider"),
+        ("weir_coefficient",    '', "Weir Coefficient", '0',  '',  '',        "Discharge coefficient for a WEIR divider")))
 
     def __init__(self):
         Junction.__init__(self)
@@ -266,22 +266,22 @@ class StorageUnit(Junction):
 
     #    attribute, input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                '', "Name",            '',   '',   '',  "User-assigned name of storage unit"),
-        ('x',                   '', "X-Coordinate",    '',   '',   '',  "X coordinate of storage unit on study area map"),
-        ('y',                   '', "Y-Coordinate",    '',   '',   '',  "Y coordinate of storage unit on study area map"),
-        ('',                    '', "Description",     '',   '',   '',  "Optional comment or description"),
-        ('tag',                 '', "Tag",             '',   '',   '',  "Optional category or classification"),
-        ('',                    '', "Inflows",         'NO', '',   '',  "Click to specify any external inflows received at the storage unit"),
-        ('.treatment(node_name)', '', "Treatment",     'NO', '',   '',  "Click to specify any pollutant removal supplied at the storage unit"),
-        ("elevation",           '', "Invert El.",      '0',  "ft", "m", "Elevation at the bottom of the storage unit"),
-        ("max_depth",           '', "Max Depth",       '0',  '',   '',  "Maximum depth of the storage unit"),
-        ("initial_depth",       '', "Initial Depth",   '0',  '',   '',  "Initial depth of water in the storage unit"),
-        ("evaporation_factor",  '', "Evap. Factor",    '',   '',   '',  "Fraction of evaporation rate realized"),
-        ("seepage_loss",        '', "Seepage Loss",    'NO', '',   '',  "Click to specify soil properties that determine seepage loss through the bottom and sloped sides of the storage unit"),
-        ("storage_curve_type",  '', "Storage Curve",   '0',  '',   '',  "Method of describing the geometric shape of the storage unit"),
-        ("coefficient",         '', "Functional Curve Coefficient",   '',   '',   '',  "A-value in expression Area = A*Depth^B + C"),
-        ("exponent",            '', "Functional Curve Exponent",      '0',  '',   '',  "B-value in expression Area = A*Depth^B + C"),
-        ("constant",            '', "Functional Curve Constant",      '0',  '',   '',  "C-value in expression Area = A*Depth^B + C"),
+        ("name",                '', "Name",            '',   '',   '',      "User-assigned name of storage unit"),
+        ('x',                   '', "X-Coordinate",    '',   '',   '',      "X coordinate of storage unit on study area map"),
+        ('y',                   '', "Y-Coordinate",    '',   '',   '',      "Y coordinate of storage unit on study area map"),
+        ('',                    '', "Description",     '',   '',   '',      "Optional comment or description"),
+        ('tag',                 '', "Tag",             '',   '',   '',      "Optional category or classification"),
+        ('',                    '', "Inflows",         'NO', '',   '',      "Click to specify any external inflows received at the storage unit"),
+        ('.treatment(node_name)', '', "Treatment",     'NO', '',   '',      "Click to specify any pollutant removal supplied at the storage unit"),
+        ("elevation",           '', "Invert El.",      '0',  '(ft)', '(m)', "Elevation at the bottom of the storage unit"),
+        ("max_depth",           '', "Max Depth",       '0',  '(ft)', '(m)', "Maximum depth of the storage unit"),
+        ("initial_depth",       '', "Initial Depth",   '0',  '(ft)', '(m)', "Initial depth of water in the storage unit"),
+        ("evaporation_factor",  '', "Evap. Factor",    '',   '',   '',      "Fraction of evaporation rate realized"),
+        ("seepage_loss",        '', "Seepage Loss",    'NO', '',   '',      "Click to specify soil properties that determine seepage loss through the bottom and sloped sides of the storage unit"),
+        ("storage_curve_type",  '', "Storage Curve",   '0',  '',   '',      "Method of describing the geometric shape of the storage unit"),
+        ("coefficient",         '', "Functional Curve Coefficient",   '',   '(ft)', '(m)',  "A-value in expression Area = A*Depth^B + C"),
+        ("exponent",            '', "Functional Curve Exponent",      '0',  '(ft)', '(m)',  "B-value in expression Area = A*Depth^B + C"),
+        ("constant",            '', "Functional Curve Constant",      '0',  '(ft)', '(m)',  "C-value in expression Area = A*Depth^B + C"),
         ("storage_curve",       '', "Tabular Curve Name",             '0',  '',   '',  "Name of storage curve to use")))
 
     def __init__(self):

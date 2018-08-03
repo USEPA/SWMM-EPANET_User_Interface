@@ -47,6 +47,9 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                 self.tblTransect.setItem(point_count,0,QTableWidgetItem(led.text()))
                 led = QLineEdit(str(value[0]))
                 self.tblTransect.setItem(point_count,1,QTableWidgetItem(led.text()))
+        if self.project.metric:
+            self.tblTransect.horizontalHeaderItem(0).setText('Station (m)')
+            self.tblTransect.horizontalHeaderItem(1).setText('Elevation (m)')
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtName.text()

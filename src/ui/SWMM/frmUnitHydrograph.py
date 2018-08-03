@@ -36,6 +36,11 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
         if isinstance(hydrograph, UnitHydrograph):
             self.editing_item = hydrograph
 
+        if self.project.metric:
+            self.lblNote4.setText('Dmax = maximum depth (mm)')
+            self.lblNote5.setText('Drec = recovery rate (mm/day)')
+            self.lblNote6.setText('Do = starting depth (mm)')
+
         self.txtGroup.setText(hydrograph.name)
 
         self.cboHydrograph.setCurrentIndex(0)

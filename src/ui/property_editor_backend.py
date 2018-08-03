@@ -106,6 +106,11 @@ class PropertyEditorBackend:
         # col = self.table.currentColumn()
         if self.hint_label:
             if hasattr(self, "meta") and self.meta and self.meta[row]:
-                self.hint_label.setText(self.meta[row].hint)
+                units = ''
+                if self._main_form.project.metric:
+                    units = self.meta[row].units_metric
+                else:
+                    units = self.meta[row].units_english
+                self.hint_label.setText(self.meta[row].hint + ' ' + units)
             else:
                 self.hint_label.setText('')

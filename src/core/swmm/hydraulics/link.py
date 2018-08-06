@@ -403,7 +403,7 @@ class CrossSection(Section):
 
         ## float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
         ## roughness) associated with a conduit (default is 1).
-        self.barrels = '0.0'
+        self.barrels = '1'
 
         ## code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control
         self.culvert_code = ''

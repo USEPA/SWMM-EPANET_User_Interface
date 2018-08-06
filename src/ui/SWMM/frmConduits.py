@@ -70,6 +70,7 @@ class frmConduits(frmGenericPropertyEditor):
                 if value.link == link_id:
                     tb.textbox.setText(value.shape.name)
                     self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
+                    self.tblGeneric.setItem(18, column, QTableWidgetItem(value.culvert_code))
                     xsection = value
                     break
         else:
@@ -78,6 +79,7 @@ class frmConduits(frmGenericPropertyEditor):
                 value = self._main_form.project_settings.xsection
                 tb.textbox.setText(value.shape.name)
                 self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
+                self.tblGeneric.setItem(18, column, QTableWidgetItem(value.culvert_code))
 
         if not xsection:
             # create new xsection
@@ -110,6 +112,7 @@ class frmConduits(frmGenericPropertyEditor):
             for value in self.project.xsections.value:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
+                    value.culvert_code = str(self.tblGeneric.item(18, column).text())
         self.close()
 
     def cmdCancel_Clicked(self):

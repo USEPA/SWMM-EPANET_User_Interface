@@ -386,12 +386,42 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             current_selection = str(cur.text())
 
         if current_selection == "Irregular":
-            self._frmTransect = frmTransect(self._main_form)
+            transect_id = self.cboCombo.currentText()
+            transect_list = []
+            new_item = None
+            new_name = ""
+            if len(transect_id) > 0:
+                transect_list.append(transect_id)
+            else:
+                item_type = self._main_form.tree_types["Transects"]
+                new_item = item_type()
+                new_item.name = self._main_form.new_item_name(item_type)
+                new_name = new_item.name
+            self._frmTransect = frmTransect(self._main_form, transect_list, new_item)
+            self._frmTransect.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmTransect.show()
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.addItem(new_name)
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
         elif current_selection == 'Custom':
-            self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE")
-            self._frmCurveEditor.set_from(self._main_form.project, '')
+            curve_id = self.cboCombo.currentText()
+            curve_list = []
+            new_item = None
+            new_name = ""
+            if len(curve_id) > 0:
+                curve_list.append(curve_id)
+            else:
+                item_type = self._main_form.tree_types["Shape Curves"]
+                new_item = item_type()
+                new_item.name = self._main_form.new_item_name(item_type)
+                new_item.curve_type = CurveType.SHAPE
+                new_name = new_item.name
+            self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE", curve_list, new_item)
+            self._frmCurveEditor.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmCurveEditor.show()
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.addItem(new_name)
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
 
     def listWidget_currentItemChanged(self):
 
@@ -410,6 +440,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         self.txt2.setVisible(True)
         self.txt3.setVisible(True)
         self.txt4.setVisible(True)
+        self.txt3.setEnabled(True)
         self.lblDimensions.setVisible(True)
         if self.units < 4:
             self.lblDimensions.setText('Dimensions are feet unless otherwise stated.')
@@ -506,9 +537,9 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblBottom.setText('Circular pipe with a special friction loss equation for pressurized flow.')
             dw_section = self._main_form.project.find_section("OPTIONS")
-            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
+            if dw_section.dynamic_wave.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
                 self.lblFootnote.setText('*Hazen-Williams C-factor')
-            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
+            if dw_section.dynamic_wave.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
                 if self.units < 4:
                     self.lblFootnote.setText('*Darcy-Weisbach roughness height (inches)')
                 else:
@@ -534,6 +565,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'HORIZ_ELLIPSE'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
@@ -553,6 +585,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'VERT_ELLIPSE'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
@@ -572,6 +605,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'ARCH'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)

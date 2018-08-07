@@ -16,25 +16,43 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
     - Time Series Viewer
     """
 
-    MAGIC = "TSGRAPHSPEC:"
+    # MAGIC = "TSGRAPHSPEC:"
 
-    def __init__(self, dataset):
+    def __init__(self, dataset, plot_type, plot_title, window_icon, x_title, y_title):
         """
         Constructor
         Args:
             dataset: time series data as pandas data frame
         """
         QMainWindow.__init__(self)
+        self.helper = HelpHandler(self)
         self.setupUi(self)
+        self.setWindowIcon(window_icon)
+
+        self.actionPrint.setVisible(False)
+        self.actionSave.setVisible(False)
+        self.actionCopy.setVisible(False)
+        self.menuFile.setEnabled(False)
+        self.menuFile.setVisible(False)
+        self.menuFile.deleteLater()
+
         self.dataset = dataset
-        self.plot_type = 'timeseries'
+        self.plot_title = plot_title
+        self.x_title = x_title
+        self.y_title = y_title
+        if plot_type == 'time':
+            self.plot_type = 'timeseries'
+            self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
+        elif plot_type == 'xy':
+            self.plot_type = 'xy'
+            self.help_topic = "swmm/src/src/transecteditordialog.htm"
         self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
         layout = QVBoxLayout(self.fraPlot)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.plot)
         self.fraPlot.setLayout(layout)
         self.helper = HelpHandler(self)
-        self.help_topic = "swmm/src/src/timeseriesplotdialog.htm"
+
         self.Xunits = {}
         self.Yunits = {}
         self.Xlabel = ""
@@ -44,7 +62,6 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
         self.TXT_OPEN_CURVE_TITLE = 'Open a Curve'
         self.TXT_SAVE_CURVE_TITLE = 'Save Curve As'
         self.TXT_CURVE_FILTER = 'Curve files (*.CRV)|*.CRV|All files|*.*'
-        self.TXT_CURVE_HEADER = 'EPANET Curve Data'
         self.xvals = []
         self.yvals = []
         self.btnClose.clicked.connect(self.frm_close)
@@ -76,17 +93,11 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
 
         """
         if self.dataset.shape[0] > 0 and self.dataset.shape[1] > 0:
-            self.plot.set_time_series_data(self.dataset)
-            #if self.dataset.hour_only:
-            #    self.plot.setData(self.xvals, self.yvals, "", "")
-            #else:
-            #    self.plot.set_time_series_data(self.dataset)
-            #for row in range(len(self.dataset)):
-            #    #ts = self.dataset.index[row]
-            #    #self.xvals.append(datetime(ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second))
-            #    self.xvals.append(mdates.date2num(self.dataset.index[row]))
-            #    self.yvals.append(self.dataset.iloc[row][0])
-            #self.plot.setData(self.xvals, self.yvals, "", "")
+            self.plot.setTitle(self.plot_title)
+            if self.plot_type == 'timeseries':
+                self.plot.set_time_series_data(self.dataset)
+            elif self.plot_type == 'xy':
+                self.plot.set_xy_data(self.dataset, self.x_title, self.y_title)
 
         pass
 
@@ -99,7 +110,7 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
         self.close()
 
     def get_help(self):
-        pass
+        self.helper.show_help()
 
 
 class CurvePlot(BasePlot):
@@ -149,6 +160,18 @@ class CurvePlot(BasePlot):
                 self.axes.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y\n%H:%M'))
                 self.setXlabel("Elapsed time (date)")
                 self.setYlabel("")
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+
+    def set_xy_data(self, df, x_title, y_title):
+        if df.shape[0] > 0 and df.shape[1] > 0:
+            x = []
+            y = []
+            for row in range(len(df)):
+                x.append(df.index[row])
+                y.append(df.iloc[row][0])
+                self.setData(x, y, x_title, y_title)
+
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
 

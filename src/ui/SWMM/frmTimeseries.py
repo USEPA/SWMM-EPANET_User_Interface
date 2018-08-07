@@ -3,6 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
+from ui.help import HelpHandler
 from core.swmm.timeseries import TimeSeries
 from ui.model_utility import ParseData
 import pandas as pd
@@ -14,6 +15,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
     def __init__(self, main_form, edit_these=[], new_item=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
@@ -177,6 +179,6 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             #ts.plot()
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
             df.hour_only = self.hour_only
-            frm_plt = frmPlotViewer(df)
+            frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
             frm_plt.show()
         pass

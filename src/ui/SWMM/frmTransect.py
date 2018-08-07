@@ -2,7 +2,10 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.SWMM.frmTransectDesigner import Ui_frmTransect
+from ui.help import HelpHandler
 from core.swmm.hydraulics.link import Transect
+import pandas as pd
+from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmTransect(QMainWindow, Ui_frmTransect):
@@ -10,9 +13,12 @@ class frmTransect(QMainWindow, Ui_frmTransect):
 
     def __init__(self, main_form, edit_these, new_item):
         QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/transecteditordialog.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.transects
@@ -32,14 +38,14 @@ class frmTransect(QMainWindow, Ui_frmTransect):
             self.editing_item = transect
             self.txtName.setText(transect.name)
             self.txtDescription.setText(transect.comment)
-            self.txtLeftBank.setText(transect.n_left)
-            self.txtRightBank.setText(transect.n_right)
-            self.txtChannel.setText(transect.n_channel)
-            self.txtLeftSta.setText(transect.overbank_left)
-            self.txtRightSta.setText(transect.overbank_right)
-            self.txtStations.setText(transect.stations_modifier)
-            self.txtElevations.setText(transect.elevations_modifier)
-            self.txtMeander.setText(transect.meander_modifier)
+            self.txtLeftBank.setText(str(transect.n_left))
+            self.txtRightBank.setText(str(transect.n_right))
+            self.txtChannel.setText(str(transect.n_channel))
+            self.txtLeftSta.setText(str(transect.overbank_left))
+            self.txtRightSta.setText(str(transect.overbank_right))
+            self.txtStations.setText(str(transect.stations_modifier))
+            self.txtElevations.setText(str(transect.elevations_modifier))
+            self.txtMeander.setText(str(transect.meander_modifier))
             point_count = -1
             for value in transect.stations:
                 point_count += 1
@@ -81,3 +87,27 @@ class frmTransect(QMainWindow, Ui_frmTransect):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def btnView_Clicked(self):
+        """
+        Display the grid data with pandas dataframe plot function
+        Returns: None
+        """
+        self.Y = []
+        self.X = []
+        for row in range(self.tblTransect.rowCount()):
+            if self.tblTransect.item(row,0):
+                x = self.tblTransect.item(row,0).text()
+                if len(x) > 0:
+                    if self.tblTransect.item(row,1):
+                        y = self.tblTransect.item(row,1).text()
+                        if len(y) > 0:
+                            self.X.append(x)
+                            self.Y.append(y)
+
+        ts = pd.Series(self.Y, index=self.X)
+        df = pd.DataFrame({'':ts})
+        frm_plt = frmPlotViewer(df,'xy', 'Transect ' + self.editing_item.name, self.windowIcon(),
+                                self.tblTransect.horizontalHeaderItem(0).text(), self.tblTransect.horizontalHeaderItem(1).text())
+        frm_plt.setWindowTitle("Transect Viewer")
+        frm_plt.show()

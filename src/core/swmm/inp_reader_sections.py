@@ -825,7 +825,7 @@ class TransectsReader(SectionReader):
     @staticmethod
     def read(new_text):
         transects = Transects()
-        transects.value = []
+        transects.value = IndexedList([], ['name'])
         item_lines = []
         line = ''
         comment = ''
@@ -853,7 +853,6 @@ class TransectsReader(SectionReader):
                             n_left, n_right, n_channel = fields[1:4]
                         elif token == "X1":
                             transect = Transect()
-                            transects.value.append(transect)
                             transect.comment = comment
                             comment = ''
                             transect.n_left = n_left
@@ -869,6 +868,7 @@ class TransectsReader(SectionReader):
                                 transect.stations_modifier = fields[8]
                             if len(fields) > 9:
                                 transect.elevations_modifier = fields[9]
+                            transects.value.append(transect)
         return transects
 
 

@@ -1,68 +1,53 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\dev\Python\dev-ui\src\ui\EPANET\frmControlsDesigner.ui'
+# Form implementation generated from reading ui file 'EPANET\frmControlsDesigner.ui'
 #
-# Created by: PyQt5 UI code generator 4.11.4
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import *
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QApplication.translate(context, text, disambig)
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_frmControls(object):
     def setupUi(self, frmControls):
-        frmControls.setObjectName(_fromUtf8("frmControls"))
+        frmControls.setObjectName("frmControls")
         frmControls.resize(541, 245)
         font = QtGui.QFont()
         font.setPointSize(10)
         frmControls.setFont(font)
-        self.centralWidget = QWidget(frmControls)
-        self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.verticalLayout_2 = QVBoxLayout(self.centralWidget)
-        # self.verticalLayout_2.setMargin(11)
+        self.centralWidget = QtWidgets.QWidget(frmControls)
+        self.centralWidget.setObjectName("centralWidget")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralWidget)
+        self.verticalLayout_2.setContentsMargins(11, 11, 11, 11)
         self.verticalLayout_2.setSpacing(6)
-        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.frame = QFrame(self.centralWidget)
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.frame.setObjectName(_fromUtf8("frame"))
-        self.verticalLayout = QVBoxLayout(self.frame)
-        # self.verticalLayout.setMargin(11)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.frame = QtWidgets.QFrame(self.centralWidget)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
         self.verticalLayout.setSpacing(6)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.txtControls = QPlainTextEdit(self.frame)
-        self.txtControls.setObjectName(_fromUtf8("txtControls"))
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.txtControls = QtWidgets.QPlainTextEdit(self.frame)
+        self.txtControls.setObjectName("txtControls")
         self.verticalLayout.addWidget(self.txtControls)
         self.verticalLayout_2.addWidget(self.frame)
-        self.fraOKCancel = QFrame(self.centralWidget)
-        self.fraOKCancel.setFrameShape(QFrame.StyledPanel)
-        self.fraOKCancel.setFrameShadow(QFrame.Raised)
-        self.fraOKCancel.setObjectName(_fromUtf8("fraOKCancel"))
-        self.horizontalLayout = QHBoxLayout(self.fraOKCancel)
-        # self.horizontalLayout.setMargin(11)
+        self.fraOKCancel = QtWidgets.QFrame(self.centralWidget)
+        self.fraOKCancel.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.fraOKCancel.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.fraOKCancel.setObjectName("fraOKCancel")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.fraOKCancel)
+        self.horizontalLayout.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout.setSpacing(6)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem = QSpacerItem(338, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        spacerItem = QtWidgets.QSpacerItem(338, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.cmdOK = QPushButton(self.fraOKCancel)
-        self.cmdOK.setObjectName(_fromUtf8("cmdOK"))
+        self.cmdOK = QtWidgets.QPushButton(self.fraOKCancel)
+        self.cmdOK.setObjectName("cmdOK")
         self.horizontalLayout.addWidget(self.cmdOK)
-        self.cmdCancel = QPushButton(self.fraOKCancel)
-        self.cmdCancel.setObjectName(_fromUtf8("cmdCancel"))
+        self.cmdCancel = QtWidgets.QPushButton(self.fraOKCancel)
+        self.cmdCancel.setObjectName("cmdCancel")
         self.horizontalLayout.addWidget(self.cmdCancel)
         self.verticalLayout_2.addWidget(self.fraOKCancel)
         frmControls.setCentralWidget(self.centralWidget)
@@ -71,7 +56,8 @@ class Ui_frmControls(object):
         QtCore.QMetaObject.connectSlotsByName(frmControls)
 
     def retranslateUi(self, frmControls):
-        frmControls.setWindowTitle(_translate("frmControls", "EPANET Controls", None))
-        self.cmdOK.setText(_translate("frmControls", "OK", None))
-        self.cmdCancel.setText(_translate("frmControls", "Cancel", None))
+        _translate = QtCore.QCoreApplication.translate
+        frmControls.setWindowTitle(_translate("frmControls", "EPANET Controls"))
+        self.cmdOK.setText(_translate("frmControls", "OK"))
+        self.cmdCancel.setText(_translate("frmControls", "Cancel"))
 

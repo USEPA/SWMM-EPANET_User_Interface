@@ -1,6 +1,6 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 import core.swmm.options.files
 from ui.SWMM.frmInterfaceFilesDesigner import Ui_frmInterfaceFiles
 
@@ -12,6 +12,16 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cmdUseRainfall.clicked.connect(self.cmdUseRainfall_Clicked)
+        self.cmdSaveRainfall.clicked.connect(self.cmdSaveRainfall_Clicked)
+        self.cmdUseRunoff.clicked.connect(self.cmdUseRunoff_Clicked)
+        self.cmdSaveRunoff.clicked.connect(self.cmdSaveRunoff_Clicked)
+        self.cmdUseHotstart.clicked.connect(self.cmdUseHotstart_Clicked)
+        self.cmdSaveHotstart.clicked.connect(self.cmdSaveHotstart_Clicked)
+        self.cmdUseRDII.clicked.connect(self.cmdUseRDII_Clicked)
+        self.cmdSaveRDII.clicked.connect(self.cmdSaveRDII_Clicked)
+        self.cmdUseInflows.clicked.connect(self.cmdUseInflows_Clicked)
+        self.cmdSaveInflows.clicked.connect(self.cmdSaveInflows_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -41,6 +51,38 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
         section.save_rdii = frmInterfaceFiles.none_if_blank(self.txtSaveRDII.text())
         section.use_inflows = frmInterfaceFiles.none_if_blank(self.txtUseInflows.text())
         section.save_outflows = frmInterfaceFiles.none_if_blank(self.txtSaveOutflows.text())
+
+        if section.use_rainfall:
+            if section.use_rainfall[0] != '"':
+                section.use_rainfall = '"' + section.use_rainfall + '"'
+        if section.save_rainfall:
+            if section.save_rainfall[0] != '"':
+                section.save_rainfall = '"' + section.save_rainfall + '"'
+        if section.use_runoff:
+            if section.use_runoff[0] != '"':
+                section.use_runoff = '"' + section.use_runoff + '"'
+        if section.save_runoff:
+            if section.save_runoff[0] != '"':
+                section.save_runoff = '"' + section.save_runoff + '"'
+        if section.use_hotstart:
+            if section.use_hotstart[0] != '"':
+                section.use_hotstart = '"' + section.use_hotstart + '"'
+        if section.save_hotstart:
+            if section.save_hotstart[0] != '"':
+                section.save_hotstart = '"' + section.save_hotstart + '"'
+        if section.use_rdii:
+            if section.use_rdii[0] != '"':
+                section.use_rdii = '"' + section.use_rdii + '"'
+        if section.use_inflows:
+            if section.use_inflows[0] != '"':
+                section.use_inflows = '"' + section.use_inflows + '"'
+        if section.save_outflows:
+            if section.save_outflows[0] != '"':
+                section.save_outflows = '"' + section.save_outflows + '"'
+        if section.save_rdii:
+            if section.save_rdii[0] != '"':
+                section.save_rdii = '"' + section.save_rdii + '"'
+
         self.close()
 
 
@@ -61,3 +103,63 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def cmdUseRainfall_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Rainfall Interface File", '',
+                                                      "Rainfall files (*.RFF);;All files (*.*)")
+        if file_name:
+            self.txtUseRainfall.setText(file_name)
+
+    def cmdSaveRainfall_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Rainfall Interface File", '',
+                                                      "Rainfall files (*.RFF);;All files (*.*)")
+        if file_name:
+            self.txtSaveRainfall.setText(file_name)
+
+    def cmdUseRunoff_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Runoff Interface File", '',
+                                                       "Runoff files (*.ROF);;All files (*.*)")
+        if file_name:
+            self.txtUseRunoff.setText(file_name)
+
+    def cmdSaveRunoff_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Runoff Interface File", '',
+                                                       "Runoff files (*.ROF);;All files (*.*)")
+        if file_name:
+            self.txtSaveRunoff.setText(file_name)
+
+    def cmdUseHotstart_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Hotstart Interface File", '',
+                                                       "Hotstart files (*.HSF);;All files (*.*)")
+        if file_name:
+            self.txtUseHotstart.setText(file_name)
+
+    def cmdSaveHotstart_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Hotstart Interface File", '',
+                                                       "Hotstart files (*.HSF);;All files (*.*)")
+        if file_name:
+            self.txtSaveHotstart.setText(file_name)
+
+    def cmdUseRDII_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a RDII Interface File", '',
+                                                       "RDII files (*.TXT);;All files (*.*)")
+        if file_name:
+            self.txtUseRDII.setText(file_name)
+
+    def cmdSaveRDII_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a RDII Interface File", '',
+                                                       "RDII files (*.TXT);;All files (*.*)")
+        if file_name:
+            self.txtSaveRDII.setText(file_name)
+
+    def cmdUseInflows_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select an Inflow Interface File", '',
+                                                       "Routing files (*.TXT);;All files (*.*)")
+        if file_name:
+            self.txtUseInflows.setText(file_name)
+
+    def cmdSaveInflows_Clicked(self):
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select an Outflow Interface File", '',
+                                                       "Routing files (*.TXT);;All files (*.*)")
+        if file_name:
+            self.txtSaveInflows.setText(file_name)

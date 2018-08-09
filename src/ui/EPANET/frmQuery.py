@@ -186,9 +186,10 @@ class frmQuery(QMainWindow, Ui_frmQuery):
 
         self.session.map_widget.clearSelectableObjects()
         if len(self.selected_objects) == 1:
-            layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
-            if layer:
-                self.session.select_named_items(layer, slist)
+            for key, value in self.selected_objects.items():
+                layer = self.session.model_layers.find_layer_by_name(key)
+                if layer:
+                    self.session.select_named_items(layer, slist)
         else:
             self.session.clear_section_selection()
             self.session.clear_object_listing()

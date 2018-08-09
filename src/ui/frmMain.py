@@ -118,6 +118,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
         self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
+        self.actionStdWinCascade.triggered.connect(self.cascade_windows)
+        self.actionStdWinTile.triggered.connect(self.tile_windows)
+        self.actionStdWinCloseAll.triggered.connect(self.close_all_windows)
+        self.actionStdMapToggle.triggered.connect(self.study_area_map)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
@@ -2188,6 +2192,19 @@ class frmMain(QMainWindow, Ui_frmMain):
                     self.close()
                 except:
                     pass
+
+    def cascade_windows(self):
+        self.map.cascadeSubWindows()
+
+    def tile_windows(self):
+        self.map.tileSubWindows()
+
+    def close_all_windows(self):
+        self.map.closeAllSubWindows()
+
+    def study_area_map(self):
+        if self.map_win:
+            self.map.setActiveSubWindow(self.map_win)
 
     def __unicode__(self):
         return unicode(self)

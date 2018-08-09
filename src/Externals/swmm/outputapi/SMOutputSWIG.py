@@ -368,11 +368,11 @@ class SwmmOutputObject(object):
         for attempt in [1, 2, 3, 4, 5]:  # wait to finish closing the file in case it just finished running the model
 
             ret = _lib.smo_open(self.ptrapi, self.output_file_name)
-            if ret == 0:
+            if ret is None:
                 break
             print("Error " + str(ret) + " opening " + self.output_file_name + " retrying...")
             time.sleep(1)
-        if ret != 0:
+        if ret is not None:
             self._raise_error(ret)
 
         ret = _lib.SMO_pollutant_conc_node()

@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from ui.help import HelpHandler
-from frmFindDesigner import Ui_frmFind
+from ui.EPANET.frmFindDesigner import Ui_frmFind
 
 
 class frmFind(QMainWindow, Ui_frmFind):

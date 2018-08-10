@@ -3,13 +3,8 @@ Wrapper for SWMM Output SWIG API.
 Written for SWMM-EPANET User Interface project
 @ swmm_output-0.1.0a0-cp36-cp36m-win_amd64.zip
 """
-
-from ctypes import *
 import time, datetime
-# import Externals.swmm.outputapi.outputapi as _lib
-import _swmm_output as _lib
-
-from swmm_output import *
+from swmm.output import output as _lib
 
 
 class SwmmOutputCategoryBase:
@@ -48,20 +43,20 @@ class SwmmOutputCategoryBase:
         # item_count = output._call_int(_lib.SMO_getProjectSize, cls._count_flag)
         # ctypes_name = _lib.String(((_lib.MAXID + 1) * '\0').encode())
         item_count = -1
-        if cls._element_type == 0:
+        if cls._element_type.value == 0:
             item_count = output.subcatchCount
-        elif cls._element_type == 1:
+        elif cls._element_type.value == 1:
             item_count = output.nodeCount
-        elif cls._element_type == 2:
+        elif cls._element_type.value == 2:
             item_count = output.linkCount
-        elif cls._element_type == 3:
+        elif cls._element_type.value == 3:
             item_count = output.pollutantCount
         for index in range(0, item_count):
             # _lib.SMO_getElementName(output.ptrapi, cls._element_type, index, ctypes_name, _lib.MAXID)
             try:
                 # name = str(ctypes_name)
                 # name = ctypes_name.data.decode('utf-8')
-                name = _lib.smo_get_element_name(output.ptrapi, cls._element_type, index)
+                name = _lib.getelementname(output.ptrapi, cls._element_type, index)
                 items[name] = cls(name, index)
             except Exception as e:
                 # raise Exception("SWMM read_all output failed.")
@@ -106,17 +101,17 @@ class SwmmOutputCategoryBase:
         tseries = None
         try:
             if attribute.smo_type == _lib.SMO_subcatch:
-                tseries = _lib.smo_get_subcatch_series(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getsubcatchseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_node:
-                tseries = _lib.smo_get_node_series(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getnodeseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_link:
-                tseries = _lib.smo_get_link_series(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getlinkseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_sys:
-                tseries = _lib.smo_get_system_series(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getsystemseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
         except Exception as e:
             print("Error reading series " + self.type_label + " " + str(self.name) + ', att #' + str(attribute.index))
             msg_buf = ""
-            error_get = _lib.smo_check_error(output.ptrapi, msg_buf)
+            error_get = _lib.checkerror(output.ptrapi, msg_buf)
             output._raise_error(error_get)
         return tseries
 
@@ -132,13 +127,13 @@ class SwmmOutputCategoryBase:
         attr_array = None
         try:
             if attribute.smo_type == _lib.SMO_subcatch:
-                attr_array = _lib.smo_get_subcatch_attribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getsubcatchattribute(output.ptrapi, time_index, attribute)
             elif attribute.smo_type == _lib.SMO_node:
-                attr_array = _lib.smo_get_node_attribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getnodeattribute(output.ptrapi, time_index, attribute)
             elif attribute.smo_type == _lib.SMO_link:
-                attr_array = _lib.smo_get_link_attribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getlinkattribute(output.ptrapi, time_index, attribute)
             elif attribute.smo_type == _lib.SMO_sys:
-                attr_array = _lib.smo_get_system_attribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getsystemattribute(output.ptrapi, time_index, attribute)
         except Exception as e:
             print("Error get_attribute_for_all_at_time")
         return attr_array
@@ -176,14 +171,23 @@ class SwmmOutputAttribute:
 class SwmmOutputSubcatchment(SwmmOutputCategoryBase):
     type_label = "Subcatchment"
 
-    attribute_precipitation    = SwmmOutputAttribute(_lib.SMO_rainfall_subcatch, "Precipitation", ('in/hr', 'mm/hr'))
-    attribute_snow_depth       = SwmmOutputAttribute(_lib.SMO_snow_depth_subcatch,"Snow Depth", ('in', 'mm'))
-    attribute_evaporation      = SwmmOutputAttribute(_lib.SMO_evap_loss, "Evaporation", ('in/day', 'mm/day'))
-    attribute_infiltration     = SwmmOutputAttribute(_lib.SMO_infil_loss, "Infiltration", ('in/hr', 'mm/hr'))
-    attribute_runoff           = SwmmOutputAttribute(_lib.SMO_runoff_rate, "Runoff", ('CFS', 'CMS'))
-    attribute_groundwater_flow = SwmmOutputAttribute(_lib.SMO_gwoutflow_rate, "Groundwater Flow", ('CFS', 'CMS'))
-    attribute_groundwater_elevation = SwmmOutputAttribute(_lib.SMO_gwtable_elev, "Groundwater Elevation", ('ft', 'm'))
-    attribute_soil_moisture    = SwmmOutputAttribute(_lib.SMO_soil_moisture, "Soil Moisture", ('', ''))
+    # attribute_precipitation    = SwmmOutputAttribute(_lib.SMO_rainfall_subcatch, "Precipitation", ('in/hr', 'mm/hr'))
+    # attribute_snow_depth       = SwmmOutputAttribute(_lib.SMO_snow_depth_subcatch,"Snow Depth", ('in', 'mm'))
+    # attribute_evaporation      = SwmmOutputAttribute(_lib.SMO_evap_loss, "Evaporation", ('in/day', 'mm/day'))
+    # attribute_infiltration     = SwmmOutputAttribute(_lib.SMO_infil_loss, "Infiltration", ('in/hr', 'mm/hr'))
+    # attribute_runoff           = SwmmOutputAttribute(_lib.SMO_runoff_rate, "Runoff", ('CFS', 'CMS'))
+    # attribute_groundwater_flow = SwmmOutputAttribute(_lib.SMO_gwoutflow_rate, "Groundwater Flow", ('CFS', 'CMS'))
+    # attribute_groundwater_elevation = SwmmOutputAttribute(_lib.SMO_gwtable_elev, "Groundwater Elevation", ('ft', 'm'))
+    # attribute_soil_moisture    = SwmmOutputAttribute(_lib.SMO_soil_moisture, "Soil Moisture", ('', ''))
+
+    attribute_precipitation    = SwmmOutputAttribute(_lib.SubcatchAttribute.RAINFALL, "Precipitation", ('in/hr', 'mm/hr'))
+    attribute_snow_depth       = SwmmOutputAttribute(_lib.SubcatchAttribute.SNOW_DEPTH,"Snow Depth", ('in', 'mm'))
+    attribute_evaporation      = SwmmOutputAttribute(_lib.SubcatchAttribute.EVAP_LOSS, "Evaporation", ('in/day', 'mm/day'))
+    attribute_infiltration     = SwmmOutputAttribute(_lib.SubcatchAttribute.INFIL_LOSS, "Infiltration", ('in/hr', 'mm/hr'))
+    attribute_runoff           = SwmmOutputAttribute(_lib.SubcatchAttribute.RUNOFF_RATE, "Runoff", ('CFS', 'CMS'))
+    attribute_groundwater_flow = SwmmOutputAttribute(_lib.SubcatchAttribute.GW_OUTFLOW_RATE, "Groundwater Flow", ('CFS', 'CMS'))
+    attribute_groundwater_elevation = SwmmOutputAttribute(_lib.SubcatchAttribute.GW_TABLE_ELEV, "Groundwater Elevation", ('ft', 'm'))
+    attribute_soil_moisture    = SwmmOutputAttribute(_lib.SubcatchAttribute.SOIL_MOISTURE, "Soil Moisture", ('', ''))
 
     attribute_precipitation.smo_type = _lib.SMO_subcatch
     attribute_snow_depth.smo_type = _lib.SMO_subcatch
@@ -204,22 +208,29 @@ class SwmmOutputSubcatchment(SwmmOutputCategoryBase):
                   attribute_soil_moisture]
 
     _count_flag = 0 # _lib.subcatchCount
-    _get_series = _lib.smo_get_subcatch_series
-    _get_attribute = _lib.smo_get_subcatch_attribute
-    _get_result = _lib.smo_get_subcatch_result
-    _element_type = _lib.SMO_subcatch  # typedef enum {subcatch, node, link, sys} smo_elementType
+    _get_series = _lib.getsubcatchseries
+    _get_attribute = _lib.getsubcatchattribute
+    _get_result = _lib.getsubcatchresult
+    _element_type = _lib.ElementType.SUBCATCH # _lib.SMO_subcatch  # typedef enum {subcatch, node, link, sys} smo_elementType
     _first_pollutant = _lib.SMO_pollutant_conc_subcatch
 
 
 class SwmmOutputNode(SwmmOutputCategoryBase):
     type_label = "Node"
 
-    attribute_depth          = SwmmOutputAttribute(_lib.SMO_invert_depth,         "Depth",          ('ft', 'm'))
-    attribute_head           = SwmmOutputAttribute(_lib.SMO_hydraulic_head,       "Head",           ('ft', 'm'))
-    attribute_volume         = SwmmOutputAttribute(_lib.SMO_stored_ponded_volume, "Volume",         ('ft3', 'm3'))
-    attribute_lateral_inflow = SwmmOutputAttribute(_lib.SMO_lateral_inflow,       "Lateral Inflow", ('CFS', 'CMS'))
-    attribute_total_inflow   = SwmmOutputAttribute(_lib.SMO_total_inflow,         "Total Inflow",   ('CFS', 'CMS'))
-    attribute_flooding       = SwmmOutputAttribute(_lib.SMO_flooding_losses,      "Flooding",       ('CFS', 'CMS'))
+    # attribute_depth          = SwmmOutputAttribute(_lib.SMO_invert_depth,         "Depth",          ('ft', 'm'))
+    # attribute_head           = SwmmOutputAttribute(_lib.SMO_hydraulic_head,       "Head",           ('ft', 'm'))
+    # attribute_volume         = SwmmOutputAttribute(_lib.SMO_stored_ponded_volume, "Volume",         ('ft3', 'm3'))
+    # attribute_lateral_inflow = SwmmOutputAttribute(_lib.SMO_lateral_inflow,       "Lateral Inflow", ('CFS', 'CMS'))
+    # attribute_total_inflow   = SwmmOutputAttribute(_lib.SMO_total_inflow,         "Total Inflow",   ('CFS', 'CMS'))
+    # attribute_flooding       = SwmmOutputAttribute(_lib.SMO_flooding_losses,      "Flooding",       ('CFS', 'CMS'))
+
+    attribute_depth          = SwmmOutputAttribute(_lib.NodeAttribute.INVERT_DEPTH,  "Depth",          ('ft', 'm'))
+    attribute_head           = SwmmOutputAttribute(_lib.NodeAttribute.HYDRAULIC_HEAD, "Head",           ('ft', 'm'))
+    attribute_volume         = SwmmOutputAttribute(_lib.NodeAttribute.PONDED_VOLUME, "Volume",         ('ft3', 'm3'))
+    attribute_lateral_inflow = SwmmOutputAttribute(_lib.NodeAttribute.LATERAL_INFLOW, "Lateral Inflow", ('CFS', 'CMS'))
+    attribute_total_inflow   = SwmmOutputAttribute(_lib.NodeAttribute.TOTAL_INFLOW,  "Total Inflow",   ('CFS', 'CMS'))
+    attribute_flooding       = SwmmOutputAttribute(_lib.NodeAttribute.FLOODING_LOSSES, "Flooding",       ('CFS', 'CMS'))
 
     attribute_depth.smo_type = _lib.SMO_node
     attribute_head.smo_type = _lib.SMO_node
@@ -236,21 +247,27 @@ class SwmmOutputNode(SwmmOutputCategoryBase):
                   attribute_flooding]
 
     _count_flag = 0 # _lib.nodeCount
-    _get_series = _lib.smo_get_node_series
-    _get_attribute = _lib.smo_get_node_attribute
-    _get_result = _lib.smo_get_node_result
-    _element_type = _lib.SMO_node  # typedef enum {subcatch, node, link, sys} smo_elementType
+    _get_series = _lib.getnodeseries
+    _get_attribute = _lib.getnodeattribute
+    _get_result = _lib.getnoderesult
+    _element_type = _lib.ElementType.NODE  # typedef enum {subcatch, node, link, sys} smo_elementType
     _first_pollutant = _lib.SMO_pollutant_conc_node
 
 
 class SwmmOutputLink(SwmmOutputCategoryBase):
     type_label = "Link"
 
-    attribute_flow          = SwmmOutputAttribute(_lib.SMO_flow_rate_link,      "Flow",          ('CFS', 'CMS'))
-    attribute_depth         = SwmmOutputAttribute(_lib.SMO_flow_depth,          "Depth",         ('ft', 'm'))
-    attribute_velocity      = SwmmOutputAttribute(_lib.SMO_flow_velocity,       "Velocity",      ('fps', 'm/s'))
-    attribute_volume        = SwmmOutputAttribute(_lib.SMO_flow_volume,         "Volume",        ('ft3', 'm3'))
-    attribute_capacity      = SwmmOutputAttribute(_lib.SMO_capacity,            "Capacity",      ('', ''))
+    # attribute_flow          = SwmmOutputAttribute(_lib.SMO_flow_rate_link,      "Flow",          ('CFS', 'CMS'))
+    # attribute_depth         = SwmmOutputAttribute(_lib.SMO_flow_depth,          "Depth",         ('ft', 'm'))
+    # attribute_velocity      = SwmmOutputAttribute(_lib.SMO_flow_velocity,       "Velocity",      ('fps', 'm/s'))
+    # attribute_volume        = SwmmOutputAttribute(_lib.SMO_flow_volume,         "Volume",        ('ft3', 'm3'))
+    # attribute_capacity      = SwmmOutputAttribute(_lib.SMO_capacity,            "Capacity",      ('', ''))
+
+    attribute_flow     = SwmmOutputAttribute(_lib.LinkAttribute.FLOW_RATE,     "Flow",     ('CFS', 'CMS'))
+    attribute_depth    = SwmmOutputAttribute(_lib.LinkAttribute.FLOW_DEPTH,    "Depth",    ('ft', 'm'))
+    attribute_velocity = SwmmOutputAttribute(_lib.LinkAttribute.FLOW_VELOCITY, "Velocity", ('fps', 'm/s'))
+    attribute_volume   = SwmmOutputAttribute(_lib.LinkAttribute.FLOW_VOLUME,   "Volume",   ('ft3', 'm3'))
+    attribute_capacity = SwmmOutputAttribute(_lib.LinkAttribute.CAPACITY,      "Capacity", ('', ''))
 
     attribute_flow.smo_type = _lib.SMO_link
     attribute_depth.smo_type = _lib.SMO_link
@@ -265,31 +282,46 @@ class SwmmOutputLink(SwmmOutputCategoryBase):
                   attribute_capacity]
 
     _count_flag = 0 # _lib.linkCount
-    _get_series = _lib.smo_get_link_series
-    _get_attribute = _lib.smo_get_link_attribute
-    _get_result = _lib.smo_get_link_result
-    _element_type = _lib.SMO_link
+    _get_series = _lib.getlinkseries
+    _get_attribute = _lib.getlinkattribute
+    _get_result = _lib.getlinkresult
+    _element_type = _lib.ElementType.LINK
     _first_pollutant = _lib.SMO_pollutant_conc_link
 
 
 class SwmmOutputSystem(SwmmOutputCategoryBase):
     type_label = "System"
 
-    attribute_temperature        = SwmmOutputAttribute(_lib.SMO_air_temp,             "Temperature",    ('deg F', 'deg C'))
-    attribute_precipitation      = SwmmOutputAttribute(_lib.SMO_rainfall_system,      "Precipitation",  ('in/hr', 'mm/hr'))
-    attribute_snow_depth         = SwmmOutputAttribute(_lib.SMO_snow_depth_system,    "Snow Depth",     ('in',    'mm'))
-    attribute_infiltration       = SwmmOutputAttribute(_lib.SMO_evap_infil_loss,      "Infiltration",   ('in/hr', 'mm/hr'))
-    attribute_runoff             = SwmmOutputAttribute(_lib.SMO_runoff_flow,          "Runoff",             ('CFS', 'CMS'))
-    attribute_dry_weather_inflow = SwmmOutputAttribute(_lib.SMO_dry_weather_inflow,   "Dry Weather Inflow", ('CFS', 'CMS'))
-    attribute_groundwater_inflow = SwmmOutputAttribute(_lib.SMO_groundwater_inflow,   "Groundwater Inflow", ('CFS', 'CMS'))
-    attribute_rdii_inflow        = SwmmOutputAttribute(_lib.SMO_RDII_inflow,          "I&I Inflow",         ('CFS', 'CMS'))
-    attribute_direct_inflow      = SwmmOutputAttribute(_lib.SMO_direct_inflow,        "Direct Inflow",      ('CFS', 'CMS'))
-    attribute_total_inflow       = SwmmOutputAttribute(_lib.SMO_total_lateral_inflow, "Total Inflow",       ('CFS', 'CMS'))
-    attribute_flooding           = SwmmOutputAttribute(_lib.SMO_flood_losses,         "Flooding",           ('CFS', 'CMS'))
-    attribute_outflow            = SwmmOutputAttribute(_lib.SMO_outfall_flows,        "Outflow",            ('CFS', 'CMS'))
-    attribute_storage            = SwmmOutputAttribute(_lib.SMO_volume_stored,        "Storage",            ('ft3', 'm3'))
-    attribute_evaporation        = SwmmOutputAttribute(_lib.SMO_evap_rate,            "Evaporation", ('in/day', 'mm/day'))
+    # attribute_temperature        = SwmmOutputAttribute(_lib.SMO_air_temp,             "Temperature",    ('deg F', 'deg C'))
+    # attribute_precipitation      = SwmmOutputAttribute(_lib.SMO_rainfall_system,      "Precipitation",  ('in/hr', 'mm/hr'))
+    # attribute_snow_depth         = SwmmOutputAttribute(_lib.SMO_snow_depth_system,    "Snow Depth",     ('in',    'mm'))
+    # attribute_infiltration       = SwmmOutputAttribute(_lib.SMO_evap_infil_loss,      "Infiltration",   ('in/hr', 'mm/hr'))
+    # attribute_runoff             = SwmmOutputAttribute(_lib.SMO_runoff_flow,          "Runoff",             ('CFS', 'CMS'))
+    # attribute_dry_weather_inflow = SwmmOutputAttribute(_lib.SMO_dry_weather_inflow,   "Dry Weather Inflow", ('CFS', 'CMS'))
+    # attribute_groundwater_inflow = SwmmOutputAttribute(_lib.SMO_groundwater_inflow,   "Groundwater Inflow", ('CFS', 'CMS'))
+    # attribute_rdii_inflow        = SwmmOutputAttribute(_lib.SMO_RDII_inflow,          "I&I Inflow",         ('CFS', 'CMS'))
+    # attribute_direct_inflow      = SwmmOutputAttribute(_lib.SMO_direct_inflow,        "Direct Inflow",      ('CFS', 'CMS'))
+    # attribute_total_inflow       = SwmmOutputAttribute(_lib.SMO_total_lateral_inflow, "Total Inflow",       ('CFS', 'CMS'))
+    # attribute_flooding           = SwmmOutputAttribute(_lib.SMO_flood_losses,         "Flooding",           ('CFS', 'CMS'))
+    # attribute_outflow            = SwmmOutputAttribute(_lib.SMO_outfall_flows,        "Outflow",            ('CFS', 'CMS'))
+    # attribute_storage            = SwmmOutputAttribute(_lib.SMO_volume_stored,        "Storage",            ('ft3', 'm3'))
+    # attribute_evaporation        = SwmmOutputAttribute(_lib.SMO_evap_rate,            "Evaporation", ('in/day', 'mm/day'))
     #attribute_pet                = SwmmOutputAttribute(_lib.SMO_pet,                  "PET",         ('in/day', 'mm/day'))
+
+    attribute_temperature   = SwmmOutputAttribute(_lib.SystemAttribute.AIR_TEMP, "Temperature",    ('deg F', 'deg C'))
+    attribute_precipitation = SwmmOutputAttribute(_lib.SystemAttribute.RAINFALL, "Precipitation",  ('in/hr', 'mm/hr'))
+    attribute_snow_depth    = SwmmOutputAttribute(_lib.SystemAttribute.SNOW_DEPTH, "Snow Depth",     ('in',    'mm'))
+    attribute_infiltration  = SwmmOutputAttribute(_lib.SystemAttribute.EVAP_INFIL_LOSS, "Infiltration",   ('in/hr', 'mm/hr'))
+    attribute_runoff        = SwmmOutputAttribute(_lib.SystemAttribute.RUNOFF_FLOW, "Runoff", ('CFS', 'CMS'))
+    attribute_dry_weather_inflow = SwmmOutputAttribute(_lib.SystemAttribute.DRY_WEATHER_INFLOW, "Dry Weather Inflow", ('CFS', 'CMS'))
+    attribute_groundwater_inflow = SwmmOutputAttribute(_lib.SystemAttribute.GW_INFLOW, "Groundwater Inflow", ('CFS', 'CMS'))
+    attribute_rdii_inflow   = SwmmOutputAttribute(_lib.SystemAttribute.RDII_INFLOW,  "I&I Inflow", ('CFS', 'CMS'))
+    attribute_direct_inflow = SwmmOutputAttribute(_lib.SystemAttribute.DIRECT_INFLOW, "Direct Inflow", ('CFS', 'CMS'))
+    attribute_total_inflow  = SwmmOutputAttribute(_lib.SystemAttribute.TOTAL_LATERAL_INFLOW, "Total Inflow", ('CFS', 'CMS'))
+    attribute_flooding      = SwmmOutputAttribute(_lib.SystemAttribute.FLOOD_LOSSES,  "Flooding", ('CFS', 'CMS'))
+    attribute_outflow       = SwmmOutputAttribute(_lib.SystemAttribute.OUTFALL_FLOWS, "Outflow",  ('CFS', 'CMS'))
+    attribute_storage       = SwmmOutputAttribute(_lib.SystemAttribute.VOLUME_STORED, "Storage",  ('ft3', 'm3'))
+    attribute_evaporation   = SwmmOutputAttribute(_lib.SystemAttribute.EVAP_RATE,     "Evaporation", ('in/day', 'mm/day'))
 
     attribute_temperature.smo_type = _lib.SMO_sys
     attribute_precipitation.smo_type = _lib.SMO_sys
@@ -321,17 +353,17 @@ class SwmmOutputSystem(SwmmOutputCategoryBase):
                   attribute_storage,
                   attribute_evaporation)
 
-    _get_series = _lib.smo_get_system_series
-    _get_attribute = _lib.smo_get_system_attribute
-    _get_result = _lib.smo_get_system_result
-    _element_type = _lib.SMO_sys  # 3 typedef enum {subcatch, node, link, sys} smo_elementType
+    _get_series = _lib.getsystemseries
+    _get_attribute = _lib.getsystemattribute
+    _get_result = _lib.getsystemresult
+    _element_type = _lib.ElementType.SYSTEM
 
 
 class SwmmOutputPollutant(SwmmOutputCategoryBase):
     type_label = "Pollutant"
     all_units = ["mg/L", "ug/L", "count/L"]
     _count_flag = 0 # _lib.pollutantCount
-    _element_type = _lib.SMO_sys  # This is recognized when getting names from the API. (There are no names for sys.)
+    _element_type = _lib.ElementType.SYSTEM  # This is recognized when getting names from the API. (There are no names for sys.)
 
 
 swmm_output_object_types = (SwmmOutputSubcatchment, SwmmOutputNode, SwmmOutputLink, SwmmOutputSystem)
@@ -350,8 +382,6 @@ TempUnits = ('deg F', 'deg C')
 SMO_UnitsUS = 0
 SMO_UnitsSI = 1
 
-cint = c_int()
-
 
 class SwmmOutputObject(object):
     def __init__(self, output_file_name):
@@ -360,14 +390,12 @@ class SwmmOutputObject(object):
             Args
             output_file_name (str): full path and file name of EPANET binary output file to open
         """
-        self._call_int_return = c_int()  # Private variable used only inside call_int
-        self._call_double_return = c_double()  # Private variable used only inside call_double
         self.output_file_name = output_file_name
 
-        self.ptrapi = _lib.smo_init()
+        self.ptrapi = _lib.init()
         for attempt in [1, 2, 3, 4, 5]:  # wait to finish closing the file in case it just finished running the model
 
-            ret = _lib.smo_open(self.ptrapi, self.output_file_name)
+            ret = _lib.open(self.ptrapi, self.output_file_name)
             if ret is None:
                 break
             print("Error " + str(ret) + " opening " + self.output_file_name + " retrying...")
@@ -375,7 +403,7 @@ class SwmmOutputObject(object):
         if ret is not None:
             self._raise_error(ret)
 
-        ret = _lib.SMO_pollutant_conc_node()
+        # ret = _lib.SMO_pollutant_conc_node()
 
         # self._measure_new_out_value_series()
         self._get_units()
@@ -383,9 +411,11 @@ class SwmmOutputObject(object):
         self._get_times()
 
         self.pollutants = SwmmOutputPollutant.read_all(self)
-        for pollutant in self.pollutants.values():
-            pollutant.units = SwmmOutputPollutant.all_units[
-                self._call_int(_lib.smo_get_pollutant_units, pollutant._index)]
+        output_pollutants_units = _lib.getpollutantunits(self.ptrapi)
+        if len(output_pollutants_units) == len(self.pollutants.values()):
+            for pollutant in self.pollutants.values():
+                # pollutant.units = SwmmOutputPollutant.all_units[self._call_int(_lib.getpollutantunits, pollutant._index)]
+                pollutant.units = SwmmOutputPollutant.all_units[output_pollutants_units[pollutant._index]]
 
         # Read all the model elements into dictionaries (also add pollutants to attributes)
         self.subcatchments = SwmmOutputSubcatchment.read_all(self)
@@ -424,31 +454,6 @@ class SwmmOutputObject(object):
             print(str(ex))
             raise Exception("SWMM output error calling " + str(function) + ": " + str(ex))
 
-    def _call_int(self, func, *args):
-        """ Call an API method whose return value is an integer indicating an error if != 0
-            and which also returns an integer in the last argument (using byref).
-            call_int handles the return value error flag by calling RaiseError if needed.
-            Do not include the last argument (the return argument) in *args, it will be added internally.
-            The integer value returned is the return value of call_int."""
-        # args_to_pass = list(args)
-        # args_to_pass.append(byref(self._call_int_return))  # When moving to Python 3.5+, can skip appending and use:
-        # self._call(function, *args_to_pass)                 # self.call(function, *args, byref(self._call_int_return))
-        self._call(func, *args, byref(self._call_int_return))
-        return self._call_int_return.value
-
-    def _call_double(self, func, *args):
-        """ Call an API method whose return value is an integer indicating an error if != 0
-            and which also returns a double in the last argument (using byref).
-            call_double handles the return value error flag by calling RaiseError if needed.
-            Do not include the last argument (the return argument) in *args, it will be added internally
-            The double value returned is the return value of call_double."""
-        # args_to_pass = list(args)
-        # args_to_pass.append(byref(self._call_double_return))
-        # self._call(function, *args_to_pass)
-        #  When moving to Python 3.5+, can skip appending and use:
-        self._call(func, *args, byref(self._call_int_return))
-        return self._call_double_return.value
-
     def _raise_error(self, ErrNo):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
         #     raise Exception(errmsg.value)
@@ -472,7 +477,7 @@ class SwmmOutputObject(object):
         Purpose: Reads flow unit index into self.flowUnits, sets self.unit_system and self.flowUnitsLabel
         """
         # self.flowUnits = self._call_int(_lib.smo_get_flow_units, _lib.SMO_flow_rate)
-        self.flowUnits = _lib.smo_get_flow_units(self.ptrapi)
+        self.flowUnits = _lib.getflowunits(self.ptrapi)
         if self.flowUnits < len(SMO_USFlowUnits):
             self.unit_system = SMO_UnitsUS
             self.flowUnitsLabel = SMO_USFlowUnits[self.flowUnits]
@@ -487,19 +492,19 @@ class SwmmOutputObject(object):
         """
         Populates object attributes with the water object counts
         """
-        self.subcatchCount, self.nodeCount, self.linkCount, self.pollutantCount = _lib.smo_get_project_size(self.ptrapi)
+        self.subcatchCount, self.nodeCount, self.linkCount, self.pollutantCount = _lib.getprojectsize(self.ptrapi)
 
     def _get_times(self):
         """
         Purpose: Retrieve report and simulation time-related parameters and stores them in self.
         """
         # RawReportStart = self._call_double(_lib.smo_getStartTime)  # decimal (Julian) days since 12 AM on 12/30/1899
-        RawReportStart = _lib.smo_get_start_date(self.ptrapi)  # decimal (Julian) days since 12 AM on 12/30/1899
+        RawReportStart = _lib.getstartdate(self.ptrapi)  # decimal (Julian) days since 12 AM on 12/30/1899
         self.StartDate = datetime.datetime(1899, 12, 30) + datetime.timedelta(RawReportStart)
         # self.reportStep = self._call_int(_lib.smo_get_times, _lib.SMO_reportStep)
         # self.num_periods = self._call_int(_lib.smo_get_times, _lib.SMO_numPeriods)
-        self.reportStep = _lib.smo_get_times(self.ptrapi, _lib.SMO_reportStep)
-        self.num_periods = _lib.smo_get_times(self.ptrapi, _lib.SMO_numPeriods)
+        self.reportStep = _lib.gettimes(self.ptrapi, _lib.Time.REPORT_STEP)
+        self.num_periods = _lib.gettimes(self.ptrapi, _lib.Time.NUM_PERIODS)
         self.simDuration = self.reportStep * self.num_periods
         self.EndDate = self.StartDate + datetime.timedelta(seconds=self.simDuration)
         # self.all_dates = pandas.date_range(start=self.StartDate, end=self.EndDate, periods=self.num_periods)
@@ -532,7 +537,7 @@ class SwmmOutputObject(object):
         Close the binary file.
         """
         # self._call(_lib.smo_close)
-        _lib.smo_close()
+        _lib.close(self.ptrapi)
 
     def elapsed_hours_at_index(self, report_time_index):
         return (report_time_index * self.reportStep) / 3600.0

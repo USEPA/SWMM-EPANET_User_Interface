@@ -127,15 +127,15 @@ class SwmmOutputCategoryBase:
         attr_array = None
         try:
             if attribute.smo_type == _lib.SMO_subcatch:
-                attr_array = _lib.getsubcatchattribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getsubcatchattribute(output.ptrapi, time_index, attribute.index)
             elif attribute.smo_type == _lib.SMO_node:
-                attr_array = _lib.getnodeattribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getnodeattribute(output.ptrapi, time_index, attribute.index)
             elif attribute.smo_type == _lib.SMO_link:
-                attr_array = _lib.getlinkattribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getlinkattribute(output.ptrapi, time_index, attribute.index)
             elif attribute.smo_type == _lib.SMO_sys:
-                attr_array = _lib.getsystemattribute(output.ptrapi, time_index, attribute)
+                attr_array = _lib.getsystemattribute(output.ptrapi, time_index, attribute.index)
         except Exception as e:
-            print("Error get_attribute_for_all_at_time")
+            print("Error get_attribute_for_all_at_time" + str(e))
         return attr_array
 
     @classmethod

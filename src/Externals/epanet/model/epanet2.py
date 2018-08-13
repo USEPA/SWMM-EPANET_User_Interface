@@ -108,7 +108,7 @@ class ENepanet():
         msgbuf = create_string_buffer(256)  
         en_geterror = getattr(self.ENlib, 'ENgeterror')
         en_geterror(self.errcode, msgbuf, sizeof(msgbuf))
-        sys.stdout.write(msgbuf.value)
+        sys.stdout.write(str(msgbuf.value))
         
         if self.errcode >= 100:
             self.Errflag = True

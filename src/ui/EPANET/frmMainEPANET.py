@@ -189,6 +189,7 @@ class frmMainEPANET(frmMain):
         self.menuTools.removeAction(self.actionStdProgPrefer)
         self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
+        self.toolBar_Standard.removeAction(self.actionProjTableStatistics)
 
         self.actionStatus_ReportMenu = QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))

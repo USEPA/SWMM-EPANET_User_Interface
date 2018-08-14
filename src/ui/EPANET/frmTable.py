@@ -128,15 +128,31 @@ class frmTable(QMainWindow, Ui_frmTable):
         frm = frmGenericListOutput(self._main_form, "EPANET Table Output")
         if self.rbnNodes.isChecked() or self.rbnLinks.isChecked():
             items_in_order = list()
+            time_index = self.cboTime.currentIndex()
+
             if self.rbnNodes.isChecked():
                 for item in self.report.all_nodes_set_category():
-                    items_in_order.append(item)
-                    row_headers.append(item.category + ' ' + item.name)
+                    if self.lstFilter.count() == 0:
+                        items_in_order.append(item)
+                        row_headers.append(item.category + ' ' + item.name)
+                    else:
+                        # check filters
+                        values = item.get_all_attributes_at_time(self.output, time_index)
+                        if self.check_filters(values):
+                            items_in_order.append(item)
+                            row_headers.append(item.category + ' ' + item.name)
             else:
                 for item in self.report.all_links_set_category():
-                    items_in_order.append(item)
-                    row_headers.append(item.category + ' ' + item.name)
-            time_index = self.cboTime.currentIndex()
+                    if self.lstFilter.count() == 0:
+                        items_in_order.append(item)
+                        row_headers.append(item.category + ' ' + item.name)
+                    else:
+                        # check filters
+                        values = item.get_all_attributes_at_time(self.output, time_index)
+                        if self.check_filters(values):
+                            items_in_order.append(item)
+                            row_headers.append(item.category + ' ' + item.name)
+
             title = "Network Table - " + self.item_type.TypeLabel + "s at "+ self.output.get_time_string(time_index)
             self.make_table(frm, title, time_index, items_in_order,
                             row_headers, attributes, column_headers)
@@ -153,6 +169,28 @@ class frmTable(QMainWindow, Ui_frmTable):
         frm.update()
         self.forms.append(frm)
         # self.close()
+
+    def check_filters(self, values):
+        ok_to_append = True
+        for i in range(0, self.lstFilter.count()):
+            word_list = self.lstFilter.item(i).text().split()
+            qty = word_list[0]
+            comp = word_list[1]
+            val = word_list[2]
+            pos = self.cboFilter.findText(qty) + 1
+            if pos > 0:
+                if comp == 'Below':
+                    if values[pos] >= float(val):
+                        ok_to_append = False
+                elif comp == 'Equal To':
+                    if values[pos] > float(val):
+                        ok_to_append = False
+                    if values[pos] < float(val):
+                        ok_to_append = False
+                elif comp == 'Above':
+                    if values[pos] <= float(val):
+                        ok_to_append = False
+        return ok_to_append
 
     def make_table(self, frm, title, time_index, items, row_headers, attributes, column_headers):
         frm.setWindowTitle(title)

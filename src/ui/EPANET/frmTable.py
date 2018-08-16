@@ -1,6 +1,7 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+from PyQt5.QtCore import Qt
 
 from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type, ENR_link_type
 from core.epanet.reports import Reports
@@ -30,6 +31,7 @@ class frmTable(QMainWindow, Ui_frmTable):
         self._main_form = main_form
         self.item_type = ENR_node_type
         self.forms = []
+        self.cbxSort.setVisible(False)
 
     def set_from(self, project, output):
         self.project = project
@@ -322,6 +324,10 @@ class frmTable(QMainWindow, Ui_frmTable):
         for row_number in rows_to_remove:
             tbl.removeRow(int(row_number)-removed_count)
             removed_count += 1
+
+        # do sort
+        # tbl.sortByColumn(1, Qt.AscendingOrder)
+        # sorting not yet enabled
 
 
     def make_timeseries_table(self, frm, title, item, attributes, column_headers):

@@ -16,8 +16,8 @@ class frmQualityOptions(QMainWindow, Ui_frmQualityOptions):
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.rbnChemical.clicked.connect(self.analysis_option_changed)
-        seChanged.connect(self.chemical_name_changed)
-        # self.txtChemicalName.textChanged(QString).connect(self.chemical_name_changed)
+        # seChanged.connect(self.chemical_name_changed)
+        self.txtChemicalName.textChanged.connect(self.chemical_name_changed)
 
         self.quality_dict = {
             QualityAnalysisType.NONE: self.rbnNone,

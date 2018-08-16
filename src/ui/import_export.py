@@ -843,7 +843,7 @@ def import_swmm_from_geojson(session, file_name):
             model_layer = session.model_layers.storage
             model_item = StorageUnit()
             build_model_object_per_geojson_record(project, f, storage_import_attributes, model_item)
-            if model_item.storage_curve and model_item.storage_curve.lower() <> 'none':
+            if model_item.storage_curve and model_item.storage_curve.lower() != 'none':
                 model_item.storage_curve_type = StorageCurveType.TABULAR
             #if model_item.coefficient or model_item.constant or model_item.exponent:
             #    model_item.storage_curve_type = StorageCurveType.FUNCTIONAL
@@ -941,7 +941,7 @@ def import_swmm_from_geojson(session, file_name):
                                                                    session.project.all_nodes(),
                                                                    inlet_sub, None)
                 except Exception as ex:
-                    print model_item.name + ": " + str(ex)
+                    print( model_item.name + ": " + str(ex))
                     continue
                 sublink_layer.startEditing()
                 added_lf = sublink_layer.dataProvider().addFeatures([lf])

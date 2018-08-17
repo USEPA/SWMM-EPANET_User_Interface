@@ -1278,11 +1278,17 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.update_thematic_map()
 
     def setQgsMapToolSelect(self):
-        self.actionMapSelectObj.setChecked(True)
+        if self.actionMapSelectObj.isChecked():
+            self.actionMapSelectObj.setChecked(False)
+        else:
+            self.actionMapSelectObj.setChecked(True)
         self.setQgsMapTool()
 
     def setQgsMapToolSelectVertex(self):
-        self.actionMapSelectVertex.setChecked(True)
+        if self.actionMapSelectVertices.isChecked():
+            self.actionMapSelectVertices.setChecked(False)
+        else:
+            self.actionMapSelectVertices.setChecked(True)
         self.setQgsMapTool()
 
     def setMenuMapTool(self, aMenuMapToolName):
@@ -1300,6 +1306,10 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.map_widget.setPanMode()
 
     def setQgsMapToolSelectRegion(self):
+        if self.actionMapSelectRegion.isChecked():
+            self.actionMapSelectRegion.setChecked(False)
+        else:
+            self.actionMapSelectRegion.setChecked(True)
         if self.actionMapSelectRegion.isChecked():
             self.select_region_checked = True
         else:

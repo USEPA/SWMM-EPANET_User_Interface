@@ -117,6 +117,10 @@ try:
 
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 self.canvas.setMapTool(self.zoomInTool)
                 #self.zoomInTool.setCursor(QtCore.Qt.CrossCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.CrossCursor)
@@ -128,6 +132,10 @@ try:
 
         def setZoomOutMode(self):
             if self.session.actionZoom_out.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 self.canvas.setMapTool(self.zoomOutTool)
                 #self.zoomOutTool.setCursor(QtCore.Qt.SplitHCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.SplitHCursor)
@@ -139,6 +147,10 @@ try:
 
         def setPanMode(self):
             if self.session.actionPan.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 self.canvas.setMapTool(self.panTool)
                 #self.panTool.setCursor(QtCore.Qt.OpenHandCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.OpenHandCursor)
@@ -150,6 +162,10 @@ try:
         def setSelectMode(self):
             QApplication.restoreOverrideCursor()
             if self.session.actionMapSelectObj.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 if self.canvas.layers():
                     self.selectTool = SelectMapTool(self.canvas, self.session)
                     if self.session.gis_layer_tree.currentLayer():
@@ -166,6 +182,10 @@ try:
 
         def setSelectVertexMode(self):
             if self.session.actionMapSelectVertices.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 if self.canvas.layers():
                     self.selectVertexTool = MoveVerticesTool(self.canvas, self.session)
                     self.selectVertexTool.setAction(self.session.actionMapSelectVertices)
@@ -190,6 +210,10 @@ try:
                 #         break
             if layer is None:
                 if self.session.actionMapSelectVertices.isChecked():
+                    self.session.actionMapMeasure.setChecked(False)
+                    self.setMeasureMode()
+                    self.session.actionMapSelectRegion.setChecked(False)
+                    self.setSelectByRegionMode()
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Information)
                     msg.setText("Need to select a GIS layer first")
@@ -244,6 +268,8 @@ try:
 
         def setMeasureMode(self):
             if self.session.actionMapMeasure.isChecked():
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 if self.measureTool is None:
                     self.measureTool = CaptureTool(self.canvas, None, None, None, self.session)
                     self.measureTool.setMeasureMode(True)
@@ -254,7 +280,9 @@ try:
                 self.canvas.unsetMapTool(self.measureTool)
 
         def setSelectByRegionMode(self):
-            if self.session.select_region_checked:
+            if self.session.actionMapSelectRegion.isChecked():
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
                 if self.selectRegionTool is None:
                     self.selectRegionTool = CaptureRegionTool(self.canvas, None, None, None, self.session)
                 self.canvas.setMapTool(self.selectRegionTool)
@@ -265,6 +293,10 @@ try:
 
         def setTranslateCoordinatesMode(self):
             if self.session.translating_coordinates:
+                self.session.actionMapMeasure.setChecked(False)
+                self.setMeasureMode()
+                self.session.actionMapSelectRegion.setChecked(False)
+                self.setSelectByRegionMode()
                 if self.translateCoordTool is None:
                     self.translateCoordTool = ModelCoordinatesTranslationTool(self.canvas, self.session)
                 self.canvas.setMapTool(self.translateCoordTool)
@@ -1830,20 +1862,27 @@ try:
                 if self.closedPolygon():
                     self.captureMode = CaptureTool.CAPTURE_POLYGON
 
+            distance_units = self.session.project.map.units.name.lower()
+            area_units = "square " + distance_units
+            if distance_units == 'none':
+                distance_units = ''
+                area_units = ''
             if self.captureMode == CaptureTool.CAPTURE_LINE:
-                d = self.ruler.measureLine(layerCoords)
-                msgBox.setText("Line Distance: " + str(d))
+                d = round(self.ruler.measureLine(layerCoords),2)
+
+                msgBox.setText("Line Distance: " + str(d) + " " + distance_units)
             elif self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 # geometry = QgsGeometry.fromPolygon([layerCoords])
                 geometry = QgsGeometry()
                 layerCoords.append(layerCoords[0])
                 geometry.addPointsXY(layerCoords, QgsWkbTypes.PolygonGeometry)
-                a = self.ruler.measureArea(geometry)
-                d = self.ruler.measurePerimeter(geometry)
-                msgBox.setText("Perimeter Distance: " + str(d) + '\n' +
-                               "Area: " + str(a))
+                a = round(self.ruler.measureArea(geometry),2)
+                d = round(self.ruler.measurePerimeter(geometry),2)
+                msgBox.setText("Perimeter Distance: " + str(d) + " " + distance_units + '\n' +
+                               "Area: " + str(a) + " " + area_units)
 
             msgBox.setWindowTitle("Measure Dimension")
+            msgBox.setWindowIcon(self.session.windowIcon())
             msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             msgBox.exec_()
             del msgBox

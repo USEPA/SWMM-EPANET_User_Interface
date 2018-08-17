@@ -1336,6 +1336,10 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.map_widget.setAddObjectMode(act, name, CaptureTool)
 
     def zoomfull(self):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         self.map_widget.zoomfull()
 
     def map_addfeature(self):
@@ -1368,6 +1372,10 @@ class frmMain(QMainWindow, Ui_frmMain):
     #             pass
 
     def map_addvector(self):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         directory = self.program_settings.value("GISDataDir", "/")
         file_filter = "Shapefile (*.shp);;" \
                       "GeoJSON (*.json *.geojson);;" \
@@ -1396,6 +1404,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         #         self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self, eventArg):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         directory = self.program_settings.value("GISDataDir", "/")
         filename, ftype = QFileDialog.getOpenFileName(self, "Open Raster...", directory,
                                                      "GeoTiff files (*.tif *tiff);;Bitmap (*.bmp);;All files (*.*)")

@@ -2,6 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtCore import *
 from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
 from ui.help import HelpHandler
 from core.swmm.timeseries import TimeSeries
@@ -182,3 +183,8 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
             frm_plt.show()
         pass
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            if self.tblTime.currentRow() + 1 == self.tblTime.rowCount():
+                self.tblTime.insertRow(self.tblTime.rowCount())

@@ -1657,9 +1657,11 @@ class frmMain(QMainWindow, Ui_frmMain):
                     code = compile(source, file_name, 'exec')
                     exec(code, namespace, namespace)
                 """
+                QApplication.restoreOverrideCursor()
                 QMessageBox.information(None, "Finished Running Script",
                                         file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
             except Exception as ex:
+                QApplication.restoreOverrideCursor()
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             finally:
@@ -1687,7 +1689,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             files = []
 
         if files and files[0] == file_name:
-            return
+            return files
 
         if file_name:
             try:

@@ -80,7 +80,7 @@ class DynamicWave(Section):
         ## Difference in computed head at each node between successive trials below
         ## which the flow solution for the current time step is assumed to have converged.
         ## The default tolerance is 0.005 ft (0.0015 m).
-        self.head_tolerance = ''
+        self.head_tolerance = '0.005'
 
         ## Smallest time step allowed when variable time steps are used for dynamic
         ## wave flow routing. The default value is 0.5 seconds.

@@ -39,12 +39,14 @@ class frmPipe(frmGenericPropertyEditor):
             combobox.addItem('OPEN')
             combobox.addItem('CLOSED')
             combobox.addItem('CV')
-            if not edit_these[column].initial_status or edit_these[column].initial_status.upper() == 'OPEN':
-                combobox.setCurrentIndex(0)
-            elif edit_these[column].initial_status.upper() == 'CLOSED':
-                combobox.setCurrentIndex(1)
-            else:
-                combobox.setCurrentIndex(2)
+            combobox.setCurrentIndex(0)
+            if len(edit_these) > 0:
+                if edit_these[column].initial_status.upper() == 'OPEN':
+                    combobox.setCurrentIndex(0)
+                elif edit_these[column].initial_status.upper() == 'CLOSED':
+                    combobox.setCurrentIndex(1)
+                else:
+                    combobox.setCurrentIndex(2)
             self.tblGeneric.setCellWidget(9, column, combobox)
 
     def cmdOK_Clicked(self):

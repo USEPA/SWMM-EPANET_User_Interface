@@ -43,10 +43,10 @@ class frmOutfalls(frmGenericPropertyEditor):
             combobox = QtGui.QComboBox()
             combobox.addItem('YES')
             combobox.addItem('NO')
-            if edit_these[column].tide_gate:
-                combobox.setCurrentIndex(0)
-            else:
-                combobox.setCurrentIndex(1)
+            combobox.setCurrentIndex(1)
+            if len(edit_these) > 0:
+                if edit_these[column].tide_gate:
+                    combobox.setCurrentIndex(0)
             row = self.header_index("tide")
             if row >= 0:
                 self.tblGeneric.setCellWidget(row, column, combobox)

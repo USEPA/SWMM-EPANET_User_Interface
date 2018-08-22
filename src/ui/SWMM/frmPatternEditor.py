@@ -33,6 +33,7 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
             pattern = self.section.value[pattern]
         if isinstance(pattern, Pattern):
             self.editing_item = pattern
+            self.cboType_currentIndexChanged(0)
             self.txtPatternID.setText(str(pattern.name))
             self.txtDescription.setText(str(pattern.description))
             ui.convenience.set_combo(self.cboType, pattern.pattern_type)

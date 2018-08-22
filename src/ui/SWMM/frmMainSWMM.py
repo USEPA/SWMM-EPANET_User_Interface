@@ -88,6 +88,7 @@ from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import SubLink
 
 from ui.SWMM.frmRunSWMM import frmRunSWMM
+from ui.SWMM.frmDefaultsEditor import frmDefaultsEditor
 
 import Externals.swmm.outputapi.SMOutputSWIG as SMO
 from core.indexed_list import IndexedList
@@ -1129,7 +1130,6 @@ class frmMainSWMM(frmMain):
         qsettings = self.project_settings
         if qsettings is None:
             qsettings = self.program_settings
-        from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
 

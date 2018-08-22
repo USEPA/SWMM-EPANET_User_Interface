@@ -1,6 +1,6 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
-from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QTableWidget, QGridLayout, QWidget, QComboBox
+from PyQt5.QtWidgets import QMainWindow, QLabel, QTableWidget, QTableWidgetItem, QGridLayout, QWidget, QComboBox
 from ui.frmGenericDefaultsEditorDesigner import Ui_frmGenericDefaultsEditor
 from ui.inifile import ini_setting
 from ui.convenience import set_combo_items
@@ -66,8 +66,8 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         self.tbl_2.setRowCount(1)
         self.tbl_2.horizontalHeader().setStretchLastSection(True)
         self.gridLayout_tab2.addWidget(self.tbl_2, 0, 0, 0, 0)
-        # self.tbl_2.cellChanged(int, int).connec(self.tbl_2_changed)
-        self.tbl_2.cellChanged.connec(self.tbl_2_changed)
+        # self.tbl_2.cellChanged(int, int).connect(self.tbl_2_changed)
+        self.tbl_2.cellChanged.connect(self.tbl_2_changed)
 
         self.corner_label_tab2 = QLabel("Property", self.tbl_2)
         self.corner_label_tab2.setAlignment(QtCore.Qt.AlignCenter)
@@ -168,7 +168,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             #self.increment = int(self.qsettings.value("Labels/Increment", 1))
             self.increment = self.defaults.id_increment
         self.tblGeneric.setItem(self.tblGeneric.rowCount()- 1,0,
-                                QTableWidgetItem(unicode(self.defaults.id_increment)))
+                                QTableWidgetItem(self.defaults.id_increment))
         pass
 
     def set_sub_properties(self):
@@ -186,7 +186,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         for i in range(0, len(self.defaults.properties_sub_keys) - 1):
             #def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
             def_val = self.defaults.properties_sub_values[self.defaults.properties_sub_keys[i]]
-            self.tbl_2.setItem(i,0, QTableWidgetItem(unicode(def_val)))
+            self.tbl_2.setItem(i,0, QTableWidgetItem(def_val))
         self.set_infilmodel_cell(0)
 
         pass
@@ -231,7 +231,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
                 if "conduit geometry" in key.lower():
                     self.set_channel_cell(0)
                 else:
-                    self.tbl_3.setItem(i,0, QTableWidgetItem(unicode(def_val)))
+                    self.tbl_3.setItem(i,0, QTableWidgetItem(def_val))
         pass
 
     def eventFilter(self, ui_object, event):

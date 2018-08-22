@@ -2,6 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtCore import *
 from ui.help import HelpHandler
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
@@ -13,6 +14,8 @@ from ui.model_utility import ParseData
 import os
 import traceback
 import numpy as np
+import pandas as pd
+from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
@@ -30,6 +33,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         self.btnSave.clicked.connect(self.save_curve_data)
         self.btnLoad.clicked.connect(self.load_curve_data)
         self.btnHelp.clicked.connect(self.show_help)
+        self.btnView.clicked.connect(self.btnView_Clicked)
         # self.cboCurveType.clicked.connect(self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         # self.set_from(main_form.project)   # do after init to set curve type
@@ -37,6 +41,8 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         self.curve_type = curve_type
         self.project = main_form.project
         self.section = self.project.curves
+        self.X = []
+        self.Y = []
         self.new_item = new_item
         if new_item:
             self.set_from(new_item)
@@ -259,3 +265,41 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
 
     def show_help(self):
         self.helper.show_help()
+
+    def GetData(self):
+        # construct pandas time series from grid data
+        del self.X[:]
+        del self.Y[:]
+        n = 0
+        for row in range(self.tblMult.rowCount()):
+            if self.tblMult.item(row,1):
+                y_val, y_val_good = ParseData.floatTryParse(self.tblMult.item(row, 1).text())
+                x_val, x_val_good = ParseData.floatTryParse(self.tblMult.item(row, 0).text())
+                if y_val_good and x_val_good:
+                    # as long as the values are good
+                    self.Y.append(y_val)
+                    self.X.append(x_val)
+                    n += 1
+            else:
+                return n
+        return n
+
+    def btnView_Clicked(self):
+        """
+        Display the grid data with pandas dataframe plot function
+        Returns: None
+        """
+        n = self.GetData()
+        if n > 0:
+            ds = pd.Series(self.Y, index=self.X)
+            df = pd.DataFrame({'DS-':ds})
+            frm_plt = frmPlotViewer(df,'xy',self.curve_type + ' Curve ' + self.txtCurveName.text(), self.windowIcon(),
+                                    self.tblMult.horizontalHeaderItem(0).text(), self.tblMult.horizontalHeaderItem(1).text())
+            frm_plt.setWindowTitle('Curve Viewer')
+            frm_plt.show()
+        pass
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            if self.tblMult.currentRow() + 1 == self.tblMult.rowCount():
+                self.tblMult.insertRow(self.tblMult.rowCount())

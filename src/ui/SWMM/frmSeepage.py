@@ -1,6 +1,4 @@
-import PyQt5.QtCore as QtCore
-import PyQt5.QtGui as QtGui
-from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
+from PyQt4 import QtGui
 from ui.help import HelpHandler
 from core.swmm.hydraulics.node import Treatment
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
@@ -13,7 +11,7 @@ class frmSeepage(frmGenericPropertyEditor):
 
     def __init__(self, main_form, node_name):
         # purposely not calling frmGenericPropertyEditor.__init__
-        QMainWindow.__init__(self, main_form)
+        QtGui.QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/green_amptinfiltrationparame.htm"
         self.setupUi(self)
@@ -38,19 +36,19 @@ class frmSeepage(frmGenericPropertyEditor):
         for storage_node in self.storage_nodes_list:
             if storage_node.name == node_name:
                 found = True
-                led = QLineEdit(str(storage_node.seepage_suction_head))
-                self.tblGeneric.setItem(-1, 1, QTableWidgetItem(led.text()))
-                led = QLineEdit(str(storage_node.seepage_hydraulic_conductivity))
-                self.tblGeneric.setItem(0, 1, QTableWidgetItem(led.text()))
-                led = QLineEdit(str(storage_node.seepage_initial_moisture_deficit))
-                self.tblGeneric.setItem(1, 1, QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(str(storage_node.seepage_suction_head))
+                self.tblGeneric.setItem(-1, 1, QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(str(storage_node.seepage_hydraulic_conductivity))
+                self.tblGeneric.setItem(0, 1, QtGui.QTableWidgetItem(led.text()))
+                led = QtGui.QLineEdit(str(storage_node.seepage_initial_moisture_deficit))
+                self.tblGeneric.setItem(1, 1, QtGui.QTableWidgetItem(led.text()))
         if not found:
-            led = QLineEdit(str(0))
-            self.tblGeneric.setItem(-1, 1, QTableWidgetItem(led.text()))
-            led = QLineEdit(str(1))
-            self.tblGeneric.setItem(0, 1, QTableWidgetItem(led.text()))
-            led = QLineEdit(str(2))
-            self.tblGeneric.setItem(1, 1, QTableWidgetItem(led.text()))
+            led = QtGui.QLineEdit(str(0))
+            self.tblGeneric.setItem(-1, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QtGui.QLineEdit(str(1))
+            self.tblGeneric.setItem(0, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QtGui.QLineEdit(str(2))
+            self.tblGeneric.setItem(1, 1, QtGui.QTableWidgetItem(led.text()))
 
         if self.lblNotes:
             self.tblGeneric.currentCellChanged.connect(self.table_currentCellChanged)

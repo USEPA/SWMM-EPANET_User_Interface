@@ -156,6 +156,12 @@ class SectionReader(object):
                 # else:
                 if not this_comment.lower() in section.comment.lower():
                     section.comment += '\n' + this_comment  # Separate from existing comment with newline
+            elif hasattr(section, "description"):
+                if not this_comment.lower() in section.description.lower():
+                    if len(section.description) == 0:
+                        section.description = this_comment
+                    else:
+                        section.description += '\n' + this_comment  # Separate from existing comment with newline
             else:
                 section.comment = this_comment
                 # section.description = this_comment

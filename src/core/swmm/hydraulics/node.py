@@ -17,7 +17,7 @@ class Node(Section, Coordinate):
         # self.x, self.y, inherited from Coordinate
 
         ## Optional description of the Node
-        # self.description = ''
+        self.description = ''
 
         ## Optional label used to categorize or classify this Node
         self.tag = ''
@@ -46,7 +46,7 @@ class Junction(Node):
         ("name",            '', "Name",            '',   '',   '', "User-assigned name of junction"),
         ('x',               '', "X-Coordinate",    '',   '',   '', "X coordinate of junction on study area map"),
         ('y',               '', "Y-Coordinate",    '',   '',   '', "Y coordinate of junction on study area map"),
-        ('',                '', "Description",     '',   '',   '', "Optional comment or description"),
+        ('description',     '', "Description",     '',   '',   '', "Optional comment or description"),
         ('tag',             '', "Tag",             '',   '',   '', "Optional category or classification"),
         ('',                '', "Inflows",         'NO', '',   '',
          "Click to specify any external inflows received at the junction"),
@@ -134,7 +134,7 @@ class Outfall(Junction):
         ("name",                '', "Name",            '',   '',   '',      "User-assigned name of outfall"),
         ('x',                   '', "X-Coordinate",    '',   '',   '',      "X coordinate of outfall on study area map"),
         ('y',                   '', "Y-Coordinate",    '',   '',   '',      "Y coordinate of outfall on study area map"),
-       #('',                    '', "Description",     '',   '',   '',      "Optional comment or description"),
+        ('description',         '', "Description",     '',   '',   '',      "Optional comment or description"),
         ('tag',                 '', "Tag",             '',   '',   '',      "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',      "Click to specify any external inflows received at the outfall"),
         ('.treatment(name)',    '', "Treatment",       'NO', '',   '',      "Click to specify any pollutant removal supplied at the outfall"),
@@ -212,7 +212,7 @@ class Divider(Junction):
         ("name",                '', "Name",            '',   '',   '',        "User-assigned name of divider"),
         ('x',                   '', "X-Coordinate",    '',   '',   '',        "X coordinate of divider on study area map"),
         ('y',                   '', "Y-Coordinate",    '',   '',   '',        "Y coordinate of divider on study area map"),
-        ('',                    '', "Description",     '',   '',   '',        "Optional comment or description"),
+        ('description',         '', "Description",     '',   '',   '',        "Optional comment or description"),
         ('tag',                 '', "Tag",             '',   '',   '',        "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',        "Click to specify any external inflows received at the divider"),
         ('.treatment(node_name)', '', "Treatment",   'NO', '',   '',          "Click to specify any pollutant removal supplied at the divider"),
@@ -269,7 +269,7 @@ class StorageUnit(Junction):
         ("name",                '', "Name",            '',   '',   '',      "User-assigned name of storage unit"),
         ('x',                   '', "X-Coordinate",    '',   '',   '',      "X coordinate of storage unit on study area map"),
         ('y',                   '', "Y-Coordinate",    '',   '',   '',      "Y coordinate of storage unit on study area map"),
-        ('',                    '', "Description",     '',   '',   '',      "Optional comment or description"),
+        ('description',         '', "Description",     '',   '',   '',      "Optional comment or description"),
         ('tag',                 '', "Tag",             '',   '',   '',      "Optional category or classification"),
         ('',                    '', "Inflows",         'NO', '',   '',      "Click to specify any external inflows received at the storage unit"),
         ('.treatment(node_name)', '', "Treatment",     'NO', '',   '',      "Click to specify any pollutant removal supplied at the storage unit"),

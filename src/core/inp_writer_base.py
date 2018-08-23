@@ -222,6 +222,19 @@ class SectionWriterAsList(SectionWriter):
             else:
                 for item in section.value:
                     if item is not None:
+                        if hasattr(item, "description"):
+                            if len(item.description) > 0 and section.SECTION_NAME != '[COORDINATES]' and \
+                                                             section.SECTION_NAME != '[SUBAREAS]' and \
+                                                             section.SECTION_NAME != '[LOSSES]' and \
+                                                             section.SECTION_NAME != '[SYMBOLS]' and \
+                                                             section.SECTION_NAME != '[STATUS]' and \
+                                                             section.SECTION_NAME != '[EMITTERS]' and \
+                                                             section.SECTION_NAME != '[PATTERNS]' and \
+                                                             section.SECTION_NAME != '[CURVES]':
+                                if item.description[0] == ';':
+                                    text_list.append(item.description)
+                                else:
+                                    text_list.append(';' + item.description)
                         if isinstance(item, str):
                             item_str = item
                         else:

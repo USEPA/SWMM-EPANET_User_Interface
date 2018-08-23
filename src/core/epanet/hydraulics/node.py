@@ -34,8 +34,8 @@ class Node(Section, Coordinate):
         ## Node location for mapping
         # self.x, self.y, inherited from Coordinate
 
-#         ## Optional description of the Node
-#         self.description = ""
+        ## Optional description of the Node
+        self.description = ""
 
         ## Optional label used to categorize or classify the Node
         self.tag = ""
@@ -58,7 +58,7 @@ class Junction(Node):
         ("name",                '', "Name",              '',   '',   '', "User-assigned name of junction"),
         ('x',                   '', "X-Coordinate",      '',   '',   '', "X coordinate of junction on study area map"),
         ('y',                   '', "Y-Coordinate",      '',   '',   '', "Y coordinate of junction on study area map"),
-        ('',                    '', "Description",       '',   '',   '', "Optional comment or description"),
+        ('description',         '', "Description",       '',   '',   '', "Optional comment or description"),
         ('tag',                 '', "Tag",               '',   '',   '', "Optional category or classification"),
         ('elevation',           '', "Elevation",         '0.0', '(ft)', '(m)', "Elevation of junction"),
         ('base_demand_flow',    '', 'Base Demand',       '0.0',  '',   '', "Base demand flow, characteristic of all demands at this node"),
@@ -97,7 +97,7 @@ class Reservoir(Node):
         ("name",              '', "Name",            '',    '',   '', "User-assigned name of reservior"),
         ('x',                 '', "X-Coordinate",    '',    '',   '', "X coordinate of reservior on study area map"),
         ('y',                 '', "Y-Coordinate",    '',    '',   '', "Y coordinate of reservior on study area map"),
-        ('',                  '', "Description",     '',    '',   '', "Optional comment or description"),
+        ('description',       '', "Description",     '',    '',   '', "Optional comment or description"),
         ('tag',               '', "Tag",             '',    '',   '', "Optional category or classification"),
         ('total_head',        '', "Total Head",      '0.0', '',   '', "Hydraulic head (elevation + pressure head) of water in the reservoir"),
         ('head_pattern_name', '', 'Head Pattern',    '',    '',   '', "Head pattern ID, can be used to make the reservoir head vary with time"),
@@ -124,7 +124,7 @@ class Tank(Node):
         ("name",            '', "Name",            '',    '',   '', "User-assigned name of tank"),
         ('x',               '', "X-Coordinate",    '',    '',   '', "X coordinate of tank on study area map"),
         ('y',               '', "Y-Coordinate",    '',    '',   '', "Y coordinate of tank on study area map"),
-        ('',                '', "Description",     '',    '',   '', "Optional comment or description"),
+        ('description',     '', "Description",     '',    '',   '', "Optional comment or description"),
         ('tag',             '', "Tag",             '',    '',   '', "Optional category or classification"),
         ('elevation',       '', "Elevation",       '0.0', '',   '', "Elevation of tank"),
         ('initial_level',   '', "Initial Level",   '0.0', '',   '', "Height of the water surface above the bottom elevation of the tank at the start of the simulation."),

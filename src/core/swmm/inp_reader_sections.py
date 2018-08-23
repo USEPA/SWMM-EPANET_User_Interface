@@ -1356,6 +1356,7 @@ class SubcatchmentReader(SectionReader):
     @staticmethod
     def read(new_text):
         subcatchment = Subcatchment()
+        new_text = SectionReader.set_comment_check_section(subcatchment, new_text)
         fields = new_text.split()
         if len(fields) > 0:
             subcatchment.name = fields[0]

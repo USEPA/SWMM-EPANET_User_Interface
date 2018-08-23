@@ -123,7 +123,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 self.tblMult.setHorizontalHeaderLabels(("Hour of Day", "Stage (ft)"))
 
         self.txtCurveName.setText(str(curve.name))
-        # self.txtDescription.setText(str(curve.description))
+        self.txtDescription.setText(str(curve.comment))
         if self.curve_type == "PUMP":
             if curve.curve_type.name == "PUMP1":
                 self.cboCurveType.setCurrentIndex(0)
@@ -145,7 +145,10 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for blank/duplicate curve name
         # TODO: Check if X-values are in ascending order
         self.editing_item.name = self.txtCurveName.text()
-        self.editing_item.description = self.txtDescription.text()
+        self.editing_item.comment = self.txtDescription.text()
+        if len(self.editing_item.comment) > 0:
+            if self.editing_item.comment[0] != ';':
+                self.editing_item.comment = ';' + self.editing_item.comment
         # curve.curve_type = core.swmm.curves.CurveType[self.cboCurveType.currentText()]
         if self.curve_type == "PUMP":
             if self.cboCurveType.currentIndex() == 0:

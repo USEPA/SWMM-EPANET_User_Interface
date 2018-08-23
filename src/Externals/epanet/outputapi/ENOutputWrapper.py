@@ -499,9 +499,9 @@ class OutputObject(object):
             for pump_index in range(1, pump_count + 1):
                 self.call(_lib.ENR_getEnergyUsage, pump_index, byref(link_index_return), array_pointer)
                 link_index = link_index_return.value
-                for link in self.links.itervalues():
-                    if link.index == link_index:
-                        all_pump_energy[link.name] = PumpEnergy(link.name,
+                for link in self.links:
+                    if self.links[link].index == link_index:
+                        all_pump_energy[self.links[link].name] = PumpEnergy(self.links[link].name,
                                                                 array_pointer[1], array_pointer[2], array_pointer[3],
                                                                 array_pointer[4], array_pointer[5], array_pointer[6])
                         break

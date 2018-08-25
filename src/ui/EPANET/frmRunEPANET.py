@@ -51,6 +51,31 @@ class frmRunEPANET(frmRunSimulation):
         # Notebook1.PageIndex = 0
         self.run_err_msg = ""
 
+    def check_errors(self):
+        if self.model_api is None:
+            return
+
+        if self.model_api.errcode != 0:
+            msg_bytes = self.model_api.ENgeterror(self.model_api.errcode)
+            if msg_bytes and isinstance(msg_bytes, bytes):
+                self.run_err_msg = msg_bytes.decode("utf-8")
+
+        if self.model_api.errcode == 0 and \
+                not self.model_api.Errflag and \
+                not self.model_api.Warnflag:
+            self.set_status(RunStatus.rsSuccess)
+        else:
+            if self.model_api.Errflag:
+                self.set_status(RunStatus.rsError)
+            elif self.model_api.Warnflag:
+                self.set_status(RunStatus.rsWarning)
+
+        if self.model_api.Errflag:
+            return RunStatus.rsError
+        elif self.model_api.Warnflag:
+            return RunStatus.rsWarning
+        return RunStatus.rsNone
+
     def Execute(self):
         self.run_err_msg = ""
         self.fraRunning.setVisible(True)
@@ -98,14 +123,20 @@ class frmRunEPANET(frmRunSimulation):
                 self.fraTime.setVisible(False)
 
             self.model_api.ENopen()
+            if self.check_errors() == RunStatus.rsError:
+                return
 
             # Solve for hydraulics & water quality, then close solver
             if self.run_status != RunStatus.rsCancelled:
                 self.RunHydraulics(total_days)
+                if self.check_errors() == RunStatus.rsError:
+                    return
             if self.run_status != RunStatus.rsCancelled:
                 self.RunQuality(total_days)
+                if self.check_errors() == RunStatus.rsError:
+                    return
             if self.run_status != RunStatus.rsCancelled:
-                self.set_status(RunStatus.rsSuccess)
+                self.check_errors()
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
             self.run_err_msg = "Simulation problem: " + '\n' + str(e) + '\n' + str(traceback.print_exc())

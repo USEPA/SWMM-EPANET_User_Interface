@@ -913,7 +913,8 @@ class frmMainEPANET(frmMain):
                     frmRun.Execute()
                     # self.report_status()
                     if frmRun.run_err_msg:
-                        raise Exception(frmRun.run_err_msg)
+                        # raise Exception(frmRun.run_err_msg)
+                        return
 
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)

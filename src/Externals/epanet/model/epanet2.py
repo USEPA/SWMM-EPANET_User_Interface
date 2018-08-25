@@ -112,7 +112,9 @@ class ENepanet():
         
         if self.errcode >= 100:
             self.Errflag = True
-            raise(EPANETException(msgbuf.value))
+            # don't raise here, because it will interrupt EPANET engine generating status.txt
+            # raise(EPANETException(msgbuf.value))
+            return msgbuf.value
         else:
             self.Warnflag = True
         return

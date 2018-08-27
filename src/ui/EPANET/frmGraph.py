@@ -15,10 +15,10 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Graph_Se.htm"
         self.setupUi(self)
-        self.cmdAdd.setVisible(False)
-        self.cmdDelete.setVisible(False)
-        self.cmdUp.setVisible(False)
-        self.cmdDown.setVisible(False)
+        self.cmdAdd.setVisible(True)
+        self.cmdDelete.setVisible(True)
+        self.cmdUp.setVisible(True)
+        self.cmdDown.setVisible(True)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
@@ -30,6 +30,11 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         self.rbnSystem.clicked.connect(self.rbnSystem_Clicked)
 
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
+
+        self.cmdAdd.clicked.connect(self.add_element)
+        self.cmdDelete.clicked.connect(self.delete_element)
+        self.cmdUp.clicked.connect(self.moveup_element)
+        self.cmdDown.clicked.connect(self.movedown_element)
 
         self.lstToGraph.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.lstToGraph.itemSelectionChanged.connect(self.select_on_map)
@@ -71,7 +76,7 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.nodes
-            self.lstToGraph.addItems(self.list_items.keys())
+            # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
@@ -96,7 +101,7 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.links
-            self.lstToGraph.addItems(self.list_items.keys())
+            # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnTime_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -197,7 +202,68 @@ class frmGraph(QMainWindow, Ui_frmGraph):
                         for itm in itms:
                             itm.setSelected(True)
 
+
+    def add_element(self):
+        layers = None
+        if self.rbnNodes.isChecked():
+            layers = self._main_form.model_layers.nodes_layers
+        elif self.rbnLinks.isChecked():
+            layers = self._main_form.model_layers.links_layers
+        if layers is None:
+            return
+        selected_prev = []
+        for ind in range(0, self.lstToGraph.count()):
+            selected_prev.append(self.lstToGraph.item(ind).text())
+        selected_new = []
+        for layer in layers:
+            # from qgis.core import QgsVectorLayer()
+            # layer = QgsVectorLayer()
+            for f in layer.getSelectedFeatures():
+                if not f['name'] in selected_new:
+                    selected_new.append(f['name'])
+
+        for n in selected_new:
+            if not n in selected_prev:
+                selected_prev.append(n)
+
+        if len(selected_prev) > 0:
+            self.lstToGraph.clear()
+            self.lstToGraph.addItems(selected_prev)
+
+    def delete_element(self):
+        all = []
+        selected = []
+        for ind in range(0, self.lstToGraph.count()):
+            itm = self.lstToGraph.item(ind)
+            all.append(itm.text())
+            if itm.isSelected():
+                selected.append(itm.text())
+
+        if len(selected) > 0:
+            for s in selected:
+                all.remove(s)
+            self.lstToGraph.clear()
+            self.lstToGraph.addItems(all)
+
+    def moveup_element(self):
+        current_row = self.lstToGraph.currentRow()
+        if current_row - 1 >= 0:
+            current_itm = self.lstToGraph.takeItem(current_row)
+            self.lstToGraph.insertItem(current_row - 1, current_itm)
+            self.lstToGraph.setCurrentRow(current_row - 1)
+            current_itm.setSelected(True)
+
+    def movedown_element(self):
+        current_row = self.lstToGraph.currentRow()
+        if current_row + 1 < self.lstToGraph.count():
+            current_itm = self.lstToGraph.takeItem(current_row)
+            self.lstToGraph.insertItem(current_row + 1, current_itm)
+            self.lstToGraph.setCurrentRow(current_row + 1)
+            current_itm.setSelected(True)
+
     def cmdOK_Clicked(self):
+        if self.lstToGraph.count() == 0:
+            return
         parameter_label = self.cboParameter.currentText()
         lqual_name = ""
         lqual_unit = ""

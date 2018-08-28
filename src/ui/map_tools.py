@@ -9,6 +9,7 @@ try:
     # from qgis.core import QgsSingleSymbolRenderer, QgsSimpleLineSymbolLayer
     # from qgis.core import QgsMapLayer
     from PyQt5 import QtGui, QtCore, Qt
+    from PyQt5.QtCore import QSettings
     from PyQt5.QtGui import *
     from PyQt5.Qt import *
     from PyQt5.QtWidgets import *
@@ -43,8 +44,10 @@ try:
             # self.canvas.useImageToRender(False)
             # self.canvas.setCanvasColor(QtGui.QColor.white)
             self.qgs_project = qgs_project
+            QSettings().setValue("/Qgis/digitizing/marker_only_for_selected", False)
 
-            root = QgsProject.instance().layerTreeRoot()
+            # root = QgsProject.instance().layerTreeRoot()
+            root = self.qgs_project.layerTreeRoot()
             self.project_group = root.addGroup("Project Objects")
             self.nodes_group = self.project_group.addGroup("Nodes")
             self.links_group = self.project_group.addGroup("Links")
@@ -114,6 +117,15 @@ try:
 
             self.refresh_extent_needed = True
             self.feature_request = QgsFeatureRequest()
+
+        def is_model_layer(self, alayer):
+            if isinstance(alayer, QgsVectorLayer):
+                if alayer in self.session.model_layers.all_layers:
+                    return True
+                else:
+                    return False
+            else:
+                return False
 
         def setZoomInMode(self):
             if self.session.actionZoom_in.isChecked():
@@ -1421,7 +1433,6 @@ try:
             if self.session.model == "SWMM":
                 for sub in self.session.project.subcatchments.value:
                     self.translate_vertices_coordinates(src_pt_ll, dst_pt_ll, sub.vertices)
-
 
         def update_links_length(self):
             if not self.session.project or not self.session.model_layers:
@@ -2770,7 +2781,8 @@ try:
             self.label_by_value = None
 
         def createContextMenu(self):
-            if not self.view.currentLayer().isValid():
+            clyr = self.view.currentLayer()
+            if clyr is None or not clyr.isValid():
                 return None
             m = QMenu()
             # m.addAction("Show Extent", self.showExtent)
@@ -2778,6 +2790,8 @@ try:
             m.addAction("Zoom to selected", self.zoom_to_layer_selected)
             m.addAction("Change Style...", self.edit_style)
             m.addAction("Default Style", self.default_style)
+            if not self.map_control.is_model_layer(clyr):
+                m.addAction("Remove Layer", self.remove_layer)
             lm = m.addMenu("Label")
             lm.addAction("By Name", lambda: self.label_layer("Name"))
             lm.addAction("By Value", lambda: self.label_layer("Value"))
@@ -2814,6 +2828,23 @@ try:
             r_new = QgsRectangle(xmin, ymin, xmax, ymax)
             self.map_control.set_extent(r_new)
             pass
+
+        def remove_layer(self):
+            clyr = self.view.currentLayer()
+            if clyr is None:
+                return
+            layer_names = []
+            canvas_layers = self.map_control.canvas.layers()
+            for layer in [clyr]:
+                layer_names.append(layer.name())
+                canvas_layers.remove(layer)
+            self.map_control.qgs_project.removeMapLayers(layer_names)
+            self.map_control.canvas.setLayers(canvas_layers)
+            if isinstance(clyr, QgsVectorLayer):
+                self.map_control.other_group.removeLayer(clyr)
+            elif isinstance(clyr, QgsRasterLayer):
+                self.map_control.base_group.removeLayer(clyr)
+            self.map_control.set_extent(self.map_control.canvas.fullExtent())
 
         def edit_style(self):
             lyr = self.view.currentLayer()

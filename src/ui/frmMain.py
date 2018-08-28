@@ -113,6 +113,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             lambda: self.toggle_toolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
             lambda: self.toggle_toolbar('standard,' + str(self.actionToolbarShowStandard.isChecked())))
+        self.menuBackdrop.deleteLater()
         self.actionStdMapBackLoad.triggered.connect(lambda: self.map_addraster('backdrop'))
         self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))

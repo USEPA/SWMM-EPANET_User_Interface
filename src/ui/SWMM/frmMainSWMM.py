@@ -1557,6 +1557,7 @@ class frmMainSWMM(frmMain):
         if self.map_widget:
             try:
                 self.model_layers.create_layers_from_project(self.project)
+                self.map_widget.load_extra_layers()
                 self.map_widget.zoomfull()
                 self.setQgsMapTool()  # Reset any active tool that still has state from old project
             except Exception as ex:

@@ -2101,8 +2101,9 @@ class frmMain(QMainWindow, Ui_frmMain):
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
-        # if self.project_settings:
-        #     self.project_settings.sync()
+        if self.project_settings:
+            self.map_widget.save_gis_settings()
+            self.project_settings.config.sync()
         if self.crs and self.crs.isValid():
             try:
                 from qgis.core import QgsCoordinateReferenceSystem

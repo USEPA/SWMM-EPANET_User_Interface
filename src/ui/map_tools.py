@@ -118,6 +118,51 @@ try:
             self.refresh_extent_needed = True
             self.feature_request = QgsFeatureRequest()
 
+        def save_gis_settings(self):
+            if self.session.project_settings is None:
+                return
+            if self.session.project_settings:
+                if self.session.project.file_name:
+                    pre, ext = os.path.splitext(self.session.project.file_name)
+                    self.session.project_settings.config.setPath(QSettings.IniFormat, QSettings.UserScope, pre + ".ini")
+                layers = self.other_group.findLayers()
+                if len(layers) > 0:
+                    self.session.project_settings.config.setValue("OtherMaps/" + r"layer_count", str(len(layers)))
+                    layer_paths = ""
+                    for nd in self.other_group.findLayers():
+                        data_path = nd.layer().dataProvider().dataSourceUri()
+                        if '|' in data_path:
+                            data_path = data_path[0: data_path.rfind('|')]
+                        layer_paths += data_path + "|"
+                    self.session.project_settings.config.setValue("OtherMaps/" + r"layer_paths", layer_paths)
+                else:
+                    self.session.project_settings.config.setValue("OtherMaps/" + r"layer_count", "0")
+                    self.session.project_settings.config.setValue("OtherMaps/" + r"layer_paths", "")
+
+                layers = self.base_group.findLayers()
+                if len(layers) > 0:
+                    self.session.project_settings.config.setValue("BaseMaps/" + "layer_count", str(len(layers)))
+                    layer_paths = ""
+                    for nd in self.base_group.findLayers():
+                        layer_paths += nd.layer().dataProvider().dataSourceUri() + "|"
+                    self.session.project_settings.config.setValue("BaseMaps/" + r"layer_paths", layer_paths)
+                else:
+                    self.session.project_settings.config.setValue("BaseMaps/" + r"layer_count", "0")
+                    self.session.project_settings.config.setValue("BaseMaps/" + r"layer_paths", "")
+
+        def load_extra_layers(self):
+            try:
+                if 'OtherMaps/layer_paths' in self.session.project_settings.config.allKeys():
+                    extra_layers = self.session.project_settings.config.value("OtherMaps/layer_paths").split("|")
+                    for lyr_path in extra_layers:
+                        self.addVectorLayer(lyr_path)
+                if 'BaseMaps/layer_paths' in self.session.project_settings.config.allKeys():
+                    extra_layers = self.session.project_settings.config.value("BaseMaps/layer_paths").split("|")
+                    for lyr_path in extra_layers:
+                        self.addRasterLayer(lyr_path)
+            except:
+                print("Adding extra layers failed.")
+
         def is_model_layer(self, alayer):
             if isinstance(alayer, QgsVectorLayer):
                 if alayer in self.session.model_layers.all_layers:
@@ -1161,10 +1206,12 @@ try:
             Returns:
                 QGIS layer if added, None if not added
             """
+            if not os.path.exists(file_name.strip()):
+                return None
             layer_name = os.path.basename(file_name.strip())
             layer = QgsVectorLayer(file_name, layer_name, "ogr")
             if layer.isValid():
-                self.add_layer(layer)
+                self.add_layer(layer, self.other_group)
                 return layer
             else:
                 layer = QgsRasterLayer(file_name, layer_name)

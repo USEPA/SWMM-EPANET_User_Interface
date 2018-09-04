@@ -50,7 +50,7 @@ class CalibrationDataset:
         # Now match up obs vs sim
         #self.data = pd.DataFrame()
         strsim = CalibrationDataset.colname_sim
-        for lrow in xrange(0, len(self.data)):
+        for lrow in range(0, len(self.data)):
             tobs_sec = self.data.index[lrow]
             self.data[strsim].values[lrow] = \
                 self.get_sim_value(sim_tser, tobs_sec, rptStart, rptStep, Dur, Nsim)
@@ -103,14 +103,14 @@ class CalibrationDataset:
         self.data = pd.DataFrame()
         lsimrow_start = 0
         strsim = CalibrationDataset.colname_sim
-        for lrow in xrange(0, len(self.data)):
+        for lrow in range(0, len(self.data)):
             tobs_sec = self.data.index[lrow]
             self.data.ix[lrow, strsim], lsimrow_start = \
                 self.get_sim_value(sim_tser, tobs_sec, lsimrow_start)
         pass
 
     def get_sim_value_seqential(self, sim_tser, tobs_sec, simrow_start):
-        for lrow in xrange(simrow_start, len(sim_tser)):
+        for lrow in range(simrow_start, len(sim_tser)):
             #ToDo: ensure report timestep is in seconds
             rpttime = sim_tser.index[lrow] * 3600.0
             if rpttime == tobs_sec:
@@ -130,7 +130,7 @@ class CalibrationDataset:
         vo = 0.0
         vs = 0.0
         sigma = Calibration.DefMeasError / 100.0 #std. dev. of measurement error
-        for idx in xrange(0, len(self.data)):
+        for idx in range(0, len(self.data)):
             vs = self.data[CalibrationDataset.colname_sim].values[idx]
             if vs >= 0.0:
                 self.sum_sim_stats_ctr += 1
@@ -287,7 +287,7 @@ class Calibration(Section):
                     else:
                         break
                 f.seek(0)
-                for l in xrange(1, len(self.headers) + 1):
+                for l in range(1, len(self.headers) + 1):
                     next(reader)
 
                 times = None

@@ -80,7 +80,7 @@ class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
         lcali = None
         ltype = pcali.ECalibrationType.NONE
         lis_flow = None
-        for lrow in xrange(0, self.tableWidget.rowCount()):
+        for lrow in range(0, self.tableWidget.rowCount()):
             litem = self.tableWidget.item(lrow, 0)
             if litem == None:
                 continue

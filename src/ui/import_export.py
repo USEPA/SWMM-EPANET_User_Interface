@@ -747,21 +747,21 @@ def import_epanet_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
+        if geom.type() == QgsWkbTypes.Point:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
+        elif geom.type() == QgsWkbTypes.Line:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
-                for i in xrange(1, len(line)):
+                for i in range(1, len(line)):
                     coord = Coordinate()
                     coord.x = str(line[i].x())
                     coord.y = str(line[i].y())
                     model_item.vertices.append(coord)
                     pass
-        elif geom.type() == QGis.Polygon:
+        elif geom.type() == QgsWkbTypes.Polygon:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
@@ -877,21 +877,21 @@ def import_swmm_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
+        if geom.type() == QgsWkbTypes.Point:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
+        elif geom.type() == QgsWkbTypes.Line:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
-                for i in xrange(1, len(line)):
+                for i in range(1, len(line)):
                     coord = Coordinate()
                     coord.x = str(line[i].x())
                     coord.y = str(line[i].y())
                     model_item.vertices.append(coord)
                     pass
-        elif geom.type() == QGis.Polygon:
+        elif geom.type() == QgsWkbTypes.Polygon:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
             for pt in geom.asPolygon()[0]:
                 coord = Coordinate()
@@ -1132,7 +1132,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
             coordinates = project.all_nodes()
             for feature in layer.getFeatures():
                 geom = feature.geometry()
-                if geom.type() == QGis.Line:
+                if geom.type() == QgsWkbTypes.Line:
                     line = geom.asPolyline()
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
@@ -1209,7 +1209,7 @@ def import_nodes(session, nodes, file_name, model_attributes, gis_attributes, mo
             attributes = zip(model_attributes, gis_attributes)
             for feature in layer.getFeatures():
                 geom = feature.geometry()
-                if geom.type() == QGis.Point:
+                if geom.type() == QgsWkbTypes.Point:
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
                         if model_attribute == "name":

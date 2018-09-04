@@ -229,7 +229,7 @@ class CorrelationPlot(BasePlot):
         cmap = plt.get_cmap('jet')
         colors = cmap(np.linspace(0, 1, len(ids)))
         dict_colors = {}
-        for i in xrange(0, len(ids)):
+        for i in range(0, len(ids)):
             dict_colors[ids[i]] = colors[i]
         return dict_colors
 

@@ -5,7 +5,7 @@ from ui.help import HelpHandler
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 from ui.EPANET.frmCalibrationReportDesigner import Ui_frmCalibrationReport
 import core.epanet.calibration as pcali
@@ -42,6 +42,7 @@ class frmCalibrationReport(QMainWindow, Ui_frmCalibrationReport):
         self.display_correlationplot()
         self.display_barplot()
         self.tabWidget.setCurrentIndex(0)
+        self.resize(700, 450)
 
     def update_error_stats(self):
         lcali = None
@@ -162,9 +163,12 @@ class BasePlot(FigureCanvas):
                                    QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-    def setTitle(self, aTitle):
+    def setTitle(self, aTitle, padding=-1):
         if self.axes is not None:
-            self.axes.set_title(aTitle)
+            if padding >= 0:
+                self.axes.set_title(aTitle, y=padding)
+            else:
+                self.axes.set_title(aTitle)
         pass
 
     def setXlabel(self, aLabel):
@@ -273,12 +277,13 @@ class BarPlot(BasePlot):
         self.axes.set_xticks(ind + wid)
         self.axes.set_xticklabels(obj_ids)
 
-        self.setTitle('Comparison of Mean Values for %s' % aData.name)
+        self.setTitle('Comparison of Mean Values for %s' % aData.name, padding=1.05)
         self.setXlabel('Location')
         #self.setYlabel('')
 
         self.autolabel(bar_sim)
         self.autolabel(bar_obs)
+
         pass
 
     def autolabel(self, rects):

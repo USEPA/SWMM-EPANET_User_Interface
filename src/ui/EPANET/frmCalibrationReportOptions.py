@@ -30,9 +30,9 @@ class frmCalibrationReportOptions(QMainWindow, Ui_frmCalibrationReportOptions):
         self.selected_nodes = []
         self.selected_pipes = []
         self.isFlow = None
-        self.set_from(project)
         # self.comboBox.currentIndexChanged(int)").connect(self.comboBox_selChanged)
         self.comboBox.currentIndexChanged.connect(self.comboBox_selChanged)
+        self.set_from(project)
         self.loaded = True
 
     def set_from(self, aproj):

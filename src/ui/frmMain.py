@@ -1308,13 +1308,12 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def setQgsMapToolSelectRegion(self):
         if self.actionMapSelectRegion.isChecked():
-            self.actionMapSelectRegion.setChecked(False)
-        else:
-            self.actionMapSelectRegion.setChecked(True)
-        if self.actionMapSelectRegion.isChecked():
             self.select_region_checked = True
         else:
             self.select_region_checked = not self.select_region_checked
+        if self.select_region_checked:
+            if not self.actionMapSelectRegion.isChecked():
+                self.actionMapSelectRegion.setChecked(True)
         self.setQgsMapTool()
         self.model_layers.get_selected_model_ids()
         if self.model_layers.total_selected > 0:

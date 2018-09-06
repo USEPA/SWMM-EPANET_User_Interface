@@ -60,7 +60,7 @@ class SWMM:
         plt.ylabel(object_type_label_y + ' ' + object_name_y + ' ' + attribute_name_y + y_units)
 
         plt.grid(True)
-        plt.show()
+        plt.show(block=False)
 
     @staticmethod
     def plot_time(output, lines_list, elapsed_flag, start_index, num_steps):
@@ -120,7 +120,7 @@ class SWMM:
         if not right_y_plot:
             plt.grid(True)  # Only show background grid if there is only a left Y axis
         plt.legend(lines_plotted, line_legends, loc="best")
-        plt.show()
+        plt.show(block=False)
 
 
 class EPANET:
@@ -164,7 +164,7 @@ class EPANET:
             plt.xlabel("Time (hours)")
             plt.grid(True)
             plt.legend()
-            plt.show()
+            plt.show(block=False)
         else:
             plt.close()
             raise Exception("No lines were selected to graph")
@@ -214,7 +214,7 @@ class EPANET:
             plt.xlabel("Index")
             plt.grid(True)
             fig.canvas.draw()
-            plt.show()
+            plt.show(block=False)
 
     @staticmethod
     def plot_freq(output, attribute, time_index, items, aname="", aunit=""):
@@ -261,7 +261,7 @@ class EPANET:
         plt.ylabel("Percent Less Than")
         plt.xlabel(parameter_label)
         plt.grid(True)
-        plt.show()
+        plt.show(block=False)
 
     @staticmethod
     def plot_system_flow(output, ajunctions=None, areservoirs=None):
@@ -308,4 +308,4 @@ class EPANET:
         plt.grid(True)
         plt.subplots_adjust(right=0.8)
         plt.legend(loc='upper left', bbox_to_anchor=(1.04, 1), fontsize='9')
-        plt.show()
+        plt.show(block=False)

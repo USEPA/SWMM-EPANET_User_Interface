@@ -2197,6 +2197,11 @@ class frmMain(QMainWindow, Ui_frmMain):
             return
         del self.program_settings
         del self.project_settings
+        try:
+            if 'matplotlib.pyplot' in sys.modules:
+                matplotlib.pyplot.close('all')
+        except:
+            pass
         if self.q_application:
             try:
                 if self.animate_thread:

@@ -51,7 +51,9 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         if project and self.output:
             for time_index in range(0, self.output.num_periods):
                 self.cboTime.addItem(self.output.get_time_string(time_index))
+            self.rbnTime.setChecked(True)
             self.rbnNodes.setChecked(True)
+            self.rbnTime_Clicked()
             self.rbnNodes_Clicked()
 
     def rbnNodes_Clicked(self):
@@ -113,6 +115,9 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(True)
         self.lstToGraph.setEnabled(True)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(False)
+        self.lstToGraph.setVisible(True)
 
     def rbnProfile_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -125,6 +130,12 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         # self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(True)
         self.lstToGraph.setEnabled(True)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(True)
+        if self.rbnProfile.isChecked():
+            self.rbnNodes.setChecked(True)
+            self.rbnNodes_Clicked()
 
     def rbnContour_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -136,6 +147,9 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(False)
 
     def rbnFrequency_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -147,6 +161,9 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(False)
 
     def rbnSystem_Clicked(self):
         self.cboParameter.setEnabled(False)
@@ -158,6 +175,9 @@ class frmGraph(QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(False)
+        self.cboTime.setVisible(False)
+        self.lstToGraph.setVisible(False)
 
     def cboTime_currentIndexChanged(self):
         time_index = self.cboTime.currentIndex()
@@ -262,8 +282,10 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             current_itm.setSelected(True)
 
     def cmdOK_Clicked(self):
-        if self.lstToGraph.count() == 0:
-            return
+        if self.rbnTime.isChecked() or self.rbnProfile.isChecked():
+            if self.lstToGraph.count() == 0 or len(self.selected_items()) == 0:
+                QMessageBox.information(None, self._main_form.model, "Need to select model elements for graphing.", QMessageBox.Ok)
+                return
         parameter_label = self.cboParameter.currentText()
         lqual_name = ""
         lqual_unit = ""

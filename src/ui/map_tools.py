@@ -258,7 +258,7 @@ try:
             layer = None
             if self.canvas.layers():
                 layer = self.session.gis_layer_tree.currentLayer()
-                if layer and layer.geometryType == QgsWkbTypes.Point:
+                if layer and layer.geometryType() == QgsWkbTypes.Point:
                     layer = None
                 # for lyr in self.canvas.layers():
                 #     if "subcatchment" in lyr.name().lower() or \
@@ -898,9 +898,9 @@ try:
             pal_layer.fontSizeInMapUnits = False
             pal_layer.labelOffsetInMapUnits = False
             pal_layer.fieldName = fieldname
-            if layer.geometryType == QgsWkbTypes.Point: # QGis.Point:
+            if layer.geometryType() == QgsWkbTypes.Point: # QGis.Point:
                 pal_layer.placement = QgsPalLayerSettings.OverPoint
-            elif layer.geometryType == QgsWkbTypes.LineString:
+            elif layer.geometryType() == QgsWkbTypes.LineString:
                 pal_layer.placement = QgsPalLayerSettings.AboveLine
             # expr = "case when size < 3 then size * 2 else size end case"
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
@@ -1274,13 +1274,13 @@ try:
                 geom = f.geometry()
                 if ind < 0 or \
                    (ind >= 0 and not elem_geom.__contains__(f.attributes()[ind])):
-                    if not geom_types.__contains__(geom.type()): geom_types.append(geom.type())
+                    if not geom_types.__contains__(geom.wkbType()): geom_types.append(geom.wkbType())
                     if ind >=0:
-                        if geom.type() == QgsWkbTypes.Point:
+                        if geom.wkbType() == QgsWkbTypes.Point:
                             elem_geom[f.attributes()[ind]] = "Point"
-                        elif geom.type() == QgsWkbTypes.LineString:
+                        elif geom.wkbType() == QgsWkbTypes.LineString:
                             elem_geom[f.attributes()[ind]] = "LineString"
-                        elif geom.type() == QgsWkbTypes.Polygon:
+                        elif geom.wkbType() == QgsWkbTypes.Polygon:
                             elem_geom[f.attributes()[ind]] = "Polygon"
 
             if len(elem_types) > 0:
@@ -1342,7 +1342,7 @@ try:
                         new_feature = QgsFeature()
                         new_feature.setGeometry(geom)
                         new_feature.setAttributes([new_id])
-                        if geom.type() == gt:
+                        if geom.wkbType() == gt:
                             new_layer.addFeature(new_feature, True)
                             new_id = new_id + 1
 
@@ -2010,13 +2010,13 @@ try:
                     selected_ids = []
                     for f in mlyr.getFeatures():
                         geom = f.geometry()
-                        if geom.type() == QgsWkbTypes.Point:
+                        if geom.wkbType() == QgsWkbTypes.Point:
                             if region_geom.contains(geom):
                                 selected_ids.append(f.id())
-                        elif geom.type() == QgsWkbTypes.LineString:
+                        elif geom.wkbType() == QgsWkbTypes.LineString:
                             if region_geom.intersects(geom):
                                 selected_ids.append(f.id())
-                        elif geom.type() == QgsWkbTypes.Polygon:
+                        elif geom.wkbType() == QgsWkbTypes.Polygon:
                             if region_geom.intersects(geom):
                                 selected_ids.append(f.id())
                     if len(selected_ids) > 0:

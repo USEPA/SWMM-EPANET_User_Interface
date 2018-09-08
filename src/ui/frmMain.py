@@ -1859,20 +1859,20 @@ class frmMain(QMainWindow, Ui_frmMain):
         # Called on double click of an item in the 'bottom left' list or on the map
         if not self.project or not hasattr(self, "get_editor"):
             return
-        if len(self.listViewObjects.selectedItems()) == 0:
-            self.model_layers.get_selected_model_ids()
-            if self.model_layers.total_selected > 0:
-                otypes = []
-                for otype in self.model_layers.selected_model_ids.keys():
-                    if len(self.model_layers.selected_model_ids[otype]):
-                        otypes.append(otype)
-                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
-                if otype and otype[1]:
-                    mobjects = self.model_layers.selected_model_ids[otype[0]]
-                    self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
-                pass
+        self.model_layers.get_selected_model_ids()
+        if self.model_layers.total_selected > 0: # len(self.listViewObjects.selectedItems()) == 0:
+            otypes = []
+            for otype in self.model_layers.selected_model_ids.keys():
+                if len(self.model_layers.selected_model_ids[otype]):
+                    otypes.append(otype)
+            if len(otypes) == 1:
+                otype = (otypes[0], True)
             else:
-                return
+                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+            if otype and otype[1]:
+                mobjects = self.model_layers.selected_model_ids[otype[0]]
+                self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
+            pass
         else:
             selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
             self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
@@ -1973,6 +1973,27 @@ class frmMain(QMainWindow, Ui_frmMain):
                     self.map_widget.clearSelectableObjects()
             finally:  # Make sure lock is released even if there is an exception
                 self.selecting.release()
+
+    def update_selected_listview(self, layer, selected_list):
+        if layer is None or selected_list is None or self.listViewObjects.count() == 0:
+            return
+        try:
+            layer_name = layer.name()
+            already_selected_item = self.obj_tree.currentItem()
+            if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                return
+            self.listViewObjects.itemSelectionChanged.disconnect(self.list_selection_changed)
+            for i in range(self.listViewObjects.count()):
+                item = self.listViewObjects.item(i)
+                if item.text() in selected_list:
+                    item.setSelected(True)
+                    # self.listViewObjects.scrollToItem(item)
+                else:
+                    item.setSelected(False)
+            self.listViewObjects.itemSelectionChanged.connect(self.list_selection_changed)
+        except:
+            pass
+        pass
 
     def confirm_discard_project(self):
         if not self.undo_stack.isClean():

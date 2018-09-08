@@ -10,6 +10,8 @@ class PropertyEditorBackend:
         self.table = table
         self.hint_label = hint_label
         self._main_form = main_form
+        self.loaded = False
+        self.col_to_item_dict = {}
         if self.hint_label:
             table.currentCellChanged.connect(self.table_currentCellChanged)
         self.set_from(edit_these, new_item)
@@ -41,6 +43,7 @@ class PropertyEditorBackend:
                         # print "row " + str(row) + " col " + str(column) + " = " + str(value)
                         self.table.setItem(row, column, QTableWidgetItem(value))
                     row += 1
+                self.col_to_item_dict[column] = edit_this
                 column += 1
         else:
             self.table.setColumnCount(1)
@@ -48,6 +51,7 @@ class PropertyEditorBackend:
             self.table.setVerticalHeaderLabels(["Error"])
             led = QLineEdit("No items selected to edit")
             self.table.setItem(-1, 1, QTableWidgetItem(led.text()))
+        self.loaded = True
 
     def apply_edits(self):
         column = 0

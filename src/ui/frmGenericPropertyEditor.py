@@ -1,6 +1,6 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
 
@@ -34,6 +34,7 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
                 edit_these.extend(self.project_section.value)
         self.edit_these = edit_these
         self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, session, edit_these, new_item)
+        self.tblGeneric.cellChanged.connect(self.check_change)
 
     def header_index(self, prop):
         """
@@ -49,6 +50,29 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
             if header and prop.upper() in header.upper():
                 return row
         return -999
+
+    def is_name_duplicate(self, irow, icol):
+        new_name = self.tblGeneric.item(irow, icol).text()
+        if self.project_section.find_item(new_name):
+            return True
+        else:
+            return False
+        pass
+
+    def check_change(self, irow, icol):
+        ori_value = getattr(self.backend.col_to_item_dict[icol], self.backend.meta[irow].attribute, '')
+        new_value = self.tblGeneric.item(irow, icol).text()
+        if not self.backend.loaded:
+            return
+        if irow == 0:
+            if self.is_name_duplicate(irow, icol):
+                QMessageBox.information(None, self.session.model,
+                                        type(self.project_section.value[0]).__name__ + " '" + new_value + "' already exists.",
+                                        QMessageBox.Ok)
+                self.tblGeneric.cellChanged.disconnect(self.check_change)
+                self.tblGeneric.item(irow, icol).setText(ori_value)
+                self.tblGeneric.cellChanged.connect(self.check_change)
+        pass
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()

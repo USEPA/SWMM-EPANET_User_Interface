@@ -2008,21 +2008,27 @@ try:
                         continue
                     mlyr.removeSelection()
                     selected_ids = []
+                    selected_model_ids = []
                     for f in mlyr.getFeatures():
                         geom = f.geometry()
                         if geom.wkbType() == QgsWkbTypes.Point:
                             if region_geom.contains(geom):
                                 selected_ids.append(f.id())
+                                selected_model_ids.append(f['name'])
                         elif geom.wkbType() == QgsWkbTypes.LineString:
                             if region_geom.intersects(geom):
                                 selected_ids.append(f.id())
-                        elif geom.wkbType() == QgsWkbTypes.Polygon:
+                                selected_model_ids.append(f['name'])
+                        elif geom.wkbType() == QgsWkbTypes.MultiPolygon:
+                            # region_geom = QgsGeometry()
                             if region_geom.intersects(geom):
                                 selected_ids.append(f.id())
+                                selected_model_ids.append(f['name'])
                     if len(selected_ids) > 0:
                         self.selected_map_objects[lyr_name] = selected_ids
                         mlyr.selectByIds(selected_ids)
                         total_selected = total_selected + len(selected_ids)
+                        self.session.update_selected_listview(mlyr, selected_model_ids)
 
             return total_selected
 

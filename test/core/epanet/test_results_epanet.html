@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>EPANET Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2017-03-27 15:01:37</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.011000</p>
-<p class='attribute'><strong>Status:</strong> Pass 25</p>
+<p class='attribute'><strong>Start Time:</strong> 2018-09-11 09:47:16</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.010000</p>
+<p class='attribute'><strong>Status:</strong> Pass 24 Failure 1</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -222,7 +222,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_title.SimpleTitleTest: Test Title section</td>
+    <td>test.core.epanet.test_title.SimpleTitleTest: Test Title section</td>
     <td>5</td>
     <td>5</td>
     <td>0</td>
@@ -256,7 +256,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_options.SimpleOptionsTest: Test Options section</td>
+    <td>test.core.epanet.test_options.SimpleOptionsTest: Test Options section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -275,7 +275,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_report.SimpleReportTest: Test Report section</td>
+    <td>test.core.epanet.test_report.SimpleReportTest: Test Report section</td>
     <td>3</td>
     <td>3</td>
     <td>0</td>
@@ -299,7 +299,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_patterns.SimplePatternTest: Test one pattern</td>
+    <td>test.core.epanet.test_patterns.SimplePatternTest: Test one pattern</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -318,7 +318,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_curves.SimpleCurveTest: Test Curves section</td>
+    <td>test.core.epanet.test_curves.SimpleCurveTest: Test Curves section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -337,7 +337,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_energy.SimpleEnergyTest: Test Energy section</td>
+    <td>test.core.epanet.test_energy.SimpleEnergyTest: Test Energy section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -356,7 +356,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_demands.SimpleDemandsTest: Test Demands section</td>
+    <td>test.core.epanet.test_demands.SimpleDemandsTest: Test Demands section</td>
     <td>1</td>
     <td>1</td>
     <td>0</td>
@@ -370,7 +370,7 @@ function showOutput(id, name) {
 </tr>
 
 <tr class='passClass'>
-    <td>test_quality.SimpleQualityTest: Test Quality section</td>
+    <td>test.core.epanet.test_quality.SimpleQualityTest: Test Quality section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -388,11 +388,11 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='passClass'>
-    <td>test_reactions.SimpleReactionsTest: Test Reaction section</td>
+<tr class='failClass'>
+    <td>test.core.epanet.test_reactions.SimpleReactionsTest: Test Reaction section</td>
     <td>2</td>
-    <td>2</td>
-    <td>0</td>
+    <td>1</td>
+    <td>1</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c9',2)">Detail</a></td>
 </tr>
@@ -402,42 +402,42 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='pt9.2' class='hiddenRow'>
-    <td class='none'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
+<tr id='ft9.2' class='none'>
+    <td class='failCase'><div class='testcase'>test_setget: Test set_text and get_text</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt9.2')" >
-        pass</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft9.2')" >
+        fail</a>
 
-    <div id='div_pt9.2' class="popup_window">
+    <div id='div_ft9.2' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_pt9.2').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft9.2').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-pt9.2: Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.3'
-Exception setting order_tank: invalid literal for int() with base 10: '1.3'
-None
-order_tank now = 1.3
-Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.1'
-Exception setting order_bulk: invalid literal for int() with base 10: '1.1'
-None
-order_bulk now = 1.1
-Traceback (most recent call last):
-  File "E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py", line 126, in setattr_keep_type
-    setattr(self, attr_name, int(attr_value))
-ValueError: invalid literal for int() with base 10: '1.2'
-Exception setting order_wall: invalid literal for int() with base 10: '1.2'
-None
-order_wall now = 1.2
+ft9.2: Traceback (most recent call last):
+  File "C:\dev\epa\SWMM-EPANET_User_Interface\test\core\epanet\test_reactions.py", line 50, in test_setget
+    self.assertTrue(match(actual_text, test_text), msg)
+AssertionError: False is not true : 
+Set:[REACTIONS]
+ Order Tank         	1.3
+ Global Wall        	2.2
+ Roughness Correlation	0.2
+ Limiting Potential 	0.1
+ Global Bulk        	2.1
+ Order Bulk         	1.1
+ Order Wall         	1.2
+Get:
+[REACTIONS]
+ Order Bulk         	1
+ Order Wall         	1
+ Order Tank         	1
+ Global Bulk        	2.1
+ Global Wall        	2.2
+ Limiting Potential 	0.1
+ Roughness Correlation	0.2
 
 
         </pre>
@@ -448,7 +448,7 @@ order_wall now = 1.2
 </tr>
 
 <tr class='passClass'>
-    <td>test_sources.SimpleSourcesTest: Test Sources section</td>
+    <td>test.core.epanet.test_sources.SimpleSourcesTest: Test Sources section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -467,7 +467,7 @@ order_wall now = 1.2
 </tr>
 
 <tr class='passClass'>
-    <td>test_backdrop.SimpleBackdropTest: Test Backdrop section</td>
+    <td>test.core.epanet.test_backdrop.SimpleBackdropTest: Test Backdrop section</td>
     <td>2</td>
     <td>2</td>
     <td>0</td>
@@ -488,8 +488,8 @@ order_wall now = 1.2
 <tr id='total_row'>
     <td>Total</td>
     <td>25</td>
-    <td>25</td>
-    <td>0</td>
+    <td>24</td>
+    <td>1</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM-EPANET UI Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2016-06-02 18:24:08</p>
-<p class='attribute'><strong>Duration:</strong> 0:13:09.362000</p>
-<p class='attribute'><strong>Status:</strong> none</p>
+<p class='attribute'><strong>Start Time:</strong> 2018-09-11 10:57:47</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:55.274353</p>
+<p class='attribute'><strong>Status:</strong> Pass 1 Failure 5</p>
 
 <p class='description'>User Interface Test Results</p>
 </div>
@@ -221,11 +221,238 @@ function showOutput(id, name) {
     <td>View</td>
 </tr>
 
+<tr class='failClass'>
+    <td>UserInterfaceTest</td>
+    <td>6</td>
+    <td>1</td>
+    <td>5</td>
+    <td>0</td>
+    <td><a href="javascript:showClassDetail('c1',6)">Detail</a></td>
+</tr>
+
+<tr id='ft1.1' class='none'>
+    <td class='failCase'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.1')" >
+        fail</a>
+
+    <div id='div_ft1.1' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.1').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.1: Traceback (most recent call last):
+  File "C:/dev/epa/SWMM-EPANET_User_Interface/test/ui/test_gui_swmm.py", line 97, in runTest
+    '\n'+ tester_notes)
+AssertionError: 29 steps failed in EPANET Testing.txt:
+
+UI test failed: EPANET Testing
+Action: Start EPANET.
+Action: Open the file named Net1.inp using 'File:Open'.
+Action: From the Project Tree, double-click 'Title/Notes'.
+Action: From the Project Tree, double-click 'Quality'.
+Action: Change the chemical name to 'XXX' and the relative diffusivity to 2.0.
+Action: Click 'OK'.
+Action: From the Project Tree, double-click 'Reactions'.
+Action: Change the wall reaction order to 2.0, the tank reaction order to 3.0, and the limiting concentration to 4.0.
+Action: Click 'OK'.
+Action: From the Project Tree, double-click 'Times'.
+Action: Change the quality time step to 0:10 and the statistic to 'Averaged'.
+Action: Click 'OK'.
+Action: From the Project Tree, double-click 'Energy'.
+Action: Change the pump efficiency to 66.
+Action: Click 'OK'.
+Action: From the Project Tree, double-click 'Report'.
+Action: Change the page size to 16 and summary to 'Yes'.
+Action: Click 'OK'.
+Action: From the Project Tree, double-click 'Map/Background'.
+Action: Change the map units to 'Meters'.
+Action: Click 'OK'.
+Action: Save the project using 'File:Save As..' with the name 'Net1X.inp'.
+Action: Now compare the file 'Net1.inp' with 'Net1X.inp'.  The only differences between the two files should be the changes made in this exercise.
+Action: Close EPANET.
+Action: Open EPANET again.
+Action: Open the file named Net1X.inp using 'File:Open'.
+Action: Save the project using 'File:Save As..' with the name 'Net1Y.inp'.
+Action: Now compare the file 'Net1X.inp' with 'Net1Y.inp'.  There should be no differences between the two files.
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft1.2' class='none'>
+    <td class='failCase'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.2')" >
+        fail</a>
+
+    <div id='div_ft1.2' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.2').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.2: Traceback (most recent call last):
+  File "C:/dev/epa/SWMM-EPANET_User_Interface/test/ui/test_gui_swmm.py", line 97, in runTest
+    '\n'+ tester_notes)
+AssertionError: 16 steps failed in EPANET_UI_TestMenuFile.txt:
+
+UI test failed: Test 'File' Menu
+Action: Start EPANET.
+Action: Test 'Open': Open the file named 'Net1.inp' using 'File:Open'.
+Action: Test 'Save as': Save the project using 'File:Save As..' with the name 'Net1x1.inp'.
+Action: Compare files 'Net1.inp' with 'Net1x1.inp' (many differences, new files missing Sections [Energy] and [Backdrop])
+Action: Save the project using 'File:Save As..' with the name 'Net1x2.inp'.
+Action: Change 'Title' to 'EPANET Example Network 1 - Test File Menu'
+Action: Test 'Save': Save the project using 'File:Save..'.
+Action: Compare files 'Net1x1.inp' with 'Net1x2.inp'. Only difference should be title
+Action: Test 'New': click 'New', double-lick 'Title', shows empty editor, type 'New Project'
+Action: Test 'Save': Save the project using 'File:Save..' (cannot find the file saved)
+Action: Test 'Save as': Save the project using 'File:Save as..' with the name 'testNewProject.inp'
+Action: Test 'Recent' (not working)
+Action: Test 'Import' (not working)
+Action: Test 'Export' (not working)
+Action: Test 'Page setup' (not working)
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft1.3' class='none'>
+    <td class='failCase'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.3')" >
+        fail</a>
+
+    <div id='div_ft1.3' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.3').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.3: Traceback (most recent call last):
+  File "C:/dev/epa/SWMM-EPANET_User_Interface/test/ui/test_gui_swmm.py", line 97, in runTest
+    '\n'+ tester_notes)
+AssertionError: 6 steps failed in EPANET_UI_TestMenuProject.txt:
+
+UI test failed: Test 'Projects' Menu
+Action: Start EPANET.
+Action: Test 'Project: Run Simulation', Message box 'Run Successful' shows, click 'OK'
+Action: Test 'Project: Summary', file 'Net1u1_status.txt' shows in a Text Editor, close the file
+Action: Test 'Project: Calibration data', set head file = 'all_heads.txt', click 'OK'. (not working)
+Action: Test 'Project: Details/Default/Simulation Options' (not working)
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft1.4' class='none'>
+    <td class='failCase'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.4')" >
+        fail</a>
+
+    <div id='div_ft1.4' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.4').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.4: Traceback (most recent call last):
+  File "C:/dev/epa/SWMM-EPANET_User_Interface/test/ui/test_gui_swmm.py", line 97, in runTest
+    '\n'+ tester_notes)
+AssertionError: 1 steps failed in EPANET_UI_TestMenuReport.txt:
+
+UI test failed: Test 'Report' menu, need more tests here (Place holder for now)
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='ft1.5' class='none'>
+    <td class='failCase'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>
+
+    <!--css div popup start-->
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1.5')" >
+        fail</a>
+
+    <div id='div_ft1.5' class="popup_window">
+        <div style='text-align: right; color:red;cursor:pointer'>
+        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1.5').style.display = 'none' " >
+           [x]</a>
+        </div>
+        <pre>
+        
+ft1.5: Traceback (most recent call last):
+  File "C:/dev/epa/SWMM-EPANET_User_Interface/test/ui/test_gui_swmm.py", line 97, in runTest
+    '\n'+ tester_notes)
+AssertionError: 6 steps failed in EPANET_UI_TestPrjTreeOptions.txt:
+
+UI test failed: Test 'Options'&gt; 'Hydraulics'
+
+UI test failed: Test 'Options'&gt; 'Quality'
+
+UI test failed: Test 'Options'&gt; 'Reactions' (Reactions not in the Options, rather an individual tab.
+
+UI test failed: Test 'Options'&gt; 'Energy'
+
+UI test failed: Test 'Options'&gt; 'Report'
+
+UI test failed: Test 'Options'&gt; 'Map/Backdrop'
+
+
+
+        </pre>
+    </div>
+    <!--css div popup end-->
+
+    </td>
+</tr>
+
+<tr id='pt1.6' class='hiddenRow'>
+    <td class='none'><div class='testcase'>runTest</div></td>
+    <td colspan='5' align='center'>pass</td>
+</tr>
+
 <tr id='total_row'>
     <td>Total</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0</td>
+    <td>6</td>
+    <td>1</td>
+    <td>5</td>
     <td>0</td>
     <td>&nbsp;</td>
 </tr>

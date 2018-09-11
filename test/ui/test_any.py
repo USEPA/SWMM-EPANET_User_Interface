@@ -19,7 +19,7 @@ class UserInterfaceTest(unittest.TestCase):
         # self.__name__ = file_name
 
     def get_file(self):
-        return file
+        return self.file
 
     def runTest(self):
         with open(self.file, 'r') as myfile:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         my_suite.addTest(make_test)
 
     report_filename = "test_results_ui.html"
-    fp = file(report_filename, 'wb')
+    fp = open(report_filename, 'wb')
     runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='SWMM-EPANET UI Test Report',

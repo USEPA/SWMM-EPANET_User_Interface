@@ -1168,13 +1168,14 @@ class frmMain(QMainWindow, Ui_frmMain):
                     index = section.value.index(item)
                     section.value._index[item.name] = item
                     del section.value._index[old_name]
+                    self.map_widget.process_name_change(section, old_name, item)
                 except Exception as ex:
                     print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
         self.list_objects()
         if self.model_layers:
-            self.model_layers.create_layers_from_project(self.project)
+            # self.model_layers.create_layers_from_project(self.project)
             try:
                 self.setQgsMapTool()
             except:

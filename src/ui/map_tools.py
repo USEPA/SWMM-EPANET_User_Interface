@@ -118,6 +118,86 @@ try:
             self.refresh_extent_needed = True
             self.feature_request = QgsFeatureRequest()
 
+        def process_name_change(self, section, old_name, item):
+            # Note: old_named element is already replaced with the new_named item
+            obj_type = type(section.value[0]).__name__
+            edit_lyr = self.session.model_layers.find_layer_by_name(obj_type)
+            # lyr = QgsVectorLayer()
+            edit_provider = edit_lyr.dataProvider()
+            for f_edit in edit_provider.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'" + old_name + "'"))):
+                # update GIS layer item name
+                vfi = f_edit.fieldNameIndex('name')
+                edit_provider.changeAttributeValues({f_edit.id(): {vfi: str(item.name)}})
+
+                if edit_lyr in self.session.model_layers.nodes_layers:
+                    # need to find all subcatch and all links to it
+                    all_links = self.session.model_layers.links_layers
+                    if self.session.model == 'SWMM':
+                        all_links.extend([self.session.model_layers.sublinks])
+                    for lyr in all_links:
+                        provider = lyr.dataProvider()
+                        neighbors = provider.getFeatures(QgsFeatureRequest().setFilterRect(f_edit.geometry().boundingBox()))
+                        for line_feature in neighbors:
+                            if f_edit.geometry().intersects(line_feature.geometry()):
+                                inlet_updated = False
+                                outlet_updated = False
+                                vfi = -1
+                                if line_feature['inlet'] == old_name:
+                                    vfi = line_feature.fieldNameIndex('inlet')
+                                    inlet_updated = True
+                                elif line_feature['outlet'] == old_name:
+                                    vfi = line_feature.fieldNameIndex('outlet')
+                                    outlet_updated = True
+                                if vfi >= 0:
+                                    provider.changeAttributeValues({line_feature.id(): {vfi: str(item.name)}})
+                                # update the corresponding model link object
+                                link_name = line_feature['name']
+                                link_section = self.session.project.find_section(lyr.name())
+                                link_to_update = link_section.find_item(link_name)
+                                if link_to_update:
+                                    if link_to_update.inlet_node == old_name:
+                                        link_to_update.inlet_node = item.name
+                                    elif link_to_update.outlet_node == old_name:
+                                        link_to_update.outlet_node = item.name
+                                if lyr.name() == 'sublinks': # find its sub source
+                                    sub_name = link_name[len('sublink-'):]
+                                    sub = self.session.project.subcatchments.find_item(sub_name)
+                                    if sub and sub.outlet == old_name:
+                                        sub.outlet = item.name
+                                    pass
+                        pass
+                    pass
+                elif edit_lyr in self.session.model_layers.links_layers:
+                    # no additional processing
+                    pass
+                elif self.session.model == 'SWMM' and edit_lyr.geometryType() == QgsWkbTypes.PolygonGeometry:
+                    ind_c_mapid = f_edit.fieldNameIndex('c_mapid')
+                    ind_c_modelid = f_edit.fieldNameIndex('c_modelid')
+                    edit_provider.changeAttributeValues({f_edit.id(): {ind_c_modelid: 'subcentroid-' + item.name}})
+                    cent_lyr = self.session.model_layers.subcentroids
+                    sublink_lyr = self.session.model_layers.sublinks
+                    cent_provider = cent_lyr.dataProvider()
+                    sublink_provider = sublink_lyr.dataProvider()
+                    ms_cent = self.session.project.subcentroids
+                    ms_sublink = self.session.project.sublinks
+                    for c_edit in cent_provider.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'subcentroid-" + old_name + "'"))):
+                        vfi = c_edit.fieldNameIndex('name')
+                        cent_provider.changeAttributeValues({c_edit.id(): {vfi: 'subcentroid-' + item.name}})
+                        vfi = c_edit.fieldNameIndex('sub_modelid')
+                        cent_provider.changeAttributeValues({c_edit.id(): {vfi: item.name}})
+                        m_cent = ms_cent.find_item('subcentroid-' + old_name)
+                        m_cent.name = 'subcentroid-' + item.name
+                    for sl_edit in sublink_provider.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'sublink-" + old_name + "'"))):
+                        vfi = sl_edit.fieldNameIndex('name')
+                        sublink_provider.changeAttributeValues({sl_edit.id(): {vfi: 'sublink-' + item.name}})
+                        vfi = sl_edit.fieldNameIndex('inlet')
+                        sublink_provider.changeAttributeValues({sl_edit.id(): {vfi: 'subcentroid-' + item.name}})
+                        m_sublink = ms_sublink.find_item('sublink-' + old_name)
+                        m_sublink.name = 'sublink-' + item.name
+                        m_sublink.inlet_node = 'subcentroid-' + item.name
+                    pass
+                pass
+
         def save_gis_settings(self):
             if self.session.project_settings is None:
                 return
@@ -258,7 +338,7 @@ try:
             layer = None
             if self.canvas.layers():
                 layer = self.session.gis_layer_tree.currentLayer()
-                if layer and layer.geometryType() == QgsWkbTypes.Point:
+                if layer and layer.geometryType() == QgsWkbTypes.PointGeometry:
                     layer = None
                 # for lyr in self.canvas.layers():
                 #     if "subcatchment" in lyr.name().lower() or \
@@ -307,11 +387,11 @@ try:
                                 if iterator:
                                     ftarget = next(iterator)
                                 if ftarget is not None:
-                                    if layer.geometryType() == QgsWkbTypes.Polygon:
+                                    if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
                                         self.session.update_model_object_vertices(layer.name(),
                                                                               ftarget.attributes()[0],
-                                                                              ftarget.geometry().asPolygon()[0])
-                                    elif layer.geometryType() == QgsWkbTypes.Line:
+                                                                              ftarget.geometry().asMultiPolygon()[0][0])
+                                    elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                                         self.session.update_model_object_vertices(layer.name(),
                                                                                   ftarget.attributes()[0],
                                                                                   ftarget.geometry().asPolyline())
@@ -898,9 +978,9 @@ try:
             pal_layer.fontSizeInMapUnits = False
             pal_layer.labelOffsetInMapUnits = False
             pal_layer.fieldName = fieldname
-            if layer.geometryType() == QgsWkbTypes.Point: # QGis.Point:
+            if layer.geometryType() == QgsWkbTypes.PointGeometry: # QGis.Point:
                 pal_layer.placement = QgsPalLayerSettings.OverPoint
-            elif layer.geometryType() == QgsWkbTypes.LineString:
+            elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                 pal_layer.placement = QgsPalLayerSettings.AboveLine
             # expr = "case when size < 3 then size * 2 else size end case"
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
@@ -1023,7 +1103,7 @@ try:
                     symbol = QgsMarkerSymbol()
                 elif geometryType == QgsWkbTypes.LineString:
                     symbol = QgsLineSymbol()
-                elif geometryType == QgsWkbTypes.Polygon:
+                elif geometryType == QgsWkbTypes.MultiPolygon:
                     symbol = QgsFillSymbol()
             return symbol
 
@@ -1280,7 +1360,7 @@ try:
                             elem_geom[f.attributes()[ind]] = "Point"
                         elif geom.wkbType() == QgsWkbTypes.LineString:
                             elem_geom[f.attributes()[ind]] = "LineString"
-                        elif geom.wkbType() == QgsWkbTypes.Polygon:
+                        elif geom.wkbType() == QgsWkbTypes.MultiPolygon:
                             elem_geom[f.attributes()[ind]] = "Polygon"
 
             if len(elem_types) > 0:
@@ -1322,7 +1402,7 @@ try:
                     elif gt == QgsWkbTypes.LineString:
                         geom_type = "LineString"
                         layer_name_postfix = "_line"
-                    elif gt == QgsWkbTypes.Polygon:
+                    elif gt == QgsWkbTypes.MultiPolygon:
                         geom_type = "Polygon"
                         layer_name_postfix = "_polygon"
 
@@ -1420,8 +1500,8 @@ try:
                         if pt.x() > xmax: xmax = pt.x()
                         if pt.y() < ymin: ymin = pt.y()
                         if pt.y() > ymax: ymax = pt.y()
-                    elif geom.wkbType() == QgsWkbTypes.Polygon:
-                        for pt in geom.asPolygon()[0]:
+                    elif geom.wkbType() == QgsWkbTypes.MultiPolygon:
+                        for pt in geom.asMultiPolygon()[0][0]:
                             if pt.x() < xmin: xmin = pt.x()
                             if pt.x() > xmax: xmax = pt.x()
                             if pt.y() < ymin: ymin = pt.y()
@@ -2375,7 +2455,7 @@ try:
             if geometry.wkbType() == QgsWkbTypes.LineString:
                 line = geometry.asPolyline()
                 pt = QgsPointXY((line[0].x() + line[-1].x()) / 2, (line[0].y() + line[-1].y()) / 2)
-            elif geometry.wkbType() == QgsWkbTypes.Polygon:
+            elif geometry.wkbType() == QgsWkbTypes.MultiPolygon:
                 # Select subbasin by clicking closest to center of its bounding box
                 box = geometry.boundingBox()
                 pt = QgsPointXY((box.xMinimum() + box.xMaximum()) / 2,
@@ -2662,8 +2742,8 @@ try:
                     wkb_type = self.nearest_geometry.wkbType()
                     if wkb_type == QgsWkbTypes.LineString:
                         vertex = self.nearest_geometry.asPolyline()[self.nearest_point_index]
-                    elif wkb_type == QgsWkbTypes.Polygon:
-                        vertex = self.nearest_geometry.asPolygon()[0][self.nearest_point_index]
+                    elif wkb_type == QgsWkbTypes.MultiPolygon:
+                        vertex = self.nearest_geometry.asMultiPolygon()[0][0][self.nearest_point_index]
                     if vertex:
                         start_pos = self.toCanvasCoordinates(vertex)
                         # layer_point = self.toLayerCoordinates(self.nearest_layer, event_pos)
@@ -2749,9 +2829,9 @@ try:
                 lineString = geometry.asPolyline()
                 if len(lineString) <= 2:
                     return
-            elif wkb_type == QgsWkbTypes.Polygon:
-                polygon = geometry.asPolygon()
-                exterior = polygon[0]
+            elif wkb_type == QgsWkbTypes.MultiPolygon:
+                polygon = geometry.asMultiPolygon()
+                exterior = polygon[0][0]
                 if len(exterior) <= 4:
                     return
             if geometry.deleteVertex(self.nearest_point_index):
@@ -2788,8 +2868,8 @@ try:
                                 if geometry.wkbType() == QgsWkbTypes.LineString:
                                     points = geometry.asPolyline()[1:-1]  # skip first and last point which are nodes
                                     index = 1
-                                elif geometry.wkbType() == QgsWkbTypes.Polygon:
-                                    points = geometry.asPolygon()[0]
+                                elif geometry.wkbType() == QgsWkbTypes.MultiPolygon:
+                                    points = geometry.asMultiPolygon()[0][0]
                                     index = 0
                                 else:
                                     break  # if this one is not a type we can use, others in layer are not either

@@ -952,7 +952,7 @@ try:
                 pal_layer.fontSizeInMapUnits = False
                 pal_layer.labelOffsetInMapUnits = False
                 pal_layer.fieldName = 'name'
-                pal_layer.placement = QgsPalLayerSettings.AboveLine
+                pal_layer.placement = QgsPalLayerSettings.Line
                 # expr = "case when size < 3 then size * 2 else size end case"
                 # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
                 if "LABELS" in layer_name_upper:
@@ -978,10 +978,7 @@ try:
             pal_layer.fontSizeInMapUnits = False
             pal_layer.labelOffsetInMapUnits = False
             pal_layer.fieldName = fieldname
-            if layer.geometryType() == QgsWkbTypes.PointGeometry: # QGis.Point:
-                pal_layer.placement = QgsPalLayerSettings.OverPoint
-            elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-                pal_layer.placement = QgsPalLayerSettings.AboveLine
+            pal_layer.placement = QgsPalLayerSettings.Line
             # expr = "case when size < 3 then size * 2 else size end case"
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
             pal_layer.xOffset = 0.5
@@ -1169,13 +1166,14 @@ try:
                 #                               'color')
                 # lDataDefined = QgsDataDefined(True, False, '', 'angle')
                 # lDataDefined = QgsExpressionContext(True, False, '', 'angle')
-                lDataDefined = QgsExpressionContext()
+                lDataDefined = QgsProperty()
+                lDataDefined.setField('angle')
+                anewlayer.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, lDataDefined)
 
                 # anewlayer.setDataDefinedProperty('angle', lDataDefined)
                 # anewlayer.setAngle(180.0)
                 if anewlayer:
                     mlayer.changeSymbolLayer(0, anewlayer)
-                    mlayer.setDataDefinedAngle(lDataDefined)
                     slayer.setPlacement(QgsMarkerLineSymbolLayer.CentralPoint)
                     # symbol.appendSymbolLayer(slayer)
                     # symbol.setDataDefinedAngle(lDataDefined)
@@ -1250,6 +1248,7 @@ try:
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
             pal_layer.setDataDefinedProperties(pc)
             pal_layer.fieldName = "value"
+            pal_layer.placement = QgsPalLayerSettings.Line
             # pal_layer.writeToLayer(layer) #pyqgis3 removed
             pal_layer.scaleMin = 1/50000
             pal_layer.scaleMax = 1/1000
@@ -3050,6 +3049,7 @@ try:
                 pal_layer = QgsPalLayerSettings()
                 if attribute.lower() in ('name', 'value'):
                     pal_layer.fieldName = attribute.lower()
+                    pal_layer.placement = QgsPalLayerSettings.Line
                     pal_layer.enabled = True
                     labeler = QgsVectorLayerSimpleLabeling(pal_layer)
                     lyr.setLabeling(labeler)

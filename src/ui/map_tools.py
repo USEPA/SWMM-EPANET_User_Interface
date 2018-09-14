@@ -118,6 +118,18 @@ try:
             self.refresh_extent_needed = True
             self.feature_request = QgsFeatureRequest()
 
+        def do_label(self, layer):
+            if not layer or not layer.isValid():
+                return False
+            lyr_name = layer.name()
+            try:
+                lyr_name = lyr_name[0:lyr_name.index(' [')]
+            except ValueError as e:
+                lyr_name = layer.name()
+            if self.session.project_settings.config.value(lyr_name + '-label') == 'Off':
+                return False
+            return True
+
         def process_name_change(self, section, old_name, item):
             # Note: old_named element is already replaced with the new_named item
             obj_type = type(section.value[0]).__name__
@@ -1106,7 +1118,7 @@ try:
 
         @staticmethod
         def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None,
-                                                arenderer=None, aflow_dir=True, acolor_by_flow=None):
+                                                arenderer=None, aflow_dir=True, acolor_by_flow=None, do_label=True):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
@@ -1238,24 +1250,29 @@ try:
                         provider.changeAttributeValues({feature.id(): {1: str(c.red()) + "," + str(c.green()) + "," +
                                                                           str(c.blue())}})
                         break
-            # if layer.featureCount() <= 300:
-            # pal_layer = QgsPalLayerSettings.fromLayer(layer) #pyqgis3 removed
-            qgs_prop = QgsProperty()
-            qgs_prop.setField("Color")
-            pc = QgsPropertyCollection('ddp')
-            pc.setProperty(4, qgs_prop)
-            pal_layer = QgsPalLayerSettings()
-            # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
-            pal_layer.setDataDefinedProperties(pc)
-            pal_layer.fieldName = "value"
-            pal_layer.placement = QgsPalLayerSettings.Line
-            # pal_layer.writeToLayer(layer) #pyqgis3 removed
-            pal_layer.scaleMin = 1/50000
-            pal_layer.scaleMax = 1/1000
-            pal_layer.enabled = True
-            labeler = QgsVectorLayerSimpleLabeling(pal_layer)
-            layer.setLabeling(labeler)
-            layer.setLabelsEnabled(True)
+
+            if do_label:
+                # if layer.featureCount() <= 300:
+                # pal_layer = QgsPalLayerSettings.fromLayer(layer) #pyqgis3 removed
+                qgs_prop = QgsProperty()
+                qgs_prop.setField("Color")
+                pc = QgsPropertyCollection('ddp')
+                pc.setProperty(4, qgs_prop)
+                pal_layer = QgsPalLayerSettings()
+                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+                pal_layer.setDataDefinedProperties(pc)
+                pal_layer.fieldName = "value"
+                pal_layer.placement = QgsPalLayerSettings.Line
+                # pal_layer.writeToLayer(layer) #pyqgis3 removed
+                pal_layer.scaleMin = 1/50000
+                pal_layer.scaleMax = 1/1000
+                pal_layer.enabled = True
+                labeler = QgsVectorLayerSimpleLabeling(pal_layer)
+                layer.setLabeling(labeler)
+                layer.setLabelsEnabled(True)
+            else:
+                layer.setLabeling(None)
+                layer.setLabelsEnabled(False)
 
         def applyLegend(self):
             self.root = QgsProject.instance().layerTreeRoot()
@@ -3045,6 +3062,12 @@ try:
         def label_layer(self, attribute):
             # print "label layer by " + attribute
             lyr = self.view.currentLayer()
+            lyr_name = lyr.name()
+            try:
+                lyr_name = lyr_name[0:lyr_name.index(' [')]
+            except ValueError as e:
+                lyr_name = lyr.name()
+
             if lyr and isinstance(lyr, QgsVectorLayer):
                 pal_layer = QgsPalLayerSettings()
                 if attribute.lower() in ('name', 'value'):
@@ -3054,10 +3077,12 @@ try:
                     labeler = QgsVectorLayerSimpleLabeling(pal_layer)
                     lyr.setLabeling(labeler)
                     lyr.setLabelsEnabled(True)
+                    self.map_control.session.project_settings.config.setValue(lyr_name + '-label', attribute.lower())
                 else:
                     pal_layer.enabled = False
                     lyr.setLabeling(None)
                     lyr.setLabelsEnabled(False)
+                    self.map_control.session.project_settings.config.setValue(lyr_name + '-label', 'Off')
                 lyr.triggerRepaint()
             self.view.setCurrentLayer(None)
 

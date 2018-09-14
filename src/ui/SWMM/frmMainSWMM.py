@@ -811,6 +811,7 @@ class frmMainSWMM(frmMain):
             if not self.allow_thematic_update or not self.map_widget:
                 return
 
+            do_label = True
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 layer = self.model_layers.subcatchments
                 selected_attribute = self.cboMapSubcatchments.currentText()
@@ -825,6 +826,8 @@ class frmMainSWMM(frmMain):
                         for subcatchment in self.output.subcatchments.values():
                             color_by[subcatchment.name] = values[index]
                             index += 1
+
+                do_label = self.map_widget.do_label(layer)
                 if color_by:
                     if layer.id() in self.map_widget.layer_styles and \
                             self.map_widget.validatedGraduatedSymbol(None,
@@ -832,16 +835,16 @@ class frmMainSWMM(frmMain):
                         self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                             self.thematic_node_min,
                                                                             self.thematic_node_max,
-                                                                            self.map_widget.layer_styles[
-                                                                                layer.id()])
+                                                                            self.map_widget.layer_styles[layer.id()],
+                                                                            True, None, do_label)
                     else:
                         self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
                                                                             self.thematic_subcatchment_min,
-                                                                            self.thematic_subcatchment_max)
+                                                                            self.thematic_subcatchment_max,
+                                                                            None, True, None, do_label)
                     self.annotate_layername(selected_attribute, "subcatchment", layer)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
-                    do_label = True
                     self.map_widget.set_default_polygon_renderer(layer, "lightgreen" , do_label)
 
                 self.model_layers.subcatchments.triggerRepaint()
@@ -862,6 +865,7 @@ class frmMainSWMM(frmMain):
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
                         if color_by:
                             if layer.id() in self.map_widget.layer_styles and \
                                     self.map_widget.validatedGraduatedSymbol(None,
@@ -869,12 +873,13 @@ class frmMainSWMM(frmMain):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
-                                                                                    self.map_widget.layer_styles[
-                                                                                        layer.id()])
+                                                                               self.map_widget.layer_styles[layer.id()],
+                                                                                    True, None, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
-                                                                                    self.thematic_node_max)
+                                                                                    self.thematic_node_max,
+                                                                                    None, True, None, do_label)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
                             do_label = True

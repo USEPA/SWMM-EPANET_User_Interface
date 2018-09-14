@@ -446,20 +446,22 @@ class frmMainEPANET(frmMain):
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
                         if color_by:
                             if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None, self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
-                                                            self.map_widget.layer_styles[layer.id()])
+                                                            self.map_widget.layer_styles[layer.id()],
+                                                                                    True, None, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
-                                                                                self.thematic_node_max)
+                                                                                self.thematic_node_max,
+                                                                                    None, True, None, do_label)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            do_label = True
                             if len(self.project.all_nodes()) > 300:
                                 do_label = False
                             self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
@@ -494,6 +496,10 @@ class frmMainEPANET(frmMain):
 
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
+                        if len(self.project.all_links()) > 300:
+                            do_label = False
+
                         if color_by:
                             if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
@@ -502,19 +508,16 @@ class frmMainEPANET(frmMain):
                                                                                     self.thematic_link_max,
                                                                              self.map_widget.layer_styles[layer.id()],
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max,
                                                                                     None,
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, do_label)
                             self.annotate_layername(selected_attribute, "link", layer)
                         else:
-                            do_label = True
-                            if len(self.project.all_links()) > 300:
-                                do_label = False
                             self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
             if self.cboTime.count() > 0:

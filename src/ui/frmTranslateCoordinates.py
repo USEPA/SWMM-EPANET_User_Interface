@@ -4,7 +4,7 @@ from ui.help import HelpHandler
 from ui.frmTranslateCoordinatesDesigner import Ui_frmTranslateCoordinatesDesigner
 from ui.model_utility import ParseData
 from core.coordinate import Coordinate
-from ui.selectCrsDlg import SelectCrsDlg
+from qgis.gui import QgsProjectionSelectionDialog
 import os, sys
 
 
@@ -217,11 +217,11 @@ class frmTranslateCoordinates(QDialog):
         return True
 
     def set_dst_crs(self):
-        frmCRS = SelectCrsDlg("Select Destination CRS", self)
+        frmCRS = QgsProjectionSelectionDialog(self._main_form)
         if frmCRS.exec_():
-            # 0: close, 1: OK
-            self.destination_crs_name = frmCRS.getProjection()
-            self._main_form.map_widget.update_project_map_crs_info(self.destination_crs_name)
+            if frmCRS.crs() is not None and frmCRS.crs().authid():
+                self.destination_crs_name = frmCRS.crs().authid()
+                self._main_form.map_widget.update_project_map_crs_info(self.destination_crs_name)
 
     def translate(self):
         if not self.check_coords():

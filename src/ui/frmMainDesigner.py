@@ -1014,7 +1014,7 @@ class Ui_frmMain(object):
         self.actionStdGroup_Edit.setToolTip(_translate("frmMain", "Edit a selected group of objects", None))
         self.actionStdProjSummary.setText(_translate("frmMain", "Summary...", None))
         self.actionStdProjSummary.setToolTip(_translate("frmMain", "Project summary", None))
-        self.actionStdProjDefault.setText(_translate("frmMain", "Default...", None))
+        self.actionStdProjDefault.setText(_translate("frmMain", "Defaults...", None))
         self.actionStdProjDefault.setToolTip(_translate("frmMain", "Project defaults", None))
         self.actionStdProjCalibration_Data.setText(_translate("frmMain", "Calibration Data...", None))
         self.actionStdProjCalibration_Data.setToolTip(_translate("frmMain", "Set project calibration data", None))

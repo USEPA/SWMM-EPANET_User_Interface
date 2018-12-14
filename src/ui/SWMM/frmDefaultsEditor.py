@@ -168,7 +168,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             #self.increment = int(self.qsettings.value("Labels/Increment", 1))
             self.increment = self.defaults.id_increment
         self.tblGeneric.setItem(self.tblGeneric.rowCount()- 1,0,
-                                QTableWidgetItem(self.defaults.id_increment))
+                                QTableWidgetItem(str(self.defaults.id_increment)))
         pass
 
     def set_sub_properties(self):
@@ -176,17 +176,17 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         setup object property defaults tab entries
         Returns:
         """
-        #self.properties = ["Area", "Width", "% Slope", "% Imperv", "N-Imperv", "N-Perv",
-        #                   "Dstore-Imperv", "Dstore-Perv", "%Zero-Imperv", "Infiltration Model"]
+        properties = ["Area", "Width", "% Slope", "% Imperv", "N-Imperv", "N-Perv",
+                      "Dstore-Imperv", "Dstore-Perv", "%Zero-Imperv", "Infiltration Model"]
         #self.properties_def_values = [5, 500, 0.5, 25, 0.01, 0.1, 0.05, 0.05, 25, "HORTON"]
         self.tbl_2.setColumnCount(1)
         self.tbl_2.setRowCount(len(self.defaults.properties_sub_keys))
         self.tbl_2.setHorizontalHeaderLabels(["Default Value"])
-        self.tbl_2.setVerticalHeaderLabels(self.defaults.properties_sub_keys)
+        self.tbl_2.setVerticalHeaderLabels(properties)
         for i in range(0, len(self.defaults.properties_sub_keys) - 1):
             #def_val = unicode(self.qsettings.value("Defaults/" + self.properties[i], def_val))
             def_val = self.defaults.properties_sub_values[self.defaults.properties_sub_keys[i]]
-            self.tbl_2.setItem(i,0, QTableWidgetItem(def_val))
+            self.tbl_2.setItem(i,0, QTableWidgetItem(str(def_val)))
         self.set_infilmodel_cell(0)
 
         pass
@@ -196,29 +196,32 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         setup the hydraulic parameter defaults tab entries
         Returns:
         """
-        #self.parameters = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length", "Conduit Geometry",
-        #                   "Conduit Roughness", "Flow Units", "Link Offsets", "Routing Method", "Force Main Equation"]
+        properties = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length", "Conduit Geometry",
+                      "Conduit Roughness", "Flow Units", "Link Offsets", "Routing Method", "Force Main Equation"]
         #self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "KINWAVE", "H_W"]
         self.tbl_3.setColumnCount(1)
         self.tbl_3.setRowCount(len(self.defaults.parameters_keys))
         self.tbl_3.setHorizontalHeaderLabels(["Default Value"])
-        self.tbl_3.setVerticalHeaderLabels(self.defaults.parameters_keys)
+        self.tbl_3.setVerticalHeaderLabels(properties)
         for i in range(0, len(self.defaults.parameters_keys)):
             combobox = None
             key = self.defaults.parameters_keys[i]
             def_val = self.defaults.parameters_values[key]
-            if "flow units" in key.lower():
+            if "flow_units" in key.lower():
                 combobox = QComboBox()
                 enum_val = FlowUnits[def_val]
-            elif "link offsets" in key.lower():
+            elif "link_offsets" in key.lower():
                 combobox = QComboBox()
                 enum_val = LinkOffsets[def_val]
-            elif "routing method" in key.lower():
+            elif "routing_model" in key.lower():
                 combobox = QComboBox()
                 enum_val = FlowRouting[def_val.upper()]
-            elif "force main" in key.lower():
+            elif "force_main" in key.lower():
                 combobox = QComboBox()
-                enum_val = ForceMainEquation[def_val.upper()]
+                if def_val.upper() == "H-W":
+                    enum_val = ForceMainEquation['H_W']
+                if def_val.upper() == "D-W":
+                    enum_val = ForceMainEquation['D_W']
 
             if combobox is not None:
                 combobox.setObjectName(key + "|" + str(i) + "|0")
@@ -228,10 +231,10 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
                 self.sm_hydraulics.setMapping(combobox, i)
                 self.tbl_3.setCellWidget(i, 0, combobox)
             else:
-                if "conduit geometry" in key.lower():
+                if "conduit_shape" in key.lower():
                     self.set_channel_cell(0)
                 else:
-                    self.tbl_3.setItem(i,0, QTableWidgetItem(def_val))
+                    self.tbl_3.setItem(i,0, QTableWidgetItem(str(def_val)))
         pass
 
     def eventFilter(self, ui_object, event):
@@ -355,6 +358,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         else:
             val, val_is_good = ParseData.floatTryParse(item.text())
             if val_is_good:
+                key = self.defaults.properties_sub_keys[row]
                 self.defaults.properties_sub_values[key] = val
         self.property_sub_changed = True
         pass
@@ -365,18 +369,19 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         item = self.tbl_3.item(row, col)
         if item is None: return
         key = self.tbl_3.verticalHeaderItem(row).text()
-        if "flow units" in key.lower() or \
-           "link offsets" in key.lower() or \
+        if "flow_units" in key.lower() or \
+           "link_offsets" in key.lower() or \
            "routing" in key.lower() or \
-           "force main" in key.lower():
+           "force_main" in key.lower():
             # do nothing
             pass
-        elif "conduit geometry" in key.lower():
+        elif "conduit_shape" in key.lower():
             #self.defaults.xsection.shape = CrossSection[item.text()]
             pass
         else:
             val, val_is_good = ParseData.floatTryParse(item.text())
             if val_is_good:
+                key = self.defaults.parameters_keys[row]
                 self.defaults.parameters_values[key] = val
         self.parameter_changed = True
         pass

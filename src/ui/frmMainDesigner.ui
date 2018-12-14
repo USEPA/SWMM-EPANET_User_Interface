@@ -1282,7 +1282,7 @@
   </action>
   <action name="actionStdProjDefault">
    <property name="text">
-    <string>Default...</string>
+    <string>Defaults...</string>
    </property>
    <property name="toolTip">
     <string>Project defaults</string>

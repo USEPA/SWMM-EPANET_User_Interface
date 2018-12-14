@@ -1208,6 +1208,12 @@ class frmMain(QMainWindow, Ui_frmMain):
 
         if self.project_settings:
             item_type_name = item_type.__name__
+            if item_type_name == 'RainGage':
+                item_type_name = 'Rain Gage'
+            elif item_type_name == 'StorageUnit':
+                item_type_name = 'Storage Unit'
+            elif item_type_name == 'Orifice' or item_type_name == 'Weir' or item_type_name == 'Outlet':
+                item_type_name = 'Regulator'
             prefix = unicode(self.project_settings.config.value("Labels/" + item_type_name, ""))
             try:
                 increment = int(self.project_settings.config.value("Labels/ID Increment", 1))
@@ -2078,6 +2084,12 @@ class frmMain(QMainWindow, Ui_frmMain):
         else:
             self.project.file_name = "New.inp"
             self.setWindowTitle(self.model + " - New")
+            if "EPANET" in self.model.upper():
+                from ui.EPANET.inifile import DefaultsEPANET
+                self.project_settings = DefaultsEPANET("", self.project)
+            elif "SWMM" in self.model.upper():
+                from ui.SWMM.inifile import DefaultsSWMM
+                self.project_settings = DefaultsSWMM("", self.project)
 
     def open_prj(self, projection_file_name):
         if os.path.isfile(projection_file_name):

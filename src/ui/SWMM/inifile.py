@@ -1,5 +1,5 @@
-from PyQt5.Qt import Qt
-from PyQt5.Qt import QSettings
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QSettings
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
@@ -954,8 +954,8 @@ class DefaultsSWMM(ini_setting):
         self.infil_model_ga.set_defaults()
         self.infil_model_cn = CurveNumberInfiltration()
         self.infil_model_cn.set_defaults()
-        self.properties_sub_keys = ["Area", "Width", "% Slope", "% Imperv", "N-Imperv", "N-Perv",
-                           "Dstore-Imperv", "Dstore-Perv", "%Zero-Imperv", self.infil_model_key]
+        self.properties_sub_keys = ["Area", "Width", "Slope", "Imperv", "Imperv_N", "Perv_N",
+                           "Imperv_DS", "Perv_DS", "PctZero", self.infil_model_key]
         self.properties_sub_def_values = [5.0, 500.0, 0.5, 25.0, 0.01, 0.1, 0.05, 0.05, 25.0, "HORTON"]
 
         # [Defaults]
@@ -969,10 +969,10 @@ class DefaultsSWMM(ini_setting):
         self.xsection.shape = CrossSectionShape.CIRCULAR
         self.xsection.barrels = 1
         self.xsection.geometry1 = 1.0
-        self.xsection_key = "Conduit Geometry"
-        self.parameters_keys = ["Node Invert", "Node Max. Depth", "Node Ponded Area", "Conduit Length",
-                                self.xsection_key, "Conduit Roughness", "Flow Units", "Link Offsets",
-                                "Routing Method", "Force Main Equation"]
+        self.xsection_key = "CONDUIT_SHAPE"
+        self.parameters_keys = ["NODE_INVERT", "NODE_DEPTH", "PONDED_AREA", "CONDUIT_LENGTH",
+                                self.xsection_key, "CONDUIT_ROUGHNESS", "FLOW_UNITS", "LINK_OFFSETS",
+                                "ROUTING_MODEL", "FORCE_MAIN_EQUATION"]
         self.parameters_def_values = [0, 0, 0, 400, "CIRCULAR", 0.01, "CFS", "DEPTH", "KINWAVE", "H_W"]
 
         self.model_object_prefix = {}
@@ -1081,23 +1081,23 @@ class DefaultsSWMM(ini_setting):
         key_prefix = group + self.keyprefix_infil + "PARAM"
         if infil_model_type == E_InfilModel.HORTON or \
            infil_model_type == E_InfilModel.MODIFIED_HORTON:
-            self.config.setValue(key_prefix + "1", unicode(self.infil_model_horton.max_rate))
-            self.config.setValue(key_prefix + "2", unicode(self.infil_model_horton.min_rate))
-            self.config.setValue(key_prefix + "3", unicode(self.infil_model_horton.decay))
-            self.config.setValue(key_prefix + "4", unicode(self.infil_model_horton.dry_time))
+            self.config.setValue(key_prefix + "1", str(self.infil_model_horton.max_rate))
+            self.config.setValue(key_prefix + "2", str(self.infil_model_horton.min_rate))
+            self.config.setValue(key_prefix + "3", str(self.infil_model_horton.decay))
+            self.config.setValue(key_prefix + "4", str(self.infil_model_horton.dry_time))
             self.config.setValue(key_prefix + "5", "0")
             self.config.setValue(key_prefix + "6", "")
         elif infil_model_type == E_InfilModel.GREEN_AMPT or \
              infil_model_type == E_InfilModel.MODIFIED_GREEN_AMPT:
-            self.config.setValue(key_prefix + "1", unicode(self.infil_model_ga.suction))
-            self.config.setValue(key_prefix + "2", unicode(self.infil_model_ga.hydraulic_conductivity))
-            self.config.setValue(key_prefix + "3", unicode(self.infil_model_ga.initial_moisture_deficit))
+            self.config.setValue(key_prefix + "1", str(self.infil_model_ga.suction))
+            self.config.setValue(key_prefix + "2", str(self.infil_model_ga.hydraulic_conductivity))
+            self.config.setValue(key_prefix + "3", str(self.infil_model_ga.initial_moisture_deficit))
             self.config.setValue(key_prefix + "4", "")
             self.config.setValue(key_prefix + "5", "")
             self.config.setValue(key_prefix + "6", "")
         elif infil_model_type == E_InfilModel.CURVE_NUMBER:
-            self.config.setValue(key_prefix + "1", unicode(self.infil_model_cn.curve_number))
-            self.config.setValue(key_prefix + "2", unicode(self.infil_model_cn.dry_days))
+            self.config.setValue(key_prefix + "1", str(self.infil_model_cn.curve_number))
+            self.config.setValue(key_prefix + "2", str(self.infil_model_cn.dry_days))
             self.config.setValue(key_prefix + "3", "")
             self.config.setValue(key_prefix + "4", "")
             self.config.setValue(key_prefix + "5", "")
@@ -1122,41 +1122,41 @@ class DefaultsSWMM(ini_setting):
         xsect_type = CrossSectionShape[xsect_name]
         self.config.setValue(group + self.keyprefix_conduit + "SHAPE", self.xsection.shape.name)
         key_prefix = group + self.keyprefix_conduit + "GEOM"
-        self.config.setValue(key_prefix + "1", unicode(self.xsection.geometry1))
-        self.config.setValue(key_prefix + "2", unicode(self.xsection.geometry2))
-        self.config.setValue(key_prefix + "3", unicode(self.xsection.geometry3))
-        self.config.setValue(key_prefix + "4", unicode(self.xsection.geometry4))
+        self.config.setValue(key_prefix + "1", str(self.xsection.geometry1))
+        self.config.setValue(key_prefix + "2", str(self.xsection.geometry2))
+        self.config.setValue(key_prefix + "3", str(self.xsection.geometry3))
+        self.config.setValue(key_prefix + "4", str(self.xsection.geometry4))
 
     def sync_project_hydraulic_parameters(self):
         group = "Defaults/"
         hydraulics_options = self.project.options
         for key in self.parameters_keys:
             val = self.parameters_values[key]
-            self.config.setValue(group + key, unicode(val))
-            if "flow unit" in key.lower():
+            self.config.setValue(group + key, str(val))
+            if "flow_unit" in key.lower():
                 hydraulics_options.flow_units = hyd.FlowUnits[val]
-            elif "link offset" in key.lower():
+            elif "link_offset" in key.lower():
                 hydraulics_options.link_offsets = hyd.LinkOffsets[val]
             elif "routing" in key.lower():
                 hydraulics_options.flow_routing = hyd.FlowRouting[val]
-            elif "force main" in key.lower():
+            elif "force_main" in key.lower():
                 hydraulics_options.dynamic_wave.force_main_equation = dw.ForceMainEquation[val]
-            elif "node invert" in key.lower():
+            elif "node_invert" in key.lower():
                 #hydraulics_options.node_invert = float(val)
                 pass
-            elif "node max. depth" in key.lower():
+            elif "node_depth" in key.lower():
                 #hydraulics_options.node_max_depth = float(val)
                 pass
-            elif "node ponded area" in key.lower():
+            elif "ponded_area" in key.lower():
                 #hydraulics_options.node_ponded_area = float(val)
                 pass
-            elif "conduit length" in key.lower():
+            elif "conduit_length" in key.lower():
                 #hydraulics_options.conduit_length = float(val)
                 pass
-            elif "conduit geometry" in key.lower():
+            elif "conduit_shape" in key.lower():
                 #hydraulics_options.conduit_geometry = float(val)
                 pass
-            elif "conduit roughness" in key.lower():
+            elif "conduit_roughness" in key.lower():
                 #hydraulics_options.conduit_roughness = float(val)
                 pass
 
@@ -1169,16 +1169,16 @@ class DefaultsSWMM(ini_setting):
         item_type = item.__class__.__name__
         if item_type == "Junction" or item_type == "Outfall" or item_type== "Divider" or \
                 item_type == "StorageUnit":
-            item.elevation = self.parameters_values["Node Invert"]
+            item.elevation = self.parameters_values["NODE_INVERT"]
             if item_type == "Junction" or item_type == "Divider" or item_type == "StorageUnit":
-                item.max_depth = self.parameters_values["Node Max. Depth"]
+                item.max_depth = self.parameters_values["NODE_DEPTH"]
             if item_type == "Junction":
-                item.ponded_area = self.parameters_values["Node Ponded Area"]
+                item.ponded_area = self.parameters_values["PONDED_AREA"]
         elif item_type == "Conduit":
             # from core.swmm.hydraulics.link import Conduit
             # item = Conduit()
-            item.length = self.parameters_values["Conduit Length"]
-            item.roughness = self.parameters_values["Conduit Roughness"]
+            item.length = self.parameters_values["CONDUIT_LENGTH"]
+            item.roughness = self.parameters_values["CONDUIT_ROUGHNESS"]
         elif item_type == "CrossSection":
             # from core.swmm.hydraulics.link import CrossSection
             # from core.swmm.hydraulics.link import CrossSectionShape
@@ -1194,13 +1194,13 @@ class DefaultsSWMM(ini_setting):
             # item = Subcatchment()
             item.area = self.properties_sub_values["Area"]
             item.width = self.properties_sub_values["Width"]
-            item.percent_slope = self.properties_sub_values["% Slope"]
-            item.percent_impervious = self.properties_sub_values["% Imperv"]
-            item.n_imperv = self.properties_sub_values["N-Imperv"]
-            item.n_perv = self.properties_sub_values["N-Perv"]
-            item.storage_depth_imperv = self.properties_sub_values["Dstore-Imperv"]
-            item.storage_depth_perv = self.properties_sub_values["Dstore-Perv"]
-            item.percent_zero_impervious = self.properties_sub_values["%Zero-Imperv"]
+            item.percent_slope = self.properties_sub_values["Slope"]
+            item.percent_impervious = self.properties_sub_values["Imperv"]
+            item.n_imperv = self.properties_sub_values["Imperv_N"]
+            item.n_perv = self.properties_sub_values["Perv_N"]
+            item.storage_depth_imperv = self.properties_sub_values["Imperv_DS"]
+            item.storage_depth_perv = self.properties_sub_values["Perv_DS"]
+            item.percent_zero_impervious = self.properties_sub_values["PctZero"]
             #self.apply_default_infiltration_attributes(item)
             #item.infiltration_parameters = None
             #infil_model_name = self.properties_sub_values[self.infil_model_key]

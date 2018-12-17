@@ -1140,7 +1140,7 @@ class DefaultsSWMM(ini_setting):
             elif "routing" in key.lower():
                 hydraulics_options.flow_routing = hyd.FlowRouting[val]
             elif "force_main" in key.lower():
-                hydraulics_options.dynamic_wave.force_main_equation = dw.ForceMainEquation[val]
+                hydraulics_options.dynamic_wave.force_main_equation = dw.ForceMainEquation[str.replace(val,'-','_')]
             elif "node_invert" in key.lower():
                 #hydraulics_options.node_invert = float(val)
                 pass

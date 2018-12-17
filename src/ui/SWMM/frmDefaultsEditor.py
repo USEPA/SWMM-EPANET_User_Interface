@@ -19,6 +19,8 @@ from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmInfiltration import frmInfiltration
 from ui.SWMM.frmCrossSection import frmCrossSection
 from ui.model_utility import ParseData
+from ui.help import HelpHandler
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -35,6 +37,8 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
     def __init__(self, session, project, defaults):
         QMainWindow.__init__(self, session)
         self.setupUi(self)
+        self.helper = HelpHandler(self)
+        self.help_topic = "swmm/src/src/settingprojectdefaults.htm"
         self.defaults = defaults
         self.session = session
         self.project = project
@@ -47,10 +51,12 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.setWindowTitle(self.session.model + " Project Defaults")
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cmdHelp.clicked.connect(self.cmdHelp_Clicked)
         # self.tabDefaults.currentChanged(int).connect(self.tab_changed)
         # self.tblGeneric.cellChanged(int, int).connect(self.tblGeneric_changed)
         self.tabDefaults.currentChanged.connect(self.tab_changed)
         self.tblGeneric.cellChanged.connect(self.tblGeneric_changed)
+        self.chk4all.setVisible(False)
 
         self.corner_label_tab1 = QLabel("Object", self.tblGeneric)
         self.corner_label_tab1.setAlignment(QtCore.Qt.AlignCenter)
@@ -412,6 +418,11 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.defaults.sync_defaults_parameter()
             pass
 
+        if self.chk4all.isChecked():
+            # take default labels and defaults from project ini file and apply to global SWMM.ini file
+            self.session.program_settings.sync()
+            pass
+
         self.close()
         pass
 
@@ -421,4 +432,11 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         Returns:
         """
         self.close()
+        pass
+
+    def cmdHelp_Clicked(self):
+        """
+        display help
+        """
+        self.helper.show_help()
         pass

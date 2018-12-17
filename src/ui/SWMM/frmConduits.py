@@ -86,7 +86,10 @@ class frmConduits(frmGenericPropertyEditor):
             xsection = CrossSection()
             if self._main_form and self._main_form.project_settings and \
                     self._main_form.project_settings.xsection:
-                value = self._main_form.project_settings.apply_default_attributes(xsection)
+                self._main_form.project_settings.apply_default_attributes(xsection)
+                tb.textbox.setText(xsection.shape.name)
+                self.tblGeneric.setItem(6, column, QTableWidgetItem(xsection.geometry1))
+                self.tblGeneric.setItem(18, column, QTableWidgetItem(xsection.culvert_code))
                 xsection.link = link_id
                 if self._main_form.project:
                     self._main_form.project.xsections.value.append(xsection)

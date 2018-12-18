@@ -1126,7 +1126,10 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def calibration_data(self):
-        self._frmCalibrationData = frmCalibrationData(self)
+        qsettings = self.project_settings
+        if qsettings is None:
+            qsettings = self.program_settings
+        self._frmCalibrationData = frmCalibrationData(self, qsettings)
         self._frmCalibrationData.show()
         pass
 

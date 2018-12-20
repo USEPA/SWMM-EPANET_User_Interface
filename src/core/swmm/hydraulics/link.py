@@ -261,7 +261,7 @@ class Weir(SwmmLink):
         self.end_coefficient = 0.0
 
         ## bool: True if weir can surcharge
-        self.can_surcharge = False
+        self.can_surcharge = True
 
         ## float: Width of road lanes and shoulders
         self.road_width = 0.0
@@ -305,13 +305,13 @@ class Outlet(SwmmLink):
         self.flap_gate = False
 
         ## float: Coefficient in outflow expression
-        self.coefficient = 0.0
+        self.coefficient = 10.0
 
         ## float: Exponent in outflow expression
-        self.exponent = 0.0
+        self.exponent = 0.5
 
         ## OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet
-        self.curve_type = OutletCurveType.TABULAR_DEPTH
+        self.curve_type = OutletCurveType.FUNCTIONAL_DEPTH
 
         ## str: Name of rating curve that relates outflow to either depth or head
         self.rating_curve = "None"

@@ -21,11 +21,17 @@ class frmLID(QMainWindow, Ui_frmLID):
         self.section = self.project.lid_controls
         self.new_item = new_item
         if new_item:
+            self.lid = new_item
             self.set_from(new_item)
         elif edit_these:
             if isinstance(edit_these, list):  # edit first lid control if given a list
+                if not isinstance(edit_these[0], LIDControl):
+                    self.lid = self.section.value[edit_these[0]]
+                else:
+                    self.lid = edit_these[0]
                 self.set_from(edit_these[0])
             else:
+                self.lid = edit_these
                 self.set_from(edit_these)
 
     def set_from(self, lid):
@@ -39,20 +45,68 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.txtName.setText(lid.name)
             if lid.lid_type == LIDType.BC:
                 self.cboLIDType.setCurrentIndex(0)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = True
+                lid.has_storage_layer = True
+                lid.has_underdrain_system = True
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.RG:
                 self.cboLIDType.setCurrentIndex(1)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = True
+                lid.has_storage_layer = False
+                lid.has_underdrain_system = False
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.GR:
                 self.cboLIDType.setCurrentIndex(2)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = True
+                lid.has_storage_layer = False
+                lid.has_underdrain_system = False
+                lid.has_drainmat_system = True
             elif lid.lid_type == LIDType.IT:
                 self.cboLIDType.setCurrentIndex(3)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = True
+                lid.has_storage_layer = False
+                lid.has_underdrain_system = True
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.PP:
                 self.cboLIDType.setCurrentIndex(4)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = True
+                lid.has_soil_layer = True
+                lid.has_storage_layer = True
+                lid.has_underdrain_system = True
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.RB:
                 self.cboLIDType.setCurrentIndex(5)
+                lid.has_surface_layer = False
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = False
+                lid.has_storage_layer = True
+                lid.has_underdrain_system = True
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.RD:
                 self.cboLIDType.setCurrentIndex(6)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = False
+                lid.has_storage_layer = False
+                lid.has_underdrain_system = True
+                lid.has_drainmat_system = False
             elif lid.lid_type == LIDType.VS:
                 self.cboLIDType.setCurrentIndex(7)
+                lid.has_surface_layer = True
+                lid.has_pavement_layer = False
+                lid.has_soil_layer = False
+                lid.has_storage_layer = False
+                lid.has_underdrain_system = False
+                lid.has_drainmat_system = False
 
             if lid.has_surface_layer:
                 self.txtSurface1.setText(lid.surface_layer_storage_depth)
@@ -157,11 +211,16 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_drainmat_system = False
 
         if self.editing_item.has_surface_layer:
-            self.editing_item.surface_layer_storage_depth = self.txtSurface1.text()
-            self.editing_item.surface_layer_vegetative_cover_fraction = self.txtSurface2.text()
-            self.editing_item.surface_layer_surface_roughness = self.txtSurface3.text()
-            self.editing_item.surface_layer_surface_slope = self.txtSurface4.text()
-            self.editing_item.surface_layer_swale_side_slope = self.txtSurface5.text()
+            if self.cboLIDType.currentIndex() == 6:
+                self.editing_item.surface_layer_storage_depth = self.txtSurface1.text()
+                self.editing_item.surface_layer_surface_roughness = self.txtSurface2.text()
+                self.editing_item.surface_layer_surface_slope = self.txtSurface3.text()
+            else:
+                self.editing_item.surface_layer_storage_depth = self.txtSurface1.text()
+                self.editing_item.surface_layer_vegetative_cover_fraction = self.txtSurface2.text()
+                self.editing_item.surface_layer_surface_roughness = self.txtSurface3.text()
+                self.editing_item.surface_layer_surface_slope = self.txtSurface4.text()
+                self.editing_item.surface_layer_swale_side_slope = self.txtSurface5.text()
         if self.editing_item.has_pavement_layer:
             self.editing_item.pavement_layer_thickness = self.txtPavement1.text()
             self.editing_item.pavement_layer_void_ratio = self.txtPavement2.text()
@@ -394,4 +453,101 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(3,False)
             self.tabLID.setTabEnabled(4,False)
             self.tabLID.setTabText(4,"Drain")
+
+        if newIndex == 0:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = True
+            self.lid.has_storage_layer = True
+            self.lid.has_underdrain_system = True
+            self.lid.has_drainmat_system = False
+        elif newIndex == 1:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = True
+            self.lid.has_storage_layer = False
+            self.lid.has_underdrain_system = False
+            self.lid.has_drainmat_system = False
+        elif newIndex == 2:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = True
+            self.lid.has_storage_layer = False
+            self.lid.has_underdrain_system = False
+            self.lid.has_drainmat_system = True
+        elif newIndex == 3:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = True
+            self.lid.has_storage_layer = False
+            self.lid.has_underdrain_system = True
+            self.lid.has_drainmat_system = False
+        elif newIndex == 4:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = True
+            self.lid.has_soil_layer = True
+            self.lid.has_storage_layer = True
+            self.lid.has_underdrain_system = True
+            self.lid.has_drainmat_system = False
+        elif newIndex == 5:
+            self.lid.has_surface_layer = False
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = False
+            self.lid.has_storage_layer = True
+            self.lid.has_underdrain_system = True
+            self.lid.has_drainmat_system = False
+        elif newIndex == 6:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = False
+            self.lid.has_storage_layer = False
+            self.lid.has_underdrain_system = True
+            self.lid.has_drainmat_system = False
+        elif newIndex == 7:
+            self.lid.has_surface_layer = True
+            self.lid.has_pavement_layer = False
+            self.lid.has_soil_layer = False
+            self.lid.has_storage_layer = False
+            self.lid.has_underdrain_system = False
+            self.lid.has_drainmat_system = False
+
+        if self.lid.has_surface_layer:
+            if newIndex == 6:
+                self.txtSurface1.setText(self.lid.surface_layer_storage_depth)
+                self.txtSurface2.setText(self.lid.surface_layer_surface_roughness)
+                self.txtSurface3.setText(self.lid.surface_layer_surface_slope)
+            else:
+                self.txtSurface1.setText(self.lid.surface_layer_storage_depth)
+                self.txtSurface2.setText(self.lid.surface_layer_vegetative_cover_fraction)
+                self.txtSurface3.setText(self.lid.surface_layer_surface_roughness)
+                self.txtSurface4.setText(self.lid.surface_layer_surface_slope)
+                self.txtSurface5.setText(self.lid.surface_layer_swale_side_slope)
+        if self.lid.has_pavement_layer:
+            self.txtPavement1.setText(self.lid.pavement_layer_thickness)
+            self.txtPavement2.setText(self.lid.pavement_layer_void_ratio)
+            self.txtPavement3.setText(self.lid.pavement_layer_impervious_surface_fraction)
+            self.txtPavement4.setText(self.lid.pavement_layer_permeability)
+            self.txtPavement5.setText(self.lid.pavement_layer_clogging_factor)
+        if self.lid.has_soil_layer:
+            self.txtSoil1.setText(self.lid.soil_layer_thickness)
+            self.txtSoil2.setText(self.lid.soil_layer_porosity)
+            self.txtSoil3.setText(self.lid.soil_layer_field_capacity)
+            self.txtSoil4.setText(self.lid.soil_layer_wilting_point)
+            self.txtSoil5.setText(self.lid.soil_layer_conductivity)
+            self.txtSoil6.setText(self.lid.soil_layer_conductivity_slope)
+            self.txtSoil7.setText(self.lid.soil_layer_suction_head)
+        if self.lid.has_storage_layer:
+            self.txtStorage1.setText(self.lid.storage_layer_height)
+            self.txtStorage2.setText(self.lid.storage_layer_void_ratio)
+            self.txtStorage3.setText(self.lid.storage_layer_filtration_rate)
+            self.txtStorage4.setText(self.lid.storage_layer_clogging_factor)
+        if self.lid.has_underdrain_system:
+            self.txtDrain1.setText(self.lid.drain_coefficient)
+            self.txtDrain2.setText(self.lid.drain_exponent)
+            self.txtDrain3.setText(self.lid.drain_offset_height)
+            self.txtDrain4.setText(self.lid.drain_delay)
+        if self.lid.has_drainmat_system:
+            self.txtDrain1.setText(self.lid.drainmat_thickness)
+            self.txtDrain2.setText(self.lid.drainmat_void_fraction)
+            self.txtDrain3.setText(self.lid.drainmat_roughness)
 

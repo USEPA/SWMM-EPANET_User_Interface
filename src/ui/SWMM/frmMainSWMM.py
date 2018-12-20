@@ -458,8 +458,26 @@ class frmMainSWMM(frmMain):
 
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
+        old_units = self.project.metric
         self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.flow_units in core.swmm.options.general.flow_units_metric
+        # change a few default parameters
+        if self.project.metric and not old_units:
+            # we just changed from english to metric
+            if self.project.options.dynamic_wave.min_surface_area == '12.557':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.min_surface_area = '1.14'
+            if self.project.options.dynamic_wave.head_tolerance == '0.005':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.head_tolerance = '0.0015'
+        if not self.project.metric and old_units:
+            # we just changed from metric to english
+            if self.project.options.dynamic_wave.min_surface_area == '1.14':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.min_surface_area = '12.557'
+            if self.project.options.dynamic_wave.head_tolerance == '0.0015':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.head_tolerance = '0.005'
 
     def cbOffset_currentIndexChanged(self):
         import core.swmm.options

@@ -55,10 +55,10 @@ class frmPumps(frmGenericPropertyEditor):
             combobox = QComboBox()
             combobox.addItem('OFF')
             combobox.addItem('ON')
-            combobox.setCurrentIndex(0)
+            combobox.setCurrentIndex(1)
             if len(edit_these) > 0:
-                if edit_these[column].initial_status == 'ON':
-                    combobox.setCurrentIndex(1)
+                if edit_these[column].initial_status == 'OFF':
+                    combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(6, column, combobox)
 
         self.installEventFilter(self)

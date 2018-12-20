@@ -20,6 +20,12 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
+        if main_form.project.metric:
+            self.lblSurface.setText("Minimum Nodal Surface Area (sq. meters)")
+            self.lblHead.setText("Head Convergence Tolerance (meters)")
+        else:
+            self.lblSurface.setText("Minimum Nodal Surface Area (sq. feet)")
+            self.lblHead.setText("Head Convergence Tolerance (feet)")
 
     def set_from(self, project):
         # section = core.swmm.options.dynamic_wave.DynamicWave()

@@ -1169,16 +1169,30 @@ class DefaultsSWMM(ini_setting):
         item_type = item.__class__.__name__
         if item_type == "Junction" or item_type == "Outfall" or item_type== "Divider" or \
                 item_type == "StorageUnit":
-            item.elevation = self.parameters_values["NODE_INVERT"]
+            item.elevation = self.config.value("Defaults/NODE_INVERT")
+            if item.elevation is None:
+                item.elevation = self.parameters_values["NODE_INVERT"]
+
             if item_type == "Junction" or item_type == "Divider" or item_type == "StorageUnit":
-                item.max_depth = self.parameters_values["NODE_DEPTH"]
+                item.max_depth = self.config.value("Defaults/NODE_DEPTH")
+                if item.max_depth is None:
+                    item.max_depth = self.parameters_values["NODE_DEPTH"]
+
             if item_type == "Junction":
-                item.ponded_area = self.parameters_values["PONDED_AREA"]
+                item.ponded_area = self.config.value("Defaults/PONDED_AREA")
+                if item.ponded_area is None:
+                    item.ponded_area = self.parameters_values["PONDED_AREA"]
+
         elif item_type == "Conduit":
             # from core.swmm.hydraulics.link import Conduit
             # item = Conduit()
-            item.length = self.parameters_values["CONDUIT_LENGTH"]
-            item.roughness = self.parameters_values["CONDUIT_ROUGHNESS"]
+            item.length = self.config.value("Defaults/CONDUIT_LENGTH")
+            if item.length is None:
+                item.length = self.parameters_values["CONDUIT_LENGTH"]
+
+            item.roughness = self.config.value("Defaults/CONDUIT_ROUGHNESS")
+            if item.roughness is None:
+                item.roughness = self.parameters_values["CONDUIT_ROUGHNESS"]
         elif item_type == "CrossSection":
             # from core.swmm.hydraulics.link import CrossSection
             # from core.swmm.hydraulics.link import CrossSectionShape
@@ -1192,15 +1206,42 @@ class DefaultsSWMM(ini_setting):
         elif item_type == "Subcatchment":
             # from core.swmm.hydrology.subcatchment import Subcatchment
             # item = Subcatchment()
-            item.area = self.properties_sub_values["Area"]
-            item.width = self.properties_sub_values["Width"]
-            item.percent_slope = self.properties_sub_values["Slope"]
-            item.percent_impervious = self.properties_sub_values["Imperv"]
-            item.n_imperv = self.properties_sub_values["Imperv_N"]
-            item.n_perv = self.properties_sub_values["Perv_N"]
-            item.storage_depth_imperv = self.properties_sub_values["Imperv_DS"]
-            item.storage_depth_perv = self.properties_sub_values["Perv_DS"]
-            item.percent_zero_impervious = self.properties_sub_values["PctZero"]
+            item.area = self.config.value("Defaults/Area")
+            if item.area is None:
+                item.area = self.properties_sub_values["Area"]
+
+            item.width = self.config.value("Defaults/Width")
+            if item.width is None:
+                item.width = self.properties_sub_values["Width"]
+
+            item.percent_slope = self.config.value("Defaults/Slope")
+            if item.percent_slope is None:
+                item.percent_slope = self.properties_sub_values["Slope"]
+
+            item.percent_impervious = self.config.value("Defaults/Imperv")
+            if item.percent_impervious is None:
+                item.percent_impervious = self.properties_sub_values["Imperv"]
+
+            item.n_imperv = self.config.value("Defaults/Imperv_N")
+            if item.n_imperv is None:
+                item.n_imperv = self.properties_sub_values["Imperv_N"]
+
+            item.n_perv = self.config.value("Defaults/Perv_N")
+            if item.n_perv is None:
+                item.n_perv = self.properties_sub_values["Perv_N"]
+
+            item.storage_depth_imperv = self.config.value("Defaults/Imperv_DS")
+            if item.storage_depth_imperv is None:
+                item.storage_depth_imperv = self.properties_sub_values["Imperv_DS"]
+
+            item.storage_depth_perv = self.config.value("Defaults/Perv_DS")
+            if item.storage_depth_perv is None:
+                item.storage_depth_perv = self.properties_sub_values["Perv_DS"]
+
+            item.percent_zero_impervious = self.config.value("Defaults/PctZero")
+            if item.percent_zero_impervious is None:
+                item.percent_zero_impervious = self.properties_sub_values["PctZero"]
+
             #self.apply_default_infiltration_attributes(item)
             #item.infiltration_parameters = None
             #infil_model_name = self.properties_sub_values[self.infil_model_key]

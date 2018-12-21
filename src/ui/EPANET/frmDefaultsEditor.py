@@ -367,6 +367,11 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.defaults.sync_defaults_parameter()
             pass
 
+        if self.chk4all.isChecked():
+            # take default labels and defaults from project ini file and apply to global EPANET.ini file
+            self.session.program_settings.sync()
+            pass
+
         self.close()
         pass
 

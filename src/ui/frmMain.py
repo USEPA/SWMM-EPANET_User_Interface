@@ -1214,7 +1214,15 @@ class frmMain(QMainWindow, Ui_frmMain):
                 item_type_name = 'Storage Unit'
             elif item_type_name == 'Orifice' or item_type_name == 'Weir' or item_type_name == 'Outlet':
                 item_type_name = 'Regulator'
-            prefix = unicode(self.project_settings.config.value("Labels/" + item_type_name, ""))
+            prefix = self.project_settings.config.value("Labels/" + item_type_name)
+            # if it wasn't in the ini file for this project, look for it in the global defaults
+            if prefix is None and item_type_name in self.project_settings.model_object_prefix:
+                prefix = self.project_settings.model_object_prefix[item_type_name]
+            if prefix is None and item_type_name + 's' in self.project_settings.model_object_prefix:
+                prefix = self.project_settings.model_object_prefix[item_type_name + 's']  # try the plural
+            if prefix is None:
+                prefix = ""
+            prefix = unicode(prefix)
             try:
                 increment = int(self.project_settings.config.value("Labels/ID Increment", 1))
             except:

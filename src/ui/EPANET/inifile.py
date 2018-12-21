@@ -59,8 +59,8 @@ class DefaultsEPANET(ini_setting):
         self.model = "epanet"
 
         # [Labels] label prefix
-        self.model_object_keys = ["Junction", "Reservoir", "Tank", "Pump", "Valve", "Pattern", "Curve"]
-        self.model_object_def_prefix = ["J", "R", "T", "P", "V", "Ptn", "C"]
+        self.model_object_keys = ["Junctions", "Reservoirs", "Tanks", "Pipes", "Pumps", "Valves", "Patterns", "Curves"]
+        self.model_object_def_prefix = ["J", "R", "T", "P", "U", "V", "Ptn", "C"]
 
         self.id_increment_key = "ID Increment"
         self.id_def_increment = 1
@@ -189,15 +189,29 @@ class DefaultsEPANET(ini_setting):
         """
         item_type = item.__class__.__name__
         if item_type == "Junction":
-            item.elevation = self.properties_values["Node Elevation"]
+            item.elevation = self.config.value("Defaults/Node Elevation")
+            if item.elevation is None:
+                item.elevation = self.properties_values["Node Elevation"]
         elif item_type == "Tank":
-            item.elevation = self.properties_values["Node Elevation"]
-            item.diameter = self.properties_values["Tank Diameter"]
-            item.initial_level = self.properties_values["Tank Height"]
+            item.elevation = self.config.value("Defaults/Node Elevation")
+            if item.elevation is None:
+                item.elevation = self.properties_values["Node Elevation"]
+            item.diameter = self.config.value("Defaults/Tank Diameter")
+            if item.diameter is None:
+                item.diameter = self.properties_values["Tank Diameter"]
+            item.initial_level = self.config.value("Defaults/Tank Height")
+            if item.initial_level is None:
+                item.initial_level = self.properties_values["Tank Height"]
         elif item_type == "Pipe":
-            item.length = self.properties_values["Pipe Length"]
-            item.diameter = self.properties_values["Pipe Diameter"]
-            item.roughness = self.properties_values["Pipe Roughness"]
+            item.length = self.config.value("Defaults/Pipe Length")
+            if item.length is None:
+                item.length = self.properties_values["Pipe Length"]
+            item.diameter = self.config.value("Defaults/Tank Diameter")
+            if item.diameter is None:
+                item.diameter = self.properties_values["Tank Diameter"]
+            item.roughness = self.config.value("Defaults/Pipe Roughness")
+            if item.roughness is None:
+                item.roughness = self.properties_values["Pipe Roughness"]
 
 
 

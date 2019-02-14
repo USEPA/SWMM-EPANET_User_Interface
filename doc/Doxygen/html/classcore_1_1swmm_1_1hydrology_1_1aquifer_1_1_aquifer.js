@@ -13,6 +13,7 @@ var classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer =
     [ "unsaturated_zone_moisture", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a809c5a9d74fee6a0fa9e001bfcf1b92c", null ],
     [ "upper_evaporation_fraction", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a4173a1a9fa17a75e760b5b6fc9fb1c09", null ],
     [ "upper_evaporation_pattern", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#a2bc19df2d7223f2d06e20adde9536e9c", null ],
+    [ "upper_evaporation_pattern_object", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#aefec3a0549b029bc7cc563ca95598c97", null ],
     [ "water_table_elevation", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#ac14218264ef25dd82eca69408a79eba2", null ],
     [ "wilting_point", "classcore_1_1swmm_1_1hydrology_1_1aquifer_1_1_aquifer.html#ab90130baaf2f0bd06ea35b20d0835d2b", null ]
 ];

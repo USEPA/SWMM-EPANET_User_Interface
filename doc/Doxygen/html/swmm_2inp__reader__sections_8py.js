@@ -59,7 +59,6 @@ var swmm_2inp__reader__sections_8py =
     [ "GeneralReader", "classcore_1_1swmm_1_1inp__reader__sections_1_1_general_reader.html", null ],
     [ "MapOptionsReader", "classcore_1_1swmm_1_1inp__reader__sections_1_1_map_options_reader.html", null ],
     [ "ReportReader", "classcore_1_1swmm_1_1inp__reader__sections_1_1_report_reader.html", null ],
-    [ "basestring", "swmm_2inp__reader__sections_8py.html#adb87e33abd882a850be0a30ef764ef31", null ],
     [ "bytes", "swmm_2inp__reader__sections_8py.html#a587f1f5397ac3658e633020fea22a404", null ],
     [ "str", "swmm_2inp__reader__sections_8py.html#a1535f99214f8e9a781d600742cba1166", null ],
     [ "unicode", "swmm_2inp__reader__sections_8py.html#add5eb69af59a7f1556afe9f329235c9c", null ]

@@ -3,6 +3,7 @@ var classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader =
     [ "__init__", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#af00ef34a76a87f745b9b8c49093671c5", null ],
     [ "finished_reading", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#afdd8a8813c1767d04c77e19957eebeac", null ],
     [ "read_section", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#ad8c90bca7382f5318ac2c8fd0848aabe", null ],
+    [ "defer_calibrations", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#a9f906ff4596ece51cfbbed232a90cb79", null ],
     [ "defer_coordinates", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#a60d945535dfed40cebabc59cfc5c2f26", null ],
     [ "defer_emitters", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#a34bf5a77eaec02796c4d78bf2ed88237", null ],
     [ "defer_mixing", "classcore_1_1epanet_1_1inp__reader__project_1_1_project_reader.html#a0a7c21c66734cdb4315cba9d386a0afd", null ],

@@ -3,6 +3,8 @@ var classcore_1_1epanet_1_1epanet__project_1_1_epanet_project =
     [ "__init__", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#a5869be301c0795535c2dab10eb2d8919", null ],
     [ "links_groups", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#a6ca303a5877d0dfe4506ecab76d1d1b3", null ],
     [ "nodes_groups", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#a46f86bc97fd2b9c5c5c3a785a6bf5f38", null ],
+    [ "refresh_pattern_object_references", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#a13876a21164e8fd9460a2c652f18bd93", null ],
+    [ "set_pattern_object_references", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#aa40bf60611b0c2531b603e597c442375", null ],
     [ "backdrop", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#a466f69b56349b0efd407d4196c2f5177", null ],
     [ "calibrations", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#acf4cc72b7b670319d4be0acfb35243e1", null ],
     [ "controls", "classcore_1_1epanet_1_1epanet__project_1_1_epanet_project.html#ad9193fe9058c7b47500a3386b6f1d080", null ],

@@ -161,8 +161,8 @@ def match_two_lists(t_fields, a_fields, ignore_trailing_0):
             rest_fields = a_fields[len(t_fields):]
             for r in rest_fields:
                 try:
-                    if float(r) != 0.0:
-                        return False  # not zero
+                    if float(r) != 0.0 and float(r) != 1.0:
+                        return False  # not zero and not one (typical defaults)
                 except:
                     return False  # not a number
     else:

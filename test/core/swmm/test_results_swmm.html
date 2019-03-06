@@ -189,9 +189,9 @@ function showOutput(id, name) {
 
 <div class='heading'>
 <h1>SWMM Core Test Report</h1>
-<p class='attribute'><strong>Start Time:</strong> 2018-09-11 09:51:52</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.070000</p>
-<p class='attribute'><strong>Status:</strong> Pass 131 Failure 3 Error 1</p>
+<p class='attribute'><strong>Start Time:</strong> 2019-03-06 14:44:13</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.056023</p>
+<p class='attribute'><strong>Status:</strong> Pass 135</p>
 
 <p class='description'>Unit test results</p>
 </div>
@@ -788,43 +788,18 @@ function showOutput(id, name) {
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='failClass'>
+<tr class='passClass'>
     <td>test.core.swmm.test_xsections.SimpleCrossSectionTest: Test XSECTIONS section</td>
     <td>7</td>
-    <td>4</td>
-    <td>3</td>
+    <td>7</td>
+    <td>0</td>
     <td>0</td>
     <td><a href="javascript:showClassDetail('c24',7)">Detail</a></td>
 </tr>
 
-<tr id='ft24.1' class='none'>
-    <td class='failCase'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.1')" >
-        fail</a>
-
-    <div id='div_ft24.1' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.1').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft24.1: Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 24, in test_geom
-    keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
-AssertionError: False is not true : 
-Set:W1   RECT_OPEN    2.83             1.75       0          0
-Get:W1              	RECT_OPEN   	2.83            	1.75      	0         	0         	1         	          
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt24.1' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_geom: Predefined shapes with Geoms only</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt24.2' class='hiddenRow'>
@@ -837,34 +812,9 @@ Get:W1              	RECT_OPEN   	2.83            	1.75      	0         	0      
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft24.4' class='none'>
-    <td class='failCase'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.4')" >
-        fail</a>
-
-    <div id='div_ft24.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft24.4: Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 49, in test_custom_curve
-    keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
-AssertionError: False is not true : 
-Set:W1   CUSTOM    1.0  Curve1
-Get:W1              	CUSTOM      	1.0             	Curve1    	1         
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt24.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_custom_curve: CUSTOM with Curve only</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr id='pt24.5' class='hiddenRow'>
@@ -877,83 +827,9 @@ Get:W1              	CUSTOM      	1.0             	Curve1    	1
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft24.7' class='none'>
-    <td class='failCase'><div class='testcase'>test_xsections_section: Test XSECTIONS: example 3</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft24.7')" >
-        fail</a>
-
-    <div id='div_ft24.7' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft24.7').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft24.7: Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\test\core\swmm\test_xsections.py", line 102, in test_xsections_section
-    keywords_=None, skipped_keywords=None, ignore_trailing_0=True), msg)
-AssertionError: False is not true : 
-Set:
-[XSECTIONS]
-;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
-;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
-C1               TRAPEZOIDAL  3                5          5          5          1
-C2               TRAPEZOIDAL  1                0          0.0001     25         1
-C3               CIRCULAR     2.25             0          0          0          1
-C4               TRAPEZOIDAL  3                5          5          5          1
-C5               TRAPEZOIDAL  3                5          5          5          1
-C6               TRAPEZOIDAL  3                5          5          5          1
-C7               CIRCULAR     3.5              0          0          0          1
-C8               TRAPEZOIDAL  3                5          5          5          1
-C9               TRAPEZOIDAL  3                5          5          5          1
-C10              TRAPEZOIDAL  3                5          5          5          1
-C11              CIRCULAR     4.75             0          0          0          1
-C_out            CIRCULAR     4.75             0          0          0          1
-Or1              RECT_CLOSED  0.3              0.25       0          0
-Or2              RECT_CLOSED  0.5              2          0          0
-Or3              RECT_CLOSED  0.25             0.35       0          0
-W1               RECT_OPEN    2.83             1.75       0          0
-;;Link          	Shape       	Geom1           	Geom2     	Geom3     	Geom4     	Barrels   	Culvert
-;;--------------	------------	----------------	----------	----------	----------	----------	----------
-Culvert         	CIRCULAR    	3               	0         	0         	0         	2         	4
-Channel         	TRAPEZOIDAL 	9               	10        	2         	2         	1
-Roadway         	RECT_OPEN   	50              	200       	0         	0
-
-Get:
-[XSECTIONS]
-;;Link           Shape        Geom1            Geom2      Geom3      Geom4      Barrels
-;;-------------- ------------ ---------------- ---------- ---------- ---------- ----------
-C1              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C2              	TRAPEZOIDAL 	1               	0         	0.0001    	25        	1         	          
-C3              	CIRCULAR    	2.25            	0         	0         	0         	1         	          
-C4              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C5              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C6              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C7              	CIRCULAR    	3.5             	0         	0         	0         	1         	          
-C8              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C9              	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C10             	TRAPEZOIDAL 	3               	5         	5         	5         	1         	          
-C11             	CIRCULAR    	4.75            	0         	0         	0         	1         	          
-C_out           	CIRCULAR    	4.75            	0         	0         	0         	1         	          
-Or1             	RECT_CLOSED 	0.3             	0.25      	0         	0         	1         	          
-Or2             	RECT_CLOSED 	0.5             	2         	0         	0         	1         	          
-Or3             	RECT_CLOSED 	0.25            	0.35      	0         	0         	1         	          
-W1              	RECT_OPEN   	2.83            	1.75      	0         	0         	1         	          
-;;Link          	Shape       	Geom1           	Geom2     	Geom3     	Geom4     	Barrels   	Culvert
-;;--------------	------------	----------------	----------	----------	----------	----------	----------
-Culvert         	CIRCULAR    	3               	0         	0         	0         	2         	4         
-Channel         	TRAPEZOIDAL 	9               	10        	2         	2         	1         	          
-Roadway         	RECT_OPEN   	50              	200       	0         	0         	1         	          
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt24.7' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_xsections_section: Test XSECTIONS: example 3</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1297,12 +1173,12 @@ Roadway         	RECT_OPEN   	50              	200       	0         	0         	
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>test.core.swmm.test_timeseries.SimpleTimeSeriesTest: Test TIMESERIES section</td>
     <td>4</td>
-    <td>3</td>
+    <td>4</td>
     <td>0</td>
-    <td>1</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c39',4)">Detail</a></td>
 </tr>
 
@@ -1321,48 +1197,9 @@ Roadway         	RECT_OPEN   	50              	200       	0         	0         	
     <td colspan='5' align='center'>pass</td>
 </tr>
 
-<tr id='ft39.4' class='none'>
-    <td class='errorCase'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
-    <td colspan='5' align='center'>
-
-    <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft39.4')" >
-        error</a>
-
-    <div id='div_ft39.4' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft39.4').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        
-ft39.4: Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\src\core\indexed_list.py", line 53, in __getitem__
-    return self._index[ind]
-KeyError: 3
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\src\core\indexed_list.py", line 58, in __getitem__
-    return list.__getitem__(self, ind)
-IndexError: list index out of range
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\test\core\swmm\test_timeseries.py", line 75, in test_timeseries_section
-    section_from_text.value[3].times == ['0', '1.25', '2:30', '3.0', '4.5', '32:10', '34.0', '35.33', '48.67', '50']
-  File "C:\dev\epa\SWMM-EPANET_User_Interface\src\core\indexed_list.py", line 60, in __getitem__
-    raise Exception("Could not find key/index '" + str(ind) + "' in IndexedList: " + str(ex))
-Exception: Could not find key/index '3' in IndexedList: list index out of range
-
-
-        </pre>
-    </div>
-    <!--css div popup end-->
-
-    </td>
+<tr id='pt39.4' class='hiddenRow'>
+    <td class='none'><div class='testcase'>test_timeseries_section: Test Example in SWMM 5.1 manual Page335</div></td>
+    <td colspan='5' align='center'>pass</td>
 </tr>
 
 <tr class='passClass'>
@@ -1431,9 +1268,9 @@ Exception: Could not find key/index '3' in IndexedList: list index out of range
 <tr id='total_row'>
     <td>Total</td>
     <td>135</td>
-    <td>131</td>
-    <td>3</td>
-    <td>1</td>
+    <td>135</td>
+    <td>0</td>
+    <td>0</td>
     <td>&nbsp;</td>
 </tr>
 </table>

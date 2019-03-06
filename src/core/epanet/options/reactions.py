@@ -22,13 +22,13 @@ class Reactions(Section):
         Section.__init__(self)
 
         ## set the order of reactions occurring in the bulk fluid
-        self.order_bulk = 1		    # int
+        self.order_bulk = 1.0		    # real
 
         ## set the order of reactions occurring in the pipe wall
-        self.order_wall = 1		    # int
+        self.order_wall = 1.0	        # real
 
         ## set the order of reactions occurring in the tanks
-        self.order_tank = 1	        # int
+        self.order_tank = 1.0	        # real
 
         ## set a global value for all bulk reaction coefficients
         self.global_bulk = 0.0		    # real

@@ -35,6 +35,18 @@ class frmTimesOptions(QMainWindow, Ui_frmTimesOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.times
+        if section.duration != self.txtTotalDuration.text() or \
+            section.hydraulic_timestep != self.txtHydraulic.text() or \
+            section.quality_timestep != self.txtQuality.text() or \
+            section.rule_timestep != self.txtRule.text() or \
+            section.pattern_timestep != self.txtPattern.text() or \
+            section.pattern_start != self.txtPatternTime.text() or \
+            section.report_timestep != self.txtReporting.text() or \
+            section.report_start != self.txtReportingTime.text() or \
+            section.start_clocktime != self.txtClockStart.text() or \
+            section.statistic != StatisticOptions[self.cboStatistic.currentText()]:
+            self._main_form.mark_project_as_unsaved()
+
         section.duration = self.txtTotalDuration.text()
         section.hydraulic_timestep = self.txtHydraulic.text()
         section.quality_timestep = self.txtQuality.text()

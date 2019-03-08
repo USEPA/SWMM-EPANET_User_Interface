@@ -28,6 +28,14 @@ class frmReactionsOptions(QMainWindow, Ui_frmReactionsOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("REACTIONS")
+        if str(section.order_bulk) != self.txtBulkOrder.text() or \
+            str(section.order_wall) != self.txtWallOrder.text() or \
+            str(section.order_tank) != self.txtTankOrder.text() or \
+            str(section.global_bulk) != self.txtGlobalBulk.text() or \
+            str(section.global_wall) != self.txtGlobalWall.text() or \
+            str(section.limiting_potential) != self.txtLimiting.text() or \
+            str(section.roughness_correlation) != self.txtCorrelation.text():
+            self._main_form.mark_project_as_unsaved()
         section.order_bulk = self.txtBulkOrder.text()
         section.order_wall = self.txtWallOrder.text()
         section.order_tank = self.txtTankOrder.text()

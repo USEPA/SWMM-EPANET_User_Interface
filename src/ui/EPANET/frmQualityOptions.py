@@ -57,6 +57,7 @@ class frmQualityOptions(QMainWindow, Ui_frmQualityOptions):
             ret = msgbox.exec_()
             return
         quality_options = self._main_form.project.options.quality
+        saved_quality = quality_options.quality
         if self.rbnNone.isChecked():
             quality_options.quality = QualityAnalysisType.NONE
         if self.rbnChemical.isChecked():
@@ -65,6 +66,14 @@ class frmQualityOptions(QMainWindow, Ui_frmQualityOptions):
             quality_options.quality = QualityAnalysisType.AGE
         if self.rbnTrace.isChecked():
             quality_options.quality = QualityAnalysisType.TRACE
+        if saved_quality != quality_options.quality or \
+            quality_options.chemical_name != self.txtChemicalName.text() or \
+            quality_options.mass_units != self.txtMassUnits.text() or \
+            str(quality_options.diffusivity) != self.txtDiffusivity.text() or \
+            str(quality_options.tolerance) != self.txtTolerance.text() or \
+            quality_options.trace_node != self.txtTraceNode.text():
+            self._main_form.mark_project_as_unsaved()
+
         quality_options.chemical_name = self.txtChemicalName.text()
         quality_options.mass_units = self.txtMassUnits.text()
         quality_options.diffusivity = self.txtDiffusivity.text()

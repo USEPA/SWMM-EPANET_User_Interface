@@ -328,6 +328,13 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for duplicate curve name
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
+        saved_curve_type = self.editing_item.curve_type
+        saved_comment = self.editing_item.comment
+        saved_description = self.editing_item.description
+        saved_name = self.editing_item.name
+        saved_value = self.editing_item.value
+        saved_xy = self.editing_item.curve_xy
+
         self.editing_item.name = self.txtCurveName.text()
         self.editing_item.description = self.txtDescription.text()
         self.editing_item.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
@@ -338,8 +345,13 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 y = self.tblMult.item(row, 1).text()
                 if len(x) > 0 and len(y) > 0:
                     self.editing_item.curve_xy.append((x, y))
+        if self.editing_item.curve_type != saved_curve_type or self.editing_item.comment != saved_comment or \
+            self.editing_item.description != saved_description or self.editing_item.name != saved_name or \
+            self.editing_item.value != saved_value or self.editing_item.curve_xy != saved_xy:
+            self._main_form.mark_project_as_unsaved()
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             # TODO: self._main_form.edited_?

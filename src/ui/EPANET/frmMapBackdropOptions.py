@@ -33,6 +33,12 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
 
     def cmdOK_Clicked(self):
         backdrop_options = self._main_form.project.backdrop
+        if backdrop_options.file != self.txtBackdropFile.text() or \
+            backdrop_options.offset != (self.txtBackdropX.text(), self.txtBackdropY.text()) or \
+            backdrop_options.dimensions != [self.txtLLX.text(), self.txtLLY.text(), self.txtURX.text(), self.txtURY.text()] or \
+            backdrop_options.units != core.epanet.options.backdrop.BackdropUnits[self.cboMapUnits.currentText()] or \
+            self._main_form.project.options.map != self.txtMapFile.text():
+            self._main_form.mark_project_as_unsaved()
         backdrop_options.file = self.txtBackdropFile.text()
         backdrop_options.offset = (self.txtBackdropX.text(), self.txtBackdropY.text())
         backdrop_options.dimensions = (self.txtLLX.text(), self.txtLLY.text(), self.txtURX.text(), self.txtURY.text())

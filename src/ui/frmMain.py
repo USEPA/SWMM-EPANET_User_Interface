@@ -2011,7 +2011,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         pass
 
     def confirm_discard_project(self):
-        if not self.undo_stack.isClean():
+        if not self.undo_stack.isClean() or self.project.file_name.endswith('*'):
             msg = QMessageBox()
             msg.setText("Discard current project?")
             msg.setWindowTitle(self.model)
@@ -2022,6 +2022,12 @@ class frmMain(QMainWindow, Ui_frmMain):
                 return True
             return False
         return True
+
+    def mark_project_as_unsaved(self):
+        if not self.project.file_name.endswith('*'):
+            self.project.file_name = self.project.file_name + "*"
+            path_only, file_only = os.path.split(self.project.file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
 
     def new_project(self):
         self.open_project_quiet(None)
@@ -2137,6 +2143,9 @@ class frmMain(QMainWindow, Ui_frmMain):
     def save_project(self, file_name=None):
         if not file_name:
             file_name = self.project.file_name
+        if file_name.endswith('*'):
+            file_name = file_name[-1]
+            self.project.file_name = file_name
         if self.model == "SWMM":
             self.set_project_map_extent()
         project_writer = self.project_writer_type()

@@ -46,8 +46,21 @@ class frmSourcesQuality(QMainWindow, Ui_frmSourcesQuality):
             new_item.name = self.node_name
             section.value.append(new_item)
             sources_list = section.value[0:]
+            self._main_form.session.mark_project_as_unsaved()
         for source in sources_list:
             if source.name == self.node_name:
+                if source.baseline_strength != self.txtQuality.text() or \
+                    source.pattern_name != self.txtPattern.text():
+                    self._main_form.session.mark_project_as_unsaved()
+                if self.rbnConcentration.isChecked and source.source_type != SourceType.CONCEN:
+                    self._main_form.session.mark_project_as_unsaved()
+                elif self.rbnFlow.isChecked() and source.source_type != SourceType.FLOWPACED:
+                    self._main_form.session.mark_project_as_unsaved()
+                elif self.rbnMass.isChecked() and source.source_type != SourceType.MASS:
+                    self._main_form.session.mark_project_as_unsaved()
+                elif self.rbnSetPoint.isChecked() and source.source_type != SourceType.SETPOINT:
+                    self._main_form.session.mark_project_as_unsaved()
+
                 source.baseline_strength = self.txtQuality.text()
                 source.pattern_name = self.txtPattern.text()
                 if self.rbnConcentration.isChecked():

@@ -148,6 +148,20 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.report
+        new_energy = True
+        if self.cboEnergy.currentText() == "NO":
+            new_energy = False
+        new_summary = True
+        if self.cboSummary.currentText() == "NO":
+            new_summary = False
+
+        if section.pagesize != self.txtPageSize.text() or \
+            section.file != self.txtReportFileName.text() or \
+            section.status != core.epanet.options.report.StatusWrite[self.cboStatus.currentText()] or \
+            section.summary != new_summary or \
+            section.energy != new_energy:
+            self._main_form.mark_project_as_unsaved()
+
         section.pagesize = self.txtPageSize.text()
         section.file = self.txtReportFileName.text()
         section.status = core.epanet.options.report.StatusWrite[self.cboStatus.currentText()]

@@ -592,8 +592,11 @@ class frmMainEPANET(frmMain):
 
     def cbFlowUnits_currentIndexChanged(self):
         import core.epanet.options.hydraulics
+        orig_flow_units = self.project.options.hydraulics.flow_units
         self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
+        if self.project.options.hydraulics.flow_units != orig_flow_units:
+            self.mark_project_as_unsaved()
 
     def report_status(self):
         print ("report_status")

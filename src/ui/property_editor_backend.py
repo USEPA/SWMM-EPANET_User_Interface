@@ -92,6 +92,7 @@ class PropertyEditorBackend:
                                         if new_value != old_value:
                                             # TODO: make undoable edit?
                                             setattr(edit_this, meta_item.attribute, new_value)
+                                            self._main_form.mark_project_as_unsaved()
                                             if meta_item.attribute == "name":
                                                 edited_names.append((old_value, edit_this))
                                     except Exception as ex:

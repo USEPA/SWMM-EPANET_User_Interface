@@ -30,6 +30,8 @@ class frmControls(QMainWindow, Ui_frmControls):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section(self.control_type)
+        if str(self.txtControls.toPlainText()) != section.value:
+            self._main_form.mark_project_as_unsaved()
         section.value = str(self.txtControls.toPlainText())
         self.close()
 

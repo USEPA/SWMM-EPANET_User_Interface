@@ -25,6 +25,9 @@ class frmEnergyOptions(QMainWindow, Ui_frmEnergyOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.energy
+        if section.global_price != self.txtGlobalPrice.text() or section.global_pattern != self.txtGlobalPattern.text() or \
+            section.global_efficiency != self.txtGlobalEfficiency.text() or section.demand_charge != self.txtDemandCharge.text():
+            self._main_form.mark_project_as_unsaved()
         section.global_price = self.txtGlobalPrice.text()
         section.global_pattern = self.txtGlobalPattern.text()
         section.global_efficiency = self.txtGlobalEfficiency.text()

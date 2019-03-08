@@ -56,9 +56,28 @@ class frmHydraulicsOptions(QMainWindow, Ui_frmHydraulicsOptions):
 
     def cmdOK_Clicked(self):
         hydraulics_options = self._main_form.project.options.hydraulics
+
+        if hydraulics_options.flow_units != core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()] :
+            self._main_form.mark_project_as_unsaved()
+
         hydraulics_options.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cboFlow.currentText()]
         ui.convenience.set_combo(self._main_form.cbFlowUnits, 'Flow Units: ' + hydraulics_options.flow_units.name)
         head_loss_underscore = self.cboHeadloss.currentText().replace('-', '_')
+
+        if hydraulics_options.head_loss != core.epanet.options.hydraulics.HeadLoss[head_loss_underscore] or \
+            hydraulics_options.accuracy != float(self.txtAccuracy.text()) or \
+            hydraulics_options.check_frequency != int(self.txtCheckFrequency.text()) or \
+            hydraulics_options.damp_limit != float(self.txtDampLimit.text()) or \
+            hydraulics_options.default_pattern != self.txtDefaultPattern.text() or \
+            hydraulics_options.demand_multiplier != float(self.txtDemandMultiplier.text()) or \
+            hydraulics_options.emitter_exponent != float(self.txtEmitterExponent.text()) or \
+            hydraulics_options.max_check != int(self.txtMaxCheck.text()) or \
+            hydraulics_options.maximum_trials != int(self.txtMaximumTrials.text()) or \
+            hydraulics_options.viscosity != float(self.txtRelativeViscosity.text()) or \
+            hydraulics_options.specific_gravity != float(self.txtSpecificGravity.text() or \
+            hydraulics_options.unbalanced_continue != self.txtContinueN.text()):
+            self._main_form.mark_project_as_unsaved()
+
         hydraulics_options.head_loss = core.epanet.options.hydraulics.HeadLoss[head_loss_underscore]
         hydraulics_options.accuracy = float(self.txtAccuracy.text())
         hydraulics_options.check_frequency = int(self.txtCheckFrequency.text())
@@ -70,6 +89,8 @@ class frmHydraulicsOptions(QMainWindow, Ui_frmHydraulicsOptions):
         hydraulics_options.maximum_trials = int(self.txtMaximumTrials.text())
         hydraulics_options.viscosity = float(self.txtRelativeViscosity.text())
         hydraulics_options.specific_gravity = float(self.txtSpecificGravity.text())
+
+        orig_unbalanced = hydraulics_options.unbalanced
         if self.rbnStop.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.STOP
         if self.rbnContinue.isChecked():
@@ -78,6 +99,9 @@ class frmHydraulicsOptions(QMainWindow, Ui_frmHydraulicsOptions):
         elif self.rbnContinueN.isChecked():
             hydraulics_options.unbalanced = core.epanet.options.hydraulics.Unbalanced.CONTINUE
             hydraulics_options.unbalanced_continue = self.txtContinueN.text()
+
+        if hydraulics_options.unbalanced != orig_unbalanced:
+            self._main_form.mark_project_as_unsaved()
 
         if self.config:
             self.sync_hydraulic_settings()

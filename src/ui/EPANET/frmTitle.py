@@ -20,6 +20,9 @@ class frmTitle(QMainWindow, Ui_frmTitle):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.title
+        if section.title != self.txtTitle.toPlainText():
+            self._main_form.mark_project_as_unsaved()
+
         section.title = self.txtTitle.toPlainText()
         self.close()
 

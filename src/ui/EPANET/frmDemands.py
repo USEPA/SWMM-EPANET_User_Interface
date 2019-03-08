@@ -74,8 +74,12 @@ class frmDemands(QMainWindow, Ui_frmDemands):
                         if self.tblDemands.item(row,0):
                             x = self.tblDemands.item(row,0).text()
                             if len(x) > 0:
+                                if junction.base_demand_flow != self.tblDemands.item(row,0).text():
+                                    self._main_form.session.mark_project_as_unsaved()
                                 junction.base_demand_flow = self.tblDemands.item(row,0).text()
-                                junction.demand_pattern = self.tblDemands.item(row,1).text()
+                                if junction.demand_pattern_name != self.tblDemands.item(row,1).text():
+                                    self._main_form.session.mark_project_as_unsaved()
+                                junction.demand_pattern_name = self.tblDemands.item(row,1).text()
         else:
             # write these as demands
             section = self._main_form.project.demands
@@ -84,6 +88,7 @@ class frmDemands(QMainWindow, Ui_frmDemands):
             for demand in section.value[0:]:
                 if demand.junction_name == self.node_name:
                     section.value.remove(demand)
+                    self._main_form.session.mark_project_as_unsaved()
             # add demands
             for row in range(self.tblDemands.rowCount()):
                 if self.tblDemands.item(row,0):
@@ -97,6 +102,7 @@ class frmDemands(QMainWindow, Ui_frmDemands):
                         if self.tblDemands.item(row,2):
                             new_demand.category = ';' + self.tblDemands.item(row,2).text()
                         section.value.append(new_demand)
+                        self._main_form.session.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

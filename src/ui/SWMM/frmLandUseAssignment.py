@@ -57,9 +57,12 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     # put this back in place
                     coverage_found = True
                     if self.tblGeneric.item(land_use_count,0) and len(self.tblGeneric.item(land_use_count,0).text()) > 0:
+                        if coverage.percent_subcatchment_area != self.tblGeneric.item(land_use_count,0).text():
+                            self._main_form.mark_project_as_unsaved()
                         coverage.percent_subcatchment_area = self.tblGeneric.item(land_use_count,0).text()
                     else:
                         section.value.remove(coverage)
+                        self._main_form.mark_project_as_unsaved()
             if not coverage_found:
                 # add new record
                 if self.tblGeneric.item(land_use_count,0):
@@ -70,6 +73,7 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     if section.value == '':
                         section.value = []
                     section.value.append(value1)
+                    self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

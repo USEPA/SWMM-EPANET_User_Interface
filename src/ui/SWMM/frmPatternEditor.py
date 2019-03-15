@@ -66,6 +66,12 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
                                           self.editing_item.name +
                                           " will be replaced with " + self.txtPatternID.text(),
                                           QMessageBox.Ok)
+            self._main_form.mark_project_as_unsaved()
+
+        orig_name = self.editing_item.name
+        orig_description = self.editing_item.description
+        orig_pattern_type = self.editing_item.pattern_type
+        orig_multipliers = self.editing_item.multipliers
 
         self.editing_item.name = self.txtPatternID.text()
         self.editing_item.description = self.txtDescription.text()
@@ -76,8 +82,16 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
                 x = self.tblMult.item(row,0).text()
                 if len(x) > 0:
                     self.editing_item.multipliers.append(x)
+
+        if orig_name != self.editing_item.name or \
+            orig_description != self.editing_item.description or \
+            orig_pattern_type != self.editing_item.pattern_type or \
+            orig_multipliers != self.editing_item.multipliers:
+            self._main_form.mark_project_as_unsaved()
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             if len(edited_names) > 0:

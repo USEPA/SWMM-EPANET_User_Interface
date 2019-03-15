@@ -95,6 +95,38 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
             self.txtRemoval7.setText(pack.subcatchment_transfer)
 
     def cmdOK_Clicked(self):
+
+        if self.editing_item.name != self.txtSnow.text() or \
+            self.editing_item.plowable_minimum_melt_coefficient != self.tblPack.item(0,0).text() or \
+            self.editing_item.plowable_maximum_melt_coefficient != self.tblPack.item(1,0).text() or \
+            self.editing_item.plowable_base_temperature != self.tblPack.item(2,0).text() or \
+            self.editing_item.plowable_fraction_free_water_capacity != self.tblPack.item(3,0).text() or \
+            self.editing_item.plowable_initial_snow_depth != self.tblPack.item(4,0).text() or \
+            self.editing_item.plowable_initial_free_water != self.tblPack.item(5,0).text() or \
+            self.editing_item.impervious_minimum_melt_coefficient != self.tblPack.item(0,1).text() or \
+            self.editing_item.impervious_maximum_melt_coefficient != self.tblPack.item(1,1).text() or \
+            self.editing_item.impervious_base_temperature != self.tblPack.item(2,1).text() or \
+            self.editing_item.impervious_fraction_free_water_capacity != self.tblPack.item(3,1).text() or \
+            self.editing_item.impervious_initial_snow_depth != self.tblPack.item(4,1).text() or \
+            self.editing_item.impervious_initial_free_water != self.tblPack.item(5,1).text() or \
+            self.editing_item.impervious_depth_100_cover != self.tblPack.item(6,1).text() or \
+            self.editing_item.pervious_minimum_melt_coefficient != self.tblPack.item(0,2).text() or \
+            self.editing_item.pervious_maximum_melt_coefficient != self.tblPack.item(1,2).text() or \
+            self.editing_item.pervious_base_temperature != self.tblPack.item(2,2).text() or \
+            self.editing_item.pervious_fraction_free_water_capacity != self.tblPack.item(3,2).text() or \
+            self.editing_item.pervious_initial_snow_depth != self.tblPack.item(4,2).text() or \
+            self.editing_item.pervious_initial_free_water != self.tblPack.item(5,2).text() or \
+            self.editing_item.pervious_depth_100_cover != self.tblPack.item(6,2).text() or \
+            self.editing_item.plowable_fraction_impervious_area != self.txtFraction.text() or \
+            self.editing_item.depth_snow_removal_begins != self.txtRemoval1.text() or \
+            self.editing_item.fraction_transferred_out_watershed != self.txtRemoval2.text() or \
+            self.editing_item.fraction_transferred_impervious_area != self.txtRemoval3.text() or \
+            self.editing_item.fraction_transferred_pervious_area != self.txtRemoval4.text() or \
+            self.editing_item.fraction_converted_immediate_melt != self.txtRemoval5.text() or \
+            self.editing_item.fraction_moved_another_subcatchment != self.txtRemoval6.text() or \
+            self.editing_item.subcatchment_transfer != self.txtRemoval7.text():
+            self._main_form.mark_project_as_unsaved()
+
         self.editing_item.name = self.txtSnow.text()
 
         self.editing_item.plowable_minimum_melt_coefficient = self.tblPack.item(0,0).text()
@@ -132,6 +164,7 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
 
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
         self.close()

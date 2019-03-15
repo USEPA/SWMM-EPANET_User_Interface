@@ -459,8 +459,11 @@ class frmMainSWMM(frmMain):
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
         old_units = self.project.metric
+        orig_flow_units = self.project.options.flow_units
         self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.flow_units in core.swmm.options.general.flow_units_metric
+        if self.project.options.flow_units != orig_flow_units:
+            self.mark_project_as_unsaved()
         # change a few default parameters
         if self.project.metric and not old_units:
             # we just changed from english to metric
@@ -481,7 +484,10 @@ class frmMainSWMM(frmMain):
 
     def cbOffset_currentIndexChanged(self):
         import core.swmm.options
+        orig_link_offsets = self.project.options.link_offsets
         self.project.options.link_offsets = core.swmm.options.general.LinkOffsets[self.cbOffset.currentText()[9:].upper()]
+        if self.project.options.link_offsets != orig_link_offsets:
+            self.mark_project_as_unsaved()
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False

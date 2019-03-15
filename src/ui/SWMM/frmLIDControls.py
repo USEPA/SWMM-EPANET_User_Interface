@@ -75,18 +75,30 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
                 lid_count += 1
                 if lid_count <= row_count:
                     # put this lid back in this spot
-                    value.control_name = self.tblControls.item(lid_count-1,0).text()
-                    value.percent_impervious_area_treated = self.tblControls.item(lid_count-1,3).text()
-                    value.detailed_report_file = self.tblControls.item(lid_count-1,4).text()
-                    value.number_replicate_units = self.tblControls.item(lid_count-1,5).text()
-                    value.area_each_unit = self.tblControls.item(lid_count-1,6).text()
-                    value.top_width_overland_flow_surface = self.tblControls.item(lid_count-1,7).text()
-                    value.percent_initially_saturated = self.tblControls.item(lid_count-1,8).text()
-                    value.send_outflow_pervious_area = self.tblControls.item(lid_count-1,9).text()
-                    value.subcatchment_drains_to = self.tblControls.item(lid_count-1,10).text()
+                    if value.control_name != self.tblControls.item(lid_count-1,0).text() or \
+                        value.percent_impervious_area_treated != self.tblControls.item(lid_count-1,3).text() or \
+                        value.detailed_report_file != self.tblControls.item(lid_count-1,4).text() or \
+                        value.number_replicate_units != self.tblControls.item(lid_count-1,5).text() or \
+                        value.area_each_unit != self.tblControls.item(lid_count-1,6).text() or \
+                        value.top_width_overland_flow_surface != self.tblControls.item(lid_count-1,7).text() or \
+                        value.percent_initially_saturated != self.tblControls.item(lid_count-1,8).text() or \
+                        value.send_outflow_pervious_area != self.tblControls.item(lid_count-1,9).text() or \
+                        value.subcatchment_drains_to != self.tblControls.item(lid_count-1,10).text():
+                        self._main_form.mark_project_as_unsaved()
+
+                    value.control_name = self.tblControls.item(lid_count - 1, 0).text()
+                    value.percent_impervious_area_treated = self.tblControls.item(lid_count - 1, 3).text()
+                    value.detailed_report_file = self.tblControls.item(lid_count - 1, 4).text()
+                    value.number_replicate_units = self.tblControls.item(lid_count - 1, 5).text()
+                    value.area_each_unit = self.tblControls.item(lid_count - 1, 6).text()
+                    value.top_width_overland_flow_surface = self.tblControls.item(lid_count - 1, 7).text()
+                    value.percent_initially_saturated = self.tblControls.item(lid_count - 1, 8).text()
+                    value.send_outflow_pervious_area = self.tblControls.item(lid_count - 1, 9).text()
+                    value.subcatchment_drains_to = self.tblControls.item(lid_count - 1, 10).text()
                 if lid_count > row_count:
                     # we removed some rows, remove from the lid list
                     section.value.remove(value)
+                    self._main_form.mark_project_as_unsaved()
         if row_count > lid_count:
             # we added some rows, need to add to the lid list
             for row in range(self.tblControls.rowCount()):
@@ -103,6 +115,7 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
                     new_lid.send_outflow_pervious_area = self.tblControls.item(row,9).text()
                     new_lid.subcatchment_drains_to = self.tblControls.item(row,10).text()
                     section.value.append(new_lid)
+            self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -73,6 +73,10 @@ class frmSeepage(frmGenericPropertyEditor):
             if storage_node.name == self.node_name:
                 # put this back in place
                 node_found = True
+                if storage_node.seepage_suction_head != self.tblGeneric.item(0, 0).text() or \
+                    storage_node.seepage_hydraulic_conductivity != self.tblGeneric.item(1, 0).text() or \
+                    storage_node.seepage_initial_moisture_deficit != self.tblGeneric.item(2, 0).text():
+                    self._main_form.mark_project_as_unsaved()
                 storage_node.seepage_suction_head = self.tblGeneric.item(0,0).text()
                 storage_node.seepage_hydraulic_conductivity = self.tblGeneric.item(1,0).text()
                 storage_node.seepage_initial_moisture_deficit = self.tblGeneric.item(2,0).text()
@@ -84,6 +88,7 @@ class frmSeepage(frmGenericPropertyEditor):
             value1.seepage_hydraulic_conductivity = self.tblGeneric.item(1, 0).text()
             value1.seepage_initial_moisture_deficit = self.tblGeneric.item(2, 0).text()
             self.section.value.append(value1)
+            self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -114,6 +114,9 @@ class frmConduits(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             for value in self.project.xsections.value:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
+                    if value.geometry1 != str(self.tblGeneric.item(6, column).text()) or \
+                    value.culvert_code != str(self.tblGeneric.item(18, column).text()):
+                        self._main_form.mark_project_as_unsaved()
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
                     value.culvert_code = str(self.tblGeneric.item(18, column).text())
         self.close()

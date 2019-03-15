@@ -22,6 +22,8 @@ class frmControls(QMainWindow, Ui_frmControls):
         self.txtControls.setPlainText(str(project.controls.value))
 
     def cmdOK_Clicked(self):
+        if str(self.txtControls.toPlainText()) != self._main_form.project.controls.value:
+            self._main_form.mark_project_as_unsaved()
         self._main_form.project.controls.value = str(self.txtControls.toPlainText())
         self.close()
 

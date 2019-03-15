@@ -86,7 +86,7 @@ class PropertyEditorBackend:
                                     widget = self.table.item(row, column)
                                     if widget:
                                         new_value = widget.text()
-                                if new_value is not None:
+                                if new_value is not None and new_value != 'None':
                                     try:
                                         old_value = str(getattr(edit_this, meta_item.attribute))
                                         if new_value != old_value:

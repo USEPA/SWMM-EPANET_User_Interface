@@ -101,7 +101,12 @@ class frmWeirs(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             for value in self.project.xsections.value:
                 if value.link == str(self.tblGeneric.item(0, column).text()):
-                    Type =self.tblGeneric.cellWidget(5, 0).currentText()
+                    orig_shape = value.shape
+                    orig_geometry1 = value.geometry1
+                    orig_geometry2 = value.geometry2
+                    orig_geometry3 = value.geometry3
+
+                    Type = self.tblGeneric.cellWidget(5, 0).currentText()
                     if Type == 'ROADWAY' or Type == 'SIDEFLOW' or Type == 'TRANSVERSE':
                         value.shape = CrossSectionShape.RECT_OPEN
                     elif Type == 'TRAPEZOIDAL':
@@ -111,6 +116,12 @@ class frmWeirs(frmGenericPropertyEditor):
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
                     value.geometry2 = str(self.tblGeneric.item(7, column).text())
                     value.geometry3 = str(self.tblGeneric.item(8, column).text())
+
+                    if orig_shape != value.shape or \
+                        orig_geometry1 != value.geometry1 or \
+                        orig_geometry2 != value.geometry2 or \
+                        orig_geometry3 != value.geometry3:
+                        self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -106,6 +106,7 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
             # this is a new lid usage, put after all others
             self.row_id = tblControls.rowCount()
             tblControls.setRowCount(tblControls.rowCount()+1)
+            self._main_form._main_form.mark_project_as_unsaved()
 
         if self.row_id >= 0:
             # editing an existing lid usage, put back
@@ -122,6 +123,7 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
             # recalculate area and lid name
             self._main_form.SetLongLIDName(lid_control, self.row_id)
             self._main_form.SetAreaTerm(self.subcatchment_name, self.row_id, number_replicate_units, area_each_unit)
+            self._main_form._main_form.mark_project_as_unsaved()
 
         self.close()
 

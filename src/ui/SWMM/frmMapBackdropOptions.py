@@ -40,11 +40,23 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.backdrop
+
+        orig_file = section.file
+        orig_dimensions = section.dimensions
+
         section.file = self.txtBackdropFile.text()
         section.dimensions = (float(self.txtLLXBack.text()), float(self.txtLLYBack.text()),
                               float(self.txtURXBack.text()), float(self.txtURYBack.text()))
 
+        if orig_file != section.file or \
+            orig_dimensions != section.dimensions:
+            self._main_form.mark_project_as_unsaved()
+
         section = self._main_form.project.map
+
+        orig_units = section.units
+        orig_dimensions = section.dimensions
+
         if self.rbnNone.isChecked():
             section.units = MapUnits.NONE
         if self.rbnDegrees.isChecked():
@@ -55,6 +67,11 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
             section.units = MapUnits.METERS
         section.dimensions = (float(self.txtLLXMap.text()), float(self.txtLLYMap.text()),
                               float(self.txtURXMap.text()), float(self.txtURYMap.text()))
+
+        if orig_units != section.units or \
+            orig_dimensions != section.dimensions:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

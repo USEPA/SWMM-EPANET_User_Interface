@@ -97,6 +97,21 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
                 self.cboRain.setCurrentIndex(selected_index)
 
     def cmdOK_Clicked(self):
+        orig_name = self.editing_item.name
+        orig_rain_gage = self.editing_item.rain_gage_name
+        orig_value = []
+        for value in self.editing_item.value:
+            new_value = UnitHydrographEntry()
+            new_value.hydrograph_month = value.hydrograph_month
+            new_value.term = value.term
+            new_value.response_ratio = value.response_ratio
+            new_value.time_to_peak = value.time_to_peak
+            new_value.recession_limb_ratio = value.recession_limb_ratio
+            new_value.initial_abstraction_depth = value.initial_abstraction_depth
+            new_value.initial_abstraction_rate = value.initial_abstraction_rate
+            new_value.initial_abstraction_amount = value.initial_abstraction_amount
+            orig_value.append(new_value)
+
         self.editing_item.name = self.txtGroup.text()
         self.editing_item.rain_gage_name = self.cboRain.currentText()
         month = self.month3[self.cboHydrograph.currentIndex()]
@@ -150,7 +165,25 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
             self.editing_item.value.append(value3)
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
+            if orig_name != self.editing_item.name or \
+                orig_rain_gage != self.editing_item.rain_gage_name or \
+                len(orig_value) != len(self.editing_item.value):
+                self._main_form.mark_project_as_unsaved()
+            if len(orig_value) == len(self.editing_item.value):
+                count = -1
+                for value in orig_value:
+                    count += 1
+                    if value.hydrograph_month != self.editing_item.value[count].hydrograph_month or \
+                        value.term != self.editing_item.value[count].term or \
+                        value.response_ratio != self.editing_item.value[count].response_ratio or \
+                        value.time_to_peak != self.editing_item.value[count].time_to_peak or \
+                        value.recession_limb_ratio != self.editing_item.value[count].recession_limb_ratio or \
+                        value.initial_abstraction_depth != self.editing_item.value[count].initial_abstraction_depth or \
+                        value.initial_abstraction_rate != self.editing_item.value[count].initial_abstraction_rate or \
+                        value.initial_abstraction_amount != self.editing_item.value[count].initial_abstraction_amount:
+                        self._main_form.mark_project_as_unsaved()
             pass
         self.close()
 

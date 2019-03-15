@@ -150,6 +150,16 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                 if buildup.land_use_name == self.editing_item.name and pollutant == buildup.pollutant:
                     # put this back in place
                     buildup_found = True
+
+                    orig_land_use_name = buildup.land_use_name
+                    orig_function = buildup.function
+                    orig_max_buildup = buildup.max_buildup
+                    orig_rate_constant = buildup.rate_constant
+                    orig_power_sat_constant = buildup.power_sat_constant
+                    orig_normalizer = buildup.normalizer
+                    orig_scaling_factor = buildup.scaling_factor
+                    orig_timeseries = buildup.timeseries
+
                     combobox = self.tblBuildup.cellWidget(0,pollutant_count)
                     buildup.land_use_name = new_name
                     buildup.function = BuildupFunction[combobox.currentText()]
@@ -161,6 +171,17 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                     buildup.scaling_factor = self.tblBuildup.item(5,pollutant_count).text()
                     combobox = self.tblBuildup.cellWidget(6,pollutant_count)
                     buildup.timeseries = combobox.currentText()
+
+                    if orig_land_use_name != buildup.land_use_name or \
+                        orig_function != buildup.function or \
+                        orig_max_buildup != buildup.max_buildup or \
+                        orig_rate_constant != buildup.rate_constant or \
+                        orig_power_sat_constant != buildup.power_sat_constant or \
+                        orig_normalizer != buildup.normalizer or \
+                        orig_scaling_factor != buildup.scaling_factor or \
+                        orig_timeseries != buildup.timeseries and buildup.function == BuildupFunction.EXP:
+                        self._main_form.mark_project_as_unsaved()
+
             if not buildup_found:
                 # add new record
                 new_buildup = Buildup()
@@ -179,6 +200,8 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                 if self.project.buildup.value == '':
                     self.project.buildup.value = []
                 self.project.buildup.value.append(new_buildup)
+                self._main_form.mark_project_as_unsaved()
+
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:
             pollutant_count += 1
@@ -187,6 +210,14 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                 if washoff.land_use_name == self.editing_item.name and pollutant == washoff.pollutant:
                     # put this back in place
                     washoff_found = True
+
+                    orig_land_use_name = washoff.land_use_name
+                    orig_function = washoff.function
+                    orig_coefficient = washoff.coefficient
+                    orig_exponent = washoff.exponent
+                    orig_cleaning_efficiency = washoff.cleaning_efficiency
+                    orig_bmp_efficiency = washoff.bmp_efficiency
+
                     combobox = self.tblWashoff.cellWidget(0,pollutant_count)
                     washoff.land_use_name = new_name
                     washoff.function = WashoffFunction[combobox.currentText()]
@@ -194,6 +225,15 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                     washoff.exponent = self.tblWashoff.item(2,pollutant_count).text()
                     washoff.cleaning_efficiency = self.tblWashoff.item(3,pollutant_count).text()
                     washoff.bmp_efficiency = self.tblWashoff.item(4,pollutant_count).text()
+
+                    if orig_land_use_name != washoff.land_use_name or \
+                        orig_function != washoff.function or \
+                        orig_coefficient != washoff.coefficient or \
+                        orig_exponent != washoff.exponent or \
+                        orig_cleaning_efficiency != washoff.cleaning_efficiency or \
+                        orig_bmp_efficiency != washoff.bmp_efficiency:
+                        self._main_form.mark_project_as_unsaved()
+
             if not washoff_found:
                 # add new record
                 new_washoff = Washoff()
@@ -208,16 +248,31 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                 if self.project.washoff.value == '':
                     self.project.washoff.value = []
                 self.project.washoff.value.append(new_washoff)
+                self._main_form.mark_project_as_unsaved()
 
         # put this back in place
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_last_swept = self.editing_item.last_swept
+        orig_street_sweeping_availability = self.editing_item.street_sweeping_availability
+        orig_street_sweeping_interval = self.editing_item.street_sweeping_interval
+
         self.editing_item.name = new_name
         self.editing_item.comment = self.tblGeneral.item(1,0).text()
         self.editing_item.last_swept = self.tblGeneral.item(3,0).text()
         self.editing_item.street_sweeping_availability = self.tblGeneral.item(4,0).text()
         self.editing_item.street_sweeping_interval = self.tblGeneral.item(5,0).text()
 
+        if orig_name != self.editing_item.name or \
+            orig_comment != self.editing_item.comment or \
+            orig_last_swept != self.editing_item.last_swept or \
+            orig_street_sweeping_availability != self.editing_item.street_sweeping_availability or \
+            orig_street_sweeping_interval != self.editing_item.street_sweeping_interval:
+            self._main_form.mark_project_as_unsaved()
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             # TODO: self._main_form.edited_?

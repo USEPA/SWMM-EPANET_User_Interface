@@ -49,6 +49,10 @@ class frmSummary(QMainWindow, Ui_frmSummary):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.title
+        if section.title != self.txtTitle.text() or \
+            section.comment != self.txtNotes.toPlainText():
+            self._main_form.mark_project_as_unsaved()
+
         section.title = self.txtTitle.text()
         section.comment = self.txtNotes.toPlainText()
         self.close()

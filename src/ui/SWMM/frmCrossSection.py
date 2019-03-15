@@ -308,6 +308,17 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 value = core.swmm.hydraulics.link.CrossSection()
                 value.link = self.link_name
                 self._main_form.project.xsections.value.append(value)
+                self._main_form.mark_project_as_unsaved()
+
+        orig_barrels = value.barrels
+        orig_comment = value.comment
+        orig_culvert_code = value.culvert_code
+        orig_curve = value.curve
+        orig_geometry1 = value.geometry1
+        orig_geometry2 = value.geometry2
+        orig_geometry3 = value.geometry3
+        orig_geometry4 = value.geometry4
+        orig_shape= value.shape
 
         value.barrels = self.sbxNumber.text()
         value.geometry1 = self.txt1.text()
@@ -374,6 +385,20 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         if self.defaults is not None:
             #self.qsettings.setValue(self.default_key, value)
             self.defaults.parameters_values[self.defaults.xsection_key] = value.shape.name
+
+        if orig_curve == 'None':
+            orig_curve = ''
+        if orig_barrels != value.barrels or \
+            orig_comment != value.comment or \
+            orig_culvert_code != value.culvert_code or \
+            orig_curve != value.curve or \
+            orig_geometry1 != value.geometry1 or \
+            orig_geometry2 != value.geometry2 or \
+            orig_geometry3 != value.geometry3 or \
+            orig_geometry4 != value.geometry4 or \
+            orig_shape != value.shape:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

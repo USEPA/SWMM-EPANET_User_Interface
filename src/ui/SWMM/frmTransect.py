@@ -58,6 +58,18 @@ class frmTransect(QMainWindow, Ui_frmTransect):
             self.tblTransect.horizontalHeaderItem(1).setText('Elevation (m)')
 
     def cmdOK_Clicked(self):
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_n_left = self.editing_item.n_left
+        orig_n_right = self.editing_item.n_right
+        orig_n_channel = self.editing_item.n_channel
+        orig_eleations_modifier = self.editing_item.elevations_modifier
+        orig_meander_modifier = self.editing_item.meander_modifier
+        orig_stations_modifier = self.editing_item.stations_modifier
+        orig_overbank_left = self.editing_item.overbank_left
+        orig_overbank_right = self.editing_item.overbank_right
+        orig_stations = self.editing_item.stations
+
         self.editing_item.name = self.txtName.text()
         self.editing_item.comment = self.txtDescription.text()
         self.editing_item.n_left = self.txtLeftBank.text()
@@ -77,11 +89,24 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                         y = self.tblTransect.item(row,0).text()
                         if len(y) > 0:
                             self.editing_item.stations.append((x,y))
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
+            if orig_name != self.editing_item.name or \
+                orig_comment != self.editing_item.comment or \
+                orig_n_left != self.editing_item.n_left or \
+                orig_n_right != self.editing_item.n_right or \
+                orig_n_channel != self.editing_item.n_channel or \
+                orig_eleations_modifier != self.editing_item.elevations_modifier or \
+                orig_meander_modifier != self.editing_item.meander_modifier or \
+                orig_stations_modifier != self.editing_item.stations_modifier or \
+                orig_overbank_left != self.editing_item.overbank_left or \
+                orig_overbank_right != self.editing_item.overbank_right or \
+                orig_stations != self.editing_item.stations:
+                self._main_form.mark_project_as_unsaved()
             pass
-            # TODO: self._main_form.edited_?
 
         self.close()
 

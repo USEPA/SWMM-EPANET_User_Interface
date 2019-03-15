@@ -62,9 +62,12 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     # put this back in place
                     loading_found = True
                     if self.tblGeneric.item(pollutant_count,0) and len(self.tblGeneric.item(pollutant_count,0).text()) > 0:
+                        if loading.initial_buildup != self.tblGeneric.item(pollutant_count, 0).text():
+                            self._main_form.mark_project_as_unsaved()
                         loading.initial_buildup = self.tblGeneric.item(pollutant_count,0).text()
                     else:
                         section.value.remove(loading)
+                        self._main_form.mark_project_as_unsaved()
             if not loading_found:
                 # add new record
                 if self.tblGeneric.item(pollutant_count,0):
@@ -75,6 +78,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     if section.value == '':
                         section.value = []
                     section.value.append(value1)
+                    self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

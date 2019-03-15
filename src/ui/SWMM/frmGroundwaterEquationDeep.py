@@ -11,6 +11,7 @@ class frmGroundwaterEquationDeep(QMainWindow, Ui_frmGroundwaterEquationDeep):
         QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/groundwater_equation_editor.htm"
+        self._main_form = main_form
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
@@ -30,6 +31,8 @@ class frmGroundwaterEquationDeep(QMainWindow, Ui_frmGroundwaterEquationDeep):
         groundwater_list = groundwater_section.value[0:]
         for value in groundwater_list:
             if value.subcatchment == self.subcatchment_name:
+                if value.custom_deep_flow_equation != self.txtControls.toPlainText():
+                    self._main_form.session.mark_project_as_unsaved()
                 value.custom_deep_flow_equation = self.txtControls.toPlainText()
         self.close()
 

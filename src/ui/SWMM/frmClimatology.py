@@ -222,6 +222,13 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
 
         # save evap tab
         evap_section = self._main_form.project.find_section("EVAPORATION")
+        orig_evap_format = evap_section.format
+        orig_pan_coeff = evap_section.monthly_pan_coefficients
+        orig_monthly = evap_section.monthly
+        orig_constant = evap_section.constant
+        orig_dry_only = evap_section.dry_only
+        orig_timeseries = evap_section.timeseries
+        orig_pattern = evap_section.recovery_pattern
         # "Constant Value","Time Series","Climate File","Monthly Averages","Temperatures"
         if self.cboEvap.currentIndex() == 0:
             evap_section.format = EvaporationFormat.CONSTANT
@@ -254,9 +261,23 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             evap_section.dry_only = False
         evap_section.timeseries = str(self.cboEvapTs.currentText())
         evap_section.recovery_pattern = str(self.cboMonthly.currentText())
+        if orig_evap_format != evap_section.format or \
+            orig_pan_coeff != evap_section.monthly_pan_coefficients or \
+            orig_monthly != evap_section.monthly or \
+            orig_constant != str(evap_section.constant) or \
+            orig_dry_only != evap_section.dry_only or \
+            orig_timeseries != evap_section.timeseries or \
+            orig_pattern != evap_section.recovery_pattern:
+            self._main_form.mark_project_as_unsaved()
 
         # save temperature tab
         temp_section = self._main_form.project.find_section("TEMPERATURE")
+        orig_source = temp_section.source
+        orig_timeseries = temp_section.timeseries
+        if orig_timeseries == 'None':
+            orig_timeseries = ""
+        orig_filename = temp_section.filename
+        orig_startdate = temp_section.start_date
         if self.rbnTimeseries.isChecked():
             temp_section.source = TemperatureSource.TIMESERIES
         elif self.rbnExternal.isChecked():
@@ -266,12 +287,21 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         temp_section.timeseries = str(self.cboTimeSeries.currentText())
         temp_section.filename = self.txtClimate.text()
         if len(temp_section.filename) > 0:
-            if temp_section.filename[0] != '"':
+            if temp_section.filename[0] != '"' and temp_section.filename[0] != "'":
                 temp_section.filename = '"' + temp_section.filename + '"'
+            if temp_section.filename == '"None"':
+                temp_section.filename = 'None'
         if self.cbxStart.isChecked():
             temp_section.start_date = self.dedStart.date().toString("MM/dd/yyyy")
+        if orig_source != temp_section.source or \
+            orig_timeseries != temp_section.timeseries or \
+            orig_filename != temp_section.filename or \
+            orig_startdate != temp_section.start_date:
+            self._main_form.mark_project_as_unsaved()
 
         # save wind speed tab
+        orig_source = temp_section.wind_speed.source
+        orig_monthly = temp_section.wind_speed.wind_speed_monthly
         if self.rbnMonthly.isChecked():
             temp_section.wind_speed.source = WindSource.MONTHLY
         elif self.rbnUseClimate.isChecked():
@@ -281,17 +311,36 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             if self.tblWind.item(0,column):
                 x = self.tblWind.item(0,column).text()
                 if len(x) > 0:
-                    temp_section.wind_speed.wind_speed_monthly.append(x)
+                    temp_section.wind_speed.wind_speed_monthly.append(float(x))
+        temp_section.wind_speed.wind_speed_monthly = tuple(temp_section.wind_speed.wind_speed_monthly)
+        if orig_source != temp_section.wind_speed.source or \
+            orig_monthly != temp_section.wind_speed.wind_speed_monthly:
+            self._main_form.mark_project_as_unsaved()
 
         # save snow melt tab
-        temp_section.snow_melt.snow_temp = self.txtSnowDivide.text()
+        snow_divide = self.txtSnowDivide.text()
+        snow_latitude = self.txtSnowLatitude.text()
+        if temp_section.snow_melt.snow_temp == '' and snow_divide == '34':
+            snow_divide = ''
+        if temp_section.snow_melt.latitude == '0.0' and snow_latitude == '50.0':
+            snow_latitude = '0.0'
+        if temp_section.snow_melt.snow_temp != snow_divide or \
+            temp_section.snow_melt.ati_weight != self.txtSnowATI.text() or \
+            temp_section.snow_melt.negative_melt_ratio != self.txtSnowMelt.text() or \
+            temp_section.snow_melt.elevation != self.txtSnowElevation.text() or \
+            temp_section.snow_melt.latitude != snow_latitude or \
+            temp_section.snow_melt.time_correction != self.txtSnowLongitude.text():
+            self._main_form.mark_project_as_unsaved()
+        temp_section.snow_melt.snow_temp = snow_divide
         temp_section.snow_melt.ati_weight = self.txtSnowATI.text()
         temp_section.snow_melt.negative_melt_ratio = self.txtSnowMelt.text()
         temp_section.snow_melt.elevation = self.txtSnowElevation.text()
-        temp_section.snow_melt.latitude = self.txtSnowLatitude.text()
+        temp_section.snow_melt.latitude = snow_latitude
         temp_section.snow_melt.time_correction = self.txtSnowLongitude.text()
 
         # save areal depletion
+        save_impervious = temp_section.areal_depletion.adc_impervious
+        save_pervious = temp_section.areal_depletion.adc_pervious
         temp_section.areal_depletion.adc_impervious = []
         for row in range(0,10):
             if self.tblAreal.item(row,0):
@@ -304,9 +353,20 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
                 x = self.tblAreal.item(row,1).text()
                 if len(x) > 0:
                     temp_section.areal_depletion.adc_pervious.append(x)
+        if len(save_impervious) == 0 and temp_section.areal_depletion.adc_impervious == ['1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0']:
+            temp_section.areal_depletion.adc_impervious = save_impervious
+        if len(save_pervious) == 0 and temp_section.areal_depletion.adc_pervious == ['1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', '1.0']:
+            temp_section.areal_depletion.adc_pervious = save_pervious
+        if save_impervious != temp_section.areal_depletion.adc_impervious or \
+            save_pervious != temp_section.areal_depletion.adc_pervious:
+            self._main_form.mark_project_as_unsaved()
 
         # save adjustments for temp, evap, rain, cond
         adjustments_section = self._main_form.project.find_section("ADJUSTMENTS")
+        save_temperature = adjustments_section.temperature
+        save_evaporation = adjustments_section.evaporation
+        save_rainfall = adjustments_section.rainfall
+        save_conductivity = adjustments_section.soil_conductivity
         adjustments_section.temperature = []
         for row in range(0,12):
             if self.tblAdjustments.item(row,0):
@@ -335,6 +395,20 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             else:
                 x = ''
             adjustments_section.soil_conductivity.append(x)
+
+        if len(save_temperature) == 0 and adjustments_section.temperature == ['', '', '', '', '', '', '', '', '', '', '', '']:
+            adjustments_section.temperature = save_temperature
+        if len(save_evaporation) == 0 and adjustments_section.evaporation == ['', '', '', '', '', '', '', '', '', '', '', '']:
+            adjustments_section.evaporation = save_evaporation
+        if len(save_rainfall) == 0 and adjustments_section.rainfall == ['', '', '', '', '', '', '', '', '', '', '', '']:
+            adjustments_section.rainfall = save_rainfall
+        if len(save_conductivity) == 0 and adjustments_section.soil_conductivity == ['', '', '', '', '', '', '', '', '', '', '', '']:
+            adjustments_section.soil_conductivity = save_conductivity
+        if save_temperature != adjustments_section.temperature or \
+            save_evaporation != adjustments_section.evaporation or \
+            save_rainfall != adjustments_section.rainfall or \
+            save_conductivity != adjustments_section.soil_conductivity:
+            self._main_form.mark_project_as_unsaved()
 
         self.close()
 

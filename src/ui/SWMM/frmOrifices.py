@@ -77,6 +77,11 @@ class frmOrifices(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             for value in cross_section_list:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
+                    if value.shape != str(self.tblGeneric.item(6,column).text()) or \
+                        value.geometry1 != str(self.tblGeneric.item(7, column).text()) or \
+                        value.geometry2 != str(self.tblGeneric.item(8, column).text()):
+                        self._main_form.mark_project_as_unsaved()
+
                     value.shape = str(self.tblGeneric.item(6,column).text())
                     value.geometry1 = str(self.tblGeneric.item(7, column).text())
                     value.geometry2 = str(self.tblGeneric.item(8, column).text())

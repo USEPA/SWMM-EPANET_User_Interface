@@ -60,9 +60,12 @@ class frmTreatment(frmGenericPropertyEditor):
                     # put this back in place
                     treatment_found = True
                     if self.tblGeneric.item(pollutant_count,0) and len(self.tblGeneric.item(pollutant_count,0).text()) > 0:
+                        if treatment.function != self.tblGeneric.item(pollutant_count, 0).text():
+                            self._main_form.mark_project_as_unsaved()
                         treatment.function = self.tblGeneric.item(pollutant_count,0).text()
                     else:
                         section.value.remove(treatment)
+                        self._main_form.mark_project_as_unsaved()
             if not treatment_found:
                 # add new record
                 if self.tblGeneric.item(pollutant_count,0):
@@ -73,6 +76,7 @@ class frmTreatment(frmGenericPropertyEditor):
                     if section.value == '':
                         section.value = []
                     section.value.append(value1)
+                    self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

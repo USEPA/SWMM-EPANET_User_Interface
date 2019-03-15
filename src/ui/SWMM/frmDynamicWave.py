@@ -65,6 +65,17 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
         section = self._main_form.project.options.dynamic_wave
 
+        orig_damping = section.inertial_damping
+        orig_force_eq = section.force_main_equation
+        orig_flow_lim = section.normal_flow_limited
+        orig_threads = section.threads
+        orig_step = section.variable_step
+        orig_min_step = section.minimum_step
+        orig_len_step = section.lengthening_step
+        orig_surface_area = section.min_surface_area
+        orig_head_tol = section.head_tolerance
+        orig_max_trials = section.max_trials
+
         if self.cboInertial.currentIndex() == 1:
             section.inertial_damping = core.swmm.options.dynamic_wave.InertialDamping.PARTIAL
         if self.cboInertial.currentIndex() == 2:
@@ -94,6 +105,19 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         section.min_surface_area = float(self.txtSurfaceArea.text())
         section.head_tolerance = float(self.txtTolerance.text())
         section.max_trials = self.sbxTrials.value()
+
+        if orig_damping != section.inertial_damping or \
+            orig_force_eq != section.force_main_equation or \
+            orig_flow_lim != section.normal_flow_limited or \
+            int(orig_threads) != section.threads or \
+            float(orig_step) != section.variable_step or \
+            float(orig_min_step) != section.minimum_step or \
+            float(orig_len_step) != section.lengthening_step or \
+            float(orig_surface_area) != section.min_surface_area or \
+            float(orig_head_tol) != section.head_tolerance or \
+            int(orig_max_trials) != section.max_trials:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

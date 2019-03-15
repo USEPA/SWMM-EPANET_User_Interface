@@ -66,6 +66,13 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("REPORT")
+
+        orig_continuity = section.continuity
+        orig_controls = section.controls
+        orig_flow_stats = section.flow_stats
+        orig_input = section.input
+        orig_nodes = section.nodes
+
         section.continuity = self.cbxContinuity.isChecked()
         section.controls = self.cbxControls.isChecked()
         section.flow_stats = self.cbxFlow.isChecked()
@@ -79,6 +86,14 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
             section.nodes = []
             for item in self.listWidget.selectedItems():
                 section.nodes.append(str(item.text()))
+
+        if orig_continuity != section.continuity or \
+            orig_controls != section.controls or \
+            orig_flow_stats != section.flow_stats or \
+            orig_input != section.input or \
+            orig_nodes != section.nodes:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -144,6 +144,11 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
     def cmdOK_Clicked(self):
         # TODO: Check for blank/duplicate curve name
         # TODO: Check if X-values are in ascending order
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_type = self.editing_item.curve_type
+        orig_xy = self.editing_item.curve_xy
+
         self.editing_item.name = self.txtCurveName.text()
         self.editing_item.comment = self.txtDescription.text()
         if len(self.editing_item.comment) > 0:
@@ -168,9 +173,17 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                     self.editing_item.curve_xy.append((x, y))
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             # TODO: self._main_form.edited_?
+
+        if orig_name != self.editing_item.name or \
+            orig_comment != self.editing_item.comment or \
+            orig_type != self.editing_item.curve_type or \
+            orig_xy != self.editing_item.curve_xy:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

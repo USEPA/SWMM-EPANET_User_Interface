@@ -212,6 +212,15 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 if item == self.cboConstituent.itemText(self.previous_constituent_index):
                     local_column = index
             if local_column > -1:
+                orig_conv_factor = self.local_conversion_factor[local_column]
+                orig_baseline = self.local_baseline[local_column]
+                orig_scale_factor = self.local_scale_factor[local_column]
+                orig_timeseries_list = self.local_timeseries_list[local_column]
+                orig_baseline_pattern = self.local_baseline_pattern[local_column]
+                orig_format = self.local_format[local_column]
+                if orig_format == '':
+                    orig_format = DirectInflowType.CONCEN
+
                 self.local_conversion_factor[local_column] = self.txtUnitsFactor.text()
                 self.local_baseline[local_column] = self.txtBaseline.text()
                 self.local_scale_factor[local_column] = self.txtScaleFactor.text()
@@ -221,6 +230,14 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                     self.local_format[local_column] = DirectInflowType.CONCEN
                 elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
+
+                if orig_conv_factor != self.local_conversion_factor[local_column] or \
+                    orig_baseline != self.local_baseline[local_column] or \
+                    orig_scale_factor != self.local_scale_factor[local_column] or \
+                    orig_timeseries_list != self.local_timeseries_list[local_column] or \
+                    orig_baseline_pattern != self.local_baseline_pattern[local_column] or \
+                    orig_format != self.local_format[local_column]:
+                    self._main_form.mark_project_as_unsaved()
 
         direct_section = self.project.find_section("INFLOWS")
         direct_list = direct_section.value[0:]
@@ -233,12 +250,28 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 if value.node == self.node_name and value.constituent == pollutant:
                     if index > -1:
                         found = True
+                        orig_timeseries = value.timeseries
+                        orig_format = value.format
+                        orig_conv_factor = value.conversion_factor
+                        orig_scale_factor = value.scale_factor
+                        orig_baseline = value.baseline
+                        orig_baseline_pattern = value.baseline_pattern
+
                         value.timeseries = self.local_timeseries_list[index]
                         value.format = self.local_format[index]
                         value.conversion_factor = self.local_conversion_factor[index]
                         value.scale_factor = self.local_scale_factor[index]
                         value.baseline = self.local_baseline[index]
                         value.baseline_pattern = self.local_baseline_pattern[index]
+
+                        if orig_timeseries != value.timeseries or \
+                            orig_format != value.format or \
+                            orig_conv_factor != value.conversion_factor or \
+                            orig_scale_factor != value.scale_factor or \
+                            orig_baseline != value.baseline or \
+                            orig_baseline_pattern != value.baseline_pattern:
+                            self._main_form.mark_project_as_unsaved()
+
             if not found:
                 # have to add this inflow to the list
                 new_inflow = DirectInflow()
@@ -253,6 +286,7 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 if direct_section.value == '':
                     direct_section.value = []
                 direct_section.value.append(new_inflow)
+                self._main_form.mark_project_as_unsaved()
 
         # dry section
         if self.previous_dry_constituent_index > -1:
@@ -280,6 +314,10 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 if value.node == self.node_name and value.constituent == pollutant:
                     if index > -1:
                         found = True
+
+                        orig_average = value.average
+                        orig_time_patterns = value.time_patterns
+
                         value.average = self.local_average_list[index]
                         value.time_patterns = []
                         if len(str(self.local_dry_pattern_1_list[index])) > 0:
@@ -290,6 +328,11 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                             value.time_patterns.append(self.local_dry_pattern_3_list[index])
                         if len(str(self.local_dry_pattern_4_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
+
+                        if orig_average != value.average or \
+                            orig_time_patterns != value.time_patterns:
+                            self._main_form.mark_project_as_unsaved()
+
             if not found:
                 # have to add this dry inflow to the list
                 new_inflow = DryWeatherInflow()
@@ -309,6 +352,7 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 if dry_section.value == '':
                     dry_section.value = []
                 dry_section.value.append(new_inflow)
+                self._main_form.mark_project_as_unsaved()
 
         # rainfall dependent infiltration/inflow
         rdii_section = self._main_form.project.find_section("RDII")
@@ -317,6 +361,9 @@ class frmInflows(QMainWindow, Ui_frmInflows):
         for value in rdii_list:
             if value.node == self.node_name:
                 found = True
+                if value.sewershed_area != self.txtSewershed.text() or \
+                    value.hydrograph_group != self.cboUnitHydro.currentText():
+                    self._main_form.mark_project_as_unsaved()
                 value.sewershed_area = self.txtSewershed.text()
                 value.hydrograph_group = self.cboUnitHydro.currentText()
         if not found:
@@ -328,6 +375,7 @@ class frmInflows(QMainWindow, Ui_frmInflows):
             if rdii_section.value == '':
                 rdii_section.value = []
             rdii_section.value.append(new_inflow)
+            self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

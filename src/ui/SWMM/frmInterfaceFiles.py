@@ -41,6 +41,18 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.files
+
+        orig_use_rainfall = section.use_rainfall
+        orig_save_rainfall = section.save_rainfall
+        orig_use_runoff = section.use_runoff
+        orig_save_runoff = section.save_runoff
+        orig_use_hotstart = section.use_hotstart
+        orig_save_hotstart = section.save_hotstart
+        orig_use_rdii = section.use_rdii
+        orig_save_rdii = section.save_rdii
+        orig_use_inflows = section.use_inflows
+        orig_save_outflows = section.save_outflows
+
         section.use_rainfall = frmInterfaceFiles.none_if_blank(self.txtUseRainfall.text())
         section.save_rainfall = frmInterfaceFiles.none_if_blank(self.txtSaveRainfall.text())
         section.use_runoff = frmInterfaceFiles.none_if_blank(self.txtUseRunoff.text())
@@ -82,6 +94,18 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
         if section.save_rdii:
             if section.save_rdii[0] != '"':
                 section.save_rdii = '"' + section.save_rdii + '"'
+
+        if orig_use_rainfall != section.use_rainfall or \
+            orig_save_rainfall != section.save_rainfall or \
+            orig_use_runoff != section.use_runoff or \
+            orig_save_runoff != section.save_runoff or \
+            orig_use_hotstart != section.use_hotstart or \
+            orig_save_hotstart != section.save_hotstart or \
+            orig_use_rdii != section.use_rdii or \
+            orig_save_rdii != section.save_rdii or \
+            orig_use_inflows != section.use_inflows or \
+            orig_save_outflows != section.save_outflows:
+            self._main_form.mark_project_as_unsaved()
 
         self.close()
 

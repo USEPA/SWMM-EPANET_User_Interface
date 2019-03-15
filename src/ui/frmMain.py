@@ -548,36 +548,43 @@ class frmMain(QMainWindow, Ui_frmMain):
             if not self.isSubLink:
                 # self.session.list_objects()  # Refresh the list of items on the form
                 list_item = self.session.listViewObjects.addItem(self.item.name)
-                self.session.listViewObjects.scrollToItem(list_item)
+                if list_item is not None:
+                    self.session.listViewObjects.scrollToItem(list_item)
 
             if self.layer is not None and self.layer.isValid():
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
                 if isinstance(self.item, Coordinate):
-                    added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                    if len(self.item.x) > 0 and len(self.item.y) > 0:
+                        added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                    else:
+                        added = [False]
                 elif isinstance(self.item, Link):
-                    f = self.session.map_widget.line_feature_from_item(self.item,
-                                                                       self.session.project.all_nodes(),
-                                                                       self.inlet_sub, self.outlet_sub)
-                    added = self.layer.dataProvider().addFeatures([f])
-                    if added[0]:
-                        #set subcatchment's outlet nodal/subcatch id
-                        if self.inlet_sub and self.inlet_sub_id:
-                            for s in self.session.project.subcatchments.value:
-                                if s.name == self.inlet_sub_id:
-                                    s.outlet = self.item.outlet_node
-                                    break
-                        #set sublink's attributes
-                        #f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
-                        #self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
-                        #self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
-                        self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
-                        self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
-                        self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
-                        self.layer.updateExtents()
-                        self.layer.commitChanges()
-                        self.layer.triggerRepaint()
-                        self.session.map_widget.canvas.refresh()
+                    if self.inlet_sub is not None and self.outlet_sub is not None:
+                        f = self.session.map_widget.line_feature_from_item(self.item,
+                                                                           self.session.project.all_nodes(),
+                                                                           self.inlet_sub, self.outlet_sub)
+                        added = self.layer.dataProvider().addFeatures([f])
+                        if added[0]:
+                            #set subcatchment's outlet nodal/subcatch id
+                            if self.inlet_sub and self.inlet_sub_id:
+                                for s in self.session.project.subcatchments.value:
+                                    if s.name == self.inlet_sub_id:
+                                        s.outlet = self.item.outlet_node
+                                        break
+                            #set sublink's attributes
+                            #f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                            #self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+                            #self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+                            self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
+                            self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
+                            self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
+                            self.layer.updateExtents()
+                            self.layer.commitChanges()
+                            self.layer.triggerRepaint()
+                            self.session.map_widget.canvas.refresh()
+                    else:
+                        added = [False]
                 elif isinstance(self.item, Polygon):
                     f = self.session.map_widget.polygon_feature_from_item(self.item)
                     added = self.layer.dataProvider().addFeatures([f])

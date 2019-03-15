@@ -118,6 +118,13 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
         return n
 
     def cmdOK_Clicked(self):
+
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_dates = self.editing_item.dates
+        orig_times = self.editing_item.times
+        orig_values = self.editing_item.values
+
         self.editing_item.name = self.txtTimeseriesName.text()
         self.editing_item.comment = self.txtDescription.text()
         if self.editing_item.comment and self.editing_item.comment[0] != ';':
@@ -154,7 +161,14 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                     print("Skipping row " + str(row) + " of time series grid: " + str(ex))
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
+            if orig_name != self.editing_item.name or \
+                orig_comment != self.editing_item.comment or \
+                orig_dates != self.editing_item.dates or \
+                orig_times != self.editing_item.times or \
+                orig_values != self.editing_item.values:
+                self._main_form.mark_project_as_unsaved()
             pass
             # TODO: self._main_form.edited_?
         self.close()

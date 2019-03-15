@@ -145,6 +145,37 @@ class frmLID(QMainWindow, Ui_frmLID):
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtName.text()
+
+        orig_lid_type = self.editing_item.lid_type
+        orig_surface_layer_storage_depth = self.editing_item.surface_layer_storage_depth
+        orig_surface_layer_vegetative_cover_fraction = self.editing_item.surface_layer_vegetative_cover_fraction
+        orig_surface_layer_surface_roughness = self.editing_item.surface_layer_surface_roughness
+        orig_surface_layer_surface_slope = self.editing_item.surface_layer_surface_slope
+        orig_surface_layer_swale_side_slope = self.editing_item.surface_layer_swale_side_slope
+        orig_pavement_layer_thickness = self.editing_item.pavement_layer_thickness
+        orig_pavement_layer_void_ratio = self.editing_item.pavement_layer_void_ratio
+        orig_pavement_layer_impervious_surface_fraction = self.editing_item.pavement_layer_impervious_surface_fraction
+        orig_pavement_layer_permeability = self.editing_item.pavement_layer_permeability
+        orig_pavement_layer_clogging_factor = self.editing_item.pavement_layer_clogging_factor
+        orig_soil_layer_thickness = self.editing_item.soil_layer_thickness
+        orig_soil_layer_porosity = self.editing_item.soil_layer_porosity
+        orig_soil_layer_field_capacity = self.editing_item.soil_layer_field_capacity
+        orig_soil_layer_wilting_point = self.editing_item.soil_layer_wilting_point
+        orig_soil_layer_conductivity = self.editing_item.soil_layer_conductivity
+        orig_soil_layer_conductivity_slope = self.editing_item.soil_layer_conductivity_slope
+        orig_soil_layer_suction_head = self.editing_item.soil_layer_suction_head
+        orig_storage_layer_height = self.editing_item.storage_layer_height
+        orig_storage_layer_void_ratio = self.editing_item.storage_layer_void_ratio
+        orig_storage_layer_filtration_rate = self.editing_item.storage_layer_filtration_rate
+        orig_storage_layer_clogging_factor = self.editing_item.storage_layer_clogging_factor
+        orig_drain_coefficient = self.editing_item.drain_coefficient
+        orig_drain_exponent = self.editing_item.drain_exponent
+        orig_drain_offset_height = self.editing_item.drain_offset_height
+        orig_drain_delay = self.editing_item.drain_delay
+        orig_drainmat_thickness = self.editing_item.drainmat_thickness
+        orig_drainmat_void_fraction = self.editing_item.drainmat_void_fraction
+        orig_drainmat_roughness = self.editing_item.drainmat_roughness
+
         if self.cboLIDType.currentIndex() == 0:
             self.editing_item.lid_type = LIDType.BC
             self.editing_item.has_surface_layer = True
@@ -253,8 +284,41 @@ class frmLID(QMainWindow, Ui_frmLID):
 
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
+
+        if orig_lid_type != self.editing_item.lid_type or \
+            orig_surface_layer_storage_depth != self.editing_item.surface_layer_storage_depth or \
+            orig_surface_layer_vegetative_cover_fraction != self.editing_item.surface_layer_vegetative_cover_fraction or \
+            orig_surface_layer_surface_roughness != self.editing_item.surface_layer_surface_roughness or \
+            orig_surface_layer_surface_slope != self.editing_item.surface_layer_surface_slope or \
+            orig_surface_layer_swale_side_slope != self.editing_item.surface_layer_swale_side_slope or \
+            orig_pavement_layer_thickness != self.editing_item.pavement_layer_thickness or \
+            orig_pavement_layer_void_ratio != self.editing_item.pavement_layer_void_ratio or \
+            orig_pavement_layer_impervious_surface_fraction != self.editing_item.pavement_layer_impervious_surface_fraction or \
+            orig_pavement_layer_permeability != self.editing_item.pavement_layer_permeability or \
+            orig_pavement_layer_clogging_factor != self.editing_item.pavement_layer_clogging_factor or \
+            orig_soil_layer_thickness != self.editing_item.soil_layer_thickness or \
+            orig_soil_layer_porosity != self.editing_item.soil_layer_porosity or \
+            orig_soil_layer_field_capacity != self.editing_item.soil_layer_field_capacity or \
+            orig_soil_layer_wilting_point != self.editing_item.soil_layer_wilting_point or \
+            orig_soil_layer_conductivity != self.editing_item.soil_layer_conductivity or \
+            orig_soil_layer_conductivity_slope != self.editing_item.soil_layer_conductivity_slope or \
+            orig_soil_layer_suction_head != self.editing_item.soil_layer_suction_head or \
+            orig_storage_layer_height != self.editing_item.storage_layer_height or \
+            orig_storage_layer_void_ratio != self.editing_item.storage_layer_void_ratio or \
+            orig_storage_layer_filtration_rate != self.editing_item.storage_layer_filtration_rate or \
+            orig_storage_layer_clogging_factor != self.editing_item.storage_layer_clogging_factor or \
+            orig_drain_coefficient != self.editing_item.drain_coefficient or \
+            orig_drain_exponent != self.editing_item.drain_exponent or \
+            orig_drain_offset_height != self.editing_item.drain_offset_height or \
+            orig_drain_delay != self.editing_item.drain_delay or \
+            orig_drainmat_thickness != self.editing_item.drainmat_thickness or \
+            orig_drainmat_void_fraction != self.editing_item.drainmat_void_fraction or \
+            orig_drainmat_roughness != self.editing_item.drainmat_roughness:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

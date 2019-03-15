@@ -30,6 +30,8 @@ class frmGroundwaterEquation(QMainWindow, Ui_frmGroundwaterEquation):
         groundwater_section = self.project.groundwater
         for value in groundwater_section.value:
             if value.subcatchment == self.subcatchment_name:
+                if value.custom_lateral_flow_equation != self.txtControls.toPlainText():
+                    self._main_form.session.mark_project_as_unsaved()
                 value.custom_lateral_flow_equation = self.txtControls.toPlainText()
         self.close()
 

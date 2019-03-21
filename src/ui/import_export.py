@@ -753,11 +753,11 @@ def import_epanet_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QgsWkbTypes.Point:
+        if geom.type() == QgsWkbTypes.PointGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QgsWkbTypes.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
@@ -897,13 +897,15 @@ def import_swmm_from_geojson(session, file_name):
                     coord.y = str(line[i].y())
                     model_item.vertices.append(coord)
                     pass
-        elif geom.type() == QgsWkbTypes.Polygon:
+        elif geom.type() == QgsWkbTypes.PolygonGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
-            for pt in geom.asPolygon()[0]:
-                coord = Coordinate()
-                coord.x = str(pt.x())
-                coord.y = str(pt.y())
-                model_item.vertices.append(coord)
+            for ptlist in geom.asMultiPolygon()[0]:
+                for i in range(1, len(ptlist)):
+                    coord = Coordinate()
+                    coord.x = str(ptlist[i].x())
+                    coord.y = str(ptlist[i].y())
+                    model_item.vertices.append(coord)
+                    pass
 
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
@@ -984,7 +986,10 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
         if f.fieldNameIndex(attr_name) >=0:
             attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
             if attr_name == "element_id":
-                model_item.name = attr_value
+                if str(attr_value) == 'NULL':
+                    model_item.name = f.attributes()[f.fieldNameIndex('name')]
+                else:
+                    model_item.name = attr_value
             elif attr_name == "description" and attr_value:
                 if isinstance(model_item, Label):
                     model_item.name = attr_value

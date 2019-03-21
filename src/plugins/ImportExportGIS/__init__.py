@@ -13,11 +13,14 @@ try:
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
                "Import from GIS to create model": 2}
-    file_filter = "GeoJSON (*.json *.geojson);;" \
+    file_export_filter = "GeoJSON (*.json *.geojson);;" \
                   "Shapefile (*.shp);;" \
                   "Comma-separated text (*.csv);;" \
-                  "File Geodatabase (*.gdb);;" \
                   "All files (*.*)"
+    file_import_filter = "GeoJSON (*.json *.geojson);;" \
+                  "All files (*.*)"
+    #              "File Geodatabase (*.gdb);;" \
+
 
     def run(session=None, choice=None):
         print("run " + str(choice))
@@ -29,10 +32,10 @@ try:
 
                 if choice == 1:
                     file_name, ftype = QFileDialog.getSaveFileName(session, "Export to GIS",
-                                                                  directory, file_filter)
+                                                                  directory, file_export_filter)
                 elif choice == 2:
                     file_name, ftype = QFileDialog.getOpenFileName(session, "Select GIS file to import",
-                                                                  directory, file_filter)
+                                                                  directory, file_import_filter)
                 else:
                     file_name = ''
 

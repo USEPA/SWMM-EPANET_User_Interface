@@ -297,7 +297,7 @@ outlet_import_attributes = [
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
     extension = extension.lower()
-    layer_options = ''
+    layer_options = []
     if extension == ".shp":
         driver_name = "ESRI Shapefile"
         one_file = False
@@ -307,7 +307,7 @@ def export_to_gis(session, file_name):
     elif extension == ".gdb":
         driver_name = "FileGDB"
         one_file = True
-        layer_options = 'GEOMETRY=AS_XYZ'
+        layer_options.append('GEOMETRY=AS_XYZ')
     else:
         driver_name = "GeoJson"
         one_file = True
@@ -415,7 +415,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     layer = export_points_layer(session.project.labels.value, labels_model_attributes, labels_gis_attributes,
                                 all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_labels" + extension, driver_name, layer_options)
-    if layer:
+    if layer and len(session.project.labels.value) > 0:
         layer_count += 1
 
     for section in [session.project.raingages, session.project.outfalls,
@@ -444,6 +444,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     one_file = False
     export_subcatchment_layer(session.project, session.model_layers.subcatchments, subcatchment_model_attributes,
                               session.crs, one_file, layer_file_name, driver_name, layer_options)
+    layer_count += 1
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
@@ -451,8 +452,10 @@ def write_layer(layer, crs, layer_file_name, driver_name, layer_options):
     if layer:
         if crs:
             layer.setCrs(crs)
+        else:
+            crs = QgsCoordinateReferenceSystem('Unknown')
         QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
-                                                driver_name, layerOptions=layer_options)
+                                                driverName=driver_name, layerOptions=layer_options)
         if driver_name == "ESRI Shapefile":
             basename = os.path.splitext(layer_file_name)[0]
             os.remove(basename + ".cpg")
@@ -492,7 +495,7 @@ def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_fil
                               layer_options):
     if not src_layer or src_layer.featureCount() == 0:
         return None
-    ind = src_layer.fieldNameIndex(u'name')
+    ind = src_layer.fields().indexFromName(u'name')
     if ind < 0:
         return None
     layer = QgsVectorLayer("Polygon", "Subcatchment", "memory")
@@ -507,7 +510,7 @@ def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_fil
             new_f.setGeometry(f.geometry())
             values = gis_values_from_model(obj_sub, model_attributes, model_attributes, model_attributes)
             new_f.setAttributes(values)
-            layer.addFeature(new_f, False)
+            layer.addFeature(new_f)
     layer.commitChanges()
     layer.updateExtents()
 
@@ -589,7 +592,10 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
         try:
             # add a feature
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(model_point.x), float(model_point.y))))
+            point = QgsPointXY()
+            point.setX(float(model_point.x))
+            point.setY(float(model_point.y))
+            feature.setGeometry(QgsGeometry.fromPointXY(point))
             values = gis_values_from_model(model_point, model_attributes, gis_attributes, all_gis_attributes)
             feature.setAttributes(values)
             features.append(feature)
@@ -606,7 +612,7 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
             provider = layer.dataProvider()
 
         layer.startEditing()  # changes are only possible when editing the layer
-        provider.addFeatures(features)
+        layer.addFeatures(features)
         layer.commitChanges()
         layer.updateExtents()
     return layer
@@ -686,7 +692,7 @@ def import_from_gis(session, file_name):
 def import_epanet_from_geojson(session, file_name):
     project = session.project
     layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
+    ind = layer.fields().indexFromName(u'element_type')
     if ind < 0:
         return
     elem_types = layer.uniqueValues(ind, 20)
@@ -777,7 +783,7 @@ def import_epanet_from_geojson(session, file_name):
 def import_swmm_from_geojson(session, file_name):
     project = session.project
     layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
+    ind = layer.fields().indexFromName(u'element_type')
     if ind < 0:
         return
     elem_types = layer.uniqueValues(ind, 20)
@@ -877,11 +883,11 @@ def import_swmm_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QgsWkbTypes.Point:
+        if geom.type() == QgsWkbTypes.PointGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QgsWkbTypes.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:

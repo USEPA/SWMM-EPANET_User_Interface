@@ -441,10 +441,28 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
         write_layer(layer, session.crs, file_name, driver_name, layer_options)
 
     layer_file_name = path_file + "_subcatchments" + extension
-    one_file = False
+    temp_one_file = False
     export_subcatchment_layer(session.project, session.model_layers.subcatchments, subcatchment_model_attributes,
-                              session.crs, one_file, layer_file_name, driver_name, layer_options)
+                              session.crs, temp_one_file, layer_file_name, driver_name, layer_options)
     layer_count += 1
+
+    if driver_name == "GeoJson" and one_file == True:
+        # also put the subcatchments into the orig geojson file
+        main_file = open(file_name, 'r')
+        main_file_contents = main_file.read()
+        main_file.close()
+        if os.path.isfile(layer_file_name):
+            sub_file = open(layer_file_name, 'r')
+            sub_file_contents = sub_file.read()
+            sub_file.close()
+            if len(sub_file_contents) > 0:
+                main_file_contents = main_file_contents[:-5] + ',' + sub_file_contents[sub_file_contents.find('"features": [') + 13:]
+                main_file = open(file_name, 'w')
+                main_file.write(main_file_contents)
+                main_file.close()
+            # now we can get rid of the subcatchments geojson file
+            os.remove(layer_file_name)
+
     return "Exported " + str(layer_count) + " layers to GIS"
 
 

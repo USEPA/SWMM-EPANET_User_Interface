@@ -957,10 +957,11 @@ try:
                     layer.setRenderer(QgsSingleSymbolRenderer(sym))
 
             # do_labels = True
-            if do_labels and not "SUBLINK" in layer_name_upper:
+            if not "SUBLINK" in layer_name_upper:
                 pal_layer = QgsPalLayerSettings()
                 # pal_layer.readFromLayer(layer) #pyqgis3 removed
-                pal_layer.enabled = True
+                pal_layer.enabled = do_labels
+                pal_layer.drawLabels = do_labels
                 pal_layer.fontSizeInMapUnits = False
                 pal_layer.labelOffsetInMapUnits = False
                 pal_layer.fieldName = 'name'

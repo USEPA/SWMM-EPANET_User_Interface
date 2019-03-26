@@ -319,6 +319,8 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
         self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
         self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
+        self.dsbPlaySpeed.setValue(2.0)
+        self.dsbPlaySpeed.valueChanged.connect(self.dsbPlaySpeed_changed)
 
         self.chkDisplayFlowDir.stateChanged.connect(self.chkDisplayFlowDir_stateChanged)
 
@@ -1280,6 +1282,11 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.horizontalTimeSlider.setSliderPosition(ltime_index)
             else:
                 return
+
+    def dsbPlaySpeed_changed(self):
+        if self.animate_thread:
+            if self.dsbPlaySpeed.value() > 0:
+                self.animate_thread.set_speed(self.dsbPlaySpeed.value())
 
     def btnPlay_clicked(self):
         if not self.animate_thread:

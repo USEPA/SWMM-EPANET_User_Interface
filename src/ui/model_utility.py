@@ -277,6 +277,7 @@ class MyProcess(Thread):
         self.loop_steps = loop_steps
         self.pause_cond = Condition(Lock())
         self.istart = 1
+        self.speed = 2
         self._is_running = True
 
     def run(self):
@@ -288,7 +289,7 @@ class MyProcess(Thread):
                             self.pause_cond.wait()
                         if self._is_running:
                             self.wfunc(i)
-                            sleep(2)
+                            sleep(self.speed)
                         else:
                             # self._reset_internal_locks()
                             return
@@ -315,4 +316,7 @@ class MyProcess(Thread):
             self.paused = False
             self.pause_cond.notify()
             self.pause_cond.release()
+
+    def set_speed(self, speed):
+        self.speed = speed
 

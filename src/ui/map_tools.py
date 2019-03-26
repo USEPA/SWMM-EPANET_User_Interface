@@ -2727,7 +2727,7 @@ try:
                     iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(ids[0]))
                     if iterator:
                         self.nearest_feature = next(iterator)
-                    return
+                    # return
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()

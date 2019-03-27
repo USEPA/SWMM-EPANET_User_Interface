@@ -631,7 +631,7 @@ try:
 
         @staticmethod
         def polygon_feature_from_item(item):
-            points = [QgsPoint(float(coord.x), float(coord.y)) for coord in item.vertices]
+            points = [QgsPointXY(float(coord.x), float(coord.y)) for coord in item.vertices]
             # geometry = QgsGeometry.fromPolygon([points])
             geometry = QgsGeometry()
             geometry.addPointsXY(points, QgsWkbTypes.PolygonGeometry)

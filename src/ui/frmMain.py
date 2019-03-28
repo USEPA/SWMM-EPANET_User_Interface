@@ -126,7 +126,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
-        self.auto_length = (self.cbAutoLength.currentIndex == 1)
+        self.auto_length = (self.cbAutoLength.currentIndex() == 1)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -2140,7 +2140,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.crs = crs
             try:
                 self.txtCrs.setText(crs.authid())
-                self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
+                self.map_widget.canvas.mapSettings().setDestinationCrs(crs)
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
                 crs_id = 0
                 for mlayer in self.model_layers.all_layers:

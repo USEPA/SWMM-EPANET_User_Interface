@@ -1186,9 +1186,10 @@ class DefaultsSWMM(ini_setting):
         elif item_type == "Conduit":
             # from core.swmm.hydraulics.link import Conduit
             # item = Conduit()
-            item.length = self.config.value("Defaults/CONDUIT_LENGTH")
-            if item.length is None:
-                item.length = self.parameters_values["CONDUIT_LENGTH"]
+            if item.length < 0.0000001:
+                item.length = self.config.value("Defaults/CONDUIT_LENGTH")
+                if item.length is None:
+                    item.length = self.parameters_values["CONDUIT_LENGTH"]
 
             item.roughness = self.config.value("Defaults/CONDUIT_ROUGHNESS")
             if item.roughness is None:
@@ -1206,9 +1207,10 @@ class DefaultsSWMM(ini_setting):
         elif item_type == "Subcatchment":
             # from core.swmm.hydrology.subcatchment import Subcatchment
             # item = Subcatchment()
-            item.area = self.config.value("Defaults/Area")
-            if item.area is None:
-                item.area = self.properties_sub_values["Area"]
+            if item.area < 0.0000001:
+                item.area = self.config.value("Defaults/Area")
+                if item.area is None:
+                    item.area = self.properties_sub_values["Area"]
 
             item.width = self.config.value("Defaults/Width")
             if item.width is None:

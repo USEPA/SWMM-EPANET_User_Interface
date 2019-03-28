@@ -1173,15 +1173,15 @@ class frmMainSWMM(frmMain):
         frmQ.show()
 
     def map_overview(self):
-        layerset = []
-        layerset.append(self.model_layers.subcatchments.id())
-        layerset.append(self.model_layers.sublinks.id())
-        layerset.append(self.model_layers.conduits.id())
-        layerset.append(self.model_layers.pumps.id())
-        layerset.append(self.model_layers.orifices.id())
-        layerset.append(self.model_layers.weirs.id())
-        layerset.append(self.model_layers.outlets.id())
-        self.map_widget.create_overview(layerset)
+        layers = []
+        layers.append(self.model_layers.subcatchments)
+        layers.append(self.model_layers.sublinks)
+        layers.append(self.model_layers.conduits)
+        layers.append(self.model_layers.pumps)
+        layers.append(self.model_layers.orifices)
+        layers.append(self.model_layers.weirs)
+        layers.append(self.model_layers.outlets)
+        self.map_widget.create_overview(layers)
         pass
 
     def get_editor(self, edit_name):

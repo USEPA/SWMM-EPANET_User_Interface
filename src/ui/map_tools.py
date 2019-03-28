@@ -1755,8 +1755,8 @@ try:
             # Layout optional playground
             layout.setContentsMargins(0, 0, 0, 0)
 
-        def create_overview(self, alayerset):
-            ovw = MapOverview(alayerset, self.canvas)
+        def create_overview(self, alayers):
+            ovw = MapOverview(alayers, self.canvas)
             ovw.exec_()
 
 
@@ -3150,9 +3150,9 @@ try:
 
 
     class MapOverview(QDialog):
-        def __init__(self, layerset_ids, canvas, parent=None, **kwargs):
+        def __init__(self, layers, canvas, parent=None, **kwargs):
             QDialog.__init__(self)
-            self.layerset_ids = layerset_ids
+            self.layers = layers
             self.canvas = canvas
 
             new_dock_widget = QDockWidget(u"Overview")
@@ -3161,7 +3161,7 @@ try:
                 new_dock_widget,
                 self.canvas
             )
-            map_canvas_overview.setLayerSet(self.layerset_ids)
+            map_canvas_overview.setLayers(self.layers)
             # map_canvas_overview.setBackgroundColor(QColor(255, 127, 0))
             map_canvas_overview.setBackgroundColor(QColor(255, 255, 255))
             map_canvas_overview.enableAntiAliasing(True)
@@ -3180,13 +3180,14 @@ try:
             layout.setContentsMargins(0, 0, 0, 0)
 
             self.setWindowTitle('Map Overview')
+            self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
             buttonBox = QDialogButtonBox(QDialogButtonBox.Close)
 
             layout.addWidget(new_dock_widget)
             layout.addWidget(buttonBox)
 
-            self.buttonBox.accepted.connect(self.accept)
-            self.buttonBox.rejected.connect(self.reject)
+            buttonBox.accepted.connect(self.accept)
+            buttonBox.rejected.connect(self.reject)
 
             layout.setContentsMargins(10, 10, 10, 10)
             self.setLayout(layout)

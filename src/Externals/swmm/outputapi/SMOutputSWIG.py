@@ -101,13 +101,13 @@ class SwmmOutputCategoryBase:
         tseries = None
         try:
             if attribute.smo_type == _lib.SMO_subcatch:
-                tseries = _lib.getsubcatchseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getsubcatchseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_node:
-                tseries = _lib.getnodeseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getnodeseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_link:
-                tseries = _lib.getlinkseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getlinkseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_sys:
-                tseries = _lib.getsystemseries(output.ptrapi, self._index, attribute, start_index, output.num_periods)
+                tseries = _lib.getsystemseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
         except Exception as e:
             print("Error reading series " + self.type_label + " " + str(self.name) + ', att #' + str(attribute.index))
             msg_buf = ""
@@ -411,7 +411,7 @@ class SwmmOutputObject(object):
         self._get_times()
 
         self.pollutants = SwmmOutputPollutant.read_all(self)
-        output_pollutants_units = _lib.getpollutantunits(self.ptrapi)
+        output_pollutants_units = _lib.getunits(self.ptrapi)[1:]
         if len(output_pollutants_units) == len(self.pollutants.values()):
             for pollutant in self.pollutants.values():
                 # pollutant.units = SwmmOutputPollutant.all_units[self._call_int(_lib.getpollutantunits, pollutant._index)]
@@ -452,7 +452,7 @@ class SwmmOutputObject(object):
                 self._raise_error(ret)
         except Exception as ex:
             print(str(ex))
-            raise Exception("SWMM output error calling " + str(function) + ": " + str(ex))
+            raise Exception("SWMM output error calling " + str(func) + ": " + str(ex))
 
     def _raise_error(self, ErrNo):
         # if _RetErrMessage(ErrNo , errmsg, err_max_char)==0:
@@ -477,7 +477,7 @@ class SwmmOutputObject(object):
         Purpose: Reads flow unit index into self.flowUnits, sets self.unit_system and self.flowUnitsLabel
         """
         # self.flowUnits = self._call_int(_lib.smo_get_flow_units, _lib.SMO_flow_rate)
-        self.flowUnits = _lib.getflowunits(self.ptrapi)
+        self.flowUnits = _lib.getunits(self.ptrapi)[0]
         if self.flowUnits < len(SMO_USFlowUnits):
             self.unit_system = SMO_UnitsUS
             self.flowUnitsLabel = SMO_USFlowUnits[self.flowUnits]

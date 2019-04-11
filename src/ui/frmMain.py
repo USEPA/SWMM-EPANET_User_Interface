@@ -2049,6 +2049,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.setWindowTitle(self.model + " - " + file_only)
 
     def new_project(self):
+        self.time_widget.setVisible(False)
         self.open_project_quiet(None)
 
     def open_project(self):

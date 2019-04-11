@@ -23,6 +23,7 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.cmdFind.clicked.connect(self.cmdFind_Clicked)
+        self.InDirectionOfFlow = True
 
     def set_from(self, project, output):
         self.project = project
@@ -50,6 +51,7 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         self.lstData.clear()
         start_node = str(self.cboStart.currentText())
         end_node = str(self.cboEnd.currentText())
+        self.InDirectionOfFlow = True
 
         current_node = start_node
         counter = 0
@@ -61,6 +63,32 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
                         if link.inlet_node == current_node and current_node != end_node:
                             self.lstData.addItem(link.name)
                             current_node = link.outlet_node
+
+        if self.lstData.count() == 0:
+            # try the reverse order
+            self.InDirectionOfFlow = False
+            start_node = str(self.cboEnd.currentText())
+            end_node = str(self.cboStart.currentText())
+
+            current_node = start_node
+            counter = 0
+            while current_node != end_node and counter < 1000:
+                counter += 1
+                for link_group in self.project.links_groups():
+                    if link_group and link_group.value:
+                        for link in link_group.value:
+                            if link.inlet_node == current_node and current_node != end_node:
+                                self.lstData.addItem(link.name)
+                                current_node = link.outlet_node
+            if self.lstData.count() > 0:
+                # reverse the order
+                temp_order = []
+                for index in range(0, self.lstData.count()):
+                    temp_order.append(self.lstData.item(index).text())
+                temp_order.reverse()
+                self.lstData.clear()
+                for item in temp_order:
+                    self.lstData.addItem(item)
 
     def cmdSave_Clicked(self):
         cb = QApplication.clipboard()
@@ -79,6 +107,9 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
 
     def cmdOK_Clicked(self):
         # Profile plot based on 'Basic HGL 2-D Video Profile Plot Script by Bryant E. McDonnell'
+
+        if self.lstData.count() == 0:
+            return
 
         import matplotlib.pyplot as plt
         import matplotlib.animation as animation
@@ -110,7 +141,10 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         for link_name in LKsToPlot:
             try:
                 link = self.project.find_link(link_name)
-                nodes = (link.inlet_node, link.outlet_node)
+                if self.InDirectionOfFlow:
+                    nodes = (link.inlet_node, link.outlet_node)
+                else:
+                    nodes = (link.outlet_node, link.inlet_node)
                 diameter = 0
                 for cross_section in self.project.xsections.value:
                     if cross_section.link == link_name:
@@ -126,9 +160,14 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
                     outlet_offset = link.outlet_offset
                 LKsToPlotData[link_name] = [nodes, length, diameter, inlet_offset, outlet_offset]
                 # this is also a convenient place to record the start and end nodes for use in the title
-                if len(start_node) == 0:
-                    start_node = link.inlet_node
-                end_node = link.outlet_node
+                if self.InDirectionOfFlow:
+                    if len(start_node) == 0:
+                        start_node = link.inlet_node
+                    end_node = link.outlet_node
+                else:
+                    if len(start_node) == 0:
+                        start_node = link.outlet_node
+                    end_node = link.inlet_node
             except:
                 pass  # probably did not find link in this group, move on to the next group
 

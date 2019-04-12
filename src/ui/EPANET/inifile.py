@@ -203,7 +203,7 @@ class DefaultsEPANET(ini_setting):
             if item.initial_level is None:
                 item.initial_level = self.properties_values["Tank Height"]
         elif item_type == "Pipe":
-            if item.length < 0.00000001:
+            if float(item.length) < 0.00000001:
                 item.length = self.config.value("Defaults/Pipe Length")
                 if item.length is None:
                     item.length = self.properties_values["Pipe Length"]

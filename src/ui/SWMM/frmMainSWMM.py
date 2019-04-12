@@ -1373,9 +1373,12 @@ class frmMainSWMM(frmMain):
         #             self.project.curves.value.remove(value)
 
     def run_simulation(self):
-        self.output = None
+        if self.output:
+            self.output.close()
+            self.output = None
         # First find input file to run
-        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
+        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name) and \
+                       os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
             ts = QtCore.QTime.currentTime().toString().replace(":", "_")
@@ -1385,8 +1388,11 @@ class frmMainSWMM(frmMain):
             # TODO: decide whether to automatically save to temp location as previous version did.
         elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
-            if self.save_project_as():
+            new_name = self.save_project_as()
+            if new_name:
                 use_existing = True
+                self.project.file_name = new_name
+                self.project.file_name_temporary = self.project.file_name
             else:
                 return None
         else:

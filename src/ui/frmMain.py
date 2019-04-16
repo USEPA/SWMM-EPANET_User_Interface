@@ -2166,7 +2166,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             new_name = self.save_project_as()
             if new_name:
                 self.project.file_name = new_name
-                return
+            return
         if not file_name:
             file_name = self.project.file_name
         if file_name.endswith('*'):

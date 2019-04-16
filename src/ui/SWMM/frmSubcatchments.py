@@ -264,6 +264,8 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        for fs in self._main_form.model_layers.subcatchments.getFeatures():
+            self._main_form.model_layers.create_subcatchment_link(fs)
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -86,6 +86,7 @@ class frmOrifices(frmGenericPropertyEditor):
                     value.geometry1 = str(self.tblGeneric.item(7, column).text())
                     value.geometry2 = str(self.tblGeneric.item(8, column).text())
         self._main_form.list_objects()
+        self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

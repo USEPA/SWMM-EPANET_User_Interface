@@ -16,6 +16,7 @@ class frmRainGages(frmGenericPropertyEditor):
                                           edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
         self.help_topic = "swmm/src/src/raingageproperties.htm"
         self.refresh_column = -1
+        self.session = session
 
         for column in range(0, self.tblGeneric.columnCount()):
             # show current and available timeseries in combo box
@@ -32,6 +33,7 @@ class frmRainGages(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self.session.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

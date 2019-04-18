@@ -605,8 +605,11 @@ try:
         @staticmethod
         def point_feature_from_item(item):
             feature = QgsFeature()
+            feature.initAttributes(6)
             feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(float(item.x), float(item.y))))
-            feature.setAttributes([item.name, '0, 0, 0', 0.0])
+            feature.setAttributes([item.name, '0, 0, 0', 0.0, False, False, 10.0, ''])
+            if hasattr(item, 'bold') and hasattr(item, 'italic') and hasattr(item, 'size') and hasattr(item, 'font'):
+                feature.setAttributes([item.name, '0, 0, 0', 0.0, item.bold, item.italic, item.size, item.font])
             return feature
 
         @staticmethod
@@ -659,7 +662,11 @@ try:
                 else:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                             QgsField("color", QtCore.QVariant.String),
-                                            QgsField("value", QtCore.QVariant.Double)])
+                                            QgsField("value", QtCore.QVariant.Double),
+                                            QgsField("bold", QtCore.QVariant.Bool),
+                                            QgsField("italic", QtCore.QVariant.Bool),
+                                            QgsField("size", QtCore.QVariant.Double),
+                                            QgsField("font", QtCore.QVariant.String)])
                 layer.updateFields()
 
                 features = []
@@ -756,6 +763,47 @@ try:
                     # symbol_layer.setOutlineColor(QColor('transparent'))
                     # symbol_layer.setColor(QColor('transparent'))
                     symbol_layer.setEnabled(False)
+
+                    # new code to implement bold, italics, font
+                    provider = layer.dataProvider()
+                    for feature in provider.getFeatures():
+                        font_name = QFont().family()
+                        format = pal_layer.format()
+                        font = format.font()
+                        isBold = feature[3]
+                        isItalic = feature[4]
+                        font_size = 10
+                        if float(feature[5]):
+                            font_size = float(feature[5])
+                        if len(str(feature[6])) > 0:
+                            font_name = str(feature[6])
+                        font.setFamily(font_name)
+                        font.setBold(isBold)
+                        font.setItalic(isItalic)
+                        format.setFont(font)
+                        format.setSize(font_size)
+                        pal_layer.setFormat(format)
+
+                    pc = QgsPropertyCollection('ddp')
+
+                    qgs_prop_bold = QgsProperty()
+                    qgs_prop_bold.setField("bold")
+                    pc.setProperty(1, qgs_prop_bold)
+
+                    qgs_prop_italic = QgsProperty()
+                    qgs_prop_italic.setField("italic")
+                    pc.setProperty(2, qgs_prop_italic)
+
+                    qgs_prop_size = QgsProperty()
+                    qgs_prop_size.setField("size")
+                    pc.setProperty(0, qgs_prop_size)
+
+                    qgs_prop_font = QgsProperty()
+                    qgs_prop_font.setField("family")
+                    pc.setProperty(6, qgs_prop_font)
+
+                    pal_layer.setDataDefinedProperties(pc)
+
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size

@@ -1,6 +1,6 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
-from PyQt5.QtWidgets import QCheckBox, QComboBox, QTableWidgetItem, QLineEdit
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QTableWidgetItem, QLineEdit, QFontComboBox, QSizePolicy
 from enum import Enum
 import ui.convenience
 
@@ -38,6 +38,16 @@ class PropertyEditorBackend:
                         combobox = QComboBox()
                         ui.convenience.set_combo_items(type(value), combobox)
                         ui.convenience.set_combo(combobox, value)
+                        self.table.setCellWidget(row, column, combobox)
+                    elif meta_item.attribute == 'font':
+                        combobox = QFontComboBox()
+                        combobox.setCurrentText(value)
+                        size_policy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+                        size_policy.setHorizontalStretch(0)
+                        size_policy.setVerticalStretch(0)
+                        combobox.setSizePolicy(size_policy)
+                        combobox.setMinimumSize(QtCore.QSize(50, 22))
+                        combobox.setMaximumSize(QtCore.QSize(16777215, 1010))
                         self.table.setCellWidget(row, column, combobox)
                     else:
                         # print "row " + str(row) + " col " + str(column) + " = " + str(value)

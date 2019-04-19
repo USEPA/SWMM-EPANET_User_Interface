@@ -516,6 +516,79 @@ try:
             # self.layer_properties_widget.setMapCanvas(self.canvas)
             # self.layer_properties_widget.show()
 
+        def move_labels_to_anchor_nodes(self, project, labels_layer):
+            # if anchor nodes in use, move labels accordingly to anchor nodes
+            # if not self.map_widget.canvas.extent().contains(self.map_widget.canvas.fullExtent()):
+            for label in project.labels.value:
+                if len(label.anchor_name) > 0:
+                    # have an anchor node name, make sure it is real
+                    found_node = False
+                    found_x = 0.0
+                    found_y = 0.0
+                    if hasattr(project,'junctions'):
+                        for point in project.junctions.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'outfalls'):
+                        for point in project.outfalls.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'dividers'):
+                        for point in project.dividers.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'storage'):
+                        for point in project.storage.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'raingages'):
+                        for point in project.raingages.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'subcentroids'):
+                        for point in project.subcentroids.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'reservoirs'):
+                        for point in project.reservoirs.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'tanks'):
+                        for point in project.tanks.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+                    if hasattr(project, 'sources'):
+                        for point in project.sources.value:
+                            if point.name == label.anchor_name:
+                                found_node = True
+                                found_x = point.x
+                                found_y = point.y
+
+                    if found_node:
+                        # now move the label point
+                        index = 0
+                        for feature in labels_layer.dataProvider().getFeatures():
+                            index += 1
+                            if feature[0] == label.name:
+                                labels_layer.startEditing()
+                                labels_layer.changeGeometry(index, QgsGeometry.fromPointXY(QgsPointXY(float(found_x), float(found_y))), True)
+                                labels_layer.commitChanges()
 
         def zoomfull(self):
             self.canvas.zoomToFullExtent()

@@ -1682,6 +1682,7 @@ class ModelLayersSWMM(ModelLayers):
         self.set_lists()
         self.create_subcatchment_links(project)
         self.create_spatial_index()
+        self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
 
     def create_subcatchment_links(self, project):
         #create centroids

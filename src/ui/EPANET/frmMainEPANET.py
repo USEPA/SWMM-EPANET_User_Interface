@@ -1136,6 +1136,7 @@ class ModelLayersEPANET(ModelLayers):
         self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
         self.set_lists()
+        self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
 
     def find_layer_by_name(self, aname):
         if not aname:

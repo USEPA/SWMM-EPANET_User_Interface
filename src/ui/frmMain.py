@@ -691,6 +691,7 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
+        self.mark_project_as_unsaved()
 
     class _DeleteItem(QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
@@ -1913,7 +1914,34 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def add_object_clicked(self):
         if self.project and self.get_editor:
-            self.add_object(self.tree_section)
+            tool_found = False
+            for act, name in self.add_point_tools:
+                # special cases
+                if name == 'raingages':
+                    name = 'rain gages'
+                elif name == 'storage':
+                    name = 'storage units'
+                elif name == 'labels' and self.model == 'SWMM':
+                    name = 'map labels'
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            for act, name in self.add_link_tools:
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            for act, name in self.add_polygon_tools:
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            if not tool_found:
+                 self.add_object(self.tree_section)
 
     def delete_object_clicked(self):
         if self.project and self.get_editor:

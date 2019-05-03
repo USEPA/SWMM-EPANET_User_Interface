@@ -465,7 +465,8 @@ try:
         def setAddObjectMode(self, action_obj, layer_name, tool_type):
             """Start interactively adding points to point layer layer_name using tool button action_obj"""
             if self.addObjectTool:
-                self.addObjectTool.stopCapturing()
+                if not isinstance(self.addObjectTool,AddPointTool):
+                    self.addObjectTool.stopCapturing()
 
             if action_obj.isChecked():
                 # QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))

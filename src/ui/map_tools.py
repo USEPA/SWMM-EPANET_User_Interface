@@ -2075,6 +2075,8 @@ try:
             if self.captureMode == CaptureTool.CAPTURE_LINE:
                 if len(points) < 2:
                     points = None
+                if self.inlet_node == None or self.outlet_node == None:
+                    points = None
             if self.captureMode == CaptureTool.CAPTURE_POLYGON:
                 if len(points) < 3:
                     points = None
@@ -2084,7 +2086,7 @@ try:
 
             self.stopCapturing()
 
-            if points or self.inlet_node and self.outlet_node:
+            if points or (self.inlet_node and self.outlet_node):
                 new_object = self.object_type()
                 new_object.vertices = []
                 if self.session.auto_length and self.session.crs and self.session.crs.isValid():

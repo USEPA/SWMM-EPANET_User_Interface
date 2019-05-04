@@ -1442,6 +1442,8 @@ class frmMainSWMM(frmMain):
                     frmRun.Execute()
                     # self.add_map_constituents()
                     try:
+                        if model_api.Errflag or (not os.path.exists(self.output_filename)):
+                            return
                         self.output = SMO.SwmmOutputObject(self.output_filename)
                         self.output.build_units_dictionary()
                         self.set_thematic_controls()

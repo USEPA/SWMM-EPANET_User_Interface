@@ -46,6 +46,7 @@ class frmRunEPANET(frmRunSimulation):
         # self.lblIconError.Visible = False
         # self.lblIconError.Left = self.lblIconSuccessful.Left
         # self.lblIconError.Top  = self.lblIconSuccessful.Top
+        self.cmdOK.clicked.connect(self.ok_clicked)
 
         #  Make the ProgressPage be the active page
         # Notebook1.PageIndex = 0
@@ -331,3 +332,6 @@ class frmRunEPANET(frmRunSimulation):
         #     else RunStatus := Uoutput.CheckRunStatus(TempOutputFile)
         #   end
         self.set_status_text(self.StatusLabelDict[self.run_status])
+
+    def ok_clicked(self):
+        self.close()

@@ -27,21 +27,15 @@ class frmRunSWMM(frmRunSimulation):
         self.ErrRunoff = 0.0          # Runoff continuity error
         self.ErrFlow = 0.0       # Flow routing continuity error
         self.ErrQual = 0.0            # Quality routing continuity error
-        self.lblSurface.setText('')
-        self.lblFlow.setText('')
-        self.lblQuality.setText('')
         self.txtSurface.setText('')
         self.txtFlow.setText('')
         self.txtQuality.setText('')
-        # self.fraFinished.setText('')
         self.fraFinished.setVisible(False)
         self.fraRunning.setVisible(True)
-        self.fraFinished.setVisible(False)
         self.StatusLabel.Caption = self.TXT_STATUS_INIT
         self.cmdStop.setVisible(False)
         self.cmdMinimize.setVisible(False)
         self.cmdOK.setVisible(False)
-        self.gbxContinuity.setVisible(False)
 
         #  Initialize placement and status of images on the ResultsPage
         self.lblIconSuccessful.Visible = False
@@ -51,6 +45,7 @@ class frmRunSWMM(frmRunSimulation):
 
         #  Make the ProgressPage be the active page
         # Notebook1.PageIndex = 0
+        self.cmdOK.clicked.connect(self.ok_clicked)
 
     def Execute(self):
         """
@@ -168,18 +163,30 @@ class frmRunSWMM(frmRunSimulation):
                 print("\n\nSWMM completed.\n")
                 self.set_status(RunStatus.rsSuccess)
 
+            if self.model_api.errcode == 0:
+                self.DisplayRunStatus()
+            else:
+                self.fraFinished.setVisible(False)
+
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
-            QMessageBox.information(None, "SWMM", msg, QMessageBox.Ok)
-            self.set_status(RunStatus.rsShutdown)
+            # QMessageBox.information(None, "SWMM", msg, QMessageBox.Ok)
+            # self.set_status(RunStatus.rsShutdown)
         finally:
             try:
                 self.lblSuccessful.setText(self.StatusLabel.text())
                 self.fraRunning.setVisible(False)
-                self.gbxContinuity.setVisible(False)
                 self.fraFinished.setVisible(True)
+                if self.model_api.errcode != 0:
+                    self.lblFlow.setText('')
+                    self.lblSurface.setText('')
+                    self.lblQuality.setText('')
+                    self.txtFlow.setText('')
+                    self.txtSurface.setText('')
+                    self.txtQuality.setText('')
+                    self.gbxContinuity.setVisible(False)
                 self.cmdStop.setVisible(False)
                 self.cmdMinimize.setVisible(False)
                 self.cmdOK.setVisible(True)
@@ -226,19 +233,16 @@ class frmRunSWMM(frmRunSimulation):
             self.gbxContinuity.setVisible(True)
 
         #  Runoff continuity error
-        if self.ErrRunoff != 0.0:
-            self.lblSurface.setText(self.TXT_SURF_RUNOFF)
-            self.txtSurface.setText('%7.2f %%'.format(self.ErrRunoff))
+        self.lblSurface.setText(self.TXT_SURF_RUNOFF)
+        self.txtSurface.setText('{:7.2f} %'.format(self.ErrRunoff))
 
         #  Flow routing continuity error
-        if self.ErrFlow != 0.0:
-            self.lblFlow.setText(self.TXT_FLOW_ROUTING)
-            self.txtFlow.setText('%7.2f %%'.format(self.ErrFlow))
+        self.lblFlow.setText(self.TXT_FLOW_ROUTING)
+        self.txtFlow.setText('{:7.2f} %'.format(self.ErrFlow))
 
         #  Quality routing continuity error
-        if self.ErrQual != 0.0:
-            self.lblQuality.setText(self.TXT_QUAL_ROUTING)
-            self.txtQuality.setText('%7.2f %%'.format(self.ErrQual))
+        self.lblQuality.setText(self.TXT_QUAL_ROUTING)
+        self.txtQuality.setText('{:7.2f} %'.format(self.ErrQual))
 
         #  If no results are available then display the error icon
         # else:
@@ -250,4 +254,13 @@ class frmRunSWMM(frmRunSimulation):
             except:
                 pass
         self.showNormal()
-        self.setWindowState(self.windowState() + QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowState(self.windowState() + QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowState(QtCore.Qt.WindowActive)
+
+    def ok_clicked(self):
+        if self.model_api.Errflag:
+            self._main_form.report_status()
+        self.close()
+        #     #  OnClick procedure for the OK button.
+        #     self.hide()
+        #     self.ModalResult = mrOK

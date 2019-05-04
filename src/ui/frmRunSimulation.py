@@ -84,15 +84,9 @@ class frmRunSimulation(QMainWindow, Ui_frmRunSimulation):
         self.set_status(RunStatus.rsInit)
         self.cmdStop.clicked.connect(self.stop_clicked)
         self.cmdMinimize.clicked.connect(self.minimize_clicked)
-        self.cmdOK.clicked.connect(self.ok_clicked)
+        # self.cmdOK.clicked.connect(self.ok_clicked)
         self._main_form = main_form
         self._last_displayed_days = -1
-
-    def ok_clicked(self):
-        self.close()
-        #     #  OnClick procedure for the OK button.
-        #     self.hide()
-        #     self.ModalResult = mrOK
 
     def minimize_clicked(self):
         #  OnClick procedure for the Minimize button.

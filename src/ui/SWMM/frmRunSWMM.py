@@ -168,25 +168,33 @@ class frmRunSWMM(frmRunSimulation):
                 print("\n\nSWMM completed.\n")
                 self.set_status(RunStatus.rsSuccess)
 
+            self.DisplayRunStatus()
+            self.lblSuccessful.setText(self.StatusLabel.text())
+            self.fraRunning.setVisible(False)
+            self.gbxContinuity.setVisible(True)
+            self.fraFinished.setVisible(True)
+            self.cmdStop.setVisible(False)
+            self.cmdMinimize.setVisible(False)
+            self.cmdOK.setVisible(True)
+            self.update()
+            process_events()
+
+            if self.model_api.Errflag or self.model_api.Warnflag:
+                self._main_form.report_status()
+
+
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
+            self.cmdStop.setVisible(False)
+            self.cmdMinimize.setVisible(False)
+            self.cmdOK.setVisible(True)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
             QMessageBox.information(None, "SWMM", msg, QMessageBox.Ok)
-            self.set_status(RunStatus.rsShutdown)
+            self._main_form.report_status()
+            # self.set_status(RunStatus.rsShutdown)
+            pass
         finally:
-            try:
-                self.lblSuccessful.setText(self.StatusLabel.text())
-                self.fraRunning.setVisible(False)
-                self.gbxContinuity.setVisible(False)
-                self.fraFinished.setVisible(True)
-                self.cmdStop.setVisible(False)
-                self.cmdMinimize.setVisible(False)
-                self.cmdOK.setVisible(True)
-                self.update()
-                process_events()
-            except:  # Ignore exception closing model object
-                pass
             try:
                 # self.model_api.swmm_report()
                 self.model_api.swmm_close()
@@ -228,17 +236,17 @@ class frmRunSWMM(frmRunSimulation):
         #  Runoff continuity error
         if self.ErrRunoff != 0.0:
             self.lblSurface.setText(self.TXT_SURF_RUNOFF)
-            self.txtSurface.setText('%7.2f %%'.format(self.ErrRunoff))
+            self.txtSurface.setText('%7.2f %%' % self.ErrRunoff)
 
         #  Flow routing continuity error
         if self.ErrFlow != 0.0:
             self.lblFlow.setText(self.TXT_FLOW_ROUTING)
-            self.txtFlow.setText('%7.2f %%'.format(self.ErrFlow))
+            self.txtFlow.setText('%7.2f %%' % self.ErrFlow)
 
         #  Quality routing continuity error
         if self.ErrQual != 0.0:
             self.lblQuality.setText(self.TXT_QUAL_ROUTING)
-            self.txtQuality.setText('%7.2f %%'.format(self.ErrQual))
+            self.txtQuality.setText('%7.2f %%' % self.ErrQual)
 
         #  If no results are available then display the error icon
         # else:
@@ -250,4 +258,4 @@ class frmRunSWMM(frmRunSimulation):
             except:
                 pass
         self.showNormal()
-        self.setWindowState(self.windowState() + QtCore.Qt.WindowStaysOnTopHint)
+

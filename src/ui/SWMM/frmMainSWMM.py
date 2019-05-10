@@ -1442,76 +1442,77 @@ class frmMainSWMM(frmMain):
                     frmRun.Execute()
                     # self.add_map_constituents()
                     try:
-                        self.output = SMO.SwmmOutputObject(self.output_filename)
-                        self.output.build_units_dictionary()
-                        self.set_thematic_controls()
-                        self.labelStartTime.setText('0:00')
-                        if self.output:
-                            # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
-                            # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
-                            # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
-                            self.cboDate.currentIndexChanged.disconnect(self._animate_date)
-                            self.cboTime.currentIndexChanged.disconnect(self._animate_time)
-                            self.sbETime.valueChanged.disconnect(self._animate_datetime)
-                            self.cboDate.clear()
-                            self.cboTime.clear()
-                            time_labels = []
-                            date_labels = []
-                            self.animation_dates.clear()
-                            self.animation_time_of_day.clear()
-                            if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
-                                self.cboTime.addItems(["01:00:00"])
-                            else:
-                                td_rep_step = timedelta(seconds = self.output.reportStep)
-                                if td_rep_step.days > 0:
+                        if os.path.isfile(self.output_filename):
+                            self.output = SMO.SwmmOutputObject(self.output_filename)
+                            self.output.build_units_dictionary()
+                            self.set_thematic_controls()
+                            self.labelStartTime.setText('0:00')
+                            if self.output:
+                                # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
+                                # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
+                                # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
+                                self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                                self.cboDate.clear()
+                                self.cboTime.clear()
+                                time_labels = []
+                                date_labels = []
+                                self.animation_dates.clear()
+                                self.animation_time_of_day.clear()
+                                if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
                                     self.cboTime.addItems(["01:00:00"])
                                 else:
-                                    num_periods_in_day, rest = divmod(86400, self.output.reportStep)
-                                    for tod_index in range(0, num_periods_in_day, 1):
-                                        time_div = timedelta(seconds = self.output.reportStep * tod_index)
-                                        hours, remainder = divmod(time_div.seconds, 3600)
-                                        minutes, secs = divmod(remainder, 60)
-                                        time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
-                                        self.animation_time_of_day[tod_index] = time_div
-                                    self.cboTime.addItems(time_labels)
+                                    td_rep_step = timedelta(seconds = self.output.reportStep)
+                                    if td_rep_step.days > 0:
+                                        self.cboTime.addItems(["01:00:00"])
+                                    else:
+                                        num_periods_in_day, rest = divmod(86400, self.output.reportStep)
+                                        for tod_index in range(0, num_periods_in_day, 1):
+                                            time_div = timedelta(seconds = self.output.reportStep * tod_index)
+                                            hours, remainder = divmod(time_div.seconds, 3600)
+                                            minutes, secs = divmod(remainder, 60)
+                                            time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
+                                            self.animation_time_of_day[tod_index] = time_div
+                                        self.cboTime.addItems(time_labels)
 
-                            hr_min_str = ""
-                            dt_str = None
-                            date_ctr = 0
-                            for i in range(0, self.output.num_periods):
-                                # hr_min_str = self.output.get_time_string(i)
-                                # time_labels.append(hr_min_str)
-                                dt = self.output.get_time(i)
-                                if not str(dt.date()) in date_labels:
-                                    date_labels.append(str(dt.date()))
-                                    self.animation_dates[date_ctr] = dt
-                                    date_ctr += 1
+                                hr_min_str = ""
+                                dt_str = None
+                                date_ctr = 0
+                                for i in range(0, self.output.num_periods):
+                                    # hr_min_str = self.output.get_time_string(i)
+                                    # time_labels.append(hr_min_str)
+                                    dt = self.output.get_time(i)
+                                    if not str(dt.date()) in date_labels:
+                                        date_labels.append(str(dt.date()))
+                                        self.animation_dates[date_ctr] = dt
+                                        date_ctr += 1
 
-                            # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
-                            # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
-                            # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
-                            # self.sbETime.setDateTimeRange(qd0, qd1)
-                            # self.sbETime.setDateTime(qdt0)
-                            # self.sbETime.setMinimumDateTime(qdt0)
-                            # self.sbETime.setMaximumDateTime(qdt1)
-                            t_str = str(self.output.get_time(0))
-                            self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
-                            self.cboDate.addItems(date_labels)
-                            self.sbETime.setMaximum(self.output.num_periods)
-                            self.sbETime.setMinimum(0)
-                            # self.labelEndTime.setText(self.project.times.duration)
-                            self.cboDate.setEnabled(True)
-                            self.cboTime.setEnabled(True)
-                            self.sbETime.setEnabled(True)
-                            self.cboDate.currentIndexChanged.connect(self._animate_date)
-                            self.cboTime.currentIndexChanged.connect(self._animate_time)
-                            self.sbETime.valueChanged.connect(self._animate_datetime)
-                        else:
-                            self.cboDate.setEnabled(False)
-                            self.cboTime.setEnabled(False)
-                            self.sbETime.setEnabled(False)
+                                # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                                # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                                # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                                # self.sbETime.setDateTimeRange(qd0, qd1)
+                                # self.sbETime.setDateTime(qdt0)
+                                # self.sbETime.setMinimumDateTime(qdt0)
+                                # self.sbETime.setMaximumDateTime(qdt1)
+                                t_str = str(self.output.get_time(0))
+                                self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
+                                self.cboDate.addItems(date_labels)
+                                self.sbETime.setMaximum(self.output.num_periods)
+                                self.sbETime.setMinimum(0)
+                                # self.labelEndTime.setText(self.project.times.duration)
+                                self.cboDate.setEnabled(True)
+                                self.cboTime.setEnabled(True)
+                                self.sbETime.setEnabled(True)
+                                self.cboDate.currentIndexChanged.connect(self._animate_date)
+                                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                                self.sbETime.valueChanged.connect(self._animate_datetime)
+                            else:
+                                self.cboDate.setEnabled(False)
+                                self.cboTime.setEnabled(False)
+                                self.sbETime.setEnabled(False)
 
-                        return
+                            return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))
                         QMessageBox.information(None, self.model,

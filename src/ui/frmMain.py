@@ -22,7 +22,7 @@ from ui.model_utility import *
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QUndoCommand, QUndoStack, QFileDialog, QVBoxLayout, QAction
-from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QMenu, QInputDialog
+from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QMenu, QInputDialog, QDockWidget
 from .frmMainDesigner import Ui_frmMain
 #from IPython import embed
 #from RestrictedPython import compile_restricted
@@ -122,6 +122,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdWinCascade.triggered.connect(self.cascade_windows)
         self.actionStdWinTile.triggered.connect(self.tile_windows)
         self.actionStdWinCloseAll.triggered.connect(self.close_all_windows)
+        self.actionStdWinCloseAll.setVisible(False)
         self.actionStdMapToggle.triggered.connect(self.study_area_map)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
@@ -138,6 +139,11 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.selecting = Lock()
         self.backdrop_name = ''
         self.qgsa = None
+
+        # remove the close button from the project explorer and object explorer
+        self.dockw_tab.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.dockw_more.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
@@ -213,6 +219,12 @@ class frmMain(QMainWindow, Ui_frmMain):
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
+
+                            # remove the close button from the map
+                            self.map_win.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+                            self.map_win.setWindowFlags(
+                                QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+
                             # self.map_win.map_unit_names = [transl8("frmMain", units, None)
                             #                                for units in self.map_win.map_unit_names]
                             self.actionPan.triggered.connect(self.setQgsMapTool)

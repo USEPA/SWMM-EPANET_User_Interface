@@ -2089,7 +2089,6 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.setWindowTitle(self.model + " - " + file_only)
 
     def new_project(self):
-        self.time_widget.setVisible(False)
         self.open_project_quiet(None)
 
     def open_project(self):
@@ -2117,6 +2116,9 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.map_widget.refresh_extent_needed = True
         self.clear_section_selection()
         self.clear_object_listing()
+        self.time_widget.setVisible(False)
+        self.time_index = 0
+        self.horizontalTimeSlider.setSliderPosition(0)
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
         self.status_file_name = ''  # Set this when model status is available

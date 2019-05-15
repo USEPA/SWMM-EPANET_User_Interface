@@ -291,7 +291,7 @@ class Reports:
                 #     Application.ProcessMessages
                 self.write_link_info()
                 if self.project.pumps:
-                    if self.project.pumps.value.count > 0:
+                    if len(self.project.pumps.value) > 0:
                         self.write_energy()
                 self.write_results()
                 return True

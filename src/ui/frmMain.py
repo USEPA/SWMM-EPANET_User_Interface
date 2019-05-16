@@ -1127,8 +1127,8 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def edit_vertex(self, layer, feature, edit_type, *args):
         if layer:
-            from map_edit import MoveVertexz
-            from map_edit import AddDeleteVertexz
+            from .map_edit import MoveVertexz
+            from .map_edit import AddDeleteVertexz
             if "move" in edit_type.lower():
                 pind = args[0]
                 fx = args[1]

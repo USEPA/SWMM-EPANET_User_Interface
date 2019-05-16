@@ -46,8 +46,10 @@ class frmPipe(frmGenericPropertyEditor):
                     combobox.setCurrentIndex(0)
                 elif edit_these[column].initial_status.upper() == 'CLOSED':
                     combobox.setCurrentIndex(1)
-                else:
+                elif edit_these[column].initial_status.upper() == 'CV':
                     combobox.setCurrentIndex(2)
+                else:
+                    combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(9, column, combobox)
 
     def cmdOK_Clicked(self):

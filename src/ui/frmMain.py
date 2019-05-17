@@ -686,6 +686,8 @@ class frmMain(QMainWindow, Ui_frmMain):
                                 s.outlet = ""
                                 break
                 self.session.map_widget.clearSelectableObjects()
+                section_field_name = self.session.section_types[type(self.item)]
+                self.layer = self.session.model_layers.layer_by_name(section_field_name)
                 self.layer.startEditing()
                 self.layer.dataProvider().deleteFeatures([self.added_id])
                 self.layer.commitChanges()

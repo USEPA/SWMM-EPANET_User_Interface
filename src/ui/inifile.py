@@ -2,33 +2,36 @@ from PyQt5.QtCore import QSettings
 from .model_utility import ParseData
 import os
 
+
 class ini_setting:
     """
     class for managing .ini file and project defaults
     """
     release_mode = False
-    def __init__(self, file_name):
+
+    def __init__(self, file_name, model):
         """
         constructor: read setting values into a QSetting object
         Args:
             file_name: ini file name
         """
         self.file_name = file_name
+        self.model = model
         self.error_msg = ""
         self.groups_with_values = {} # all values read
         self.groups = {} # group names and key names
         self.config = None
-        if self.config is None and os.path.isfile(self.file_name):
-            try:
-                self.config = QSettings(self.file_name, QSettings.IniFormat)
-                self.build_setting_map()
-                print("Read project settings from " + self.file_name)
-            except Exception as exINI:
-                self.config = None
-                self.error_msg = "Reading Error" + ":\n" + str(exINI)
-        else:
-            if file_name:
+        try:
+            if os.path.isfile(self.file_name):
                 self.create_ini_file(file_name)
+            else:
+                self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+            self.file_name = self.config.fileName()
+            self.build_setting_map()
+            print("Read project settings from " + self.file_name)
+        except Exception as exINI:
+            self.config = None
+            self.error_msg = "Reading Error" + ":\n" + str(exINI)
 
     def create_ini_file(self, file_name):
         """
@@ -47,7 +50,7 @@ class ini_setting:
                 self.config = QSettings(file_name, QSettings.IniFormat)
                 if len(self.config.allKeys()) == 0:
                     # this is a brand new ini file
-                    self.config.setValue("Model/Name", "")
+                    self.config.setValue("Model/Name", self.model)
                     self.config.sync()
                     print("created ini file: " + file_name)
                 else:

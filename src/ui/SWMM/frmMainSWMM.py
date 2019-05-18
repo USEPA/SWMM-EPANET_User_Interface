@@ -273,7 +273,7 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
-        self.project_settings = DefaultsSWMM("", self.project)
+        self.project_settings = DefaultsSWMM("", self.project, self.program_settings)
         self.tree_types = {
             self.tree_hydrology_Subcatchments[0]: Subcatchment,
             self.tree_hydrology_RainGages[0]: RainGage,

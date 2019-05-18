@@ -53,10 +53,11 @@ class EPROPERTY_PIPE(Enum):
 
 
 class DefaultsEPANET(ini_setting):
-    def __init__(self, file_name, project):
-        ini_setting.__init__(self, file_name)
-        self.project = project
+    def __init__(self, file_name, project, program_setting):
         self.model = "epanet"
+        self.project = project
+        self.program_settings = program_setting
+        ini_setting.__init__(self, file_name, self.model)
 
         # [Labels] label prefix
         self.model_object_keys = ["Junctions", "Reservoirs", "Tanks", "Pipes", "Pumps", "Valves", "Patterns", "Curves"]
@@ -77,6 +78,9 @@ class DefaultsEPANET(ini_setting):
                            "Emitter Exponent", "Status Report", "Check Frequency", "Max Check", "Damp Limit"]
         self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "CONTINUE", 1, 1.0, 0.5, "Yes",
                                       2, 10, 0.0]
+
+        if self.config is None:
+            self.init_config()
 
         self.model_object_prefix = {}
         for key in self.model_object_keys:
@@ -106,13 +110,12 @@ class DefaultsEPANET(ini_setting):
                 if val is not None:
                     self.parameters_values[key] = val
 
-        if self.config is None:
-            self.init_config()
-
     def init_config(self):
         # if a new qsettings has not been created such as when no project is created
         # then, create an empty qsettings
-        self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        if self.config is None:
+            self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        '''
         self.config.setValue("Model/Name", self.model)
         for key in self.model_object_keys:
             self.config.setValue("Labels/" + key, self.model_object_prefix[key])
@@ -120,6 +123,7 @@ class DefaultsEPANET(ini_setting):
             self.config.setValue("Defaults/" + key, self.properties_values[key])
         for key in self.parameters_keys:
             self.config.setValue("Defaults/" + key, self.parameters_values[key])
+        '''
 
     def sync_defaults_label(self):
         """
@@ -130,6 +134,7 @@ class DefaultsEPANET(ini_setting):
                 self.config.setValue("Labels/" + key, self.model_object_prefix[key])
         if self.config:
             self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
+            self.config.sync()
 
     def sync_defaults_property(self):
         """
@@ -138,6 +143,8 @@ class DefaultsEPANET(ini_setting):
         for key in self.properties_keys:
             if self.config:
                 self.config.setValue("Defaults/" + key, self.properties_values[key])
+        if self.config:
+            self.config.sync()
 
     def sync_defaults_parameter(self):
         """

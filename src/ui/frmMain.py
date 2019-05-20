@@ -48,7 +48,7 @@ class frmMain(QMainWindow, Ui_frmMain):
     def __init__(self, q_application):
         QMainWindow.__init__(self, None)
         self.crs = None
-        self.project_settings = None
+        # self.project_settings = None
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
         self.status_file_name = ''  # Set this when model status is available
@@ -2147,10 +2147,10 @@ class frmMain(QMainWindow, Ui_frmMain):
                 try:
                     if "EPANET" in self.model.upper():
                         from ui.EPANET.inifile import DefaultsEPANET
-                        self.project_settings = DefaultsEPANET(ini_file_name, self.project)
+                        self.project_settings = DefaultsEPANET(ini_file_name, self.project, self.program_settings)
                     elif "SWMM" in self.model.upper():
                         from ui.SWMM.inifile import DefaultsSWMM
-                        self.project_settings = DefaultsSWMM(ini_file_name, self.project)
+                        self.project_settings = DefaultsSWMM(ini_file_name, self.project, self.program_settings)
                 except Exception as exINI:
                     self.project_settings = None
                     print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
@@ -2164,10 +2164,10 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.setWindowTitle(self.model + " - New")
             if "EPANET" in self.model.upper():
                 from ui.EPANET.inifile import DefaultsEPANET
-                self.project_settings = DefaultsEPANET("", self.project)
+                self.project_settings = DefaultsEPANET("", self.project, self.program_settings)
             elif "SWMM" in self.model.upper():
                 from ui.SWMM.inifile import DefaultsSWMM
-                self.project_settings = DefaultsSWMM("", self.project)
+                self.project_settings = DefaultsSWMM("", self.project, self.program_settings)
 
     def open_prj(self, projection_file_name):
         if os.path.isfile(projection_file_name):

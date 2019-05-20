@@ -926,10 +926,11 @@ def ExtractValues(S, N1, N2, X):
 
 from ui.inifile import ini_setting
 class DefaultsSWMM(ini_setting):
-    def __init__(self, file_name, project):
-        ini_setting.__init__(self, file_name)
-        self.project = project
+    def __init__(self, file_name, project, program_setting):
         self.model = "swmm"
+        self.project = project
+        self.program_settings = program_setting
+        ini_setting.__init__(self, file_name, self.model)
 
         # [Labels] label prefix
         self.model_object_keys = ["Rain Gage", "Subcatchment", "Junction", "Outfall", "Divider",
@@ -1047,7 +1048,9 @@ class DefaultsSWMM(ini_setting):
     def init_config(self):
         # if a new qsettings has not been created such as when no project is created
         # then, create an empty qsettings
-        self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        if self.config is None:
+            self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        '''
         self.config.setValue("Model/Name", self.model)
         for key in self.model_object_keys:
             self.config.setValue("Labels/" + key, self.model_object_prefix[key])
@@ -1055,6 +1058,7 @@ class DefaultsSWMM(ini_setting):
             self.config.setValue("Defaults/" + self.keyprefix_subcatch + key, self.properties_sub_values[key])
         for key in self.parameters_keys:
             self.config.setValue("Defaults/" + key, self.parameters_values[key])
+        '''
 
     def sync_defaults_label(self):
         """
@@ -1065,6 +1069,7 @@ class DefaultsSWMM(ini_setting):
                 self.config.setValue("Labels/" + key, self.model_object_prefix[key])
         if self.config:
             self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
+            self.config.sync()
 
     def sync_defaults_sub_property(self):
         """

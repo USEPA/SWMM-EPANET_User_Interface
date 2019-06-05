@@ -1,0 +1,64 @@
+/* Text Styles */
+hr { color: #000000}
+body, table, tr, th /* Normal */
+{
+ font-size: 10pt;
+ font-family: 'Arial';
+ font-style: normal;
+ font-weight: normal;
+ color: #000000;
+ text-decoration: none;
+}
+span.f_CodeExample /* Code Example */
+{
+ font-size: 8pt;
+ font-family: 'Courier New';
+}
+span.f_Comment /* Comment */
+{
+}
+span.f_Heading1 /* Heading1 */
+{
+ font-size: 12pt;
+ font-weight: bold;
+ color: #ffffff;
+}
+span.f_ImageCaption /* Image Caption */
+{
+ font-size: 8pt;
+ font-weight: bold;
+}
+span.f_Notes /* Notes */
+{
+}
+span.f_Textforpopuptopics /* Text for popup topics */
+{
+ font-size: 9pt;
+}
+/* Paragraph styles */
+p /* Normal */
+{
+ text-align: left;
+ text-indent: 0px;
+ padding: 0px 0px 0px 0px;
+ margin: 0px 0px 0px 0px;
+}
+.p_CodeExample /* Code Example */
+{
+ white-space: nowrap;
+}
+.p_Comment /* Comment */
+{
+}
+.p_Heading1 /* Heading1 */
+{
+}
+.p_ImageCaption /* Image Caption */
+{
+}
+.p_Notes /* Notes */
+{
+}
+.p_Textforpopuptopics /* Text for popup topics */
+{
+}

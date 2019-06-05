@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Land Use Editor - Buildup Page</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Land Use Editor - Buildup Page</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="landuseeditorgeneralpage.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="landuseeditorwashoffpage.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Buildup</span> page of the Land Use Editor dialog describes the properties associated with pollutant buildup over the land during dry weather periods. These consist of:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Pollutant</span></p>
+<p>Select the pollutant whose buildup properties are being edited.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Function</span></p>
+<p>The type of buildup function to use for the pollutant. The choices are <span style="font-weight: bold;">NONE</span> for no buildup, <span style="font-weight: bold;">POW</span> for power function buildup, <span style="font-weight: bold;">EXP</span> for exponential function buildup, <span style="font-weight: bold;">SAT</span> for saturation function buildup, and <span style="font-weight: bold;">EXT </span>for buildup supplied by an external time series. See the <a href="pollutantbuildup.htm">Pollutant Buildup</a> topic for explanations of these different functions. Select <span style="font-weight: bold;">NONE</span> if no buildup occurs.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Max. Buildup</span></p>
+<p>The maximum buildup that can occur, expressed as lbs (or kg) of the pollutant per unit of the normalizer variable (see below). This is the same as the C1 coefficient used in the buildup formulas discussed under <a href="pollutantbuildup.htm">Pollutant Buildup</a>.</p>
+<p>&nbsp;</p>
+<p><span style="font-style: italic; font-weight: bold;">The following two properties apply to the POW, EXP, and SAT buildup functions:</span></p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Rate Constant</span></p>
+<p>The time constant that governs the rate of pollutant buildup. This is the C2 coefficient in the Power and Exponential buildup formulas discussed under <a href="pollutantbuildup.htm">Pollutant Buildup</a>. For Power buildup its units are mass / days raised to a power, while for Exponential buildup its units are 1/days.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Power/Sat. Constant</span></p>
+<p>The exponent C3 used in the Power buildup formula, or the half-saturation constant C2 used in the Saturation buildup formula discussed under <a href="pollutantbuildup.htm">Pollutant Buildup</a>. For the latter case, its units are days.</p>
+<p>&nbsp;</p>
+<p><span style="font-style: italic; font-weight: bold;">The following two properties apply to the External Time Series option:</span></p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Scaling Factor</span></p>
+<p>A multiplier used to adjust the buildup rates listed in the time series.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Time Series</span></p>
+<p>The name of the Time Series that contains buildup rates (as mass per normalizer per day).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Normalizer</span></p>
+<p>The variable to which buildup is normalized on a per unit basis. The choices are either land area (in acres or hectares) or curb length. Any units of measure can be used for curb length, as long as they remain the same for all subcatchments in the project.</p>
+<p>&nbsp;</p>
+<p>When there are multiple pollutants, the user must select each pollutant separately from the Pollutant dropdown list and specify its pertinent buildup properties.</p>
+
+</div>
+
+</body>
+</html>

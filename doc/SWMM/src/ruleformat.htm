@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Rule Format</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Control Rules,Control Rules Rule Format">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Rule Format</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="examplerules.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="conditionclauses.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>Each control rule is a series of statements of the form:</p>
+<p>&nbsp;</p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">RULE</span><span style="font-family: 'Courier New';"> &nbsp;ruleID</span></p>
+<p><span style="font-family: 'Courier New';">&nbsp;</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">IF</span><span style="font-family: 'Courier New';"> &nbsp; &nbsp;condition_1</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">AND</span><span style="font-family: 'Courier New';"> &nbsp; condition_2</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">OR &nbsp;  </span><span style="font-family: 'Courier New';">condition_3</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">AND</span><span style="font-family: 'Courier New';"> &nbsp; condition_4</span></p>
+<p><span style="font-family: 'Courier New';">Etc.</span></p>
+<p><span style="font-family: 'Courier New';">&nbsp;</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">THEN</span><span style="font-family: 'Courier New';"> &nbsp;action_1</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">AND</span><span style="font-family: 'Courier New';"> &nbsp; action_2</span></p>
+<p><span style="font-family: 'Courier New';">Etc.</span></p>
+<p><span style="font-family: 'Courier New';">&nbsp;</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">ELSE</span><span style="font-family: 'Courier New';"> &nbsp;action_3</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">AND</span><span style="font-family: 'Courier New';"> &nbsp; action_4</span></p>
+<p><span style="font-family: 'Courier New';">Etc.</span></p>
+<p><span style="font-family: 'Courier New';">&nbsp;</span></p>
+<p><span style="font-family: 'Courier New'; font-weight: bold;">PRIORITY</span><span style="font-family: 'Courier New';"> value</span></p>
+<p>&nbsp;</p>
+<p>where keywords are shown in boldface and <span style="font-family: 'Courier New';">ruleID</span> is an ID label assigned to the rule, <span style="font-family: 'Courier New';">condition_n</span> is a <a href="conditionclauses.htm">Condition Clause</a>, <span style="font-family: 'Courier New';">action_n </span>is an <a href="actionclauses.htm">Action Clause</a>, and <span style="font-family: 'Courier New';">value</span> is a priority value (e.g., a number from 1 to 5).</p>
+<p>&nbsp;</p>
+<p>Each rule clause must begin with one of the boldface keywords shown above, and only one clause per line is allowed.</p>
+<p>&nbsp;</p>
+<p>Only the <span style="font-family: 'Courier New'; font-weight: bold;">RULE</span>, <span style="font-family: 'Courier New'; font-weight: bold;">IF</span> and <span style="font-family: 'Courier New'; font-weight: bold;">THEN</span> portions of a rule are required; the <span style="font-family: 'Courier New'; font-weight: bold;">ELSE</span> and <span style="font-family: 'Courier New'; font-weight: bold;">PRIORITY</span> portions are optional.</p>
+<p>&nbsp;</p>
+<p>Blank lines between clauses are permitted and any text to the right of a semicolon is considered a comment.</p>
+<p>&nbsp;</p>
+<p>When mixing <span style="font-family: 'Courier New'; font-weight: bold;">AND</span> and <span style="font-family: 'Courier New'; font-weight: bold;">OR</span> clauses, the <span style="font-family: 'Courier New'; font-weight: bold;">OR</span> operator has higher precedence than <span style="font-family: 'Courier New'; font-weight: bold;">AND</span>, i.e.,</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="font-family: 'Courier New';">IF A or B and C</span></p>
+<p>is equivalent to</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="font-family: 'Courier New';">IF (A or B) and C</span>.</p>
+<p>If the interpretation was meant to be</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="font-family: 'Courier New';">IF A or (B and C)</span></p>
+<p>then this can be expressed using two rules as in</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="font-family: 'Courier New';">IF A THEN ...</span></p>
+<p style="margin: 0px 0px 0px 13px;"><span style="font-family: 'Courier New';">IF B and C THEN ...</span></p>
+<p>&nbsp;</p>
+<p>The <span style="font-family: 'Courier New'; font-weight: bold;">PRIORITY</span> value is used to determine which rule applies when two or more rules require that conflicting actions be taken on a link. A conflicting rule with a higher priority value has precedence over one with a lower value (e.g., PRIORITY 5 outranks PRIORITY 1). A rule without a priority value always has a lower priority than one with a value. For two rules with the same priority value, the rule that appears first is given the higher priority.</p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<HTML><HEAD><TITLE>Importing a Partial Network</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P CLASS="BannerBase">
+<SPAN  STYLE="color: #0000ff; ">Importing a Partial Network</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+EPANET has the ability to import a geometric description of a pipe network in a format similar to that in which it exports a full network database to a text file. This description simply contains the ID labels and map coordinates of the nodes, the ID labels and end nodes of the links, and any intermediate vertex points associated with links. This simplifies the process of using other programs, such as CAD and GIS packages, to digitize network geometric data and then transfer these data to EPANET.</P>
+<P CLASS="Base">
+The format of a partial network text file looks as follows, where the text between brackets (&lt; &gt;) describes what type of information appears in that line of the file:</P><TABLE CELLPADDING="2" CELLSPACING="2">
+<TR><TD WIDTH="192">
+<P STYLE="font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">[TITLE]</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&lt;optional description of the file&gt;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&nbsp;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+[JUNCTIONS]</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&lt;ID label of each junction&gt;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&nbsp;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+[PIPES]</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&lt;ID label of each pipe followed by the IDs of its starting and ending junctions&gt;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&nbsp;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+[COORDINATES]</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&lt;Junction ID and its X and Y coordinates&gt;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Times New Roman,serif; ">
+</SPAN>&nbsp;</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+[VERTICES]</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">
+</SPAN>&lt;Pipe ID and the X and Y coordinates of an intermediate vertex point (use a separate line for each vertex)&gt;</P></TD></TR></TABLE>
+
+<P CLASS="Base">
+Note that only junctions and pipes are represented. Other network elements, such as reservoirs and pumps, can either be imported as junctions or pipes and converted later on or simply be added in later on. The user is responsible for transferring any data generated from a CAD or GIS package into a text file with the format shown above.</P>
+<P CLASS="Base">
+<SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">In addition to this partial representation, a complete specification of the network can be placed in a file using the same format </SPAN>EPANET uses when a project is exported to a text file (see <A HREF="Expo0026.htm">Exporting to Text File</A>). In this case the file would also contain information on node and link properties, such as elevations, demands, diameters, roughness, etc.</P>
+<P CLASS="Base">
+&nbsp;</P><!--ForeHelp.Ignore-->
+<!--ForeHelp.Browse NAME="import/export" PREV="Exportin.htm" NEXT="Impo0024.htm"-->
+<BR CLEAR><HR><TABLE WIDTH="100%"><TR>
+<TD ALIGN="LEFT" WIDTH="33%"><A HREF="Exportin.htm"><IMG SRC="prev.gif" ALIGN="BOTTOM" ALT="prev.gif" BORDER=0></A>
+<A HREF="Impo0024.htm"><IMG SRC="next.gif" ALIGN="BOTTOM" ALT="next.gif" BORDER=0></A></TD>
+<TD ALIGN="CENTER" WIDTH="33%"></TD>
+<TD ALIGN="RIGHT" WIDTH="33%"></TD>
+</TR></TABLE><!--ForeHelp.EndIgnore-->
+
+</BODY></HTML>

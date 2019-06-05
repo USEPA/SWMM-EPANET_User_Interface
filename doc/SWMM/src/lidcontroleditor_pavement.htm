@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>LID Pavement Layer</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">LID Pavement Layer</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="lidcontroleditor_surfacel.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="lidcontroleditor_soillaye.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Pavement Layer</span> page of the <a href="lidcontroleditor.htm">LID Control Editor</a> supplies values for the following properties of a permeable pavement LID:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Thickness</span></p>
+<p>The thickness of the pavement layer (inches or mm). Typical values are 4 to 6 inches (100 to 150 mm).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Void Ratio</span></p>
+<p>The volume of void space relative to the volume of solids in the pavement for continuous systems or for &nbsp;the fill material used in modular systems. Typical values for pavements are 0.12 to 0.21. Note that porosity = void ratio / (1 + void ratio).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Impervious Surface Fraction</span></p>
+<p>Ratio of impervious paver material to total area for modular systems; 0 for continuous porous pavement systems.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Permeability</span></p>
+<p>Permeability of the concrete or asphalt used in continuous systems or hydraulic conductivity of the fill material (gravel or sand) used in modular systems (in/hr or mm/hr). The permeability of new porous concrete or asphalt is very high (e.g., hundreds of in/hr) but can drop off over time due to clogging by fine particulates in the runoff (see below).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Clogging Factor</span></p>
+<p>Number of pavement layer void volumes of runoff treated it takes to completely clog the pavement. Use a value of 0 to ignore clogging. Clogging progressively reduces the pavement's permeability in direct proportion to the cumulative volume of runoff treated.</p>
+<p>&nbsp;</p>
+<p>If one has an estimate of the number of years it takes to fully clog the system (<span style="font-style: italic;">Yclog)</span>, the Clogging Factor can be computed as: <span style="font-style: italic;">Yclog</span> * <span style="font-style: italic;">Pa * CR * (1 + VR) * (1 - ISF) / (T * VR) </span>where <span style="font-style: italic;">Pa </span>is the annual rainfall amount over the site, <span style="font-style: italic;">CR</span> is the pavement's capture ratio (area that contributes runoff to the pavement divided by area of the pavement itself), <span style="font-style: italic;">VR</span> is the system's Void Ratio, <span style="font-style: italic;">ISF</span> is the Impervious Surface Fraction, and <span style="font-style: italic;">T </span>is the pavement layer Thickness.</p>
+<p>&nbsp;</p>
+<p>As an example, suppose it takes 5 years to clog a continuous porous pavement system that serves an area where the annual rainfall is 36 inches/year. If the pavement is 6 inches thick, has a void ratio of 0.2 and captures runoff only from its own surface, then the Clogging Factor is 5 x 36 x (1 + 0.2) / 6 / 0.2 = 180.</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

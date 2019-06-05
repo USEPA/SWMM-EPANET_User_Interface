@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Direct Inflow Page</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Direct Inflow Page</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="inflowseditordialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="dryweatherinfloweditor.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Direct</span> page on the <a href="inflowseditordialog.htm">Inflows Editor</a> dialog is used to specify the time history of direct external flow and water quality entering a node of the drainage system. These inflows are represented by both a constant and time varying component as follows:</p>
+<p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table cellspacing="0" cellpadding="0" border="0" style="border: none; border-spacing:0px;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="30" style="width:30px;"><br>
+</td>
+<td valign="top" width="103" style="width:103px;"><p><span style="font-style: italic;">Inflow at time t =</span></p>
+</td>
+<td valign="top" width="266" style="width:266px;"><p><span style="font-style: italic;">(baseline value)*(baseline pattern factor) +</span></p>
+<p><span style="font-style: italic;">(scale factor) * (time series value at time t)</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p>&nbsp;</p>
+<p>The page contains the following input fields that define the properties of this relation:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Constituent</span></p>
+<p>Selects the constituent (FLOW or one of the project's named pollutants) whose direct inflow will be described.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Baseline</span></p>
+<p>Specifies the value of the constant baseline component of the constituent's inflow. For FLOW, the units are the project's flow units. For pollutants, the units are the pollutant's concentration units if inflow is a concentration, or can be any mass flow units if the inflow is a mass flow (see <span style="font-weight: bold;">Units Factor</span> below). If left blank then no baseline inflow is assumed.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Baseline Pattern</span></p>
+<p>An optional <a href="timepatterns.htm">Time Pattern</a> whose factors adjust the baseline inflow on either an hourly, daily, or monthly basis (depending on the type of time pattern specified). Clicking the <img src="editbtn.png" width="24" height="24" border="0" alt="EditBtn"> button will bring up the <a href="timepatterneditordialog.htm">Time Pattern Editor</a> dialog for the selected time pattern. If left blank, then no adjustment is made to the baseline inflow.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Time Series</span></p>
+<p>The name of the time series that describes the time varying component of the constituent's inflow. If left blank then no time varying inflow is assumed. Clicking the <img src="editbtn.png" width="24" height="24" border="0" alt="EditBtn"> button will bring up the <a href="timeserieseditordialog.htm">Time Series Editor</a> dialog for the selected time series. The units of the time series values obey the same convention as described above for <span style="font-weight: bold;">Baseline</span> inflow.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Scale Factor</span></p>
+<p>A multiplier used to adjust the values of the constituent's inflow time series. The baseline value <span style="text-decoration: underline;">is not</span> adjusted by this factor. The scale factor can have several uses, such as allowing one to easily change the magnitude of an inflow hydrograph while keeping its shape the same, without having to re-edit the entries in the hydrograph's time series. Or it can allow a group of nodes sharing the same time series to have their inflows behave in a time-synchronized fashion while letting their individual magnitudes be different. If left blank the scale factor defaults to 1.0.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Inflow Type</span></p>
+<p>For pollutants, this field selects the type of inflow data as being either a CONCENTRATION (mass/volume) or a MASS FLOW RATE (mass/time). This field does not appear for FLOW inflow.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Units Factor</span></p>
+<p>A numerical factor used to convert the units of pollutant mass flow rate into concentration mass units per second. For example, if the inflow data were in lbs/day and the pollutant concentration was chosen as mg/L, then the conversion factor value would be (453,590 mg/lb) / (86,400 sec/day) = 5.25 (mg/sec) per (lb/day). This field does not appear for FLOW inflow, and for concentration-type inflows any value entered will be overriden to 1.0.</p>
+<p>&nbsp;</p>
+<p>More than one constituent can be edited while the dialog is active by simply selecting another choice for the <span style="font-weight: bold;">Constituent</span> property. However, if the Cancel button is clicked then any changes made to all constituents will be ignored.</p>
+<p>&nbsp;</p>
+<p style="text-indent: -24px; margin: 0px 0px 0px 24px;"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip">If a pollutant is assigned a direct inflow in terms of concentration, then one must also assign a time series inflow to flow, otherwise no pollutant inflow will occur. An exception is at submerged outfalls where pollutant intrusion can occur during periods of reverse flow. If pollutant inflow is defined in terms of mass, then a corresponding flow inflow is not required.</p>
+
+</div>
+
+</body>
+</html>

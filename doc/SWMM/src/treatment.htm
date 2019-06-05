@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Treatment</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Nodes,Treatment">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Treatment</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="streetsweeping.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="tabulardata.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>Removal of pollutants from the flow streams entering any drainage system node is modeled by assigning a set of treatment functions to the node. A treatment function can be any well-formed mathematical expression involving:</p>
+<p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>the pollutant concentration (use the pollutant name to represent its concentration)– for non-storage nodes this is the mixture concentration of all flow streams entering the node while for storage nodes it is the pollutant concentration within the node’s stored volume</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>the removals of other pollutants (use <span style="font-weight: bold;">R_</span> prefixed to the pollutant name to represent removal)</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>any of the following process variables:</td></tr></table></div><p style="margin: 0px 0px 0px 13px;">- <span style="font-family: 'Courier New'; font-weight: bold;">FLOW</span> for flow rate into node (in user-defined flow units)</p>
+<p style="margin: 0px 0px 0px 13px;">- <span style="font-family: 'Courier New'; font-weight: bold;">DEPTH</span> for water depth above node invert (ft or m)</p>
+<p style="margin: 0px 0px 0px 13px;">- <span style="font-family: 'Courier New'; font-weight: bold;">AREA</span> for node surface area (ft2 or m2)</p>
+<p style="margin: 0px 0px 0px 13px;">- <span style="font-family: 'Courier New'; font-weight: bold;">DT</span> for routing time step (sec)</p>
+<p style="margin: 0px 0px 0px 13px;">- <span style="font-family: 'Courier New'; font-weight: bold;">HRT</span> for hydraulic residence time (hours)</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: justify; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: 1.20;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>Any of the following math functions (which are case insensitive) can be used in a treatment expression:</td></tr></table></div><p style="text-align: justify; margin: 0px 0px 0px 13px;">- abs(x) for absolute value of x</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- sgn(x) which is +1 for x &gt;= 0 or -1 otherwise</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- step(x) which is 0 for x &lt;= 0 and 1 otherwise</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- sqrt(x) for the square root of x</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- log(x) for logarithm base e of x</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- log10(x) for logarithm base 10 of x</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- exp(x) for e raised to the x power</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- the standard trig functions (sin, cos, tan, and cot)</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- the inverse trig functions (asin, acos, atan, and acot)</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">- the hyperbolic trig functions (sinh, cosh, tanh, and coth)</p>
+<p style="text-align: justify; margin: 0px 0px 0px 13px;">along with the standard operators +, -, *, /, ^ (for exponentiation ) and any level of nested parentheses.</p>
+<p style="margin: 0px 0px 0px 13px;"><span style="color: #000000;">&nbsp;</span></p>
+<p>The result of the treatment function can be either a concentration (denoted by the letter <span style="font-weight: bold;">C</span>) or a fractional removal (denoted by <span style="font-weight: bold;">R</span>). For example, a first-order decay expression for BOD exiting from a storage node might be expressed as:</p>
+<p>&nbsp;</p>
+<p> &nbsp;  <span style="font-family: 'Courier New';">C = BOD * exp(-0.05*HRT)</span></p>
+<p>&nbsp;</p>
+<p>or the removal of some trace pollutant that is proportional to the removal of total suspended solids (TSS) could be expressed as:</p>
+<p>&nbsp;</p>
+<p> &nbsp;  <span style="font-family: 'Courier New';">R = 0.75 * R_TSS</span></p>
+<p>&nbsp;</p>
+<p style="text-indent: -24px; margin: 0px 0px 0px 24px;"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip">Care must be taken to avoid circular references when specifying treatment functions. For example, the above expression would not be computable if it were used to compute fractional removal of TSS.</p>
+
+</div>
+
+</body>
+</html>

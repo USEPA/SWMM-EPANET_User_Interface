@@ -1,0 +1,91 @@
+<HTML><HEAD><TITLE>Junction Properties</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Junction Properties</SPAN><SPAN  STYLE="font-size: 10pt ; color: #0000ff; "></SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+<B><U>Junction ID</U></B></P>
+<P CLASS="Base">
+A unique label used to identify the junction. It can consist of a combination of up to 15 numerals or characters. It cannot be the same as the ID for any other node. This is a required property.</P>
+<P CLASS="Base">
+<B><U>X-Coordinate</U></B></P>
+<P CLASS="Base">
+The horizontal location of the junction on the map, measured in the map's distance units. If left blank the junction will not appear on the network map.</P>
+<P CLASS="Base">
+<B><U>Y-Coordinate</U></B></P>
+<P CLASS="Base">
+The vertical location of the junction on the map, measured in the map's distance units. If left blank the junction will not appear on the network map.</P>
+<P CLASS="Base">
+<B><U>Description</U></B></P>
+<P CLASS="Base">
+An optional text string that describes other significant information about the junction.</P>
+<P CLASS="Base">
+<B><U>Tag</U></B></P>
+<P CLASS="Base">
+An optional text string (with no spaces) used to assign the junction to a category, such as a pressure zone.</P>
+<P CLASS="Base">
+<B><U>Elevation</U></B></P>
+<P CLASS="Base">
+The elevation in feet (meters) above some common reference of the junction. This is a required property. Elevation is used only to compute pressure at the junction. It does not affect any other computed quantity.</P>
+<P CLASS="Base">
+<B><U>Base Demand</U></B></P>
+<P CLASS="Base">
+The average or nominal demand for water by the main category of consumer at the junction, as measured in the current flow units. A negative value is used to indicate an external source of flow into the junction. If left blank then demand is assumed to be zero. </P>
+<P CLASS="Base">
+<B><U>Demand Pattern</U></B></P>
+<P CLASS="Base">
+The ID label of the <A HREF="Time_Pat.htm">time pattern</A> used to characterize time variation in demand for the main category of consumer at the junction. The pattern provides multipliers that are applied to the Base Demand to determine actual demand in a given time period. If left blank then the <B>Default Time Pattern</B> assigned in the <A HREF="Anal0040.htm">Hydraulic Options</A> will be used.</P>
+<P CLASS="Base">
+<B><U>Demand Categories</U></B></P>
+<P CLASS="Base">
+When the ellipsis button is clicked a <A HREF="Demand_E.htm">Demand Category Editor</A> is displayed that allows base demands and time patterns to be assigned to other categories of users at the junction.</P>
+<P CLASS="Base">
+<B><U>Emitter Coefficient</U></B></P>
+<P CLASS="Base">
+Discharge coefficient for emitter (sprinkler or nozzle) placed at junction. Units are flow units at 1 unit of pressure drop (psi or m). Leave blank or set to 0 if no emitter is present. See <A HREF="Emitters.htm">Emitters</A> for more details.</P>
+<P CLASS="Base">
+<B><U>Initial Quality</U></B></P>
+<P CLASS="Base">
+Water quality level at the junction at the start of the simulation. Can be left blank if no water quality analysis is being made or if the level is zero.</P>
+<P CLASS="Base">
+<B><U>Source Quality</U></B></P>
+<P CLASS="Base">
+When the ellipsis button is clicked a <A HREF="Source_Q.htm">Source Quality Editor</A> appears in which the quality of any water entering the network at this location can be specified.</P>
+</BODY></HTML>

@@ -1,0 +1,74 @@
+<HTML><HEAD><TITLE>Wall Reaction - Pipe Roughness Correlation</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Wall Reaction - Pipe Roughness Correlation</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+It is well known that as metal pipes age their roughness tends to increase due to encrustation and tuburculation of corrosion products on the pipe walls. This increase in roughness produces a lower Hazen-Williams C-factor or a higher Darcy-Weisbach roughness coefficient, resulting in greater frictional headloss in flow through the pipe.</P>
+<P CLASS="Base">
+There is some evidence to suggest that the same processes that increase a pipe's roughness with age also tend to increase the reactivity of its wall with some chemical species, particularly chlorine and other disinfectants. EPANET can make each pipe's wall reaction coefficient (Kw) be a function of the coefficient used to describe its roughness. A different function applies depending on the formula used to compute headloss through the pipe:</P><TABLE CELLPADDING="2" CELLSPACING="2">
+<TR><TD WIDTH="192">
+<P STYLE="font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; border: thin solid ; border-left-width: 0; border-right-width: 0; border-top-width: 0; font-family: Arial,sans-serif; "><B>Headloss Formula</B></P><TD WIDTH="192">
+<P STYLE="font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; border: thin solid ; border-left-width: 0; border-right-width: 0; border-top-width: 0; font-family: Arial,sans-serif; "><B>Wall Reaction Formula</B></P></TD></TR>
+<TR><TD WIDTH="192">
+<P CLASS="Base">Hazen-Williams</P><TD WIDTH="192">
+<P CLASS="Base">Kw = F / C</P></TD></TR>
+<TR><TD WIDTH="192">
+<P CLASS="Base">Darcy-Weisbach</P><TD WIDTH="192">
+<P CLASS="Base">Kw = -F / log(e/d)</P></TD></TR>
+<TR><TD WIDTH="192">
+<P CLASS="Base">Chezy-Manning</P><TD WIDTH="192">
+<P CLASS="Base">Kw = F* N</P></TD></TR></TABLE>
+
+<P CLASS="Base">
+where</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+C = Hazen-Williams C-factor</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+e = Darcy-Weisbach roughness</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+d = pipe diameter</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+N = Manning roughness coefficient</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+F = wall reaction - pipe roughness coefficient</P>
+<P CLASS="Base">
+The coefficient F must be developed from site-specific field measurements and will have a different meaning depending on which headloss equation is used. The advantage of using this approach is that it requires only a single parameter, F, to allow wall reaction coefficients to vary throughout the network in a physically meaningful way.</P>
+</BODY></HTML>

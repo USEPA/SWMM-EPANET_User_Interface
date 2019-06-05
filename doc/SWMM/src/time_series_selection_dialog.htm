@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Data Series Selection Dialog</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Data Series Selection Dialog</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="timeseriesplotdialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="toolpropertiesdialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Data Series Selection</span> dialog is launched by the<a href="timeseriesplotdialog.htm"> Time Series Plot Selection</a> dialog to select a data series for plotting in a <a href="timeseriesplots.htm">Time Series Plot</a>. It contains the following data fields:</p>
+<p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 10px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="96"><span style="font-weight: bold;">Object Type</span>:</td><td>The type of object to plot (Subcatchment, Node, Link or System).</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 10px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="96"><span style="font-weight: bold;">Object Name</span>:</td><td>The ID name of the object to be plotted. (This field is disabled for System variables).</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 10px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="96"><span style="font-weight: bold;">Variable</span>:</td><td>The variable whose time series will be plotted (choices vary by object type).</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 10px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="96"><span style="font-weight: bold;">Legend Label</span>:</td><td>The text to use in the legend for the data series. If left blank, a default label made up of the object type, name, variable and units will be used (e.g. Link C16 Flow (CFS)).</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 10px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="96"><span style="font-weight: bold;">Axis</span>:</td><td>Whether to use the left or right vertical axis to plot the data series.</td></tr></table></div><p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"> As you select objects on the Study Area Map or in the <a href="swmmsmainwindow.htm">Project Browser</a> their types and ID names will automatically appear in this dialog.</p>
+<p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+<p style="margin: 0px 0px 10px 0px;">Click the <span style="font-weight: bold;">Accept</span> button to add/update the data series into the plot or click the <span style="font-weight: bold;">Cancel</span> button to disregard your edits. You will then be returned to the Time Series Plot Selection dialog where you can add or edit another data series.</p>
+<p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"> To make a precipitation time series display in inverted fashion on a plot, assign it to the right axis and after the plot is displayed, use the <a href="graphoptionsdialog.htm">Graph Options Dialog</a> to invert the right axis and expand the scales of both the left and right axes (so it doesn't overlap another data series).</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

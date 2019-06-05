@@ -1,0 +1,93 @@
+<HTML><HEAD><TITLE>Time Patterns</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Time Patterns</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+A <B>Time Pattern</B> is a collection of multipliers that can be applied to a quantity to allow it to vary over time. Water demands, reservoir heads, pump schedules, and water quality source inputs can all have time patterns associated with them.</P>
+<P CLASS="Base">
+The time interval used in all patterns is set with the project's <A HREF="Anal0034.htm">Time Options</A>. Within this interval a quantity remains at a constant level, equal to the product of its nominal value and the pattern's multiplier for that interval. Although all time patterns must utilize the same time interval, each can have a different number of periods. When the simulation clock exceeds the number of periods in a pattern, the pattern wraps around to its first period again.</P>
+<P CLASS="Base">
+As an example of how time patterns work consider a junction node with an average demand of 10 GPM. Assume that the time pattern interval has been set to 4 hours and a pattern with the following multipliers has been specified for demand at this node:</P><TABLE CELLPADDING="2" CELLSPACING="2">
+<TR><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">Period</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">1</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">2</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">3</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">4</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">5</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">6</SPAN></P></TD></TR>
+<TR><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">Multiplier</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">0.5</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">0.8</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">1.0</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">1.2</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">0.9</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">0.7</SPAN></P></TD></TR></TABLE>
+
+<P CLASS="Base">
+Then during the simulation the actual demand exerted at this node will be as follows:</P><TABLE CELLPADDING="2" CELLSPACING="2">
+<TR><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">Hour</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">0-4</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">4-8</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">8-12</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">12-16</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">16-20</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">20-24</SPAN></P><TD WIDTH="137">
+<P CLASS="Base"><SPAN  STYLE="font-family: Courier New,monospace; ">24-28</SPAN></P></TD></TR>
+<TR><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">Demand</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">5</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">8</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">10</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">12</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">9</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">7</SPAN></P><TD WIDTH="137">
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-family: Courier New,monospace; ">5</SPAN></P></TD></TR></TABLE>
+
+<P CLASS="Base">
+<B><SPAN  STYLE="color: #0000ff; ">See Also:</SPAN></B></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="color: #0000ff; ">
+</SPAN><A HREF="Addi0035.htm">Adding a Time Pattern</A></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+<A HREF="Edit0036.htm">Editing a Time Pattern</A></P>
+</BODY></HTML>

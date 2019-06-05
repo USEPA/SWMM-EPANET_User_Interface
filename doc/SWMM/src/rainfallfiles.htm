@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Rainfall Files</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Rainfall Files</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="reportandoutputfiles.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="climatefiles.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>SWMM's rain gage objects can utilize rainfall data stored in external <span style="font-weight: bold;">Rainfall Files</span>. The program currently recognizes the following formats for storing such data:</p>
+<p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>Hourly and fifteen minute precipitation data from over 5,500 reporting stations retrieved using NOAA's National Climatic Data Center (NCDC) Climate Data Online service (<span style="color: #0000ff; text-decoration: underline;"><a href="http://www.ncdc.noaa.gov/cdo-web" target="_blank" class="weblink">www.ncdc.noaa.gov/cdo-web</a></span>) (space delimited format only).</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>The older DS-3240 and related formats used for hourly precipitation by NCDC.</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>The older DS-3260 and related formats used for fifteen minute precipitation by NCDC.</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>HLY03 and HLY21 formats for hourly rainfall at Canadian stations, available from Environment Canada at <span style="color: #0000ff; text-decoration: underline;"><a href="http://www.climate.weatheroffice.ec.gc.ca" target="_blank" class="weblink">www.climate.weather.gc.ca</a></span>.</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>FIF21 format for fifteen minute rainfall at Canadian stations, also available from Environment Canada.</td></tr></table></div><p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>a standard user-prepared format where each line of the file contains the station ID, year, month, day, hour, minute, and non-zero precipitation reading, all separated by one or more spaces.</td></tr></table></div><p>&nbsp;</p>
+<p>When requesting data from NCDC’s online service, be sure to specify the TEXT format option, make sure that the data flags are included, and, for 15-minute data, select the QPCP option and not the QGAG one.</p>
+<p>&nbsp;</p>
+<p>An excerpt from the user-prepared format might look as follows:</p>
+<p style="margin: 0px 0px 0px 19px;"><span style="font-size: 9pt; font-family: 'Courier New';">STA01 &nbsp;2004 &nbsp;6 &nbsp;12 &nbsp;00 &nbsp;00 &nbsp;0.12</span></p>
+<p style="margin: 0px 0px 0px 19px;"><span style="font-size: 9pt; font-family: 'Courier New';">STA01 &nbsp;2004 &nbsp;6 &nbsp;12 &nbsp;01 &nbsp;00 &nbsp;0.04</span></p>
+<p style="margin: 0px 0px 0px 19px;"><span style="font-size: 9pt; font-family: 'Courier New';">STA01 &nbsp;2004 &nbsp;6 &nbsp;22 &nbsp;16 &nbsp;00 &nbsp;0.07</span></p>
+<p>This format can also accept multiple stations within the same file.</p>
+<p>&nbsp;</p>
+<p>When a rain gage is designated as receiving its rainfall data from a file, the user must supply the name of the file and the name of the recording station referenced in the file. For the standard user-prepared format, the rainfall type (e.g., intensity or volume), recording time interval, and depth units must also be supplied as rain gage properties. For the other file types these properties are defined by their respective file format and are automatically recognized by SWMM.</p>
+
+</div>
+
+</body>
+</html>

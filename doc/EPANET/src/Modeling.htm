@@ -1,0 +1,87 @@
+<HTML><HEAD><TITLE>Modeling Additions</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Modeling Additions</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<OL CLASS="Number1"><LI>
+A new input file format (.NET file) has been introduced to work more efficiently with the new user interface. This is a binary file that the user does not edit directly. The old Version 1.1-style text files (.INP files) can still be opened and written to (mainly to provide a readable hardcopy of a network's input data).</LI>
+<LI>
+The ID's used to identify network objects no longer have to be numbers - they can contain any combination of up to 15 letters and numerals.</LI>
+<LI>
+A new Reservoir category of object has been added to distinguish reservoirs from storage tanks. A time pattern can be assigned to the reservoir elevation (or head) to simulate time variation in boundary conditions. See <A HREF="Reservoi.htm">Reservoirs</A> for more details.</LI>
+<LI>
+A new Curve object has been added to model relationships between two variables  (see <A HREF="Curves.htm">Curves</A>).</LI>
+<LI>
+Pumps have been updated to allow the use of multi-point, user-defined pump curves and to assign time patterns to control a pump's status or speed (see <A HREF="Pump_Cur.htm">Pump Curve</A> and <A HREF="Pump_Pro.htm">Pump Properties</A>).</LI>
+<LI>
+Computation of pumping energy and cost has been added. One can either use pump-specific efficiency curves and electricity rate schedules for these computations (see <A HREF="Pump_Pro.htm">Pump Properties</A>) or a set of default values (see <A HREF="Anal0030.htm">Energy Options</A>).</LI>
+<LI>
+Non-cylindrical storage tanks can be modeled by specifying a volume versus water level curve for the tank (see <A HREF="Volume_C.htm">Volume Curve</A> and <A HREF="Tank_Pro.htm">Tank Properties</A>).</LI>
+<LI>
+Multiple demand categories ( base demand plus time pattern) can now be assigned to junctions (see <A HREF="Junc0028.htm">Junction Properties</A> and <A HREF="Demand_E.htm">Demand Editor</A>).</LI>
+<LI>
+Old-style control statements are now called Simple Controls and have been extended to allow a link to be controlled based on the time of day (see <A HREF="Simple_C.htm">Simple Controls</A>).</LI>
+<LI>
+A new category of controls, called Rule-Based controls, allows the control of links to be based on a combination of conditions  (see <A HREF="Rule-Bas.htm">Rule-Based Controls</A>).</LI>
+<LI>
+The ability to model emitters (sprinklers or orifices) placed at junctions has been added. With these devices the outflow from the junction becomes a function of the pressure available. (See <A HREF="Junc0028.htm">Junction Properties</A> and <A HREF="Emitters.htm">Emitters</A>).</LI>
+<LI>
+A General Purpose Valve has been introduced to model a link which obeys a user-defined curve of headloss versus flow instead of one of the standard headloss formulas (see <A HREF="Valves.htm">Valves</A> and <A HREF="Head_Los.htm">Headloss Curve</A>).</LI>
+<LI>
+Improved options for dealing with disconnected and hydraulically unbalanced conditions have been added (see <A HREF="Troubles.htm">Troubleshooting Analysis Results</A>).</LI>
+<LI>
+The water quality solver has been replaced with a more efficient Lagrangian Time Driven method. The key user-supplied parameters for this method are the Water Quality Time Step (see <A HREF="Anal0034.htm">Time Options</A>) and the Quality Tolerance (see <A HREF="Anal0041.htm">Quality Options</A>).</LI>
+<LI>
+Water quality sources can now be defined in terms of concentration, mass inflow, or as booster sources (see <A HREF="Source_Q.htm">Source Quality Editor</A>).</LI>
+<LI>
+Bulk flow reactions can now be modeled with n-th order kinetics as well as bimolecular and enzyme (Michaelis-Menton) kinetics (see <A HREF="Bulk_Flo.htm">Bulk Flow Reaction Rates</A>).</LI>
+<LI>
+Pipe wall reactions can be modeled with either zero- or first-order kinetics (see <A HREF="Pipe_Wal.htm">Pipe Wall Reaction Rates</A>).</LI>
+<LI>
+A water quality constituent's growth or decay can be modeled up to a limiting potential (see <A HREF="Wate0047.htm">Water Quality Reactions</A>).</LI>
+<LI>
+Pipe wall reaction coefficients can be correlated to pipe roughness coefficients (see <A HREF="Wall_Rea.htm">Wall Reaction - Pipe Roughness Correlation</A>).</LI>
+<LI>
+Several different models are available for characterizing mixing in storage tanks (see <A HREF="Tank_Mix.htm">Mixing Models</A>).</LI>
+<LI>
+Extended period simulation results can be displayed as a time series of values, as a single set of time-averaged values for each node and link in the network, or as minima, maxima, or ranges (see <A HREF="Anal0034.htm">Time Options</A>).</LI>
+<LI>
+Calibration statistics can be computed showing how well simulated values compare with measured ones (see <A HREF="Cali0078.htm">Calibration Report</A>).</LI>
+</BODY></HTML>

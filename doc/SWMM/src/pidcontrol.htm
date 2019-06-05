@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>PID Controller</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">PID Controller</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="modulatedcontrols.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="waterquality.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>A <span style="font-weight: bold;">PID (Proportional-Integral-Derivative) Controller </span>is a generic closed-loop control scheme that tries to maintain a desired set-point on some process variable by computing and applying a corrective action that adjusts the process accordingly. In the context of a hydraulic conveyance system a PID controller might be used to adjust the opening on a gated orifice to maintain a target flow rate in a specific conduit or to adjust a variable speed pump to maintain a desired depth in a storage unit. The classical PID controller has the form:</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span><img src="pid_eqn.png" width="275" height="45" border="0" alt="pid_eqn"></p>
+<p>where:</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table cellspacing="0" cellpadding="1" border="0" style="border: none; border-spacing:0px;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">m(t)</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>controller output</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">Kp</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>proportional coefficient (gain)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">Ti</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>integral time (minutes)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">Td</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>derivative time (minutes)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">e(t)</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>error (difference between setpoint and observed variable value)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="48" style="width:48px;"><p> &nbsp;  <span style="font-style: italic;">t</span></p>
+</td>
+<td valign="top" width="16" style="width:16px;"><p>=</p>
+</td>
+<td valign="top" width="247" style="width:247px;"><p>time.</p>
+</td>
+</tr>
+</table>
+</div>
+<p>The performance of a PID controller is determined by the values assigned to the coefficients <span style="font-style: italic;">Kp, Ti</span>, and <span style="font-style: italic;">Td</span>.</p>
+<p>&nbsp;</p>
+<p>The controller output <span style="font-style: italic;">m(t)</span> has the same meaning as a link setting used in a rule's <a href="actionclauses.htm">Action Clause</a> &nbsp;while <span style="font-style: italic;">dt</span> is the current flow routing time step in minutes. Because link settings are relative values (with respect to either a pump's standard operating curve or to the full opening height of an orifice or weir) the error <span style="font-style: italic;">e(t)</span> used by the controller is also a relative value. It is defined as the difference between the control variable setpoint <span style="font-style: italic;">x*</span> and its value at time <span style="font-style: italic;">t</span>, <span style="font-style: italic;">x(t)</span>, normalized to the setpoint value:</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span><span style="font-style: italic;">e(t) = (x* - x(t)) / x*</span></p>
+<p>&nbsp;</p>
+<p>Note that for direct action control, where an increase in the link setting causes an increase in the controlled variable, the sign of <span style="font-style: italic;">Kp</span> must be positive. For reverse action control, where the controlled variable decreases as the link setting increases, the sign of <span style="font-style: italic;">Kp</span> must be negative. The user must recognize whether the control is direct or reverse action and use the proper sign on Kd accordingly. For example, adjusting an orifice opening to maintain a desired downstream flow or downstream water level is direct action. Adjusting it to maintain an upstream water level is reverse action. Controlling a pump to maintain a fixed wet well water level would be reverse action while using it to maintain a fixed downstream flow is direct action.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

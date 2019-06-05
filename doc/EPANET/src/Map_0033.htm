@@ -1,0 +1,77 @@
+<HTML><HEAD><TITLE>Map Label Properties</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Map Label Properties</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+<B><U>Text</U></B></P>
+<P CLASS="Base">
+The label's text.</P>
+<P CLASS="Base">
+<B><U>X-Coordinate</U></B></P>
+<P CLASS="Base">
+The horizontal location of the upper left corner of the label on the map, measured in the map's distance units. This is a required property.</P>
+<P CLASS="Base">
+<B><U>Y-Coordinate</U></B></P>
+<P CLASS="Base">
+The vertical location of the upper left corner of the label on the map, measured in the map's distance units. This is a required property.</P>
+<P CLASS="Base">
+<B><U>Anchor Node</U></B></P>
+<P CLASS="Base">
+ID of node that serves as the label's anchor point (see Note 1 below). Leave blank if label will not be anchored.</P>
+<P CLASS="Base">
+<B><U>Meter Type</U></B></P>
+<P CLASS="Base">
+Type of object being metered by the label (see Note 2 below). Choices are <B>None,</B> <B>Node,</B> or <B>Link.</B> </P>
+<P CLASS="Base">
+<B><U>Meter ID</U></B></P>
+<P CLASS="Base">
+ID of the object (Node or Link) being metered.</P>
+<P CLASS="Base">
+<B><U>Font</U></B></P>
+<P CLASS="Base">
+Displays an ellipsis button that when clicked, will display a Font Dialog form that allows selection of the label's font, size, and style.</P>
+<P CLASS="Base">
+<B><SPAN  STYLE="color: #ff0000; ">Notes:</SPAN></B></P>
+<OL STYLE="font-size: 10pt ; font-family: Arial,sans-serif; "><LI>
+A label's anchor node property is used to anchor the label relative to a given location on the map. When the map is zoomed in the label will appear the same distance from its anchor node as it did under the full extent view. This feature prevents labels from wandering too far away from the objects they were meant to describe when a map is zoomed.</LI>
+<LI>
+The Meter Type and ID properties determine if the label will act as a meter. Meter labels display the value of the currently viewed parameter (chosen from the <A HREF="Map_Brow.htm">Map Browser</A>) underneath the label text. The Meter Type and ID must refer to an existing node or link in the network. Otherwise, only the label text appears.</LI>
+</BODY></HTML>

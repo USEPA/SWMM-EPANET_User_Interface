@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>LID Usage Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">LID Usage Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="lidgroupeditor.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="mapdimensionsdialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">LID Usage Editor</span> is invoked from a subcatchment's <a href="lidgroupeditor.htm">LID Group Editor</a> to specify how a particular LID control will be deployed within the subcatchment. It contains the following data entry fields:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Control Name</span></p>
+<p>The name of a previously defined LID control to be used in the subcatchment. (LID controls are added to a project by using the <a href="swmmsmainwindow.htm">Project Browser</a> -- see <a href="lidutilization.htm">LID Utilization</a>.)</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">LID Occupies Full Subcatchment</span></p>
+<p>Select this checkbox option if the LID control occupies the full subcatchment (i.e., the LID is placed in its own separate subcatchment and accepts runoff from upstream subcatchments).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Area of Each Unit</span></p>
+<p>The surface area devoted to each replicate LID unit (sq. ft or sq. m). If the <span style="font-style: italic; font-weight: bold;">LID Occupies Full Subcatchment</span><span style="font-style: italic;"> </span>box<span style="font-style: italic;"> </span>is checked, then this field becomes disabled and will display the total subcatchment area divided by the number of replicate units. &nbsp;(See <a href="lidplacement.htm">LID Placement</a> for options on placing LIDs within subcatchments.) The label below this field indicates how much of the total subcatchment area is devoted to the particular LID being deployed and gets updated as changes are made to the number of units and area of each unit.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Number of Replicate Units</span></p>
+<p>The number of equal size units of the LID practice (e.g., the number of rain barrels) deployed within the subcatchment.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface Width Per Unit</span></p>
+<p>The width of the outflow face of each identical LID unit (in ft or m). This parameter applies to roofs, pavement, trenches, and swales that use overland flow to convey surface runoff off of the unit. It can be set to 0 for other LID processes, such as bio-retention cells, rain gardens, and rain barrels that simply spill any excess captured runoff over their berms. </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">% Initially Saturated</span></p>
+<p>For bio-retention cells, rain gardens, and green roofs this is the degree to which the unit's soil is initially filled with water (0 % saturation corresponds to the wilting point moisture content, 100 % saturation has the moisture content equal to the porosity). The storage zone beneath the soil zone of the cell is assumed to be completely dry. For other types of LIDs it corresponds to the degree to which their storage zone is initially filled with water.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">% of Impervious Area Treated</span></p>
+<p>The percent of the impervious portion of the subcatchment's non-LID area whose runoff is treated by the LID practice. (E.g., if rain barrels are used to capture roof runoff and roofs represent 60% of the impervious area, then the impervious area treated is 60%). If the LID unit treats only direct rainfall, such as with a green roof or roof disconnection, then this value should be 0. If the LID takes up the entire subcatchment then this field is ignored.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Send Drain Flow To</span></p>
+<p>Provide the name of the Node or Subcatchment that receives any drain flow produced by the LID unit. This field can &nbsp;be left blank if this flow goes to the same outlet as the LID unit’s subcatchment. </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Return All Outflow To Pervious Area</span></p>
+<p>Select this option if outflow from the LID unit should be routed back onto the pervious area of the subcatchment that contains it. If drain outflow was selected to be routed to a different location than the subcatchment outlet then only surface outflow will be returned. Otherwise both surface and drain flow will be returned. Selecting this option would be a common choice to make for Rain Barrels, Rooftop Disconnection and possibly Green Roofs. </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Detailed Report File</span></p>
+<p>The name of an optional file where detailed time series results for the LID will be written. Click the browse button <img src="filebrowsebtn.png" width="24" height="24" border="0" alt="FileBrowseBtn"> &nbsp;to select a file using the standard Windows File Save dialog or click the delete button <img src="clip0013.png" width="19" height="19" border="0" alt="clip0013"> &nbsp;to remove any detailed reporting. Consult the <a href="lidresults.htm">LID Results</a> topic to learn more about the contents of this file. </p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Loading a Backdrop Image</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Loading a Backdrop Image</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="utilizingabackdropimage.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="aligningabackdropimage.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>To load a backdrop image, select <span style="font-weight: bold;">View &gt;&gt; Backdrop &gt;&gt; Load</span> from the Main Menu. A Backdrop Image Selector dialog form will be displayed. The entries on this form are as follows:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Backdrop Image File</span></p>
+<p>Enter the name of the file that contains the image. You can click the <img src="filebrowsebtn.png" width="24" height="24" border="0" alt="FileBrowseBtn"> button to bring up a standard Windows file selection dialog from which you can search for the image file.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">World Coordinates File</span></p>
+<p>If a &quot;world&quot; file exists for the image, enter its name here, or click the <img src="filebrowsebtn.png" width="24" height="24" border="0" alt="FileBrowseBtn"> button to search for it. A world file contains geo-referencing &nbsp;information for the image and can be created from the software that produced the image file or by using a text editor. It contains six lines with the following information:</p>
+<p>Line 1: &nbsp; &nbsp; &nbsp; &nbsp;real world width of a pixel in the horizontal direction.</p>
+<p>Line 2: &nbsp; &nbsp; &nbsp; &nbsp;X rotation parameter (not used).</p>
+<p>Line 3: &nbsp; &nbsp; &nbsp; &nbsp;Y rotation parameter (not used).</p>
+<p>Line 4: &nbsp; &nbsp; &nbsp; &nbsp;negative of the real world height of a pixel in the vertical direction.</p>
+<p>Line 5: &nbsp; &nbsp; &nbsp; &nbsp;real world X coordinate of the upper left corner of the image.</p>
+<p>Line 6: &nbsp; &nbsp; &nbsp; &nbsp;real world Y coordinate of the upper left corner of the image.</p>
+<p>If no world file is specified, then the backdrop will be scaled to fit into the center of the map display window.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Scale Map to Backdrop Image</span></p>
+<p>This option is only available when a world file has been specified. Selecting it forces the dimensions of the Study Area Map to coincide with those of the backdrop image. In addition, all existing objects on the map will have their coordinates adjusted so that they appear within the new map dimensions yet maintain their relative positions to one another. Selecting this option may then require that the backdrop be re-aligned so that its position relative to the drainage area objects is correct.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

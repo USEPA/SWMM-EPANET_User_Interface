@@ -1,0 +1,187 @@
+<HTML><HEAD><TITLE>Pipes</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P STYLE="font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif; ">
+<SPAN  STYLE="color: #0000ff; ">Pipes</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+Pipes convey water from one point in the network to another. EPANET assumes that all pipes are full at all times. Flow direction is from the end at higher hydraulic head (internal energy per weight of water) to that at lower head. The principal hydraulic input parameters for pipes are:</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+diameter</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+length</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+roughness coefficient</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+initial status (open, closed, or contains a check valve).</P>
+<P CLASS="Base">
+The status parameter allows pipes to implicitly contain shutoff valves and check valves (which allow flow in only one direction).</P>
+<P CLASS="Base">
+The water quality inputs for pipes consist of</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+bulk reaction coefficient</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+wall reaction coefficient.</P>
+<P CLASS="Base">
+Computed outputs for pipes include</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+flow rate</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+velocity</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+headloss</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+friction factor</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+reaction rate</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+water quality.</P>
+<P CLASS="Base">
+The hydraulic head lost by water flowing in a pipe due to friction with the pipe walls can be computed using three different formulas:</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<A HREF="javascript:DoPopup('Hazen-Wi.htm', 0, 269, 134)">Hazen-Williams Formula</A></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<A HREF="javascript:DoPopup('Darcy-We.htm', 0, 404, 201)">Darcy-Weisbach Formula</A></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<A HREF="javascript:DoPopup('Chezy-Ma.htm', 0, 246, 122)">Chezy-Manning Formula</A></P>
+<P CLASS="Base">
+<A HREF="javascript:DoPopup('Minor_Lo.htm', 0, 448, 224)">Minor losses</A> caused by bends and fittings can also be accounted for by assigning the pipe a minor loss coefficient.</P>
+<P CLASS="Base">
+Pipes can be set open or closed at preset times, when tank levels fall below or above certain set-points, or when nodal pressures fall below or above certain set-points by the use of <A HREF="Controls.htm">Controls</A>.</P>
+<P CLASS="Base">
+<B><SPAN  STYLE="color: #0000ff; ">See Also:</SPAN></B></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+<A HREF="Pipe_Pro.htm">Pipe Properties</A></P>
+
+
+<!--ForeHelp.Ignore-->
+<OBJECT	ID="PopObj"	CLASSID="clsid:9C9393C4-85B0-11D0-9180-74F103C10000"></OBJECT>
+
+<SCRIPT LANGUAGE=JAVASCRIPT>
+<!--
+
+function IsIE () {
+
+	var 	agent;
+	var		version;
+	var		i;
+	
+	agent = navigator.userAgent;
+	i = agent.indexOf ("MSIE");
+	if (i > 0) {	// get IE version
+		version = parseInt (agent.substring (i+5, agent.indexOf (".", i)));
+		return version;
+		}
+	else
+		return 0;
+	};
+
+
+function DoPopup (file, flags, width, height) {
+
+	var		path;
+	var 	i;
+	var		str1;
+	var		str2;
+	var		cc;
+
+	i = file.indexOf (":");	// if file has a colon, just use it
+	if (i == -1) {
+		// make full path for string
+		i = IsIE ();
+		if (i > 0) {	// make full path
+			if (i >= 4)
+				str1 = document.location.href;
+			else
+				str1 = document.location;
+
+			// check to see if mk:@MSIT...
+			if (str1.charAt(0)=="m" && str1.charAt(1)=="k" && str1.charAt(2)==":") {
+				// parse string and convert all \ to /
+				i = 0;
+				str2 = "";
+				while (i < str1.length - 1) {
+					cc = str1.charAt (i);
+					if (cc == "\\") {
+						if (str2 != "mk:")
+							str2 += "/";
+						}
+					else {
+						if (cc == "/") {
+							if (str2 != "mk:")
+								str2 += cc;
+							}
+						else
+							str2 += cc;
+						}
+
+					i++;
+					}
+
+				i = str2.lastIndexOf ("::");
+				if (i != -1)
+					path = str2.substring (0, i+2);	// go beyond ::
+				path += "/";
+				path += file;
+				}
+			else {
+				i = str1.lastIndexOf ("\\");
+				if (i == -1)	// try with /
+					i = str1.lastIndexOf ("/");
+
+				if (i != -1)
+					path = str1.substring (0, i+1);
+				path += file;
+				}
+			}
+		else
+			path = file;
+		}
+	else
+		path = file;
+
+	PopObj.ShowPopup (path, flags, width, height);
+	};
+
+// -->
+</SCRIPT>
+<!--ForeHelp.EndIgnore-->
+
+
+</BODY></HTML>

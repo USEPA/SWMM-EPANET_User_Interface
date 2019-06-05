@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Aquifer Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Aquifers,Aquifers Editing">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Aquifer Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="maplabelproperties.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="backdropdimensionsdialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Aquifer Editor</span> is invoked whenever a new <a href="aquifers.htm">Aquifer</a> object is created or an exisitng Aquifer object is selected for editing. It contains the following data fields:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Name</span></p>
+<p>User-assigned aquifer name.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Porosity</span></p>
+<p>Volume of voids / total soil volume (volumetric fraction).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Wilting Point</span></p>
+<p>Soil moisture content at which plants cannot survive (volumetric fraction).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Field Capacity</span></p>
+<p>Soil moisture content after all free water has drained off (volumetric fraction).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Conductivity</span></p>
+<p>Soil's saturated hydraulic conductivity (in/hr or mm/hr).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Conductivity Slope</span></p>
+<p>Average slope of log(conductivity) versus soil moisture deficit (i.e., porosity minus moisture content) curve (unitless). </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Tension Slope</span></p>
+<p>Average slope of soil tension versus soil moisture content curve (inches or mm). </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Upper Evaporation Fraction</span></p>
+<p>Fraction of total evaporation available for evapotranspiration in the upper unsaturated zone.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Lower Evaporation Depth</span></p>
+<p>Maximum depth below the surface at which evapotranspiration from the lower saturated zone can still occur (ft or m).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Lower Groundwater Loss Rate</span></p>
+<p>Rate of percolation to deep groundwater when the water table reaches the ground surface (in/hr or mm/hr).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Bottom Elevation</span></p>
+<p>Elevation of the bottom of the aquifer (ft or m).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Water Table Elevation</span></p>
+<p>Elevation of the water table in the aquifer at the start of the simulation (ft or m).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Unsaturated Zone Moisture</span></p>
+<p>Moisture content of the unsaturated upper zone of the aquifer at the start of the simulation (volumetric fraction) (cannot exceed soil porosity).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Upper Evaporation Pattern</span></p>
+<p>The name of a monthly <a href="timepatterns.htm">time pattern</a> used to adjust the Upper Evaporation Fraction for different months of the year. Leave blank if not applicable.</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

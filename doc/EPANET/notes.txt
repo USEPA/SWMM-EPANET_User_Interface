@@ -1,6 +1,7 @@
 To generate compiled help, open a command prompt, cd to this folder, then:
 
-Generate compiled help from a qt help project:  C:\Qt\Qt5.5.1\5.5\msvc2013_64\bin\qhelpgenerator epanet.qhp -o epanet.qch
+
+Generate compiled help from a qt help project:  C:\Qt\Qt5.5.1\5.5\msvc2013_64\bin\qhelpgenerator C:\dev\Python\dev-ui-py3qt5\doc\EPANET\epanet.qhp -o epanet.qch
 
 (Optional: Register compiled help with Qt Assistant:  assistant -register epanet.qch)
 

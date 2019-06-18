@@ -41,7 +41,6 @@
                 <section title="Adding an Object" ref="./src/Adding_a.htm"></section>
                 <section title="Selecting an Object" ref="./src/Selectin.htm"></section>
                 <section title="Editing an Object" ref="./src/Editing_.htm"></section>
-                <section title="Copying and Pasting Object Properties" ref="./src/Copying_.htm"></section>
                 <section title="Shaping a Link" ref="./src/Shaping_.htm"></section>
                 <section title="Deleting an Object" ref="./src/Deleting.htm"></section>
                 <section title="Moving an Object" ref="./src/Moving_a.htm"></section>
@@ -80,17 +79,14 @@
                 <section title="Setting the Page Format" ref="./src/Sett0018.htm"></section>
                 <section title="Previewing the page" ref="./src/Print_Pr.htm"></section>
                 <section title="Printing the Current View" ref="./src/Prin0019.htm"></section>
-                <section title="Copying the Current View" ref="./src/Copy0020.htm"></section>
             </section>
             <section title="Importing and Exporting" ref="./src/Importin.htm">
                 <section title="Overview" ref="./src/Importin.htm"></section>
                 <section title="Project Scenarios" ref="./src/Proj0021.htm"></section>
                 <section title="Importing a Scenario" ref="./src/Impo0022.htm"></section>
-                <section title="Exporting a Scenario" ref="./src/Exportin.htm"></section>
                 <section title="Importing a Partial Network" ref="./src/Impo0023.htm"></section>
                 <section title="Importing a Network Map" ref="./src/Impo0024.htm"></section>
                 <section title="Exporting the Map" ref="./src/Expo0025.htm"></section>
-                <section title="Exporting to Text File" ref="./src/Expo0026.htm"></section>
             </section>
             <section title="Frequently Asked Questions" ref="./src/Frequent.htm">
                 <section title="Frequently Asked Questions" ref="./src/Frequent.htm"></section>
@@ -128,9 +124,6 @@
             <keyword name="Controls Editor" ref="./src/Cont0063.htm"/>
             <keyword name="Simple Controls" ref="./src/Simple_C.htm"/>
             <keyword name="Rule-Based Controls" ref="./src/Rule-Bas.htm"/>
-            <keyword name="Copy Dialog" ref="./src/Copy_Dia.htm"/>
-            <keyword name="Copying a View" ref="./src/Copy0020.htm"/>
-            <keyword name="Copying and Pasting Objects" ref="./src/Copying_.htm"/>
             <keyword name="Curve Editor" ref="./src/Curve_Ed.htm"/>
             <keyword name="Shaping a Link" ref="./src/Shaping_.htm"/>
             <keyword name="Pump Curve" ref="./src/Pump_Cur.htm"/>
@@ -157,15 +150,11 @@
             <keyword name="Emitters" ref="./src/Emitters.htm"/>
             <keyword name="Energy Report" ref="./src/Energy_R.htm"/>
             <keyword name="Error Messages" ref="./src/Error_Me.htm"/>
-            <keyword name="Exporting a Scenario" ref="./src/Exportin.htm"/>
             <keyword name="Exporting the Network Map" ref="./src/Expo0025.htm"/>
-            <keyword name="Exporting to Text File" ref="./src/Expo0026.htm"/>
             <keyword name="Calibration File" ref="./src/Calibrat.htm"/>
             <keyword name="Saving a Project" ref="./src/Saving_a.htm"/>
             <keyword name="Opening an Existing Project" ref="./src/Opening_.htm"/>
-            <keyword name="Exporting a Scenario" ref="./src/Exportin.htm"/>
             <keyword name="Exporting the Network Map" ref="./src/Expo0025.htm"/>
-            <keyword name="Exporting to Text File" ref="./src/Expo0026.htm"/>
             <keyword name="Importing a Network Map" ref="./src/Impo0024.htm"/>
             <keyword name="Importing a Partial Network" ref="./src/Impo0023.htm"/>
             <keyword name="Importing a Scenario" ref="./src/Impo0022.htm"/>
@@ -208,7 +197,6 @@
             <keyword name="Animating the Map" ref="./src/Animatin.htm"/>
             <keyword name="Utilizing a Backdrop Map" ref="./src/Utilizin.htm"/>
             <keyword name="Map Browser" ref="./src/Map_Brow.htm"/>
-            <keyword name="Copying a View" ref="./src/Copy0020.htm"/>
             <keyword name="Setting the Map's Dimensions" ref="./src/Sett0010.htm"/>
             <keyword name="Exporting the Network Map" ref="./src/Expo0025.htm"/>
             <keyword name="Importing a Network Map" ref="./src/Impo0024.htm"/>
@@ -256,7 +244,6 @@
             <keyword name="Adding a map label" ref="./src/Addi0050.htm"/>
             <keyword name="Adding a node" ref="./src/Addi0048.htm"/>
             <keyword name="Adding a time pattern" ref="./src/Addi0035.htm"/>
-            <keyword name="Copying and Pasting Objects" ref="./src/Copying_.htm"/>
             <keyword name="Finding an Object" ref="./src/Finding_.htm"/>
             <keyword name="Moving an Object" ref="./src/Moving_a.htm"/>
             <keyword name="Deleting an Object" ref="./src/Deleting.htm"/>

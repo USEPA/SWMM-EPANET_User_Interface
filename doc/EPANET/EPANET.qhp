@@ -163,10 +163,6 @@
             <keyword name="Frequently Asked Questions" ref="./src/Frequent.htm"/>
             <keyword name="Full Report" ref="./src/Full_Rep.htm"/>
             <keyword name="Graph Options Dialog Box" ref="./src/Graph_Op.htm"/>
-            <keyword name="Graph Options - Axes" ref="./src/Grap0065.htm"/>
-            <keyword name="Graph Options - General" ref="./src/Grap0064.htm"/>
-            <keyword name="Graph Options - Legend" ref="./src/Grap0066.htm"/>
-            <keyword name="Graph Options - Series" ref="./src/Grap0067.htm"/>
             <keyword name="Contour Options Dialog Box" ref="./src/Contour_.htm"/>
             <keyword name="Viewing Results with a Graph" ref="./src/View0014.htm"/>
             <keyword name="Graph Selection Dialog Box" ref="./src/Graph_Se.htm"/>

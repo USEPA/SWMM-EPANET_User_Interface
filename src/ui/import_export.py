@@ -379,6 +379,8 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
     if one_file:
         if session.crs:
             layer.setCrs(session.crs)
+        else:
+            session.crs = QgsCoordinateReferenceSystem('Unknown')
         QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", session.crs, driver_name)
         print("saved " + file_name)
 

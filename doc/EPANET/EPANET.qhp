@@ -354,6 +354,7 @@
             <file>src/GENERATE/*.gif</file>
 	    <file>src/*.js</file>
             <file>src/*.png</file>
+            <file>src/GENERATE/*.png</file>
         </files>
     </filterSection>
 </QtHelpProject>

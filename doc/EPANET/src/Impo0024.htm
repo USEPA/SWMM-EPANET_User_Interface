@@ -48,6 +48,16 @@ Select <B>File &gt;&gt; Import &gt;&gt; Map</B>.</LI>
 Select the file containing the map information from the <B>Open File</B> dialog that appears.</LI>
 <LI>
 Click <B>OK</B> to replace the current network map with the one described in the file.</LI>
+</OL>
+
+<P CLASS="Base">
+This open source version of EPANET uses the GeoJSON format for importing a map. An example GeoJSON file is shown below.</P>
+<P CLASS="Base">
+The GeoJSON file can be created within other GIS systems by exporting a GIS layers as GeoJSON. To be recognized and import properly, the features must have an attribute called 'element_type' and 'element_id'. The 'element_type' should indicate the type of EPANET object, such as 'Junction', 'Pump', 'Tank', 'Pipe', etc. The 'element_id' should correspond to the EPANET object id. Other attributes are optional, however if an attribute name matches the name of a corresponding EPANET object attribute, that attribute value will be imported.
+<P CLASS="Base">
+<IMG SRC="GENERATE/json.png" ALT="GENERATE/json.png" WIDTH="869" HEIGHT="433" ALIGN="BASELINE" BORDER="0"></P>
+<P CLASS="Base">
+
 <P CLASS="Base">
 <B><SPAN  STYLE="color: #0000ff; ">See Also:</SPAN></B></P>
 <P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">

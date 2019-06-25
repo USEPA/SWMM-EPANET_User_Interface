@@ -2,9 +2,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
 <head>
-   <title>What are Add-In Tools</title>
+   <title>What are Plugins</title>
    <meta name="generator" content="Help & Manual">
-   <meta name="keywords" content="Add-In Tools">
+   <meta name="keywords" content="Plugins">
 
    <style type="text/css">
 	a:link { color: #002682 }
@@ -68,7 +68,7 @@
  bgcolor="#649CCC">
   <tr valign="top">
     <td align="left">
-      <p class="p_Heading1"><span class="f_Heading1">What are Add-In Tools</span></p>
+      <p class="p_Heading1"><span class="f_Heading1">What are Plugins</span></p>
 
     </td>
     <td align="right">
@@ -94,11 +94,25 @@
 
 
 <div id="mainbody">
-<p>Add-in tools are third party applications that users can add to the <a href="toolsmenu.htm">Tools</a> menu of SWMM's &nbsp;Main Menu and be launched while SWMM is still running. SWMM can interact with these applications to a limited degree by exchanging data through its <a href="files.htm">pre-defined files</a> or through the Windows clipboard. Add-in tools can provide additional modeling capabilities to what SWMM already offers. Some examples of useful add-ins might include:</p>
+<p>Plugins are third party applications that users can add to the <a href="toolsmenu.htm">Plugins</a> menu of SWMM's &nbsp;Main Menu and be launched while SWMM is still running. SWMM can interact with these applications to a limited degree by exchanging data through its <a href="files.htm">pre-defined files</a> or through the Windows clipboard. Plugins can provide additional modeling capabilities to what SWMM already offers. Some examples of useful Plugins might include:</p>
 <div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 3px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>a tool that performs a statistical analysis of long-term rainfall data prior to adding it to a SWMM rain gage,</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 3px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>an external spreadsheet program that would facilitate the editing of a SWMM data set,</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 3px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>a unit hydrograph estimator program that would derive the R-T-K parameters for a set of &nbsp;RDII unit hydrographs which could then be copied and pasted directly into SWMM's Unit Hydrograph Editor,</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 3px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>a post-processor program that uses SWMM's hydraulic results to compute suspended solids removal through a storage unit,</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 3px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>a third-party dynamic flow routing program used as a substitute for SWMM's own internal procedure.</td></tr></table></div><p>&nbsp;</p>
-<p>The figure below shows what the <span style="font-weight: bold;">Tools</span> menu might look like after several add-in tools have been registered with it. The <span style="font-weight: bold;">Configure</span> <span style="font-weight: bold;">Tools</span> option is used to add, delete, or modify add-in tools. The options below this are the individual tools that have been made available (by this particular user) &nbsp;and can be launched by selecting them from the menu.</p>
+<p>
+The plugins folder installed with SWMM contains example/demo user plugins. Plugins are dynamically loaded into the 'Plugins' menu on the main window and they are checkable as toggles to control menu creation.</P>
 <p>&nbsp;</p>
-<p><img src="addintools.png" width="512" height="202" border="0" alt="AddInTools"></p>
+<p>
+Three sample plugins are included with SWMM to demonstrate different types of user plugins:</P>
+<ul>
+<li>
+The ImportExportGIS plugin adds a new menu to the UI, with options to import and export the current map to GIS files. This plugin has the same functionality as the 'File:Import' and 'File:Export' menus, but it is included here to demonstrate the plugin capabilities.
+<p>&nbsp;</p>
+<li>
+The MyCalculations plugin demonstrates how a user could create a plugin that runs without creating its own menu item.
+<p>&nbsp;</p>
+<li>
+The Summary plugin creates its own menu item with three options to summarize the contents of the existing project.</P>
+</ul>
+<p>&nbsp;</p>
+<p><img src="addintools.png" width="512" height="152" border="0" alt="AddInTools"></p>
 
 </div>
 

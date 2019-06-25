@@ -7,7 +7,7 @@ from ui.EPANET.frmSummaryDesigner import Ui_frmSummary
 class frmSummary(QMainWindow, Ui_frmSummary):
     def __init__(self, main_form=None):
         QMainWindow.__init__(self, main_form)
-        self.help_topic = "epanet/src/src/Pipes.htm"
+        self.help_topic = "epanet/src/src/View0006.htm"
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)

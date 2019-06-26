@@ -9,7 +9,7 @@
         <text>Storm Water Management Model, Version 5.1</text>
     </aboutMenuText>
     <aboutDialog>
-        <file>src/introduction.htm</file>
+        <file>src/introduction2.htm</file>
         <icon>src/dwrd.png</icon>
     </aboutDialog>
     <enableDocumentationManager>false</enableDocumentationManager>
@@ -18,7 +18,7 @@
 </assistant>
   <docFiles>
     <register>
-        <file>swmm.qch</file>
+        <file>C:\dev\Python\dev-ui-py3qt5\doc\SWMM\swmm.qch</file>
     </register>
   </docFiles>
 </QHelpCollectionProject>

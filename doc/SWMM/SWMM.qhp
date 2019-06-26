@@ -192,13 +192,6 @@
                 <section title="Viewing Results with a Table" ref="./src/viewingresultswithatable.htm"></section>
                 <section title="Viewing a Statistics Report" ref="./src/viewingastatisticsreport.htm"></section>
             </section>
-            <section title="Printing and Copying" ref="./src/printingandcopying.htm">
-                <section title="Selecting a Printer" ref="./src/selectingaprinter.htm"></section>
-                <section title="Setting the Page Format" ref="./src/settingthepageformat.htm"></section>
-                <section title="Previewing the Page" ref="./src/previewingthepage.htm"></section>
-                <section title="Printing the Current View" ref="./src/printingthecurrentview.htm"></section>
-                <section title="Copying the Current View" ref="./src/copyingthecurrentview.htm"></section>
-            </section>
             <section title="Files Used by SWMM" ref="./src/files.htm">
                 <section title="Project File" ref="./src/projectfile.htm"></section>
                 <section title="Report and Output Files" ref="./src/reportandoutputfiles.htm"></section>
@@ -213,10 +206,6 @@
                     <section title="Routing Files" ref="./src/routingfiles.htm"></section>
                     <section title="RDII / Routing File Format" ref="./src/rdiiandroutingfileformat.htm"></section>
                 </section>
-            </section>
-            <section title="Using Add-In Tools" ref="./src/usingadd_intools.htm">
-                <section title="What are Add-In Tools" ref="./src/whatareadd_intools.htm"></section>
-                <section title="Configuring Add-In Tools" ref="./src/configuringadd_intools.htm"></section>
             </section>
             <section title="Reference">
                 <section title="Measurement Units">
@@ -263,7 +252,6 @@
                         <section title="Areal Depletion Page" ref="./src/climateeditor_arealdepletion.htm"></section>
                         <section title="Adjustments Page" ref="./src/climatology_editor___adjustmen.htm"></section>
                     </section>
-                    <section title="Copy Dialog" ref="./src/copydialog.htm"></section>
                     <section title="Cross-Section Editor" ref="./src/cross_sectioneditordialog.htm"></section>
                     <section title="Curve Editor" ref="./src/curveeditordialog.htm"></section>
                     <section title="Graph Options Dialog" ref="./src/graphoptionsdialog.htm">
@@ -363,8 +351,6 @@
             </section>
         </toc>
         <keywords>
-            <keyword name="Add-In Tools" ref="./src/whatareadd_intools.htm"/>
-            <keyword name="Add-In Tools" ref="./src/configuringadd_intools.htm"/>
             <keyword name="Aquifers Description" ref="./src/aquifers.htm"/>
             <keyword name="Aquifers Editing" ref="./src/aquifereditordialog.htm"/>
             <keyword name="AutoLength" ref="./src/statusbar.htm"/>
@@ -388,7 +374,6 @@
 	    <keyword name="Modulated Controls" ref="./src/modulatedcontrols.htm"/>
 	    <keyword name="Rule Format" ref="./src/ruleformat.htm"/>
 	    <keyword name="Copying Objects" ref="./src/copyingandpastingobjects.htm"/>
-	    <keyword name="Copying the current window" ref="./src/copyingthecurrentview.htm"/>
 	    <keyword name="Curves Description" ref="./src/curves.htm"/>
 	    <keyword name="Curves Editing" ref="./src/curveeditordialog.htm"/>
 	    <keyword name="Deleting a Group of Objects" ref="./src/deletingagroupofobjects.htm"/>
@@ -424,9 +409,7 @@
 	    <keyword name="How do I change the Offsets convention" ref="./src/statusbar.htm"/>
 	    <keyword name="How do I change the Offsets convention" ref="./src/linkoffsets.htm"/>
 	    <keyword name="How do I compare results to measured data" ref="./src/registeringcalibrationdata.htm"/>
-	    <keyword name="How do I configure an add-in tool" ref="./src/configuringadd_intools.htm"/>
 	    <keyword name="How do I convert an object to another type" ref="./src/convertinganobject.htm"/>
-	    <keyword name="How do I copy the contents of the current window" ref="./src/copyingthecurrentview.htm"/>
 	    <keyword name="How do I create a new project" ref="./src/creatinganewproject.htm"/>
 	    <keyword name="How do I create a profile plot" ref="./src/profileplots.htm"/>
 	    <keyword name="How do I create a scatter plot" ref="./src/scatterplots.htm"/>
@@ -442,7 +425,6 @@
 	    <keyword name="How do I open an existing project" ref="./src/openinganexistingproject.htm"/>
 	    <keyword name="How do I pan the map" ref="./src/panningthemap.htm"/>
 	    <keyword name="How do I prevent a graph from updating itself" ref="./src/viewingresultswithagraph.htm"/>
-	    <keyword name="How do I print the current window" ref="./src/printingthecurrentview.htm"/>
 	    <keyword name="How do I query the map" ref="./src/submittingamapquery.htm"/>
 	    <keyword name="How do I run a simulation" ref="./src/startingasimulation.htm"/>
 	    <keyword name="How do I save a project" ref="./src/savingaproject.htm"/>
@@ -537,10 +519,6 @@
             <keyword name="Preferences" ref="./src/settingprogrampreferences.htm"/>
 	    <keyword name="General Preferences" ref="./src/generalpreferences.htm"/>
 	    <keyword name="Number Formats" ref="./src/numberformats.htm"/>
-	    <keyword name="Printing Previewing the Page" ref="./src/previewingthepage.htm"/>
-	    <keyword name="Printing the Current View" ref="./src/printingthecurrentview.htm"/>
-	    <keyword name="Printing Selecting a Printer" ref="./src/selectingaprinter.htm"/>
-	    <keyword name="Printing Setting the Page Format" ref="./src/settingthepageformat.htm"/>
             <keyword name="Profile Plot" ref="./src/profileplots.htm"/>
             <keyword name="Project Browser" ref="./src/projectbrowser.htm"/>
             <keyword name="Project Defaults" ref="./src/settingprojectdefaults.htm"/>

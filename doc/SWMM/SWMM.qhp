@@ -146,8 +146,6 @@
                 <section title="Shaping a Link" ref="./src/shapingalink.htm"></section>
                 <section title="Shaping a Subcatchment" ref="./src/shapingasubcatchment.htm"></section>
                 <section title="Selecting a Group of Objects" ref="./src/selectingagroupofobjects.htm"></section>
-                <section title="Deleting a Group of Objects" ref="./src/deletingagroupofobjects.htm"></section>
-                <section title="Editing a Group of Objects" ref="./src/editingagroupofobjects.htm"></section>
             </section>
             <section title="Working with the Map" ref="./src/workingwiththemap.htm">
                 <section title="Selecting a Map Theme" ref="./src/selectingamaptheme.htm"></section>
@@ -161,7 +159,6 @@
                 <section title="Zooming the Map" ref="./src/zoomingthemap.htm"></section>
                 <section title="Panning the Map" ref="./src/panningthemap.htm"></section>
                 <section title="Viewing at Full Extent" ref="./src/viewingatfullextent.htm"></section>
-                <section title="Finding an Object" ref="./src/findinganobject.htm"></section>
                 <section title="Submitting a Map Query" ref="./src/submittingamapquery.htm"></section>    
                 <section title="Using the Map Legends" ref="./src/usingthemaplegends.htm"></section>
                 <section title="Using the Overview Map" ref="./src/usingtheoverviewmap.htm"></section>
@@ -254,15 +251,9 @@
                     </section>
                     <section title="Cross-Section Editor" ref="./src/cross_sectioneditordialog.htm"></section>
                     <section title="Curve Editor" ref="./src/curveeditordialog.htm"></section>
-                    <section title="Graph Options Dialog" ref="./src/graphoptionsdialog.htm">
-                        <section title="Graph Options - General" ref="./src/graphoptions_general.htm"></section>
-                        <section title="Graph Options - Axes" ref="./src/graphoptions_axes.htm"></section>
-                        <section title="Graph Options - Legend" ref="./src/graphoptions_legend.htm"></section>
-                        <section title="Graph Options - Styles" ref="./src/graphoptions_series.htm"></section>
-                    </section>
+                    <section title="Graph Options Dialog" ref="./src/graphoptionsdialog.htm"></section>
                     <section title="Groundwater Flow Editor" ref="./src/groundwaterfloweditordialog.htm"></section>
                     <section title="Groundwater Equation Editor" ref="./src/groundwater_equation_editor.htm"></section>
-                    <section title="Group Edit Dialog" ref="./src/groupeditordialog.htm"></section>
                     <section title="Infiltration Editor" ref="./src/infiltrationeditordialog.htm">
                         <section title="Horton Infiltration Parameters" ref="./src/hortoninfiltrationparameters.htm"></section>
                         <section title="Green-Ampt Infiltration Parameters" ref="./src/green_amptinfiltrationparame.htm"></section>
@@ -274,7 +265,6 @@
                         <section title="RDII Inflow Page" ref="./src/rdiiinfloweditor.htm"></section>
                     </section>
                     <section title="Initial Buildup Editor" ref="./src/initialbuildupeditor.htm"></section>
-                    <section title="Interface File Combine Dialog" ref="./src/interfacefilecombinedialog.htm"></section>
                     <section title="Interface File Selection Dialog" ref="./src/interfacefileselectiondialog.htm"></section>
                     <section title="Land Use Assignment Editor" ref="./src/landuseassignmenteditor.htm"></section>
                     <section title="Land Use Editor" ref="./src/landuseeditordialog.htm">
@@ -376,11 +366,9 @@
 	    <keyword name="Copying Objects" ref="./src/copyingandpastingobjects.htm"/>
 	    <keyword name="Curves Description" ref="./src/curves.htm"/>
 	    <keyword name="Curves Editing" ref="./src/curveeditordialog.htm"/>
-	    <keyword name="Deleting a Group of Objects" ref="./src/deletingagroupofobjects.htm"/>
 	    <keyword name="Deleting an Object" ref="./src/deletinganobject.htm"/>
             <keyword name="Dry Weather Inflows" ref="./src/externalinflows.htm"/>
 	    <keyword name="Editing Group" ref="./src/editingagroupofobjects.htm"/>
-	    <keyword name="Editing Object Properties" ref="./src/editinganobject.htm"/>
             <keyword name="Error Messages" ref="./src/errormessages.htm"/>
 	    <keyword name="File Errors" ref="./src/fileerrors2.htm"/>
 	    <keyword name="Format Errors" ref="./src/formaterrors.htm"/>
@@ -419,7 +407,6 @@
 	    <keyword name="How do I customize a graph" ref="./src/graphoptionsdialog.htm"/>
 	    <keyword name="How do I delete an object" ref="./src/deletinganobject.htm"/>
 	    <keyword name="How do I edit an object's properties" ref="./src/editinganobject.htm"/>
-	    <keyword name="How do I find an object on the map" ref="./src/findinganobject.htm"/>
 	    <keyword name="How do I get an overiew of the current map view" ref="./src/usingtheoverviewmap.htm"/>
 	    <keyword name="How do I measure distances on the map" ref="./src/measuringdistances.htm"/>
 	    <keyword name="How do I open an existing project" ref="./src/openinganexistingproject.htm"/>
@@ -473,7 +460,6 @@
 	    <keyword name="Map Dimensions" ref="./src/settingthemapdimensions.htm"/>
 	    <keyword name="Map Display Options" ref="./src/settingmapdisplayoptions.htm"/>
 	    <keyword name="Map Exporting" ref="./src/exportingthemap.htm"/>
-	    <keyword name="Map Finding an Object" ref="./src/findinganobject.htm"/>
 	    <keyword name="Map Full Extent" ref="./src/viewingatfullextent.htm"/>
 	    <keyword name="Map Legends" ref="./src/usingthemaplegends.htm"/>
 	    <keyword name="Map Query" ref="./src/submittingamapquery.htm"/>
@@ -499,9 +485,7 @@
 	    <keyword name="Objects Converting" ref="./src/convertinganobject.htm"/>
 	    <keyword name="Objects Copying and Pasting" ref="./src/copyingandpastingobjects.htm"/>
 	    <keyword name="Objects Deleting" ref="./src/deletinganobject.htm"/>
-	    <keyword name="Objects Deleting a Group" ref="./src/deletingagroupofobjects.htm"/>
 	    <keyword name="Objects Editing" ref="./src/editinganobject.htm"/>
-	    <keyword name="Objects Editing a Group" ref="./src/editingagroupofobjects.htm"/>
 	    <keyword name="Objects Moving" ref="./src/movinganobject.htm"/>
 	    <keyword name="Objects Selecting" ref="./src/selectinganobject.htm"/>
 	    <keyword name="Objects Selecting a Group" ref="./src/selectingagroupofobjects.htm"/>

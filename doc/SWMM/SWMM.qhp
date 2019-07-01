@@ -204,12 +204,12 @@
                     <section title="RDII / Routing File Format" ref="./src/rdiiandroutingfileformat.htm"></section>
                 </section>
             </section>
-            <section title="Reference">
-                <section title="Measurement Units">
+            <section title="Reference" ref="./src/reference.htm">
+                <section title="Measurement Units" ref="./src/measurementunits.htm">
                     <section title="US Standard Units" ref="./src/usstandardunits.htm"></section>
                     <section title="SI Metric Units" ref="./src/simetricunits.htm"></section>
                 </section>
-                <section title="Tables of Parameter Values">
+                <section title="Tables of Parameter Values" ref="./src/tableofparametervalues.htm">
                     <section title="Soil Characteristics" ref="./src/soilcharacteristics.htm"></section>
                     <section title="SCS Curve Numbers" ref="./src/scscurvenumbers.htm"></section>
                     <section title="Soil Group Definitions" ref="./src/soilclasses.htm"></section>
@@ -223,7 +223,7 @@
                     <section title="Standard Elliptical Pipe Sizes" ref="./src/elliptical_pipe_sizes.htm"></section>
                     <section title="Standard Arch Pipe Sizes" ref="./src/standard_arch_pipe_sizes.htm"></section>
                 </section>
-                <section title="Visual Object Properties">
+                <section title="Visual Object Properties" ref="./src/visualobjectproperties.htm">
                     <section title="Rain Gage Properties" ref="./src/raingageproperties.htm"></section>
                     <section title="Subcatchment Properties" ref="./src/subcatchmentproperties.htm"></section>
                     <section title="Junction Properties" ref="./src/junctionproperties.htm"></section>
@@ -237,7 +237,7 @@
                     <section title="Outlet Properties" ref="./src/outletproperties.htm"></section>
                     <section title="Map Label Properties" ref="./src/maplabelproperties.htm"></section>
                 </section>
-                <section title="Special Dialog Forms">
+                <section title="Special Dialog Forms" ref="./src/specialdialogforms.htm">
                     <section title="Aquifer Editor" ref="./src/aquifereditordialog.htm"></section>
                     <section title="Backdrop Dimensions Dialog" ref="./src/backdropdimensionsdialog.htm"></section>
                     <section title="Backdrop Image Selector Dialog" ref="./src/backdropimageselectordialog.htm"></section>
@@ -326,7 +326,6 @@
                     <section title="Time Series Editor" ref="./src/timeserieseditordialog.htm"></section>
                     <section title="Time Series Plot Selection Dialog" ref="./src/timeseriesplotdialog.htm"></section>
                     <section title="Data Series Selection Dialog" ref="./src/time_series_selection_dialog.htm"></section>
-                    <section title="Tool Properties Dialog" ref="./src/toolpropertiesdialog.htm"></section>
                     <section title="Transect Editor" ref="./src/transecteditordialog.htm"></section>
                     <section title="Treatment Editor" ref="./src/treatmenteditor.htm"></section>
                     <section title="Unit Hydrograph Editor" ref="./src/unithydrographeditordialog.htm"></section>

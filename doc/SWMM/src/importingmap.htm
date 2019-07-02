@@ -2,9 +2,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
 <head>
-   <title>Setting Map Display Options</title>
+   <title>Importing a Map</title>
    <meta name="generator" content="Help & Manual">
-   <meta name="keywords" content="How do I,How do I change map display options,Map,Map Display Options">
+   <meta name="keywords" content="How do I,How do I import a map,Map,Map Display Options">
 
    <style type="text/css">
 	a:link { color: #002682 }
@@ -68,7 +68,7 @@
  bgcolor="#649CCC">
   <tr valign="top">
     <td align="left">
-      <p class="p_Heading1"><span class="f_Heading1">Setting Map Display Options</span></p>
+      <p class="p_Heading1"><span class="f_Heading1">Importing a Map</span></p>
 
     </td>
     <td align="right">
@@ -77,12 +77,12 @@
         onmouseover="document.images.main.src='button_main_h.png'"
   	onmouseout="document.images.main.src='button_main.png'">
         <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
-     <a href="usingtheoverviewmap.htm"
+     <a href="settingmapdisplayoptions.htm"
         onmouseover="document.images.prev.src='button_prev_h.png'"
   	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
      
 
-     <a href="importingmap.htm"
+     <a href="exportingthemap.htm"
         onmouseover="document.images.next.src='button_next_h.png'"
   	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
      
@@ -94,7 +94,18 @@
 
 
 <div id="mainbody">
-<p>The <span style="text-decoration: underline;"><a href="mapoptionsdialog.htm">Map Options</a></span> functionality is available through the 'Layers' tab in the 'Project Explorer'.</p>
+<p>To import the coordinates for a network map stored in a text file:</p>
+<ol>
+<li>Select <b>File &gt;&gt; Import &gt;&gt; Map</b>.</li>
+<li>Select the file containing the map information from the <B>Open File</B> dialog that appears.</li>
+<li>Click <b>OK</b> to replace the current network map with the one described in the file.</li>
+</ol>
+
+<p>This open source version of SWMM uses the GeoJSON format for importing a map. An example GeoJSON file is shown below.</p>
+<p>&nbsp;</p>
+<p>The GeoJSON file can be created within other GIS systems by exporting GIS layers as GeoJSON. To be recognized and import properly, the features must have an attribute called 'element_type' and 'element_id'. The 'element_type' should indicate the type of SWMM object, such as 'Junction', 'Outfall', 'Conduit', etc. The 'element_id' should correspond to the SWMM object id. Other attributes are optional, however if an attribute name matches the name of a corresponding SWMM object attribute, that attribute value will be imported.
+<p>&nbsp;</p>
+<p><IMG SRC="json.png" ALT="json.png" WIDTH="869" HEIGHT="433" ALIGN="BASELINE" BORDER="0"></p>
 
 </div>
 

@@ -165,6 +165,7 @@
                 <section title="Using the Map Legends" ref="./src/usingthemaplegends.htm"></section>
                 <section title="Using the Overview Map" ref="./src/usingtheoverviewmap.htm"></section>
                 <section title="Setting Map Display Options" ref="./src/settingmapdisplayoptions.htm"></section>
+                <section title="Importing a Map" ref="./src/importingmap.htm"></section>
                 <section title="Exporting the Map" ref="./src/exportingthemap.htm"></section>
             </section>
             <section title="Running a Simulation" ref="./src/runningasimulation.htm">

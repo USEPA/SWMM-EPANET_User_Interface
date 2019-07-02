@@ -2,9 +2,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
 <head>
-   <title>Window Menu</title>
+   <title>Plugins Menu</title>
    <meta name="generator" content="Help & Manual">
-   <meta name="keywords" content="Main Menu,Main Menu Window Menu">
+   <meta name="keywords" content="Main Menu,Main Menu Plugins Menu">
 
    <style type="text/css">
 	a:link { color: #002682 }
@@ -68,7 +68,7 @@
  bgcolor="#649CCC">
   <tr valign="top">
     <td align="left">
-      <p class="p_Heading1"><span class="f_Heading1">Window Menu</span></p>
+      <p class="p_Heading1"><span class="f_Heading1">Plugins Menu</span></p>
 
     </td>
     <td align="right">
@@ -77,12 +77,12 @@
         onmouseover="document.images.main.src='button_main_h.png'"
   	onmouseout="document.images.main.src='button_main.png'">
         <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
-     <a href="toolsmenu.htm"
+     <a href="windowmenu.htm"
         onmouseover="document.images.prev.src='button_prev_h.png'"
   	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
      
 
-     <a href="pluginsmenu.htm"
+     <a href="scriptingmenu.htm"
         onmouseover="document.images.next.src='button_next_h.png'"
   	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
      
@@ -94,31 +94,18 @@
 
 
 <div id="mainbody">
-<p>The <span style="font-weight: bold;">Window Menu</span> contains commands for arranging and selecting windows within the SWMM workspace.</p>
+<p>The <span style="font-weight: bold;">Plugins Menu</span> lists user-developed plugins for SWMM.</p>
 <p>&nbsp;</p>
-<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table cellspacing="0" cellpadding="2" border="0" style="border: none; border-spacing:0px;">
-<tr style="text-align:left;vertical-align:top;">
-<td valign="top" width="120" style="width:120px;"><p><span style="font-weight: bold; text-decoration: underline;">Command</span></p>
-</td>
-<td valign="top" width="312" style="width:312px;"><p><span style="font-weight: bold; text-decoration: underline;">Description</span></p>
-</td>
-</tr>
-<tr style="text-align:left;vertical-align:top;">
-<td valign="top" width="120" style="width:120px;"><p>Cascade</p>
-</td>
-<td valign="top" width="312" style="width:312px;"><p>Arranges windows in cascaded style, with the <a href="studyareamap.htm">Study Area Map</a> filling the entire display area</p>
-</td>
-</tr>
-<tr style="text-align:left;vertical-align:top;">
-<td valign="top" width="120" style="width:120px;"><p>Tile</p>
-</td>
-<td valign="top" width="312" style="width:312px;"><p>Minimizes the Map and tiles the remaining windows vertically in the display area</p>
-</td>
-</tr>
-
-</table>
-</div>
-
+<p>The plugins folder installed with SWMM contains example/demo user plugins. Plugins are dynamically loaded into the 'Plugins' menu on the main window and they are checkable as toggles to control menu creation.</p>
+<p>&nbsp;</p>
+Three sample plugins are included with SWMM to demonstrate different types of user plugins:
+<ul>
+<li> The ImportExportGIS plugin adds a new menu to the UI, with options to import and export the current map to GIS files. This plugin has the same functionality as the 'File:Import' and 'File:Export' menus, but it is included here to demonstrate the plugin capabilities.
+<p>&nbsp;</p>
+<li> The MyCalculations plugin demonstrates how a user could create a plugin that runs without creating its own menu item.
+<p>&nbsp;</p>
+<li> The Summary plugin creates its own menu item with three options to summarize the contents of the existing project.
+</ul>
 </div>
 
 </body>

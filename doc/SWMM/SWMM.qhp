@@ -103,6 +103,8 @@
                     <section title="Report Menu" ref="./src/reportmenu.htm"></section>
                     <section title="Tools Menu" ref="./src/toolsmenu.htm"></section>
                     <section title="Window Menu" ref="./src/windowmenu.htm"></section>
+                    <section title="Plugins Menu" ref="./src/pluginsmenu.htm"></section>
+                    <section title="Scripting Menu" ref="./src/scriptingmenu.htm"></section>
                     <section title="Help Menu" ref="./src/helpmenu.htm"></section>
                 </section>
                 <section title="Toolbars" ref="./src/toolbars.htm">

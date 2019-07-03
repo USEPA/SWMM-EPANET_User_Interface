@@ -1218,7 +1218,7 @@ try:
                 pal_layer.fontSizeInMapUnits = False
                 pal_layer.labelOffsetInMapUnits = False
                 pal_layer.fieldName = 'name'
-                pal_layer.placement = QgsPalLayerSettings.CentroidWhole
+                pal_layer.placement = QgsPalLayerSettings.OverPoint
                 labeler = QgsVectorLayerSimpleLabeling(pal_layer)
                 layer.setLabeling(labeler)
                 # pal_layer.writeToLayer(layer) #pyqgis3 removed
@@ -3230,8 +3230,8 @@ try:
             layout.addWidget(self.editor)
             layout.addWidget(buttonBox)
 
-            self.buttonBox.accepted.connect(self.accept)
-            self.buttonBox.rejected.connect(self.reject)
+            buttonBox.accepted.connect(self.accept)
+            buttonBox.rejected.connect(self.reject)
 
             layout.setContentsMargins(10, 10, 10, 10)
             self.setLayout(layout)

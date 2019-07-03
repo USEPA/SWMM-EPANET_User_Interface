@@ -1917,7 +1917,11 @@ class frmMain(QMainWindow, Ui_frmMain):
             if len(otypes) == 1:
                 otype = (otypes[0], True)
             else:
-                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+                # otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+                if len(self.tree_section) > 0:
+                    otype = (self.tree_section, True)
+                else:
+                    otype = (self.tree_section, False)
             if otype and otype[1]:
                 mobjects = self.model_layers.selected_model_ids[otype[0]]
                 self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))

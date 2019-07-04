@@ -346,6 +346,7 @@ class frmMainSWMM(frmMain):
         self.menuProject.removeAction(self.actionStdProjSimulation_Options)
         self.menuObjects.deleteLater()
         self.menuView.removeAction(self.actionStdMapFind)
+        self.menuTools.removeAction(self.actionStdConfigTools)
 
         self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))

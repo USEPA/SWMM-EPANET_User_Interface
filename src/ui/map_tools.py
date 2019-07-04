@@ -271,11 +271,13 @@ try:
                 self.session.actionMapSelectRegion.setChecked(False)
                 self.setSelectByRegionMode()
                 self.canvas.setMapTool(self.zoomInTool)
+                zoomin = QtGui.QPixmap(":/icons/zoom-in.png")
+                self.zoomInTool.setCursor(QtGui.QCursor(zoomin))
                 #self.zoomInTool.setCursor(QtCore.Qt.CrossCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.CrossCursor)
             else:
                 self.canvas.unsetMapTool(self.zoomInTool)
-                #self.zoomInTool.setCursor(QtCore.Qt.ArrowCursor)
+                self.zoomInTool.setCursor(QtCore.Qt.ArrowCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
             pass
 
@@ -286,11 +288,13 @@ try:
                 self.session.actionMapSelectRegion.setChecked(False)
                 self.setSelectByRegionMode()
                 self.canvas.setMapTool(self.zoomOutTool)
+                zoomout = QtGui.QPixmap(":/icons/zoom-out.png")
+                self.zoomOutTool.setCursor(QtGui.QCursor(zoomout))
                 #self.zoomOutTool.setCursor(QtCore.Qt.SplitHCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.SplitHCursor)
             else:
                 self.canvas.unsetMapTool(self.zoomOutTool)
-                #self.zoomOutTool.setCursor(QtCore.Qt.ArrowCursor)
+                self.zoomOutTool.setCursor(QtCore.Qt.ArrowCursor)
                 #QApplication.setOverrideCursor(QtCore.Qt.ArrowCursor)
             pass
 

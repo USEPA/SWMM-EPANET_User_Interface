@@ -69,5 +69,7 @@
     <file>icons/forward.png</file>
     <file>icons/pause.png</file>
     <file>icons/play.png</file>
+    <file>icons/zoom-in.png</file>
+    <file>icons/zoom-out.png</file>
   </qresource>
 </RCC>

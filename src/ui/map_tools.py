@@ -2825,9 +2825,11 @@ try:
             for mlyr in self.session.model_layers.all_layers:
                 lyr_name = mlyr.name()
                 if lyr_name and \
-                        ("label" in lyr_name.lower() or
-                             lyr_name.lower().startswith("subcentroid") or
-                             lyr_name.lower().startswith("sublink")):
+                        (lyr_name.lower().startswith("subcentroid") or
+                        lyr_name.lower().startswith("sublink")):
+                        #("label" in lyr_name.lower() or
+                        #     lyr_name.lower().startswith("subcentroid") or
+                        #     lyr_name.lower().startswith("sublink")):
                     continue
                 # mlyr.removeSelection()
                 if not self.auto_detect:

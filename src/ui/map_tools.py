@@ -3273,8 +3273,8 @@ try:
             layout.addWidget(self.editor)
             layout.addWidget(buttonBox)
 
-            self.buttonBox.accepted.connect(self.accept)
-            self.buttonBox.rejected.connect(self.reject)
+            buttonBox.accepted.connect(self.accept)
+            buttonBox.rejected.connect(self.reject)
 
             layout.setContentsMargins(10, 10, 10, 10)
             self.setLayout(layout)

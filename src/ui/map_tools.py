@@ -354,13 +354,14 @@ try:
             layer = None
             if self.canvas.layers():
                 layer = self.session.gis_layer_tree.currentLayer()
-                if layer and layer.geometryType() == QgsWkbTypes.PointGeometry:
-                    layer = None
-                # for lyr in self.canvas.layers():
-                #     if "subcatchment" in lyr.name().lower() or \
-                #             "conduit" in lyr.name().lower():
-                #         layer = lyr
-                #         break
+                if isinstance(layer, QgsVectorLayer):
+                    if layer and layer.geometryType() == QgsWkbTypes.PointGeometry:
+                        layer = None
+                    # for lyr in self.canvas.layers():
+                    #     if "subcatchment" in lyr.name().lower() or \
+                    #             "conduit" in lyr.name().lower():
+                    #         layer = lyr
+                    #         break
             if layer is None:
                 if self.session.actionMapSelectVertices.isChecked():
                     self.session.actionMapMeasure.setChecked(False)
@@ -2860,7 +2861,7 @@ try:
                     iterator = self.nearest_layer.getFeatures(QgsFeatureRequest().setFilterFid(ids[0]))
                     if iterator:
                         self.nearest_feature = next(iterator)
-                    # return
+                    return
 
         def canvasDoubleClickEvent(self, e):
             self.session.edit_selected_objects()

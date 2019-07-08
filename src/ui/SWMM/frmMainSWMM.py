@@ -1655,9 +1655,12 @@ class ModelLayersSWMM(ModelLayers):
         """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
-        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks]
-        self.all_layers.extend(self.nodes_layers)
-        self.all_layers.extend(self.links_layers)
+        self.all_layers = [];
+        for lyr in self.nodes_layers:
+            self.all_layers.append(lyr)
+        for lyr in self.links_layers:
+            self.all_layers.append(lyr)
+        self.all_layers.extend([self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks])
 
     def create_layers_from_project(self, project):
         """Create QGIS map layers and populate them with features representing model objects"""

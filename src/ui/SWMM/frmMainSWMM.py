@@ -29,6 +29,7 @@ from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmConduits import frmConduits
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
+from ui.SWMM.frmDetails import frmDetails
 from ui.SWMM.frmOrifices import frmOrifices
 from ui.SWMM.frmOutlets import frmOutlets
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -1565,7 +1566,8 @@ class frmMainSWMM(frmMain):
         self._frmSummary.show()
 
     def show_details(self):
-        QMessageBox.information(None, self.model, "'Details' not yet implemented.", QMessageBox.Ok)
+        self._frmDetails= frmDetails(self)
+        self._frmDetails.show()
 
     def help_topics(self):
         self.helper.show_help()

@@ -16,31 +16,32 @@ class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.toolButton.clicked.connect(self.toolButton_Clicked)
         # need to load table with selected file names
-        self.file_dict = self.defaults.groups_with_values['Calibration']
-        if self.file_dict['File1']:
-            self.tableWidget.setItem(0, 0, QTableWidgetItem(QLineEdit(self.file_dict['File1']).text()))
-        if self.file_dict['File2']:
-            self.tableWidget.setItem(1, 0, QTableWidgetItem(QLineEdit(self.file_dict['File2']).text()))
-        if self.file_dict['File3']:
-            self.tableWidget.setItem(2, 0, QTableWidgetItem(QLineEdit(self.file_dict['File3']).text()))
-        if self.file_dict['File4']:
-            self.tableWidget.setItem(3, 0, QTableWidgetItem(QLineEdit(self.file_dict['File4']).text()))
-        if self.file_dict['File5']:
-            self.tableWidget.setItem(4, 0, QTableWidgetItem(QLineEdit(self.file_dict['File5']).text()))
-        if self.file_dict['File6']:
-            self.tableWidget.setItem(5, 0, QTableWidgetItem(QLineEdit(self.file_dict['File6']).text()))
-        if self.file_dict['File7']:
-            self.tableWidget.setItem(6, 0, QTableWidgetItem(QLineEdit(self.file_dict['File7']).text()))
-        if self.file_dict['File8']:
-            self.tableWidget.setItem(7, 0, QTableWidgetItem(QLineEdit(self.file_dict['File8']).text()))
-        if self.file_dict['File9']:
-            self.tableWidget.setItem(8, 0, QTableWidgetItem(QLineEdit(self.file_dict['File9']).text()))
-        if self.file_dict['File10']:
-            self.tableWidget.setItem(9, 0, QTableWidgetItem(QLineEdit(self.file_dict['File10']).text()))
-        if self.file_dict['File11']:
-            self.tableWidget.setItem(10, 0, QTableWidgetItem(QLineEdit(self.file_dict['File11']).text()))
-        if self.file_dict['File12']:
-            self.tableWidget.setItem(11, 0, QTableWidgetItem(QLineEdit(self.file_dict['File12']).text()))
+        if 'Calibration' in self.defaults.groups_with_values:
+            self.file_dict = self.defaults.groups_with_values['Calibration']
+            if self.file_dict['File1']:
+                self.tableWidget.setItem(0, 0, QTableWidgetItem(QLineEdit(self.file_dict['File1']).text()))
+            if self.file_dict['File2']:
+                self.tableWidget.setItem(1, 0, QTableWidgetItem(QLineEdit(self.file_dict['File2']).text()))
+            if self.file_dict['File3']:
+                self.tableWidget.setItem(2, 0, QTableWidgetItem(QLineEdit(self.file_dict['File3']).text()))
+            if self.file_dict['File4']:
+                self.tableWidget.setItem(3, 0, QTableWidgetItem(QLineEdit(self.file_dict['File4']).text()))
+            if self.file_dict['File5']:
+                self.tableWidget.setItem(4, 0, QTableWidgetItem(QLineEdit(self.file_dict['File5']).text()))
+            if self.file_dict['File6']:
+                self.tableWidget.setItem(5, 0, QTableWidgetItem(QLineEdit(self.file_dict['File6']).text()))
+            if self.file_dict['File7']:
+                self.tableWidget.setItem(6, 0, QTableWidgetItem(QLineEdit(self.file_dict['File7']).text()))
+            if self.file_dict['File8']:
+                self.tableWidget.setItem(7, 0, QTableWidgetItem(QLineEdit(self.file_dict['File8']).text()))
+            if self.file_dict['File9']:
+                self.tableWidget.setItem(8, 0, QTableWidgetItem(QLineEdit(self.file_dict['File9']).text()))
+            if self.file_dict['File10']:
+                self.tableWidget.setItem(9, 0, QTableWidgetItem(QLineEdit(self.file_dict['File10']).text()))
+            if self.file_dict['File11']:
+                self.tableWidget.setItem(10, 0, QTableWidgetItem(QLineEdit(self.file_dict['File11']).text()))
+            if self.file_dict['File12']:
+                self.tableWidget.setItem(11, 0, QTableWidgetItem(QLineEdit(self.file_dict['File12']).text()))
 
         file_name = self.defaults.config.value("Calibration/File1")
         if file_name:

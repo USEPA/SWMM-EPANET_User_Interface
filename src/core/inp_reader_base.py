@@ -25,7 +25,7 @@ class InputFileReader(object):
                 self.set_from_text_lines(project, inp_reader.readlines())
         except Exception as e:
             print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
-            self.input_err_msg = "File is probably not a valid EPANET project or input file."
+            self.input_err_msg = "File is probably not a valid project or input file."
             if ".net" in file_name:
                 self.input_err_msg += "\nPlease note: binary (.net) input file is deprecated (not supported)."
             # try:
@@ -92,6 +92,8 @@ class InputFileReader(object):
                       '\n' + str(traceback.print_exc()))
 
         if new_section is None:
+            if not section_name == '[END]':
+                self.input_err_msg += '\n' + 'Unrecognized keyword (' + section_name + ').'
             print("Default Section for " + section_name)
             new_section = Section()
             new_section.SECTION_NAME = section_name

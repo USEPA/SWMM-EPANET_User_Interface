@@ -616,6 +616,17 @@ try:
                     except:
                         pass
 
+        def pan_to_one_feature(self):
+            for lyr in self.canvas.layers():
+                if isinstance(lyr, QgsVectorLayer):
+                    try:
+                        box = lyr.boundingBoxOfSelected()
+                        if lyr.selectedFeatureCount() > 0:
+                            self.canvas.setExtent(box)
+                            lyr.triggerRepaint()
+                    except:
+                        pass
+
         def setMouseTracking(self, flag):
             def recursive_set(parent):
                 for child in parent.findChildren(QtCore.QObject):

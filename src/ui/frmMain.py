@@ -247,6 +247,7 @@ class frmMain(QMainWindow, Ui_frmMain):
                             self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
                             self.actionStdMapZoomOut.triggered.connect(lambda: self.setMenuMapTool('zoomout'))
                             self.actionStdMapFullExtent.triggered.connect(lambda: self.setMenuMapTool('fullextent'))
+                            self.actionStdMapPanSelection.triggered.connect(lambda: self.setMenuMapTool('panselection'))
 
                             from qgis.gui import QgsLayerTreeView
                             from qgis.core import QgsLayerTreeModel
@@ -1350,6 +1351,8 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.actionZoom_out.setChecked(True)
         elif aMenuMapToolName == 'fullextent':
             self.zoomfull()
+        elif aMenuMapToolName == 'panselection':
+            self.pantoselection()
         if self.canvas:
             self.map_widget.setZoomInMode()
             self.map_widget.setZoomOutMode()
@@ -1400,6 +1403,9 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionMapSelectRegion.setChecked(False)
         self.map_widget.setSelectByRegionMode()
         self.map_widget.zoomfull()
+
+    def pantoselection(self):
+        self.map_widget.pan_to_one_feature()
 
     def map_addfeature(self):
         self.map_widget.setAddFeatureMode()

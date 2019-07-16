@@ -1126,15 +1126,22 @@ class ModelLayersEPANET(ModelLayers):
 
         # Add new layers containing objects from this project
         self.junctions = addCoordinates(project.junctions.value, "Junctions")
+        self.junctions.setLabelsEnabled(False)
         self.reservoirs = addCoordinates(project.reservoirs.value, "Reservoirs")
+        self.reservoirs.setLabelsEnabled(False)
         self.tanks = addCoordinates(project.tanks.value, "Tanks")
+        self.tanks.setLabelsEnabled(False)
         self.sources = addCoordinates(project.sources.value, "Sources")
+        self.sources.setLabelsEnabled(False)
         self.labels = addCoordinates(project.labels.value, "Labels")
 
         coordinates = project.all_nodes()
         self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
+        self.pumps.setLabelsEnabled(False)
         self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
+        self.valves.setLabelsEnabled(False)
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
+        self.pipes.setLabelsEnabled(False)
         self.set_lists()
         self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
 

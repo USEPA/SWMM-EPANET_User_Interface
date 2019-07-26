@@ -20,7 +20,7 @@ class InputFileReader(object):
                 self.set_from_text_lines(project, inp_reader.readlines())
             """
             import codecs
-            with codecs.open(file_name, 'r', 'utf-8') as inp_reader:
+            with codecs.open(file_name, 'r') as inp_reader:
                 project.file_name = file_name
                 self.set_from_text_lines(project, inp_reader.readlines())
         except Exception as e:

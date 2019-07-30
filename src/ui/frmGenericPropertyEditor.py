@@ -3,6 +3,8 @@ import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
+from PyQt5.Qt import QApplication, QClipboard
+from PyQt5.QtCore import *
 
 
 class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
@@ -35,6 +37,8 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
         self.edit_these = edit_these
         self.backend = PropertyEditorBackend(self.tblGeneric, self.lblNotes, session, edit_these, new_item)
         self.tblGeneric.cellChanged.connect(self.check_change)
+        for row in range(self.tblGeneric.rowCount()):
+            self.tblGeneric.setRowHeight(row, 20)
 
     def header_index(self, prop):
         """
@@ -82,3 +86,44 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
     def cmdCancel_Clicked(self):
         self.close()
 
+    def copy(self):
+        selected_range = self.tblGeneric.selectedRanges()[0]
+        str = ""
+        for i in range(selected_range.rowCount()):
+            if i > 0:
+                str += "\n"
+            for j in range(selected_range.columnCount()):
+                if j > 0:
+                    str += "\t"
+                str += self.tblGeneric.item(selected_range.topRow() + i, selected_range.leftColumn() + j).text()
+        str += "\n"
+        QApplication.clipboard().setText(str)
+
+    def paste(self):
+        str = QApplication.clipboard().text()
+        selected_range = self.tblGeneric.selectedRanges()[0]
+        rows = str.split('\n')
+        numRows = len(rows) - 1
+        numColumns = rows[0].count('\t') + 1
+        for i in range(numRows):
+            columns = rows[i].split('\t')
+            for j in range(numColumns):
+                if selected_range.topRow() + i < self.tblGeneric.rowCount() and selected_range.leftColumn() + j < self.tblGeneric.columnCount():
+                    self.tblGeneric.item(selected_range.topRow() + i, selected_range.leftColumn() + j).setText(columns[j])
+        if selected_range.rowCount() > numRows or selected_range.columnCount() > numColumns:
+            # not enough data to fill selected area, don't continue unless theres a single cell on the clipboard
+            if numRows == 1 and numColumns == 1:
+                # fill selected range with single value
+                value = rows[0]
+                for i in range(selected_range.rowCount()):
+                    for j in range(selected_range.columnCount()):
+                        self.tblGeneric.item(selected_range.topRow() + i, selected_range.leftColumn() + j).setText(value)
+        pass
+
+    def keyPressEvent(self, event):
+        x = event.key()
+        y = QtGui.QKeySequence.Copy
+        if event.matches(QtGui.QKeySequence.Copy):
+            self.copy()
+        if event.matches(QtGui.QKeySequence.Paste):
+            self.paste()

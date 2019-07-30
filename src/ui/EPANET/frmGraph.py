@@ -55,6 +55,7 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             self.rbnNodes.setChecked(True)
             self.rbnTime_Clicked()
             self.rbnNodes_Clicked()
+            self.add_element()
 
     def rbnNodes_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -78,6 +79,7 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.nodes
+            self.add_element()
             # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnLinks_Clicked(self):
@@ -103,6 +105,7 @@ class frmGraph(QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.links
+            self.add_element()
             # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnTime_Clicked(self):

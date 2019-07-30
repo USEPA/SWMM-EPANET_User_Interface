@@ -42,6 +42,10 @@ class frmRunSWMM(frmRunSimulation):
         self.cmdMinimize.setVisible(False)
         self.cmdOK.setVisible(False)
         self.gbxContinuity.setVisible(False)
+        self.progressBar.setVisible(True)
+        self.lblTime.setVisible(True)
+        self.fraTime.setVisible(True)
+        self.fraBottom.setVisible(True)
 
         #  Initialize placement and status of images on the ResultsPage
         self.lblIconSuccessful.Visible = False
@@ -134,7 +138,7 @@ class frmRunSWMM(frmRunSimulation):
                         date_now = datetime.now()
                         if (date_now - date_updated).microseconds > 100000:
                             self.update_progress_days(elapsed_days, total_days)
-                            self.update_progress_bar(elapsed_days, total_days)
+                            self.update_progress_bar(round(elapsed_days), total_days)
                             process_events()
                             date_updated = date_now
                 else:
@@ -205,10 +209,10 @@ class frmRunSWMM(frmRunSimulation):
         #  Compute the simulation duration in days from the Project's simulation options.
         try:
             end_date = datetime.strptime(self._main_form.project.options.dates.end_date + ' ' +
-                                         self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M")
+                                         self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M:%S")
             start_date = datetime.strptime(self._main_form.project.options.dates.start_date + ' ' +
-                                           self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M")
-            return (end_date - start_date).days + 1
+                                           self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M:%S")
+            return (end_date - start_date).days
         except:
             return 0.0
 

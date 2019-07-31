@@ -4,12 +4,14 @@ from PyQt5.QtWidgets import QMainWindow
 from core.epanet.hydraulics.node import SourceType
 from core.epanet.hydraulics.node import Source
 from ui.EPANET.frmSourcesQualityDesigner import Ui_frmSourcesQuality
+from ui.help import HelpHandler
 
 
 class frmSourcesQuality(QMainWindow, Ui_frmSourcesQuality):
 
     def __init__(self, main_form=None):
         QMainWindow.__init__(self, main_form)
+        self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Source_Q.htm"
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)

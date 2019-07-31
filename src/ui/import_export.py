@@ -919,13 +919,12 @@ def import_swmm_from_geojson(session, file_name):
                     pass
         elif geom.type() == QgsWkbTypes.PolygonGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
-            for ptlist in geom.asMultiPolygon()[0]:
-                for i in range(1, len(ptlist)):
-                    coord = Coordinate()
-                    coord.x = str(ptlist[i].x())
-                    coord.y = str(ptlist[i].y())
-                    model_item.vertices.append(coord)
-                    pass
+            for ptlist in geom.asPolygon()[0]:
+                coord = Coordinate()
+                coord.x = str(ptlist.x())
+                coord.y = str(ptlist.y())
+                model_item.vertices.append(coord)
+                pass
 
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()

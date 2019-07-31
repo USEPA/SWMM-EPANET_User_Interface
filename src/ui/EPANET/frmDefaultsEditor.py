@@ -1,6 +1,7 @@
 import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QTableWidget, QWidget, QTableWidgetItem, QComboBox
+from ui.help import HelpHandler
 from ui.frmGenericDefaultsEditorDesigner import Ui_frmGenericDefaultsEditor
 from ui.inifile import ini_setting
 from ui.convenience import set_combo_items
@@ -25,6 +26,8 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
     """
     def __init__(self, session, project, defaults):
         QMainWindow.__init__(self, session)
+        self.helper = HelpHandler(self)
+        self.help_topic = "epanet/src/src/Sett0005.htm"
         self.setupUi(self)
         self.defaults = defaults
         self.session = session
@@ -268,11 +271,14 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
 
     def tab_changed(self, index):
         #self.move_table(index)
-        #if index == 0:
+        if index == 0:
+            self.help_topic = "epanet/src/src/Proj0043.htm"
         #    self.set_tab_prefix()
-        #elif index == 1:
+        elif index == 1:
+            self.help_topic = "epanet/src/src/Proj0045.htm"
         #    self.set_tab_properties()
-        #elif index == 2:
+        elif index == 2:
+            self.help_topic = "epanet/src/src/Proj0044.htm"
         #    self.set_tab_hydraulics()
         pass
 

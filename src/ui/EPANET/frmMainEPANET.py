@@ -5,10 +5,13 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 import traceback
 import webbrowser
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from PyQt5 import QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QAction
+from PyQt5.QtCore import QObject, QSettings
 from threading import Lock, Thread
 from time import sleep
+
 
 from ui.model_utility import QString, from_utf8, transl8, process_events
 from ui.help import HelpHandler
@@ -60,7 +63,7 @@ import core.epanet.reports as reports
 from core.epanet.options.quality import QualityAnalysisType
 from Externals.epanet.model.epanet2 import ENepanet
 from Externals.epanet.outputapi import ENOutputWrapper
-from frmRunEPANET import frmRunEPANET
+from ui.EPANET.frmRunEPANET import frmRunEPANET
 
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
@@ -125,8 +128,7 @@ class frmMainEPANET(frmMain):
 
     def __init__(self, q_application):
         self.model = "EPANET"
-        self.program_settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
-                                                 "EPA", self.model)
+        self.program_settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model)
         print("Read program settings from " + self.program_settings.fileName())
         self.model_path = ''  # Set this only if needed later when running model
         self.output = None    # Set this when model output is available
@@ -140,7 +142,7 @@ class frmMainEPANET(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
-        self.project_settings = DefaultsEPANET("", self.project)
+        self.project_settings = DefaultsEPANET("", self.project, self.program_settings)
         self.tree_types = {
             self.tree_Patterns[0]: Pattern,
             self.tree_Curves[0]: Curve,
@@ -172,92 +174,93 @@ class frmMainEPANET(frmMain):
         self.help_topic = ""  # TODO: specify topic to open when Help key is pressed on main form
         self.helper = HelpHandler(self)
 
-        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
-        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               lambda: self.open_translate_coord_dialog(None, None))
+        #QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'), lambda: self.open_translate_coord_dialog(None, None))
+        self.actionTranslate_Coordinates.triggered.connect(lambda: self.open_translate_coord_dialog(None, None))
 
         self.actionStdProjSummary.triggered.connect(self.show_summary)
-        QtCore.QObject.connect(self.actionStdProjSimulation_Options, QtCore.SIGNAL('triggered()'), self.edit_simulation_options)
+        self.actionStdProjSimulation_Options.triggered.connect(self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
         self.menuTools.removeAction(self.actionStdProgPrefer)
         self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
+        self.toolBar_Standard.removeAction(self.actionProjTableStatistics)
 
-        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu = QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
-        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionStatus_ReportMenu.triggered.connect(self.report_status)
         self.actionProjStatus.triggered.connect(self.report_status)
 
-        self.actionEnergy_ReportMenu = QtGui.QAction(self)
+        self.actionEnergy_ReportMenu = QAction(self)
         self.actionEnergy_ReportMenu.setObjectName(from_utf8("actionEnergy_ReportMenu"))
         self.actionEnergy_ReportMenu.setText(transl8("frmMain", "Energy", None))
         self.actionEnergy_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Energy", None))
         self.menuReport.addAction(self.actionEnergy_ReportMenu)
-        QtCore.QObject.connect(self.actionEnergy_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_energy)
+        self.actionEnergy_ReportMenu.triggered.connect(self.report_energy)
 
-        self.actionCalibration_ReportMenu = QtGui.QAction(self)
+        self.actionCalibration_ReportMenu = QAction(self)
         self.actionCalibration_ReportMenu.setObjectName(from_utf8("actionCalibration_ReportMenu"))
         self.actionCalibration_ReportMenu.setText(transl8("frmMain", "Calibration", None))
         self.actionCalibration_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Calibration", None))
         self.menuReport.addAction(self.actionCalibration_ReportMenu)
-        QtCore.QObject.connect(self.actionCalibration_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_calibration)
+        self.actionCalibration_ReportMenu.triggered.connect(self.report_calibration)
 
-        self.actionReaction_ReportMenu = QtGui.QAction(self)
+        self.actionReaction_ReportMenu = QAction(self)
         self.actionReaction_ReportMenu.setObjectName(from_utf8("actionReaction_ReportMenu"))
         self.actionReaction_ReportMenu.setText(transl8("frmMain", "Reaction", None))
         self.actionReaction_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Reaction", None))
         self.menuReport.addAction(self.actionReaction_ReportMenu)
-        QtCore.QObject.connect(self.actionReaction_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_reaction)
+        self.actionReaction_ReportMenu.triggered.connect(self.report_reaction)
 
-        self.actionFull_ReportMenu = QtGui.QAction(self)
+        self.actionFull_ReportMenu = QAction(self)
         self.actionFull_ReportMenu.setObjectName(from_utf8("actionFull_ReportMenu"))
         self.actionFull_ReportMenu.setText(transl8("frmMain", "Full...", None))
         self.actionFull_ReportMenu.setToolTip(transl8("frmMain", "Save full report as text file", None))
         self.menuReport.addAction(self.actionFull_ReportMenu)
-        QtCore.QObject.connect(self.actionFull_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_full)
+        self.actionFull_ReportMenu.triggered.connect(self.report_full)
 
-        self.actionGraph_ReportMenu = QtGui.QAction(self)
+        self.actionGraph_ReportMenu = QAction(self)
         self.actionGraph_ReportMenu.setObjectName(from_utf8("actionGraph_ReportMenu"))
         self.actionGraph_ReportMenu.setText(transl8("frmMain", "Graph...", None))
         self.actionGraph_ReportMenu.setToolTip(transl8("frmMain", "Display graph selection options", None))
         self.menuReport.addAction(self.actionGraph_ReportMenu)
-        QtCore.QObject.connect(self.actionGraph_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_graph)
+        self.actionGraph_ReportMenu.triggered.connect(self.report_graph)
         self.actionProjPlotTimeseries.triggered.connect(self.report_graph)
         self.actionProjPlotScatter.triggered.connect(self.report_graph)
-        self.actionProjPlotProfile.triggered.connect(self.report_graph)
+        self.actionProjPlotProfile.setVisible(False)
 
-        self.actionTable_ReportMenu = QtGui.QAction(self)
+        self.actionTable_ReportMenu = QAction(self)
         self.actionTable_ReportMenu.setObjectName(from_utf8("actionTable_ReportMenu"))
         self.actionTable_ReportMenu.setText(transl8("frmMain", "Table...", None))
         self.actionTable_ReportMenu.setToolTip(transl8("frmMain", "Display table selection options", None))
         self.menuReport.addAction(self.actionTable_ReportMenu)
-        QtCore.QObject.connect(self.actionTable_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_table)
+        self.actionTable_ReportMenu.triggered.connect(self.report_table)
         self.actionProjTableTimeseries.triggered.connect(self.report_table)
 
         self.actionStdMapQuery.triggered.connect(self.map_query)
         self.actionStdMapFind.triggered.connect(self.map_finder)
 
-        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu = QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
         self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
         self.menuHelp.addAction(self.Help_Topics_Menu)
-        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+        self.Help_Topics_Menu.triggered.connect(self.help_topics)
 
-        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu = QAction(self)
         self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
         self.Help_About_Menu.setText(transl8("frmMain", "About", None))
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About EPANET", None))
         self.menuHelp.addAction(self.Help_About_Menu)
-        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+        self.Help_About_Menu.triggered.connect(self.help_about)
 
         self.cbFlowUnits.clear()
         self.cbFlowUnits.addItems(['Flow Units: CFS','Flow Units: GPM','Flow Units: MGD','Flow Units: IMGD',
@@ -352,15 +355,15 @@ class frmMainEPANET(frmMain):
                         color_by[node.name] = values[index]
                         index += 1
 
-            # for layer in self.model_layers.nodes_layers:
-            #     if layer.isValid():
-            #         if color_by:
-            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-            #                                                                 self.thematic_node_min,
-            #                                                                 self.thematic_node_max)
-            #         else:
-            #             self.map_widget.set_default_point_renderer(layer)
-            #         layer.triggerRepaint()
+            for layer in self.model_layers.nodes_layers:
+                if layer.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_node_min,
+                                                                            self.thematic_node_max)
+                    else:
+                        self.map_widget.set_default_point_renderer(layer)
+                    layer.triggerRepaint()
 
         if self.model_layers.links_layers:
             selected_attribute = self.cboMapLinks.currentText()
@@ -406,15 +409,15 @@ class frmMainEPANET(frmMain):
                     for link in self.output.links.values():
                         color_by[link.name] = values[index]
                         index += 1
-            # for layer in self.model_layers.links_layers:
-            #     if layer.isValid():
-            #         if color_by:
-            #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-            #                                                                 self.thematic_link_min,
-            #                                                                 self.thematic_link_max)
-            #         else:
-            #             self.map_widget.set_default_line_renderer(layer)
-            #         layer.triggerRepaint()
+            for layer in self.model_layers.links_layers:
+                if layer.isValid():
+                    if color_by:
+                        self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                            self.thematic_link_min,
+                                                                            self.thematic_link_max)
+                    else:
+                        self.map_widget.set_default_line_renderer(layer, do_labels=False)
+                    layer.triggerRepaint()
         self.time_widget.setVisible(enable_time_widget)
         if enable_time_widget:
             self.update_thematic_map_time()
@@ -443,20 +446,22 @@ class frmMainEPANET(frmMain):
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None, self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
-                                                            self.map_widget.layer_styles[layer.id()])
+                                                            self.map_widget.layer_styles[layer.id()],
+                                                                                    True, None, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
-                                                                                self.thematic_node_max)
+                                                                                self.thematic_node_max,
+                                                                                    None, True, None, do_label)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
-                            do_label = True
                             if len(self.project.all_nodes()) > 300:
                                 do_label = False
                             self.map_widget.set_default_point_renderer(layer, None, 3.5, do_label)
@@ -491,27 +496,28 @@ class frmMainEPANET(frmMain):
 
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
+                        if len(self.project.all_links()) > 300:
+                            do_label = False
+
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_link_min,
                                                                                     self.thematic_link_max,
                                                                              self.map_widget.layer_styles[layer.id()],
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max,
                                                                                     None,
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, do_label)
                             self.annotate_layername(selected_attribute, "link", layer)
                         else:
-                            do_label = True
-                            if len(self.project.all_links()) > 300:
-                                do_label = False
                             self.map_widget.set_default_line_renderer(layer, do_label)
                         layer.triggerRepaint()
             if self.cboTime.count() > 0:
@@ -535,7 +541,7 @@ class frmMainEPANET(frmMain):
         """
         unit_text = ""
         if obj_type == "node":
-            if self.output.nodes_units.has_key(selected_attribute):
+            if selected_attribute in self.output.nodes_units:
                 unit_text = self.output.nodes_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -548,7 +554,7 @@ class frmMainEPANET(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "link":
-            if self.output.links_units.has_key(selected_attribute):
+            if selected_attribute in self.output.links_units:
                 unit_text = self.output.links_units[selected_attribute]
             else:
                 if selected_attribute == "Length":
@@ -566,9 +572,9 @@ class frmMainEPANET(frmMain):
         if " [" in layer_name:
             layer_name = layer_name[0:layer_name.index(" [")]
         if unit_text:
-            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+            layer.setName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
         else:
-            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+            layer.setName(layer_name + " [" + selected_attribute + "]")
 
     def animate_e(self):
         if self.output:
@@ -586,11 +592,14 @@ class frmMainEPANET(frmMain):
 
     def cbFlowUnits_currentIndexChanged(self):
         import core.epanet.options.hydraulics
+        orig_flow_units = self.project.options.hydraulics.flow_units
         self.project.options.hydraulics.flow_units = core.epanet.options.hydraulics.FlowUnits[self.cbFlowUnits.currentText()[12:]]
         self.project.metric = self.project.options.hydraulics.flow_units in core.epanet.options.hydraulics.flow_units_metric
+        if self.project.options.hydraulics.flow_units != orig_flow_units:
+            self.mark_project_as_unsaved()
 
     def report_status(self):
-        print "report_status"
+        print ("report_status")
         if not os.path.isfile(self.status_file_name):
             prefix, extension = os.path.splitext(self.project.file_name)
             if os.path.isfile(prefix + self.status_suffix):
@@ -633,7 +642,7 @@ class frmMainEPANET(frmMain):
     def report_full(self):
         if self.output:
             directory = os.path.dirname(self.project.file_name)
-            report_file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Full Report As...", directory, "Text files (*.txt)")
+            report_file_name, ftype = QFileDialog.getSaveFileName(self, "Save Full Report As...", directory, "Text files (*.txt)")
             if report_file_name:
                 try:
                     reporter = reports.Reports(self.project, self.output)
@@ -736,7 +745,7 @@ class frmMainEPANET(frmMain):
 
     def edit_defaults(self):
         directory = self.program_settings.value("ProjectDir", "")
-        from frmDefaultsEditor import frmDefaultsEditor
+        from ui.EPANET.frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, self.project_settings)
         fd.show()
 
@@ -751,11 +760,11 @@ class frmMainEPANET(frmMain):
         frmF.show()
 
     def map_overview(self):
-        layerset = []
-        layerset.append(self.model_layers.pipes.id())
-        layerset.append(self.model_layers.pumps.id())
-        layerset.append(self.model_layers.valves.id())
-        self.map_widget.create_overview(layerset)
+        layers = []
+        layers.append(self.model_layers.pipes)
+        layers.append(self.model_layers.pumps)
+        layers.append(self.model_layers.valves)
+        self.map_widget.create_overview(layers)
         pass
 
     def edit_simulation_options(self):
@@ -770,7 +779,7 @@ class frmMainEPANET(frmMain):
             edit_these = []
             new_item = None
             if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
+                if not isinstance(self.project.labels.value, str):
                     if isinstance(self.project.labels.value, list):
                         edit_these.extend(self.project.labels.value)
                 if len(edit_these) == 0:
@@ -816,6 +825,18 @@ class frmMainEPANET(frmMain):
         else:
             return None
 
+    def move_object_in_list(self, category, item_name, old_index, new_index):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            item = section.value[item_name]
+            section.value.remove(section.value[old_index])
+            section.value.insert(new_index, item)
+
+    def sort_objects_in_list(self, category):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            section.value.sort(key=lambda x: x.name)
+
     def add_object(self, tree_text):
         item_type = self.tree_types[tree_text]
         new_item = item_type()
@@ -841,7 +862,8 @@ class frmMainEPANET(frmMain):
 
         # Find input file to run
         # TODO: decide whether to automatically save to temp location as previous version did.
-        use_existing = self.project and self.project.file_name
+        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name) and \
+                       os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
             ts = QtCore.QTime.currentTime().toString().replace(":", "_")
@@ -850,8 +872,11 @@ class frmMainEPANET(frmMain):
             self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
-            if self.save_project_as():
+            new_name = self.save_project_as()
+            if new_name:
                 use_existing = True
+                self.project.file_name = new_name
+                self.project.file_name_temporary = self.project.file_name
             else:
                 return None
         else:
@@ -898,7 +923,8 @@ class frmMainEPANET(frmMain):
                     frmRun.Execute()
                     # self.report_status()
                     if frmRun.run_err_msg:
-                        raise Exception(frmRun.run_err_msg)
+                        # raise Exception(frmRun.run_err_msg)
+                        return
 
                     try:
                         self.output = ENOutputWrapper.OutputObject(self.output_filename)
@@ -1058,6 +1084,7 @@ class frmMainEPANET(frmMain):
         if self.map_widget:
             try:
                 self.model_layers.create_layers_from_project(self.project)
+                self.map_widget.load_extra_layers()
                 self.map_widget.zoomfull()
                 self.setQgsMapTool()  # Reset any active tool that still has state from old project
             except Exception as ex:
@@ -1099,16 +1126,24 @@ class ModelLayersEPANET(ModelLayers):
 
         # Add new layers containing objects from this project
         self.junctions = addCoordinates(project.junctions.value, "Junctions")
+        self.junctions.setLabelsEnabled(False)
         self.reservoirs = addCoordinates(project.reservoirs.value, "Reservoirs")
+        self.reservoirs.setLabelsEnabled(False)
         self.tanks = addCoordinates(project.tanks.value, "Tanks")
+        self.tanks.setLabelsEnabled(False)
         self.sources = addCoordinates(project.sources.value, "Sources")
+        self.sources.setLabelsEnabled(False)
         self.labels = addCoordinates(project.labels.value, "Labels")
 
         coordinates = project.all_nodes()
         self.pumps = addLinks(coordinates, project.pumps.value, "Pumps", QColor('red'), 1)
+        self.pumps.setLabelsEnabled(False)
         self.valves = addLinks(coordinates, project.valves.value, "Valves", QColor('green'), 2)
+        self.valves.setLabelsEnabled(False)
         self.pipes = addLinks(coordinates, project.pipes.value, "Pipes", QColor('gray'), 3)
+        self.pipes.setLabelsEnabled(False)
         self.set_lists()
+        self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
 
     def find_layer_by_name(self, aname):
         if not aname:
@@ -1133,7 +1168,7 @@ class ModelLayersEPANET(ModelLayers):
             return None
 
 if __name__ == '__main__':
-    application = QtGui.QApplication(sys.argv)
+    application = QApplication(sys.argv)
 
     'try out internationalization'
     from ui.settings import internationalization

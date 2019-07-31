@@ -1,16 +1,17 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.general
 from ui.SWMM.frmGeneralOptionsDesigner import Ui_frmGeneralOptions
 
 
-class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
+class frmGeneralOptions(QMainWindow, Ui_frmGeneralOptions):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/simulationoptions_general.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -50,6 +51,18 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.options
+
+        orig_ignore_rainfall = section.ignore_rainfall
+        orig_ignore_rdii = section.ignore_rdii
+        orig_ignore_snowmelt = section.ignore_snowmelt
+        orig_ignore_groundwater = section.ignore_groundwater
+        orig_ignore_quality = section.ignore_quality
+        orig_ignore_routing = section.ignore_routing
+        orig_flow_routing = section.flow_routing
+        orig_infiltration = section.infiltration
+        orig_allow_ponding = section.allow_ponding
+        orig_min_slope = section.min_slope
+
         section.ignore_rainfall = not self.cbxRainfallRunoff.isChecked()
         section.ignore_rdii = not self.cbxRainfallII.isChecked()
         section.ignore_snowmelt = not self.cbxSnowmelt.isChecked()
@@ -78,9 +91,30 @@ class frmGeneralOptions(QtGui.QMainWindow, Ui_frmGeneralOptions):
         section.allow_ponding = self.cbxAllowPonding.isChecked()
         section.min_slope = float(self.txtMinimum.text())
 
+        if orig_ignore_rainfall != section.ignore_rainfall or \
+            orig_ignore_rdii != section.ignore_rdii or \
+            orig_ignore_snowmelt != section.ignore_snowmelt or \
+            orig_ignore_groundwater != section.ignore_groundwater or \
+            orig_ignore_quality != section.ignore_quality or \
+            orig_ignore_routing != section.ignore_routing or \
+            orig_flow_routing != section.flow_routing or \
+            orig_infiltration != section.infiltration or \
+            orig_allow_ponding != section.allow_ponding or \
+            float(orig_min_slope) != section.min_slope:
+            self._main_form.mark_project_as_unsaved()
+
         section = self._main_form.project.report
+
+        orig_controls = section.controls
+        orig_input = section.input
+
         section.controls = self.cbxReportControl.isChecked()
         section.input = self.cbxReportInput.isChecked()
+
+        if orig_controls != section.controls or \
+            orig_input != section.input:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -77,13 +77,11 @@ except NameError:
     str = str
     unicode = str
     bytes = bytes
-    basestring = (str,bytes)
 else:
     # 'unicode' exists, must be Python 2
     str = str
     unicode = unicode
     bytes = str
-    basestring = basestring
 
 class CoordinateReader(SectionReader):
     @staticmethod
@@ -185,13 +183,14 @@ class LabelReader(SectionReader):
     @staticmethod
     def read(new_text):
         label = Label()
-        fields = shlex.split(new_text.encode('utf8'))
+        # fields = shlex.split(new_text.encode('utf8'))
+        fields = shlex.split(new_text)
         if len(fields) > 2:
             (label.x, label.y) = fields[0:2]
-            label.name = fields[2].decode('UTF8')
+            label.name = fields[2]
 
             if len(fields) > 3:
-                label.anchor_name = fields[3].decode('UTF8')  # name of an anchor node (optional)
+                label.anchor_name = fields[3] # name of an anchor node (optional)
             if len(fields) > 4:
                 label.font = fields[4]
             if len(fields) > 5:
@@ -209,11 +208,13 @@ class CurveReader(SectionReader):
     @staticmethod
     def read(new_text):
         curve = Curve()
+        found_real_values = False
         for line in new_text.splitlines():
-            SectionReader.set_comment_check_section(curve, line)
+            line = SectionReader.set_comment_check_section(curve, line)
             if line.strip():
                 fields = line.split()
                 if len(fields) > 2:
+                    found_real_values = True
                     curve.name = fields[0]
                     try:
                         curve.curve_type = CurveType[fields[1].upper()]
@@ -222,7 +223,10 @@ class CurveReader(SectionReader):
                         x_index = 1
                     for x in range(x_index, len(fields) - 1, 2):
                         curve.curve_xy.append((fields[x], fields[x + 1]))
-        return curve
+        if found_real_values:
+            return curve
+        else:
+            return None
 
 
 class PatternReader(SectionReader):
@@ -230,6 +234,7 @@ class PatternReader(SectionReader):
     @staticmethod
     def read(new_text):
         pattern = Pattern()
+        found_real_values = False
         for line in new_text.splitlines():
             comment_split = line.split(';', 1)
             if len(comment_split) > 1:
@@ -238,6 +243,7 @@ class PatternReader(SectionReader):
             if line:
                 fields = line.split()
                 if len(fields) > 1:
+                    found_real_values = True
                     pattern.name = fields[0]
                     check_type = fields[1].upper()
                     try:
@@ -246,7 +252,10 @@ class PatternReader(SectionReader):
                     except:
                         first_multiplier = 1
                     pattern.multipliers.extend(fields[first_multiplier:])
-        return pattern
+        if found_real_values:
+            return pattern
+        else:
+            return None
 
 
 class LanduseReader(SectionReader):
@@ -348,6 +357,7 @@ class TimeSeriesReader(SectionReader):
     @staticmethod
     def read(new_text):
         time_series = TimeSeries()
+        found_real_values = False
         needs_date = 1
         needs_time = 2
         needs_value = 3
@@ -356,6 +366,7 @@ class TimeSeriesReader(SectionReader):
             try:
                 fields = line.split()
                 if len(fields) > 1:
+                    found_real_values = True
                     if time_series.name and time_series.name != "Unnamed":
                         if time_series.name != fields[0]:
                             raise ValueError("TimeSeriesReader.read: Different Timeseries names " +
@@ -397,7 +408,10 @@ class TimeSeriesReader(SectionReader):
                                              "\nValues = " + str(len(time_series.values)))
             except Exception as ex:
                 raise ValueError("Could not set timeseries from line: " + line + '\n' + str(ex))
-        return time_series
+        if found_real_values:
+            return time_series
+        else:
+            return None
 
 
 class TitleReader(SectionReader):
@@ -811,7 +825,7 @@ class TransectsReader(SectionReader):
     @staticmethod
     def read(new_text):
         transects = Transects()
-        transects.value = []
+        transects.value = IndexedList([], ['name'])
         item_lines = []
         line = ''
         comment = ''
@@ -839,7 +853,6 @@ class TransectsReader(SectionReader):
                             n_left, n_right, n_channel = fields[1:4]
                         elif token == "X1":
                             transect = Transect()
-                            transects.value.append(transect)
                             transect.comment = comment
                             comment = ''
                             transect.n_left = n_left
@@ -855,6 +868,7 @@ class TransectsReader(SectionReader):
                                 transect.stations_modifier = fields[8]
                             if len(fields) > 9:
                                 transect.elevations_modifier = fields[9]
+                            transects.value.append(transect)
         return transects
 
 
@@ -934,7 +948,7 @@ class OutfallReader(SectionReader):
             else:
                 gated_field = 3
             if len(fields) > gated_field:
-                outfall.setattr_keep_type("tidal_gate", fields[gated_field])
+                outfall.setattr_keep_type("tide_gate", fields[gated_field])
             if len(fields) > gated_field + 1:
                 outfall.route_to = fields[gated_field + 1]
         else:
@@ -1228,11 +1242,13 @@ class LIDControlReader(SectionReader):
     @staticmethod
     def read(new_text):
         lid_control = LIDControl()
+        found_real_values = False
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(lid_control, line)
             if line:
                 fields = line.split()
                 if len(fields) == 2:
+                    found_real_values = True
                     if lid_control.name and lid_control.name != 'Unnamed':
                         raise ValueError("LIDControlReader.read: LID name already set: " +
                                          lid_control.name + ", then found 2-element line: " + line)
@@ -1242,6 +1258,7 @@ class LIDControlReader(SectionReader):
                     except:
                         raise ValueError("LIDControlReader.read: Unknown LID type in second field: " + line)
                 elif len(fields) > 2:
+                    found_real_values = True
                     if fields[0] != lid_control.name:
                         raise ValueError("LIDControlReader.read: LID name: {} != {}".format(fields[0], lid_control.name))
                     check_type = fields[1].upper()
@@ -1255,7 +1272,10 @@ class LIDControlReader(SectionReader):
                             continue
                     if not found_type:
                         raise ValueError("LIDControlReader.read: Unknown line: " + line)
-        return lid_control
+        if found_real_values:
+            return lid_control
+        else:
+            return None
 
 
 class SnowPackReader(SectionReader):
@@ -1302,11 +1322,13 @@ class SnowPackReader(SectionReader):
     @staticmethod
     def read(new_text):
         snow_pack = SnowPack()
+        found_real_values = False
         for line in new_text.splitlines():
             line = SectionReader.set_comment_check_section(snow_pack, line)
             if line:
                 fields = line.split()
                 if len(fields) > 2:
+                    found_real_values = True
                     if not snow_pack.name or snow_pack.name == 'Unnamed':                      # If we have not found a name yet, use the first one we find
                         snow_pack.name = fields[0]
                     elif fields[0] != snow_pack.name:           # If we find a different name, complain
@@ -1322,7 +1344,10 @@ class SnowPackReader(SectionReader):
                             continue
                     if not found_type:
                         raise ValueError("SnowPackReader.read: Unknown line: " + line)
-        return snow_pack
+        if found_real_values:
+            return snow_pack
+        else:
+            return None
 
 
 class SubcatchmentReader(SectionReader):
@@ -1331,6 +1356,7 @@ class SubcatchmentReader(SectionReader):
     @staticmethod
     def read(new_text):
         subcatchment = Subcatchment()
+        new_text = SectionReader.set_comment_check_section(subcatchment, new_text)
         fields = new_text.split()
         if len(fields) > 0:
             subcatchment.name = fields[0]
@@ -1575,11 +1601,12 @@ class RainGageReader(SectionReader):
             if fields[4].upper() == "TIMESERIES":
                 rain_gage.timeseries = fields[5]
             else:
+                rain_gage.setattr_keep_type("data_source", fields[4])
                 rain_gage.data_file_name = fields[5]
                 if len(fields) > 6:
                     rain_gage.data_file_station_id = fields[6]
                 if len(fields) > 7:
-                    rain_gage.data_file_rain_units = fields[7]
+                    rain_gage.setattr_keep_type("data_file_rain_units", fields[7])
         return rain_gage
 
 
@@ -1643,7 +1670,7 @@ class TagsReader(SectionReader):
                     if found:
                         break
                 if not found:
-                    print "Tag not applied: " + line
+                    print ("Tag not applied: " + line + "\n")
 
 
 class LossesReader(SectionReader):
@@ -1678,6 +1705,7 @@ class UnitHydrographReader(SectionReader):
     @staticmethod
     def read(new_text):
         unit_hydrograph = UnitHydrograph()
+        found_real_values = False
         for line in new_text.splitlines():
             entry = None
             line = SectionReader.set_comment_check_section(unit_hydrograph, line)
@@ -1687,8 +1715,10 @@ class UnitHydrographReader(SectionReader):
                     raise ValueError("UnitHydrographReader.read: name: " + fields[0] + " != " +
                                      unit_hydrograph.name + "\nin line: " + line)
                 if len(fields) == 2:
+                    found_real_values = True
                     (unit_hydrograph.name, unit_hydrograph.rain_gage_name) = fields
                 elif len(fields) > 5:
+                    found_real_values = True
                     entry = UnitHydrographEntry()
                     entry.hydrograph_month = fields[1]
                     entry.term = fields[2]
@@ -1705,7 +1735,10 @@ class UnitHydrographReader(SectionReader):
                     print("UnitHydrographReader.read skipped: " + line)
             if entry:
                 unit_hydrograph.value.append(entry)
-        return unit_hydrograph
+        if found_real_values:
+            return unit_hydrograph
+        else:
+            return None
 
 
 class BackdropOptionsReader(SectionReader):
@@ -1767,7 +1800,7 @@ class GeneralReader(SectionReader):
                         try:
                             tried_set = True
 
-                            if attr_name == "flow_routing" and GeneralReader.old_flow_routing.has_key(attr_value.upper()):
+                            if attr_name == "flow_routing" and attr_value.upper() in GeneralReader.old_flow_routing:
                                 # Translate from old flow routing name to new flow routing name
                                 attr_value = GeneralReader.old_flow_routing[attr_value.upper()]
 

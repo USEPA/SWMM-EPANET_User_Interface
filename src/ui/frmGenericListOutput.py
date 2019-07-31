@@ -1,14 +1,15 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
 
 
-class frmGenericListOutput(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
+class frmGenericListOutput(QMainWindow, Ui_frmGenericPropertyEditor):
     def __init__(self, main_form, title):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.setupUi(self)
         self.setWindowTitle(title)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.fraNotes.setVisible(False)
         self.cmdOK.setVisible(False)
         self.cmdCancel.setText('Close')
@@ -36,7 +37,7 @@ class frmGenericListOutput(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         for data_row in data_rows:
             col = 0
             for data_value in data_row:
-                item = QtGui.QTableWidgetItem(str(data_value))
+                item = QTableWidgetItem(str(data_value))
                 item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                 self.tblGeneric.setItem(row, col, item)
                 col += 1
@@ -66,7 +67,7 @@ class frmGenericListOutput(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         for data_column in data_columns:
             row = 0
             for data_value in data_column:
-                item = QtGui.QTableWidgetItem(str(data_value))
+                item = QTableWidgetItem(str(data_value))
                 item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                 self.tblGeneric.setItem(row, col, item)
                 row += 1
@@ -82,7 +83,7 @@ class frmGenericListOutput(QtGui.QMainWindow, Ui_frmGenericPropertyEditor):
         for col in range(ncols):
             for row in range(nrows):
                 counter += 1
-                item = QtGui.QTableWidgetItem(str(data[counter]))
+                item = QTableWidgetItem(str(data[counter]))
                 item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                 self.tblGeneric.setItem(row, col, item)
         self.tblGeneric.resizeColumnsToContents()

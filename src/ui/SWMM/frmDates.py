@@ -1,17 +1,18 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.dates
 from ui.SWMM.frmDatesDesigner import Ui_frmDates
 from ui.model_utility import ParseData
 
 
-class frmDates(QtGui.QMainWindow, Ui_frmDates):
+class frmDates(QMainWindow, Ui_frmDates):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/simulationoptions_dates.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -28,8 +29,28 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         self.dedSweepStart.setDate(QtCore.QDate.fromString(section.sweep_start, section.DATE_SWEEP_FORMAT))
         self.txtAntecedent.setText(str(section.dry_days))
 
+        section.start_date = self.dedStart.date().toString(section.DATE_FORMAT)
+        section.start_time = self.tmeStart.time().toString(section.TIME_FORMAT)
+        section.report_start_date = self.dedStartReport.date().toString(section.DATE_FORMAT)
+        section.report_start_time = self.tmeReport.time().toString(section.TIME_FORMAT)
+        section.end_date = self.dedEnd.date().toString(section.DATE_FORMAT)
+        section.end_time = self.tmeEnd.time().toString(section.TIME_FORMAT)
+        section.sweep_end = self.dedSweepEnd.date().toString(section.DATE_SWEEP_FORMAT)
+        section.sweep_start = self.dedSweepStart.date().toString(section.DATE_SWEEP_FORMAT)
+
     def cmdOK_Clicked(self):
         section = self._main_form.project.options.dates
+
+        orig_start_date = section.start_date
+        orig_start_time = section.start_time
+        orig_report_start_date = section.report_start_date
+        orig_report_start_time = section.report_start_time
+        orig_end_date = section.end_date
+        orig_end_time = section.end_time
+        orig_sweep_end = section.sweep_end
+        orig_sweep_start = section.sweep_start
+        orig_dry_days = section.dry_days
+
         section.start_date = self.dedStart.date().toString(section.DATE_FORMAT)
         section.start_time = self.tmeStart.time().toString(section.TIME_FORMAT)
         section.report_start_date = self.dedStartReport.date().toString(section.DATE_FORMAT)
@@ -41,6 +62,18 @@ class frmDates(QtGui.QMainWindow, Ui_frmDates):
         val, val_is_good = ParseData.floatTryParse(self.txtAntecedent.text())
         if val_is_good and val >= 0:
             section.dry_days = val
+
+        if orig_start_date != section.start_date or \
+            orig_start_time != section.start_time or \
+            orig_report_start_date != section.report_start_date or \
+            orig_report_start_time != section.report_start_time or \
+            orig_end_date != section.end_date or \
+            orig_end_time != section.end_time or \
+            orig_sweep_end != section.sweep_end or \
+            orig_sweep_start != section.sweep_start or \
+            orig_dry_days != section.dry_days:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

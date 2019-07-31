@@ -517,6 +517,7 @@ class WeirWriter(SectionWriter):
     def as_text(weir):
         """format contents of this item for writing to file"""
         if weir.name:
+            weir_name = weir.type.name.replace('_', '-')
             if weir.type == WeirType.ROADWAY:
                 road_width = weir.road_width
                 road_surface = weir.road_surface.name
@@ -524,7 +525,7 @@ class WeirWriter(SectionWriter):
                 road_width = ''
                 road_surface = ''
             return WeirWriter.field_format.format(weir.name, weir.inlet_node, weir.outlet_node,
-                                                     weir.type.name, weir.inlet_offset, weir.discharge_coefficient,
+                                                     weir_name, weir.inlet_offset, weir.discharge_coefficient,
                                                      SectionWriter.yes_no(weir.flap_gate),
                                                      weir.end_contractions,
                                                      weir.end_coefficient,
@@ -1151,10 +1152,10 @@ class RainGageWriter(SectionWriter):
                 rain_gage.rain_format.name,
                 rain_gage.rain_interval,
                 rain_gage.snow_catch_factor)
-        if rain_gage.timeseries:
+        if rain_gage.timeseries != "None":
             inp += "{:10}\t{}".format("TIMESERIES", rain_gage.timeseries)
         else:
-            inp += '{:10}\t"{}"\t{:10}\t{:5}'.format(
+            inp += '{:10}\t{}\t{:10}\t{:5}'.format(
                 "FILE",
                 rain_gage.data_file_name,
                 rain_gage.data_file_station_id,

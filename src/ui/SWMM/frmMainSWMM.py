@@ -5,8 +5,9 @@ for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", 
     sip.setapi(typ, 2)
 import webbrowser
 import traceback
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox, QFileDialog, QColor
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QAction, QMenu, QApplication
 from time import sleep
 
 from ui.model_utility import QString, from_utf8, transl8, process_events, StatusMonitor0
@@ -22,11 +23,13 @@ from ui.SWMM.frmTimeSteps import frmTimeSteps
 from ui.SWMM.frmTitle import frmTitle
 
 from ui.SWMM.frmAbout import frmAbout
+from ui.SWMM.frmSummary import frmSummary
 from ui.SWMM.frmAquifers import frmAquifers
 from ui.SWMM.frmClimatology import frmClimatology
 from ui.SWMM.frmConduits import frmConduits
 from ui.SWMM.frmControls import frmControls
 from ui.SWMM.frmCurveEditor import frmCurveEditor
+from ui.SWMM.frmDetails import frmDetails
 from ui.SWMM.frmOrifices import frmOrifices
 from ui.SWMM.frmOutlets import frmOutlets
 from ui.SWMM.frmPatternEditor import frmPatternEditor
@@ -85,9 +88,10 @@ from core.swmm.labels import Label
 from core.swmm.hydraulics.node import SubCentroid
 from core.swmm.hydraulics.link import SubLink
 
-from frmRunSWMM import frmRunSWMM
+from ui.SWMM.frmRunSWMM import frmRunSWMM
+from ui.SWMM.frmDefaultsEditor import frmDefaultsEditor
 
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 from core.indexed_list import IndexedList
 import ui.convenience
 from ui.SWMM.inifile import DefaultsSWMM
@@ -270,7 +274,7 @@ class frmMainSWMM(frmMain):
         self.assembly_path = os.path.dirname(os.path.abspath(__file__))
         frmMain.__init__(self, q_application)
         self.on_load(tree_top_item_list=self.tree_top_items)
-        self.project_settings = DefaultsSWMM("", self.project)
+        self.project_settings = DefaultsSWMM("", self.project, self.program_settings)
         self.tree_types = {
             self.tree_hydrology_Subcatchments[0]: Subcatchment,
             self.tree_hydrology_RainGages[0]: RainGage,
@@ -336,90 +340,98 @@ class frmMainSWMM(frmMain):
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/swmmsmainwindow.htm"
 
-        self.actionTranslate_Coordinates = QtGui.QAction(self)
+        self.actionStdProjSummary.triggered.connect(self.show_summary)
+        self.actionStdProjDetails.triggered.connect(self.show_details)
+
+        # remove menus that are EPANET-specific
+        self.menuProject.removeAction(self.actionStdProjSimulation_Options)
+        self.menuObjects.deleteLater()
+        self.menuView.removeAction(self.actionStdMapFind)
+        self.menuTools.removeAction(self.actionStdConfigTools)
+
+        self.actionTranslate_Coordinates = QAction(self)
         self.actionTranslate_Coordinates.setObjectName(from_utf8("actionTranslate_CoordinatesMenu"))
         self.actionTranslate_Coordinates.setText(transl8("frmMain", "Translate Coordinates", None))
         self.actionTranslate_Coordinates.setToolTip(transl8("frmMain", "Change model objects coordinates", None))
         self.menuView.addAction(self.actionTranslate_Coordinates)
-        QtCore.QObject.connect(self.actionTranslate_Coordinates, QtCore.SIGNAL('triggered()'),
-                               lambda: self.open_translate_coord_dialog(None, None))
+        self.actionTranslate_Coordinates.triggered.connect(lambda: self.open_translate_coord_dialog(None, None))
 
-        self.actionStatus_ReportMenu = QtGui.QAction(self)
+        self.actionStatus_ReportMenu = QAction(self)
         self.actionStatus_ReportMenu.setObjectName(from_utf8("actionStatus_ReportMenu"))
         self.actionStatus_ReportMenu.setText(transl8("frmMain", "Status", None))
         self.actionStatus_ReportMenu.setToolTip(transl8("frmMain", "Display Simulation Status", None))
         self.menuReport.addAction(self.actionStatus_ReportMenu)
-        QtCore.QObject.connect(self.actionStatus_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_status)
+        self.actionStatus_ReportMenu.triggered.connect(self.report_status)
         self.actionProjStatus.triggered.connect(self.report_status)
 
-        self.actionSummary_ReportMenu = QtGui.QAction(self)
+        self.actionSummary_ReportMenu = QAction(self)
         self.actionSummary_ReportMenu.setObjectName(from_utf8("actionSummary_ReportMenu"))
         self.actionSummary_ReportMenu.setText(transl8("frmMain", "Summary", None))
         self.actionSummary_ReportMenu.setToolTip(transl8("frmMain", "Display Results Summary", None))
         self.menuReport.addAction(self.actionSummary_ReportMenu)
-        QtCore.QObject.connect(self.actionSummary_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_summary)
+        self.actionSummary_ReportMenu.triggered.connect(self.report_summary)
 
-        menu = QtGui.QMenu()
-        submenuGraph = QtGui.QMenu(self.menuReport)
+        menu = QMenu()
+        submenuGraph = QMenu(self.menuReport)
         submenuGraph.setTitle("Graph")
         self.menuReport.addMenu(submenuGraph)
 
-        self.actionGraph_ProfileMenu = QtGui.QAction(self)
+        self.actionGraph_ProfileMenu = QAction(self)
         self.actionGraph_ProfileMenu.setObjectName(from_utf8("actionGraph_ProfileMenu"))
         self.actionGraph_ProfileMenu.setText(transl8("frmMain", "Profile", None))
         self.actionGraph_ProfileMenu.setToolTip(transl8("frmMain", "Display Profile Plot", None))
         submenuGraph.addAction(self.actionGraph_ProfileMenu)
-        QtCore.QObject.connect(self.actionGraph_ProfileMenu, QtCore.SIGNAL('triggered()'), self.report_profile)
+        self.actionGraph_ProfileMenu.triggered.connect(self.report_profile)
         self.actionProjPlotProfile.triggered.connect(self.report_profile)
 
 
-        self.actionGraph_TimeSeriesMenu = QtGui.QAction(self)
+        self.actionGraph_TimeSeriesMenu = QAction(self)
         self.actionGraph_TimeSeriesMenu.setObjectName(from_utf8("actionGraph_TimeSeriesMenu"))
         self.actionGraph_TimeSeriesMenu.setText(transl8("frmMain", "Time Series", None))
         self.actionGraph_TimeSeriesMenu.setToolTip(transl8("frmMain", "Display Time Series Plot", None))
         submenuGraph.addAction(self.actionGraph_TimeSeriesMenu)
-        QtCore.QObject.connect(self.actionGraph_TimeSeriesMenu, QtCore.SIGNAL('triggered()'), self.report_timeseries)
+        self.actionGraph_TimeSeriesMenu.triggered.connect(self.report_timeseries)
         self.actionProjPlotTimeseries.triggered.connect(self.report_timeseries)
 
-        self.actionGraph_ScatterMenu = QtGui.QAction(self)
+        self.actionGraph_ScatterMenu = QAction(self)
         self.actionGraph_ScatterMenu.setObjectName(from_utf8("actionGraph_ScatterMenu"))
         self.actionGraph_ScatterMenu.setText(transl8("frmMain", "Scatter", None))
         self.actionGraph_ScatterMenu.setToolTip(transl8("frmMain", "Display Scatter Plot", None))
         submenuGraph.addAction(self.actionGraph_ScatterMenu)
-        QtCore.QObject.connect(self.actionGraph_ScatterMenu, QtCore.SIGNAL('triggered()'), self.report_scatter)
+        self.actionGraph_ScatterMenu.triggered.connect(self.report_scatter)
         self.actionProjPlotScatter.triggered.connect(self.report_scatter)
 
-        self.actionTable_VariableMenu = QtGui.QAction(self)
+        self.actionTable_VariableMenu = QAction(self)
         self.actionTable_VariableMenu.setObjectName(from_utf8("actionTable_VariableMenu"))
         self.actionTable_VariableMenu.setText(transl8("frmMain", "Table", None))
         self.actionTable_VariableMenu.setToolTip(transl8("frmMain", "Display Table", None))
         self.menuReport.addAction(self.actionTable_VariableMenu)
-        QtCore.QObject.connect(self.actionTable_VariableMenu, QtCore.SIGNAL('triggered()'), self.report_variable)
+        self.actionTable_VariableMenu.triggered.connect(self.report_variable)
         self.actionProjTableTimeseries.triggered.connect(self.report_variable)
 
-        self.actionStatistics_ReportMenu = QtGui.QAction(self)
+        self.actionStatistics_ReportMenu = QAction(self)
         self.actionStatistics_ReportMenu.setObjectName(from_utf8("actionStatistics_ReportMenu"))
         self.actionStatistics_ReportMenu.setText(transl8("frmMain", "Statistics", None))
         self.actionStatistics_ReportMenu.setToolTip(transl8("frmMain", "Display Results Statistics", None))
         self.menuReport.addAction(self.actionStatistics_ReportMenu)
-        QtCore.QObject.connect(self.actionStatistics_ReportMenu, QtCore.SIGNAL('triggered()'), self.report_statistics)
+        self.actionStatistics_ReportMenu.triggered.connect(self.report_statistics)
         self.actionProjTableStatistics.triggered.connect(self.report_statistics)
 
         self.actionStdMapQuery.triggered.connect(self.map_query)
 
-        self.Help_Topics_Menu = QtGui.QAction(self)
+        self.Help_Topics_Menu = QAction(self)
         self.Help_Topics_Menu.setObjectName(from_utf8("Help_Topics_Menu"))
         self.Help_Topics_Menu.setText(transl8("frmMain", "Help Topics", None))
         self.Help_Topics_Menu.setToolTip(transl8("frmMain", "Display Help Topics", None))
         self.menuHelp.addAction(self.Help_Topics_Menu)
-        QtCore.QObject.connect(self.Help_Topics_Menu, QtCore.SIGNAL('triggered()'), self.help_topics)
+        self.Help_Topics_Menu.triggered.connect(self.help_topics)
 
-        self.Help_About_Menu = QtGui.QAction(self)
+        self.Help_About_Menu = QAction(self)
         self.Help_About_Menu.setObjectName(from_utf8("Help_About_Menu"))
         self.Help_About_Menu.setText(transl8("frmMain", "About", None))
         self.Help_About_Menu.setToolTip(transl8("frmMain", "About SWMM", None))
         self.menuHelp.addAction(self.Help_About_Menu)
-        QtCore.QObject.connect(self.Help_About_Menu, QtCore.SIGNAL('triggered()'), self.help_about)
+        self.Help_About_Menu.triggered.connect(self.help_about)
 
         if self.map_widget:
             self.map_widget.applyLegend()
@@ -448,12 +460,36 @@ class frmMainSWMM(frmMain):
 
     def cbFlowUnits_currentIndexChanged(self):
         import core.swmm.options
+        old_units = self.project.metric
+        orig_flow_units = self.project.options.flow_units
         self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
-        self.project.metric = self.project.options.hydraulics.flow_units in core.swmm.options.general.flow_units_metric
+        self.project.metric = self.project.options.flow_units in core.swmm.options.general.flow_units_metric
+        if self.project.options.flow_units != orig_flow_units:
+            self.mark_project_as_unsaved()
+        # change a few default parameters
+        if self.project.metric and not old_units:
+            # we just changed from english to metric
+            if self.project.options.dynamic_wave.min_surface_area == '12.557':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.min_surface_area = '1.14'
+            if self.project.options.dynamic_wave.head_tolerance == '0.005':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.head_tolerance = '0.0015'
+        if not self.project.metric and old_units:
+            # we just changed from metric to english
+            if self.project.options.dynamic_wave.min_surface_area == '1.14':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.min_surface_area = '12.557'
+            if self.project.options.dynamic_wave.head_tolerance == '0.0015':
+                # was the english default, make it the metric default
+                self.project.options.dynamic_wave.head_tolerance = '0.005'
 
     def cbOffset_currentIndexChanged(self):
         import core.swmm.options
+        orig_link_offsets = self.project.options.link_offsets
         self.project.options.link_offsets = core.swmm.options.general.LinkOffsets[self.cbOffset.currentText()[9:].upper()]
+        if self.project.options.link_offsets != orig_link_offsets:
+            self.mark_project_as_unsaved()
 
     def set_thematic_controls(self):
         self.allow_thematic_update = False
@@ -666,13 +702,14 @@ class frmMainSWMM(frmMain):
                                     self.thematic_subcatchment_min = value
                                 if self.thematic_subcatchment_max is None or value > self.thematic_subcatchment_max:
                                     self.thematic_subcatchment_max = value
-                # if color_by:
-                #     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
-                #                                                         self.thematic_subcatchment_min,
-                #                                                         self.thematic_subcatchment_max)
-                # else:
-                #     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
-                # self.model_layers.subcatchments.triggerRepaint()
+                if color_by:
+                    self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
+                                                                        self.thematic_subcatchment_min,
+                                                                        self.thematic_subcatchment_max,
+                                                                        do_label=False)
+                else:
+                    self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
+                self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
@@ -706,15 +743,15 @@ class frmMainSWMM(frmMain):
                                 if self.thematic_node_max is None or value > self.thematic_node_max:
                                     self.thematic_node_max = value
 
-                # for layer in self.model_layers.nodes_layers:
-                #     if layer.isValid():
-                #         if color_by:
-                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                #                                                                 self.thematic_node_min,
-                #                                                                 self.thematic_node_max)
-                #         else:
-                #             self.map_widget.set_default_point_renderer(layer)
-                #         layer.triggerRepaint()
+                for layer in self.model_layers.nodes_layers:
+                    if layer.isValid():
+                        if color_by:
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_node_min,
+                                                                                self.thematic_node_max)
+                        else:
+                            self.map_widget.set_default_point_renderer(layer)
+                        layer.triggerRepaint()
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
@@ -748,7 +785,7 @@ class frmMainSWMM(frmMain):
                                 except Exception as end_elev_ex:
                                     print("Exception finding conduit end elevation, using 0: " + str(end_elev_ex))
                                     end_elev = 0.0
-                                if link.length > 0.0:
+                                if float(link.length) > 0.0:
                                     slope = abs((float(start_elev) - float(end_elev)) / float(link.length))
                                 else:
                                     slope = 0.0
@@ -775,15 +812,16 @@ class frmMainSWMM(frmMain):
                                 if self.thematic_link_max is None or value > self.thematic_link_max:
                                     self.thematic_link_max = value
 
-                # for layer in self.model_layers.links_layers:
-                #     if layer.isValid():
-                #         if color_by:
-                #             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
-                #                                                                 self.thematic_link_min,
-                #                                                                 self.thematic_link_max)
-                #         else:
-                #             self.map_widget.set_default_line_renderer(layer)
-                #         layer.triggerRepaint()
+                for layer in self.model_layers.links_layers:
+                    if layer.isValid():
+                        if color_by:
+                            display_flow_dir = self.chkDisplayFlowDir.isChecked()
+                            self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
+                                                                                self.thematic_link_min,
+                                                                                self.thematic_link_max)
+                        else:
+                            self.map_widget.set_default_line_renderer(layer, do_labels=False)
+                        layer.triggerRepaint()
 
         except Exception as exBig:
             print("Exception in update_thematic_map: " + str(exBig))
@@ -801,6 +839,7 @@ class frmMainSWMM(frmMain):
             if not self.allow_thematic_update or not self.map_widget:
                 return
 
+            do_label = True
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 layer = self.model_layers.subcatchments
                 selected_attribute = self.cboMapSubcatchments.currentText()
@@ -815,23 +854,25 @@ class frmMainSWMM(frmMain):
                         for subcatchment in self.output.subcatchments.values():
                             color_by[subcatchment.name] = values[index]
                             index += 1
+
+                do_label = self.map_widget.do_label(layer)
                 if color_by:
-                    if self.map_widget.layer_styles.has_key(layer.id()) and \
+                    if layer.id() in self.map_widget.layer_styles and \
                             self.map_widget.validatedGraduatedSymbol(None,
                                                                      self.map_widget.layer_styles[layer.id()]):
                         self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                             self.thematic_node_min,
                                                                             self.thematic_node_max,
-                                                                            self.map_widget.layer_styles[
-                                                                                layer.id()])
+                                                                            self.map_widget.layer_styles[layer.id()],
+                                                                            True, None, do_label)
                     else:
                         self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
                                                                             self.thematic_subcatchment_min,
-                                                                            self.thematic_subcatchment_max)
+                                                                            self.thematic_subcatchment_max,
+                                                                            None, True, None, do_label)
                     self.annotate_layername(selected_attribute, "subcatchment", layer)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
-                    do_label = True
                     self.map_widget.set_default_polygon_renderer(layer, "lightgreen" , do_label)
 
                 self.model_layers.subcatchments.triggerRepaint()
@@ -852,19 +893,21 @@ class frmMainSWMM(frmMain):
 
                 for layer in self.model_layers.nodes_layers:
                     if layer.isValid():
+                        do_label = self.map_widget.do_label(layer)
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                     self.map_widget.validatedGraduatedSymbol(None,
                                                                              self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
-                                                                                    self.map_widget.layer_styles[
-                                                                                        layer.id()])
+                                                                               self.map_widget.layer_styles[layer.id()],
+                                                                                    True, None, do_label)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
-                                                                                    self.thematic_node_max)
+                                                                                    self.thematic_node_max,
+                                                                                    None, True, None, do_label)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
                             do_label = True
@@ -905,7 +948,7 @@ class frmMainSWMM(frmMain):
                 for layer in self.model_layers.links_layers:
                     if layer.isValid():
                         if color_by:
-                            if self.map_widget.layer_styles.has_key(layer.id()) and \
+                            if layer.id() in self.map_widget.layer_styles and \
                                 self.map_widget.validatedGraduatedSymbol(None,self.map_widget.layer_styles[layer.id()]):
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_link_min,
@@ -960,7 +1003,7 @@ class frmMainSWMM(frmMain):
         """
         unit_text = ""
         if obj_type == "subcatchment":
-            if self.output.subcatchments_units.has_key(selected_attribute):
+            if selected_attribute in self.output.subcatchments_units:
                 unit_text = self.output.subcatchments_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -973,7 +1016,7 @@ class frmMainSWMM(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "node":
-            if self.output.nodes_units.has_key(selected_attribute):
+            if selected_attribute in self.output.nodes_units:
                 unit_text = self.output.nodes_units[selected_attribute]
             else:
                 if selected_attribute == "Elevation":
@@ -986,7 +1029,7 @@ class frmMainSWMM(frmMain):
                 elif selected_attribute == "Initial Quality":
                     unit_text = self.output.links_units["Quality"]
         elif obj_type == "link":
-            if self.output.links_units.has_key(selected_attribute):
+            if selected_attribute in self.output.links_units:
                 unit_text = self.output.links_units[selected_attribute]
             else:
                 if selected_attribute == "Length":
@@ -1004,9 +1047,9 @@ class frmMainSWMM(frmMain):
         if " [" in layer_name:
             layer_name = layer_name[0:layer_name.index(" [")]
         if unit_text:
-            layer.setLayerName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
+            layer.setName(layer_name + " [" + selected_attribute + ", " + unit_text + "]")
         else:
-            layer.setLayerName(layer_name + " [" + selected_attribute + "]")
+            layer.setName(layer_name + " [" + selected_attribute + "]")
 
     def animate_e(self):
         if self.output:
@@ -1027,7 +1070,7 @@ class frmMainSWMM(frmMain):
         return self.output
 
     def report_status(self):
-        print "report_status"
+        print ("report_status")
         if not os.path.isfile(self.status_file_name):
             prefix, extension = os.path.splitext(self.project.file_name)
             if os.path.isfile(prefix + self.status_suffix):
@@ -1111,7 +1154,10 @@ class frmMainSWMM(frmMain):
                                     QMessageBox.Ok)
 
     def calibration_data(self):
-        self._frmCalibrationData = frmCalibrationData(self)
+        qsettings = self.project_settings
+        if qsettings is None:
+            qsettings = self.program_settings
+        self._frmCalibrationData = frmCalibrationData(self, qsettings)
         self._frmCalibrationData.show()
         pass
 
@@ -1120,7 +1166,6 @@ class frmMainSWMM(frmMain):
         qsettings = self.project_settings
         if qsettings is None:
             qsettings = self.program_settings
-        from frmDefaultsEditor import frmDefaultsEditor
         fd = frmDefaultsEditor(self, self.project, qsettings)
         fd.show()
 
@@ -1130,15 +1175,15 @@ class frmMainSWMM(frmMain):
         frmQ.show()
 
     def map_overview(self):
-        layerset = []
-        layerset.append(self.model_layers.subcatchments.id())
-        layerset.append(self.model_layers.sublinks.id())
-        layerset.append(self.model_layers.conduits.id())
-        layerset.append(self.model_layers.pumps.id())
-        layerset.append(self.model_layers.orifices.id())
-        layerset.append(self.model_layers.weirs.id())
-        layerset.append(self.model_layers.outlets.id())
-        self.map_widget.create_overview(layerset)
+        layers = []
+        layers.append(self.model_layers.subcatchments)
+        layers.append(self.model_layers.sublinks)
+        layers.append(self.model_layers.conduits)
+        layers.append(self.model_layers.pumps)
+        layers.append(self.model_layers.orifices)
+        layers.append(self.model_layers.weirs)
+        layers.append(self.model_layers.outlets)
+        self.map_widget.create_overview(layers)
         pass
 
     def get_editor(self, edit_name):
@@ -1149,7 +1194,7 @@ class frmMainSWMM(frmMain):
         if edit_name == self.tree_quality_Pollutants[0]:
             edit_these = []
             if self.project and self.project.pollutants:
-                if not isinstance(self.project.pollutants.value, basestring):
+                if not isinstance(self.project.pollutants.value, str):
                     if isinstance(self.project.pollutants.value, list):
                         edit_these.extend(self.project.pollutants.value)
                 if len(edit_these) == 0:
@@ -1162,7 +1207,7 @@ class frmMainSWMM(frmMain):
         elif edit_name == self.tree_MapLabels[0]:
             edit_these = []
             if self.project and self.project.labels:
-                if not isinstance(self.project.labels.value, basestring):
+                if not isinstance(self.project.labels.value, str):
                     if isinstance(self.project.labels.value, list):
                         edit_these.extend(self.project.labels.value)
                 if len(edit_these) == 0:
@@ -1195,6 +1240,8 @@ class frmMainSWMM(frmMain):
 
     def get_object_list(self, category):
         ids = []
+        if category == 'Curves':
+            return None
         if category == self.tree_curves_ControlCurves[0]:
             for curve in self.project.curves.value:
                 if curve.curve_type == CurveType.CONTROL:
@@ -1238,6 +1285,18 @@ class frmMainSWMM(frmMain):
             else:
                 ids = None
         return ids
+
+    def move_object_in_list(self, category, item_name, old_index, new_index):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            item = section.value[item_name]
+            section.value.remove(section.value[old_index])
+            section.value.insert(new_index, item)
+
+    def sort_objects_in_list(self, category):
+        section = self.project.find_section(category)
+        if section and isinstance(section.value, list):
+            section.value.sort(key=lambda x: x.name)
 
     def add_object(self, tree_text):
         item_type = self.tree_types[tree_text]
@@ -1316,9 +1375,12 @@ class frmMainSWMM(frmMain):
         #             self.project.curves.value.remove(value)
 
     def run_simulation(self):
-        self.output = None
+        if self.output:
+            self.output.close()
+            self.output = None
         # First find input file to run
-        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name)
+        use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name) and \
+                       os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
             ts = QtCore.QTime.currentTime().toString().replace(":", "_")
@@ -1328,8 +1390,11 @@ class frmMainSWMM(frmMain):
             # TODO: decide whether to automatically save to temp location as previous version did.
         elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
-            if self.save_project_as():
+            new_name = self.save_project_as()
+            if new_name:
                 use_existing = True
+                self.project.file_name = new_name
+                self.project.file_name_temporary = self.project.file_name
             else:
                 return None
         else:
@@ -1343,6 +1408,7 @@ class frmMainSWMM(frmMain):
             prefix, extension = os.path.splitext(file_name)
             self.status_file_name = prefix + self.status_suffix
             self.output_filename = prefix + '.out'
+            os.chdir(os.path.split(prefix)[0])
             if self.output:
                 self.output.close()
                 self.output = None
@@ -1378,76 +1444,77 @@ class frmMainSWMM(frmMain):
                     frmRun.Execute()
                     # self.add_map_constituents()
                     try:
-                        self.output = SMO.SwmmOutputObject(self.output_filename)
-                        self.output.build_units_dictionary()
-                        self.set_thematic_controls()
-                        self.labelStartTime.setText('0:00')
-                        if self.output:
-                            # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
-                            # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
-                            # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
-                            self.cboDate.currentIndexChanged.disconnect(self._animate_date)
-                            self.cboTime.currentIndexChanged.disconnect(self._animate_time)
-                            self.sbETime.valueChanged.disconnect(self._animate_datetime)
-                            self.cboDate.clear()
-                            self.cboTime.clear()
-                            time_labels = []
-                            date_labels = []
-                            self.animation_dates.clear()
-                            self.animation_time_of_day.clear()
-                            if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
-                                self.cboTime.addItems(["01:00:00"])
-                            else:
-                                td_rep_step = timedelta(seconds = self.output.reportStep)
-                                if td_rep_step.days > 0:
+                        if os.path.isfile(self.output_filename):
+                            self.output = SMO.SwmmOutputObject(self.output_filename)
+                            self.output.build_units_dictionary()
+                            self.set_thematic_controls()
+                            self.labelStartTime.setText('0:00')
+                            if self.output:
+                                # QtCore.QObject.disconnect(self.cboDate, QtCore.SIGNAL('currentIndexChanged()'), self._animate_date)
+                                # QtCore.QObject.disconnect(self.cboTime, QtCore.SIGNAL('currentIndexChanged()'), self._animate_time)
+                                # QtCore.QObject.disconnect(self.sbETime, QtCore.SIGNAL('valueChanged()'), self._animate_datetime)
+                                self.cboDate.currentIndexChanged.disconnect(self._animate_date)
+                                self.cboTime.currentIndexChanged.disconnect(self._animate_time)
+                                self.sbETime.valueChanged.disconnect(self._animate_datetime)
+                                self.cboDate.clear()
+                                self.cboTime.clear()
+                                time_labels = []
+                                date_labels = []
+                                self.animation_dates.clear()
+                                self.animation_time_of_day.clear()
+                                if timedelta(seconds=self.output.reportStep) > (self.output.EndDate - self.output.StartDate):
                                     self.cboTime.addItems(["01:00:00"])
                                 else:
-                                    num_periods_in_day, rest = divmod(86400, self.output.reportStep)
-                                    for tod_index in range(0, num_periods_in_day, 1):
-                                        time_div = timedelta(seconds = self.output.reportStep * tod_index)
-                                        hours, remainder = divmod(time_div.seconds, 3600)
-                                        minutes, secs = divmod(remainder, 60)
-                                        time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
-                                        self.animation_time_of_day[tod_index] = time_div
-                                    self.cboTime.addItems(time_labels)
+                                    td_rep_step = timedelta(seconds = self.output.reportStep)
+                                    if td_rep_step.days > 0:
+                                        self.cboTime.addItems(["01:00:00"])
+                                    else:
+                                        num_periods_in_day, rest = divmod(86400, self.output.reportStep)
+                                        for tod_index in range(0, num_periods_in_day, 1):
+                                            time_div = timedelta(seconds = self.output.reportStep * tod_index)
+                                            hours, remainder = divmod(time_div.seconds, 3600)
+                                            minutes, secs = divmod(remainder, 60)
+                                            time_labels.append('{:02d}:{:02d}:{:02d}'.format(hours, minutes, secs))
+                                            self.animation_time_of_day[tod_index] = time_div
+                                        self.cboTime.addItems(time_labels)
 
-                            hr_min_str = ""
-                            dt_str = None
-                            date_ctr = 0
-                            for i in range(0, self.output.num_periods):
-                                # hr_min_str = self.output.get_time_string(i)
-                                # time_labels.append(hr_min_str)
-                                dt = self.output.get_time(i)
-                                if not str(dt.date()) in date_labels:
-                                    date_labels.append(str(dt.date()))
-                                    self.animation_dates[date_ctr] = dt
-                                    date_ctr += 1
+                                hr_min_str = ""
+                                dt_str = None
+                                date_ctr = 0
+                                for i in range(0, self.output.num_periods):
+                                    # hr_min_str = self.output.get_time_string(i)
+                                    # time_labels.append(hr_min_str)
+                                    dt = self.output.get_time(i)
+                                    if not str(dt.date()) in date_labels:
+                                        date_labels.append(str(dt.date()))
+                                        self.animation_dates[date_ctr] = dt
+                                        date_ctr += 1
 
-                            # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
-                            # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
-                            # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
-                            # self.sbETime.setDateTimeRange(qd0, qd1)
-                            # self.sbETime.setDateTime(qdt0)
-                            # self.sbETime.setMinimumDateTime(qdt0)
-                            # self.sbETime.setMaximumDateTime(qdt1)
-                            t_str = str(self.output.get_time(0))
-                            self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
-                            self.cboDate.addItems(date_labels)
-                            self.sbETime.setMaximum(self.output.num_periods)
-                            self.sbETime.setMinimum(0)
-                            # self.labelEndTime.setText(self.project.times.duration)
-                            self.cboDate.setEnabled(True)
-                            self.cboTime.setEnabled(True)
-                            self.sbETime.setEnabled(True)
-                            self.cboDate.currentIndexChanged.connect(self._animate_date)
-                            self.cboTime.currentIndexChanged.connect(self._animate_time)
-                            self.sbETime.valueChanged.connect(self._animate_datetime)
-                        else:
-                            self.cboDate.setEnabled(False)
-                            self.cboTime.setEnabled(False)
-                            self.sbETime.setEnabled(False)
+                                # qdt0 = QtCore.QDateTime.fromString(str(self.output.get_time(1)), 'yyyy-MM-dd hh:mm:ss')
+                                # qdt1 = QtCore.QDateTime.fromString(str(self.output.get_time(self.output.num_periods)), 'yyyy-MM-dd hh:mm:ss')
+                                # self.sbETime.setDisplayFormat('yyyy-MM-dd HH:mm:ss')
+                                # self.sbETime.setDateTimeRange(qd0, qd1)
+                                # self.sbETime.setDateTime(qdt0)
+                                # self.sbETime.setMinimumDateTime(qdt0)
+                                # self.sbETime.setMaximumDateTime(qdt1)
+                                t_str = str(self.output.get_time(0))
+                                self.txtETime.setText("0." + t_str[t_str.index(" ") + 1:])
+                                self.cboDate.addItems(date_labels)
+                                self.sbETime.setMaximum(self.output.num_periods)
+                                self.sbETime.setMinimum(0)
+                                # self.labelEndTime.setText(self.project.times.duration)
+                                self.cboDate.setEnabled(True)
+                                self.cboTime.setEnabled(True)
+                                self.sbETime.setEnabled(True)
+                                self.cboDate.currentIndexChanged.connect(self._animate_date)
+                                self.cboTime.currentIndexChanged.connect(self._animate_time)
+                                self.sbETime.valueChanged.connect(self._animate_datetime)
+                            else:
+                                self.cboDate.setEnabled(False)
+                                self.cboTime.setEnabled(False)
+                                self.sbETime.setEnabled(False)
 
-                        return
+                            return
                     except Exception as e1:
                         print(str(e1) + '\n' + str(traceback.print_exc()))
                         QMessageBox.information(None, self.model,
@@ -1494,6 +1561,14 @@ class frmMainSWMM(frmMain):
         else:
             QMessageBox.information(None, self.model, self.model + " input file not found", QMessageBox.Ok)
 
+    def show_summary(self):
+        self._frmSummary = frmSummary(self)
+        self._frmSummary.show()
+
+    def show_details(self):
+        self._frmDetails= frmDetails(self)
+        self._frmDetails.show()
+
     def help_topics(self):
         self.helper.show_help()
 
@@ -1526,6 +1601,7 @@ class frmMainSWMM(frmMain):
         if self.map_widget:
             try:
                 self.model_layers.create_layers_from_project(self.project)
+                self.map_widget.load_extra_layers()
                 self.map_widget.zoomfull()
                 self.setQgsMapTool()  # Reset any active tool that still has state from old project
             except Exception as ex:
@@ -1581,9 +1657,12 @@ class ModelLayersSWMM(ModelLayers):
         """Set up lists of layers for convenient iteration"""
         self.nodes_layers = [self.junctions, self.outfalls, self.dividers, self.storage]
         self.links_layers = [self.pumps, self.orifices, self.outlets, self.weirs, self.conduits]
-        self.all_layers = [self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks]
-        self.all_layers.extend(self.nodes_layers)
-        self.all_layers.extend(self.links_layers)
+        self.all_layers = [];
+        for lyr in self.nodes_layers:
+            self.all_layers.append(lyr)
+        for lyr in self.links_layers:
+            self.all_layers.append(lyr)
+        self.all_layers.extend([self.raingages, self.labels, self.subcatchments, self.subcentroids, self.sublinks])
 
     def create_layers_from_project(self, project):
         """Create QGIS map layers and populate them with features representing model objects"""
@@ -1610,6 +1689,7 @@ class ModelLayersSWMM(ModelLayers):
         self.set_lists()
         self.create_subcatchment_links(project)
         self.create_spatial_index()
+        self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
 
     def create_subcatchment_links(self, project):
         #create centroids
@@ -1641,7 +1721,7 @@ class ModelLayersSWMM(ModelLayers):
 
         # add centroid item
         c_item = None
-        for obj_type, lyr_name in self.map_widget.session.section_types.iteritems():
+        for obj_type, lyr_name in self.map_widget.session.section_types.items():
             if lyr_name == "subcentroids":
                 c_item = obj_type()
                 c_item.x = str(pt.x())
@@ -1780,7 +1860,7 @@ class ModelLayersSWMM(ModelLayers):
 
 if __name__ == '__main__':
     print("QApplication")
-    application = QtGui.QApplication(sys.argv)
+    application = QApplication(sys.argv)
 
     print("internationalization")
     from ui.settings import internationalization

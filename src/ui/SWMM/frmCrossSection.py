@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.hydraulics
 import core.swmm.hydraulics.link
 import core.swmm.options.dynamic_wave
@@ -9,25 +10,25 @@ from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
 
 
-class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
+class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
     def __init__(self, main_form=None, **kwargs):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/cross_sectioneditordialog.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.btnDialog, QtCore.SIGNAL("clicked()"), self.btnDialog_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnDialog.clicked.connect(self.btnDialog_Clicked)
         self.listWidget.currentItemChanged.connect(self.listWidget_currentItemChanged)
         self.cboCombo.currentIndexChanged.connect(self.cboCombo_currentIndexChanged)
         self.set_from(main_form.project)
         self._main_form = main_form
         self.defaults = None
-        if kwargs.has_key("defaults"):
+        if "defaults" in kwargs:
             self.defaults = kwargs["defaults"]
         #self.default_key = "obj_def_xsection"
-        #if kwargs.has_key("default_key"):
+        #if "default_key" in kwargs:
         #    self.default_key = kwargs["default_key"]
         self.link_name = ''
         self.ellipse_minor_axis_in = (14,19,22,24,27,29,32,34,38,43,48,53,58,63,68,72,77,82,87,92,97,106,116)
@@ -307,6 +308,17 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
                 value = core.swmm.hydraulics.link.CrossSection()
                 value.link = self.link_name
                 self._main_form.project.xsections.value.append(value)
+                self._main_form.mark_project_as_unsaved()
+
+        orig_barrels = value.barrels
+        orig_comment = value.comment
+        orig_culvert_code = value.culvert_code
+        orig_curve = value.curve
+        orig_geometry1 = value.geometry1
+        orig_geometry2 = value.geometry2
+        orig_geometry3 = value.geometry3
+        orig_geometry4 = value.geometry4
+        orig_shape= value.shape
 
         value.barrels = self.sbxNumber.text()
         value.geometry1 = self.txt1.text()
@@ -368,11 +380,25 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'CUSTOM'
             value.curve = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Dummy':
-            XType = 'NotSet'
+            XType = 'DUMMY'
         value.shape = core.swmm.hydraulics.link.CrossSectionShape[XType]
         if self.defaults is not None:
             #self.qsettings.setValue(self.default_key, value)
             self.defaults.parameters_values[self.defaults.xsection_key] = value.shape.name
+
+        if orig_curve == 'None':
+            orig_curve = ''
+        if orig_barrels != value.barrels or \
+            orig_comment != value.comment or \
+            orig_culvert_code != value.culvert_code or \
+            orig_curve != value.curve or \
+            orig_geometry1 != value.geometry1 or \
+            orig_geometry2 != value.geometry2 or \
+            orig_geometry3 != value.geometry3 or \
+            orig_geometry4 != value.geometry4 or \
+            orig_shape != value.shape:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -385,12 +411,42 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             current_selection = str(cur.text())
 
         if current_selection == "Irregular":
-            self._frmTransect = frmTransect(self._main_form)
+            transect_id = self.cboCombo.currentText()
+            transect_list = []
+            new_item = None
+            new_name = ""
+            if len(transect_id) > 0:
+                transect_list.append(transect_id)
+            else:
+                item_type = self._main_form.tree_types["Transects"]
+                new_item = item_type()
+                new_item.name = self._main_form.new_item_name(item_type)
+                new_name = new_item.name
+            self._frmTransect = frmTransect(self._main_form, transect_list, new_item)
+            self._frmTransect.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmTransect.show()
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.addItem(new_name)
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
         elif current_selection == 'Custom':
-            self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE")
-            self._frmCurveEditor.set_from(self._main_form.project, '')
+            curve_id = self.cboCombo.currentText()
+            curve_list = []
+            new_item = None
+            new_name = ""
+            if len(curve_id) > 0:
+                curve_list.append(curve_id)
+            else:
+                item_type = self._main_form.tree_types["Shape Curves"]
+                new_item = item_type()
+                new_item.name = self._main_form.new_item_name(item_type)
+                new_item.curve_type = CurveType.SHAPE
+                new_name = new_item.name
+            self._frmCurveEditor = frmCurveEditor(self._main_form, 'SWMM Shape Curves', "SHAPE", curve_list, new_item)
+            self._frmCurveEditor.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmCurveEditor.show()
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.addItem(new_name)
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
 
     def listWidget_currentItemChanged(self):
 
@@ -409,6 +465,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
         self.txt2.setVisible(True)
         self.txt3.setVisible(True)
         self.txt4.setVisible(True)
+        self.txt3.setEnabled(True)
         self.lblDimensions.setVisible(True)
         if self.units < 4:
             self.lblDimensions.setText('Dimensions are feet unless otherwise stated.')
@@ -505,9 +562,9 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             self.txt4.setVisible(False)
             self.lblBottom.setText('Circular pipe with a special friction loss equation for pressurized flow.')
             dw_section = self._main_form.project.find_section("OPTIONS")
-            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
+            if dw_section.dynamic_wave.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.H_W:
                 self.lblFootnote.setText('*Hazen-Williams C-factor')
-            if dw_section.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
+            if dw_section.dynamic_wave.force_main_equation == core.swmm.options.dynamic_wave.ForceMainEquation.D_W:
                 if self.units < 4:
                     self.lblFootnote.setText('*Darcy-Weisbach roughness height (inches)')
                 else:
@@ -533,6 +590,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'HORIZ_ELLIPSE'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
@@ -552,6 +610,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'VERT_ELLIPSE'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)
@@ -571,6 +630,7 @@ class frmCrossSection(QtGui.QMainWindow, Ui_frmCrossSection):
             XType = 'ARCH'
             self.lblText2.setText('Maximum Width')
             self.lblText3.setText('Size Code')
+            self.txt3.setEnabled(False)
             self.lblText4.setVisible(False)
             self.txt4.setVisible(False)
             self.lblCombo.setVisible(True)

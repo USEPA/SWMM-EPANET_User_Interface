@@ -1,20 +1,21 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem, QMessageBox
 import ui.convenience
 from core.swmm.patterns import PatternType
 from core.swmm.patterns import Pattern
 from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
 
 
-class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
-    def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
+    def __init__(self, main_form, edit_these=[], new_item=None):
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.setupUi(self)
         self.cboType.clear()
         ui.convenience.set_combo_items(PatternType, self.cboType)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
         self._main_form = main_form
         self.project = main_form.project
@@ -33,14 +34,15 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
             pattern = self.section.value[pattern]
         if isinstance(pattern, Pattern):
             self.editing_item = pattern
+            self.cboType_currentIndexChanged(0)
             self.txtPatternID.setText(str(pattern.name))
             self.txtDescription.setText(str(pattern.description))
             ui.convenience.set_combo(self.cboType, pattern.pattern_type)
             point_count = -2
             for point in pattern.multipliers:
                 point_count += 1
-                led = QtGui.QLineEdit(str(point))
-                self.tblMult.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(point))
+                self.tblMult.setItem(point_count,1,QTableWidgetItem(led.text()))
 
     def cmdOK_Clicked(self):
         edited_names = []
@@ -52,18 +54,24 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                 if section.value:
                     for itm in section.value:
                         if itm.name == self.txtPatternID.text():
-                            QtGui.QMessageBox.information(None,"SWMM Pattern Editor",
+                            QMessageBox.information(None,"SWMM Pattern Editor",
                                                           "Pattern name " + self.txtPatternID.text() +
                                                           " is already in use.",
-                                                           QtGui.QMessageBox.Ok)
+                                                           QMessageBox.Ok)
                             self.txtPatternID.setText(self.editing_item.name)
                             return
             edited_names.append((self.editing_item.name, self.editing_item))
-            QtGui.QMessageBox.information(None,"SWMM Pattern Editor",
+            QMessageBox.information(None,"SWMM Pattern Editor",
                                           "All references to Pattern " +
                                           self.editing_item.name +
                                           " will be replaced with " + self.txtPatternID.text(),
-                                          QtGui.QMessageBox.Ok)
+                                          QMessageBox.Ok)
+            self._main_form.mark_project_as_unsaved()
+
+        orig_name = self.editing_item.name
+        orig_description = self.editing_item.description
+        orig_pattern_type = self.editing_item.pattern_type
+        orig_multipliers = self.editing_item.multipliers
 
         self.editing_item.name = self.txtPatternID.text()
         self.editing_item.description = self.txtDescription.text()
@@ -74,8 +82,16 @@ class frmPatternEditor(QtGui.QMainWindow, Ui_frmPatternEditor):
                 x = self.tblMult.item(row,0).text()
                 if len(x) > 0:
                     self.editing_item.multipliers.append(x)
+
+        if orig_name != self.editing_item.name or \
+            orig_description != self.editing_item.description or \
+            orig_pattern_type != self.editing_item.pattern_type or \
+            orig_multipliers != self.editing_item.multipliers:
+            self._main_form.mark_project_as_unsaved()
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             if len(edited_names) > 0:

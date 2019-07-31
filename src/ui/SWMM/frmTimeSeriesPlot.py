@@ -1,7 +1,8 @@
 import os
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
-from PyQt4.QtGui import QMessageBox
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 import traceback
 from ui.help import HelpHandler
 import ui.convenience
@@ -9,24 +10,24 @@ from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
 from ui.SWMM.frmTimeSeriesSelection import frmTimeSeriesSelection
 from core.graph import SWMM as graphSWMM
 
-class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
+class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
     MAGIC = "TSGRAPHSPEC:"
 
     def __init__(self, session):
         self.session = session
-        QtGui.QMainWindow.__init__(self, session)
+        QMainWindow.__init__(self, session)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/timeseriesplotdialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.rbnDate, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)
-        QtCore.QObject.connect(self.rbnElapsed, QtCore.SIGNAL("clicked()"), self.rbnDate_Clicked)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.btnAdd, QtCore.SIGNAL("clicked()"), self.btnAdd_Clicked)
-        QtCore.QObject.connect(self.btnRemove, QtCore.SIGNAL("clicked()"), self.btnRemove_Clicked)
-        QtCore.QObject.connect(self.btnSave, QtCore.SIGNAL("clicked()"), self.save_file)
-        QtCore.QObject.connect(self.btnLoad, QtCore.SIGNAL("clicked()"), self.load_file)
-        QtCore.QObject.connect(self.btnScript, QtCore.SIGNAL("clicked()"), self.save_script)
+        self.rbnDate.clicked.connect(self.rbnDate_Clicked)
+        self.rbnElapsed.clicked.connect(self.rbnDate_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnAdd.clicked.connect(self.btnAdd_Clicked)
+        self.btnRemove.clicked.connect(self.btnRemove_Clicked)
+        self.btnSave.clicked.connect(self.save_file)
+        self.btnLoad.clicked.connect(self.load_file)
+        self.btnScript.clicked.connect(self.save_script)
         self.cboStart.currentIndexChanged.connect(self.cboStart_currentIndexChanged)
         self.cboEnd.currentIndexChanged.connect(self.cboEnd_currentIndexChanged)
         # self.installEventFilter(self)
@@ -39,7 +40,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
             self.rbnElapsed.setChecked(True)
             self.rbnDate_Clicked()
             # try:
-            #     self.set_from_text(QtGui.QApplication.clipboard().text())
+            #     self.set_from_text(QApplication.clipboard().text())
             # except Exception as ex:
             #     print(str(ex))
             #     self.lstData.clear()
@@ -95,21 +96,21 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
                                     "Error plotting:\n" + msg,
                                     QMessageBox.Ok)
 
-        # cb = QtGui.QApplication.clipboard()
+        # cb = QApplication.clipboard()
         # cb.clear(mode=cb.Clipboard)
         # cb.setText(self.get_text(), mode=cb.Clipboard)
 
     def save_script(self):
         directory = self.session.program_settings.value("ScriptDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Script As...", directory,
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Plot Script As...", directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
             path_only, file_only = os.path.split(file_name)
             try:
                 with open(file_name, 'w') as writer:
-                    writer.write("from Externals.swmm.outputapi import SMOutputWrapper\n")
+                    writer.write("from Externals.swmm.outputapi import SMOutputSWIG\n")
                     writer.write("from core.graph import SWMM as graphSWMM\n")
-                    writer.write("output = SMOutputWrapper.SwmmOutputObject('" + self.output.output_file_name + "')\n")
+                    writer.write("output = SMOutputSWIG.SwmmOutputObject('" + self.output.output_file_name + "')\n")
                     writer.write("elapsed_flag = " + str(self.rbnElapsed.isChecked()) + "\n")
                     writer.write("start_index = " + str(self.cboStart.currentIndex()) + "\n")
                     if self.cboEnd.currentIndex() == self.output.num_periods:
@@ -151,7 +152,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
 
     def save_file(self):
         directory = self.session.program_settings.value("PlotSpecDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Plot Specification As...", directory,
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Plot Specification As...", directory,
                                                            "Time Series Plot (*.tsplt);;All files (*.*)")
         if file_name:
             try:
@@ -167,7 +168,7 @@ class frmTimeSeriesPlot(QtGui.QMainWindow, Ui_frmTimeSeriesPlot):
 
     def load_file(self):
         directory = self.session.program_settings.value("PlotSpecDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Time Series Plot Specification...", directory,
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open Time Series Plot Specification...", directory,
                                                             "Time Series Plot (*.tsplt);;All files (*.*)")
         if file_name:
             try:

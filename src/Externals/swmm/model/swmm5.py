@@ -170,7 +170,8 @@ class pyswmm():
         
     def swmm_start(self):
         """frees all memory & files used by SWMM"""
-        self.errcode = self.SWMMlibobj.swmm_start()
+        flg_saveresults = 1
+        self.errcode = self.SWMMlibobj.swmm_start(flg_saveresults)
         
         self._error()
         if self.errcode < 100:

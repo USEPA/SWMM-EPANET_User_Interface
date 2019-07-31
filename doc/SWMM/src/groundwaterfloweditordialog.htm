@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Groundwater Flow Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Groundwater,Groundwater Editing Flow">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Groundwater Flow Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="graphoptionsdialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="groundwater_equation_editor.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Groundwater Flow Editor</span> dialog is invoked when the Groundwater property of a <a href="subcatchments.htm">Subcatchment</a> is being edited. It is used to link a subcatchment to both a parent aquifer and to a node of the conveyance system that exchanges groundwater with the subcatchment. It also specifies coefficients that determine the rate of lateral groundwater flow between the aquifer and the node. These coefficients (A1, A2, B1, B2, and A3) appear in the following equation that computes lateral groundwater flow as a function of groundwater and surface water levels:</p>
+<p>&nbsp;</p>
+<p> &nbsp;Q<span style="font-size: 7pt; vertical-align: sub;">L</span> = A1(H<span style="font-size: 6pt; vertical-align: sub;">GW</span><span style="vertical-align: sub;"> -</span> H<span style="font-size: 7pt; vertical-align: sub;">CB</span>)<span style="font-size: 6pt; vertical-align: super;">B1</span> - A2(H<span style="font-size: 6pt; vertical-align: sub;">SW</span> - H<span style="font-size: 7pt; vertical-align: sub;">CB</span>)<span style="font-size: 6pt; vertical-align: super;">B2</span> + A3(H<span style="font-size: 6pt; vertical-align: sub;">GW</span> H<span style="font-size: 6pt; vertical-align: sub;">SW</span>)</p>
+<p>&nbsp;</p>
+<p>where Q<span style="font-size: 7pt; vertical-align: sub;">L</span> = lateral groundwater flow (cfs per acre or cms per hectare), H<span style="font-size: 6pt; vertical-align: sub;">GW</span> = height of saturated zone above bottom of aquifer (ft or m), H<span style="font-size: 6pt; vertical-align: sub;">SW</span> = height of surface water at receiving node above aquifer bottom (ft or m), and H<span style="font-size: 7pt; vertical-align: sub;">CB</span> = height of channel bottom above aquifer bottom (ft or m). Note that Q<span style="font-size: 7pt; vertical-align: sub;">L</span> can also be expressed in inches/hr for US units.</p>
+<p>&nbsp;</p>
+<p><img src="gwater2.png" width="346" height="156" border="0" alt="gwater2"></p>
+<p><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;">The rate of seepage to deep groundwater, Q</span><span class="f_ImageCaption" style="font-size: 7pt; font-weight: normal; vertical-align: sub;">D</span><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;">, in in/hr (or mm/hr) is given by the following equation:</span></p>
+<p>&nbsp;</p>
+<p><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;"> &nbsp; Q</span><span class="f_ImageCaption" style="font-size: 7pt; font-weight: normal; vertical-align: sub;">D</span><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;"> = LGLR * H</span><span class="f_ImageCaption" style="font-size: 7pt; font-weight: normal; vertical-align: sub;">GW</span><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;"> / H</span><span class="f_ImageCaption" style="font-size: 7pt; font-weight: normal; vertical-align: sub;">GS</span><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;"> </span></p>
+<p>&nbsp;</p>
+<p><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;">where LGLR is the lower groundwater loss rate parameter assigned to the subcatchment's aquifer (in/hr or mm/hr) and H</span><span class="f_ImageCaption" style="font-size: 7pt; font-weight: normal; vertical-align: sub;">GS</span><span class="f_ImageCaption" style="font-size: 10pt; font-weight: normal;"> is the distance from the ground surface to the aquifer bottom (ft or m).</span></p>
+<p>&nbsp;</p>
+<p>In addition to the standard lateral flow equation, the dialog allows one to define a custom equation whose results will be added onto those of the standard equation. One can also define a custom equation for deep groundwater flow that will replace the standard one. Finally, the dialog offers the option to override certain parameters that were specified for the aquifer to which the subcatchment belongs. The properties listed in the editor are as follows:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Aquifer Name</span></p>
+<p>Name of the aquifer object that describes the subsurface soil properties, thickness, and initial conditions. Leave this field blank if you want the subcatchment not to generate any groundwater flow.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Receiving Node</span></p>
+<p>Name of the node that receives groundwater from the subcatchment.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface Elevation</span></p>
+<p>Elevation of the subcatchment's ground surface (ft or m).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Groundwater Flow Coefficient</span></p>
+<p>Value of A1 in the groundwater flow formula.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Groundwater Flow Exponent</span></p>
+<p>Value of B1 in the groundwater flow formula.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface Water Flow Coefficient</span></p>
+<p>Value of A2 in the groundwater flow formula.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface Water Flow Exponent</span></p>
+<p>Value of B2 in the groundwater flow formula.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface-GW Interaction Coefficient</span></p>
+<p>Value of A3 in the groundwater flow formula.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surface Water Depth </span><span style="font-weight: bold;">(H</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">SW</span><span style="font-weight: bold;"> - H</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">CB</span><span style="font-weight: bold;">)</span></p>
+<p>Fixed depth of surface water above the receiving node's invert (ft or m). Set to zero if surface water depth will vary as computed by flow routing. </p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Threshold Water Table Elevation </span><span style="font-weight: bold;">(E</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">B</span><span style="font-weight: bold;"> + H</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">CB</span><span style="font-weight: bold;">)</span></p>
+<p>Minimum water table elevation that must be reached before any flow occurs (feet or meters). Leave blank to use the receiving node's invert elevation.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Aquifer Bottom Elevation </span><span style="font-weight: bold;">(E</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">B</span><span style="font-weight: bold;">)</span></p>
+<p>Elevation of the bottom of the aquifer below this particular subcatchment (ft or m). Leave blank to use the value from the parent aquifer.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Initial Water Table Elevation</span><span style="font-weight: bold;"> (E</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">B</span><span style="font-weight: bold;"> + H</span><span style="font-size: 7pt; font-weight: bold; vertical-align: sub;">GW</span><span style="font-weight: bold;">)</span></p>
+<p>Initial water table elevation at the start of the simulation for this particular subcatchment (ft or m). Leave blank to use the value from the parent aquifer.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Unsaturated Zone Moisture</span></p>
+<p>Moisture content of the unsaturated upper zone above the water table for this particular subcatchment at the start of the simulation (volumetric fraction). Leave blank to use the value from the parent aquifer.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Custom Lateral Flow Equation</span></p>
+<p>Click the ellipsis button (or press Enter) to launch the Custom Groundwater Flow Equation editor for lateral groundwater flow (Q<span style="font-size: 7pt; vertical-align: sub;">L</span>). The equation supplied by this editor will be used in addition to the standard equation to compute groundwater outflow from the subcatchment.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Custom Deep Flow Equation</span></p>
+<p>Click the ellipsis button (or press Enter) to launch the Custom Groundwater Flow Equation editor for deep groundwater flow (Q<span style="font-size: 7pt; vertical-align: sub;">D</span>). The equation supplied by this editor will be used to replace the standard equation for deep groundwater flow.</p>
+<p>&nbsp;</p>
+<p>The coefficients supplied to the lateral groundwater flow equations must be in units that are consistent with the groundwater flow units, which can either be cfs/acre (equivalent to inches/hr) for US units or cms/ha for SI units.</p>
+<p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>Note that elevations are used to specify the ground surface, water table height, and aquifer bottom in the dialog's data entry fields but that the groundwater flow equation uses depths above the aquifer bottom.</td></tr></table></div><p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>If lateral groundwater flow is simply proportional to the difference in groundwater and surface water heads, then set the Groundwater and Surface Water Flow Exponents (B1 and B2) to 1.0, set the Groundwater Flow Coefficient (A1) to the proportionality factor, set the Surface Water Flow Coefficient (A2) to the same value as A1, and set the Interaction Coefficient (A3) to zero.</td></tr></table></div><p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>Note that when conditions warrant, the lateral groundwater flow can be negative, simulating flow into the aquifer from the channel, in the manner of bank storage. An exception occurs when A3 <span style="font-size: 12pt; font-family: 'Arial Unicode MS', 'Lucida Sans Unicode', 'Arial';">&ne;</span> 0, since the surface water - groundwater interaction term is usually derived from groundwater flow models that assume unidirectional flow. Otherwise, to ensure that a negative flow will not occur, one can make A1 greater than or equal to A2, B1 greater than or equal to B2, and A3 equal to zero.</td></tr></table></div><p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>To completely replace the standard lateral groundwater flow equation with the custom equation, set all of the standard equation coefficients to 0.</td></tr></table></div>
+</div>
+
+</body>
+</html>

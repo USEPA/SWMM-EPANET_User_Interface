@@ -1,19 +1,19 @@
 import webbrowser
 import unittest
 import test.HTMLTestRunner
-from test_title import SimpleTitleTest
-from test_options import SimpleOptionsTest
-from test_quality import SimpleQualityTest
-from test_reactions import SimpleReactionsTest
+from test.core.epanet.test_title import SimpleTitleTest
+from test.core.epanet.test_options import SimpleOptionsTest
+from test.core.epanet.test_quality import SimpleQualityTest
+from test.core.epanet.test_reactions import SimpleReactionsTest
 # from test_times import SimpleTimesTest
-from test_energy import SimpleEnergyTest
-from test_report import SimpleReportTest
-from test_backdrop import SimpleBackdropTest
+from test.core.epanet.test_energy import SimpleEnergyTest
+from test.core.epanet.test_report import SimpleReportTest
+from test.core.epanet.test_backdrop import SimpleBackdropTest
 # from test_project import ProjectTest  # Changes to a individual regression test
-from test_patterns import SimplePatternTest
-from test_curves import SimpleCurveTest
-from test_demands import SimpleDemandsTest
-from test_sources import SimpleSourcesTest
+from test.core.epanet.test_patterns import SimplePatternTest
+from test.core.epanet.test_curves import SimpleCurveTest
+from test.core.epanet.test_demands import SimpleDemandsTest
+from test.core.epanet.test_sources import SimpleSourcesTest
 
 my_suite = unittest.TestSuite()
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     # execute only if run as a script
     # runner = unittest.TextTestRunner()
     report_filename = "test_results_epanet.html"
-    fp = file(report_filename, 'wb')
+    fp = open(report_filename, 'wb')
     runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='EPANET Core Test Report',

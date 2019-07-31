@@ -1,0 +1,69 @@
+<HTML><HEAD><TITLE>Bulk Flow Reaction Rates</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P CLASS="BannerBase">
+<SPAN  STYLE="color: #0000ff; ">Bulk Flow Reaction Rates</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P STYLE="font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif; ">
+Bulk flow reactions are reactions that occur in the main flow stream of a pipe or in a storage tank, unaffected by any processes that might involve the pipe wall. EPANET models these reactions using n-th order kinetics, where the instantaneous rate of reaction (R in mass/volume/time) is assumed to be concentration-dependent according to</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  0pt  6pt  0pt ; font-family: Arial,sans-serif; ">
+<IMG SRC="GENERATE/Reaction.gif" ALT="GENERATE/Reaction.gif" WIDTH="69" HEIGHT="25" ALIGN="BASELINE" BORDER="0"></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; ">
+where <I>K</I><I><SPAN  STYLE="font-size: 8pt ; ">b</SPAN></I> = a bulk rate coefficient, <I>C</I> = reactant concentration (mass/volume), and <I>n</I> = a reaction order. <I>K</I><I><SUB><SPAN  STYLE="font-size: 5pt ; ">b</SPAN></I></SUB> has units of concentration raised to the (1-n) power divided by time. It is positive for growth reactions and negative for decay reactions</P>
+<P STYLE="font-size: 12pt ; margin: 6pt  0pt  6pt  0pt ; font-family: Times New Roman,serif; ">
+<SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">EPANET can also consider reactions where a limiting concentration exists on the ultimate growth or loss of the substance. In this case the rate expression for a growth reaction becomes</SPAN></P>
+<P STYLE="font-size: 12pt ; margin: 6pt  0pt  6pt  0pt ; font-family: Times New Roman,serif; "><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">
+<IMG SRC="GENERATE/react2.gif" ALT="GENERATE/react2.gif" WIDTH="118" HEIGHT="20" ALIGN="BASELINE" BORDER="0"></SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; "><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">
+where </SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; "> = the limiting concentration. (For decay reactions (</SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; "> - C</SPAN></I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">) is replaced by (</SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">C - C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">).)  </SPAN></P>
+<P CLASS="Base"><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">
+</SPAN><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">Thus there are three parameters (</SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">K</SPAN></I><I><SUB><SPAN  STYLE="font-size: 5pt ; font-family: Arial,sans-serif; ">b</SPAN></I></SUB><I><SPAN  STYLE="font-size: 15pt ; font-family: Arial,sans-serif; ">, </SPAN></I><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">C</SPAN></I><I><SUB><SPAN  STYLE="font-size: 5pt ; font-family: Arial,sans-serif; ">L</SPAN></I></SUB><SPAN  STYLE="font-size: 15pt ; font-family: Arial,sans-serif; ">, </SPAN><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">and </SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">n</SPAN></I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">) that are used to characterize bulk reaction rates. General values can be selected for these parameters that lead to several well-known kinetic models. These include:</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;<SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">
+<A HREF="Kinetic_.htm">Simple First-Order Decay</A> (</SPAN><I><SPAN  STYLE="font-size: 10pt ; font-family: Arial,sans-serif; ">K</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">b</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> &lt; 0, C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> = 0, n = 1</SPAN></I><SPAN  STYLE="font-family: Arial,sans-serif; ">)</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;<SPAN  STYLE="font-family: Arial,sans-serif; ">
+<A HREF="Kine0084.htm">First-Order Saturation Growth</A> (</SPAN><I><SPAN  STYLE="font-family: Arial,sans-serif; ">K</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">b</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> &gt; 0, C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> &gt; 0, n = 1</SPAN></I><SPAN  STYLE="font-family: Arial,sans-serif; ">)</SPAN></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;<SPAN  STYLE="font-family: Arial,sans-serif; ">
+<A HREF="Kine0085.htm">Two-Component, Second-Order Decay</A> (</SPAN><I><SPAN  STYLE="font-family: Arial,sans-serif; ">K</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">b</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> &lt; 0, C</SPAN></I><I><SPAN  STYLE="font-size: 8pt ; font-family: Arial,sans-serif; ">L</SPAN></I><I><SPAN  STYLE="font-family: Arial,sans-serif; "> </SPAN></I><SPAN  STYLE="font-family: Symbol,serif; ">&sup1;</SPAN><I> 0, n = 2</I>)</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/DIAMOND.gif" ALT="GENERATE/DIAMOND.gif" WIDTH="8" HEIGHT="12" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<A HREF="Kine0086.htm">Michaelis-Menton Kinetics</A> (<I>K</I><I><SPAN  STYLE="font-size: 8pt ; ">b</SPAN></I><I> </I><SPAN  STYLE="font-family: Symbol,serif; ">&sup1;</SPAN><I> 0</I>, <I>C</I><I><SPAN  STYLE="font-size: 8pt ; ">L</SPAN></I><I> &gt; 0, n &lt; 0</I>) </P>
+<P CLASS="Base">
+&nbsp;</P>
+<P CLASS="Base">
+&nbsp;</P>
+</BODY></HTML>

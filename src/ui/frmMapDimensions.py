@@ -1,9 +1,16 @@
-from PyQt4 import QtCore, QtGui
-from frmMapDimensionsDesigner import Ui_frmMapDimensionsDesigner
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QDialog, QMessageBox
+from ui.frmMapDimensionsDesigner import Ui_frmMapDimensionsDesigner
+from ui.help import HelpHandler
 
-class frmMapDimensions(QtGui.QDialog):
+class frmMapDimensions(QDialog):
     def __init__(self, main_form=None, *args):
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
+        self.helper = HelpHandler(self)
+        if main_form.model == "SWMM":
+            self.help_topic = "swmm/src/src/mapdimensionsdialog.htm"
+        elif main_form.model == "EPANET":
+            self.help_topic = "epanet/src/src/Map_Dime.htm"
         self.ui = Ui_frmMapDimensionsDesigner()
         self.ui.setupUi(self)
         self.session = main_form
@@ -22,6 +29,7 @@ class frmMapDimensions(QtGui.QDialog):
         self.ui.txtURy.textChanged.connect(lambda:self.checkCoords(self.ui.txtURy.text()))
         self.ui.btnAutoSize.clicked.connect(self.autoSetMapDimensions)
         self.ui.buttonBox.accepted.connect(self.setExtent)
+        self.ui.btnHelp.clicked.connect(self.show_help)
         self.setupOptions()
 
     def autoSetMapDimensions(self):
@@ -60,22 +68,22 @@ class frmMapDimensions(QtGui.QDialog):
                     if self.session.project.backdrop is not None:
                         self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtLLy.text(), self.ui.txtURx.text(), self.ui.txtURy.text())
                         if self.ui.rdoUnitFeet.isChecked():
-                            if not isinstance(self.session.project.backdrop.units, basestring):
+                            if not isinstance(self.session.project.backdrop.units, str):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.FEET
                             else:
                                 self.session.project.backdrop.units = "FEET"
                         elif self.ui.rdoUnitMeters.isChecked():
-                            if not isinstance(self.session.project.backdrop.units, basestring):
+                            if not isinstance(self.session.project.backdrop.units, str):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.METERS
                             else:
                                 self.session.project.backdrop.units = "METERS"
                         elif self.ui.rdoUnitDegrees.isChecked():
-                            if not isinstance(self.session.project.backdrop.units, basestring):
+                            if not isinstance(self.session.project.backdrop.units, str):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.DEGREES
                             else:
                                 self.session.project.backdrop.units = "DEGREES"
                         else:
-                            if not isinstance(self.session.project.backdrop.units, basestring):
+                            if not isinstance(self.session.project.backdrop.units, str):
                                 self.session.project.backdrop.units = self.session.project.backdrop.units.NONE
                             else:
                                 self.session.project.backdrop.units = ""
@@ -88,7 +96,7 @@ class frmMapDimensions(QtGui.QDialog):
             return
 
         model_dim = self.session.project.backdrop.dimensions
-        if model_dim and model_dim[0] and model_dim[1] and model_dim[2] and model_dim[3]:
+        if model_dim and model_dim[0] is not None and model_dim[1] is not None and model_dim[2] is not None and model_dim[3] is not None:
             #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
             #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
             #self.ui.txtURx.setText('{:.3f}'.format(self._main_form.map_widget.coord_fext.x))
@@ -100,7 +108,7 @@ class frmMapDimensions(QtGui.QDialog):
         else:
             self.display_layers_extent()
 
-        if not isinstance(self.session.project.backdrop.units, basestring):
+        if not isinstance(self.session.project.backdrop.units, str):
             units = self.session.project.backdrop.units.name
         else:
             units = self.session.project.backdrop.units.upper()
@@ -175,10 +183,10 @@ class frmMapDimensions(QtGui.QDialog):
             return
         val, value_is_good = self.floatTryParse(avalue)
         if not value_is_good:
-            msg = QtGui.QMessageBox()
+            msg = QMessageBox()
             msg.setWindowTitle('Map Dimension')
             msg.setText('Coordinate value is not valid numeric value.')
-            msg.setStandardButtons(QtGui.QMessageBox.Ok)
+            msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
             del msg
         pass
@@ -198,4 +206,5 @@ class frmMapDimensions(QtGui.QDialog):
         else:
             return False
 
-
+    def show_help(self):
+        self.helper.show_help()

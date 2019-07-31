@@ -231,6 +231,7 @@
     <addaction name="actionStdMapZoomIn"/>
     <addaction name="actionStdMapZoomOut"/>
     <addaction name="actionStdMapFullExtent"/>
+    <addaction name="actionStdMapPanSelection"/>
     <addaction name="separator"/>
     <addaction name="actionStdMapFind"/>
     <addaction name="actionStdMapQuery"/>
@@ -1282,7 +1283,7 @@
   </action>
   <action name="actionStdProjDefault">
    <property name="text">
-    <string>Default...</string>
+    <string>Defaults...</string>
    </property>
    <property name="toolTip">
     <string>Project defaults</string>
@@ -1978,6 +1979,14 @@
   <action name="actionStdLegends">
    <property name="text">
     <string>Legends</string>
+   </property>
+  </action>
+  <action name="actionStdMapPanSelection">
+   <property name="text">
+    <string>Pan to Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Pan Map to Selected Object</string>
    </property>
   </action>
  </widget>

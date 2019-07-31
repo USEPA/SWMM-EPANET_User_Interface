@@ -1,0 +1,73 @@
+<HTML><HEAD><TITLE>Importing a Network Map</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P CLASS="BannerBase">
+<SPAN  STYLE="color: #0000ff; ">Importing a Network Map</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+To import the coordinates for a network map stored in a text file:</P>
+<OL STYLE="font-size: 10pt ; font-family: Arial,sans-serif; "><LI>
+Select <B>File &gt;&gt; Import &gt;&gt; Map</B>.</LI>
+<LI>
+Select the file containing the map information from the <B>Open File</B> dialog that appears.</LI>
+<LI>
+Click <B>OK</B> to replace the current network map with the one described in the file.</LI>
+</OL>
+
+<P CLASS="Base">
+This open source version of EPANET uses the GeoJSON format for importing a map. An example GeoJSON file is shown below.</P>
+<P CLASS="Base">
+The GeoJSON file can be created within other GIS systems by exporting a GIS layers as GeoJSON. To be recognized and import properly, the features must have an attribute called 'element_type' and 'element_id'. The 'element_type' should indicate the type of EPANET object, such as 'Junction', 'Pump', 'Tank', 'Pipe', etc. The 'element_id' should correspond to the EPANET object id. Other attributes are optional, however if an attribute name matches the name of a corresponding EPANET object attribute, that attribute value will be imported.
+<P CLASS="Base">
+<IMG SRC="GENERATE/json.png" ALT="GENERATE/json.png" WIDTH="869" HEIGHT="433" ALIGN="BASELINE" BORDER="0"></P>
+<P CLASS="Base">
+
+<P CLASS="Base">
+<B><SPAN  STYLE="color: #0000ff; ">See Also:</SPAN></B></P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif; ">
+<A HREF="Expo0025.htm">Exporting the Map</A></P><!--ForeHelp.Ignore-->
+<!--ForeHelp.Browse NAME="import/export" PREV="Impo0022.htm" NEXT="Expo0025.htm"-->
+<BR CLEAR><HR><TABLE WIDTH="100%"><TR>
+<TD ALIGN="LEFT" WIDTH="33%"><A HREF="Impo0022.htm"><IMG SRC="prev.gif" ALIGN="BOTTOM" ALT="prev.gif" BORDER=0></A>
+<A HREF="Expo0025.htm"><IMG SRC="next.gif" ALIGN="BOTTOM" ALT="next.gif" BORDER=0></A></TD>
+<TD ALIGN="CENTER" WIDTH="33%"></TD>
+<TD ALIGN="RIGHT" WIDTH="33%"></TD>
+</TR></TABLE><!--ForeHelp.EndIgnore-->
+
+</BODY></HTML>

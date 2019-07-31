@@ -1,5 +1,6 @@
 import ui.import_export as ie
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 """
     Example script that imports a particular set of shapefiles into an EPANET project.
@@ -25,7 +26,7 @@ directory = r"C:/devNotMW/GitHub/SWMM-EPANET_User_Interface_dev_ui/test/core/epa
 
 
 # Locate and import junctions
-file_name = QtGui.QFileDialog.getOpenFileName(None, 'Open Junction File...', directory,
+file_name, ftype = QFileDialog.getOpenFileName(None, 'Open Junction File...', directory,
                                              'Shapefiles (*.shp);;All files (*.*)')
 if file_name:
     model_attributes = ["name", "description", "elevation", "base_demand_flow", "demand_pattern_name"]
@@ -37,7 +38,7 @@ else:
 
 
 # Locate and import tanks
-file_name = QtGui.QFileDialog.getOpenFileName(None, 'Open Tank File...', directory,
+file_name, ftype = QFileDialog.getOpenFileName(None, 'Open Tank File...', directory,
                                              'Shapefiles (*.shp);;All files (*.*)')
 if file_name:
     model_attributes = ["name", "description", "elevation", "minimum_level", "maximum_level", "initial_level", "diameter", "minimum_volume", "volume_curve"]
@@ -49,7 +50,7 @@ else:
 
 
 # Locate and import pipes
-file_name = QtGui.QFileDialog.getOpenFileName(None, 'Open Pipe File...', directory,
+file_name = QFileDialog.getOpenFileName(None, 'Open Pipe File...', directory,
                                              'Shapefiles (*.shp);;All files (*.*)')
 if file_name:
     model_attributes = ["name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness", "loss_coefficient"]

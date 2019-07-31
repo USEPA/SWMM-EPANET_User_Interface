@@ -1,31 +1,34 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLineEdit, QTableWidgetItem, QFileDialog
 import core.epanet.curves
 from ui.EPANET.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.epanet.curves import CurveType
 from core.epanet.curves import Curve
-from PyQt4.QtGui import *
+from PyQt5.QtGui import *
 import numpy as np
 from ui.model_utility import ParseData
 from ui.model_utility import BasePlot
 from math import isnan
 import os
 import traceback
+import matplotlib.pyplot as plt
 
 
-class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
+class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Curve_Ed.htm"
         self.setupUi(self)
         self.loaded = False
         self.cboCurveType.clear()
         ui.convenience.set_combo_items(core.epanet.curves.CurveType, self.cboCurveType)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        #QtCore.QObject.connect(self.tblMult, QtCore.SIGNAL("cellChanged(int, int)"), self.tblMult_cellChanged(int, int))
-        #QtCore.QObject.connect(self.cboCurveType, QtCore.SIGNAL("clicked()"), self.cboCurveType_currentIndexChanged)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
+        # self.cboCurveType.clicked.connect(self.cboCurveType_currentIndexChanged)
         self.cboCurveType.currentIndexChanged.connect(self.cboCurveType_currentIndexChanged)
         self.btnSave.clicked.connect(self.save_curve_data)
         self.btnLoad.clicked.connect(self.load_curve_data)
@@ -35,7 +38,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         self.project = main_form.project
         self.section = self.project.curves
         self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
-        layout = QtGui.QVBoxLayout(self.fraPlot)
+        layout = QVBoxLayout(self.fraPlot)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.plot)
         self.fraPlot.setLayout(layout)
@@ -124,10 +127,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         point_count = -1
         for point in curve.curve_xy:
             point_count += 1
-            led = QtGui.QLineEdit(str(point[0]))
-            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(str(point[1]))
-            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(str(point[0]))
+            self.tblMult.setItem(point_count, 0, QTableWidgetItem(led.text()))
+            led = QLineEdit(str(point[1]))
+            self.tblMult.setItem(point_count, 1, QTableWidgetItem(led.text()))
         #CurveGrid.RowCount= MAXPOINTS + 1
         #CurveID.MaxLength= MAXID; // Max.chars. in a ID
         #ActiveControl= CurveID
@@ -157,8 +160,8 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def load_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
-        #file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.crv)")
+        #file_name, ftype = QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open Curve Data File", directory, "Curve Files (*.crv)")
         if os.path.exists(file_name):
             self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
             self._main_form.program_settings.sync()
@@ -185,10 +188,10 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                         point_count = -1
                         for point in curve_xy:
                             point_count += 1
-                            led = QtGui.QLineEdit(str(point[0]))
-                            self.tblMult.setItem(point_count, 0, QtGui.QTableWidgetItem(led.text()))
-                            led = QtGui.QLineEdit(str(point[1]))
-                            self.tblMult.setItem(point_count, 1, QtGui.QTableWidgetItem(led.text()))
+                            led = QLineEdit(str(point[0]))
+                            self.tblMult.setItem(point_count, 0, QTableWidgetItem(led.text()))
+                            led = QLineEdit(str(point[1]))
+                            self.tblMult.setItem(point_count, 1, QTableWidgetItem(led.text()))
 
                         pass
                     except Exception as ex:
@@ -196,7 +199,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
 
     def save_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Curve", directory, "Curve files (*.crv)")
         if os.path.exists(file_name):
             self._main_form.program_settings.setValue("DataDir", os.path.dirname(file_name))
             self._main_form.program_settings.sync()
@@ -325,6 +328,13 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         # TODO: Check for duplicate curve name
         # TODO: Check if X-values are in ascending order
         # TODO: Check for legal pump curve
+        saved_curve_type = self.editing_item.curve_type
+        saved_comment = self.editing_item.comment
+        saved_description = self.editing_item.description
+        saved_name = self.editing_item.name
+        saved_value = self.editing_item.value
+        saved_xy = self.editing_item.curve_xy
+
         self.editing_item.name = self.txtCurveName.text()
         self.editing_item.description = self.txtDescription.text()
         self.editing_item.curve_type = core.epanet.curves.CurveType[self.cboCurveType.currentText()]
@@ -335,8 +345,13 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
                 y = self.tblMult.item(row, 1).text()
                 if len(x) > 0 and len(y) > 0:
                     self.editing_item.curve_xy.append((x, y))
+        if self.editing_item.curve_type != saved_curve_type or self.editing_item.comment != saved_comment or \
+            self.editing_item.description != saved_description or self.editing_item.name != saved_name or \
+            self.editing_item.value != saved_value or self.editing_item.curve_xy != saved_xy:
+            self._main_form.mark_project_as_unsaved()
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             # TODO: self._main_form.edited_?
@@ -415,7 +430,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
         else:
             a = h0
             Result = False
-            for Iter in xrange(1, 6): # 1 to 5 do
+            for Iter in range(1, 6): # 1 to 5 do
                 h4 = a - h1
                 h5 = a - h2
                 #c = ln(h5/h4)/ln(q2/q1)
@@ -455,7 +470,7 @@ class frmCurveEditor(QtGui.QMainWindow, Ui_frmCurveEditor):
             q1 = q1/N
             self.X[1] = 0.0
             self.Y[1] = a
-            for I in xrange(2, N + 1): #2 to N do:
+            for I in range(2, N + 1): #2 to N do:
                 self.X[I] = (I-1)*q1
                 #Y[I] = a + b*Power(X[I],c)
                 self.Y[I] = a + b * (self.X[I] ** c)

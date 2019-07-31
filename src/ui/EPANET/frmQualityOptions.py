@@ -1,21 +1,23 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 import core.epanet.options.quality
 from core.epanet.options.quality import QualityOptions
 from core.epanet.options.quality import QualityAnalysisType
 from ui.EPANET.frmQualityOptionsDesigner import Ui_frmQualityOptions
 
 
-class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
+class frmQualityOptions(QMainWindow, Ui_frmQualityOptions):
 
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Anal0041.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.rbnChemical, QtCore.SIGNAL("clicked()"), self.analysis_option_changed)
-        QtCore.QObject.connect(self.txtChemicalName, QtCore.SIGNAL("textChanged(QString)"), self.chemical_name_changed)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.rbnChemical.clicked.connect(self.analysis_option_changed)
+        # seChanged.connect(self.chemical_name_changed)
+        self.txtChemicalName.textChanged.connect(self.chemical_name_changed)
 
         self.quality_dict = {
             QualityAnalysisType.NONE: self.rbnNone,
@@ -47,14 +49,15 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
     def cmdOK_Clicked(self):
         warning_msg = self.check_options()
         if warning_msg:
-            msgbox = QtGui.QMessageBox()
-            msgbox.setIcon(QtGui.QMessageBox.Information)
+            msgbox = QMessageBox()
+            msgbox.setIcon(QMessageBox.Information)
             msgbox.setText(warning_msg)
             msgbox.setWindowTitle("Quality Analysis Options")
-            msgbox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgbox.setStandardButtons(QMessageBox.Ok)
             ret = msgbox.exec_()
             return
         quality_options = self._main_form.project.options.quality
+        saved_quality = quality_options.quality
         if self.rbnNone.isChecked():
             quality_options.quality = QualityAnalysisType.NONE
         if self.rbnChemical.isChecked():
@@ -63,6 +66,14 @@ class frmQualityOptions(QtGui.QMainWindow, Ui_frmQualityOptions):
             quality_options.quality = QualityAnalysisType.AGE
         if self.rbnTrace.isChecked():
             quality_options.quality = QualityAnalysisType.TRACE
+        if saved_quality != quality_options.quality or \
+            quality_options.chemical_name != self.txtChemicalName.text() or \
+            quality_options.mass_units != self.txtMassUnits.text() or \
+            str(quality_options.diffusivity) != self.txtDiffusivity.text() or \
+            str(quality_options.tolerance) != self.txtTolerance.text() or \
+            quality_options.trace_node != self.txtTraceNode.text():
+            self._main_form.mark_project_as_unsaved()
+
         quality_options.chemical_name = self.txtChemicalName.text()
         quality_options.mass_units = self.txtMassUnits.text()
         quality_options.diffusivity = self.txtDiffusivity.text()

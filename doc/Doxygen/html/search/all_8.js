@@ -15,6 +15,7 @@ var searchData=
   ['head_5fcurve_5fname',['head_curve_name',['../classcore_1_1epanet_1_1hydraulics_1_1link_1_1_pump.html#a776c8faac0cf8cb770cd41326435f5ea',1,'core::epanet::hydraulics::link::Pump']]],
   ['head_5floss',['head_loss',['../classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a5ba3a38e7316d4e7caf540118aac15df',1,'core::epanet::options::hydraulics::HydraulicsOptions']]],
   ['head_5fpattern_5fname',['head_pattern_name',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html#ac67466485881a216133801b9faf232ab',1,'core::epanet::hydraulics::node::Reservoir']]],
+  ['head_5fpattern_5fobject',['head_pattern_object',['../classcore_1_1epanet_1_1hydraulics_1_1node_1_1_reservoir.html#a53202d9a4a31fef15812f7eae57ccd51',1,'core::epanet::hydraulics::node::Reservoir']]],
   ['head_5ftolerance',['head_tolerance',['../classcore_1_1swmm_1_1options_1_1dynamic__wave_1_1_dynamic_wave.html#a8b55c997506cf6de9617c1636b8b9a83',1,'core::swmm::options::dynamic_wave::DynamicWave']]],
   ['header_5fchar',['header_char',['../classcore_1_1epanet_1_1calibration_1_1_calibration.html#aff2165f48c8af104974c1500de6d6b6d',1,'core::epanet::calibration::Calibration']]],
   ['headers',['headers',['../classcore_1_1epanet_1_1calibration_1_1_calibration.html#a15533304479fc9b9001fb15e6cd1ed0c',1,'core::epanet::calibration::Calibration']]],

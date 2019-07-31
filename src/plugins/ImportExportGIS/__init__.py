@@ -1,8 +1,8 @@
 try:
     from qgis.core import *
     from qgis.gui import *
-    from PyQt4 import QtGui, QtCore, Qt
-    from PyQt4.QtGui import QMessageBox
+    from PyQt5 import QtGui, QtCore, Qt
+    from PyQt5.QtWidgets import QMessageBox, QFileDialog
     from core.coordinate import Coordinate
     from core.epanet.hydraulics.link import Pipe
     from ui import import_export
@@ -13,11 +13,14 @@ try:
     plugin_create_menu = True
     __all__ = {"Export to GIS": 1,
                "Import from GIS to create model": 2}
-    file_filter = "GeoJSON (*.json *.geojson);;" \
+    file_export_filter = "GeoJSON (*.json *.geojson);;" \
                   "Shapefile (*.shp);;" \
                   "Comma-separated text (*.csv);;" \
-                  "File Geodatabase (*.gdb);;" \
                   "All files (*.*)"
+    file_import_filter = "GeoJSON (*.json *.geojson);;" \
+                  "All files (*.*)"
+    #              "File Geodatabase (*.gdb);;" \
+
 
     def run(session=None, choice=None):
         print("run " + str(choice))
@@ -28,11 +31,11 @@ try:
                 directory = session.program_settings.value("GISPath", os.path.dirname(session.project.file_name))
 
                 if choice == 1:
-                    file_name = QtGui.QFileDialog.getSaveFileName(session, "Export to GIS",
-                                                                  directory, file_filter)
+                    file_name, ftype = QFileDialog.getSaveFileName(session, "Export to GIS",
+                                                                  directory, file_export_filter)
                 elif choice == 2:
-                    file_name = QtGui.QFileDialog.getOpenFileName(session, "Select GIS file to import",
-                                                                  directory, file_filter)
+                    file_name, ftype = QFileDialog.getOpenFileName(session, "Select GIS file to import",
+                                                                  directory, file_import_filter)
                 else:
                     file_name = ''
 
@@ -64,8 +67,8 @@ try:
                     result = "No file is selected."
                 QMessageBox.information(None, plugin_name, result, QMessageBox.Ok)
             except Exception as ex:
-                print str(ex)
+                print (str(ex))
 
 
 except Exception as ex:
-    print "Skip loading ImportExportGIS plugin: " + str(ex)
+    print ("Skip loading ImportExportGIS plugin: " + str(ex) + "\n")

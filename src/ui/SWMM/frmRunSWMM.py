@@ -1,7 +1,8 @@
 import os
 import traceback
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMessageBox
 import Externals.swmm.model.swmm5 as pyswmm
 from datetime import datetime
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
@@ -41,6 +42,10 @@ class frmRunSWMM(frmRunSimulation):
         self.cmdMinimize.setVisible(False)
         self.cmdOK.setVisible(False)
         self.gbxContinuity.setVisible(False)
+        self.progressBar.setVisible(True)
+        self.lblTime.setVisible(True)
+        self.fraTime.setVisible(True)
+        self.fraBottom.setVisible(True)
 
         #  Initialize placement and status of images on the ResultsPage
         self.lblIconSuccessful.Visible = False
@@ -133,7 +138,7 @@ class frmRunSWMM(frmRunSimulation):
                         date_now = datetime.now()
                         if (date_now - date_updated).microseconds > 100000:
                             self.update_progress_days(elapsed_days, total_days)
-                            self.update_progress_bar(elapsed_days, total_days)
+                            self.update_progress_bar(round(elapsed_days), total_days)
                             process_events()
                             date_updated = date_now
                 else:
@@ -167,25 +172,33 @@ class frmRunSWMM(frmRunSimulation):
                 print("\n\nSWMM completed.\n")
                 self.set_status(RunStatus.rsSuccess)
 
+            self.DisplayRunStatus()
+            self.lblSuccessful.setText(self.StatusLabel.text())
+            self.fraRunning.setVisible(False)
+            self.gbxContinuity.setVisible(True)
+            self.fraFinished.setVisible(True)
+            self.cmdStop.setVisible(False)
+            self.cmdMinimize.setVisible(False)
+            self.cmdOK.setVisible(True)
+            self.update()
+            process_events()
+
+            if self.model_api.Errflag or self.model_api.Warnflag:
+                self._main_form.report_status()
+
+
         except Exception as e:  # Close solver if an exception occurs
             self.set_status(RunStatus.rsError)
+            self.cmdStop.setVisible(False)
+            self.cmdMinimize.setVisible(False)
+            self.cmdOK.setVisible(True)
             msg = "Exception running simulation: " + '\n' + str(e) + '\n' + str(traceback.print_exc())
             print(msg)
-            QtGui.QMessageBox.information(None, "SWMM", msg, QtGui.QMessageBox.Ok)
-            self.set_status(RunStatus.rsShutdown)
+            QMessageBox.information(None, "SWMM", msg, QMessageBox.Ok)
+            self._main_form.report_status()
+            # self.set_status(RunStatus.rsShutdown)
+            pass
         finally:
-            try:
-                self.lblSuccessful.setText(self.StatusLabel.text())
-                self.fraRunning.setVisible(False)
-                self.gbxContinuity.setVisible(False)
-                self.fraFinished.setVisible(True)
-                self.cmdStop.setVisible(False)
-                self.cmdMinimize.setVisible(False)
-                self.cmdOK.setVisible(True)
-                self.update()
-                process_events()
-            except:  # Ignore exception closing model object
-                pass
             try:
                 # self.model_api.swmm_report()
                 self.model_api.swmm_close()
@@ -196,10 +209,10 @@ class frmRunSWMM(frmRunSimulation):
         #  Compute the simulation duration in days from the Project's simulation options.
         try:
             end_date = datetime.strptime(self._main_form.project.options.dates.end_date + ' ' +
-                                         self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M")
+                                         self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M:%S")
             start_date = datetime.strptime(self._main_form.project.options.dates.start_date + ' ' +
-                                           self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M")
-            return (end_date - start_date).days + 1
+                                           self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M:%S")
+            return (end_date - start_date).days
         except:
             return 0.0
 
@@ -227,17 +240,17 @@ class frmRunSWMM(frmRunSimulation):
         #  Runoff continuity error
         if self.ErrRunoff != 0.0:
             self.lblSurface.setText(self.TXT_SURF_RUNOFF)
-            self.txtSurface.setText('%7.2f %%'.format(self.ErrRunoff))
+            self.txtSurface.setText('%7.2f %%' % self.ErrRunoff)
 
         #  Flow routing continuity error
         if self.ErrFlow != 0.0:
             self.lblFlow.setText(self.TXT_FLOW_ROUTING)
-            self.txtFlow.setText('%7.2f %%'.format(self.ErrFlow))
+            self.txtFlow.setText('%7.2f %%' % self.ErrFlow)
 
         #  Quality routing continuity error
         if self.ErrQual != 0.0:
             self.lblQuality.setText(self.TXT_QUAL_ROUTING)
-            self.txtQuality.setText('%7.2f %%'.format(self.ErrQual))
+            self.txtQuality.setText('%7.2f %%' % self.ErrQual)
 
         #  If no results are available then display the error icon
         # else:
@@ -249,4 +262,4 @@ class frmRunSWMM(frmRunSimulation):
             except:
                 pass
         self.showNormal()
-        self.setWindowState(self.windowState() + QtCore.Qt.WindowStaysOnTopHint)
+

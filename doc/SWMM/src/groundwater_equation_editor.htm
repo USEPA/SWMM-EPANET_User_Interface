@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Groundwater Equation Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Groundwater Equation Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="groundwaterfloweditordialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="infiltrationeditordialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Groundwater Equation Editor</span> is used to supply a custom equation for computing groundwater flow between the saturated sub-surface zone of a subcatchment and either a node in the conveyance network (lateral flow) or to a deeper groundwater aquifer (deep flow). It is invoked from the <a href="groundwaterfloweditordialog.htm">Groundwater Flow Editor</a> form. </p>
+<p>&nbsp;</p>
+<p> <img src="eqneditor.png" width="532" height="161" border="0" alt="EqnEditor"></p>
+<p>&nbsp;</p>
+<p>For lateral groundwater flow the result of evaluating the custom equation will be added onto the result of the standard equation. To replace the standard equation completely set all of its coefficients to 0. Remember that groundwater flow units are cfs/acre for US units and cms/ha for metric units.</p>
+<p>&nbsp;</p>
+<p>The following symbols can be used in the equation:</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table cellspacing="0" cellpadding="4" border="0" style="border: none; border-spacing:0px;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Hgw &nbsp; &nbsp; &nbsp; &nbsp;</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(height of the groundwater table)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Hsw</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(height of the surface water)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Hcb</span> </p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(height of the channel bottom)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Hgs</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(height of the ground surface)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Phi</span> </p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(porosity of the subsurface soil)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Theta</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(moisture content of the upper unsaturated zone)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Ks</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(saturated hydraulic conductivity in inches/hr or mm/hr)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">K</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(hydraulic conductivity at the current moisture content in inches/hr or mm/hr)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Fi</span> </p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(infiltration rate from the ground surface in inches/hr or mm/hr)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">Fu</span> </p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(percolation rate from the upper unsaturated zone in inches/hr or mm/hr)</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="56" style="width:56px;"><p><span style="font-weight: bold;">A</span></p>
+</td>
+<td valign="top" width="692" style="width:692px;"><p>(subcatchment area in acres or hectares)</p>
+</td>
+</tr>
+</table>
+</div>
+<p>where all heights are relative to the aquifer's bottom elevation in feet (or meters).</p>
+<p>&nbsp;</p>
+<p style="margin: 0px 0px 4px 0px;">The <span style="font-weight: bold;">STEP</span> function can be used to have flow only when the groundwater level is above a certain threshold. For example, the expression:</p>
+<p style="margin: 0px 0px 4px 0px;"> &nbsp; &nbsp;0.001 * (Hgw - 5) * STEP(Hgw - 5)</p>
+<p>would generate flow only when Hgw was above 5. See the <a href="treatmenteditor.htm">Treatment Editor</a> topic for a list of additional math functions that can be used in a groundwater flow expression.</p>
+
+</div>
+
+</body>
+</html>

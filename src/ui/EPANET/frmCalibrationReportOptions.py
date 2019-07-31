@@ -1,37 +1,38 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QAbstractItemView
 import core.epanet.calibration as pcali
 from ui.help import HelpHandler
 from ui.EPANET.frmCalibrationReportOptionsDesigner import Ui_frmCalibrationReportOptions
 from ui.EPANET.frmCalibrationReport import frmCalibrationReport
 
 
-class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOptions):
+class frmCalibrationReportOptions(QMainWindow, Ui_frmCalibrationReportOptions):
 
     def __init__(self, main_form, project, output):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.loaded = False
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Crea0079.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), \
-                               self.listWidget_clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        # self.listWidget.itemClicked(QListWidgetItem *)").connect(self.listWidget_clicked)
+        self.listWidget.itemClicked.connect(self.listWidget_clicked)
         self.project = project
         self.output = output
         # limit what shows up in the combo box to only those with calibration data
         self.comboBox.addItems(['Demand','Head','Pressure','Quality','Flow','Velocity'])
         self._main_form = main_form
-        self.listWidget.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
-        #self.listWidget.setItemSelected(self.listWidget.item(0),True)
+        self.listWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+        #self.listWidget.item(0).setSelected(True)
         self.currentECaliType = None
         self.selected_nodes = []
         self.selected_pipes = []
         self.isFlow = None
+        # self.comboBox.currentIndexChanged(int)").connect(self.comboBox_selChanged)
+        self.comboBox.currentIndexChanged.connect(self.comboBox_selChanged)
         self.set_from(project)
-        QtCore.QObject.connect(self.comboBox, QtCore.SIGNAL("currentIndexChanged(int)"), \
-                               self.comboBox_selChanged)
         self.loaded = True
 
     def set_from(self, aproj):
@@ -49,8 +50,8 @@ class frmCalibrationReportOptions(QtGui.QMainWindow, Ui_frmCalibrationReportOpti
     def listWidget_clicked(self, item):
         if not self.loaded:
             return
-        #w = QtGui.QWidget()
-        #QtGui.QMessageBox.information(w, "Message", "clicked")
+        #w = QWidget()
+        #QMessageBox.information(w, "Message", "clicked")
         if self.currentECaliType == pcali.ECalibrationType.DEMAND or \
            self.currentECaliType == pcali.ECalibrationType.HEAD or \
            self.currentECaliType == pcali.ECalibrationType.QUALITY or \

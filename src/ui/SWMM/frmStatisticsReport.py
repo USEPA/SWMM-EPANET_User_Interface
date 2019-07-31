@@ -1,16 +1,19 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QVBoxLayout, QSizePolicy
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportDesigner import Ui_frmStatisticsReport
 import numpy as np
 from pandas import Series, DataFrame
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+# import matplotlib
+# matplotlib.use('agg')
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 import matplotlib.ticker as mtick
 import datetime
 import core.swmm.stats as UStats
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 import core.swmm.swmm_project as SMP
 
 StatsText = \
@@ -33,15 +36,15 @@ StatsText = \
      '  Std. Deviation ....... %.3f',
      '  Skewness Coeff. ...... %.3f')
 
-class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
+class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/viewingastatisticsreport.htm"
         self.helper = HelpHandler(self)
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         # self.set_from(parent.project)
         self._main_form = main_form
         self.stats = None
@@ -230,8 +233,8 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         self.tableWidget.verticalHeader().setVisible(False)
         #column_headers = ""
         #self.tableWidget.setHorizontalHeaderLabels(column_headers)
-        for c in xrange(0, num_cols):
-            header_item = QtGui.QTableWidgetItem(ColHeading1[c] + '\n' +
+        for c in range(0, num_cols):
+            header_item = QTableWidgetItem(ColHeading1[c] + '\n' +
                                                  ColHeading2[c] + '\n' +
                                                  ColHeading3[c])
             self.tableWidget.setHorizontalHeaderItem(c, header_item)
@@ -241,12 +244,12 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
         for e in self.statsResult.EventList:
             #e = UStats.TStatsEvent() #debug only
             datestr = datetime.datetime.strftime(e.StartDate, '%m/%d/%Y')
-            self.tableWidget.setItem(row, 0, QtGui.QTableWidgetItem(str(e.Rank)))
-            self.tableWidget.setItem(row, 1, QtGui.QTableWidgetItem(datestr))
-            self.tableWidget.setItem(row, 2, QtGui.QTableWidgetItem(str(e.Duration)))
-            self.tableWidget.setItem(row, 3, QtGui.QTableWidgetItem('%.3f' % (e.Value)))
-            self.tableWidget.setItem(row, 4, QtGui.QTableWidgetItem('%.2f' % (e.ExceedancePCT)))
-            self.tableWidget.setItem(row, 5, QtGui.QTableWidgetItem('%.2f' % (e.ReturnPeriod)))
+            self.tableWidget.setItem(row, 0, QTableWidgetItem(str(e.Rank)))
+            self.tableWidget.setItem(row, 1, QTableWidgetItem(datestr))
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(str(e.Duration)))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem('%.3f' % (e.Value)))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem('%.2f' % (e.ExceedancePCT)))
+            self.tableWidget.setItem(row, 5, QTableWidgetItem('%.2f' % (e.ReturnPeriod)))
             row += 1
         pass
 
@@ -320,7 +323,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                                 self.stats.VariableText + " " +
                                 "(" + lunit + ")")
 
-        layout = QtGui.QVBoxLayout(self.tabHistogram)
+        layout = QVBoxLayout(self.tabHistogram)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(histogram)
         self.tabHistogram.setLayout(layout)
@@ -339,7 +342,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                 M = 1
             lX = []
             lY = []
-            for I in xrange(0, N):
+            for I in range(0, N):
                 if np.mod(I, M) > 0:
                     continue
                 E = self.statsResult.EventList[I]
@@ -369,7 +372,7 @@ class frmStatisticsReport(QtGui.QMainWindow, Ui_frmStatisticsReport):
                                 self.stats.VariableText + " " +
                                 "(" + lunit + ")")
 
-        layout = QtGui.QVBoxLayout(self.tabFrequency)
+        layout = QVBoxLayout(self.tabFrequency)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(freqplot)
         self.tabFrequency.setLayout(layout)
@@ -497,8 +500,8 @@ class MyHistogram(FigureCanvas):
 
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def setData(self, aData, aBins=None):
@@ -545,8 +548,8 @@ class MyFrequencyPlot(FigureCanvas):
         self.setParent(main_form)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def setData(self, aData, aBins=None):

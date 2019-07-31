@@ -1,7 +1,7 @@
 # Example code copied from https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
 
-from PyQt4.QtCore import QRegExp
-from PyQt4.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
 def make_char_format(color, style=''):

@@ -1,16 +1,17 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options
 from ui.SWMM.frmTimeStepsDesigner import Ui_frmTimeSteps
 import math
 
-class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
+class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/simulationoptions_timesteps.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -59,6 +60,19 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.options.time_steps
+
+        orig_skip = section.skip_steady_state
+        orig_lateral = section.lateral_inflow_tolerance
+        orig_system = section.system_flow_tolerance
+        orig_dry_step = section.dry_step
+        orig_wet_step = section.wet_step
+        orig_report_step = section.report_step
+        orig_routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
+        orig_routing_time = QtCore.QTime(0, 0, 0).addSecs(orig_routing_time)
+        orig_hour = orig_routing_time.hour()
+        orig_minute = orig_routing_time.minute()
+        orig_second = orig_routing_time.second()
+
         section.skip_steady_state = self.cbxSkip.isChecked()
         section.lateral_inflow_tolerance = str(self.sbxLateral.value())
         section.system_flow_tolerance = str(self.sbxSystem.value())
@@ -68,6 +82,17 @@ class frmTimeSteps(QtGui.QMainWindow, Ui_frmTimeSteps):
         section.report_step = frmTimeSteps.controls_to_hms(self.sbxReportDay, self.tmeReport)
         routing_time = QtCore.QTime(0, 0, 0).addSecs(int(self.txtRouting.text()))
         section.routing_step = "{:02}:{:02}:{:02}".format(routing_time.hour(), routing_time.minute(), routing_time.second())
+
+        if orig_skip != section.skip_steady_state or \
+            orig_lateral != section.lateral_inflow_tolerance or \
+            orig_system != section.system_flow_tolerance or \
+            orig_dry_step != section.dry_step or \
+            orig_wet_step != section.wet_step or \
+            orig_report_step != section.report_step or \
+            orig_hour != routing_time.hour() or \
+            orig_minute != routing_time.minute() or \
+            orig_second != routing_time.second():
+            self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -1,15 +1,16 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 from ui.EPANET.frmSummaryDesigner import Ui_frmSummary
 
 
-class frmSummary(QtGui.QMainWindow, Ui_frmSummary):
+class frmSummary(QMainWindow, Ui_frmSummary):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
-        self.help_topic = "epanet/src/src/Pipes.htm"
+        QMainWindow.__init__(self, main_form)
+        self.help_topic = "epanet/src/src/View0006.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -30,6 +31,9 @@ class frmSummary(QtGui.QMainWindow, Ui_frmSummary):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.title
+        if section.title != self.txtTitle.text() or \
+            section.notes != self.txtNotes.toPlainText():
+            self._main_form.mark_project_as_unsaved()
         section.title = self.txtTitle.text()
         section.notes = self.txtNotes.toPlainText()
         self.close()

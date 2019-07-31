@@ -13,13 +13,11 @@ except NameError:
     str = str
     unicode = str
     bytes = bytes
-    basestring = (str,bytes)
 else:
     # 'unicode' exists, must be Python 2
     str = str
     unicode = unicode
     bytes = str
-    basestring = basestring
 
 
 class ProjectReader(InputFileReader):
@@ -64,29 +62,45 @@ class ProjectReader(InputFileReader):
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
         if section_name_upper == "[QUALITY]":
+            self.check_valid_node_id(project, 'QUALITY', section_text)
             self.defer_quality = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[COORDINATES]":
+            self.check_valid_node_id(project, 'COORDINATES', section_text)
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[VERTICES]":
+            self.check_valid_link_id(project, 'VERTICES', section_text)
             self.defer_vertices = section_text
             return
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[MIXING]":
+            self.check_valid_node_id(project, 'MIXING', section_text)
             self.defer_mixing = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[EMITTERS]":
+            self.check_valid_node_id(project, 'EMITTERS', section_text)
             self.defer_emitters = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[STATUS]":
+            self.check_valid_link_id(project, 'STATUS', section_text)
             self.defer_status = section_text
             return
         elif section_name_upper == "[CALIBRATIONS]":
             self.defer_calibrations = section_text
             return
+        elif section_name_upper == "[PIPES]":
+            self.check_valid_node_id(project, 'PIPES', section_text)
+        elif section_name_upper == "[PUMPS]":
+            self.check_valid_node_id(project, 'PUMPS', section_text)
+        elif section_name_upper == "[VALVES]":
+            self.check_valid_node_id(project, 'VALVES', section_text)
+        elif section_name_upper == "[DEMANDS]":
+            self.check_valid_node_id(project, 'DEMANDS', section_text)
+        elif section_name_upper == "[SOURCES]":
+            self.check_valid_node_id(project, 'SOURCES', section_text)
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -113,3 +127,81 @@ class ProjectReader(InputFileReader):
             self.defer_status = None
         project.metric = project.options.hydraulics.flow_units in flow_units_metric
         project.set_pattern_object_references()
+
+
+    def check_valid_node_id(self, project, section_name, section_text):
+        # check for valid node ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        if section_name == "PIPES" or section_name == "PUMPS" or section_name == "VALVES":
+                            node_name = fields[1]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                            node_name = fields[2]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                        elif section_name == "MIXING":
+                            node_name = fields[0]
+                            found = False
+                            for node in project.tanks():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                        elif section_name == "EMITTERS" or section_name == "DEMANDS":
+                            node_name = fields[0]
+                            found = False
+                            for node in project.junctions():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                        else:
+                            node_name = fields[0]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_link_id(self, project, section_name, section_text):
+        # check for valid link ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        link_name = fields[0]
+                        found = False
+                        for link in project.all_links():
+                            if link.name == link_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Link (' + link_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass

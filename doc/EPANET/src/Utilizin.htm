@@ -1,0 +1,74 @@
+<HTML><HEAD><TITLE>Utilizing a Backdrop Map</TITLE><META NAME="GENERATOR" CONTENT="ForeHTML Pro 2.0">
+<STYLE TYPE="text/css"><!-- 
+
+     .BannerBase { font-size: 12pt ; font-weight: bold; margin: 5pt  0pt  5pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .Base1 { font-size: 10pt ; margin: 6pt  0pt  0pt  0pt ; font-family: Arial,sans-serif;  }
+     .BodyText2 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .BodyText21 { font-size: 12pt ; margin: 0pt  36pt  0pt  36pt ; font-family: Times New Roman,serif;  }
+     .Bullet1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet2 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet3 { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif;  }
+     .Bullet4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Bullet5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .ButtonBar { font-size: 6pt ; font-weight: bold; margin: 5pt  -0.1in  5pt  -0.1in ; font-family: Arial,sans-serif;  }
+     .HeadingBase { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HeadingBase1 { font-size: 11pt ; margin: 7pt  0pt  0pt  0pt ; line-height: 11pt ; font-family: Arial,sans-serif;  }
+     .HTMLBASE { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     BODY { margin: 0pt  1px  0pt  0pt ;  }
+     .Indented { font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; font-family: Arial,sans-serif;  }
+     .List { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListBullet1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .ListNumber1 { font-size: 11pt ; margin: 6pt  90pt  0pt  90pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .List1 { font-size: 11pt ; margin: 0pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Times New Roman,serif;  }
+     .Normal { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Normal1 { font-size: 12pt ; margin: 0pt  1px  0pt  0pt ; font-family: Times New Roman,serif;  }
+     .Number1 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number2 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number3 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number4 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+     .Number5 { font-size: 10pt ; font-family: Arial,sans-serif;  }
+
+--></STYLE>
+</HEAD>
+
+<BODY BGPROPERTIES=FIXED>
+<!--ForeHelp.Banner-->
+
+<P CLASS="BannerBase">
+<SPAN  STYLE="color: #0000ff; ">Utilizing a Backdrop Map</SPAN></P><!--ForeHelp.Ignore--><HR><!--ForeHelp.EndIgnore--><!--ForeHelp.EndBanner-->
+
+<P CLASS="Base">
+EPANET can display a backdrop map behind the pipe network map. The backdrop map might be a street map, utility map, topographic map, site development plan, or any other picture or drawing that might be useful. For example, using a street map would simplify the process of adding pipes to the network since one could essentially digitize the network&#146;s nodes and links directly on top of it.</P>
+<P CLASS="Base">
+<IMG SRC="GENERATE/backdrp.gif" ALT="GENERATE/backdrp.gif" WIDTH="269" HEIGHT="233" ALIGN="BASELINE" BORDER="0"></P>
+<P CLASS="Base">
+The backdrop map must be a Windows enhanced metafile or bitmap created outside of EPANET. Once imported, its features cannot be edited, although its scale and viewport will change as the map window is zoomed and panned. For this reason metafiles work better than bitmaps since they will not loose resolution when re-scaled. Most CAD and GIS programs have the ability to save their drawings and maps as metafiles.</P>
+<P CLASS="Base">
+Selecting <B>View &gt;&gt; Backdrop</B> from the Menu Bar will display a sub-menu with the following commands:</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/POINT.gif" ALT="GENERATE/POINT.gif" WIDTH="5" HEIGHT="10" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<B>Load</B> (loads a backdrop map file into the project)</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/POINT.gif" ALT="GENERATE/POINT.gif" WIDTH="5" HEIGHT="10" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<B>Unload</B> (unloads the backdrop map from the project)</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/POINT.gif" ALT="GENERATE/POINT.gif" WIDTH="5" HEIGHT="10" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<B>Align</B> (aligns the pipe network with the backdrop)</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  18pt  0pt  18pt ; text-indent: -18pt ; font-family: Arial,sans-serif; "><IMG SRC="GENERATE/POINT.gif" ALT="GENERATE/POINT.gif" WIDTH="5" HEIGHT="10" ALIGN="BASELINE" BORDER="0">&nbsp;&nbsp;&nbsp;&nbsp;
+<B>Show/Hide</B> (toggles the display of the backdrop on and off)</P>
+<P CLASS="Base">
+When first loaded, the backdrop image is placed with its upper left corner coinciding with that of the network&#146;s bounding rectangle. The backdrop can be repositioned relative to the network map by selecting <B>View &gt;&gt; Backdrop &gt;&gt; Align</B>. This allows an outline of the pipe network to be moved across the backdrop (by moving the mouse with the left button held down) until one decides that it lines up properly with the backdrop. The name of the backdrop file and its current alignment are saved along with the rest of a project&#146;s data whenever the project is saved to file.</P>
+<P STYLE="font-size: 10pt ; margin: 0pt  1px  0pt  0pt ; font-family: Arial,sans-serif; ">
+&nbsp;</P>
+<P STYLE="font-size: 10pt ; margin: 6pt  36pt  0pt  36pt ; text-indent: -36pt ; border: thin solid ; font-family: Arial,sans-serif; ">
+<B><SPAN  STYLE="color: #ff0000; ">Note:</SPAN></B> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For best results in using a backdrop map, dimension the network map so that its bounding rectangle has the same aspect ratio (width-to-height ratio) as the backdrop (see <A HREF="Sett0010.htm">Setting the Map's Dimensions</A>).</P><!--ForeHelp.Ignore-->
+<!--ForeHelp.Browse NAME="map" PREV="Sett0010.htm" NEXT="Zooming_.htm"-->
+<BR CLEAR><HR><TABLE WIDTH="100%"><TR>
+<TD ALIGN="LEFT" WIDTH="33%"><A HREF="Sett0010.htm"><IMG SRC="prev.gif" ALIGN="BOTTOM" ALT="prev.gif" BORDER=0></A>
+<A HREF="Zooming_.htm"><IMG SRC="next.gif" ALIGN="BOTTOM" ALT="next.gif" BORDER=0></A></TD>
+<TD ALIGN="CENTER" WIDTH="33%"></TD>
+<TD ALIGN="RIGHT" WIDTH="33%"></TD>
+</TR></TABLE><!--ForeHelp.EndIgnore-->
+
+</BODY></HTML>

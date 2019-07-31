@@ -49,25 +49,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="lblTimes">
-         <property name="minimumSize">
-          <size>
-           <width>50</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Time (H:M)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QLabel" name="lblDays">
          <property name="minimumSize">
           <size>
@@ -83,6 +64,25 @@
          </property>
          <property name="text">
           <string>Date (M/D/Y)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblTimes">
+         <property name="minimumSize">
+          <size>
+           <width>50</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Time (H:M)</string>
          </property>
         </widget>
        </item>

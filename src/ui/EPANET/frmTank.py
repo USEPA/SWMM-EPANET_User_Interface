@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.epanet.hydraulics.node import Tank
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
@@ -24,7 +25,7 @@ class frmTank(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -38,7 +39,7 @@ class frmTank(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for curve, show available curves
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for curve in self.project.curves.value:
@@ -84,6 +85,7 @@ class frmTank(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self.session.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

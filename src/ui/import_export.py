@@ -1,8 +1,8 @@
 import os
 from enum import Enum
 from qgis.core import *
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QMessageBox
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QMessageBox
 from core.coordinate import Coordinate
 from core.epanet.hydraulics.node import Junction as EpanetJunction
 from core.epanet.hydraulics.node import Tank as EpanetTank
@@ -34,21 +34,21 @@ pipe_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
     "loss_coefficient"]
 pipe_gis_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
+    "element_type", "element_id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
     "loss_coefficient"]
 pipe_import_attributes = [
-    "id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
+    "element_id", "description", "inlet_node", "outlet_node", "length", "diameter", "roughness",
     "loss_coefficient", "bulk_reaction_coefficient", "wall_reaction_coefficient", "initial_status"]
 
 pumps_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
 pumps_gis_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
-pump_import_attributes = [ "id", "description", "inlet_node", "outlet_node",
+    "element_type", "element_id", "description", "inlet_node", "outlet_node", "power", "head_curve_name", "speed", "pattern"]
+pump_import_attributes = [ "element_id", "description", "inlet_node", "outlet_node",
                             "power", "head_curve_name", "speed", "pattern", "initial_status",
                             "efficiency_curve_name", "energy_price", "price_pattern"]
 pump_import_attributes_swmm = [
-    "id",
+    "element_id",
     "description",
     "inlet_node",
     "outlet_node",
@@ -60,16 +60,16 @@ pump_import_attributes_swmm = [
 valves_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
 valves_gis_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
+    "element_type", "element_id", "description", "inlet_node", "outlet_node", "setting", "minor_loss_coefficient"]
 valve_import_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "type", "diameter", "setting",
+    "element_type", "element_id", "description", "inlet_node", "outlet_node", "type", "diameter", "setting",
     "minor_loss_coefficient", "status"]
 
 junctions_model_attributes = [
     "element_type", "name", "elevation", "base_demand_flow", "demand_pattern_name"]
 junctions_gis_attributes = [
-    "element_type", "id", "elevation", "base_demand_flow", "demand_pattern"]
-junction_import_attributes = [ "id", "elevation", "emitter_coefficient",
+    "element_type", "element_id", "elevation", "base_demand_flow", "demand_pattern"]
+junction_import_attributes = [ "element_id", "elevation", "emitter_coefficient",
                                "initial_quality",
                                "source_quality_amount", "source_quality_type", "source_quality_pattern",
                                "base_demand_flow", "demand_pattern_name"]
@@ -77,17 +77,17 @@ junction_import_attributes = [ "id", "elevation", "emitter_coefficient",
 labels_model_attributes = [
     "element_type", "name", "anchor_name", "font", "size", "bold", "italic"]
 labels_gis_attributes = [
-    "element_type", "id", "anchor_name", "font", "size", "bold", "italic"]
+    "element_type", "element_id", "anchor_name", "font", "size", "bold", "italic"]
 label_import_attributes = [
-    "id", "description", "meter_type", "meter_name",
+    "element_id", "description", "meter_type", "meter_name",
     "anchor_name", "font", "size", "bold", "italic"
 ]
 
-reservoir_import_attributes = ["id", "tag", "total_head", "head_pattern_name",
+reservoir_import_attributes = ["element_id", "tag", "total_head", "head_pattern_name",
                                "initial_quality",
                                "source_quality_amount", "source_quality_type", "source_quality_pattern"]
 tank_import_attributes = [
- "id",
+ "element_id",
  "description",
  "inlet_node",
  "outlet_node",
@@ -111,10 +111,10 @@ conduit_model_attributes = [
     "element_type", "name", "description", "inlet_node", "outlet_node", "length", "roughness",
     "inlet_offset", "outlet_offset", "maximum_flow", "loss_coefficient", "flap_gate", "seepage"]
 conduit_gis_attributes = [
-    "element_type", "id", "description", "inlet_node", "outlet_node", "length", "roughness",
+    "element_type", "element_id", "description", "inlet_node", "outlet_node", "length", "roughness",
     "inlet_offset", "outlet_offset", "maximum_flow", "loss_coefficient", "flap_gate", "seepage"]
 conduit_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "inlet_node",
     "outlet_node",
@@ -133,9 +133,9 @@ conduit_import_attributes = [
 junctions_model_attributes_swmm = [
     "element_type", "name", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junctions_gis_attributes_swmm = [
-    "element_type", "id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
+    "element_type", "element_id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junction_import_attributes_swmm = [
-    "id",
+    "element_id",
     "description",
     "elevation",
     "max_depth",
@@ -147,7 +147,7 @@ junction_import_attributes_swmm = [
 generic_model_attributes = [
     "element_type", "name"]
 generic_gis_attributes = [
-    "element_type", "id"]
+    "element_type", "element_id"]
 
 subcatchment_model_attributes = [
     "element_type",
@@ -169,7 +169,7 @@ subcatchment_model_attributes = [
     "curb_length"]
 
 subcatchment_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "rain_gage",
     "outlet",
@@ -188,7 +188,7 @@ subcatchment_import_attributes = [
 ]
 
 raingage_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "rain_format",
     "rain_interval",
@@ -201,7 +201,7 @@ raingage_import_attributes = [
 ]
 
 outfall_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "elevation",
     "tide_gate",
@@ -213,7 +213,7 @@ outfall_import_attributes = [
 ]
 
 storage_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "elevation",
     "max_depth",
@@ -226,7 +226,7 @@ storage_import_attributes = [
 ]
 
 divider_import_attributes = [
-    "id",
+    "element_id",
     "Description",
     "tag",
     "elevation",
@@ -245,7 +245,7 @@ divider_import_attributes = [
 #"flap_gate", '', "Flap Gate", "False", '', '', "True if weir contains a flap gate to prevent backflow"),
 #"road_surface", '', "Road Surface", "", '', '', "Type of road surface if roadway weir")
 weir_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "inlet_node",
     "outlet_node",
@@ -267,7 +267,7 @@ weir_import_attributes = [
 #"type", '', "Type", "", '', '', "Type of orifice"),
 #"cross_section", '', "Shape", "", '', '', "Orifice shape"),
 orifice_import_attributes = [
-    "id",
+    "element_id",
     "description",
     "inlet_node",
     "outlet_node",
@@ -281,7 +281,7 @@ orifice_import_attributes = [
 ]
 
 outlet_import_attributes = [
-    "id",
+    "element_id",
     "inlet_node",
     "outlet_node",
     "description",
@@ -297,7 +297,7 @@ outlet_import_attributes = [
 def export_to_gis(session, file_name):
     path_file, extension = os.path.splitext(file_name)
     extension = extension.lower()
-    layer_options = ''
+    layer_options = []
     if extension == ".shp":
         driver_name = "ESRI Shapefile"
         one_file = False
@@ -307,7 +307,7 @@ def export_to_gis(session, file_name):
     elif extension == ".gdb":
         driver_name = "FileGDB"
         one_file = True
-        layer_options = 'GEOMETRY=AS_XYZ'
+        layer_options.append('GEOMETRY=AS_XYZ')
     else:
         driver_name = "GeoJson"
         one_file = True
@@ -379,6 +379,8 @@ def export_epanet_to_gis(session, file_name, path_file, extension, driver_name, 
     if one_file:
         if session.crs:
             layer.setCrs(session.crs)
+        else:
+            session.crs = QgsCoordinateReferenceSystem('Unknown')
         QgsVectorFileWriter.writeAsVectorFormat(layer, file_name, "utf-8", session.crs, driver_name)
         print("saved " + file_name)
 
@@ -415,7 +417,7 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
     layer = export_points_layer(session.project.labels.value, labels_model_attributes, labels_gis_attributes,
                                 all_gis_attributes, layer, session.crs, one_file,
                                 path_file + "_labels" + extension, driver_name, layer_options)
-    if layer:
+    if layer and len(session.project.labels.value) > 0:
         layer_count += 1
 
     for section in [session.project.raingages, session.project.outfalls,
@@ -441,9 +443,28 @@ def export_swmm_to_gis(session, file_name, path_file, extension, driver_name, la
         write_layer(layer, session.crs, file_name, driver_name, layer_options)
 
     layer_file_name = path_file + "_subcatchments" + extension
-    one_file = False
+    temp_one_file = False
     export_subcatchment_layer(session.project, session.model_layers.subcatchments, subcatchment_model_attributes,
-                              session.crs, one_file, layer_file_name, driver_name, layer_options)
+                              session.crs, temp_one_file, layer_file_name, driver_name, layer_options)
+    layer_count += 1
+
+    if driver_name == "GeoJson" and one_file == True:
+        # also put the subcatchments into the orig geojson file
+        main_file = open(file_name, 'r')
+        main_file_contents = main_file.read()
+        main_file.close()
+        if os.path.isfile(layer_file_name):
+            sub_file = open(layer_file_name, 'r')
+            sub_file_contents = sub_file.read()
+            sub_file.close()
+            if len(sub_file_contents) > 0:
+                main_file_contents = main_file_contents[:-5] + ',' + sub_file_contents[sub_file_contents.find('"features": [') + 13:]
+                main_file = open(file_name, 'w')
+                main_file.write(main_file_contents)
+                main_file.close()
+            # now we can get rid of the subcatchments geojson file
+            os.remove(layer_file_name)
+
     return "Exported " + str(layer_count) + " layers to GIS"
 
 
@@ -451,8 +472,10 @@ def write_layer(layer, crs, layer_file_name, driver_name, layer_options):
     if layer:
         if crs:
             layer.setCrs(crs)
+        else:
+            crs = QgsCoordinateReferenceSystem('Unknown')
         QgsVectorFileWriter.writeAsVectorFormat(layer, layer_file_name, "utf-8", crs,
-                                                driver_name, layerOptions=layer_options)
+                                                driverName=driver_name, layerOptions=layer_options)
         if driver_name == "ESRI Shapefile":
             basename = os.path.splitext(layer_file_name)[0]
             os.remove(basename + ".cpg")
@@ -492,7 +515,7 @@ def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_fil
                               layer_options):
     if not src_layer or src_layer.featureCount() == 0:
         return None
-    ind = src_layer.fieldNameIndex(u'name')
+    ind = src_layer.fields().indexFromName(u'name')
     if ind < 0:
         return None
     layer = QgsVectorLayer("Polygon", "Subcatchment", "memory")
@@ -507,7 +530,7 @@ def export_subcatchment_layer(project, src_layer, model_attributes, crs, one_fil
             new_f.setGeometry(f.geometry())
             values = gis_values_from_model(obj_sub, model_attributes, model_attributes, model_attributes)
             new_f.setAttributes(values)
-            layer.addFeature(new_f, False)
+            layer.addFeature(new_f)
     layer.commitChanges()
     layer.updateExtents()
 
@@ -589,12 +612,15 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
         try:
             # add a feature
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPoint(QgsPoint(float(model_point.x), float(model_point.y))))
+            point = QgsPointXY()
+            point.setX(float(model_point.x))
+            point.setY(float(model_point.y))
+            feature.setGeometry(QgsGeometry.fromPointXY(point))
             values = gis_values_from_model(model_point, model_attributes, gis_attributes, all_gis_attributes)
             feature.setAttributes(values)
             features.append(feature)
         except Exception as exPoint:
-            print "Skipping point " + model_point.name + ": " + str(exPoint)
+            print ("Skipping point " + model_point.name + ": " + str(exPoint))
 
     if features:  # If features were created, build and return a GIS layer containing these features
         creating_layer = (layer is None)
@@ -606,7 +632,7 @@ def make_points_layer(model_points, model_attributes, gis_attributes, all_gis_at
             provider = layer.dataProvider()
 
         layer.startEditing()  # changes are only possible when editing the layer
-        provider.addFeatures(features)
+        layer.addFeatures(features)
         layer.commitChanges()
         layer.updateExtents()
     return layer
@@ -681,12 +707,12 @@ def import_from_gis(session, file_name):
             result = "Create Model from GIS data supports GeoJSON data only"
         QMessageBox.information(None, "Create Model from GIS data", result, QMessageBox.Ok)
     except Exception as ex:
-        print str(ex)
+        print (str(ex))
 
 def import_epanet_from_geojson(session, file_name):
     project = session.project
     layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
+    ind = layer.fields().indexFromName(u'element_type')
     if ind < 0:
         return
     elem_types = layer.uniqueValues(ind, 20)
@@ -747,21 +773,21 @@ def import_epanet_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
+        if geom.type() == QgsWkbTypes.PointGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
-                for i in xrange(1, len(line)):
+                for i in range(1, len(line)):
                     coord = Coordinate()
                     coord.x = str(line[i].x())
                     coord.y = str(line[i].y())
                     model_item.vertices.append(coord)
                     pass
-        elif geom.type() == QGis.Polygon:
+        elif geom.type() == QgsWkbTypes.Polygon:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
@@ -777,7 +803,7 @@ def import_epanet_from_geojson(session, file_name):
 def import_swmm_from_geojson(session, file_name):
     project = session.project
     layer = QgsVectorLayer(file_name, "temp", "ogr")
-    ind = layer.fieldNameIndex(u'element_type')
+    ind = layer.fields().indexFromName(u'element_type')
     if ind < 0:
         return
     elem_types = layer.uniqueValues(ind, 20)
@@ -843,7 +869,7 @@ def import_swmm_from_geojson(session, file_name):
             model_layer = session.model_layers.storage
             model_item = StorageUnit()
             build_model_object_per_geojson_record(project, f, storage_import_attributes, model_item)
-            if model_item.storage_curve and model_item.storage_curve.lower() <> 'none':
+            if model_item.storage_curve and model_item.storage_curve.lower() != 'none':
                 model_item.storage_curve_type = StorageCurveType.TABULAR
             #if model_item.coefficient or model_item.constant or model_item.exponent:
             #    model_item.storage_curve_type = StorageCurveType.FUNCTIONAL
@@ -877,27 +903,28 @@ def import_swmm_from_geojson(session, file_name):
         # add gis feature
         new_feature = QgsFeature()
         new_feature.setGeometry(geom)
-        if geom.type() == QGis.Point:
+        if geom.type() == QgsWkbTypes.PointGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0.0])
             model_item.x = geom.asPoint().x()
             model_item.y = geom.asPoint().y()
-        elif geom.type() == QGis.Line:
+        elif geom.type() == QgsWkbTypes.LineGeometry:
             new_feature.setAttributes([model_item.name, 0.0, model_item.inlet_node, model_item.outlet_node, 0, 0.0, 0.0])
             line = geom.asPolyline()
             if len(line) > 2:
-                for i in xrange(1, len(line)):
+                for i in range(1, len(line)):
                     coord = Coordinate()
                     coord.x = str(line[i].x())
                     coord.y = str(line[i].y())
                     model_item.vertices.append(coord)
                     pass
-        elif geom.type() == QGis.Polygon:
+        elif geom.type() == QgsWkbTypes.PolygonGeometry:
             new_feature.setAttributes([model_item.name, 0.0, 0, "0", 0.0])
-            for pt in geom.asPolygon()[0]:
+            for ptlist in geom.asPolygon()[0]:
                 coord = Coordinate()
-                coord.x = str(pt.x())
-                coord.y = str(pt.y())
+                coord.x = str(ptlist.x())
+                coord.y = str(ptlist.y())
                 model_item.vertices.append(coord)
+                pass
 
         #model_layer = QgsVectorLayer()
         model_layer.startEditing()
@@ -936,9 +963,13 @@ def import_swmm_from_geojson(session, file_name):
                     p_section.value = IndexedList([], ['name'])
                 p_section.value.append(l_item)
                 inlet_sub = model_item.centroid
-                lf = session.map_widget.line_feature_from_item(l_item,
-                                                               session.project.all_nodes(),
-                                                               inlet_sub, None)
+                try:
+                    lf = session.map_widget.line_feature_from_item(l_item,
+                                                                   session.project.all_nodes(),
+                                                                   inlet_sub, None)
+                except Exception as ex:
+                    print( model_item.name + ": " + str(ex))
+                    continue
                 sublink_layer.startEditing()
                 added_lf = sublink_layer.dataProvider().addFeatures([lf])
                 if added_lf[0]:
@@ -973,8 +1004,11 @@ def build_model_object_per_geojson_record(project, f, import_attributes, model_i
     for attr_name in import_attributes:
         if f.fieldNameIndex(attr_name) >=0:
             attr_value = f.attributes()[f.fieldNameIndex(attr_name)]
-            if attr_name == "id":
-                model_item.name = attr_value
+            if attr_name == "element_id":
+                if str(attr_value) == 'NULL':
+                    model_item.name = f.attributes()[f.fieldNameIndex('name')]
+                else:
+                    model_item.name = attr_value
             elif attr_name == "description" and attr_value:
                 if isinstance(model_item, Label):
                     model_item.name = attr_value
@@ -1128,7 +1162,7 @@ def import_links(session, links, file_name, model_attributes, gis_attributes, mo
             coordinates = project.all_nodes()
             for feature in layer.getFeatures():
                 geom = feature.geometry()
-                if geom.type() == QGis.Line:
+                if geom.type() == QgsWkbTypes.Line:
                     line = geom.asPolyline()
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
@@ -1205,7 +1239,7 @@ def import_nodes(session, nodes, file_name, model_attributes, gis_attributes, mo
             attributes = zip(model_attributes, gis_attributes)
             for feature in layer.getFeatures():
                 geom = feature.geometry()
-                if geom.type() == QGis.Point:
+                if geom.type() == QgsWkbTypes.Point:
                     item_name = ''
                     for model_attribute, gis_attribute in attributes:
                         if model_attribute == "name":

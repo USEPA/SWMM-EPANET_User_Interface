@@ -1,10 +1,10 @@
 To generate compiled help, open a command prompt, cd to this folder, then:
 
-Generate compiled help from a qt help project:  qhelpgenerator swmm.qhp -o swmm.qch
+Generate compiled help from a qt help project:  C:\Qt\Qt5.5.1\5.5\msvc2013_64\bin\qhelpgenerator C:\dev\Python\dev-ui-py3qt5\doc\SWMM\swmm.qhp -o swmm.qch
 
 (Optional: Register compiled help with Qt Assistant:  assistant -register swmm.qch)
 
-Generate qt help collection from a qt help collection project:  qcollectiongenerator swmm.qhcp -o swmm.qhc
+Generate qt help collection from a qt help collection project:  C:\Qt\Qt5.5.1\5.5\msvc2013_64\bin\qcollectiongenerator C:\dev\Python\dev-ui-py3qt5\doc\SWMM\swmm.qhcp -o swmm.qhc
 
 
 Then to run in Qt Assistant from command line:

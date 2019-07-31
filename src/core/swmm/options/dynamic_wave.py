@@ -49,7 +49,7 @@ class DynamicWave(Section):
 
         ## How the inertial terms in the Saint Venant momentum equation
         ## will be handled under dynamic wave flow routing
-        self.inertial_damping = InertialDamping.NONE
+        self.inertial_damping = InertialDamping.PARTIAL
 
         ## Which condition is checked to determine if flow in a conduit
         ## is supercritical and should thus be limited to the normal flow
@@ -67,11 +67,11 @@ class DynamicWave(Section):
 
         ## Safety factor applied to a variable time step computed for each
         ## time period under dynamic wave flow routing
-        self.variable_step = '0'
+        self.variable_step = '0.75'
 
         ## Minimum surface area used at nodes when computing
         ## changes in water depth under dynamic wave routing
-        self.min_surface_area = '0'
+        self.min_surface_area = '12.557'
 
         ## The maximum number of trials allowed during a time step to reach convergence
         ## when updating hydraulic heads at the conveyance system's nodes. The default value is 8.
@@ -80,7 +80,7 @@ class DynamicWave(Section):
         ## Difference in computed head at each node between successive trials below
         ## which the flow solution for the current time step is assumed to have converged.
         ## The default tolerance is 0.005 ft (0.0015 m).
-        self.head_tolerance = ''
+        self.head_tolerance = '0.005'
 
         ## Smallest time step allowed when variable time steps are used for dynamic
         ## wave flow routing. The default value is 0.5 seconds.

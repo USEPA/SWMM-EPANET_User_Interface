@@ -1,20 +1,21 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QFileDialog
 import core.epanet.calibration as pcali
 from ui.help import HelpHandler
 from ui.EPANET.frmCalibrationDataDesigner import Ui_frmCalibrationData
 import os, sys
 
-class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
+class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Register.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked()"), self.toolButton_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.toolButton.clicked.connect(self.toolButton_Clicked)
         # need to load table with selected file names
         self.calibrations = None
         self.set_from(main_form.project)
@@ -49,22 +50,22 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
                 if lrow >= 0 and lrow <= 5:
                     litem = self.tableWidget.item(lrow, 0)
                     if litem == None:
-                        litem = QtGui.QTableWidgetItem(lcali.filename)
+                        litem = QTableWidgetItem(lcali.filename)
                         self.tableWidget.setItem(lrow,0,litem)
                     else:
-                        #litem = QtGui.QTableWidgetItem(lcali.filename)
+                        #litem = QTableWidgetItem(lcali.filename)
                         litem.setText(lcali.filename)
 
-            #self.tableWidget.setItem(lrow,1,QtGui.QTableWidgetItem(QtGui.QLineEdit(file_name).text()))
+            #self.tableWidget.setItem(lrow,1,QTableWidgetItem(QLineEdit(file_name).text()))
             pass
 
     def toolButton_Clicked(self):
         directory = self._main_form.program_settings.value("CaliDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Select a Calibration File", directory,
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Calibration File", directory,
                                                       "Data files (*.DAT);;All files (*.*)")
         if file_name:
-            #self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QtGui.QTableWidgetItem(QtGui.QLineEdit(file_name).text()))
-            self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QtGui.QTableWidgetItem(file_name))
+            #self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QTableWidgetItem(QLineEdit(file_name).text()))
+            self.tableWidget.setItem(self.tableWidget.currentRow()-1,1,QTableWidgetItem(file_name))
             pass
 
     def cmdOK_Clicked(self):
@@ -79,7 +80,7 @@ class frmCalibrationData(QtGui.QMainWindow, Ui_frmCalibrationData):
         lcali = None
         ltype = pcali.ECalibrationType.NONE
         lis_flow = None
-        for lrow in xrange(0, self.tableWidget.rowCount()):
+        for lrow in range(0, self.tableWidget.rowCount()):
             litem = self.tableWidget.item(lrow, 0)
             if litem == None:
                 continue

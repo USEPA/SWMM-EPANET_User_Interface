@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem, QComboBox
 from ui.SWMM.frmLandUsesDesigner import Ui_frmLandUsesEditor
 import ui.convenience
 from core.swmm.quality import Buildup
@@ -11,17 +12,17 @@ from core.swmm.quality import Washoff
 from core.swmm.quality import WashoffFunction
 
 
-class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
+class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/landuseeditorgeneralpage.htm"
         self.setupUi(self)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.landuses
 
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.tabLanduse.currentChanged.connect(self.tabLanduse_currentTabChanged)
         self.tblGeneral.currentCellChanged.connect(self.tblGeneral_currentCellChanged)
         self.tblBuildup.currentCellChanged.connect(self.tblBuildup_currentCellChanged)
@@ -58,16 +59,16 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
         if isinstance(land_use, Landuse):
             # this is the land_use we want to edit
             self.editing_item = land_use
-            led = QtGui.QLineEdit(land_use.name)
-            self.tblGeneral.setItem(0,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(land_use.comment)
-            self.tblGeneral.setItem(1,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(land_use.last_swept)
-            self.tblGeneral.setItem(3,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(land_use.street_sweeping_availability)
-            self.tblGeneral.setItem(4,0,QtGui.QTableWidgetItem(led.text()))
-            led = QtGui.QLineEdit(land_use.street_sweeping_interval)
-            self.tblGeneral.setItem(5,0,QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit(land_use.name)
+            self.tblGeneral.setItem(0,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(land_use.comment)
+            self.tblGeneral.setItem(1,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(land_use.last_swept)
+            self.tblGeneral.setItem(3,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(land_use.street_sweeping_availability)
+            self.tblGeneral.setItem(4,0,QTableWidgetItem(led.text()))
+            led = QLineEdit(land_use.street_sweeping_interval)
+            self.tblGeneral.setItem(5,0,QTableWidgetItem(led.text()))
             self.tblGeneral.setCurrentCell(0,0)
             local_column = -1
             for pollutant in self.local_pollutant_list:
@@ -84,23 +85,23 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                     buildup.pollutant = pollutant
                     self.project.buildup.value.append(buildup)
 
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 ui.convenience.set_combo_items(type(buildup.function), combobox)
                 ui.convenience.set_combo(combobox, buildup.function)  # BuildupFunction.POW
                 self.tblBuildup.setCellWidget(0, local_column, combobox)
-                led = QtGui.QLineEdit(buildup.max_buildup)
-                self.tblBuildup.setItem(1, local_column,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(buildup.rate_constant)
-                self.tblBuildup.setItem(2, local_column,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(buildup.power_sat_constant)
-                self.tblBuildup.setItem(3, local_column,QtGui.QTableWidgetItem(led.text()))
-                combobox = QtGui.QComboBox()
+                led = QLineEdit(buildup.max_buildup)
+                self.tblBuildup.setItem(1, local_column,QTableWidgetItem(led.text()))
+                led = QLineEdit(buildup.rate_constant)
+                self.tblBuildup.setItem(2, local_column,QTableWidgetItem(led.text()))
+                led = QLineEdit(buildup.power_sat_constant)
+                self.tblBuildup.setItem(3, local_column,QTableWidgetItem(led.text()))
+                combobox = QComboBox()
                 ui.convenience.set_combo_items(type(buildup.normalizer), combobox)
                 ui.convenience.set_combo(combobox, buildup.normalizer)   # Normalizer.AREA
                 self.tblBuildup.setCellWidget(4, local_column, combobox)
-                led = QtGui.QLineEdit(buildup.scaling_factor)
-                self.tblBuildup.setItem(5, local_column, QtGui.QTableWidgetItem(led.text()))
-                combobox = QtGui.QComboBox()
+                led = QLineEdit(buildup.scaling_factor)
+                self.tblBuildup.setItem(5, local_column, QTableWidgetItem(led.text()))
+                combobox = QComboBox()
                 combobox.addItem('')
                 selected_index = 0
                 for value in self.project.timeseries.value:
@@ -125,18 +126,18 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                     washoff.pollutant = pollutant
                     self.project.washoff.value.append(washoff)
 
-                combobox = QtGui.QComboBox()
+                combobox = QComboBox()
                 ui.convenience.set_combo_items(type(washoff.function), combobox)
                 ui.convenience.set_combo(combobox, washoff.function)  # WashoffFunction.EXP
                 self.tblWashoff.setCellWidget(0,local_column, combobox)
-                led = QtGui.QLineEdit(washoff.coefficient)
-                self.tblWashoff.setItem(1,local_column,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(washoff.exponent)
-                self.tblWashoff.setItem(2,local_column,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(washoff.cleaning_efficiency)
-                self.tblWashoff.setItem(3,local_column,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(washoff.bmp_efficiency)
-                self.tblWashoff.setItem(4,local_column,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(washoff.coefficient)
+                self.tblWashoff.setItem(1,local_column,QTableWidgetItem(led.text()))
+                led = QLineEdit(washoff.exponent)
+                self.tblWashoff.setItem(2,local_column,QTableWidgetItem(led.text()))
+                led = QLineEdit(washoff.cleaning_efficiency)
+                self.tblWashoff.setItem(3,local_column,QTableWidgetItem(led.text()))
+                led = QLineEdit(washoff.bmp_efficiency)
+                self.tblWashoff.setItem(4,local_column,QTableWidgetItem(led.text()))
             self.tblWashoff.setCurrentCell(0,0)
 
     def cmdOK_Clicked(self):
@@ -149,6 +150,16 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if buildup.land_use_name == self.editing_item.name and pollutant == buildup.pollutant:
                     # put this back in place
                     buildup_found = True
+
+                    orig_land_use_name = buildup.land_use_name
+                    orig_function = buildup.function
+                    orig_max_buildup = buildup.max_buildup
+                    orig_rate_constant = buildup.rate_constant
+                    orig_power_sat_constant = buildup.power_sat_constant
+                    orig_normalizer = buildup.normalizer
+                    orig_scaling_factor = buildup.scaling_factor
+                    orig_timeseries = buildup.timeseries
+
                     combobox = self.tblBuildup.cellWidget(0,pollutant_count)
                     buildup.land_use_name = new_name
                     buildup.function = BuildupFunction[combobox.currentText()]
@@ -160,6 +171,17 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                     buildup.scaling_factor = self.tblBuildup.item(5,pollutant_count).text()
                     combobox = self.tblBuildup.cellWidget(6,pollutant_count)
                     buildup.timeseries = combobox.currentText()
+
+                    if orig_land_use_name != buildup.land_use_name or \
+                        orig_function != buildup.function or \
+                        orig_max_buildup != buildup.max_buildup or \
+                        orig_rate_constant != buildup.rate_constant or \
+                        orig_power_sat_constant != buildup.power_sat_constant or \
+                        orig_normalizer != buildup.normalizer or \
+                        orig_scaling_factor != buildup.scaling_factor or \
+                        orig_timeseries != buildup.timeseries and buildup.function == BuildupFunction.EXP:
+                        self._main_form.mark_project_as_unsaved()
+
             if not buildup_found:
                 # add new record
                 new_buildup = Buildup()
@@ -178,6 +200,8 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if self.project.buildup.value == '':
                     self.project.buildup.value = []
                 self.project.buildup.value.append(new_buildup)
+                self._main_form.mark_project_as_unsaved()
+
         pollutant_count = -1
         for pollutant in self.local_pollutant_list:
             pollutant_count += 1
@@ -186,6 +210,14 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if washoff.land_use_name == self.editing_item.name and pollutant == washoff.pollutant:
                     # put this back in place
                     washoff_found = True
+
+                    orig_land_use_name = washoff.land_use_name
+                    orig_function = washoff.function
+                    orig_coefficient = washoff.coefficient
+                    orig_exponent = washoff.exponent
+                    orig_cleaning_efficiency = washoff.cleaning_efficiency
+                    orig_bmp_efficiency = washoff.bmp_efficiency
+
                     combobox = self.tblWashoff.cellWidget(0,pollutant_count)
                     washoff.land_use_name = new_name
                     washoff.function = WashoffFunction[combobox.currentText()]
@@ -193,6 +225,15 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                     washoff.exponent = self.tblWashoff.item(2,pollutant_count).text()
                     washoff.cleaning_efficiency = self.tblWashoff.item(3,pollutant_count).text()
                     washoff.bmp_efficiency = self.tblWashoff.item(4,pollutant_count).text()
+
+                    if orig_land_use_name != washoff.land_use_name or \
+                        orig_function != washoff.function or \
+                        orig_coefficient != washoff.coefficient or \
+                        orig_exponent != washoff.exponent or \
+                        orig_cleaning_efficiency != washoff.cleaning_efficiency or \
+                        orig_bmp_efficiency != washoff.bmp_efficiency:
+                        self._main_form.mark_project_as_unsaved()
+
             if not washoff_found:
                 # add new record
                 new_washoff = Washoff()
@@ -207,16 +248,31 @@ class frmLandUses(QtGui.QMainWindow, Ui_frmLandUsesEditor):
                 if self.project.washoff.value == '':
                     self.project.washoff.value = []
                 self.project.washoff.value.append(new_washoff)
+                self._main_form.mark_project_as_unsaved()
 
         # put this back in place
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_last_swept = self.editing_item.last_swept
+        orig_street_sweeping_availability = self.editing_item.street_sweeping_availability
+        orig_street_sweeping_interval = self.editing_item.street_sweeping_interval
+
         self.editing_item.name = new_name
         self.editing_item.comment = self.tblGeneral.item(1,0).text()
         self.editing_item.last_swept = self.tblGeneral.item(3,0).text()
         self.editing_item.street_sweeping_availability = self.tblGeneral.item(4,0).text()
         self.editing_item.street_sweeping_interval = self.tblGeneral.item(5,0).text()
 
+        if orig_name != self.editing_item.name or \
+            orig_comment != self.editing_item.comment or \
+            orig_last_swept != self.editing_item.last_swept or \
+            orig_street_sweeping_availability != self.editing_item.street_sweeping_availability or \
+            orig_street_sweeping_interval != self.editing_item.street_sweeping_interval:
+            self._main_form.mark_project_as_unsaved()
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
             pass
             # TODO: self._main_form.edited_?

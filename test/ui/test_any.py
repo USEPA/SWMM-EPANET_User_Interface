@@ -2,8 +2,9 @@ import sys
 import glob
 import webbrowser
 import unittest
-import PyQt4.Qt as Qt
-import PyQt4.QtGui as QtGui
+import PyQt5.Qt as Qt
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QApplication
 import test.HTMLTestRunner
 import test.ui.frmInteractiveTest as frmInteractiveTest
 
@@ -18,7 +19,7 @@ class UserInterfaceTest(unittest.TestCase):
         # self.__name__ = file_name
 
     def get_file(self):
-        return file
+        return self.file
 
     def runTest(self):
         with open(self.file, 'r') as myfile:
@@ -43,7 +44,7 @@ class UserInterfaceTest(unittest.TestCase):
 
 if __name__ == "__main__":
     # execute only if run as a script
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     my_suite = unittest.TestSuite()
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         my_suite.addTest(make_test)
 
     report_filename = "test_results_ui.html"
-    fp = file(report_filename, 'wb')
+    fp = open(report_filename, 'wb')
     runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='SWMM-EPANET UI Test Report',

@@ -1,6 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
-from PyQt4.QtGui import QMessageBox
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QAbstractItemView
 import matplotlib.pyplot as plt
 from core.epanet.reports import Reports
 from ui.convenience import all_list_items, selected_list_items
@@ -9,31 +9,35 @@ from ui.EPANET.frmGraphDesigner import Ui_frmGraph
 from Externals.epanet.outputapi.ENOutputWrapper import OutputObject, ENR_node_type, ENR_link_type
 from core.graph import EPANET as graphEPANET
 
-class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
+class frmGraph(QMainWindow, Ui_frmGraph):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Graph_Se.htm"
         self.setupUi(self)
-        self.cmdAdd.setVisible(False)
-        self.cmdDelete.setVisible(False)
-        self.cmdUp.setVisible(False)
-        self.cmdDown.setVisible(False)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.rbnNodes, QtCore.SIGNAL("clicked()"), self.rbnNodes_Clicked)
-        QtCore.QObject.connect(self.rbnLinks, QtCore.SIGNAL("clicked()"), self.rbnLinks_Clicked)
-
-        QtCore.QObject.connect(self.rbnTime, QtCore.SIGNAL("clicked()"), self.rbnTime_Clicked)
-        QtCore.QObject.connect(self.rbnProfile, QtCore.SIGNAL("clicked()"), self.rbnProfile_Clicked)
-        QtCore.QObject.connect(self.rbnContour, QtCore.SIGNAL("clicked()"), self.rbnContour_Clicked)
-        QtCore.QObject.connect(self.rbnFrequency, QtCore.SIGNAL("clicked()"), self.rbnFrequency_Clicked)
-        QtCore.QObject.connect(self.rbnSystem, QtCore.SIGNAL("clicked()"), self.rbnSystem_Clicked)
+        self.cmdAdd.setVisible(True)
+        self.cmdDelete.setVisible(True)
+        self.cmdUp.setVisible(True)
+        self.cmdDown.setVisible(True)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.rbnNodes.clicked.connect(self.rbnNodes_Clicked)
+        self.rbnLinks.clicked.connect(self.rbnLinks_Clicked)
+        self.rbnTime.clicked.connect(self.rbnTime_Clicked)
+        self.rbnProfile.clicked.connect(self.rbnProfile_Clicked)
+        self.rbnContour.clicked.connect(self.rbnContour_Clicked)
+        self.rbnFrequency.clicked.connect(self.rbnFrequency_Clicked)
+        self.rbnSystem.clicked.connect(self.rbnSystem_Clicked)
 
         self.cboTime.currentIndexChanged.connect(self.cboTime_currentIndexChanged)
 
-        self.lstToGraph.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        QtCore.QObject.connect(self.lstToGraph, QtCore.SIGNAL("itemSelectionChanged()"), self.select_on_map)
+        self.cmdAdd.clicked.connect(self.add_element)
+        self.cmdDelete.clicked.connect(self.delete_element)
+        self.cmdUp.clicked.connect(self.moveup_element)
+        self.cmdDown.clicked.connect(self.movedown_element)
+
+        self.lstToGraph.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstToGraph.itemSelectionChanged.connect(self.select_on_map)
         self._main_form = main_form
         self.onObjectSelected = self._main_form.objectsSelected
         self.onObjectSelected.connect(self.set_selected_object)
@@ -47,8 +51,11 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         if project and self.output:
             for time_index in range(0, self.output.num_periods):
                 self.cboTime.addItem(self.output.get_time_string(time_index))
+            self.rbnTime.setChecked(True)
             self.rbnNodes.setChecked(True)
+            self.rbnTime_Clicked()
             self.rbnNodes_Clicked()
+            self.add_element()
 
     def rbnNodes_Clicked(self):
         if self.rbnNodes.isChecked():
@@ -72,7 +79,8 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.nodes
-            self.lstToGraph.addItems(self.list_items.keys())
+            self.add_element()
+            # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnLinks_Clicked(self):
         if self.rbnLinks.isChecked():
@@ -97,7 +105,8 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
             self.cboParameter.addItems(attr_list)
             self.lstToGraph.clear()
             self.list_items = self.output.links
-            self.lstToGraph.addItems(self.list_items.keys())
+            self.add_element()
+            # self.lstToGraph.addItems(self.list_items.keys())
 
     def rbnTime_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -109,6 +118,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(True)
         self.lstToGraph.setEnabled(True)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(False)
+        self.lstToGraph.setVisible(True)
 
     def rbnProfile_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -121,6 +133,12 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         # self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(True)
         self.lstToGraph.setEnabled(True)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(True)
+        if self.rbnProfile.isChecked():
+            self.rbnNodes.setChecked(True)
+            self.rbnNodes_Clicked()
 
     def rbnContour_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -132,6 +150,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(False)
 
     def rbnFrequency_Clicked(self):
         self.cboParameter.setEnabled(True)
@@ -143,6 +164,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(True)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(True)
+        self.cboTime.setVisible(True)
+        self.lstToGraph.setVisible(False)
 
     def rbnSystem_Clicked(self):
         self.cboParameter.setEnabled(False)
@@ -154,6 +178,9 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
         self.rbnLinks.setEnabled(False)
         self.gbxToGraph.setEnabled(False)
         self.lstToGraph.setEnabled(False)
+        self.cboParameter.setVisible(False)
+        self.cboTime.setVisible(False)
+        self.lstToGraph.setVisible(False)
 
     def cboTime_currentIndexChanged(self):
         time_index = self.cboTime.currentIndex()
@@ -198,7 +225,70 @@ class frmGraph(QtGui.QMainWindow, Ui_frmGraph):
                         for itm in itms:
                             itm.setSelected(True)
 
+
+    def add_element(self):
+        layers = None
+        if self.rbnNodes.isChecked():
+            layers = self._main_form.model_layers.nodes_layers
+        elif self.rbnLinks.isChecked():
+            layers = self._main_form.model_layers.links_layers
+        if layers is None:
+            return
+        selected_prev = []
+        for ind in range(0, self.lstToGraph.count()):
+            selected_prev.append(self.lstToGraph.item(ind).text())
+        selected_new = []
+        for layer in layers:
+            # from qgis.core import QgsVectorLayer()
+            # layer = QgsVectorLayer()
+            for f in layer.getSelectedFeatures():
+                if not f['name'] in selected_new:
+                    selected_new.append(f['name'])
+
+        for n in selected_new:
+            if not n in selected_prev:
+                selected_prev.append(n)
+
+        if len(selected_prev) > 0:
+            self.lstToGraph.clear()
+            self.lstToGraph.addItems(selected_prev)
+
+    def delete_element(self):
+        all = []
+        selected = []
+        for ind in range(0, self.lstToGraph.count()):
+            itm = self.lstToGraph.item(ind)
+            all.append(itm.text())
+            if itm.isSelected():
+                selected.append(itm.text())
+
+        if len(selected) > 0:
+            for s in selected:
+                all.remove(s)
+            self.lstToGraph.clear()
+            self.lstToGraph.addItems(all)
+
+    def moveup_element(self):
+        current_row = self.lstToGraph.currentRow()
+        if current_row - 1 >= 0:
+            current_itm = self.lstToGraph.takeItem(current_row)
+            self.lstToGraph.insertItem(current_row - 1, current_itm)
+            self.lstToGraph.setCurrentRow(current_row - 1)
+            current_itm.setSelected(True)
+
+    def movedown_element(self):
+        current_row = self.lstToGraph.currentRow()
+        if current_row + 1 < self.lstToGraph.count():
+            current_itm = self.lstToGraph.takeItem(current_row)
+            self.lstToGraph.insertItem(current_row + 1, current_itm)
+            self.lstToGraph.setCurrentRow(current_row + 1)
+            current_itm.setSelected(True)
+
     def cmdOK_Clicked(self):
+        if self.rbnTime.isChecked() or self.rbnProfile.isChecked():
+            if self.lstToGraph.count() == 0 or len(self.selected_items()) == 0:
+                QMessageBox.information(None, self._main_form.model, "Need to select model elements for graphing.", QMessageBox.Ok)
+                return
         parameter_label = self.cboParameter.currentText()
         lqual_name = ""
         lqual_unit = ""

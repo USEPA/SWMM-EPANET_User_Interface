@@ -1,5 +1,6 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from core.swmm.hydraulics.node import DirectInflow, DirectInflowType, RDIInflow, DryWeatherInflow
 from core.swmm.quality import ConcentrationUnitLabels
@@ -9,35 +10,35 @@ from ui.SWMM.frmPatternEditor import frmPatternEditor
 from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
 
 
-class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
+class frmInflows(QMainWindow, Ui_frmInflows):
 
     def __init__(self, main_form, node_name):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/directinfloweditor.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.tabInflows.currentChanged.connect(self.tabInflows_currentTabChanged)
         self.cboConstituent.currentIndexChanged.connect(self.cboConstituent_currentIndexChanged)
-        QtCore.QObject.connect(self.btnBaseline, QtCore.SIGNAL("clicked()"), self.btnBaseline_Clicked)
-        QtCore.QObject.connect(self.btnTimeseriesDelete, QtCore.SIGNAL("clicked()"), self.btnTimeseriesDelete_Clicked)
-        QtCore.QObject.connect(self.btnPatternDelete, QtCore.SIGNAL("clicked()"), self.btnPatternDelete_Clicked)
-        QtCore.QObject.connect(self.btnTimeseries, QtCore.SIGNAL("clicked()"), self.btnTimeseries_Clicked)
-        QtCore.QObject.connect(self.btnPattern, QtCore.SIGNAL("clicked()"), self.btnPattern_Clicked)
+        self.btnBaseline.clicked.connect(self.btnBaseline_Clicked)
+        self.btnTimeseriesDelete.clicked.connect(self.btnTimeseriesDelete_Clicked)
+        self.btnPatternDelete.clicked.connect(self.btnPatternDelete_Clicked)
+        self.btnTimeseries.clicked.connect(self.btnTimeseries_Clicked)
+        self.btnPattern.clicked.connect(self.btnPattern_Clicked)
         self.cboDryConstituent.currentIndexChanged.connect(self.cboDryConstituent_currentIndexChanged)
-        QtCore.QObject.connect(self.btnAverage, QtCore.SIGNAL("clicked()"), self.btnAverage_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern1, QtCore.SIGNAL("clicked()"), self.btnDryPattern1_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern2, QtCore.SIGNAL("clicked()"), self.btnDryPattern2_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern3, QtCore.SIGNAL("clicked()"), self.btnDryPattern3_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern4, QtCore.SIGNAL("clicked()"), self.btnDryPattern4_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern5, QtCore.SIGNAL("clicked()"), self.btnDryPattern5_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern6, QtCore.SIGNAL("clicked()"), self.btnDryPattern6_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern7, QtCore.SIGNAL("clicked()"), self.btnDryPattern7_Clicked)
-        QtCore.QObject.connect(self.btnDryPattern8, QtCore.SIGNAL("clicked()"), self.btnDryPattern8_Clicked)
-        QtCore.QObject.connect(self.btnUnitHydro1, QtCore.SIGNAL("clicked()"), self.btnUnitHydro1_Clicked)
-        QtCore.QObject.connect(self.btnUniHydro2, QtCore.SIGNAL("clicked()"), self.btnUniHydro2_Clicked)
+        self.btnAverage.clicked.connect(self.btnAverage_Clicked)
+        self.btnDryPattern1.clicked.connect(self.btnDryPattern1_Clicked)
+        self.btnDryPattern2.clicked.connect(self.btnDryPattern2_Clicked)
+        self.btnDryPattern3.clicked.connect(self.btnDryPattern3_Clicked)
+        self.btnDryPattern4.clicked.connect(self.btnDryPattern4_Clicked)
+        self.btnDryPattern5.clicked.connect(self.btnDryPattern5_Clicked)
+        self.btnDryPattern6.clicked.connect(self.btnDryPattern6_Clicked)
+        self.btnDryPattern7.clicked.connect(self.btnDryPattern7_Clicked)
+        self.btnDryPattern8.clicked.connect(self.btnDryPattern8_Clicked)
+        self.btnUnitHydro1.clicked.connect(self.btnUnitHydro1_Clicked)
+        self.btnUniHydro2.clicked.connect(self.btnUniHydro2_Clicked)
         self.node_name = node_name
         self._main_form = main_form
         self.project = main_form.project
@@ -211,6 +212,15 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if item == self.cboConstituent.itemText(self.previous_constituent_index):
                     local_column = index
             if local_column > -1:
+                orig_conv_factor = self.local_conversion_factor[local_column]
+                orig_baseline = self.local_baseline[local_column]
+                orig_scale_factor = self.local_scale_factor[local_column]
+                orig_timeseries_list = self.local_timeseries_list[local_column]
+                orig_baseline_pattern = self.local_baseline_pattern[local_column]
+                orig_format = self.local_format[local_column]
+                if orig_format == '':
+                    orig_format = DirectInflowType.CONCEN
+
                 self.local_conversion_factor[local_column] = self.txtUnitsFactor.text()
                 self.local_baseline[local_column] = self.txtBaseline.text()
                 self.local_scale_factor[local_column] = self.txtScaleFactor.text()
@@ -220,6 +230,14 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                     self.local_format[local_column] = DirectInflowType.CONCEN
                 elif self.cboInflowType.currentIndex() == 1:
                     self.local_format[local_column] = DirectInflowType.MASS
+
+                if orig_conv_factor != self.local_conversion_factor[local_column] or \
+                    orig_baseline != self.local_baseline[local_column] or \
+                    orig_scale_factor != self.local_scale_factor[local_column] or \
+                    orig_timeseries_list != self.local_timeseries_list[local_column] or \
+                    orig_baseline_pattern != self.local_baseline_pattern[local_column] or \
+                    orig_format != self.local_format[local_column]:
+                    self._main_form.mark_project_as_unsaved()
 
         direct_section = self.project.find_section("INFLOWS")
         direct_list = direct_section.value[0:]
@@ -232,12 +250,28 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if value.node == self.node_name and value.constituent == pollutant:
                     if index > -1:
                         found = True
+                        orig_timeseries = value.timeseries
+                        orig_format = value.format
+                        orig_conv_factor = value.conversion_factor
+                        orig_scale_factor = value.scale_factor
+                        orig_baseline = value.baseline
+                        orig_baseline_pattern = value.baseline_pattern
+
                         value.timeseries = self.local_timeseries_list[index]
                         value.format = self.local_format[index]
                         value.conversion_factor = self.local_conversion_factor[index]
                         value.scale_factor = self.local_scale_factor[index]
                         value.baseline = self.local_baseline[index]
                         value.baseline_pattern = self.local_baseline_pattern[index]
+
+                        if orig_timeseries != value.timeseries or \
+                            orig_format != value.format or \
+                            orig_conv_factor != value.conversion_factor or \
+                            orig_scale_factor != value.scale_factor or \
+                            orig_baseline != value.baseline or \
+                            orig_baseline_pattern != value.baseline_pattern:
+                            self._main_form.mark_project_as_unsaved()
+
             if not found:
                 # have to add this inflow to the list
                 new_inflow = DirectInflow()
@@ -252,6 +286,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if direct_section.value == '':
                     direct_section.value = []
                 direct_section.value.append(new_inflow)
+                self._main_form.mark_project_as_unsaved()
 
         # dry section
         if self.previous_dry_constituent_index > -1:
@@ -279,6 +314,10 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if value.node == self.node_name and value.constituent == pollutant:
                     if index > -1:
                         found = True
+
+                        orig_average = value.average
+                        orig_time_patterns = value.time_patterns
+
                         value.average = self.local_average_list[index]
                         value.time_patterns = []
                         if len(str(self.local_dry_pattern_1_list[index])) > 0:
@@ -289,6 +328,11 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                             value.time_patterns.append(self.local_dry_pattern_3_list[index])
                         if len(str(self.local_dry_pattern_4_list[index])) > 0:
                             value.time_patterns.append(self.local_dry_pattern_4_list[index])
+
+                        if orig_average != value.average or \
+                            orig_time_patterns != value.time_patterns:
+                            self._main_form.mark_project_as_unsaved()
+
             if not found:
                 # have to add this dry inflow to the list
                 new_inflow = DryWeatherInflow()
@@ -308,6 +352,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
                 if dry_section.value == '':
                     dry_section.value = []
                 dry_section.value.append(new_inflow)
+                self._main_form.mark_project_as_unsaved()
 
         # rainfall dependent infiltration/inflow
         rdii_section = self._main_form.project.find_section("RDII")
@@ -316,6 +361,9 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         for value in rdii_list:
             if value.node == self.node_name:
                 found = True
+                if value.sewershed_area != self.txtSewershed.text() or \
+                    value.hydrograph_group != self.cboUnitHydro.currentText():
+                    self._main_form.mark_project_as_unsaved()
                 value.sewershed_area = self.txtSewershed.text()
                 value.hydrograph_group = self.cboUnitHydro.currentText()
         if not found:
@@ -327,6 +375,7 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
             if rdii_section.value == '':
                 rdii_section.value = []
             rdii_section.value.append(new_inflow)
+            self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -471,36 +520,127 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
 
     def btnTimeseries_Clicked(self):
         # send in currently selected timeseries
-        self._frmTimeseries = frmTimeseries(self._main_form)
+        new_name = ''
+        if self.cboTimeSeries.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Series"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmTimeseries = frmTimeseries(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboTimeSeries.currentText())
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+        # edit timeseries
+        self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
+        if self.cboTimeSeries.currentIndex() == 0:
+            self.cboTimeSeries.addItem(new_name)
+            self.cboTimeSeries.setCurrentIndex(self.cboTimeSeries.count()-1)
 
     def btnPattern_Clicked(self):
+        new_name = ''
+        if self.cboPattern.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboPattern.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboPattern.currentIndex() == 0:
+            self.cboPattern.addItem(new_name)
+            self.cboPattern.setCurrentIndex(self.cboPattern.count()-1)
 
     def btnAverage_Clicked(self):
         self.txtAverage.setText('')
 
     def btnDryPattern1_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern1.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern1.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern1.currentIndex() == 0:
+            self.cboDryPattern1.addItem(new_name)
+            self.cboDryPattern1.setCurrentIndex(self.cboDryPattern1.count()-1)
 
     def btnDryPattern2_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern2.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern2.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern2.currentIndex() == 0:
+            self.cboDryPattern2.addItem(new_name)
+            self.cboDryPattern2.setCurrentIndex(self.cboDryPattern2.count()-1)
 
     def btnDryPattern3_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern3.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern3.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern3.currentIndex() == 0:
+            self.cboDryPattern3.addItem(new_name)
+            self.cboDryPattern3.setCurrentIndex(self.cboDryPattern3.count()-1)
 
     def btnDryPattern4_Clicked(self):
+        new_name = ''
+        if self.cboDryPattern4.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Time Patterns"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmPatternEditor = frmPatternEditor(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboDryPattern4.currentText())
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
         # edit pattern
-        self._frmPatternEditor = frmPatternEditor(self._main_form)
+        self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
+        if self.cboDryPattern4.currentIndex() == 0:
+            self.cboDryPattern4.addItem(new_name)
+            self.cboDryPattern4.setCurrentIndex(self.cboDryPattern4.count()-1)
 
     def btnDryPattern5_Clicked(self):
         self.cboDryPattern1.setCurrentIndex(0)
@@ -515,9 +655,25 @@ class frmInflows(QtGui.QMainWindow, Ui_frmInflows):
         self.cboDryPattern4.setCurrentIndex(0)
 
     def btnUnitHydro1_Clicked(self):
-        # edit unit hydrograph
-        self._frmUnitHydrograph = frmUnitHydrograph(self._main_form)
+        # send in currently selected UnitHydrograph
+        new_name = ''
+        if self.cboUnitHydro.currentIndex() == 0:
+            # create a new one
+            item_type = self._main_form.tree_types["Unit Hydrographs"]
+            new_item = item_type()
+            new_item.name = self._main_form.new_item_name(item_type)
+            new_name = new_item.name
+            self._frmUnitHydrograph = frmUnitHydrograph(self._main_form,[],new_item)
+        else:
+            edit_these = []
+            edit_these.append(self.cboUnitHydro.currentText())
+            self._frmUnitHydrograph = frmUnitHydrograph(self._main_form, edit_these)
+        # edit UnitHydrograph
+        self._frmUnitHydrograph.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmUnitHydrograph.show()
+        if self.cboUnitHydro.currentIndex() == 0:
+            self.cboUnitHydro.addItem(new_name)
+            self.cboUnitHydro.setCurrentIndex(self.cboUnitHydro.count()-1)
 
     def btnUniHydro2_Clicked(self):
         self.cboUnitHydro.setCurrentIndex(0)

@@ -3,62 +3,62 @@ import unittest
 from test.HTMLTestRunner import HTMLTestRunner
 
 # Options
-from test_backdrop import SimpleBackdropTest
-from test_options_dates import OptionsDatesTest
-from test_options_dynamicwave import OptionsDynamicWaveTest
-from test_files import SimpleFilesTest
-from test_options_general import OptionsGeneralTest
-from test_options_interfacefiles import OptionsInterfaceFilesTest
-from test_map import SimpleMapTest
-from test_report import SimpleReportTest
-from test_options_timesteps import OptionsTimestepTest
+from test.core.swmm.test_backdrop import SimpleBackdropTest
+from test.core.swmm.test_options_dates import OptionsDatesTest
+from test.core.swmm.test_options_dynamicwave import OptionsDynamicWaveTest
+from test.core.swmm.test_files import SimpleFilesTest
+from test.core.swmm.test_options_general import OptionsGeneralTest
+from test.core.swmm.test_options_interfacefiles import OptionsInterfaceFilesTest
+from test.core.swmm.test_map import SimpleMapTest
+from test.core.swmm.test_report import SimpleReportTest
+from test.core.swmm.test_options_timesteps import OptionsTimestepTest
 
 # Climatology
-from test_evaporation import EvaporationTest
-from test_temperature import TemperatureTest
-from test_adjustments import AdjustmentsTest
+from test.core.swmm.test_evaporation import EvaporationTest
+from test.core.swmm.test_temperature import TemperatureTest
+from test.core.swmm.test_adjustments import AdjustmentsTest
 
 # Hydrology
-from test_aquifers import SimpleAquifersTest
-from test_lid_controls import SimpleLIDControlTest
-from test_raingages import SimpleRainGageTest
-from test_snowpack import SimpleSnowPackTest
-from test_subcatchments import SimpleSubcatchmentTest
-from test_infiltrations import InfiltrationTest
-from test_groundwater import SimpleGroundwaterTest
-from test_lid_usage import SimpleLIDUsageTest
-from test_coverages import SimpleCoverageTest
-from test_loadings import SimpleLoadingTest
-from test_hydrographs import SimpleHydrographsTest
+from test.core.swmm.test_aquifers import SimpleAquifersTest
+from test.core.swmm.test_lid_controls import SimpleLIDControlTest
+from test.core.swmm.test_raingages import SimpleRainGageTest
+from test.core.swmm.test_snowpack import SimpleSnowPackTest
+from test.core.swmm.test_subcatchments import SimpleSubcatchmentTest
+from test.core.swmm.test_infiltrations import InfiltrationTest
+from test.core.swmm.test_groundwater import SimpleGroundwaterTest
+from test.core.swmm.test_lid_usage import SimpleLIDUsageTest
+from test.core.swmm.test_coverages import SimpleCoverageTest
+from test.core.swmm.test_loadings import SimpleLoadingTest
+from test.core.swmm.test_hydrographs import SimpleHydrographsTest
 
 # Hydraulics
 # Link:
-from test_conduits import SimpleConduitTest
+from test.core.swmm.test_conduits import SimpleConduitTest
 # Pump
 # Orifice
 # Weir
 # Outlet
 # CrossSection
-from test_xsections import SimpleCrossSectionTest
-from test_transects import SimpleTransectTest
-from test_xsection import XsectionTest
+from test.core.swmm.test_xsections import SimpleCrossSectionTest
+from test.core.swmm.test_transects import SimpleTransectTest
+from test.core.swmm.test_xsection import XsectionTest
 
 # Node:
-from test_junctions import SimpleJunctionTest
-from test_outfalls import SimpleOutfallTest
-from test_dividers import SimpleDividerTest
+from test.core.swmm.test_junctions import SimpleJunctionTest
+from test.core.swmm.test_outfalls import SimpleOutfallTest
+from test.core.swmm.test_dividers import SimpleDividerTest
 
 # Storage
-from test_inflows import SimpleInflowTest
-from test_dwf import SimpleDWITest
-from test_RDII import SimpleRDIITest
-from test_treatment import SimpleTreatmentTest
+from test.core.swmm.test_inflows import SimpleInflowTest
+from test.core.swmm.test_dwf import SimpleDWITest
+from test.core.swmm.test_RDII import SimpleRDIITest
+from test.core.swmm.test_treatment import SimpleTreatmentTest
 
 # Quality:
-from test_pollutants import SimplePollutantTest
-from test_buildup import SingleBuildupTest
-from test_washoff import SimpleWashoffTest
-from test_landuses import SimpleLanduseTest
+from test.core.swmm.test_pollutants import SimplePollutantTest
+from test.core.swmm.test_buildup import SingleBuildupTest
+from test.core.swmm.test_washoff import SimpleWashoffTest
+from test.core.swmm.test_landuses import SimpleLanduseTest
 
 # Map related:
 # -- Map is in options group
@@ -71,14 +71,14 @@ from test_landuses import SimpleLanduseTest
 # -- Backdrop is in options group
 
 # Mislaneous relations:
-from test_curves import SimpleCurveTest
+from test.core.swmm.test_curves import SimpleCurveTest
 # Hydrographs is moved to Hydrology section
-from test_patterns import SimplePatternTest
-from test_timeseries import SimpleTimeSeriesTest
+from test.core.swmm.test_patterns import SimplePatternTest
+from test.core.swmm.test_timeseries import SimpleTimeSeriesTest
 
 # Mislaneous
 # from test_energy import SimpleEnergyTest
-from test_title import SimpleTitleTest
+from test.core.swmm.test_title import SimpleTitleTest
 
 my_suite = unittest.TestSuite()
 
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     # execute only if run as a script
     # runner = unittest.TextTestRunner()
     report_filename = "test_results_swmm.html"
-    fp = file(report_filename, 'wb')
+    fp = open(report_filename, 'wb')
     runner = HTMLTestRunner(
         stream=fp,
         title='SWMM Core Test Report',

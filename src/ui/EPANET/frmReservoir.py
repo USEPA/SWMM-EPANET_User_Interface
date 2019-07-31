@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.epanet.hydraulics.node import Reservoir
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
@@ -24,7 +25,7 @@ class frmReservior(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -39,7 +40,7 @@ class frmReservior(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             # for pattern, show available patterns
             pattern_list = self.project.patterns.value
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
@@ -52,9 +53,9 @@ class frmReservior(frmGenericPropertyEditor):
             # coordinate_section = self.project.find_section("COORDINATES")
             # if coordinate_section.value[edit_these[column].name]:
             #     value = coordinate_section.value[edit_these[column].name].x
-            #     self.tblGeneric.setItem(1, column, QtGui.QTableWidgetItem(value))
+            #     self.tblGeneric.setItem(1, column, QTableWidgetItem(value))
             #     value = coordinate_section.value[edit_these[column].name].y
-            #     self.tblGeneric.setItem(2, column, QtGui.QTableWidgetItem(value))
+            #     self.tblGeneric.setItem(2, column, QTableWidgetItem(value))
             # also set special text plus button cells
             self.set_quality_cell(column)
 
@@ -93,6 +94,7 @@ class frmReservior(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self.session.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

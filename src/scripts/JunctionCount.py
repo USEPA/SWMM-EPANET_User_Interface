@@ -1,1 +1,1 @@
-print len(session.project.junctions.value)
+print (str(len(session.project.junctions.value)))

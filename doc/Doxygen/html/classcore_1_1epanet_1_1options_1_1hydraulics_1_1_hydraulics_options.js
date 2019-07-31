@@ -5,6 +5,7 @@ var classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options =
     [ "check_frequency", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#af6eee64cea546fb893ff397e101ff16f", null ],
     [ "damp_limit", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a1a9796325e7f70ced6bd1f46fe56a4db", null ],
     [ "default_pattern", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a60b8d33ba09bd1189a7678c6fb4452f4", null ],
+    [ "default_pattern_object", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a163358b6c465b02ce145e060e640da42", null ],
     [ "demand_multiplier", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a2c243fc691d33a0b2e7bb8ca9985670d", null ],
     [ "emitter_exponent", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#aa45795748ddd3f8fcf380a4d424edea6", null ],
     [ "flow_units", "classcore_1_1epanet_1_1options_1_1hydraulics_1_1_hydraulics_options.html#a8203bb4bf173b4aed89dc23a1f5c7e23", null ],

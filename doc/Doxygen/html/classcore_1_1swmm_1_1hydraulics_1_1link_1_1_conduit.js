@@ -1,6 +1,7 @@
 var classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit =
 [
     [ "__init__", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#ae5072a79977a8c6c3d9ec060490fa61f", null ],
+    [ "get_slope", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#a6b8d74cf79a88dfd293de4bac4f8191b", null ],
     [ "entry_loss_coefficient", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#a315a7d9e67808cc1af0a3f5f4120095b", null ],
     [ "exit_loss_coefficient", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#a373680c67e5b415400ea2b7a31b22e9f", null ],
     [ "flap_gate", "classcore_1_1swmm_1_1hydraulics_1_1link_1_1_conduit.html#adc640f04cf72ce8e878be8a3ca723b13", null ],

@@ -6,6 +6,9 @@ Written for SWMM-EPANET User Interface project
 2016
 Mark Gray, RESPEC
 for US EPA
+2018
+Tong Zhai, RESPEC
+migrate to Python 3
 
 Inspired by ENOutputWrapper by Bryant E. McDonnell 12/7/2015
 
@@ -50,11 +53,16 @@ class SwmmOutputCategoryBase:
         """
         items = {}
         item_count = output._call_int(_lib.SMO_getProjectSize, cls._count_flag)
-        ctypes_name = _lib.String((_lib.MAXID + 1) * '\0')
+        ctypes_name = _lib.String(((_lib.MAXID + 1) * '\0').encode())
         for index in range(0, item_count):
             _lib.SMO_getElementName(output.ptrapi, cls._element_type, index, ctypes_name, _lib.MAXID)
-            name = str(ctypes_name)
-            items[name] = cls(name, index)
+            try:
+                # name = str(ctypes_name)
+                name = ctypes_name.data.decode('utf-8')
+                items[name] = cls(name, index)
+            except Exception as e:
+                # raise Exception("SWMM read_all output failed.")
+                pass
 
         # Populate pollutants as attributes of this class
         if hasattr(cls, "_first_pollutant"):
@@ -69,8 +77,8 @@ class SwmmOutputCategoryBase:
                 # if pollutant_names:
                 #     print(cls.type_label + " pollutants: " + ", ".join(pollutant_names))
             else:
-                print "Not reading pollutants because len(cls.attributes) == " + str(len(cls.attributes)) +\
-                      " and pollutant_index == " + str(pollutant_index)
+                print ("Not reading pollutants because len(cls.attributes) == " + str(len(cls.attributes)) +
+                      " and pollutant_index == " + str(pollutant_index))
         return items
 
     def get_series(self, output, attribute, start_index=0, num_values=-1):
@@ -333,7 +341,7 @@ class SwmmOutputObject(object):
         self.ptrapi = _lib.SMO_init()
         for attempt in [1, 2, 3, 4, 5]:  # wait to finish closing the file in case it just finished running the model
 
-            ret = _lib.SMO_open(self.ptrapi, self.output_file_name)
+            ret = _lib.SMO_open(self.ptrapi, c_char_p(self.output_file_name.encode()))
             if ret == 0:
                 break
             print("Error " + str(ret) + " opening " + self.output_file_name + " retrying...")
@@ -538,7 +546,7 @@ class SwmmOutputObject(object):
             # now make a time series data frame
             return pandas.Series(y_values, index=x_values)
         except Exception as ex:
-            print str(ex)
+            print (str(ex))
 
     def get_item_unit(self, type_label, object_id, attribute_name):
         if "SYSTEM" in type_label.upper():

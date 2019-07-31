@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.swmm.hydraulics.link import Orifice
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
@@ -23,7 +24,7 @@ class frmOrifices(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -37,7 +38,7 @@ class frmOrifices(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
             combobox.setCurrentIndex(1)
@@ -46,7 +47,7 @@ class frmOrifices(frmGenericPropertyEditor):
                     combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(11, column, combobox)
             # set cross section cell
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('CIRCULAR')
             combobox.addItem('RECT_CLOSED')
             self.tblGeneric.setCellWidget(6, column, combobox)
@@ -58,8 +59,8 @@ class frmOrifices(frmGenericPropertyEditor):
                         combobox.setCurrentIndex(0)
                     elif value.link.shape == 'RECT_CLOSED':
                         combobox.setCurrentIndex(1)
-                    self.tblGeneric.setItem(7, column, QtGui.QTableWidgetItem(value.geometry1))
-                    self.tblGeneric.setItem(8, column, QtGui.QTableWidgetItem(value.geometry2))
+                    self.tblGeneric.setItem(7, column, QTableWidgetItem(value.geometry1))
+                    self.tblGeneric.setItem(8, column, QTableWidgetItem(value.geometry2))
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -76,10 +77,16 @@ class frmOrifices(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             for value in cross_section_list:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
+                    if value.shape != str(self.tblGeneric.item(6,column).text()) or \
+                        value.geometry1 != str(self.tblGeneric.item(7, column).text()) or \
+                        value.geometry2 != str(self.tblGeneric.item(8, column).text()):
+                        self._main_form.mark_project_as_unsaved()
+
                     value.shape = str(self.tblGeneric.item(6,column).text())
                     value.geometry1 = str(self.tblGeneric.item(7, column).text())
                     value.geometry2 = str(self.tblGeneric.item(8, column).text())
         self._main_form.list_objects()
+        self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.swmm.hydrology.raingage import RainGage
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
@@ -15,11 +16,12 @@ class frmRainGages(frmGenericPropertyEditor):
                                           edit_these, new_item, "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
         self.help_topic = "swmm/src/src/raingageproperties.htm"
         self.refresh_column = -1
+        self.session = session
 
         for column in range(0, self.tblGeneric.columnCount()):
             # show current and available timeseries in combo box
             timeseries_list = self.project.timeseries.value
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in timeseries_list:
@@ -31,6 +33,7 @@ class frmRainGages(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self.session.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

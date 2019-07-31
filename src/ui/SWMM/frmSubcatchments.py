@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem, QMessageBox
 from core.swmm.hydrology.subcatchment import Subcatchment
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
@@ -31,7 +32,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -50,7 +51,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
 
             # for snowpacks, show available snowpacks
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in self.project.snowpacks.value:
@@ -63,7 +64,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             # show available rain gages
             raingage_section = self.project.find_section("RAINGAGES")
             raingage_list = raingage_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in raingage_list:
@@ -101,7 +102,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_infilt(column))
-        self.tblGeneric.setItem(row, column, QtGui.QTableWidgetItem(''))
+        self.tblGeneric.setItem(row, column, QTableWidgetItem(''))
         self.tblGeneric.setCellWidget(row, column, tb)
 
     def set_groundwater_cell(self, row, column):
@@ -172,11 +173,13 @@ class frmSubcatchments(frmGenericPropertyEditor):
                             edit_these.append(item)
                 if len(groundwater_section.value) == 0:
                     new_item = Groundwater()
+                    new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                     groundwater_section.value.append(new_item)
                     edit_these.append(new_item)
-            else:
+            if len(edit_these) == 0:
                 new_item = Groundwater()
                 groundwater_section.value = []
+                new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                 groundwater_section.value.append(new_item)
                 edit_these.append(new_item)
             editor = frmGroundwaterFlow(self, edit_these, None, "SWMM Groundwater Flow Editor")
@@ -223,30 +226,46 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def make_show_lid_controls(self, column):
         def local_show():
-            editor = frmLIDControls(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("LID_CONTROLS")
+            if section and len(section.value[0:]) > 0:
+                editor = frmLIDControls(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM",  "No LID controls have been defined yet for this project.", QMessageBox.Ok)
         return local_show
 
     def make_show_coverage_controls(self, column):
         def local_show():
-            editor = frmLandUseAssignment(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("LANDUSES")
+            if section and len(section.value[0:]) > 0:
+                editor = frmLandUseAssignment(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM", "No land uses have been defined yet for this project.",
+                                        QMessageBox.Ok)
         return local_show
 
     def make_show_loadings_controls(self, column):
         def local_show():
-            editor = frmInitialBuildup(self._main_form, str(self.tblGeneric.item(0, column).text()))
-            editor.setWindowModality(QtCore.Qt.ApplicationModal)
-            editor.show()
-            self.refresh_column = column
+            section = self.project.find_section("POLLUTANTS")
+            if section and len(section.value[0:]) > 0:
+                editor = frmInitialBuildup(self._main_form, str(self.tblGeneric.item(0, column).text()))
+                editor.setWindowModality(QtCore.Qt.ApplicationModal)
+                editor.show()
+                self.refresh_column = column
+            else:
+                QMessageBox.information(None, "SWMM", "No pollutants have been defined yet for this project.",
+                                        QMessageBox.Ok)
         return local_show
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        for fs in self._main_form.model_layers.subcatchments.getFeatures():
+            self._main_form.model_layers.create_subcatchment_link(fs)
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Time Series Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Time Series,Time Series Editing">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Time Series Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="timepatterneditordialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="timeseriesplotdialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Time Series Editor</span> is invoked whenever a new <a href="timeseries.htm">Time Series</a> object is created or an existing time series is selected for editing. To use the Time Series Editor:</p>
+<p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="27">1.</td><td>Enter values for the following standard items:</td></tr></table></div><p style="text-indent: -27px; margin: 0px 0px 0px 27px;"><span style="width:27px">&nbsp;</span></p>
+<div style="text-align: left; text-indent: -27px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 27px;"><table cellspacing="0" cellpadding="4" border="0" style="border: none; border-spacing:0px;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="115" style="width:115px;"><p><span style="font-style: italic;">Name</span></p>
+</td>
+<td valign="top" width="272" style="width:272px;"><p>Name of the time series.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="115" style="width:115px;"><p><span style="font-style: italic;">Description</span></p>
+</td>
+<td valign="top" width="272" style="width:272px;"><p>Optional comment or description of what the time series represents.Click the <img src="edit.png" width="16" height="16" border="0" alt="edit"> button to launch a multi-line comment editor if more than one line is needed. </p>
+</td>
+</tr>
+</table>
+</div>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="27">2.</td><td>Select whether to use an external file as the source of the data or to enter the data directly into the form's data entry grid.</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="27">3.</td><td>If the external file option is selected, click the <img src="filebrowsebtn.png" width="24" height="24" border="0" alt="FileBrowseBtn"> button to locate the file's name. The file's contents must be formatted in the same manner as the direct data entry option discussed below. See the description of <a href="timeseriesfiles.htm">Time Series Files</a> for details.</td></tr></table></div><p style="text-indent: -27px; margin: 0px 0px 0px 27px;"><span style="width:27px">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="27">4.</td><td>For direct data entry, enter values in the data entry grid as follows:</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 27px;"><table cellspacing="0" cellpadding="4" border="0" style="border: none; border-spacing:0px;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="115" style="width:115px;"><p><span style="font-style: italic;">Date Column</span></p>
+</td>
+<td valign="top" width="264" style="width:264px;"><p>Optional date (in month/day/year format) of the time series values (only needed at points in time where a new date occurs). </p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="115" style="width:115px;"><p><span style="font-style: italic;">Time Column</span></p>
+</td>
+<td valign="top" width="264" style="width:264px;"><p>If dates are used, enter the military time of day for each time series value (as hours:minutes or decimal hours). If dates are not used, enter time as hours since the start of the simulation.</p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="115" style="width:115px;"><p><span style="font-style: italic;">Value Column</span></p>
+</td>
+<td valign="top" width="264" style="width:264px;"><p>Time series numerical values.</p>
+</td>
+</tr>
+</table>
+</div>
+<p style="margin: 0px 0px 0px 27px;">A graphical plot of the data in the grid can be viewed in a separate window by clicking the <span style="font-weight: bold;">View</span> button. Right clicking over the grid will make a popup Edit menu appear. It contains commands to cut, copy, insert, and paste selected cells in the grid as well as options to insert or delete a row.</p>
+<p><span style="color: #000000;">&nbsp;</span></p>
+<p><span style="font-size: 5pt;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="27">5.</td><td>Press <span style="font-weight: bold;">OK</span> to accept the time series or <span style="font-weight: bold;">Cancel</span> to cancel your edits.</td></tr></table></div><p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>Note that there are two methods for describing the occurrence time of time series data:</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 27px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>as calendar date/time of day (which requires that at least one date, at the start of the series, be entered in the Date column)</td></tr></table></div><div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 27px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="13"><span style="font-size: 10pt; font-family: 'Symbol'; font-style: normal; color: #000000; text-decoration: none;">&#183;</span></td><td>as elapsed hours since the start of the simulation (where the Date column remains empty).</td></tr></table></div><p style="text-indent: -29px; margin: 0px 0px 0px 29px;">&nbsp;</p>
+<p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"> For rainfall time series, it is only necessary to enter periods with non-zero rainfall amounts. SWMM interprets the rainfall value as a constant value lasting over the recording interval specified for the rain gage which utilizes the time series. For all other types of time series, SWMM uses interpolation to estimate values at times that fall in between the recorded values.</p>
+<p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+<p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+
+</div>
+
+</body>
+</html>

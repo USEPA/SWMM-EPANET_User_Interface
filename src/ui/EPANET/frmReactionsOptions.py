@@ -1,16 +1,17 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.epanet.options.reactions
 from ui.EPANET.frmReactionsOptionsDesigner import Ui_frmReactionsOptions
 
 
-class frmReactionsOptions(QtGui.QMainWindow, Ui_frmReactionsOptions):
+class frmReactionsOptions(QMainWindow, Ui_frmReactionsOptions):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "epanet/src/src/Anal0042.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
 
@@ -27,6 +28,14 @@ class frmReactionsOptions(QtGui.QMainWindow, Ui_frmReactionsOptions):
 
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("REACTIONS")
+        if str(section.order_bulk) != self.txtBulkOrder.text() or \
+            str(section.order_wall) != self.txtWallOrder.text() or \
+            str(section.order_tank) != self.txtTankOrder.text() or \
+            str(section.global_bulk) != self.txtGlobalBulk.text() or \
+            str(section.global_wall) != self.txtGlobalWall.text() or \
+            str(section.limiting_potential) != self.txtLimiting.text() or \
+            str(section.roughness_correlation) != self.txtCorrelation.text():
+            self._main_form.mark_project_as_unsaved()
         section.order_bulk = self.txtBulkOrder.text()
         section.order_wall = self.txtWallOrder.text()
         section.order_tank = self.txtTankOrder.text()

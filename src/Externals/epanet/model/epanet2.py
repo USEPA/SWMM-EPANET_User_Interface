@@ -108,11 +108,13 @@ class ENepanet():
         msgbuf = create_string_buffer(256)  
         en_geterror = getattr(self.ENlib, 'ENgeterror')
         en_geterror(self.errcode, msgbuf, sizeof(msgbuf))
-        sys.stdout.write(msgbuf.value)
+        sys.stdout.write(str(msgbuf.value))
         
         if self.errcode >= 100:
             self.Errflag = True
-            raise(EPANETException(msgbuf.value))
+            # don't raise here, because it will interrupt EPANET engine generating status.txt
+            # raise(EPANETException(msgbuf.value))
+            return msgbuf.value
         else:
             self.Warnflag = True
         return

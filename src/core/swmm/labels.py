@@ -16,7 +16,7 @@ class Label(Section, Coordinate):
         ("font",                '', "Font",            "",       '', '',  "The label's font"),
         ("size",                '', "Size",            "10.0",   '', '',  "The label's font size"),
         ("bold",                '', "Bold",            "False",  '', '',  "Set to True if the label is to be bold"),
-        ("italics",             '', "Italics",         "False",  '', '',  "Set to True if the label is to be italicized"),
+        ("italic",              '', "Italics",         "False",  '', '',  "Set to True if the label is to be italicized"),
     ))
 
     def __init__(self):

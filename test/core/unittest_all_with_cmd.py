@@ -15,7 +15,7 @@ print(dnames)
 ## ----------------------------------------------------------------------
 import webbrowser
 import unittest
-import test.HTMLTestRunner
+import HTMLTestRunner
 import test.core.epanet.test_all
 import test.core.swmm.test_all
 
@@ -26,8 +26,8 @@ my_suite.addTests(test.core.swmm.test_all.my_suite)
 if __name__ == "__main__":
     # execute only if run as a script
     report_filename = "test_results_core.html"
-    fp = file(report_filename, 'wb')
-    runner = test.HTMLTestRunner.HTMLTestRunner(
+    fp = open(report_filename, 'wb')
+    runner = HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='SWMM-EPANET Core Test Report',
         description='Unit test results')

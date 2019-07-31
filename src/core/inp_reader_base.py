@@ -24,16 +24,16 @@ class InputFileReader(object):
                 project.file_name = file_name
                 self.set_from_text_lines(project, inp_reader.readlines())
         except Exception as e:
-            print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
-            self.input_err_msg = "File is probably not a valid EPANET project or input file."
-            if ".net" in file_name:
-                self.input_err_msg += "\nPlease note: binary (.net) input file is deprecated (not supported)."
-            # try:
-            #     with open(file_name, 'r') as inp_reader:
-            #         project.file_name = file_name
-            #         self.set_from_text_lines(project, iter(inp_reader))
-            # except Exception as e:
-            #     print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
+            # print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
+            try:
+                with codecs.open(file_name, 'r', 'latin1') as inp_reader:
+                    project.file_name = file_name
+                    self.set_from_text_lines(project, iter(inp_reader))
+            except Exception as e:
+                self.input_err_msg = "File is probably not a valid project or input file."
+                print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
+                if ".net" in file_name:
+                    self.input_err_msg += "\nPlease note: binary (.net) input file is deprecated (not supported)."
 
     def set_from_text_lines(self, project, lines_iterator):
         """Read a project file from lines of text.
@@ -61,7 +61,7 @@ class InputFileReader(object):
         self.finished_reading(project)
 
     def finished_reading(self, project):
-        print "Finished reading " + project.file_name
+        print ("Finished reading " + project.file_name)
 
     def read_section(self, project, section_name, section_text):
         """ Read the section named section_name whose complete text is section_text into project. """
@@ -71,6 +71,17 @@ class InputFileReader(object):
         #    project.sections.remove(old_section)
         new_section = None
         attr_name = project.format_as_attribute_name(section_name)
+
+        # special case for section 'lid_controls', because of multi-line structure, must strip out comment lines
+        if attr_name == "lid_controls":
+            # strip comment lines from section_text
+            section_text_list = section_text.split('\n')
+            string_without_comments = ""
+            for line in section_text_list:
+                if line[0] != ";":
+                    string_without_comments += line + '\n'
+            section_text = string_without_comments[:-1]
+
         reader_name = "read_" + attr_name
         if hasattr(self, reader_name):
             reader = self.__getattribute__(reader_name)
@@ -81,6 +92,8 @@ class InputFileReader(object):
                       '\n' + str(traceback.print_exc()))
 
         if new_section is None:
+            if not section_name == '[END]':
+                self.input_err_msg += '\n' + 'Unrecognized keyword (' + section_name + ').'
             print("Default Section for " + section_name)
             new_section = Section()
             new_section.SECTION_NAME = section_name
@@ -145,8 +158,15 @@ class SectionReader(object):
                 # else:
                 if not this_comment.lower() in section.comment.lower():
                     section.comment += '\n' + this_comment  # Separate from existing comment with newline
+            elif hasattr(section, "description"):
+                if not this_comment.lower() in section.description.lower():
+                    if len(section.description) == 0:
+                        section.description = this_comment
+                    else:
+                        section.description += '\n' + this_comment  # Separate from existing comment with newline
             else:
                 section.comment = this_comment
+                # section.description = this_comment
         if line.startswith('['):
             if hasattr(section, "SECTION_NAME") and line.strip().upper() != section.SECTION_NAME.upper():
                 raise ValueError("Cannot set " + section.SECTION_NAME + " from: " + line.strip())

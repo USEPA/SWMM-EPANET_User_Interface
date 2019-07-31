@@ -1,6 +1,6 @@
 from enum import Enum
 from ui.inifile import ini_setting
-from PyQt4.QtCore import QSettings
+from PyQt5.QtCore import QSettings
 import core.epanet.options.hydraulics as hyd
 
 class EPROPERTY_JUNCTION(Enum):
@@ -53,14 +53,15 @@ class EPROPERTY_PIPE(Enum):
 
 
 class DefaultsEPANET(ini_setting):
-    def __init__(self, file_name, project):
-        ini_setting.__init__(self, file_name)
-        self.project = project
+    def __init__(self, file_name, project, program_setting):
         self.model = "epanet"
+        self.project = project
+        self.program_settings = program_setting
+        ini_setting.__init__(self, file_name, self.model)
 
         # [Labels] label prefix
-        self.model_object_keys = ["Junction", "Reservoir", "Tank", "Pump", "Valve", "Pattern", "Curve"]
-        self.model_object_def_prefix = ["J", "R", "T", "P", "V", "Ptn", "C"]
+        self.model_object_keys = ["Junctions", "Reservoirs", "Tanks", "Pipes", "Pumps", "Valves", "Patterns", "Curves"]
+        self.model_object_def_prefix = ["J", "R", "T", "P", "U", "V", "Ptn", "C"]
 
         self.id_increment_key = "ID Increment"
         self.id_def_increment = 1
@@ -75,8 +76,11 @@ class DefaultsEPANET(ini_setting):
         self.parameters_keys = ["Flow Units", "Headloss Formula", "Specific Gravity", "Relative Viscosity",
                            "Maximum Trials", "Accuracy", "If Unbalanced", "Default Pattern", "Demand Multiplier",
                            "Emitter Exponent", "Status Report", "Check Frequency", "Max Check", "Damp Limit"]
-        self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "Continue", 1, 1.0, 0.5, "Yes",
+        self.parameters_def_values = ["GPM", "H_W", 1.0, 1.0, 40, 0.001, "CONTINUE", 1, 1.0, 0.5, "Yes",
                                       2, 10, 0.0]
+
+        if self.config is None:
+            self.init_config()
 
         self.model_object_prefix = {}
         for key in self.model_object_keys:
@@ -106,13 +110,12 @@ class DefaultsEPANET(ini_setting):
                 if val is not None:
                     self.parameters_values[key] = val
 
-        if self.config is None:
-            self.init_config()
-
     def init_config(self):
         # if a new qsettings has not been created such as when no project is created
         # then, create an empty qsettings
-        self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        if self.config is None:
+            self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+        '''
         self.config.setValue("Model/Name", self.model)
         for key in self.model_object_keys:
             self.config.setValue("Labels/" + key, self.model_object_prefix[key])
@@ -120,6 +123,7 @@ class DefaultsEPANET(ini_setting):
             self.config.setValue("Defaults/" + key, self.properties_values[key])
         for key in self.parameters_keys:
             self.config.setValue("Defaults/" + key, self.parameters_values[key])
+        '''
 
     def sync_defaults_label(self):
         """
@@ -130,6 +134,7 @@ class DefaultsEPANET(ini_setting):
                 self.config.setValue("Labels/" + key, self.model_object_prefix[key])
         if self.config:
             self.config.setValue("Labels/" + self.id_increment_key, str(self.id_increment))
+            self.config.sync()
 
     def sync_defaults_property(self):
         """
@@ -138,6 +143,8 @@ class DefaultsEPANET(ini_setting):
         for key in self.properties_keys:
             if self.config:
                 self.config.setValue("Defaults/" + key, self.properties_values[key])
+        if self.config:
+            self.config.sync()
 
     def sync_defaults_parameter(self):
         """
@@ -189,15 +196,30 @@ class DefaultsEPANET(ini_setting):
         """
         item_type = item.__class__.__name__
         if item_type == "Junction":
-            item.elevation = self.properties_values["Node Elevation"]
+            item.elevation = self.config.value("Defaults/Node Elevation")
+            if item.elevation is None:
+                item.elevation = self.properties_values["Node Elevation"]
         elif item_type == "Tank":
-            item.elevation = self.properties_values["Node Elevation"]
-            item.diameter = self.properties_values["Tank Diameter"]
-            item.initial_level = self.properties_values["Tank Height"]
+            item.elevation = self.config.value("Defaults/Node Elevation")
+            if item.elevation is None:
+                item.elevation = self.properties_values["Node Elevation"]
+            item.diameter = self.config.value("Defaults/Tank Diameter")
+            if item.diameter is None:
+                item.diameter = self.properties_values["Tank Diameter"]
+            item.initial_level = self.config.value("Defaults/Tank Height")
+            if item.initial_level is None:
+                item.initial_level = self.properties_values["Tank Height"]
         elif item_type == "Pipe":
-            item.length = self.properties_values["Pipe Length"]
-            item.diameter = self.properties_values["Pipe Diameter"]
-            item.roughness = self.properties_values["Pipe Roughness"]
+            if float(item.length) < 0.00000001:
+                item.length = self.config.value("Defaults/Pipe Length")
+                if item.length is None:
+                    item.length = self.properties_values["Pipe Length"]
+            item.diameter = self.config.value("Defaults/Tank Diameter")
+            if item.diameter is None:
+                item.diameter = self.properties_values["Tank Diameter"]
+            item.roughness = self.config.value("Defaults/Pipe Roughness")
+            if item.roughness is None:
+                item.roughness = self.properties_values["Pipe Roughness"]
 
 
 

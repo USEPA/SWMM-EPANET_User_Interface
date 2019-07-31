@@ -1,17 +1,24 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.SWMM.frmTransectDesigner import Ui_frmTransect
+from ui.help import HelpHandler
 from core.swmm.hydraulics.link import Transect
+import pandas as pd
+from ui.frmPlotViewer import frmPlotViewer
 
 
-class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
+class frmTransect(QMainWindow, Ui_frmTransect):
     SECTION_TYPE = Transect
 
     def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
+        self.help_topic = "swmm/src/src/transecteditordialog.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.transects
@@ -31,23 +38,38 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
             self.editing_item = transect
             self.txtName.setText(transect.name)
             self.txtDescription.setText(transect.comment)
-            self.txtLeftBank.setText(transect.n_left)
-            self.txtRightBank.setText(transect.n_right)
-            self.txtChannel.setText(transect.n_channel)
-            self.txtLeftSta.setText(transect.overbank_left)
-            self.txtRightSta.setText(transect.overbank_right)
-            self.txtStations.setText(transect.stations_modifier)
-            self.txtElevations.setText(transect.elevations_modifier)
-            self.txtMeander.setText(transect.meander_modifier)
+            self.txtLeftBank.setText(str(transect.n_left))
+            self.txtRightBank.setText(str(transect.n_right))
+            self.txtChannel.setText(str(transect.n_channel))
+            self.txtLeftSta.setText(str(transect.overbank_left))
+            self.txtRightSta.setText(str(transect.overbank_right))
+            self.txtStations.setText(str(transect.stations_modifier))
+            self.txtElevations.setText(str(transect.elevations_modifier))
+            self.txtMeander.setText(str(transect.meander_modifier))
             point_count = -1
             for value in transect.stations:
                 point_count += 1
-                led = QtGui.QLineEdit(str(value[1]))
-                self.tblTransect.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(str(value[0]))
-                self.tblTransect.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value[1]))
+                self.tblTransect.setItem(point_count,0,QTableWidgetItem(led.text()))
+                led = QLineEdit(str(value[0]))
+                self.tblTransect.setItem(point_count,1,QTableWidgetItem(led.text()))
+        if self.project.metric:
+            self.tblTransect.horizontalHeaderItem(0).setText('Station (m)')
+            self.tblTransect.horizontalHeaderItem(1).setText('Elevation (m)')
 
     def cmdOK_Clicked(self):
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_n_left = self.editing_item.n_left
+        orig_n_right = self.editing_item.n_right
+        orig_n_channel = self.editing_item.n_channel
+        orig_eleations_modifier = self.editing_item.elevations_modifier
+        orig_meander_modifier = self.editing_item.meander_modifier
+        orig_stations_modifier = self.editing_item.stations_modifier
+        orig_overbank_left = self.editing_item.overbank_left
+        orig_overbank_right = self.editing_item.overbank_right
+        orig_stations = self.editing_item.stations
+
         self.editing_item.name = self.txtName.text()
         self.editing_item.comment = self.txtDescription.text()
         self.editing_item.n_left = self.txtLeftBank.text()
@@ -67,13 +89,50 @@ class frmTransect(QtGui.QMainWindow, Ui_frmTransect):
                         y = self.tblTransect.item(row,0).text()
                         if len(y) > 0:
                             self.editing_item.stations.append((x,y))
+
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
+            if orig_name != self.editing_item.name or \
+                orig_comment != self.editing_item.comment or \
+                orig_n_left != self.editing_item.n_left or \
+                orig_n_right != self.editing_item.n_right or \
+                orig_n_channel != self.editing_item.n_channel or \
+                orig_eleations_modifier != self.editing_item.elevations_modifier or \
+                orig_meander_modifier != self.editing_item.meander_modifier or \
+                orig_stations_modifier != self.editing_item.stations_modifier or \
+                orig_overbank_left != self.editing_item.overbank_left or \
+                orig_overbank_right != self.editing_item.overbank_right or \
+                orig_stations != self.editing_item.stations:
+                self._main_form.mark_project_as_unsaved()
             pass
-            # TODO: self._main_form.edited_?
 
         self.close()
 
     def cmdCancel_Clicked(self):
         self.close()
+
+    def btnView_Clicked(self):
+        """
+        Display the grid data with pandas dataframe plot function
+        Returns: None
+        """
+        self.Y = []
+        self.X = []
+        for row in range(self.tblTransect.rowCount()):
+            if self.tblTransect.item(row,0):
+                x = self.tblTransect.item(row,0).text()
+                if len(x) > 0:
+                    if self.tblTransect.item(row,1):
+                        y = self.tblTransect.item(row,1).text()
+                        if len(y) > 0:
+                            self.X.append(x)
+                            self.Y.append(y)
+
+        ts = pd.Series(self.Y, index=self.X)
+        df = pd.DataFrame({'':ts})
+        frm_plt = frmPlotViewer(df,'xy', 'Transect ' + self.editing_item.name, self.windowIcon(),
+                                self.tblTransect.horizontalHeaderItem(0).text(), self.tblTransect.horizontalHeaderItem(1).text())
+        frm_plt.setWindowTitle("Transect Viewer")
+        frm_plt.show()

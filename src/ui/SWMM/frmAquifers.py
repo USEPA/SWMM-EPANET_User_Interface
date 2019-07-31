@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.swmm.hydrology.aquifer import Aquifer
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
@@ -21,7 +22,7 @@ class frmAquifers(frmGenericPropertyEditor):
             # for patterns, show available patterns
             pattern_section = main_form.project.patterns
             pattern_list = pattern_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:

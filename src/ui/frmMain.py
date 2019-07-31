@@ -3,22 +3,27 @@ os.environ['QT_API'] = 'pyqt'
 import sip
 for typ in ["QString","QVariant", "QDate", "QDateTime", "QTextStream", "QTime", "QUrl"]:
     sip.setapi(typ, 2)
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 if sys.version_info >= (3,):
     unicode = str
 # from embed_ipython_new import EmbedIPython
 from threading import Lock, Thread
 from time import sleep
-from PyQt4.Qsci import QsciScintilla
+from PyQt5.Qsci import QsciScintilla
 
 #from ui.ui_utility import EmbedMap
 # from ui.ui_utility import *
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.help import HelpHandler
 from ui.model_utility import *
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import *
-from frmMainDesigner import Ui_frmMain
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QUndoCommand, QUndoStack, QFileDialog, QVBoxLayout, QAction
+from PyQt5.QtWidgets import QAbstractItemView, QMessageBox, QMenu, QInputDialog, QDockWidget
+from .frmMainDesigner import Ui_frmMain
 #from IPython import embed
 #from RestrictedPython import compile_restricted
 #import py_compile
@@ -35,15 +40,19 @@ INSTALL_DIR = os.path.abspath(os.path.dirname('__file__'))
 INIT_MODULE = "__init__"
 MAX_RECENT_FILES = 8
 
-class frmMain(QtGui.QMainWindow, Ui_frmMain):
+class frmMain(QMainWindow, Ui_frmMain):
 
     signalTimeChanged = QtCore.pyqtSignal()
     objectsSelected = QtCore.pyqtSignal(str, list)
 
     def __init__(self, q_application):
-        QtGui.QMainWindow.__init__(self, None)
+        QMainWindow.__init__(self, None)
         self.crs = None
-        self.project_settings = None
+        # self.project_settings = None
+        self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
+        self.status_file_name = ''  # Set this when model status is available
+        self.output_filename = ''   # Set this when model output is available
         self.no_items = True
         self.setupUi(self)
         self.q_application = q_application
@@ -51,7 +60,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             print("QsciScintilla.SC_TYPE_STRING:")
             print(str(QsciScintilla.SC_TYPE_STRING))
         except Exception as exQsci:
-            print str(exQsci)
+            print (str(exQsci))
         self._forms = []
         self._editor_form = None
         """List of editor windows used during this session, kept here so they are not automatically closed."""
@@ -104,15 +113,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             lambda: self.toggle_toolbar('object,' + str(self.actionToolbarShowObject.isChecked())))
         self.actionToolbarShowStandard.triggered.connect(
             lambda: self.toggle_toolbar('standard,' + str(self.actionToolbarShowStandard.isChecked())))
+        self.menuBackdrop.deleteLater()
         self.actionStdMapBackLoad.triggered.connect(lambda: self.map_addraster('backdrop'))
         self.actionStdMapBackUnload.triggered.connect(self.unloadBasemap)
         self.actionStdMapBackAlign.triggered.connect(lambda: self.setMenuMapTool('pan'))
         self.actionAdd_Vector.triggered.connect(self.map_addvector)
         self.actionAdd_Raster.triggered.connect(lambda: self.map_addraster(''))
+        self.actionStdWinCascade.triggered.connect(self.cascade_windows)
+        self.actionStdWinTile.triggered.connect(self.tile_windows)
+        self.actionStdWinCloseAll.triggered.connect(self.close_all_windows)
+        self.actionStdWinCloseAll.setVisible(False)
+        self.actionStdMapToggle.triggered.connect(self.study_area_map)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
-        self.auto_length = (self.cbAutoLength.currentIndex == 1)
+        self.auto_length = (self.cbAutoLength.currentIndex() == 1)
 
         self.setAcceptDrops(True)
         self.tree_section = ''
@@ -123,6 +138,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget = None
         self.selecting = Lock()
         self.backdrop_name = ''
+        self.qgsa = None
+
+        # remove the close button from the project explorer and object explorer
+        self.dockw_tab.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.dockw_more.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
             orig_path = os.environ["Path"]
@@ -133,9 +154,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                install_dir_base == "EPANET-UI" or \
                install_dir_base == "SWMM-UI":
                 search_paths.append(INSTALL_DIR)
-            if os.environ.has_key("QGIS_PREFIX_PATH"):
+            if "QGIS_PREFIX_PATH" in os.environ:
                 search_paths.append(os.environ.get("QGIS_PREFIX_PATH"))
-            if os.environ.has_key("QGIS_HOME"):
+            if "QGIS_HOME" in os.environ:
                 search_paths.append(os.environ.get("QGIS_HOME"))
             dirname = INSTALL_DIR
             package_dir = INSTALL_DIR + "\\dist\\" + self.model + "-UI"
@@ -170,27 +191,40 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 path = add_path + ';' + path
                         os.environ["Path"] = path
                         print("Try path = " + os.environ["Path"])
-                        from qgis.core import QgsApplication, QgsVectorLayer
+
+                        from qgis.core import QgsApplication, QgsVectorLayer, QgsProject
                         from qgis.gui import QgsMapCanvas
-                        from map_tools import EmbedMap, LegendMenuProvider
+                        print("DBG: import qgis core gui passed.")
+                        from ui.map_tools import EmbedMap, LegendMenuProvider
+                        print("DBG: import map_tools passed.")
                         QgsApplication.setPrefixPath(qgis_home, True)
-                        QgsApplication.initQgis()
+                        # QgsApplication.initQgis()
+                        self.qgsa = QgsApplication([], False)
+                        self.qgsa.initQgis()
                         tmp_lyr = QgsVectorLayer("Point", "Test", "memory")
-                        if not tmp_lyr.dataProvider():
+                        if not tmp_lyr.isValid():
                             del tmp_lyr
                             raise Exception("Loading QGIS data provider failed.")
                         else:
                             del tmp_lyr
-                        self.canvas = QgsMapCanvas(self, 'mapCanvas')
+                        self.canvas = QgsMapCanvas(self)
                         self.canvas.setMouseTracking(True)
-                        self.canvas.mapRenderer().setProjectionsEnabled(True)
-                        self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self)
+                        self.qgs_project = QgsProject.instance()
+                        # self.canvas.mapRenderer().setProjectionsEnabled(True)
+                        self.map_widget = EmbedMap(session=self, canvas=self.canvas, main_form=self,
+                                                   qgs_project=self.qgs_project)
                         self.map_win = self.map.addSubWindow(self.map_widget, QtCore.Qt.Widget)
                         self.select_region_checked = False
                         self.translating_coordinates = False
                         if self.map_win:
                             self.map_win.setWindowTitle('Study Area Map')
                             self.map_win.showMaximized()
+
+                            # remove the close button from the map
+                            self.map_win.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+                            self.map_win.setWindowFlags(
+                                QtCore.Qt.WindowMaximizeButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+
                             # self.map_win.map_unit_names = [transl8("frmMain", units, None)
                             #                                for units in self.map_win.map_unit_names]
                             self.actionPan.triggered.connect(self.setQgsMapTool)
@@ -213,16 +247,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             self.actionStdMapZoomIn.triggered.connect(lambda: self.setMenuMapTool('zoomin'))
                             self.actionStdMapZoomOut.triggered.connect(lambda: self.setMenuMapTool('zoomout'))
                             self.actionStdMapFullExtent.triggered.connect(lambda: self.setMenuMapTool('fullextent'))
+                            self.actionStdMapPanSelection.triggered.connect(lambda: self.setMenuMapTool('panselection'))
 
                             from qgis.gui import QgsLayerTreeView
                             from qgis.core import QgsLayerTreeModel
                             from qgis.core import QgsProject
                             from qgis.gui import QgsLayerTreeMapCanvasBridge
-                            self.gis_layer_root = QgsProject.instance().layerTreeRoot()
+                            # self.gis_layer_root = QgsProject.instance().layerTreeRoot()
+                            self.gis_layer_root = self.qgs_project.layerTreeRoot()
                             self.gis_layer_model = QgsLayerTreeModel(self.gis_layer_root)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeReorder)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowLegendChangeState)
-                            self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
+                            # self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowSymbologyChangeState)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeChangeVisibility)
                             self.gis_layer_model.setFlag(QgsLayerTreeModel.AllowNodeRename)
                             self.gis_layer_tree = QgsLayerTreeView()
@@ -245,7 +281,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     # QMessageBox.information(None, "Error Initializing Map", msg, QMessageBox.Ok)
         except Exception as eImport:
             self.canvas = None
-            print str(eImport) + str(traceback.print_exc())
+            print (str(eImport) + str(traceback.print_exc()))
         if not self.canvas:
             self.map_widget = None
             print("QGIS libraries not found, Not creating map\n")
@@ -296,6 +332,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.pushButtonPlay.clicked.connect(self.btnPlay_clicked)
         self.pushButtonForward.clicked.connect(self.btnPlayForward_clicked)
         self.pushButtonBack.clicked.connect(self.btnPlayBack_clicked)
+        self.dsbPlaySpeed.setValue(2.0)
+        self.dsbPlaySpeed.valueChanged.connect(self.dsbPlaySpeed_changed)
 
         self.chkDisplayFlowDir.stateChanged.connect(self.chkDisplayFlowDir_stateChanged)
 
@@ -303,7 +341,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.undo_stack = QUndoStack(self)
         # self.undo_view = QUndoView(self.undo_stack)
 
-        self.action_undo = QtGui.QAction(self)
+        self.action_undo = QAction(self)
         self.action_undo.setObjectName("actionUndo")
         self.action_undo.setText(transl8("frmMain", "Undo", None) )
         self.action_undo.setToolTip(transl8("frmMain", "Undo the most recent edit", None))
@@ -311,7 +349,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.menuEdit.addAction(self.action_undo)
         self.action_undo.triggered.connect(self.undo)
 
-        self.action_redo = QtGui.QAction(self)
+        self.action_redo = QAction(self)
         self.action_redo.setObjectName("actionRedo")
         self.action_redo.setText(transl8("frmMain", "Redo", None) )
         self.action_redo.setToolTip(transl8("frmMain", "Redo the most recent Undo", None) )
@@ -378,13 +416,13 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 QMessageBox.Ok)
 
     def import_from_gis(self):
-        import import_export
+        import ui.import_export
 
         file_filter = "GeoJSON (*.json *.geojson);;"  \
                       "All files (*.*)"
         directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Create Model from GeoJSON file",
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Create Model from GeoJSON file",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)
@@ -392,10 +430,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.program_settings.setValue("GISPath", path_only)
                 self.program_settings.sync()
 
-            import_export.import_from_gis(self, file_name)
+            ui.import_export.import_from_gis(self, file_name)
 
     def export_to_gis(self):
-        import import_export
+        import ui.import_export
 
         file_filter = "GeoJSON (*.json);;" \
                       "Shapefile (*.shp);;" \
@@ -403,7 +441,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                       "All files (*.*)"
         directory = self.program_settings.value("GISPath", os.path.dirname(self.project.file_name))
 
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Export to GIS",
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Export to GIS",
                                                       directory, file_filter)
         if file_name:
             path_only, file_only = os.path.split(file_name)
@@ -411,7 +449,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.program_settings.setValue("GISPath", path_only)
                 self.program_settings.sync()
 
-            import_export.export_to_gis(self, file_name)
+            ui.import_export.export_to_gis(self, file_name)
 
     # def tabProjMapChanged(self, index):
     #     if index == 1:
@@ -421,7 +459,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def saveMapAsImage(self):
         directory = self.program_settings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save Map As...", directory,
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save Map As...", directory,
                                                             "PNG Files (*.png);;All files (*.*)")
         if file_name:
             self.canvas.saveAsImage(file_name)
@@ -432,10 +470,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def redo(self):
         self.undo_stack.redo()
 
-    class _AddItem(QtGui.QUndoCommand):
+    class _AddItem(QUndoCommand):
         """Private class that adds an item to the model and the map. Accessed via add_item method."""
         def __init__(self, session, item):
-            QtGui.QUndoCommand.__init__(self, "Add " + str(item))
+            QUndoCommand.__init__(self, "Add " + str(item))
             self.session = session
             self.item = item
             self.added_id = None
@@ -498,7 +536,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if self.isSubLink:
                 #swap out link item and section types
                 #self.layer = self.session.model_layers.layer_by_name("sublinks")
-                for obj_type, lyr_name in self.session.section_types.iteritems():
+                for obj_type in self.session.section_types:
+                    lyr_name = self.session.section_types[obj_type]
                     if lyr_name == "sublinks":
                         in_node = self.item.inlet_node
                         out_node = self.item.outlet_node
@@ -525,36 +564,46 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             if not self.isSubLink:
                 # self.session.list_objects()  # Refresh the list of items on the form
                 list_item = self.session.listViewObjects.addItem(self.item.name)
-                self.session.listViewObjects.scrollToItem(list_item)
+                if list_item is not None:
+                    self.session.listViewObjects.scrollToItem(list_item)
 
-            if self.layer:
+            if self.layer is not None and self.layer.isValid():
                 self.session.map_widget.clearSelectableObjects()
                 self.layer.startEditing()
                 if isinstance(self.item, Coordinate):
-                    added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                    if len(str(self.item.x)) > 0 and len(str(self.item.y)) > 0:
+                        added = self.layer.dataProvider().addFeatures([self.session.map_widget.point_feature_from_item(self.item)])
+                    else:
+                        added = [False]
                 elif isinstance(self.item, Link):
-                    f = self.session.map_widget.line_feature_from_item(self.item,
-                                                                       self.session.project.all_nodes(),
-                                                                       self.inlet_sub, self.outlet_sub)
-                    added = self.layer.dataProvider().addFeatures([f])
-                    if added[0]:
-                        #set subcatchment's outlet nodal/subcatch id
-                        if self.inlet_sub and self.inlet_sub_id:
-                            for s in self.session.project.subcatchments.value:
-                                if s.name == self.inlet_sub_id:
-                                    s.outlet = self.item.outlet_node
-                                    break
-                        #set sublink's attributes
-                        #f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
-                        #self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
-                        #self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
-                        self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
-                        self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
-                        self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
-                        self.layer.updateExtents()
-                        self.layer.commitChanges()
-                        self.layer.triggerRepaint()
-                        self.session.map_widget.canvas.refresh()
+                    if self.item.inlet_node is not None and self.item.outlet_node is not None:
+                        if self.item.inlet_node != 'None' and self.item.outlet_node != 'None':
+                            f = self.session.map_widget.line_feature_from_item(self.item,
+                                                                               self.session.project.all_nodes(),
+                                                                               self.inlet_sub, self.outlet_sub)
+                            added = self.layer.dataProvider().addFeatures([f])
+                            if added[0]:
+                                #set subcatchment's outlet nodal/subcatch id
+                                if self.inlet_sub and self.inlet_sub_id:
+                                    for s in self.session.project.subcatchments.value:
+                                        if s.name == self.inlet_sub_id:
+                                            s.outlet = self.item.outlet_node
+                                            break
+                                #set sublink's attributes
+                                #f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
+                                self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
+                                self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
+                                self.layer.changeAttributeValue(added[1][0].id(), 2, self.item.inlet_node)
+                                self.layer.changeAttributeValue(added[1][0].id(), 3, self.item.outlet_node)
+                                self.layer.changeAttributeValue(added[1][0].id(), 4, self.isSub2Sub)
+                                self.layer.updateExtents()
+                                self.layer.commitChanges()
+                                self.layer.triggerRepaint()
+                                self.session.map_widget.canvas.refresh()
+                        else:
+                            added = [False]
+                    else:
+                        added = [False]
                 elif isinstance(self.item, Polygon):
                     f = self.session.map_widget.polygon_feature_from_item(self.item)
                     added = self.layer.dataProvider().addFeatures([f])
@@ -565,7 +614,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
                         #add centroid item
                         c_item = None
-                        for obj_type, lyr_name in self.session.section_types.iteritems():
+                        for obj_type in self.session.section_types:
+                            lyr_name = self.session.section_types[obj_type]
                             if lyr_name == "subcentroids":
                                 c_item = obj_type()
                                 c_item.x = str(pt.x())
@@ -637,6 +687,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 s.outlet = ""
                                 break
                 self.session.map_widget.clearSelectableObjects()
+                section_field_name = self.session.section_types[type(self.item)]
+                self.layer = self.session.model_layers.layer_by_name(section_field_name)
                 self.layer.startEditing()
                 self.layer.dataProvider().deleteFeatures([self.added_id])
                 self.layer.commitChanges()
@@ -654,11 +706,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
+        self.mark_project_as_unsaved()
 
-    class _DeleteItem(QtGui.QUndoCommand):
+    class _DeleteItem(QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
         def __init__(self, session, item):
-            QtGui.QUndoCommand.__init__(self, "Delete " + str(item))
+            QUndoCommand.__init__(self, "Delete " + str(item))
             self.session = session
             self.item = item
             section_field_name = session.section_types[type(item)]
@@ -685,13 +738,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     sel_sub_ids.append(f['sub_mapid'])
                     sel_cen_names.append(f['name'])
                 if sel_sub_ids:
-                    layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                    # layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                    layer_subcatchments.selectByIds(sel_sub_ids)
                     self.delete_features[layer_subcatchments] = [f for f in layer_subcatchments.selectedFeatures()]
                 for f in layer_sublinks.getFeatures():
                     if f['inlet'] in sel_cen_names or f['outlet'] in sel_cen_names:
                         sel_slink_ids.append(f.id())
                 if sel_slink_ids:
-                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    layer_sublinks.selectByIds(sel_slink_ids)
                     self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
             elif "subcatchment" in self.layer.name().lower():
                 layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
@@ -700,7 +754,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 for f in self.layer.selectedFeatures():
                     sel_cent_ids.append(f['c_mapid'])
                 if sel_cent_ids:
-                    layer_subcentroids.setSelectedFeatures(sel_cent_ids)
+                    layer_subcentroids.selectByIds(sel_cent_ids)
                     self.delete_features[layer_subcentroids] =[f for f in layer_subcentroids.selectedFeatures()]
                 sel_sub_names = []
                 for f in self.layer.selectedFeatures():
@@ -713,7 +767,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if f['outlet'][len('subcentroid-'):] in sel_sub_names:
                             sel_slink_ids.append(f.id())
                 if sel_slink_ids:
-                    layer_sublinks.setSelectedFeatures(sel_slink_ids)
+                    layer_sublinks.selectByIds(sel_slink_ids)
                     self.delete_features[layer_sublinks] =[f for f in layer_sublinks.selectedFeatures()]
             pass
 
@@ -795,10 +849,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def delete_item(self, item):
         self.undo_stack.push(self._DeleteItem(self, item))
 
-    class _MoveSelectedItems(QtGui.QUndoCommand):
+    class _MoveSelectedItems(QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
         def __init__(self, session, layer, dx, dy):
-            QtGui.QUndoCommand.__init__(self, "Move " + str(dx) + ", " + str(dy))
+            QUndoCommand.__init__(self, "Move " + str(dx) + ", " + str(dy))
             self.session = session
             self.layer = layer
             self.dx = dx
@@ -814,7 +868,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 sel_sub_ids = []
                 for f in self.layer.selectedFeatures():
                     sel_sub_ids.append(f['sub_mapid'])
-                layer_subcatchments.setSelectedFeatures(sel_sub_ids)
+                layer_subcatchments.selectByIds(sel_sub_ids)
                 self.map_features.extend(layer_subcatchments.selectedFeatures())
                 pass
             elif "subcatchment" in self.layer.name().lower():
@@ -823,7 +877,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 sel_cent_ids = []
                 for f in self.layer.selectedFeatures():
                     sel_cent_ids.append(f['c_mapid'])
-                layer_subcentroids.setSelectedFeatures(sel_cent_ids)
+                layer_subcentroids.selectByIds(sel_cent_ids)
                 self.map_features.extend(layer_subcentroids.selectedFeatures())
 
             pass
@@ -835,7 +889,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.move(True)
 
         def move(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsWkbTypes, QgsPointXY
             try:
                 self.layer.startEditing()
                 all_nodes = self.session.project.all_nodes()
@@ -857,21 +911,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 for feature in self.map_features:
                     name = feature.attributes()[0]
                     geometry = feature.geometry()
-                    if geometry.wkbType() == QGis.WKBPoint:
+                    if geometry.wkbType() == QgsWkbTypes.Point:
                         point = geometry.asPoint()
                         if undo:
                             new_point = point
                         else:
-                            new_point = QgsPoint(point.x() + dx, point.y() + dy)
+                            new_point = QgsPointXY(point.x() + dx, point.y() + dy)
                         if "subcatchment" in self.layer.name().lower():
                             layer_subcentroids = self.session.model_layers.layer_by_name("subcentroids")
                             layer_subcentroids.startEditing()
-                            layer_subcentroids.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                            layer_subcentroids.changeGeometry(feature.id(), QgsGeometry.fromPointXY(new_point))
                             layer_subcentroids.commitChanges()
                             layer_subcentroids.updateExtents()
                             layer_subcentroids.triggerRepaint()
                         else:
-                            self.layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(new_point))
+                            self.layer.changeGeometry(feature.id(), QgsGeometry.fromPointXY(new_point))
 
                         node = all_nodes[name]
                         if node:
@@ -880,14 +934,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                             if not undo:
                                 moved_coordinates.append(node)
 
-                    elif geometry.wkbType() == QGis.WKBPolygon:
+                    elif geometry.wkbType() == QgsWkbTypes.Polygon or \
+                         geometry.wkbType() == QgsWkbTypes.MultiPolygon or \
+                        geometry.wkbType() == QgsWkbTypes.CurvePolygon:
                         if undo:
                             new_geom = geometry
                         else:
                             new_pts = []
-                            for pt in geometry.asPolygon()[0]:
-                                new_pts.append(QgsPoint(pt.x() + dx, pt.y() + dy))
-                            new_geom = QgsGeometry.fromPolygon([new_pts])
+                            for pt in geometry.vertices():
+                                new_pts.append(QgsPointXY(pt.x() + dx, pt.y() + dy))
+                            new_geom = QgsGeometry()
+                            new_geom.addPointsXY(new_pts, QgsWkbTypes.PolygonGeometry)
+                            # new_geom = QgsGeometry.fromPolygon([new_pts])
                         if "centroid" in self.layer.name().lower():
                             layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
                             layer_subcatchments.startEditing()
@@ -898,7 +956,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         else:
                             self.layer.changeGeometry(feature.id(), new_geom)
 
-                    elif geometry.wkbType() == QGis.WKBLineString:
+                    elif geometry.wkbType() == QgsWkbTypes.LineString:
                         link = all_links[name]
                         if link:
                             for node_name in [link.inlet_node, link.outlet_node]:
@@ -911,7 +969,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         node_layer = getattr(self.session.model_layers, section_field_name)
                                         node_layer.startEditing()
                                         feature = self.session.map_widget.find_feature(node_layer, node.name)
-                                        node_layer.changeGeometry(feature.id(), QgsGeometry.fromPoint(QgsPoint(node.x, node.y)))
+                                        node_layer.changeGeometry(feature.id(), QgsGeometry.fromPointXY(QgsPointXY(node.x, node.y)))
                                         node_layer.commitChanges()
                                         node_layer.updateExtents()
                                         node_layer.triggerRepaint()
@@ -956,7 +1014,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         feature = self.session.map_widget.find_feature(link_layer, link.name)
                         self.moved_links.append([link, link_layer, feature])
 
-                        link_points = feature.geometry().asPolyline()
+                        # link_points = feature.geometry().asPolyline()
+                        link_points = [QgsPoint(v.x(), v.y()) for v in feature.geometry().vertices()]
                         if move_inlet and move_outlet:
                             for vertex in link.vertices:
                                 vertex.x += dx
@@ -980,10 +1039,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.undo_stack.push(self._MoveSelectedItems(self, layer, dx, dy))
 
 
-    class _MoveVertex(QtGui.QUndoCommand):
+    class _MoveVertex(QUndoCommand):
         """Private class that removes an item from the model and the map. Accessed via delete_item method."""
         def __init__(self, session, layer, feature, point_index, from_x, from_y, to_x, to_y):
-            QtGui.QUndoCommand.__init__(self, "Move Vertex " + str(point_index) +
+            QUndoCommand.__init__(self, "Move Vertex " + str(point_index) +
                                         " from " + str(from_x) + ", " + str(from_y) +
                                         " to " + str(to_x) + ", " + str(to_y))
             self.session = session
@@ -1004,7 +1063,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.move(True)
 
         def move(self, undo):
-            from qgis.core import QgsGeometry, QGis, QgsPoint
+            from qgis.core import QgsGeometry, QgsWkbTypes
             try:
                 self.layer.startEditing()
                 if undo:
@@ -1046,10 +1105,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                         break
                                 for fl in self.sublinks.dataProvider().getFeatures():
                                     if fl["inlet"] == self.feature["c_modelid"]:
-                                        if fl.geometry().wkbType() == QGis.WKBLineString:
+                                        if fl.geometry().wkbType() == QgsWkbTypes.LineString:
                                             line = fl.geometry().asPolyline()
                                             new_l_g = QgsGeometry.fromPolyline([new_c, line[-1]])
-                                            change_map = {fl.id() : new_l_g}
+                                            change_map = {fl.id(): new_l_g}
                                             self.sublinks.dataProvider().changeGeometryValues(change_map)
                                         break
 
@@ -1071,8 +1130,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def edit_vertex(self, layer, feature, edit_type, *args):
         if layer:
-            from map_edit import MoveVertexz
-            from map_edit import AddDeleteVertexz
+            from .map_edit import MoveVertexz
+            from .map_edit import AddDeleteVertexz
             if "move" in edit_type.lower():
                 pind = args[0]
                 fx = args[1]
@@ -1139,13 +1198,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     index = section.value.index(item)
                     section.value._index[item.name] = item
                     del section.value._index[old_name]
+                    self.map_widget.process_name_change(section, old_name, item)
                 except Exception as ex:
                     print("edited_name: " + str(ex) + '\n' + str(traceback.print_exc()))
             else:
                 raise Exception("edited_name: Section not found in project: " + section_field_name)
         self.list_objects()
         if self.model_layers:
-            self.model_layers.create_layers_from_project(self.project)
+            # self.model_layers.create_layers_from_project(self.project)
             try:
                 self.setQgsMapTool()
             except:
@@ -1178,7 +1238,21 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         if self.project_settings:
             item_type_name = item_type.__name__
-            prefix = unicode(self.project_settings.config.value("Labels/" + item_type_name, ""))
+            if item_type_name == 'RainGage':
+                item_type_name = 'Rain Gage'
+            elif item_type_name == 'StorageUnit':
+                item_type_name = 'Storage Unit'
+            elif item_type_name == 'Orifice' or item_type_name == 'Weir' or item_type_name == 'Outlet':
+                item_type_name = 'Regulator'
+            prefix = self.project_settings.config.value("Labels/" + item_type_name)
+            # if it wasn't in the ini file for this project, look for it in the global defaults
+            if prefix is None and item_type_name in self.project_settings.model_object_prefix:
+                prefix = self.project_settings.model_object_prefix[item_type_name]
+            if prefix is None and item_type_name + 's' in self.project_settings.model_object_prefix:
+                prefix = self.project_settings.model_object_prefix[item_type_name + 's']  # try the plural
+            if prefix is None:
+                prefix = ""
+            prefix = unicode(prefix)
             try:
                 increment = int(self.project_settings.config.value("Labels/ID Increment", 1))
             except:
@@ -1190,9 +1264,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
         for name in existing_names:
             try:
-                digits = filter(unicode.isdigit, name)
-                if digits:
-                    int_digits = int(digits)
+                digits = list(filter(unicode.isdigit, name))
+                if digits and len(digits) > 0:
+                    int_digits = int(digits[0])
                     if int_digits >= number:
                         number = int_digits + increment
             except Exception as ex:
@@ -1230,6 +1304,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             else:
                 return
 
+    def dsbPlaySpeed_changed(self):
+        if self.animate_thread:
+            if self.dsbPlaySpeed.value() > 0:
+                self.animate_thread.set_speed(self.dsbPlaySpeed.value())
+
     def btnPlay_clicked(self):
         if not self.animate_thread:
             self.animate_thread = MyProcess(self.animate_e_step, self.output.num_periods)
@@ -1250,11 +1329,17 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.update_thematic_map()
 
     def setQgsMapToolSelect(self):
-        self.actionMapSelectObj.setChecked(True)
+        if self.actionMapSelectObj.isChecked():
+            self.actionMapSelectObj.setChecked(False)
+        else:
+            self.actionMapSelectObj.setChecked(True)
         self.setQgsMapTool()
 
     def setQgsMapToolSelectVertex(self):
-        self.actionMapSelectVertex.setChecked(True)
+        if self.actionMapSelectVertices.isChecked():
+            self.actionMapSelectVertices.setChecked(False)
+        else:
+            self.actionMapSelectVertices.setChecked(True)
         self.setQgsMapTool()
 
     def setMenuMapTool(self, aMenuMapToolName):
@@ -1266,6 +1351,8 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.actionZoom_out.setChecked(True)
         elif aMenuMapToolName == 'fullextent':
             self.zoomfull()
+        elif aMenuMapToolName == 'panselection':
+            self.pantoselection()
         if self.canvas:
             self.map_widget.setZoomInMode()
             self.map_widget.setZoomOutMode()
@@ -1276,6 +1363,9 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.select_region_checked = True
         else:
             self.select_region_checked = not self.select_region_checked
+        if self.select_region_checked:
+            if not self.actionMapSelectRegion.isChecked():
+                self.actionMapSelectRegion.setChecked(True)
         self.setQgsMapTool()
         self.model_layers.get_selected_model_ids()
         if self.model_layers.total_selected > 0:
@@ -1291,7 +1381,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def setQgsMapTool(self):
         if self.canvas:
-            from map_tools import AddPointTool, AddLinkTool, CaptureTool
+            from .map_tools import AddPointTool, AddLinkTool, CaptureTool
             self.map_widget.setZoomInMode()
             self.map_widget.setZoomOutMode()
             self.map_widget.setPanMode()
@@ -1308,16 +1398,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 self.map_widget.setAddObjectMode(act, name, CaptureTool)
 
     def zoomfull(self):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         self.map_widget.zoomfull()
+
+    def pantoselection(self):
+        self.map_widget.pan_to_one_feature()
 
     def map_addfeature(self):
         self.map_widget.setAddFeatureMode()
 
     def onGeometryAdded(self):
-        print 'Geometry Added'
+        print('Geometry Added')
 
     def onGeometryChanged(self):
-        print 'Geometry Changed'
+        print('Geometry Changed')
 
     # def mouseMoveEvent(self, event):
     #     pass
@@ -1340,11 +1437,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     #             pass
 
     def map_addvector(self):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         directory = self.program_settings.value("GISDataDir", "/")
         file_filter = "Shapefile (*.shp);;" \
                       "GeoJSON (*.json *.geojson);;" \
                       "All files (*.*)"
-        filename = QtGui.QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
+        filename, filetype = QFileDialog.getOpenFileName(None, 'Open Vector File...', directory, file_filter)
         if filename:
             try:
                 self.map_widget.addVectorLayer(filename)
@@ -1368,10 +1469,14 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         #         self.map_widget.addVectorLayer(filename)
 
     def map_addraster(self, eventArg):
+        self.actionMapMeasure.setChecked(False)
+        self.map_widget.setMeasureMode()
+        self.actionMapSelectRegion.setChecked(False)
+        self.map_widget.setSelectByRegionMode()
         directory = self.program_settings.value("GISDataDir", "/")
-        filename = QtGui.QFileDialog.getOpenFileName(self, "Open Raster...", directory,
+        filename, ftype = QFileDialog.getOpenFileName(self, "Open Raster...", directory,
                                                      "GeoTiff files (*.tif *tiff);;Bitmap (*.bmp);;All files (*.*)")
-        #filename = QtGui.QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
+        #filename, ftype = QFileDialog.getOpenFileName(None, 'Specify Raster Dataset', '')
         if filename:
             try:
                 self.map_widget.addRasterLayer(filename, eventArg)
@@ -1405,7 +1510,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.actionStdDeleteObject.triggered.connect(self.delete_object_clicked)
         self.actionStdMapDimensions.triggered.connect(self.configMapDimensions)
 
-        layout = QtGui.QVBoxLayout(self.tabProject)
+        layout = QVBoxLayout(self.tabProject)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)
@@ -1431,7 +1536,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         pass
 
     def configMapDimensions(self):
-        from frmMapDimensions import frmMapDimensions
+        from .frmMapDimensions import frmMapDimensions
         f = frmMapDimensions(self)
         f.show()
         result = f.exec_()
@@ -1449,7 +1554,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         if self.plugins:
             menu = self.menuPlugins
             for p in self.plugins:
-                lnew_action = QtGui.QAction(p['name'], menu)
+                lnew_action = QAction(p['name'], menu)
                 lnew_action.setCheckable(True)
                 menu.addAction(lnew_action)
                 lnew_action.triggered.connect(self.run_tier1_plugin)
@@ -1500,7 +1605,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         new_custom_menu = self.menubar.addMenu(plugin.plugin_name)
         new_custom_menu.menuTag = 'plugin_mainmenu_' + plugin.plugin_name
         for m in plugin.__all__:
-            new_action = QtGui.QAction(m, self)
+            new_action = QAction(m, self)
             new_action.setStatusTip(m)
             new_action.setData(plugin.plugin_name + '|' + m)
             new_action.setCheckable(False)
@@ -1535,11 +1640,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     return
 
     def edit_script(self):
-        import editor
-        editor.ICON_FOLDER = os.path.join(INSTALL_DIR, "icons", "editor")
-        if not os.path.isdir(editor.ICON_FOLDER):
-            editor.ICON_FOLDER = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
-        editor.MAX_RECENT_FILES = MAX_RECENT_FILES
+        import ui.editor as editor
+        editor.ICON_FOLDER_EDITOR = os.path.join(INSTALL_DIR, "icons", "editor")
+        if not os.path.isdir(editor.ICON_FOLDER_EDITOR):
+            editor.ICON_FOLDER_EDITOR = os.path.join(os.path.dirname(INSTALL_DIR), "icons", "editor")
+        MAX_RECENT_FILES = editor.MAX_RECENT_FILES_EDITOR
         self._editor_form = editor.EditorWindow(parent=self, session=self)
         self._editor_form.session = self
         self._editor_form.show()
@@ -1560,7 +1665,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def script_browse_open(self, browse_title="Select script"):
         directory = self.program_settings.value("ScriptDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, browse_title, directory,
+        file_name, ftype = QFileDialog.getOpenFileName(self, browse_title, directory,
                                                       "Python Files (*.py);;All files (*.*)")
         if file_name:
             self.add_recent_script(file_name)
@@ -1573,7 +1678,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def script_browse_save(self, browse_title="Save Script As..."):
         directory = self.program_settings.value("ScriptDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, browse_title, directory,
+        file_name, ftype = QFileDialog.getSaveFileName(self, browse_title, directory,
                                                             "Python Files (*.py);;All files (*.*)")
         if file_name:
             # Append extension if not there yet
@@ -1595,17 +1700,23 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 redirected_output = StringIO()
                 sys.stdout = redirected_output
                 session = self
+                code = ""
                 with open(file_name, 'r') as script_file:
-                    exec(script_file)
+                    code = script_file.read()
+                    exec(code)
                 # Potential alternative way to run script, would allow running without saving
-                # namespace['__file__'] = script_filename
-                # if os.path.exists(script_filename):
-                #     source = open(script_filename).read()
-                #     code = compile(source, script_filename, 'exec')
-                #     exec (code, namespace, namespace)
+                """
+                namespace['__file__'] = file_name
+                if os.path.exists(file_name):
+                    source = open(file_name).read()
+                    code = compile(source, file_name, 'exec')
+                    exec(code, namespace, namespace)
+                """
+                QApplication.restoreOverrideCursor()
                 QMessageBox.information(None, "Finished Running Script",
                                         file_name + "\n" + redirected_output.getvalue(), QMessageBox.Ok)
             except Exception as ex:
+                QApplication.restoreOverrideCursor()
                 QMessageBox.information(None, "Exception Running Script",
                                         file_name + '\n' + str(ex), QMessageBox.Ok)
             finally:
@@ -1633,7 +1744,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             files = []
 
         if files and files[0] == file_name:
-            return
+            return files
 
         if file_name:
             try:
@@ -1667,7 +1778,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         menus = []
         parent_menu.addSeparator()
         for i in range(MAX_RECENT_FILES):
-            action = QtGui.QAction(self, visible=False, triggered=callback)
+            action = QAction(self, visible=False, triggered=callback)
             # if parent_menu is not self.menuScripting:
             #     action.setShortcut(QKeySequence("Ctrl+" + str(i+1)))
             menus.append(action)
@@ -1713,7 +1824,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 edit_these = [new_item]
             else:  # add selected items to edit_these
                 edit_these = []
-                if not isinstance(section.value, basestring):
+                if not isinstance(section.value, str):
                     if isinstance(section.value, list):
                         for value in section.value:
                             if value.name in selected_items:
@@ -1728,7 +1839,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                         if len(tree_item) > 2:
                             # Get arguments for editor creation from tree_item
                             # Usually this is a list, but if not, try to treat it as a single argument
-                            if isinstance(tree_item[2], basestring) or not isinstance(tree_item[2], list):
+                            if isinstance(tree_item[2], str) or not isinstance(tree_item[2], list):
                                 args.append(str(tree_item[2]))
                             else:  # tree_item[2] is a list that is not a string
                                 args.extend(tree_item[2])
@@ -1759,7 +1870,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def show_edit_window(self, window):
         if window:
-            print "Show edit window " + str(window)
+            print("Show edit window " + str(window))
             self._forms.append(window)
             # window.destroyed.connect(lambda s, e, a: self._forms.remove(s))
             # window.destroyed = lambda s, e, a: self._forms.remove(s)
@@ -1803,27 +1914,58 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         # Called on double click of an item in the 'bottom left' list or on the map
         if not self.project or not hasattr(self, "get_editor"):
             return
-        if len(self.listViewObjects.selectedItems()) == 0:
-            self.model_layers.get_selected_model_ids()
-            if self.model_layers.total_selected > 0:
-                otypes = []
-                for otype in self.model_layers.selected_model_ids.keys():
-                    if len(self.model_layers.selected_model_ids[otype]):
-                        otypes.append(otype)
-                otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
-                if otype and otype[1]:
-                    mobjects = self.model_layers.selected_model_ids[otype[0]]
-                    self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
-                pass
+        self.model_layers.get_selected_model_ids()
+        if self.model_layers.total_selected > 0: # len(self.listViewObjects.selectedItems()) == 0:
+            otypes = []
+            for otype in self.model_layers.selected_model_ids.keys():
+                if len(self.model_layers.selected_model_ids[otype]):
+                    otypes.append(otype)
+            if len(otypes) == 1:
+                otype = (otypes[0], True)
             else:
-                return
+                # otype = QInputDialog.getItem(None, "Choose a Type", self.model + " Model Objects", otypes)
+                if len(self.tree_section) > 0:
+                    otype = (self.tree_section, True)
+                else:
+                    otype = (self.tree_section, False)
+            if otype and otype[1]:
+                mobjects = self.model_layers.selected_model_ids[otype[0]]
+                self.show_edit_window(self.make_editor_from_tree(otype[0], self.tree_top_items, mobjects))
+            pass
         else:
             selected = [str(item.data()) for item in self.listViewObjects.selectedIndexes()]
             self.show_edit_window(self.make_editor_from_tree(self.tree_section, self.tree_top_items, selected))
 
     def add_object_clicked(self):
         if self.project and self.get_editor:
-            self.add_object(self.tree_section)
+            tool_found = False
+            for act, name in self.add_point_tools:
+                # special cases
+                if name == 'raingages':
+                    name = 'rain gages'
+                elif name == 'storage':
+                    name = 'storage units'
+                elif name == 'labels' and self.model == 'SWMM':
+                    name = 'map labels'
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            for act, name in self.add_link_tools:
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            for act, name in self.add_polygon_tools:
+                if self.tree_section.lower() == name:
+                    act.setChecked(True)
+                    self.setQgsMapTool()
+                    act.setChecked(False)
+                    tool_found = True
+            if not tool_found:
+                 self.add_object(self.tree_section)
 
     def delete_object_clicked(self):
         if self.project and self.get_editor:
@@ -1848,13 +1990,34 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         currentItem = self.listViewObjects.takeItem(currentRow)
         self.listViewObjects.insertItem(currentRow - 1, currentItem)
 
+        if currentRow > 0:
+            selected_text = ''
+            for item in self.obj_tree.selectedIndexes():
+                selected_text = str(item.data())
+            if self.project is None or not selected_text:
+                return
+            self.move_object_in_list(selected_text, currentItem.text(), currentRow, currentRow - 1)
+
     def movedown_object(self):
         currentRow = self.listViewObjects.currentRow()
         currentItem = self.listViewObjects.takeItem(currentRow)
         self.listViewObjects.insertItem(currentRow + 1, currentItem)
 
+        if currentRow + 1 < self.listViewObjects.count():
+            selected_text = ''
+            for item in self.obj_tree.selectedIndexes():
+                selected_text = str(item.data())
+            if self.project is None or not selected_text:
+                return
+            self.move_object_in_list(selected_text, currentItem.text(), currentRow, currentRow)
+
     def sort_object(self):
         self.listViewObjects.sortItems()
+        # reorder objects to match sort order
+        selected_text = ''
+        for item in self.obj_tree.selectedIndexes():
+            selected_text = str(item.data())
+        self.sort_objects_in_list(selected_text)
 
     def select_named_items(self, layer, selected_list):
         if self.selecting.acquire(False):
@@ -1877,7 +2040,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                                 f = self.map_widget.find_feature(layer, moname)
                                 if f:
                                     qgis_ids.append(f.id())
-                            layer.setSelectedFeatures(qgis_ids)
+                            layer.selectByIds(qgis_ids)
 
                     except Exception as ex:
                         print("Did not find layer in tree:\n" + str(ex))
@@ -1887,18 +2050,39 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                     for i in range(self.listViewObjects.count()):
                         item = self.listViewObjects.item(i)
                         if item.text() in selected_list:
-                            self.listViewObjects.setItemSelected(item, True)
+                            item.setSelected(True)
                             self.listViewObjects.scrollToItem(item)
                         else:
-                            self.listViewObjects.setItemSelected(item, False)
+                            item.setSelected(False)
                 else:
                     self.listViewObjects.clearSelection()
                     self.map_widget.clearSelectableObjects()
             finally:  # Make sure lock is released even if there is an exception
                 self.selecting.release()
 
+    def update_selected_listview(self, layer, selected_list):
+        if layer is None or selected_list is None or self.listViewObjects.count() == 0:
+            return
+        try:
+            layer_name = layer.name()
+            already_selected_item = self.obj_tree.currentItem()
+            if already_selected_item is None or already_selected_item.text(0) != layer_name:
+                return
+            self.listViewObjects.itemSelectionChanged.disconnect(self.list_selection_changed)
+            for i in range(self.listViewObjects.count()):
+                item = self.listViewObjects.item(i)
+                if item.text() in selected_list:
+                    item.setSelected(True)
+                    # self.listViewObjects.scrollToItem(item)
+                else:
+                    item.setSelected(False)
+            self.listViewObjects.itemSelectionChanged.connect(self.list_selection_changed)
+        except:
+            pass
+        pass
+
     def confirm_discard_project(self):
-        if not self.undo_stack.isClean():
+        if not self.undo_stack.isClean() or self.project.file_name.endswith('*'):
             msg = QMessageBox()
             msg.setText("Discard current project?")
             msg.setWindowTitle(self.model)
@@ -1910,12 +2094,18 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             return False
         return True
 
+    def mark_project_as_unsaved(self):
+        if not self.project.file_name.endswith('*'):
+            self.project.file_name = self.project.file_name + "*"
+            path_only, file_only = os.path.split(self.project.file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+
     def new_project(self):
         self.open_project_quiet(None)
 
     def open_project(self):
         directory = self.program_settings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open Project...", directory,
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
             self.add_recent_project(file_name)
@@ -1936,7 +2126,15 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.map_widget.remove_all_layers()
         # self.map_widget.set_extent_empty()
         self.map_widget.refresh_extent_needed = True
+        self.clear_section_selection()
         self.clear_object_listing()
+        self.time_widget.setVisible(False)
+        self.time_index = 0
+        self.horizontalTimeSlider.setSliderPosition(0)
+        self.model_path = ''  # Set this only if needed later when running model
+        self.output = None    # Set this when model output is available
+        self.status_file_name = ''  # Set this when model status is available
+        self.output_filename = ''   # Set this when model output is available
         if hasattr(self, "project_settings"):
             del self.project_settings
         self.project_settings = None
@@ -1947,7 +2145,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 project_reader.read_file(self.project, file_name)
                 if project_reader.input_err_msg:
                     self.restoreCursor()
-                    QMessageBox.information(self, self.model, project_reader.input_err_msg, QMessageBox.Ok)
+                    QMessageBox.information(self, self.model + " Warning", project_reader.input_err_msg, QMessageBox.Ok)
 
                 if self.map_widget:
                     projection_file_name = file_name[:-3] + "prj"
@@ -1959,10 +2157,10 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 try:
                     if "EPANET" in self.model.upper():
                         from ui.EPANET.inifile import DefaultsEPANET
-                        self.project_settings = DefaultsEPANET(ini_file_name, self.project)
+                        self.project_settings = DefaultsEPANET(ini_file_name, self.project, self.program_settings)
                     elif "SWMM" in self.model.upper():
                         from ui.SWMM.inifile import DefaultsSWMM
-                        self.project_settings = DefaultsSWMM(ini_file_name, self.project)
+                        self.project_settings = DefaultsSWMM(ini_file_name, self.project, self.program_settings)
                 except Exception as exINI:
                     self.project_settings = None
                     print("error opening " + ini_file_name + ":\n" + str(exINI) + '\n' + str(
@@ -1974,6 +2172,12 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         else:
             self.project.file_name = "New.inp"
             self.setWindowTitle(self.model + " - New")
+            if "EPANET" in self.model.upper():
+                from ui.EPANET.inifile import DefaultsEPANET
+                self.project_settings = DefaultsEPANET("", self.project, self.program_settings)
+            elif "SWMM" in self.model.upper():
+                from ui.SWMM.inifile import DefaultsSWMM
+                self.project_settings = DefaultsSWMM("", self.project, self.program_settings)
 
     def open_prj(self, projection_file_name):
         if os.path.isfile(projection_file_name):
@@ -1991,7 +2195,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             self.crs = crs
             try:
                 self.txtCrs.setText(crs.authid())
-                self.map_widget.canvas.mapRenderer().setDestinationCrs(crs)
+                self.map_widget.canvas.mapSettings().setDestinationCrs(crs)
                 self.map_widget.map_linear_unit = self.map_widget.QGis_UnitType[self.crs.mapUnits()]
                 crs_id = 0
                 for mlayer in self.model_layers.all_layers:
@@ -2012,14 +2216,24 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
 
     def save_project(self, file_name=None):
         if not file_name:
+            # prompt to save
+            new_name = self.save_project_as()
+            if new_name:
+                self.project.file_name = new_name
+            return
+        if not file_name:
             file_name = self.project.file_name
+        if file_name.endswith('*'):
+            file_name = file_name[-1]
+            self.project.file_name = file_name
         if self.model == "SWMM":
             self.set_project_map_extent()
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
-        # if self.project_settings:
-        #     self.project_settings.sync()
+        if self.project_settings:
+            self.map_widget.save_gis_settings()
+            self.project_settings.config.sync()
         if self.crs and self.crs.isValid():
             try:
                 from qgis.core import QgsCoordinateReferenceSystem
@@ -2046,7 +2260,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 if not os.path.exists(filename):
                     filename = os.path.join(path_prefix, "Externals", self.model.lower(), "model", lib_name)
                     if not os.path.exists(filename):
-                        filename = QtGui.QFileDialog.getOpenFileName(self,
+                        filename, ftype = QFileDialog.getOpenFileName(self,
                                                                      'Locate ' + self.model + ' Library', '/',
                                                                      '(*{0})'.format(os.path.splitext(lib_name)[1]))
             if os.path.exists(filename):
@@ -2056,7 +2270,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
     def save_project_as(self):
         """ Prompt for file to save as and save project. Returns file name if saved, None on cancel or error. """
         directory = self.program_settings.value("ProjectDir", "")
-        file_name = QtGui.QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
+        file_name, ftype = QFileDialog.getSaveFileName(self, "Save As...", directory, "Inp files (*.inp)")
         if file_name:
             self.add_recent_project(file_name)
             path_only, file_only = os.path.split(file_name)
@@ -2114,6 +2328,11 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
             return
         del self.program_settings
         del self.project_settings
+        try:
+            if 'matplotlib.pyplot' in sys.modules:
+                matplotlib.pyplot.close('all')
+        except:
+            pass
         if self.q_application:
             try:
                 if self.animate_thread:
@@ -2135,12 +2354,27 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
                 except:
                     pass
 
+    def cascade_windows(self):
+        self.map.cascadeSubWindows()
+
+    def tile_windows(self):
+        self.map.tileSubWindows()
+
+    def close_all_windows(self):
+        self.map.closeAllSubWindows()
+
+    def study_area_map(self):
+        if self.map_win:
+            self.map.setActiveSubWindow(self.map_win)
+
     def __unicode__(self):
         return unicode(self)
 
-    def clear_object_listing(self):
+    def clear_section_selection(self):
         self.tree_section = ''
         self.obj_tree.selectionModel().clearSelection()
+
+    def clear_object_listing(self):
         self.listViewObjects.clear()
 
     def list_objects(self):
@@ -2195,7 +2429,7 @@ class frmMain(QtGui.QMainWindow, Ui_frmMain):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setContentsMargins(1, 2, 1, 3)
-        self.listViewObjects.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listViewObjects.setSelectionMode(QAbstractItemView.ExtendedSelection)
         if len(self.listViewObjects.selectedIndexes()) > 0:
             self.actionStdEditObject.setEnabled(True)
             self.actionStdDeleteObject.setEnabled(True)
@@ -2352,7 +2586,7 @@ class ModelLayers:
                lyr_name.lower().startswith("subcentroid") or
                lyr_name.lower().startswith("sublink")):
                 continue
-            if self.selected_model_ids.has_key(lyr_name):
+            if lyr_name in self.selected_model_ids:
                 if isinstance(self.selected_model_ids[lyr_name], list):
                     del self.selected_model_ids[lyr_name][:]
                 else:
@@ -2364,10 +2598,10 @@ class ModelLayers:
                 self.total_selected = self.total_selected + 1
 
 def print_process_id():
-    print 'Process ID is:', os.getpid()
+    print('Process ID is:', os.getpid())
 
 if __name__ == '__main__':
-    application = QtGui.QApplication(sys.argv)
+    application = QApplication(sys.argv)
     QMessageBox.information(None, "frmMain",
                             "Run ui/EPANET/frmMainEPANET or ui/SWMM/frmMainSWMM instead of frmMain.",
                             QMessageBox.Ok)

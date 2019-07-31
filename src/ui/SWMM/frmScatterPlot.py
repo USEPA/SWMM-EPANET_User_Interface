@@ -1,20 +1,21 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from ui.help import HelpHandler
 from ui.SWMM.frmScatterPlotDesigner import Ui_frmScatterPlot
 from ui.help import HelpHandler
 from core.graph import SWMM as graphSWMM
 
-class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
+class frmScatterPlot(QMainWindow, Ui_frmScatterPlot):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self._main_form = main_form
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/scatterplotdialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.cboStart.currentIndexChanged.connect(self.cboStart_currentIndexChanged)
         self.cboEnd.currentIndexChanged.connect(self.cboEnd_currentIndexChanged)
         self.cboXCat.currentIndexChanged.connect(self.cboXCat_currentIndexChanged)
@@ -73,13 +74,13 @@ class frmScatterPlot(QtGui.QMainWindow, Ui_frmScatterPlot):
 
     def cmdOK_Clicked(self):
         if not self.lstX.currentItem():
-            QtGui.QMessageBox.information(None, "Scatter Plot",
+            QMessageBox.information(None, "Scatter Plot",
                                     "X variable not set.",
-                                          QtGui.QMessageBox.Ok)
+                                          QMessageBox.Ok)
         elif not self.lstY.currentItem():
-            QtGui.QMessageBox.information(None, "Scatter Plot",
+            QMessageBox.information(None, "Scatter Plot",
                                     "Y variable not set.",
-                                          QtGui.QMessageBox.Ok)
+                                          QMessageBox.Ok)
         else:
             start_index = self.cboStart.currentIndex()
             end_index = self.cboEnd.currentIndex()

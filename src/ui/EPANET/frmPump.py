@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.epanet.hydraulics.link import Pump
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 
@@ -21,7 +22,7 @@ class frmPump(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -35,7 +36,7 @@ class frmPump(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # pump curve
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in self.project.curves.value:
@@ -46,7 +47,7 @@ class frmPump(frmGenericPropertyEditor):
             self.tblGeneric.setCellWidget(5, column, combobox)
             # for pattern, show available patterns
             pattern_list = self.project.patterns.value
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
@@ -56,16 +57,18 @@ class frmPump(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(8, column, combobox)
             # Pumps can have a status of OPEN, CLOSED
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('OPEN')
             combobox.addItem('CLOSED')
-            if edit_these[column].initial_status and (edit_these[column].initial_status.upper() == 'OPEN' or edit_these[column].initial_status == ''):
-                combobox.setCurrentIndex(0)
-            else:
-                combobox.setCurrentIndex(1)
+            combobox.setCurrentIndex(0)
+            if len(edit_these) > 0:
+                if edit_these[column].initial_status.upper() == 'OPEN':
+                    combobox.setCurrentIndex(0)
+                else:
+                    combobox.setCurrentIndex(1)
             self.tblGeneric.setCellWidget(9, column, combobox)
             # efficiency curve
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in self.project.curves.value:
@@ -74,7 +77,7 @@ class frmPump(frmGenericPropertyEditor):
             self.tblGeneric.setCellWidget(10, column, combobox)
             # for price pattern, show available patterns
             pattern_list = self.project.patterns.value
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
             for value in pattern_list:
@@ -84,6 +87,7 @@ class frmPump(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

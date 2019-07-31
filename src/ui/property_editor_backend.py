@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QCheckBox, QComboBox, QTableWidgetItem, QLineEdit, QFontComboBox, QSizePolicy
 from enum import Enum
 import ui.convenience
 
@@ -9,6 +10,8 @@ class PropertyEditorBackend:
         self.table = table
         self.hint_label = hint_label
         self._main_form = main_form
+        self.loaded = False
+        self.col_to_item_dict = {}
         if self.hint_label:
             table.currentCellChanged.connect(self.table_currentCellChanged)
         self.set_from(edit_these, new_item)
@@ -28,25 +31,37 @@ class PropertyEditorBackend:
                 for meta_item in self.meta:
                     value = self.meta.value(meta_item, edit_this)
                     if isinstance(value, bool):
-                        checkbox = QtGui.QCheckBox()
+                        checkbox = QCheckBox()
                         checkbox.setChecked(value)
                         self.table.setCellWidget(row, column, checkbox)
                     if isinstance(value, Enum):
-                        combobox = QtGui.QComboBox()
+                        combobox = QComboBox()
                         ui.convenience.set_combo_items(type(value), combobox)
                         ui.convenience.set_combo(combobox, value)
                         self.table.setCellWidget(row, column, combobox)
+                    elif meta_item.attribute == 'font':
+                        combobox = QFontComboBox()
+                        combobox.setCurrentText(value)
+                        size_policy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+                        size_policy.setHorizontalStretch(0)
+                        size_policy.setVerticalStretch(0)
+                        combobox.setSizePolicy(size_policy)
+                        combobox.setMinimumSize(QtCore.QSize(50, 22))
+                        combobox.setMaximumSize(QtCore.QSize(16777215, 1010))
+                        self.table.setCellWidget(row, column, combobox)
                     else:
                         # print "row " + str(row) + " col " + str(column) + " = " + str(value)
-                        self.table.setItem(row, column, QtGui.QTableWidgetItem(value))
+                        self.table.setItem(row, column, QTableWidgetItem(value))
                     row += 1
+                self.col_to_item_dict[column] = edit_this
                 column += 1
         else:
             self.table.setColumnCount(1)
             self.table.setRowCount(1)
             self.table.setVerticalHeaderLabels(["Error"])
-            led = QtGui.QLineEdit("No items selected to edit")
-            self.table.setItem(-1, 1, QtGui.QTableWidgetItem(led.text()))
+            led = QLineEdit("No items selected to edit")
+            self.table.setItem(-1, 1, QTableWidgetItem(led.text()))
+        self.loaded = True
 
     def apply_edits(self):
         column = 0
@@ -60,14 +75,14 @@ class PropertyEditorBackend:
                         for meta_item in self.meta:
                             if meta_item.label == label:
                                 if not meta_item.attribute:
-                                    print "No attribute to set for " + label
+                                    print ("No attribute to set for " + label)
                                     break
                                 new_value = None
                                 widget = self.table.cellWidget(row, column)
                                 if widget:
-                                    if isinstance(widget, QtGui.QCheckBox):
+                                    if isinstance(widget, QCheckBox):
                                         new_value = widget.isChecked()
-                                    elif isinstance(widget, QtGui.QComboBox):
+                                    elif isinstance(widget, QComboBox):
                                         default_value = self.meta.value(meta_item, edit_this)
                                         if isinstance(default_value, Enum):
                                             try:
@@ -81,12 +96,13 @@ class PropertyEditorBackend:
                                     widget = self.table.item(row, column)
                                     if widget:
                                         new_value = widget.text()
-                                if new_value is not None:
+                                if new_value is not None and new_value != 'None':
                                     try:
                                         old_value = str(getattr(edit_this, meta_item.attribute))
                                         if new_value != old_value:
                                             # TODO: make undoable edit?
                                             setattr(edit_this, meta_item.attribute, new_value)
+                                            self._main_form.mark_project_as_unsaved()
                                             if meta_item.attribute == "name":
                                                 edited_names.append((old_value, edit_this))
                                     except Exception as ex:
@@ -105,6 +121,11 @@ class PropertyEditorBackend:
         # col = self.table.currentColumn()
         if self.hint_label:
             if hasattr(self, "meta") and self.meta and self.meta[row]:
-                self.hint_label.setText(self.meta[row].hint)
+                units = ''
+                if self._main_form.project.metric:
+                    units = self.meta[row].units_metric
+                else:
+                    units = self.meta[row].units_english
+                self.hint_label.setText(self.meta[row].hint + ' ' + units)
             else:
                 self.hint_label.setText('')

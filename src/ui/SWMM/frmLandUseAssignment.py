@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.help import HelpHandler
 from core.swmm.hydrology.subcatchment import Coverages
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
@@ -11,13 +12,13 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
 
     def __init__(self, main_form, subcatchment_name):
         # purposely not calling frmGenericPropertyEditor.__init__
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/landuseassignmenteditor.htm"
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.setWindowTitle('SWMM Land Use Assignment for Subcatchment ' + subcatchment_name)
         self.lblNotes.setText('')
         self.tblGeneric.setColumnCount(1)
@@ -40,8 +41,8 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
             land_use_count += 1
             for coverage in coverage_list:
                 if coverage.subcatchment_name == subcatchment_name and coverage.land_use_name == land_use:
-                    led = QtGui.QLineEdit(str(coverage.percent_subcatchment_area))
-                    self.tblGeneric.setItem(land_use_count,0,QtGui.QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(coverage.percent_subcatchment_area))
+                    self.tblGeneric.setItem(land_use_count,0,QTableWidgetItem(led.text()))
         self._main_form = main_form
 
     def cmdOK_Clicked(self):
@@ -56,9 +57,12 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     # put this back in place
                     coverage_found = True
                     if self.tblGeneric.item(land_use_count,0) and len(self.tblGeneric.item(land_use_count,0).text()) > 0:
+                        if coverage.percent_subcatchment_area != self.tblGeneric.item(land_use_count,0).text():
+                            self._main_form.mark_project_as_unsaved()
                         coverage.percent_subcatchment_area = self.tblGeneric.item(land_use_count,0).text()
                     else:
                         section.value.remove(coverage)
+                        self._main_form.mark_project_as_unsaved()
             if not coverage_found:
                 # add new record
                 if self.tblGeneric.item(land_use_count,0):
@@ -69,6 +73,7 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     if section.value == '':
                         section.value = []
                     section.value.append(value1)
+                    self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

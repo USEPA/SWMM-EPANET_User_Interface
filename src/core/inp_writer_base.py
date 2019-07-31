@@ -3,11 +3,6 @@ import traceback
 from enum import Enum
 from core.project_base import ProjectBase, Section, SectionAsList
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 class InputFileWriterBase(object):
     """ Base class common to SWMM and EPANET.
@@ -45,13 +40,13 @@ class InputFileWriterBase(object):
                     continue
                 if hasattr(self, attr_name):
                     writer = self.__getattribute__(attr_name)
-                elif hasattr(section, "value") and isinstance(section.value, basestring):
+                elif hasattr(section, "value") and isinstance(section.value, str):
                     writer = SectionWriter()
                 else:
                     writer = SectionWriterAsList(section_name, SectionWriter(), None)
                 try:
                     section_text = writer.as_text(section).rstrip('\n')
-                    if section_text and section_text <> '[END]':                    # Skip adding blank sections
+                    if section_text and section_text != '[END]':                    # Skip adding blank sections
                         section_text_list.append(section_text)
 
                     # If we have a section order and derived sections to insert,
@@ -72,7 +67,7 @@ class InputFileWriterBase(object):
                             pass
                 except Exception as e1:
                     section_text_list.append(str(e1) + '\n' + str(traceback.print_exc()))
-            for section_text in derived_sections.itervalues():
+            for section_text in derived_sections.values(): #.items()
                 section_text_list.append(section_text)
             return '\n\n'.join(section_text_list) + '\n'
         except Exception as e2:
@@ -89,7 +84,7 @@ class InputFileWriterBase(object):
         """
         if file_name:
             with open(file_name, 'w') as writer:
-                writer.writelines(self.as_text(project).encode('utf-8'))
+                writer.writelines(self.as_text(project))
                 # project.file_name = file_name
 
 
@@ -104,12 +99,12 @@ class SectionWriter(object):
             Args:
                 section (Section): section of input sequence
         """
-        if isinstance(section, basestring):
+        if isinstance(section, str):
             return section
         txt = SectionWriter._get_text_using_metadata(section)
         if txt or txt == '':
             return txt
-        if isinstance(section.value, basestring) and len(section.value) > 0:
+        if isinstance(section.value, str) and len(section.value) > 0:
             return section.value
         elif isinstance(section.value, (list, tuple)):
             text_list = []
@@ -193,7 +188,7 @@ class SectionWriterAsList(SectionWriter):
             section_comment (str): Default comment lines that appear at the beginning of the section. Can be None.
         """
         if list_type_writer is None:
-            print "No list_type_writer specified for " + section_name
+            print ("No list_type_writer specified for " + section_name)
         if not section_name.startswith("["):
             section_name = '[' + section_name + ']'
         self.SECTION_NAME = section_name.upper()
@@ -222,12 +217,25 @@ class SectionWriterAsList(SectionWriter):
                 text_list.append(section.comment)
             elif hasattr(self, "DEFAULT_COMMENT") and self.DEFAULT_COMMENT:
                 text_list.append(self.DEFAULT_COMMENT)
-            if isinstance(section.value, basestring):
+            if isinstance(section.value, str):
                 text_list.append(section.value.rstrip('\n'))  # strip any newlines from end of each item
             else:
                 for item in section.value:
                     if item is not None:
-                        if isinstance(item, basestring):
+                        if hasattr(item, "description"):
+                            if len(item.description) > 0 and section.SECTION_NAME != '[COORDINATES]' and \
+                                                             section.SECTION_NAME != '[SUBAREAS]' and \
+                                                             section.SECTION_NAME != '[LOSSES]' and \
+                                                             section.SECTION_NAME != '[SYMBOLS]' and \
+                                                             section.SECTION_NAME != '[STATUS]' and \
+                                                             section.SECTION_NAME != '[EMITTERS]' and \
+                                                             section.SECTION_NAME != '[PATTERNS]' and \
+                                                             section.SECTION_NAME != '[CURVES]':
+                                if item.description[0] == ';':
+                                    text_list.append(item.description)
+                                else:
+                                    text_list.append(';' + item.description)
+                        if isinstance(item, str):
                             item_str = item
                         else:
                             if hasattr(item, "SECTION_NAME") and item.SECTION_NAME == "Comment":  #xw9/13/2016
@@ -236,7 +244,7 @@ class SectionWriterAsList(SectionWriter):
                                 item_str = self.list_type_writer.as_text(item)
                         if item_str is not None and item_str:
                             # Uncomment below to skip blank items unless they are a blank comment, those are purposely blank
-                            # if item_str.strip() or isinstance(item, basestring) or
+                            # if item_str.strip() or isinstance(item, str) or
                             #  (isinstance(item, Section) and item.SECTION_NAME == "Comment"):
                             text_list.append(item_str.rstrip('\n'))  # strip any newlines from end of each item
             return '\n'.join(text_list)

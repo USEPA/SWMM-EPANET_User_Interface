@@ -35,13 +35,11 @@ except NameError:
     str = str
     unicode = str
     bytes = bytes
-    basestring = (str, bytes)
 else:
     # 'unicode' exists, must be Python 2
     str = str
     unicode = unicode
     bytes = str
-    basestring = basestring
 
 
 class ProjectReader(InputFileReader):
@@ -177,6 +175,7 @@ class ProjectReader(InputFileReader):
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
         if section_name_upper == project.infiltration.SECTION_NAME.upper():
+            self.check_valid_subcatchment_id(project, 'INFILTRATION', section_text)
             infiltration = project.options.infiltration.upper()
             if infiltration == "HORTON":
                 self.read_infiltration = SectionReaderAsList(section_name, HortonInfiltrationReader)
@@ -185,26 +184,76 @@ class ProjectReader(InputFileReader):
             elif infiltration.startswith("CURVE"):
                 self.read_infiltration = SectionReaderAsList(section_name, CurveNumberInfiltrationReader)
         elif section_name_upper == "[SUBAREAS]":
+            self.check_valid_subcatchment_id(project, 'SUBAREAS', section_text)
             self.defer_subareas = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[COORDINATES]":
+            self.check_valid_node_id(project, 'COORDINATES', section_text)
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[SYMBOLS]":
+            self.check_valid_raingage_id(project, 'SYMBOLS', section_text)
             self.defer_symbols = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[LOSSES]":
+            self.check_valid_link_id(project, 'LOSSES', section_text)
             self.defer_losses = section_text
             return
         elif section_name_upper == "[VERTICES]":
+            self.check_valid_link_id(project, 'VERTICES', section_text)
             self.defer_vertices = section_text
             return
         elif section_name_upper == "[POLYGONS]":
+            self.check_valid_subcatchment_id(project, 'POLYGONS', section_text)
             self.defer_polygons = section_text
             return
+        elif section_name_upper == "[GROUNDWATER]":
+            self.check_valid_subcatchment_id(project, 'GROUNDWATER', section_text)
+        elif section_name_upper == "[GWF]":
+            self.check_valid_subcatchment_id(project, 'GWF', section_text)
+        elif section_name_upper == "[COVERAGES]":
+            self.check_valid_subcatchment_id(project, 'COVERAGES', section_text)
+            self.check_valid_landuse_id(project, 'COVERAGES', section_text)
+        elif section_name_upper == "[LOADINGS]":
+            self.check_valid_subcatchment_id(project, 'LOADINGS', section_text)
+        elif section_name_upper == "[LID_USAGE]":
+            self.check_valid_subcatchment_id(project, 'LID_USAGE', section_text)
+            self.check_valid_lid_id(project, 'LID_USAGE', section_text)
+        elif section_name_upper == "[CONDUITS]":
+            self.check_valid_node_id(project, 'CONDUITS', section_text)
+        elif section_name_upper == "[PUMPS]":
+            self.check_valid_node_id(project, 'PUMPS', section_text)
+        elif section_name_upper == "[ORIFICES]":
+            self.check_valid_node_id(project, 'ORIFICES', section_text)
+        elif section_name_upper == "[WEIRS]":
+            self.check_valid_node_id(project, 'WEIRS', section_text)
+        elif section_name_upper == "[OUTLETS]":
+            self.check_valid_node_id(project, 'OUTLETS', section_text)
+        elif section_name_upper == "[TREATMENT]":
+            self.check_valid_node_id(project, 'TREATMENT', section_text)
+            self.check_valid_pollutant_id(project, 'TREATMENT', section_text)
+        elif section_name_upper == "[INFLOWS]":
+            self.check_valid_node_id(project, 'INFLOWS', section_text)
+            self.check_valid_pollutant_id(project, 'INFLOWS', section_text)
+        elif section_name_upper == "[DWF]":
+            self.check_valid_node_id(project, 'DWF', section_text)
+        elif section_name_upper == "[RDII]":
+            self.check_valid_node_id(project, 'RDII', section_text)
+        elif section_name_upper == "[XSECTIONS]":
+            self.check_valid_link_id(project, 'XSECTIONS', section_text)
+        elif section_name_upper == "[LOSSES]":
+            self.check_valid_link_id(project, 'LOSSES', section_text)
+        elif section_name_upper == "[BUILDUP]":
+            self.check_valid_landuse_id(project, 'BUILDUP', section_text)
+            self.check_valid_pollutant_id(project, 'BUILDUP', section_text)
+        elif section_name_upper == "[WASHOFF]":
+            self.check_valid_landuse_id(project, 'WASHOFF', section_text)
+            self.check_valid_pollutant_id(project, 'WASHOFF', section_text)
+        elif section_name_upper == "[SUBCATCHMENTS]":
+            self.check_valid_raingage_id(project, 'SUBCATCHMENTS', section_text)
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
@@ -232,5 +281,184 @@ class ProjectReader(InputFileReader):
         project.metric = project.options.flow_units in flow_units_metric
         project.set_pattern_object_references()
 
+    def check_valid_subcatchment_id(self, project, section_name, section_text):
+        # check for valid subcatchment ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        subcatchment_name = fields[0]
+                        found = False
+                        for subcatchment in project.subcatchments.value:
+                            if subcatchment.name == subcatchment_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Subcatchment (' + subcatchment_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
 
 
+    def check_valid_node_id(self, project, section_name, section_text):
+        # check for valid node ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        if section_name == "CONDUITS" or section_name == "PUMPS" or section_name == "ORIFICES" or section_name == "WEIRS" or section_name == "OUTLETS":
+                            node_name = fields[1]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                            node_name = fields[2]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+                        else:
+                            node_name = fields[0]
+                            found = False
+                            for node in project.all_nodes():
+                                if node.name == node_name:
+                                    found = True
+                            if not found:
+                                self.input_err_msg += '\n' + 'Undefined Node (' + node_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_link_id(self, project, section_name, section_text):
+        # check for valid link ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        link_name = fields[0]
+                        found = False
+                        for link in project.all_links():
+                            if link.name == link_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Link (' + link_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_landuse_id(self, project, section_name, section_text):
+        # check for valid landuse ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        landuse_name = fields[0]
+                        if section_name == 'COVERAGES':
+                            landuse_name = fields[1]
+                        found = False
+                        for landuse in project.landuses.value:
+                            if landuse.name == landuse_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Land Use (' + landuse_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_pollutant_id(self, project, section_name, section_text):
+        # check for valid pollutant ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 1:
+                        if "none" in fields[0].lower():
+                            pass
+                        pollutant_name = fields[1]
+                        found = False
+                        if pollutant_name == "FLOW":
+                            found = True
+                        for pollutant in project.pollutants.value:
+                            if pollutant.name == pollutant_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Pollutant (' + pollutant_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_lid_id(self, project, section_name, section_text):
+        # check for valid lid ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        lid_name = fields[1]
+                        found = False
+                        for lid in project.lid_controls.value:
+                            if lid.name == lid_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined LID process (' + lid_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass
+
+
+    def check_valid_raingage_id(self, project, section_name, section_text):
+        # check for valid raingage ids
+        temp_text = section_text
+        try:
+            for line in temp_text.splitlines():
+                if line[0:1] == '[' or line[0:1] == ';':
+                    pass
+                else:
+                    fields = line.split()
+                    if len(fields) > 0:
+                        if "none" in fields[0].lower():
+                            pass
+                        raingage_name = fields[0]
+                        if section_name == 'SUBCATCHMENTS':
+                            raingage_name = fields[1]
+                        found = False
+                        for raingage in project.raingages.value:
+                            if raingage.name == raingage_name:
+                                found = True
+                        if not found:
+                            self.input_err_msg += '\n' + 'Undefined Raingage (' + raingage_name + ') referenced in ' + section_name + ' section.'
+        except:
+            pass

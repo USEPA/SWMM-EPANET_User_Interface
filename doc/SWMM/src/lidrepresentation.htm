@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>LID Representation</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">LID Representation</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="lidcontrols.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="lidutilization.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>LID controls are represented by a combination of vertical layers whose properties are defined on a per-unit-area basis. This allows LIDs of the same design but differing areal coverage to easily be placed within different subcatchments in a study area.</p>
+<p>&nbsp;</p>
+<p>During a simulation SWMM performs a moisture balance that keeps track of how much water moves between and is stored within each LID layer. As an example, the layers used to model a bio-retention cell and the flow pathways between them are shown below:</p>
+<p>&nbsp;</p>
+<p><img src="biocell.png" width="283" height="245" border="0" alt="biocell"></p>
+<p>&nbsp;</p>
+<p>The following table indicates which combination of layers applies to each type of LID (<span style="font-weight: bold;">x</span> means required, <span style="font-weight: bold;">o</span> means optional):</p>
+<p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table cellspacing="0" cellpadding="2" border="0" style="border: none; border-spacing:0px; border-collapse: collapse;">
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p><span style="font-weight: bold;">LID Type</span></p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Surface</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Pavement</span></p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Soil</span></p>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Storage</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Drain</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">Drainage Mat</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Bio-Retention Cell</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">o</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Rain Garden</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Green Roof</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Infiltration Trench</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">o</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Permeable Pavement</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">o</span></p>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">o</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Rain Barrel</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><p style="text-align: center;"><span style="color: #000000;">&nbsp;</span></p>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Rooftop Disconnection</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><br>
+</td>
+</tr>
+<tr style="text-align:left;vertical-align:top;">
+<td valign="top" width="133" style="width:133px; border: solid 1px #000000;"><p>Vegetative Swale</p>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><p style="text-align: center;"><span style="font-weight: bold;">x</span></p>
+</td>
+<td valign="top" width="72" style="width:72px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="57" style="width:57px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="85" style="width:85px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="78" style="width:78px; border: solid 1px #000000;"><br>
+</td>
+<td valign="top" width="96" style="width:96px; border: solid 1px #000000;"><br>
+</td>
+</tr>
+</table>
+</div>
+<p>&nbsp;</p>
+<p>When a user adds a specific type of LID control object to a SWMM project the <a href="lidcontroleditor.htm">LID Control Editor</a> is used to set the design properties of each relevant layer (such as thickness, void volume, hydraulic conductivity, drain characteristics, etc.). These LID objects can then be placed within selected subcatchments at any desired sizing (or areal coverage) by editing the subcatchment's <span style="font-weight: bold;">LID Controls</span> property.</p>
+
+</div>
+
+</body>
+</html>

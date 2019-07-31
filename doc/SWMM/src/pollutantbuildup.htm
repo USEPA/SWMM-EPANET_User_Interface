@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Pollutant Buildup</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="Land Uses,Land Uses Buildup,Pollutant Buildup">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Pollutant Buildup</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'"
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="landuses.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'"
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="pollutantwashoff.htm"
+        onmouseover="document.images.next.src='button_next_h.png'"
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p><span style="font-weight: bold;">Pollutant buildup</span> that accumulates within a land use category is described (or &quot;normalized&quot;) by either a mass per unit of subcatchment area or per unit of curb length. Mass is expressed in pounds for US units and kilograms for metric units. The amount of buildup is a function of the number of preceding dry weather days and can be computed using one of the following functions:</p>
+<p>&nbsp;</p>
+<p style="line-height: 1.50;"><span style="font-weight: bold; text-decoration: underline;">Power Function</span></p>
+<p style="line-height: 1.50;">Pollutant buildup (B) accumulates proportional to time (t) raised to some power, until a maximum limit is achieved,</p>
+<p style="line-height: 1.50; margin: 0px 0px 0px 13px;"><img src="eqn6.png" width="128" height="24" border="0" alt="Eqn6"> </p>
+<p style="line-height: 1.50;">where <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">1</span> = maximum buildup possible (mass per unit of area or curb length), <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">2</span> = buildup rate constant, and C<span style="font-size: 6pt; vertical-align: sub;">3</span> = time exponent.</p>
+<p>&nbsp;</p>
+<p style="line-height: 1.50;"><span style="font-weight: bold; text-decoration: underline;">Exponential Function</span></p>
+<p style="line-height: 1.50;">Buildup follows an exponential growth curve that approaches a maximum limit asymptotically,</p>
+<p style="line-height: 1.50; margin: 0px 0px 0px 13px;"><img src="eqn7.png" width="107" height="24" border="0" alt="Eqn7"> </p>
+<p style="line-height: 1.50;">where <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">1</span> = maximum buildup possible (mass per unit of area or curb length) and <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">2</span> = buildup rate constant (1/days).</p>
+<p>&nbsp;</p>
+<p style="line-height: 1.50;"><span style="font-weight: bold; text-decoration: underline;">Saturation Function</span></p>
+<p>Buildup begins at a linear rate that continuously declines with time until a saturation value is reached,</p>
+<p style="margin: 0px 0px 0px 13px;"><img src="eqn8.png" width="73" height="47" border="0" alt="Eqn8"> </p>
+<p>where <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">1</span> = maximum buildup possible (mass per unit area or curb length) and <span style="font-style: italic;">C</span><span style="font-size: 6pt; font-style: italic; vertical-align: sub;">2</span> = half-saturation constant (days to reach half of the maximum buildup).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">External Time Series</span></p>
+<p>This option allows one to use a <a href="timeseries.htm">Time Series</a> to describe the rate of buildup per day as a function of time. The values placed in the time series would have units of mass per unit area (or curb length) per day. One can also provide a maximum possible buildup (mass per unit area or curb length) with this option and a scaling factor that multiplies the time series values.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</div>
+
+</body>
+</html>

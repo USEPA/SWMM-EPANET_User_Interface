@@ -1,13 +1,14 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.dynamic_wave
 from ui.SWMM.frmDynamicWaveDesigner import Ui_frmDynamicWave
 from ui.model_utility import ParseData
 
 
-class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
+class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/simulationoptions_dynamicwave.htm"
         self.setupUi(self)
         self.cboInertial.addItems(("Keep", "Dampen", "Ignore"))
@@ -15,10 +16,16 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         self.cboForce.addItems(("Hazen-Williams", "Darcy-Weisbach"))
         self.cboNormal.addItems(("Slope", "Froude No.", "Slope & Froude"))
         self.cboThreads.addItems(("1", "2", "3", "4"))
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
+        if main_form.project.metric:
+            self.lblSurface.setText("Minimum Nodal Surface Area (sq. meters)")
+            self.lblHead.setText("Head Convergence Tolerance (meters)")
+        else:
+            self.lblSurface.setText("Minimum Nodal Surface Area (sq. feet)")
+            self.lblHead.setText("Head Convergence Tolerance (feet)")
 
     def set_from(self, project):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
@@ -58,6 +65,17 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
         section = self._main_form.project.options.dynamic_wave
 
+        orig_damping = section.inertial_damping
+        orig_force_eq = section.force_main_equation
+        orig_flow_lim = section.normal_flow_limited
+        orig_threads = section.threads
+        orig_step = section.variable_step
+        orig_min_step = section.minimum_step
+        orig_len_step = section.lengthening_step
+        orig_surface_area = section.min_surface_area
+        orig_head_tol = section.head_tolerance
+        orig_max_trials = section.max_trials
+
         if self.cboInertial.currentIndex() == 1:
             section.inertial_damping = core.swmm.options.dynamic_wave.InertialDamping.PARTIAL
         if self.cboInertial.currentIndex() == 2:
@@ -87,6 +105,19 @@ class frmDynamicWave(QtGui.QMainWindow, Ui_frmDynamicWave):
         section.min_surface_area = float(self.txtSurfaceArea.text())
         section.head_tolerance = float(self.txtTolerance.text())
         section.max_trials = self.sbxTrials.value()
+
+        if orig_damping != section.inertial_damping or \
+            orig_force_eq != section.force_main_equation or \
+            orig_flow_lim != section.normal_flow_limited or \
+            int(orig_threads) != section.threads or \
+            float(orig_step) != section.variable_step or \
+            float(orig_min_step) != section.minimum_step or \
+            float(orig_len_step) != section.lengthening_step or \
+            float(orig_surface_area) != section.min_surface_area or \
+            float(orig_head_tol) != section.head_tolerance or \
+            int(orig_max_trials) != section.max_trials:
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

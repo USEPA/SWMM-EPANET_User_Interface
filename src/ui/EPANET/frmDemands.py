@@ -1,19 +1,20 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.help import HelpHandler
 from core.epanet.hydraulics.node import Demand
 from ui.EPANET.frmDemandsDesigner import Ui_frmDemands
 
 
-class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
+class frmDemands(QMainWindow, Ui_frmDemands):
 
     def __init__(self, main_form=None):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper=HelpHandler(self)
         self.help_topic = "epanet/src/src/Demand_E.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         # self.set_from(parent.project)
         self._main_form = main_form
         self.node_name = ''
@@ -34,24 +35,24 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
         for demand in demands_list:
             if demand.junction_name == node_name:
                 row_count += 1
-                led = QtGui.QLineEdit(str(demand.base_demand))
-                self.tblDemands.setItem(row_count,0,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(str(demand.demand_pattern))
-                self.tblDemands.setItem(row_count,1,QtGui.QTableWidgetItem(led.text()))
-                led = QtGui.QLineEdit(str(demand.category))
-                self.tblDemands.setItem(row_count,2,QtGui.QTableWidgetItem(led.text()))
+                led = QLineEdit(str(demand.base_demand))
+                self.tblDemands.setItem(row_count,0,QTableWidgetItem(led.text()))
+                led = QLineEdit(str(demand.demand_pattern))
+                self.tblDemands.setItem(row_count,1,QTableWidgetItem(led.text()))
+                led = QLineEdit(str(demand.category))
+                self.tblDemands.setItem(row_count,2,QTableWidgetItem(led.text()))
                 self.junction_only = False
         if row_count == -1:
             # did not find any in demands table, so use whats in junction table
             for junction in junctions_list:
                 if junction.name == node_name:
                     row_count += 1
-                    led = QtGui.QLineEdit(str(junction.base_demand_flow))
-                    self.tblDemands.setItem(row_count,0,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(junction.demand_pattern_name))
-                    self.tblDemands.setItem(row_count,1,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit('')
-                    self.tblDemands.setItem(row_count,2,QtGui.QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(junction.base_demand_flow))
+                    self.tblDemands.setItem(row_count,0,QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(junction.demand_pattern_name))
+                    self.tblDemands.setItem(row_count,1,QTableWidgetItem(led.text()))
+                    led = QLineEdit('')
+                    self.tblDemands.setItem(row_count,2,QTableWidgetItem(led.text()))
                     self.junction_only = True
 
     def cmdOK_Clicked(self):
@@ -73,8 +74,12 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                         if self.tblDemands.item(row,0):
                             x = self.tblDemands.item(row,0).text()
                             if len(x) > 0:
+                                if junction.base_demand_flow != self.tblDemands.item(row,0).text():
+                                    self._main_form.session.mark_project_as_unsaved()
                                 junction.base_demand_flow = self.tblDemands.item(row,0).text()
-                                junction.demand_pattern = self.tblDemands.item(row,1).text()
+                                if junction.demand_pattern_name != self.tblDemands.item(row,1).text():
+                                    self._main_form.session.mark_project_as_unsaved()
+                                junction.demand_pattern_name = self.tblDemands.item(row,1).text()
         else:
             # write these as demands
             section = self._main_form.project.demands
@@ -83,6 +88,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
             for demand in section.value[0:]:
                 if demand.junction_name == self.node_name:
                     section.value.remove(demand)
+                    self._main_form.session.mark_project_as_unsaved()
             # add demands
             for row in range(self.tblDemands.rowCount()):
                 if self.tblDemands.item(row,0):
@@ -96,6 +102,7 @@ class frmDemands(QtGui.QMainWindow, Ui_frmDemands):
                         if self.tblDemands.item(row,2):
                             new_demand.category = ';' + self.tblDemands.item(row,2).text()
                         section.value.append(new_demand)
+                        self._main_form.session.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

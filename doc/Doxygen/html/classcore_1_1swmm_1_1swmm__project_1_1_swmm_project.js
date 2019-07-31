@@ -3,6 +3,8 @@ var classcore_1_1swmm_1_1swmm__project_1_1_swmm_project =
     [ "__init__", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#a6b558bf45dacd5707f170f11f00639ab", null ],
     [ "links_groups", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#ac79741f543ab2b046fbe700f03604d3f", null ],
     [ "nodes_groups", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#af2368c734c0777079b795e05606e522e", null ],
+    [ "refresh_pattern_object_references", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#acc849bb5836572e09aae9d9529eef80b", null ],
+    [ "set_pattern_object_references", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#ac631a8e50cd1b3b0c951f16650c7b422", null ],
     [ "adjustments", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#af3c06df251c2425017fa0e8fc9ccc0d1", null ],
     [ "aquifers", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#af74bbb572dce08073f1f71503675dd83", null ],
     [ "backdrop", "classcore_1_1swmm_1_1swmm__project_1_1_swmm_project.html#af59a3410177f74fdfc8d63654431ff9d", null ],

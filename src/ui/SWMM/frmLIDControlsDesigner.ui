@@ -53,7 +53,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Report Flle</string>
+           <string>Report File</string>
           </property>
          </column>
         </widget>

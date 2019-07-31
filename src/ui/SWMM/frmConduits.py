@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
@@ -25,7 +26,7 @@ class frmConduits(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -39,7 +40,7 @@ class frmConduits(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for flapgate, show true/false
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('True')
             combobox.addItem('False')
             combobox.setCurrentIndex(1)
@@ -68,7 +69,8 @@ class frmConduits(frmGenericPropertyEditor):
             for value in self.project.xsections.value:
                 if value.link == link_id:
                     tb.textbox.setText(value.shape.name)
-                    self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+                    self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
+                    self.tblGeneric.setItem(18, column, QTableWidgetItem(value.culvert_code))
                     xsection = value
                     break
         else:
@@ -76,14 +78,18 @@ class frmConduits(frmGenericPropertyEditor):
                     self._main_form.project_settings.xsection:
                 value = self._main_form.project_settings.xsection
                 tb.textbox.setText(value.shape.name)
-                self.tblGeneric.setItem(6, column, QtGui.QTableWidgetItem(value.geometry1))
+                self.tblGeneric.setItem(6, column, QTableWidgetItem(value.geometry1))
+                self.tblGeneric.setItem(18, column, QTableWidgetItem(value.culvert_code))
 
         if not xsection:
             # create new xsection
             xsection = CrossSection()
             if self._main_form and self._main_form.project_settings and \
                     self._main_form.project_settings.xsection:
-                value = self._main_form.project_settings.apply_default_attributes(xsection)
+                self._main_form.project_settings.apply_default_attributes(xsection)
+                tb.textbox.setText(xsection.shape.name)
+                self.tblGeneric.setItem(6, column, QTableWidgetItem(xsection.geometry1))
+                self.tblGeneric.setItem(18, column, QTableWidgetItem(xsection.culvert_code))
                 xsection.link = link_id
                 if self._main_form.project:
                     self._main_form.project.xsections.value.append(xsection)
@@ -108,7 +114,12 @@ class frmConduits(frmGenericPropertyEditor):
         for column in range(0, self.tblGeneric.columnCount()):
             for value in self.project.xsections.value:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
+                    if value.geometry1 != str(self.tblGeneric.item(6, column).text()) or \
+                    value.culvert_code != str(self.tblGeneric.item(18, column).text()):
+                        self._main_form.mark_project_as_unsaved()
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
+                    value.culvert_code = str(self.tblGeneric.item(18, column).text())
+        self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

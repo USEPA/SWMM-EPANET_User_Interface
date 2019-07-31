@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QComboBox
 from core.swmm.hydraulics.node import Outfall
 from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow, Treatment
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
@@ -27,7 +28,7 @@ class frmOutfalls(frmGenericPropertyEditor):
                 isinstance(self.project_section.value[0], self.SECTION_TYPE):
 
             if edit_these:  # Edit only specified item(s) in section
-                if isinstance(edit_these[0], basestring):  # Translate list from names to objects
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
                     edit_names = edit_these
                     edit_objects = [item for item in self.project_section.value if item.name in edit_these]
                     edit_these = edit_objects
@@ -40,20 +41,20 @@ class frmOutfalls(frmGenericPropertyEditor):
 
         for column in range(0, self.tblGeneric.columnCount()):
             # for tide gate, show true/false
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('YES')
             combobox.addItem('NO')
-            if edit_these[column].tide_gate:
-                combobox.setCurrentIndex(0)
-            else:
-                combobox.setCurrentIndex(1)
+            combobox.setCurrentIndex(1)
+            if len(edit_these) > 0:
+                if edit_these[column].tide_gate:
+                    combobox.setCurrentIndex(0)
             row = self.header_index("tide")
             if row >= 0:
                 self.tblGeneric.setCellWidget(row, column, combobox)
             # for curves, show available curves
             curves_section = self.project.find_section("CURVES")
             curves_list = curves_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in curves_list:
@@ -68,7 +69,7 @@ class frmOutfalls(frmGenericPropertyEditor):
             # for time series, show available timeseries
             timeseries_section = self.project.find_section("TIMESERIES")
             timeseries_list = timeseries_section.value[0:]
-            combobox = QtGui.QComboBox()
+            combobox = QComboBox()
             combobox.addItem('*')
             selected_index = 0
             for value in timeseries_list:
@@ -152,6 +153,7 @@ class frmOutfalls(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -1,15 +1,16 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QApplication, QAbstractItemView
 from ui.SWMM.frmProfilePlotDesigner import Ui_frmProfilePlot
 from ui.help import HelpHandler
 import core.swmm.hydraulics.node
 
 
-class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
+class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
     MAGIC = "SWMM_PROFILE_GRAPH_SPEC:\n"
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/profileplotoptionsdialog.htm"
         self._main_form = main_form
@@ -17,11 +18,12 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         self.cmdFind.setEnabled(False)  # TODO: Enable when functionality is ready
         self.cmdSave.setText("Copy")
         self.cmdUse.setText("Paste")
-        QtCore.QObject.connect(self.cmdSave, QtCore.SIGNAL("clicked()"), self.cmdSave_Clicked)
-        QtCore.QObject.connect(self.cmdUse, QtCore.SIGNAL("clicked()"), self.cmdUse_Clicked)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.cmdFind, QtCore.SIGNAL("clicked()"), self.cmdFind_Clicked)
+        self.cmdSave.clicked.connect(self.cmdSave_Clicked)
+        self.cmdUse.clicked.connect(self.cmdUse_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.cmdFind.clicked.connect(self.cmdFind_Clicked)
+        self.InDirectionOfFlow = True
 
     def set_from(self, project, output):
         self.project = project
@@ -49,26 +51,53 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         self.lstData.clear()
         start_node = str(self.cboStart.currentText())
         end_node = str(self.cboEnd.currentText())
+        self.InDirectionOfFlow = True
 
         current_node = start_node
         counter = 0
-        while current_node <> end_node and counter < 1000:
+        while current_node != end_node and counter < 1000:
             counter += 1
             for link_group in self.project.links_groups():
                 if link_group and link_group.value:
                     for link in link_group.value:
-                        if link.inlet_node == current_node and current_node <> end_node:
+                        if link.inlet_node == current_node and current_node != end_node:
                             self.lstData.addItem(link.name)
                             current_node = link.outlet_node
 
+        if self.lstData.count() == 0:
+            # try the reverse order
+            self.InDirectionOfFlow = False
+            start_node = str(self.cboEnd.currentText())
+            end_node = str(self.cboStart.currentText())
+
+            current_node = start_node
+            counter = 0
+            while current_node != end_node and counter < 1000:
+                counter += 1
+                for link_group in self.project.links_groups():
+                    if link_group and link_group.value:
+                        for link in link_group.value:
+                            if link.inlet_node == current_node and current_node != end_node:
+                                self.lstData.addItem(link.name)
+                                current_node = link.outlet_node
+            if self.lstData.count() > 0:
+                # reverse the order
+                temp_order = []
+                for index in range(0, self.lstData.count()):
+                    temp_order.append(self.lstData.item(index).text())
+                temp_order.reverse()
+                self.lstData.clear()
+                for item in temp_order:
+                    self.lstData.addItem(item)
+
     def cmdSave_Clicked(self):
-        cb = QtGui.QApplication.clipboard()
+        cb = QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(self.get_text(), mode=cb.Clipboard)
 
     def cmdUse_Clicked(self):
         try:
-            self.set_from_text(QtGui.QApplication.clipboard().text())
+            self.set_from_text(QApplication.clipboard().text())
         except Exception as ex:
             print(str(ex))
             self.lstData.clear()
@@ -79,6 +108,9 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
     def cmdOK_Clicked(self):
         # Profile plot based on 'Basic HGL 2-D Video Profile Plot Script by Bryant E. McDonnell'
 
+        if self.lstData.count() == 0:
+            return
+
         import matplotlib.pyplot as plt
         import matplotlib.animation as animation
         import numpy as np
@@ -88,7 +120,7 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         fig_output = 1
 
         # Pass Ordered Links
-        self.lstData.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.lstData.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.lstData.selectAll()
         LKsToPlot = []
         for selected_item in self.lstData.selectedItems():
@@ -109,7 +141,10 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
         for link_name in LKsToPlot:
             try:
                 link = self.project.find_link(link_name)
-                nodes = (link.inlet_node, link.outlet_node)
+                if self.InDirectionOfFlow:
+                    nodes = (link.inlet_node, link.outlet_node)
+                else:
+                    nodes = (link.outlet_node, link.inlet_node)
                 diameter = 0
                 for cross_section in self.project.xsections.value:
                     if cross_section.link == link_name:
@@ -125,9 +160,14 @@ class frmProfilePlot(QtGui.QMainWindow, Ui_frmProfilePlot):
                     outlet_offset = link.outlet_offset
                 LKsToPlotData[link_name] = [nodes, length, diameter, inlet_offset, outlet_offset]
                 # this is also a convenient place to record the start and end nodes for use in the title
-                if len(start_node) == 0:
-                    start_node = link.inlet_node
-                end_node = link.outlet_node
+                if self.InDirectionOfFlow:
+                    if len(start_node) == 0:
+                        start_node = link.inlet_node
+                    end_node = link.outlet_node
+                else:
+                    if len(start_node) == 0:
+                        start_node = link.outlet_node
+                    end_node = link.inlet_node
             except:
                 pass  # probably did not find link in this group, move on to the next group
 

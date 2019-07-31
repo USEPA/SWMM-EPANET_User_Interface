@@ -1,22 +1,23 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow
 import core.swmm.stats as ostatistics
 #from core.swmm.stats import TStatsSelection
 from ui.help import HelpHandler
 from ui.SWMM.frmStatisticsReportSelectionDesigner import Ui_frmStatisticsReportSelection
 from ui.SWMM.frmStatisticsReport import frmStatisticsReport
 from ui.help import HelpHandler
-import Externals.swmm.outputapi.SMOutputWrapper as SMO
+import Externals.swmm.outputapi.SMOutputSWIG as SMO
 
-class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSelection):
+class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/statisticsselectiondialog.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
 
         self._main_form = main_form
         self.cboCategory.addItems(["Subcatchment", "Node", "Link", "System"])
@@ -42,7 +43,7 @@ class frmStatisticsReportSelection(QtGui.QMainWindow, Ui_frmStatisticsReportSele
         if newIndex != 3:
             for item in self.output.all_items[newIndex]:
                 self.lstName.addItem(item)
-            self.lstName.setItemSelected(self.lstName.item(0), True)
+            self.lstName.item(0).setSelected(True)
             self.cboVariable.clear()
             for attribute in object_type.attributes:
                 self.cboVariable.addItem(attribute.name)

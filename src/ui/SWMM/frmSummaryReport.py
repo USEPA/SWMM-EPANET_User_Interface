@@ -1,17 +1,18 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from ui.help import HelpHandler
 from ui.SWMM.frmSummaryReportDesigner import Ui_frmSummaryReport
 
 
-class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
+class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
 
     def __init__(self, main_form):
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/viewing_a_summary_report.htm"
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         # self.set_from(parent.project)   # do after init to set control type CONTROLS or RULES
         self._main_form = main_form
         self.label.setVisible(False)  # since sorting seems buggy, take this off for now
@@ -43,6 +44,15 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
 
             topics = []
             try:
+                with open(status_file_name, 'r') as inp_reader:
+                    for line in iter(inp_reader):
+                        if line.startswith('  No nodes were surcharged.'):
+                            potential_topics.remove('Node Surcharge')
+                        elif line.startswith('  No nodes were flooded.'):
+                            potential_topics.remove('Node Flooding')
+                        elif line.startswith('  No conduits were surcharged.'):
+                            potential_topics.remove('Conduit Surcharge')
+
                 with open(status_file_name, 'r') as inp_reader:
                     for line in iter(inp_reader):
                         for potential_topic in potential_topics:
@@ -105,8 +115,8 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Continuity Error %']
                     elif self.cboType.currentText() == 'Groundwater':
                         Units1 = header_list[3]
-                        Units2 = header_list[5] + ' ' + header_list[6]
-                        Units3 = header_list[10]
+                        Units2 = header_list[5]
+                        Units3 = header_list[6]
                         column_headers = ['Subcatchment',
                                           'Total' + '\n' + 'Infil' + '\n' + Units1,
                                           'Total' + '\n' + 'Evap' + '\n' + Units1,
@@ -149,17 +159,17 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                     elif self.cboType.currentText() == 'Node Flooding':
                         Units1 = header_list[2]
                         Units2 = header_list[5] + ' ' + header_list[6]
-                        Units3 = header_list[7] + ' ' + header_list[8]
+                        Units3 = header_list[7]
                         column_headers = ['Node',
                                           'Hours' + '\n' + 'Flooded',
-                                          'Maximum' + '\n' + 'Rate' + Units1,
+                                          'Maximum' + '\n' + 'Rate' + '\n' + Units1,
                                           'Day of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Hour of' + '\n' + 'Maximum' + '\n' + 'Flooding',
                                           'Total' + '\n' + 'Flood' + '\n' + 'Volume' + '\n' + Units2,
-                                          'Maximum' + '\n' + 'Ponded' + '\n' + 'Volume' + '\n' + Units3]
+                                          'Maximum' + '\n' + 'Ponded' + '\n' + 'Depth' + '\n' + Units3]
                     elif self.cboType.currentText() == 'Storage Volume':
-                        Units1 = header_list[1]
-                        Units2 = header_list[9] + ' ' + header_list[10]
+                        Units1 = header_list[2] + ' ' + header_list[3]
+                        Units2 = header_list[12]
                         column_headers = ['Node',
                                           'Average' + '\n' + 'Volume' + '\n' + Units1,
                                           'Average' + '\n' + 'Percent' + '\n' + 'Full',
@@ -202,7 +212,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                           'Hours' + '\n' + 'Capacity' + '\n' + 'Limited']
                     elif self.cboType.currentText() == 'Pumping':
                         Units1 = header_list[3]
-                        Units2 = header_list[6] + header_list[7]
+                        Units2 = header_list[6] + ' ' + header_list[7]
                         Units3 = header_list[8]
                         column_headers = ['Pump',
                                           'Percent' + '\n' + 'Utilized',
@@ -227,9 +237,13 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                                 if header_count == total_num_headers:
                                     if temp_header_list[1] == 'Node':
                                         temp_header_list.remove('Node')
-                                    if temp_header_list[i+1] == '10^6' and temp_header_list[i+2] == 'gal':
-                                        temp_header_list[i+1] = '10^6 gal'
-                                        temp_header_list[i+2] = temp_header_list[i+3]
+                                    if temp_header_list[i+1] == '10^6':
+                                        if temp_header_list[i+2] == 'gal' or temp_header_list[i+2] == 'ltr':
+                                            temp_header_list[i+1] = '10^6 ' + temp_header_list[i+2]
+                                        if len(temp_header_list) > i+3:
+                                            temp_header_list[i+2] = temp_header_list[i+3]
+                                        if len(temp_header_list) == i+4:
+                                            temp_header_list[i+3] = ''
                                         if len(temp_header_list) > i+4:
                                             temp_header_list[i+3] = temp_header_list[i+4]
                                     header_list[i] += '\n' + temp_header_list[i+1]
@@ -247,7 +261,7 @@ class frmSummaryReport(QtGui.QMainWindow, Ui_frmSummaryReport):
                         row += 1
                         for value in line_list[0:]:
                             col += 1
-                            item = QtGui.QTableWidgetItem(value)
+                            item = QTableWidgetItem(value)
                             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                             if col == 0:
                                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)

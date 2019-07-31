@@ -21,7 +21,11 @@ var dir_aebb8dcc11953d78e620bbef0b9e2183 =
       [ "SectionReaderAsList", "classcore_1_1inp__reader__base_1_1_section_reader_as_list.html", "classcore_1_1inp__reader__base_1_1_section_reader_as_list" ],
       [ "SectionReaderAsListGroupByID", "classcore_1_1inp__reader__base_1_1_section_reader_as_list_group_by_i_d.html", "classcore_1_1inp__reader__base_1_1_section_reader_as_list_group_by_i_d" ]
     ] ],
-    [ "inp_writer_base.py", "inp__writer__base_8py.html", "inp__writer__base_8py" ],
+    [ "inp_writer_base.py", "inp__writer__base_8py.html", [
+      [ "InputFileWriterBase", "classcore_1_1inp__writer__base_1_1_input_file_writer_base.html", "classcore_1_1inp__writer__base_1_1_input_file_writer_base" ],
+      [ "SectionWriter", "classcore_1_1inp__writer__base_1_1_section_writer.html", null ],
+      [ "SectionWriterAsList", "classcore_1_1inp__writer__base_1_1_section_writer_as_list.html", "classcore_1_1inp__writer__base_1_1_section_writer_as_list" ]
+    ] ],
     [ "metadata.py", "metadata_8py.html", [
       [ "MetadataItem", "classcore_1_1metadata_1_1_metadata_item.html", "classcore_1_1metadata_1_1_metadata_item" ],
       [ "Metadata", "classcore_1_1metadata_1_1_metadata.html", "classcore_1_1metadata_1_1_metadata" ]

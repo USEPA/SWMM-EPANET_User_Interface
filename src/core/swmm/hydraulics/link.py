@@ -18,25 +18,25 @@ class Conduit(SwmmLink):
 
     #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the conduit"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the conduit"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the conduit"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the conduit"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the conduit"),
-        ("shape",                   '', "Shape",           "",       '', '', "Click to edit the conduit's cross section geometry"),
-        ("max_depth",               '', "Max. Depth",      "",       '', '', "Maximum depth of cross section"),
-        ("length",                  '', "Length",          "0.0",    '', '', "Conduit length"),
-        ("roughness",               '', "Roughness",       "0.0",    '', '', "Manning's N roughness coefficient"),
-        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of conduit invert above node invert at inlet end"),
-        ("outlet_offset",           '', "Outlet Offset",   "0.0",    '', '', "Depth of conduit invert above node invert at outlet end"),
-        ("initial_flow",            '', "Initial Flow",    "0.0",    '', '', "Initial flow in the conduit (flow units)"),
-        ("maximum_flow",            '', "Maximum Flow",    "",       '', '', "Maximum flow allowed in the conduit (flow units)"),
-        ("entry_loss_coefficient",  '', "Entry Loss Coeff.","0.0",   '', '', "Coefficient for energy losses at the entrance of the conduit"),
-        ("exit_loss_coefficient",   '', "Exit Loss Coeff.","0.0",    '', '', "Coefficient for energy losses at the exit of the conduit"),
-        ("loss_coefficient",        '', "Avg. Loss Coeff.","0.0",    '', '', "Coefficient for energy losses along the length of the conduit"),
-        ("seepage",                 '', "Seepage Loss Rate","0.0",   '', '', "Rate of seepage loss into surrounding soil"),
-        ("flap_gate",               '', "Flap Gate",        "False", '', '', "True if a flap gate prevents reverse flow through conduit"),
-        ("culvert_code",            '', "Culvert Code",     "",      '', '', "Culvert type code (leave blank for no culvert")
+        ("name",                    '', "Name",            "",       '', '',               "User-assigned name of the conduit"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '',               "Node on the inlet end of the conduit"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '',               "Node on the outlet end of the conduit"),
+        ("description",             '', "Description",     "",       '', '',               "Optional description of the conduit"),
+        ("tag",                     '', "Tag",             "",       '', '',               "Optional label used to categorize or classify the conduit"),
+        ("shape",                   '', "Shape",           "",       '', '',               "Click to edit the conduit's cross section geometry"),
+        ("max_depth",               '', "Max. Depth",      "",       '(ft)', '(m)',        "Maximum depth of cross section"),
+        ("length",                  '', "Length",          "0.0",    '(ft)', '(m)',        "Conduit length"),
+        ("roughness",               '', "Roughness",       "0.0",    '', '',               "Manning's N roughness coefficient"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '(ft)', '(m)',        "Depth of conduit invert above node invert at inlet end"),
+        ("outlet_offset",           '', "Outlet Offset",   "0.0",    '(ft)', '(m)',        "Depth of conduit invert above node invert at outlet end"),
+        ("initial_flow",            '', "Initial Flow",    "0.0",    '', '',               "Initial flow in the conduit (flow units)"),
+        ("maximum_flow",            '', "Maximum Flow",    "",       '', '',               "Maximum flow allowed in the conduit (flow units)"),
+        ("entry_loss_coefficient",  '', "Entry Loss Coeff.","0.0",   '', '',               "Coefficient for energy losses at the entrance of the conduit"),
+        ("exit_loss_coefficient",   '', "Exit Loss Coeff.","0.0",    '', '',               "Coefficient for energy losses at the exit of the conduit"),
+        ("loss_coefficient",        '', "Avg. Loss Coeff.","0.0",    '', '',               "Coefficient for energy losses along the length of the conduit"),
+        ("seepage",                 '', "Seepage Loss Rate","0.0",   '(in/hr)', '(mm/hr)', "Rate of seepage loss into surrounding soil"),
+        ("flap_gate",               '', "Flap Gate",        "False", '', '',               "True if a flap gate prevents reverse flow through conduit"),
+        ("culvert_code",            '', "Culvert Code",     "",      '', '',               "Culvert type code (leave blank for no culvert)")
     ))
 
     def __init__(self):
@@ -128,15 +128,15 @@ class Pump(SwmmLink):
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of the pump"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of the pump"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of the pump"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the pump"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the pump"),
-        ("pump_curve",              '', "Pump Curve",      "*",      '', '', "Name of pump curve (or * for ideal pump)"),
-        ("initial_status",          '', "Initial Status",  "ON",     '', '', "Initial Status of the pump (ON or OFF)"),
-        ("startup_depth",           '', "Startup Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns on"),
-        ("shutoff_depth",           '', "Shutoff Depth",   "0.0",    '', '', "Depth at inlet node when the pump turns off")
+        ("name",                    '', "Name",            "",       '', '',        "User-assigned name of the pump"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '',        "Node on the inlet end of the pump"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '',        "Node on the outlet end of the pump"),
+        ("description",             '', "Description",     "",       '', '',        "Optional description of the pump"),
+        ("tag",                     '', "Tag",             "",       '', '',        "Optional label used to categorize or classify the pump"),
+        ("pump_curve",              '', "Pump Curve",      "*",      '', '',        "Name of pump curve (or * for ideal pump)"),
+        ("initial_status",          '', "Initial Status",  "ON",     '', '',        "Initial Status of the pump (ON or OFF)"),
+        ("startup_depth",           '', "Startup Depth",   "0.0",    '(ft)', '(m)', "Depth at inlet node when the pump turns on"),
+        ("shutoff_depth",           '', "Shutoff Depth",   "0.0",    '(ft)', '(m)', "Depth at inlet node when the pump turns off")
     ))
 
     def __init__(self):
@@ -165,19 +165,19 @@ class Orifice(SwmmLink):
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of orifice"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of orifice"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of orifice"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of orifice"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify orifice"),
-        ("type",                    '', "Type",            "",       '', '', "Type of orifice"),
-        ("cross_section",           '', "Shape",           "",       '', '', "Orifice shape"),
-        ("height",                  '', "Height",          "1.0",    '', '', "Height of orifice opening when fully opened"),
-        ("width",                   '', "Width",           "1.0",    '', '', "Width of orifice opening when fully opened"),
-        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of bottom of orifice opening from inlet node invert"),
-        ("discharge_coefficient",   '', "Discharge Coeff.",   "0.0",   '', '', "Discharge coefficient"),
-        ("flap_gate",               '', "Flap Gate",          "False", '', '', "True if orifice contains a flap gate to prevent backflow"),
-        ("o_rate",                  '', "Time to Open/Close", "0.0",   '', '', "Time in decimal hours to open/close a gated orifice")
+        ("name",                    '', "Name",            "",       '', '',        "User-assigned name of orifice"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '',        "Node on the inlet end of orifice"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '',        "Node on the outlet end of orifice"),
+        ("description",             '', "Description",     "",       '', '',        "Optional description of orifice"),
+        ("tag",                     '', "Tag",             "",       '', '',        "Optional label used to categorize or classify orifice"),
+        ("type",                    '', "Type",            "",       '', '',        "Type of orifice"),
+        ("cross_section",           '', "Shape",           "",       '', '',        "Orifice shape"),
+        ("height",                  '', "Height",          "1.0",    '(ft)', '(m)', "Height of orifice opening when fully opened"),
+        ("width",                   '', "Width",           "1.0",    '(ft)', '(m)', "Width of orifice opening when fully opened"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '(ft)', '(m)', "Depth of bottom of orifice opening from inlet node invert"),
+        ("discharge_coefficient",   '', "Discharge Coeff.",   "0.0",   '', '',      "Discharge coefficient"),
+        ("flap_gate",               '', "Flap Gate",          "False", '', '',      "True if orifice contains a flap gate to prevent backflow"),
+        ("o_rate",                  '', "Time to Open/Close", "0.0",   '', '',      "Time in decimal hours to open/close a gated orifice")
     ))
 
     def __init__(self):
@@ -220,23 +220,23 @@ class Weir(SwmmLink):
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of weir"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of weir"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of weir"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the weir"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the weir"),
-        ("type",                   '', "Type",            "",       '', '', "Type of weir"),
-        ("height",                  '', "Height",          "1.0",    '', '', "Vertical height of weir opening"),
-        ("length",                  '', "Length",          "1.0",    '', '', "Horizontal length of weir crest (or crown for V-Notch weir)"),
-        ("side_slope",              '', "Side Slope",      "0.0",    '', '', "Slope (width-to-height) of TRAPEZOIDAL weir side walls"),
-        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of bottom of weir opening from inlet node invert"),
-        ("discharge_coefficient",   '', "Discharge Coeff.","0.0",    '', '', "Discharge coefficient for central portion of weir"),
-        ("flap_gate",               '', "Flap Gate",       "False",  '', '', "True if weir contains a flap gate to prevent backflow"),
-        ("end_contractions",        '', "End Contractions","0",      '', '', "Number of end contractions"),
-        ("end_coefficient",         '', "End Coeff.",      "0",      '', '', "Discharge coefficient for flow through the triangular ends of a TRAPEZOIDAL weir"),
-        ("can_surcharge",           '', "Can Surcharge",   "False",  '', '', "True if weir can surcharge"),
-        ("road_width",              '', "Road Width",      "0.0",    '', '', "Width of road lanes and shoulders if roadway weir"),
-        ("road_surface",            '', "Road Surface",    "",       '', '', "Type of road surface if roadway weir")
+        ("name",                    '', "Name",            "",       '', '',           "User-assigned name of weir"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '',           "Node on the inlet end of weir"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '',           "Node on the outlet end of weir"),
+        ("description",             '', "Description",     "",       '', '',           "Optional description of the weir"),
+        ("tag",                     '', "Tag",             "",       '', '',           "Optional label used to categorize or classify the weir"),
+        ("type",                   '', "Type",            "",       '', '',            "Type of weir"),
+        ("height",                  '', "Height",          "1.0",    '(ft)', '(m)',    "Vertical height of weir opening"),
+        ("length",                  '', "Length",          "1.0",    '(ft)', '(m)',    "Horizontal length of weir crest (or crown for V-Notch weir)"),
+        ("side_slope",              '', "Side Slope",      "0.0",    '', '',           "Slope (width-to-height) of TRAPEZOIDAL weir side walls"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '(ft)', '(m)',    "Depth of bottom of weir opening from inlet node invert"),
+        ("discharge_coefficient",   '', "Discharge Coeff.","0.0",    '(CFS)', '(CMS)', "Discharge coefficient for central portion of weir"),
+        ("flap_gate",               '', "Flap Gate",       "False",  '', '',           "True if weir contains a flap gate to prevent backflow"),
+        ("end_contractions",        '', "End Contractions","0",      '', '',           "Number of end contractions"),
+        ("end_coefficient",         '', "End Coeff.",      "0",      '(CFS)', '(CMS)', "Discharge coefficient for flow through the triangular ends of a TRAPEZOIDAL weir"),
+        ("can_surcharge",           '', "Can Surcharge",   "False",  '', '',           "True if weir can surcharge"),
+        ("road_width",              '', "Road Width",      "0.0",    '(ft)', '(m)',    "Width of road lanes and shoulders if roadway weir"),
+        ("road_surface",            '', "Road Surface",    "",       '', '',           "Type of road surface if roadway weir")
     ))
 
     def __init__(self):
@@ -261,7 +261,7 @@ class Weir(SwmmLink):
         self.end_coefficient = 0.0
 
         ## bool: True if weir can surcharge
-        self.can_surcharge = False
+        self.can_surcharge = True
 
         ## float: Width of road lanes and shoulders
         self.road_width = 0.0
@@ -282,17 +282,17 @@ class Outlet(SwmmLink):
 
 #    attribute,         input_name, label,         default, english, metric, hint
     metadata = Metadata((
-        ("name",                    '', "Name",            "",       '', '', "User-assigned name of outlet"),
-        ("inlet_node",              '', "Inlet Node",      "",       '', '', "Node on the inlet end of outlet"),
-        ("outlet_node",             '', "Outlet Node",     "",       '', '', "Node on the outlet end of outlet"),
-        ("description",             '', "Description",     "",       '', '', "Optional description of the outlet"),
-        ("tag",                     '', "Tag",             "",       '', '', "Optional label used to categorize or classify the outlet"),
-        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '', '', "Depth of outlet above inlet node invert"),
-        ("flap_gate",               '', "Flap Gate",       "False",  '', '', "True if outlet contains a flap gate to prevent backflow"),
-        ("curve_type",              '', "Rating Curve",    "",       '', '', "Method of defining flow as a function of either freeboard depth or head across the outlet"),
-        ("coefficient",             '', "Functional Curve Coefficient", "0.0",    '', '', "A-value in expression Outflow = A*y^B for y(=depth or head)"),
-        ("exponent",                '', "Functional Curve Exponent",    "0.0",    '', '', "B-value in expression Outflow = A*y^B for y(=depth or head)"),
-        ("rating_curve",            '', "Tabular Curve Name",           "",       '', '', "Name of rating curve that relates outflow to either depth or head")
+        ("name",                    '', "Name",            "",       '', '',                     "User-assigned name of outlet"),
+        ("inlet_node",              '', "Inlet Node",      "",       '', '',                     "Node on the inlet end of outlet"),
+        ("outlet_node",             '', "Outlet Node",     "",       '', '',                     "Node on the outlet end of outlet"),
+        ("description",             '', "Description",     "",       '', '',                     "Optional description of the outlet"),
+        ("tag",                     '', "Tag",             "",       '', '',                     "Optional label used to categorize or classify the outlet"),
+        ("inlet_offset",            '', "Inlet Offset",    "0.0",    '(ft)', '(m)',              "Depth of outlet above inlet node invert"),
+        ("flap_gate",               '', "Flap Gate",       "False",  '', '',                     "True if outlet contains a flap gate to prevent backflow"),
+        ("curve_type",              '', "Rating Curve",    "",       '', '',                     "Method of defining flow as a function of either freeboard depth or head across the outlet"),
+        ("coefficient",             '', "Functional Curve Coefficient", "0.0",    '(ft)', '(m)', "A-value in expression Outflow = A*y^B for y(=depth or head)"),
+        ("exponent",                '', "Functional Curve Exponent",    "0.0",    '(ft)', '(m)', "B-value in expression Outflow = A*y^B for y(=depth or head)"),
+        ("rating_curve",            '', "Tabular Curve Name",           "",       '', '',        "Name of rating curve that relates outflow to either depth or head")
     ))
 
     def __init__(self):
@@ -305,13 +305,13 @@ class Outlet(SwmmLink):
         self.flap_gate = False
 
         ## float: Coefficient in outflow expression
-        self.coefficient = 0.0
+        self.coefficient = 10.0
 
         ## float: Exponent in outflow expression
-        self.exponent = 0.0
+        self.exponent = 0.5
 
         ## OutletCurveType: Method of defining flow as a function of either freeboard depth or head across the outlet
-        self.curve_type = OutletCurveType.TABULAR_DEPTH
+        self.curve_type = OutletCurveType.FUNCTIONAL_DEPTH
 
         ## str: Name of rating curve that relates outflow to either depth or head
         self.rating_curve = "None"
@@ -361,6 +361,7 @@ class CrossSectionShape(Enum):
     SEMICIRCULAR = 22       # Full Height
     IRREGULAR = 23          # TransectCoordinates (Natural Channel)
     CUSTOM = 24             # Full Height, ShapeCurveCoordinates
+    DUMMY = 25
 
 
 class CrossSection(Section):
@@ -402,7 +403,7 @@ class CrossSection(Section):
 
         ## float: number of barrels (i.e., number of parallel pipes of equal size, slope, and
         ## roughness) associated with a conduit (default is 1).
-        self.barrels = '0.0'
+        self.barrels = '1'
 
         ## code number for the conduits inlet geometry if it is a culvert subject to possible inlet flow control
         self.culvert_code = ''

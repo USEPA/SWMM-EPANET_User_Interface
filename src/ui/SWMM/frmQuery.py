@@ -1,18 +1,19 @@
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import *
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from ui.frmQueryDesigner import Ui_frmQuery
-import Externals.swmm.outputapi.SMOutputWrapper as SWMMO
+import Externals.swmm.outputapi.SMOutputSWIG as SWMMO
 import core.swmm.hydraulics.node as snode
 import core.swmm.hydraulics.link as slink
 import core.swmm.hydrology.subcatchment as sub
 import core.swmm.hydrology.lidcontrol as lid
 
 
-class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
+class frmQuery(QMainWindow, Ui_frmQuery):
 
     def __init__(self, session, project):
-        QtGui.QMainWindow.__init__(self, session)
+        QMainWindow.__init__(self, session)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/Submitti.htm"
         self.setupUi(self)
@@ -42,7 +43,7 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
         self.cboAbove.addItem('Equal To')
         self.cboAbove.addItem('Above')
 
-        QtCore.QObject.connect(self.cmdSubmit, QtCore.SIGNAL("clicked()"), self.cmdSubmit_Clicked)
+        self.cmdSubmit.clicked.connect(self.cmdSubmit_Clicked)
 
     def cboFind_Changed(self):
         # Changes list of map display variables to choose
@@ -160,12 +161,18 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                         if self.is_selected(node.name, value, val, slist):
                             count += 1
         elif self.cboFind.currentIndex() == 3: # LID
-            #ToDo figure out how to search for LID's presence
             otype = "subcatchment"
             for lid in self.project.lid_usage.value:
                 if lid.subcatchment_name:
-                    slist.append(lid.subcatchment_name)
-            pass
+                    if selected_attribute == "Any LIDs":
+                        slist.append(lid.subcatchment_name)
+                        count += 1
+                    else:
+                        for lid_control in self.project.lid_controls.value:
+                            if lid_control.name == lid.control_name:
+                                if lid_control.lid_type.value == self.cboProperty.currentIndex():
+                                    slist.append(lid.subcatchment_name)
+                                    count += 1
         elif self.cboFind.currentIndex() == 4: # nodes with inflow
             otype = "node"
             inflows = None
@@ -177,7 +184,9 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
                 inflows = self.project.rdii
             if inflows is not None:
                 for inflow in inflows.value:
-                    slist.append(inflow.node)
+                    if not inflow.node in slist:
+                        slist.append(inflow.node)
+                        count += 1
         else:
             otype = 'link'
             attribute = None
@@ -212,10 +221,13 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
 
         self.session.map_widget.clearSelectableObjects()
         if len(self.selected_objects) == 1:
-            layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
-            if layer:
-                self.session.select_named_items(layer, slist)
+            key_list = list(self.selected_objects.keys())
+            layer_name = key_list[0]
+            if layer_name:
+                lyr = self.session.model_layers.find_layer_by_name(layer_name)
+                self.session.select_named_items(lyr, slist)
         else:
+            self.session.clear_section_selection()
             self.session.clear_object_listing()
             self.session.map_widget.select_model_objects_by_ids(self.selected_objects)
 

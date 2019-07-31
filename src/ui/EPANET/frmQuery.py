@@ -1,5 +1,6 @@
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import *
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from ui.frmQueryDesigner import Ui_frmQuery
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
@@ -11,10 +12,10 @@ from core.epanet.hydraulics.link import Pump
 from core.epanet.hydraulics.link import Valve
 
 
-class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
+class frmQuery(QMainWindow, Ui_frmQuery):
 
     def __init__(self, session, project):
-        QtGui.QMainWindow.__init__(self, session)
+        QMainWindow.__init__(self, session)
         self.helper = HelpHandler(self)
         self.help_topic = "epanet/src/src/Submitti.htm"
         self.setupUi(self)
@@ -22,7 +23,7 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
         self.project = project
 
         self.cboFind.currentIndexChanged.connect(self.cboFind_Changed)
-        QtCore.QObject.connect(self.cmdSubmit, QtCore.SIGNAL("clicked()"), self.cmdSubmit_Clicked)
+        self.cmdSubmit.clicked.connect(self.cmdSubmit_Clicked)
 
         self.cboFind.addItem('Find Nodes with')
         self.cboFind.addItem('Find Links with')
@@ -185,9 +186,11 @@ class frmQuery(QtGui.QMainWindow, Ui_frmQuery):
 
         self.session.map_widget.clearSelectableObjects()
         if len(self.selected_objects) == 1:
-            layer = self.session.model_layers.find_layer_by_name(self.selected_objects.keys()[0])
-            if layer:
-                self.session.select_named_items(layer, slist)
+            for key, value in self.selected_objects.items():
+                layer = self.session.model_layers.find_layer_by_name(key)
+                if layer:
+                    self.session.select_named_items(layer, slist)
         else:
+            self.session.clear_section_selection()
             self.session.clear_object_listing()
             self.session.map_widget.select_model_objects_by_ids(self.selected_objects)

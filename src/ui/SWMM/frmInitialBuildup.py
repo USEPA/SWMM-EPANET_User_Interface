@@ -1,5 +1,6 @@
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from ui.help import HelpHandler
 from core.swmm.hydrology.subcatchment import InitialLoading
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
@@ -11,14 +12,14 @@ class frmInitialBuildup(frmGenericPropertyEditor):
 
     def __init__(self, main_form, subcatchment_name):
         # purposely not calling frmGenericPropertyEditor.__init__
-        QtGui.QMainWindow.__init__(self, main_form)
+        QMainWindow.__init__(self, main_form)
         self.helper = HelpHandler(self)
         self.help_topic = "swmm/src/src/initialbuildupeditor.htm"
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         self.subcatchment_name = subcatchment_name
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.setWindowTitle('SWMM Initial Buildup Editor for Subcatchment ' + subcatchment_name)
         self.lblNotes.setText("Enter initial buildup of pollutants on Subcatchment " + subcatchment_name)
         self.tblGeneric.setColumnCount(1)
@@ -45,8 +46,8 @@ class frmInitialBuildup(frmGenericPropertyEditor):
             pollutant_count += 1
             for loading in loadings_list:
                 if loading.subcatchment_name == subcatchment_name and loading.pollutant_name == pollutant:
-                    led = QtGui.QLineEdit(str(loading.initial_buildup))
-                    self.tblGeneric.setItem(pollutant_count,0,QtGui.QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(loading.initial_buildup))
+                    self.tblGeneric.setItem(pollutant_count,0,QTableWidgetItem(led.text()))
         self._main_form = main_form
 
     def cmdOK_Clicked(self):
@@ -61,9 +62,12 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     # put this back in place
                     loading_found = True
                     if self.tblGeneric.item(pollutant_count,0) and len(self.tblGeneric.item(pollutant_count,0).text()) > 0:
+                        if loading.initial_buildup != self.tblGeneric.item(pollutant_count, 0).text():
+                            self._main_form.mark_project_as_unsaved()
                         loading.initial_buildup = self.tblGeneric.item(pollutant_count,0).text()
                     else:
                         section.value.remove(loading)
+                        self._main_form.mark_project_as_unsaved()
             if not loading_found:
                 # add new record
                 if self.tblGeneric.item(pollutant_count,0):
@@ -74,6 +78,7 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     if section.value == '':
                         section.value = []
                     section.value.append(value1)
+                    self._main_form.mark_project_as_unsaved()
         self.close()
 
     def cmdCancel_Clicked(self):

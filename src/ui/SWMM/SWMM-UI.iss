@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SWMM-UI"
-#define MyAppVersion "MTP 3r3"
+#define MyAppVersion "MTP5r0"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/SWMM-EPANET_User_Interface/"
 #define MyAppExeName "SWMM-UI.exe"
-#define QTplugins "C:\OSGeo4W64\apps\Qt4\plugins"
+#define QTplugins "C:\OSGeo4W64\apps\Qt5\plugins"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -24,7 +24,7 @@ DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=SWMM-UI-MTP3r3
+OutputBaseFilename=SWMM-UI-MTP5r0
 Compression=lzma
 SolidCompression=yes
 
@@ -35,11 +35,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "dist\SWMM-UI\*";     DestDir: "{app}";              Flags: ignoreversion recursesubdirs
-Source: "swmmimages\*";       DestDir: "{app}\swmmimages";   Flags: ignoreversion recursesubdirs
-Source: "..\icons\editor\*";  DestDir: "{app}\icons\editor"; Flags: ignoreversion recursesubdirs
-Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+Source: "dist\SWMM-UI\*";     DestDir: "{app}";              Flags: ignoreversion recursesubdirs; Source: "swmmimages\*";       DestDir: "{app}\swmmimages";   Flags: ignoreversion recursesubdirs
+; Source: "..\icons\editor\*";  DestDir: "{app}\icons\editor"; Flags: ignoreversion recursesubdirs
+; Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+; Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"

@@ -2,13 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EPANET-UI"
-#define MyAppVersion "MTP 3r2"
+#define MyAppVersion "MTP5r0"
 #define MyAppPublisher "RESPEC"
 #define MyAppURL "https://github.com/USEPA/EPANET-EPANET_User_Interface/"
 #define MyAppExeName "EPANET-UI.exe"
 ;Python folder to install Qt Help Assistant from
 #define pyLibrary "C:\OSGeo4W64" 
-#define QTplugins "C:\OSGeo4W64\apps\Qt4\plugins"
+#define QTplugins "C:\OSGeo4W64\apps\Qt5\plugins"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -26,7 +26,7 @@ DefaultDirName={pf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=output
-OutputBaseFilename=EPANET-UI-MTP3r2
+OutputBaseFilename=EPANET-UI-MTP5r0
 Compression=lzma
 SolidCompression=yes
 
@@ -42,12 +42,12 @@ Source: "epanet.qch";                           DestDir: "{app}";               
 Source: "epanet.qhc";                           DestDir: "{app}";                      Flags: ignoreversion
 
 ;Files needed for Qt Help Assistant to run as our help viewer
-Source: "{#pyLibrary}\bin\assistant.exe";       DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\QtHelp4.dll";         DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\QtCLucene4.dll";      DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#pyLibrary}\bin\phonon4.dll";         DestDir: "{app}";                      Flags: ignoreversion
-Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
-Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
+;Source: "{#pyLibrary}\bin\assistant.exe";       DestDir: "{app}";                      Flags: ignoreversion
+;Source: "{#pyLibrary}\bin\QtHelp4.dll";         DestDir: "{app}";                      Flags: ignoreversion
+;Source: "{#pyLibrary}\bin\QtCLucene4.dll";      DestDir: "{app}";                      Flags: ignoreversion
+;Source: "{#pyLibrary}\bin\phonon4.dll";         DestDir: "{app}";                      Flags: ignoreversion
+;Source: "{#QTplugins}\sqldrivers\qsqlite4.dll"; DestDir: "{app}\plugins\sqldrivers";   Flags: ignoreversion
+;Source: "{#QTplugins}\imageformats\*";          DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

@@ -1,6 +1,10 @@
-import PyQt4.QtGui as QtGui
-import PyQt4.QtCore as QtCore
+import PyQt5.QtGui as QtGui
+import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtCore import *
 from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
+from ui.help import HelpHandler
 from core.swmm.timeseries import TimeSeries
 from ui.model_utility import ParseData
 import pandas as pd
@@ -8,15 +12,16 @@ import pandas as pd
 from ui.frmPlotViewer import frmPlotViewer
 
 
-class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
-    def __init__(self, main_form, edit_these, new_item):
-        QtGui.QMainWindow.__init__(self, main_form)
+class frmTimeseries(QMainWindow, Ui_frmTimeseries):
+    def __init__(self, main_form, edit_these=[], new_item=None):
+        QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
-        QtCore.QObject.connect(self.cmdOK, QtCore.SIGNAL("clicked()"), self.cmdOK_Clicked)
-        QtCore.QObject.connect(self.cmdCancel, QtCore.SIGNAL("clicked()"), self.cmdCancel_Clicked)
-        QtCore.QObject.connect(self.btnFile, QtCore.SIGNAL("clicked()"), self.btnFile_Clicked)
-        QtCore.QObject.connect(self.btnView, QtCore.SIGNAL("clicked()"), self.btnView_Clicked)
+        self.cmdOK.clicked.connect(self.cmdOK_Clicked)
+        self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
+        self.btnFile.clicked.connect(self.btnFile_Clicked)
+        self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
         self.section = self.project.timeseries
@@ -39,6 +44,7 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
             self.editing_item = timeseries
             self.txtTimeseriesName.setText(timeseries.name)
             self.txtDescription.setText(timeseries.comment)
+            self.tblTime.setRowCount(max(len(timeseries.values) + 1, self.tblTime.rowCount()))
             if timeseries.file:
                 if len(timeseries.file) > 0:
                     self.rbnExternal.setChecked(True)
@@ -51,12 +57,12 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                 point_count = -1
                 for value in timeseries.values:
                     point_count += 1
-                    led = QtGui.QLineEdit(str(timeseries.dates[point_count]))
-                    self.tblTime.setItem(point_count,0,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(timeseries.times[point_count]))
-                    self.tblTime.setItem(point_count,1,QtGui.QTableWidgetItem(led.text()))
-                    led = QtGui.QLineEdit(str(value))
-                    self.tblTime.setItem(point_count,2,QtGui.QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(timeseries.dates[point_count]))
+                    self.tblTime.setItem(point_count,0,QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(timeseries.times[point_count]))
+                    self.tblTime.setItem(point_count,1,QTableWidgetItem(led.text()))
+                    led = QLineEdit(str(value))
+                    self.tblTime.setItem(point_count,2,QTableWidgetItem(led.text()))
 
     def GetData(self):
         """
@@ -112,6 +118,13 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         return n
 
     def cmdOK_Clicked(self):
+
+        orig_name = self.editing_item.name
+        orig_comment = self.editing_item.comment
+        orig_dates = self.editing_item.dates
+        orig_times = self.editing_item.times
+        orig_values = self.editing_item.values
+
         self.editing_item.name = self.txtTimeseriesName.text()
         self.editing_item.comment = self.txtDescription.text()
         if self.editing_item.comment and self.editing_item.comment[0] != ';':
@@ -148,7 +161,14 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
                     print("Skipping row " + str(row) + " of time series grid: " + str(ex))
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
             self._main_form.add_item(self.new_item)
+            self._main_form.mark_project_as_unsaved()
         else:
+            if orig_name != self.editing_item.name or \
+                orig_comment != self.editing_item.comment or \
+                orig_dates != self.editing_item.dates or \
+                orig_times != self.editing_item.times or \
+                orig_values != self.editing_item.values:
+                self._main_form.mark_project_as_unsaved()
             pass
             # TODO: self._main_form.edited_?
         self.close()
@@ -157,10 +177,10 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
         self.close()
 
     def btnFile_Clicked(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open a Time Series", '',
+        file_name, ftype = QFileDialog.getOpenFileName(self, "Open a Time Series", '',
                                                       "Time series files (*.DAT);;All files (*.*)")
         if file_name:
-            self.txtExternalFile.setText(file_name)
+            self.txtExternalFile.setText('"' + file_name + '"')
 
     def btnView_Clicked(self):
         """
@@ -174,6 +194,11 @@ class frmTimeseries(QtGui.QMainWindow, Ui_frmTimeseries):
             #ts.plot()
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
             df.hour_only = self.hour_only
-            frm_plt = frmPlotViewer(df)
+            frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
             frm_plt.show()
         pass
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            if self.tblTime.currentRow() + 1 == self.tblTime.rowCount():
+                self.tblTime.insertRow(self.tblTime.rowCount())

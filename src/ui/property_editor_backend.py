@@ -21,8 +21,11 @@ class PropertyEditorBackend:
         self.new_item = new_item
         if edit_these:
             self.meta = edit_these[0].metadata
-            self.table.horizontalHeader().hide()
+            # self.table.horizontalHeader().hide()
             self.table.setColumnCount(len(edit_these))
+            listofblanks = [''] * len(edit_these)
+            self.table.setHorizontalHeaderLabels(listofblanks)
+            self.table.horizontalHeader().setFixedHeight(5)
             self.table.setRowCount(len(self.meta))
             self.table.setVerticalHeaderLabels(self.meta.labels())
             column = 0

@@ -1875,6 +1875,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             # window.destroyed.connect(lambda s, e, a: self._forms.remove(s))
             # window.destroyed = lambda s, e, a: self._forms.remove(s)
             # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
+            window.setWindowModality(QtCore.Qt.ApplicationModal)
             window.show()
 
             # def editor_closing(self, event):

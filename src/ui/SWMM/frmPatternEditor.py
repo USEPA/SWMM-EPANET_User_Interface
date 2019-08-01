@@ -5,12 +5,14 @@ import ui.convenience
 from core.swmm.patterns import PatternType
 from core.swmm.patterns import Pattern
 from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
+from ui.help import HelpHandler
 
 
 class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
     def __init__(self, main_form, edit_these=[], new_item=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
+        self.helper = HelpHandler(self)
         self.setupUi(self)
         self.cboType.clear()
         ui.convenience.set_combo_items(PatternType, self.cboType)

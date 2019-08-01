@@ -2,6 +2,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from PyQt5.QtCore import Qt
+from PyQt5.Qt import QApplication, QClipboard
 
 from Externals.epanet.outputapi.ENOutputWrapper import ENR_node_type, ENR_link_type
 from core.epanet.reports import Reports
@@ -280,7 +281,7 @@ class frmTable(QMainWindow, Ui_frmTable):
             for attribute in requested_output_attributes:
                 val_str = attribute.str(values[attribute.index])
                 table_cell_widget = QTableWidgetItem(val_str)
-                table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
+                table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                 table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                 tbl.setItem(row, col, table_cell_widget)
                 col += 1
@@ -324,6 +325,8 @@ class frmTable(QMainWindow, Ui_frmTable):
         for row_number in rows_to_remove:
             tbl.removeRow(int(row_number)-removed_count)
             removed_count += 1
+        for row in range(tbl.rowCount()):
+            tbl.setRowHeight(row, 10)
 
         # do sort
         # tbl.sortByColumn(1, Qt.AscendingOrder)
@@ -349,11 +352,13 @@ class frmTable(QMainWindow, Ui_frmTable):
                 for attribute in attributes:
                     val_str = attribute.str(values[attribute.index])
                     table_cell_widget = QTableWidgetItem(val_str)
-                    table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable)  # | QtCore.Qt.ItemIsEnabled)
+                    table_cell_widget.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                     table_cell_widget.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                     tbl.setItem(row, col, table_cell_widget)
                     col += 1
                 row += 1
+        for row in range(tbl.rowCount()):
+            tbl.setRowHeight(row, 10)
 
     def cmdCancel_Clicked(self):
         self.close()
@@ -375,3 +380,20 @@ class frmTable(QMainWindow, Ui_frmTable):
         for wi in self.lstFilter.selectedItems():
             self.lstFilter.takeItem(self.lstFilter.row(wi))
         pass
+
+    def copy(self):
+        selected_range = self.tblGeneric.selectedRanges()[0]
+        str = ""
+        for i in range(selected_range.rowCount()):
+            if i > 0:
+                str += "\n"
+            for j in range(selected_range.columnCount()):
+                if j > 0:
+                    str += "\t"
+                str += self.tblGeneric.item(selected_range.topRow() + i, selected_range.leftColumn() + j).text()
+        str += "\n"
+        QApplication.clipboard().setText(str)
+
+    def keyPressEvent(self, event):
+        if event.matches(QtGui.QKeySequence.Copy):
+            self.copy()

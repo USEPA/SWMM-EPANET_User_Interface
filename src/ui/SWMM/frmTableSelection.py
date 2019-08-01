@@ -42,6 +42,11 @@ class frmTableSelection(QMainWindow, Ui_frmTableSelection):
                                           "No locations are selected.",
                                           QMessageBox.Ok)
             return
+        if len(self.lstVariables.selectedIndexes()) == 0:
+            QMessageBox.information(None, "Table",
+                                    "No variables are selected.",
+                                    QMessageBox.Ok)
+            return
         object_label = self.cboObject.currentText()
         start_index = self.cboStart.currentIndex()
         end_index = self.cboEnd.currentIndex()

@@ -51,7 +51,9 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.setWindowTitle(self.session.model + " Project Defaults")
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
-        self.cmdHelp.clicked.connect(self.cmdHelp_Clicked)
+        #disable Help button on form since no other forms have one
+        self.cmdHelp.setVisible(False)
+        #self.cmdHelp.clicked.connect(self.cmdHelp_Clicked)
         # self.tabDefaults.currentChanged(int).connect(self.tab_changed)
         # self.tblGeneric.cellChanged(int, int).connect(self.tblGeneric_changed)
         self.tabDefaults.currentChanged.connect(self.tab_changed)

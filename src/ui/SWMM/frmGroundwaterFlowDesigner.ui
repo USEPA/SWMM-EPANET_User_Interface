@@ -141,7 +141,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>../swmmimages/gw.png</pixmap>
+             <pixmap>swmmimages/gw.png</pixmap>
             </property>
            </widget>
           </item>

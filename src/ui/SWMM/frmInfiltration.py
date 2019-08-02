@@ -67,6 +67,8 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         set_combo_items(type(enum_val), self.cboInfilModel)
         set_combo(self.cboInfilModel, enum_val)
 
+        self.tblGeneric.setHorizontalHeaderLabels(['Value'])
+        self.tblGeneric.horizontalHeader().setFixedHeight(30)
         self.corner_label = QLabel("Property", self.tblGeneric)
         self.corner_label.setAlignment(QtCore.Qt.AlignCenter)
         self.corner_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)

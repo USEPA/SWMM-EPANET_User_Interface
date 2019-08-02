@@ -128,7 +128,7 @@ class Ui_frmGroundwaterFlow(object):
         sizePolicy.setHeightForWidth(self.lblImage.sizePolicy().hasHeightForWidth())
         self.lblImage.setSizePolicy(sizePolicy)
         self.lblImage.setText(_fromUtf8(""))
-        self.lblImage.setPixmap(QPixmap(_fromUtf8("../swmmimages/gw.png")))
+        self.lblImage.setPixmap(QPixmap(_fromUtf8("swmmimages/gw.png")))
         self.lblImage.setObjectName(_fromUtf8("lblImage"))
         self.horizontalLayout.addWidget(self.lblImage)
         self.verticalLayout.addWidget(self.fraImage)

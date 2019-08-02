@@ -1216,7 +1216,7 @@ class frmMainSWMM(frmMain):
                     edit_these.append(new_item)
             frm = frmGenericPropertyEditor(self, self.project.labels, edit_these, new_item, "SWMM Map Label Editor")
             frm.helper = HelpHandler(frm)
-            frm.help_topic = "swmm/src/src/maplabeleditordialog.htm"
+            frm.help_topic = "swmm/src/src/maplabelproperties.htm"
         elif edit_name in [item[0] for item in self.tree_items_using_name]:
             # in these cases the click on the tree diagram populates the lower left list, not directly to an editor
             return None

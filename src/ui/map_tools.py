@@ -744,6 +744,7 @@ try:
                     layer = QgsVectorLayer("Point", layer_name, "memory")
                 provider = layer.dataProvider()
                 is_centroid = "CENTROID" in layer.name().upper()
+                is_label = "LABEL" in layer.name().upper()
 
                 # add fields
                 if is_centroid:
@@ -751,7 +752,14 @@ try:
                                             QgsField("color", QtCore.QVariant.String),
                                             QgsField("sub_mapid", QtCore.QVariant.Int),
                                             QgsField("sub_modelid", QtCore.QVariant.String)])
-                    pass
+                elif is_label:
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.String),
+                                            QgsField("value", QtCore.QVariant.Double),
+                                            QgsField("bold", QtCore.QVariant.Bool),
+                                            QgsField("italic", QtCore.QVariant.Bool),
+                                            QgsField("size", QtCore.QVariant.Double),
+                                            QgsField("font", QtCore.QVariant.String)])
                 else:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                             QgsField("color", QtCore.QVariant.String),
@@ -851,15 +859,16 @@ try:
                     # size = 10.0
                     # symbol_layer.setOutlineColor(QColor('transparent'))
                     # symbol_layer.setColor(QColor('transparent'))
+                    EmbedMap.config_labeling(layer, None)
                     symbol_layer.setEnabled(False)
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size
-                # pal_layer.textColor = None
-                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
-                labeler = QgsVectorLayerSimpleLabeling(pal_layer)
-                layer.setLabeling(labeler)
-                layer.setLabelsEnabled(True)
+                    # pal_layer.textColor = None
+                    # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+                    labeler = QgsVectorLayerSimpleLabeling(pal_layer)
+                    layer.setLabeling(labeler)
+                    layer.setLabelsEnabled(True)
 
             symbol_layer.setSize(size)
             symbol.appendSymbolLayer(symbol_layer)
@@ -880,8 +889,49 @@ try:
             # expr = "case when size < 3 then size * 2 else size end case"
             # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
             if "LABELS" in layer.name().upper():
-                new_format = QgsTextFormat(txt_format)
-                pal_layer.setFormat(new_format)
+                if txt_format is not None:
+                    new_format = QgsTextFormat(txt_format)
+                    pal_layer.setFormat(new_format)
+                else:
+                    # new code to implement bold, italics, font
+                    provider = layer.dataProvider()
+                    for feature in provider.getFeatures():
+                        font_name = QFont().family()
+                        fmt = pal_layer.format()
+                        font = fmt.font()
+                        is_bold = feature[3]
+                        is_italic = feature[4]
+                        font_size = 10
+                        if float(feature[5]):
+                            font_size = float(feature[5])
+                        if len(str(feature[6])) > 0:
+                            font_name = str(feature[6])
+                        font.setFamily(font_name)
+                        font.setBold(is_bold)
+                        font.setItalic(is_italic)
+                        fmt.setFont(font)
+                        fmt.setSize(font_size)
+                        pal_layer.setFormat(fmt)
+
+                    pc = QgsPropertyCollection('ddp')
+
+                    qgs_prop_bold = QgsProperty()
+                    qgs_prop_bold.setField("bold")
+                    pc.setProperty(QgsPalLayerSettings.Bold, qgs_prop_bold)
+
+                    qgs_prop_italic = QgsProperty()
+                    qgs_prop_italic.setField("italic")
+                    pc.setProperty(QgsPalLayerSettings.Italic, qgs_prop_italic)
+
+                    qgs_prop_size = QgsProperty()
+                    qgs_prop_size.setField("size")
+                    pc.setProperty(QgsPalLayerSettings.Size, qgs_prop_size)
+
+                    qgs_prop_font = QgsProperty()
+                    qgs_prop_font.setField("family")
+                    pc.setProperty(QgsPalLayerSettings.Family, qgs_prop_font)
+
+                    pal_layer.setDataDefinedProperties(pc)
             else:
                 # pal_layer.xOffset = size
                 # pal_layer.yOffset = -size

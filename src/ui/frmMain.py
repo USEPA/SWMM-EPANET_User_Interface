@@ -714,6 +714,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             QUndoCommand.__init__(self, "Delete " + str(item))
             self.session = session
             self.item = item
+            self.objects_with_pattern = None
             section_field_name = session.section_types[type(item)]
             if hasattr(session.project, section_field_name):
                 self.section = getattr(session.project, section_field_name)
@@ -729,6 +730,8 @@ class frmMain(QMainWindow, Ui_frmMain):
             layer_sublinks = self.session.model_layers.layer_by_name("sublinks")
             layer_sublinks.removeSelection()
             sel_slink_ids = []
+            if not self.layer:
+                return
             if "centroid" in self.layer.name().lower():
                 layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
                 layer_subcatchments.removeSelection()
@@ -773,6 +776,8 @@ class frmMain(QMainWindow, Ui_frmMain):
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
+            if "PATTERN" in self.section.SECTION_NAME:
+                self.objects_with_pattern = self.session.project.delete_pattern(self.item)
             self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             if self.layer:
@@ -808,6 +813,8 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.section.value.insert(self.item_index, self.item)
             else:
                 self.section.value.append(self.item)
+            if "PATTERN" in self.section.SECTION_NAME or "DWF" in self.section.SECTION_NAME:
+                self.session.project.restore_pattern(self.objects_with_pattern, self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             added_del = None
             if self.layer and self.delete_feature:
@@ -1899,7 +1906,8 @@ class frmMain(QMainWindow, Ui_frmMain):
     def list_selection_changed(self):
         try:
             layer = self.current_map_layer()
-            self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
+            if layer:
+                self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
             if len(self.listViewObjects.selectedIndexes()) > 0:
                 self.actionStdEditObject.setEnabled(True)
                 self.actionStdDeleteObject.setEnabled(True)

@@ -220,6 +220,13 @@ class SwmmProject(ProjectBase):
     def links_groups(self):
         return [self.conduits, self.pumps, self.orifices, self.weirs, self.outlets]
 
+    @staticmethod
+    def get_dwf_label_text(pattern=None):
+        if pattern:
+            return u'"' + pattern.name + u'"'
+        else:
+            return u'""'
+
     def set_pattern_object_references(self):
         """
         setup node <-> pattern object reference
@@ -267,6 +274,58 @@ class SwmmProject(ProjectBase):
                 # order of patterns should be kept intact
                 for i in range(0, len(obj_dwf.time_pattern_objects)):
                     if obj_dwf.time_pattern_objects[i]:
-                        obj_dwf.time_patterns.append(u'"' + obj_dwf.time_pattern_objects[i].name + u'"')
+                        # obj_dwf.time_patterns.append(u'"' + obj_dwf.time_pattern_objects[i].name + u'"')
+                        obj_dwf.time_patterns.append(self.get_dwf_label_text(obj_dwf.time_pattern_objects[i]))
                     else:
-                        obj_dwf.time_patterns.append(u'""')
+                        obj_dwf.time_patterns.append(self.get_dwf_label_text())
+
+    def delete_pattern(self, pattern):
+        objects_with_pattern = {}
+        if self.inflows.value:
+            for obj_inflow in self.inflows.value:
+                if pattern in [obj_inflow.baseline_pattern_object]:
+                    obj_inflow.baseline_pattern = ""
+                    obj_inflow.baseline_pattern_object = None
+                    objects_with_pattern[obj_inflow] = None
+
+        if self.aquifers.value:
+            for obj_aquifer in self.aquifers.value:
+                if pattern in [obj_aquifer.upper_evaporation_pattern_object]:
+                    obj_aquifer.upper_evaporation_pattern = ""
+                    obj_aquifer.upper_evaporation_pattern_object = None
+                    objects_with_pattern[obj_aquifer] = None
+
+        if self.dwf.value:
+            for obj_dwf in self.dwf.value:
+                # del obj_dwf.time_patterns[:]
+                # order of patterns should be kept intact
+                if pattern in obj_dwf.time_pattern_objects:
+                    objects_with_pattern[obj_dwf] = []
+                    lbl_dwf_pattern = self.get_dwf_label_text(pattern)
+                    for i in range(0, len(obj_dwf.time_patterns)):
+                        if lbl_dwf_pattern.replace('"', '') in [obj_dwf.time_patterns[i].replace('"', '')]:
+                            obj_dwf.time_patterns[i] = self.get_dwf_label_text()
+                            obj_dwf.time_pattern_objects[i] = None
+                            objects_with_pattern[obj_dwf].append(i)
+
+        return objects_with_pattern
+
+    def restore_pattern(self, objects_with_pattern, pattern):
+        for obj in objects_with_pattern.keys():
+            if self.inflows.value:
+                if obj in self.inflows.value:
+                    obj.baseline_pattern = pattern.name
+                    obj.baseline_pattern_object = pattern
+
+            if self.aquifers.value:
+                if obj in self.aquifers.value:
+                    obj.upper_evaporation_pattern = pattern.name
+                    obj.upper_evaporation_pattern_object = pattern
+
+            if self.dwf.value:
+                if obj in self.dwf.value:
+                    for i in objects_with_pattern[obj]:
+                        # order of patterns should be kept intact
+                        if i < len(obj.time_patterns):
+                            obj.time_pattern_objects[i] = pattern
+                            obj.time_patterns[i] = self.get_dwf_label_text(pattern)

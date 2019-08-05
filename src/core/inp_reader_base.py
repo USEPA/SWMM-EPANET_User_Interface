@@ -3,6 +3,8 @@ import traceback
 from enum import Enum
 from core.project_base import ProjectBase, Section, SectionAsList
 from core.indexed_list import IndexedList
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QProgressDialog
 
 
 class InputFileReader(object):
@@ -23,12 +25,20 @@ class InputFileReader(object):
             with codecs.open(file_name, 'r', 'utf-8') as inp_reader:
                 project.file_name = file_name
                 self.set_from_text_lines(project, inp_reader.readlines())
+                """
+                task = TaskOpenInput('open file', project, inp_reader.readlines(), self.read_section)
+                task.begun.connect(lambda: print('reading begins...'))
+                task.progressChanged.connect(lambda: print(task.progress()))
+                task.taskCompleted.connect(lambda: self.finished_reading(project))
+                task.run()
+                """
         except Exception as e:
             # print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
             try:
                 with codecs.open(file_name, 'r', 'latin1') as inp_reader:
                     project.file_name = file_name
-                    self.set_from_text_lines(project, iter(inp_reader))
+                    # self.set_from_text_lines(project, iter(inp_reader))
+                    self.set_from_text_lines(project, inp_reader.readlines())
             except Exception as e:
                 self.input_err_msg = "File is probably not a valid project or input file."
                 print("Error reading {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
@@ -45,7 +55,15 @@ class InputFileReader(object):
         project.section_order = []
         section_name = ""
         section_whole = []
+        total_count = len(lines_iterator)
+        progress = QProgressDialog('Reading input...', 'Cancel', 1, total_count)
+        progress.setWindowModality(Qt.WindowModal)
+        line_ctr = 1
         for line in lines_iterator:
+            if line_ctr % 100 == 0:
+                progress.setValue(line_ctr)
+            if progress.wasCanceled():
+                break
             if line.lstrip().startswith('['):
                 if section_name:
                     project.section_order.append(section_name.upper())
@@ -54,6 +72,9 @@ class InputFileReader(object):
                 section_whole = [section_name]
             elif line.strip():
                 section_whole.append(line.rstrip())
+            line_ctr = line_ctr + 1
+        progress.setValue(total_count)
+
         if section_name:
             project.section_order.append(section_name.upper())
             self.read_section(project, section_name, '\n'.join(section_whole))

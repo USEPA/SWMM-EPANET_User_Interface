@@ -1229,7 +1229,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         links_groups = self.project.links_groups()
         if section in links_groups:
             unique_groups = links_groups
-        elif section.SECTION_NAME.upper() in ["[RAINGAGES]", "[LABELS]"]:
+        elif section.SECTION_NAME.upper() in ["[RAINGAGES]", "[LABELS]", "[CURVES"]:
             unique_groups = [section]
         else:
             unique_groups = self.project.nodes_groups()
@@ -2402,7 +2402,8 @@ class frmMain(QMainWindow, Ui_frmMain):
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            self.listViewObjects.addItems(names)
+            if len(names) > 0:
+                self.listViewObjects.addItems(names)
             # is_node_item = False
             # for nt in self.tree_nodes_items:
             #     if selected_text in nt[0]:

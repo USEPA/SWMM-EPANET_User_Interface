@@ -72,6 +72,11 @@ class CurveReader(SectionReader):
                 if len(fields) > 2:
                     curve.name = fields[0]
                     curve.curve_xy.append((fields[1], fields[2]))
+                    return curve
+                else:
+                    return None
+            else:
+                return None
         return curve
 
 

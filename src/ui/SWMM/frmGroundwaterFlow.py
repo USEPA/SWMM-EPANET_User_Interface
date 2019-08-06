@@ -17,6 +17,7 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         self.help_topic = "swmm/src/src/groundwaterfloweditordialog.htm"
         self._main_form = main_form
         self.project = main_form.project
+        self.new_item = new_item
         self.refresh_column = -1
         self.setupUi(self)
         self.setWindowTitle(title)
@@ -96,6 +97,9 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         return local_show
 
     def cmdOK_Clicked(self):
+        if self.new_item:
+            self.project.groundwater.value.append(self.new_item)
+        self.backend.new_item = None
         self.backend.apply_edits()
         self.close()
 

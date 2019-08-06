@@ -17,6 +17,7 @@ from ui.model_utility import ParseData
 class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
     def __init__(self, parent, edit_these, new_item, title, **kwargs):
         QMainWindow.__init__(self, parent)
+        self.new_item = new_item
         self.helper = HelpHandler(self)
         option_section = parent.project.find_section('OPTIONS')
         if option_section.infiltration=="HORTON" or option_section.infiltration=="MODIFIED_HORTON":
@@ -225,6 +226,9 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
 
     def cmdOK_Clicked(self):
         if hasattr(self, "backend") and self.backend is not None:
+            if self.new_item:
+                self.project.infiltration.value.append(self.new_item)
+            self.backend.new_item = None
             self.backend.apply_edits()
         else:
             if self.defaults is not None:

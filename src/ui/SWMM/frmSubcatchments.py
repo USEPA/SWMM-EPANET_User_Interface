@@ -165,6 +165,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
     def make_show_groundwater(self, column):
         def local_show():
             edit_these = []
+            new_item = None
             groundwater_section = self.project.groundwater
             if isinstance(groundwater_section.value, list):
                 if len(groundwater_section.value) > 0:
@@ -174,15 +175,15 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 if len(groundwater_section.value) == 0:
                     new_item = Groundwater()
                     new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
-                    groundwater_section.value.append(new_item)
+                    # groundwater_section.value.append(new_item)  not until ok
                     edit_these.append(new_item)
             if len(edit_these) == 0:
                 new_item = Groundwater()
                 groundwater_section.value = []
                 new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
-                groundwater_section.value.append(new_item)
+                # groundwater_section.value.append(new_item)  not until ok
                 edit_these.append(new_item)
-            editor = frmGroundwaterFlow(self, edit_these, None, "SWMM Groundwater Flow Editor")
+            editor = frmGroundwaterFlow(self._main_form, edit_these, new_item, "SWMM Groundwater Flow Editor")
             editor.setWindowModality(QtCore.Qt.ApplicationModal)
             editor.show()
             self.refresh_column = column
@@ -195,6 +196,7 @@ class frmSubcatchments(frmGenericPropertyEditor):
             if row >= 0:
                 sub_name = self.tblGeneric.item(row, column).text()
             edit_these = []
+            new_item = None
             infiltration_section = self.project.infiltration
             if isinstance(infiltration_section.value, list):
                 if len(infiltration_section.value) > 0:
@@ -218,9 +220,9 @@ class frmSubcatchments(frmGenericPropertyEditor):
                     if self._main_form and self._main_form.project_settings:
                         self._main_form.project_settings.apply_default_infiltration_attributes(new_item)
                     new_item.subcatchment = sub_name
-                    infiltration_section.value.append(new_item)
+                    # infiltration_section.value.append(new_item)  not until ok
                     edit_these.append(new_item)
-            editor = frmInfiltration(self, edit_these, None, "SWMM Infiltration Editor")
+            editor = frmInfiltration(self, edit_these, new_item, "SWMM Infiltration Editor")
             editor.show()
         return local_show
 

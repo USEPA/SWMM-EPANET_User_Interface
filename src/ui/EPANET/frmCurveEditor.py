@@ -48,7 +48,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         self.HEADCURVE = 1
         self.EFFCURVE = 2
         self.HLOSSCURVE = 3
-        self.MAXPOINTS = 51
+        self.MAXPOINTS = self.tblMult.rowCount() + 1
         self.TINY = 1.e-6
         self.Xlabels = {CurveType.VOLUME : " Height",
                        CurveType.PUMP : " Flow",
@@ -100,6 +100,12 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
 
         self.loaded = True
 
+    def update_row_count(self, row_count):
+        self.tblMult.setRowCount(row_count)
+        self.MAXPOINTS = self.tblMult.rowCount() + 1
+        self.X = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
+        self.Y = np.arange(self.MAXPOINTS, dtype=float) * float('NaN')
+
     def set_from(self, curve):
         if not isinstance(curve, Curve):
             curve = self.section.value[curve]
@@ -124,6 +130,9 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         self.Yunits[CurveType.HEADLOSS] = ' (' + LengthUnits + ')'
         self.Yunits[CurveType.UNSET] = ""
         ui.convenience.set_combo(self.cboCurveType, curve.curve_type)
+        self.tblMult.cellChanged.disconnect(self.tblMult_cellChanged)
+        if len(curve.curve_xy) > self.tblMult.rowCount():
+            self.update_row_count(len(curve.curve_xy))
         point_count = -1
         for point in curve.curve_xy:
             point_count += 1
@@ -134,6 +143,8 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         #CurveGrid.RowCount= MAXPOINTS + 1
         #CurveID.MaxLength= MAXID; // Max.chars. in a ID
         #ActiveControl= CurveID
+        self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
+        self.tblMult_cellChanged(point_count - 1, 1)
 
     def GetData(self):
         n = 0
@@ -176,6 +187,11 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 a = lines[2].split()
                 self.txtCurveName.setText(a[len(a) - 1])
             if len(lines) > 3:
+                self.tblMult.cellChanged.disconnect(self.tblMult_cellChanged)
+                if len(lines) - 3 > self.tblMult.rowCount():
+                    self.update_row_count(len(lines) - 3)
+
+                point_count = -1
                 curve_xy = []
                 for i in range(3, len(lines)):
                     try:
@@ -196,6 +212,8 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                         pass
                     except Exception as ex:
                         pass
+                self.tblMult.cellChanged.connect(self.tblMult_cellChanged)
+                self.tblMult_cellChanged(point_count - 1, 1)
 
     def save_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")

@@ -33,6 +33,7 @@ from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
 from ui.frmTranslateCoordinates import frmTranslateCoordinates
+from ui.frmPreferences import frmPreferences
 from ui.inifile import ini_setting
 from ui.model_utility import ParseData
 
@@ -124,6 +125,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdWinCloseAll.triggered.connect(self.close_all_windows)
         self.actionStdWinCloseAll.setVisible(False)
         self.actionStdMapToggle.triggered.connect(self.study_area_map)
+        self.actionStdProgPrefer.triggered.connect(self.program_preferences)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
@@ -2375,6 +2377,10 @@ class frmMain(QMainWindow, Ui_frmMain):
     def study_area_map(self):
         if self.map_win:
             self.map.setActiveSubWindow(self.map_win)
+
+    def program_preferences(self):
+        self._frmPreferences = frmPreferences(self)
+        self._frmPreferences.show()
 
     def __unicode__(self):
         return unicode(self)

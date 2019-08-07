@@ -186,8 +186,8 @@ class frmMainEPANET(frmMain):
         self.actionStdProjSimulation_Options.triggered.connect(self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
-        self.menuTools.removeAction(self.actionStdProgPrefer)
-        self.menuTools.deleteLater()
+        # self.menuTools.removeAction(self.actionStdProgPrefer)
+        # self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
         self.toolBar_Standard.removeAction(self.actionProjTableStatistics)
 

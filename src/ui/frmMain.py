@@ -2227,13 +2227,13 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def save_project(self, file_name=None):
         if not file_name:
+            file_name = self.project.file_name
+        if not file_name:
             # prompt to save
             new_name = self.save_project_as()
             if new_name:
                 self.project.file_name = new_name
             return
-        if not file_name:
-            file_name = self.project.file_name
         if file_name.endswith('*'):
             file_name = file_name[-1]
             self.project.file_name = file_name

@@ -988,6 +988,36 @@ class DefaultsSWMM(ini_setting):
         if self.id_increment is None:
             self.id_increment = 1
 
+        self.subcatchment_numerical_preference_keys = ['Precipitation', 'Snow Depth', 'Evaporation', 'Infiltration', 'Runoff',
+                                                       'GW Flow', 'GW Elev.', 'Soil Moisture', 'Washoff']
+        self.subcatchment_numerical_preferences = {}
+        for key in self.subcatchment_numerical_preference_keys:
+            self.subcatchment_numerical_preferences[key] = 2
+            if self.config:
+                val, vtype = self.get_setting_value("Display Precision", key)
+                if val is not None:
+                    self.subcatchment_numerical_preferences[key] = val
+
+        self.node_numerical_preference_keys = ['Node Depth', 'Head', 'Node Volume', 'Lateral Inflow',
+                                               'Total Inflow', 'Flooding', 'Node Quality']
+        self.node_numerical_preferences = {}
+        for key in self.node_numerical_preference_keys:
+            self.node_numerical_preferences[key] = 2
+            if self.config:
+                val, vtype = self.get_setting_value("Display Precision", key)
+                if val is not None:
+                    self.node_numerical_preferences[key] = val
+
+        self.link_numerical_preference_keys = ['Flow', 'Depth', 'Velocity', 'Volume',
+                                               'Capacity', 'Quality']
+        self.link_numerical_preferences = {}
+        for key in self.link_numerical_preference_keys:
+            self.link_numerical_preferences[key] = 2
+            if self.config:
+                val, vtype = self.get_setting_value("Display Precision", key)
+                if val is not None:
+                    self.link_numerical_preferences[key] = val
+
         group = "Defaults"
         self.properties_sub_values = {}
         for key in self.properties_sub_keys:
@@ -1164,6 +1194,22 @@ class DefaultsSWMM(ini_setting):
             elif "conduit_roughness" in key.lower():
                 #hydraulics_options.conduit_roughness = float(val)
                 pass
+
+    def sync_preferences(self):
+        """
+        sync preferences with internal qsettings
+        """
+        for key in self.subcatchment_numerical_preference_keys:
+            if self.config:
+                self.config.setValue("Display Precision/" + key, self.subcatchment_numerical_preferences[key])
+        for key in self.node_numerical_preference_keys:
+            if self.config:
+                self.config.setValue("Display Precision/" + key, self.node_numerical_preferences[key])
+        for key in self.link_numerical_preference_keys:
+            if self.config:
+                self.config.setValue("Display Precision/" + key, self.link_numerical_preferences[key])
+        if self.config:
+            self.config.sync()
 
     def apply_default_attributes(self, item):
         """

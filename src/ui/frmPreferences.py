@@ -52,11 +52,37 @@ class frmPreferences(QMainWindow, Ui_frmPreferences):
             self.spnNode.setValue(self.local_node_preferences[self.node_keys[0]])
             self.spnLink.setValue(self.local_link_preferences[self.link_keys[0]])
 
+            if settings.general_preferences[settings.general_preference_keys[0]] > 0:
+                self.cbxGeneral1.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[1]] > 0:
+                self.cbxGeneral2.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[2]] > 0:
+                self.cbxGeneral3.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[3]] > 0:
+                self.cbxGeneral4.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[4]] > 0:
+                self.cbxGeneral5.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[5]] > 0:
+                self.cbxGeneral6.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[6]] > 0:
+                self.cbxGeneral7.setChecked(True)
+
+            self.cbxGeneral1.setDisabled(True)
+            self.cbxGeneral2.setDisabled(True)
+            self.cbxGeneral3.setDisabled(True)
+            self.cbxGeneral5.setDisabled(True)
+            self.cbxGeneral6.setDisabled(True)
+            self.cbxGeneral7.setDisabled(True)
+
         elif self._main_form.model == "EPANET":
             self.lblSubcatchment.setVisible(False)
             self.cboSubcatchment.setVisible(False)
             self.lblDecimal1.setVisible(False)
             self.spnSubcatchment.setVisible(False)
+            self.cbxGeneral5.setText('Bold Fonts')
+            self.cbxGeneral6.setVisible(False)
+            self.cbxGeneral7.setVisible(False)
+            # self.cbxGeneral8.setVisible(False)
 
             settings = self._main_form.project_settings
             self.node_keys = settings.node_numerical_preference_keys
@@ -74,6 +100,22 @@ class frmPreferences(QMainWindow, Ui_frmPreferences):
 
             self.spnNode.setValue(self.local_node_preferences[self.node_keys[0]])
             self.spnLink.setValue(self.local_link_preferences[self.link_keys[0]])
+
+            if settings.general_preferences[settings.general_preference_keys[0]] > 0:
+                self.cbxGeneral1.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[1]] > 0:
+                self.cbxGeneral2.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[2]] > 0:
+                self.cbxGeneral3.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[3]] > 0:
+                self.cbxGeneral4.setChecked(True)
+            if settings.general_preferences[settings.general_preference_keys[4]] > 0:
+                self.cbxGeneral5.setChecked(True)
+
+            self.cbxGeneral1.setDisabled(True)
+            self.cbxGeneral2.setDisabled(True)
+            self.cbxGeneral3.setDisabled(True)
+            self.cbxGeneral5.setDisabled(True)
         pass
 
     def cboSubcatchment_currentIndexChanged(self, newIndex):
@@ -101,8 +143,39 @@ class frmPreferences(QMainWindow, Ui_frmPreferences):
         settings = self._main_form.project_settings
         if self._main_form.model == "SWMM":
             settings.subcatchment_numerical_preferences = self.local_subcatch_preferences
+            if self.cbxGeneral1.isChecked():
+                settings.general_preferences[settings.general_preference_keys[0]] = 1
+            if self.cbxGeneral2.isChecked():
+                settings.general_preferences[settings.general_preference_keys[1]] = 1
+            if self.cbxGeneral3.isChecked():
+                settings.general_preferences[settings.general_preference_keys[2]] = 1
+            if self.cbxGeneral4.isChecked():
+                settings.general_preferences[settings.general_preference_keys[3]] = 1
+            if self.cbxGeneral5.isChecked():
+                settings.general_preferences[settings.general_preference_keys[4]] = 1
+            if self.cbxGeneral6.isChecked():
+                settings.general_preferences[settings.general_preference_keys[5]] = 1
+            if self.cbxGeneral7.isChecked():
+                settings.general_preferences[settings.general_preference_keys[6]] = 1
+        elif self._main_form.model == "EPANET":
+            if self.cbxGeneral1.isChecked():
+                settings.general_preferences[settings.general_preference_keys[0]] = 1
+            if self.cbxGeneral2.isChecked():
+                settings.general_preferences[settings.general_preference_keys[1]] = 1
+            if self.cbxGeneral3.isChecked():
+                settings.general_preferences[settings.general_preference_keys[2]] = 1
+            if self.cbxGeneral4.isChecked():
+                settings.general_preferences[settings.general_preference_keys[3]] = 1
+            if self.cbxGeneral5.isChecked():
+                settings.general_preferences[settings.general_preference_keys[4]] = 1
+
         settings.node_numerical_preferences = self.local_node_preferences
         settings.link_numerical_preferences = self.local_link_preferences
+
+        if self.cbxGeneral8.isChecked():
+            self._main_form.program_settings.setValue('recentProjectList', '')
+            self._main_form.update_recent(self._main_form.recent_projects, '')
+
         self._main_form.project_settings.sync_preferences()
         self.close()
 

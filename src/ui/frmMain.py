@@ -2119,6 +2119,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
+            if self.project_settings.general_preferences['AutoBackup'] > 0:
+                from shutil import copyfile
+                copyfile(file_name, file_name + ".bak")
+
             self.add_recent_project(file_name)
             self.open_project_quiet(file_name)
             path_only, file_only = os.path.split(file_name)
@@ -2239,6 +2243,11 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.project.file_name = file_name
         if self.model == "SWMM":
             self.set_project_map_extent()
+
+        if self.project_settings.general_preferences['AutoBackup'] > 0:
+            from shutil import copyfile
+            copyfile(file_name, file_name + ".bak")
+
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.

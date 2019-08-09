@@ -96,6 +96,7 @@ from core.indexed_list import IndexedList
 import ui.convenience
 from ui.SWMM.inifile import DefaultsSWMM
 from datetime import timedelta
+from tempfile import *
 
 
 class frmMainSWMM(frmMain):
@@ -261,10 +262,7 @@ class frmMainSWMM(frmMain):
         #     print(name + " = " + value)
 
         self.model_path = ''  # Set this only if needed later when running model
-        self.output = None    # Set this when model output is available
         self.status_suffix = "_status.txt"
-        self.status_file_name = ''  # Set this when model status is available
-        self.output_filename = ''  # Set this when model output is available
         self.animation_dates = {}
         self.animation_time_of_day = {}
         self.project_type = Project  # Use the model-specific Project as defined in core.swmm.project
@@ -1419,17 +1417,16 @@ class frmMainSWMM(frmMain):
         #             self.project.curves.value.remove(value)
 
     def run_simulation(self):
-        if self.output:
-            self.output.close()
-            self.output = None
+
+        self.delete_temp_run_files()
+
         # First find input file to run
         use_existing = self.project and self.project.file_name and os.path.exists(self.project.file_name) and \
                        os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
-            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
-            if not os.path.exists(self.project.file_name_temporary):
-                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+            self.project.file_name_temporary = self.run_inp_file[1]
             self.save_project(self.project.file_name_temporary)
             # TODO: decide whether to automatically save to temp location as previous version did.
         elif self.project.subcatchments.value or self.project.raingages.value or self.project.all_nodes():
@@ -1438,24 +1435,23 @@ class frmMainSWMM(frmMain):
             if new_name:
                 use_existing = True
                 self.project.file_name = new_name
-                self.project.file_name_temporary = self.project.file_name
+                filename, file_extension = os.path.splitext(self.project.file_name)
+                self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+                self.project.file_name_temporary = self.run_inp_file[1]
             else:
                 return None
         else:
             self.open_project()
 
-        file_name = ''
+        inp_file_name = ''
         if self.project:
-            file_name = self.project.file_name_temporary
+            inp_file_name = self.project.file_name_temporary
 
-        if os.path.exists(file_name):
-            prefix, extension = os.path.splitext(file_name)
+        if os.path.exists(inp_file_name):
+            prefix, extension = os.path.splitext(inp_file_name)
             self.status_file_name = prefix + self.status_suffix
             self.output_filename = prefix + '.out'
             os.chdir(os.path.split(prefix)[0])
-            if self.output:
-                self.output.close()
-                self.output = None
             if not os.path.exists(self.model_path):
                 if 'darwin' in sys.platform:
                     lib_name = 'libswmm.dylib'
@@ -1469,8 +1465,12 @@ class frmMainSWMM(frmMain):
                 print('Model Path ' + self.model_path + '\n')
                 try:
                     from Externals.swmm.model.swmm5 import pyswmm
-                    model_api = pyswmm(file_name, self.status_file_name, self.output_filename, self.model_path)
-                    frmRun = frmRunSWMM(model_api, self.project, self)
+                    if self.output:
+                        self.output = None
+                    if self.model_api:
+                        self.model_api = None
+                    self.model_api = pyswmm(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunSWMM(self.model_api, self.project, self)
                     self._forms.append(frmRun)
                     if not use_existing:
                         # Read this project so we can refer to it while running
@@ -1479,10 +1479,10 @@ class frmMainSWMM(frmMain):
                         frmRun.fraTime.setVisible(False)
                         frmRun.fraBottom.setVisible(False)
                         frmRun.showNormal()
-                        frmRun.set_status_text("Reading " + file_name)
+                        frmRun.set_status_text("Reading " + inp_file_name)
 
                         self.project = Project()
-                        self.project.read_file(file_name)
+                        self.project.read_file(inp_file_name)
                         frmRun.project = self.project
 
                     frmRun.Execute()
@@ -1577,8 +1577,10 @@ class frmMainSWMM(frmMain):
                                             QMessageBox.Ok)
                 finally:
                     try:
-                        if model_api and model_api.isOpen():
-                            model_api.ENclose()
+                        if self.run_inp_file:
+                            os.close(self.run_inp_file[0])
+                        if self.model_api:
+                            self.model_api.swmm_close()
                     except:
                         pass
                     return
@@ -1593,7 +1595,7 @@ class frmMainSWMM(frmMain):
                 exe_name = "swmm5.exe"
             exe_path = self.find_external(exe_name)
             if os.path.isfile(exe_path):
-                args.append(file_name)
+                args.append(inp_file_name)
                 args.append(self.status_file_name)
                 args.append(self.output_filename)
                 # running the Exe

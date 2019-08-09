@@ -68,6 +68,7 @@ from ui.EPANET.frmRunEPANET import frmRunEPANET
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
 from ui.EPANET.inifile import DefaultsEPANET
+from tempfile import *
 
 
 class frmMainEPANET(frmMain):
@@ -131,10 +132,7 @@ class frmMainEPANET(frmMain):
         self.program_settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model)
         print("Read program settings from " + self.program_settings.fileName())
         self.model_path = ''  # Set this only if needed later when running model
-        self.output = None    # Set this when model output is available
         self.status_suffix = "_status.txt"
-        self.status_file_name = ''  # Set this when model status is available
-        self.output_filename = ''   # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
         self.project_reader_type = ProjectReader
         self.project_writer_type = ProjectWriter
@@ -887,8 +885,8 @@ class frmMainEPANET(frmMain):
         self.delete_item(item)
 
     def run_simulation(self):
-        # self.open_output()
-        # return
+
+        self.delete_temp_run_files()
 
         # Find input file to run
         # TODO: decide whether to automatically save to temp location as previous version did.
@@ -896,9 +894,8 @@ class frmMainEPANET(frmMain):
                        os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
-            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
-            if not os.path.exists(self.project.file_name_temporary):
-                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+            self.project.file_name_temporary = self.run_inp_file[1]
             self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
@@ -906,7 +903,9 @@ class frmMainEPANET(frmMain):
             if new_name:
                 use_existing = True
                 self.project.file_name = new_name
-                self.project.file_name_temporary = self.project.file_name
+                filename, file_extension = os.path.splitext(self.project.file_name)
+                self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+                self.project.file_name_temporary = self.run_inp_file[1]
             else:
                 return None
         else:
@@ -945,10 +944,11 @@ class frmMainEPANET(frmMain):
                             print("Could not change into temporary directory: " + str(err_temp))
 
                     if self.output:
-                        self.output.close()
                         self.output = None
-                    model_api = ENepanet(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
-                    frmRun = frmRunEPANET(model_api, self.project, self)
+                    if self.model_api:
+                        self.model_api = None
+                    self.model_api = ENepanet(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunEPANET(self.model_api, self.project, self)
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     # self.report_status()
@@ -984,9 +984,11 @@ class frmMainEPANET(frmMain):
                                             QMessageBox.Ok)
                 finally:
                     try:
-                        os.chdir(current_directory)
-                        if model_api and model_api.isOpen():
-                            model_api.ENclose()
+                        # os.chdir(current_directory)
+                        if self.run_inp_file:
+                            os.close(self.run_inp_file[0])
+                        if self.model_api and self.model_api.isOpen():
+                            self.model_api.ENclose()
                     except:
                         pass
                     return

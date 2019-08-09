@@ -51,9 +51,11 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.crs = None
         # self.project_settings = None
         self.model_path = ''  # Set this only if needed later when running model
+        self.model_api = None
         self.output = None    # Set this when model output is available
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''   # Set this when model output is available
+        self.run_inp_file = None
         self.no_items = True
         self.setupUi(self)
         self.q_application = q_application
@@ -2103,7 +2105,51 @@ class frmMain(QMainWindow, Ui_frmMain):
             if choice == QMessageBox.Yes:
                 return True
             return False
+        self.delete_temp_run_files()
         return True
+
+    def delete_temp_run_files(self):
+        if self.run_inp_file:
+            if os.path.exists(self.run_inp_file[1]):
+                if self.output:
+                    try:
+                        if self.model.upper() == 'EPANET':
+                            self.output.close()
+                        elif self.model.upper() == 'SWMM':
+                            # self.output.close()
+                            pass
+                    except Exception as ex:
+                        pass
+                    self.output = None
+
+                if self.model_api:
+                    try:
+                        if self.model.upper() == 'EPANET':
+                            self.model_api.ENcloseH()
+                            self.model_api.ENcloseQ()
+                            if self.model_api.isOpen():
+                                self.model_api.ENclose()
+                        elif self.model.upper() == 'SWMM':
+                            self.model_api.swmm_close()
+                    except Exception as ex:
+                        pass
+                    self.model_api = None
+
+                try:
+                    os.remove(self.output_filename)
+                except Exception as ex:
+                    pass
+
+                try:
+                    os.remove(self.status_file_name)
+                except Exception as ex:
+                    pass
+
+                try:
+                    # os.close(self.run_inp_file[0])
+                    os.remove(self.run_inp_file[1])
+                except Exception as ex:
+                    pass
 
     def mark_project_as_unsaved(self):
         if not self.project.file_name.endswith('*'):

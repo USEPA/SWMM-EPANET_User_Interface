@@ -673,6 +673,13 @@ class frmMainSWMM(frmMain):
 
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 selected_attribute = self.cboMapSubcatchments.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.subcatchment_numerical_preferences:
+                    precision = self.project_settings.subcatchment_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 attribute = None
                 setting_index = self.cboMapSubcatchments.currentIndex()
                 if setting_index < 6:
@@ -706,13 +713,20 @@ class frmMainSWMM(frmMain):
                     self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
                                                                         self.thematic_subcatchment_min,
                                                                         self.thematic_subcatchment_max,
-                                                                        do_label=False)
+                                                                        do_label=False, number_of_digits=num_figs)
                 else:
                     self.map_widget.set_default_polygon_renderer(self.model_layers.subcatchments)
                 self.model_layers.subcatchments.triggerRepaint()
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.node_numerical_preferences:
+                    precision = self.project_settings.node_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 attribute = None
                 setting_index = self.cboMapNodes.currentIndex()
                 if setting_index < 2:
@@ -748,13 +762,21 @@ class frmMainSWMM(frmMain):
                         if color_by:
                             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
-                                                                                self.thematic_node_max)
+                                                                                self.thematic_node_max,
+                                                                                number_of_digits=num_figs)
                         else:
                             self.map_widget.set_default_point_renderer(layer)
                         layer.triggerRepaint()
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.link_numerical_preferences:
+                    precision = self.project_settings.link_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 attribute = None
                 setting_index = self.cboMapLinks.currentIndex()
                 if setting_index < 3:
@@ -818,7 +840,8 @@ class frmMainSWMM(frmMain):
                             display_flow_dir = self.chkDisplayFlowDir.isChecked()
                             self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
-                                                                                self.thematic_link_max)
+                                                                                self.thematic_link_max,
+                                                                                number_of_digits=num_figs)
                         else:
                             self.map_widget.set_default_line_renderer(layer, do_labels=False)
                         layer.triggerRepaint()
@@ -843,6 +866,13 @@ class frmMainSWMM(frmMain):
             if self.model_layers.subcatchments and self.model_layers.subcatchments.isValid():
                 layer = self.model_layers.subcatchments
                 selected_attribute = self.cboMapSubcatchments.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.subcatchment_numerical_preferences:
+                    precision = self.project_settings.subcatchment_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 setting_index = self.cboMapSubcatchments.currentIndex()
                 color_by = {}
                 if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
@@ -864,12 +894,12 @@ class frmMainSWMM(frmMain):
                                                                             self.thematic_node_min,
                                                                             self.thematic_node_max,
                                                                             self.map_widget.layer_styles[layer.id()],
-                                                                            True, None, do_label)
+                                                                            True, None, do_label, num_figs)
                     else:
                         self.map_widget.applyGraduatedSymbologyStandardMode(self.model_layers.subcatchments, color_by,
                                                                             self.thematic_subcatchment_min,
                                                                             self.thematic_subcatchment_max,
-                                                                            None, True, None, do_label)
+                                                                            None, True, None, do_label, num_figs)
                     self.annotate_layername(selected_attribute, "subcatchment", layer)
                     #self.map_widget.LegendDock.setVisible(True)
                 else:
@@ -879,6 +909,13 @@ class frmMainSWMM(frmMain):
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.node_numerical_preferences:
+                    precision = self.project_settings.node_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 setting_index = self.cboMapNodes.currentIndex()
                 color_by = {}
                 if setting_index >= 2 and self.output:  # Look for attribute to color by in the output
@@ -902,12 +939,12 @@ class frmMainSWMM(frmMain):
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
                                                                                self.map_widget.layer_styles[layer.id()],
-                                                                                    True, None, do_label)
+                                                                                    True, None, do_label, num_figs)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
-                                                                                    None, True, None, do_label)
+                                                                                    None, True, None, do_label, num_figs)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
                             do_label = True
@@ -919,6 +956,13 @@ class frmMainSWMM(frmMain):
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.link_numerical_preferences:
+                    precision = self.project_settings.link_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 setting_index = self.cboMapLinks.currentIndex()
                 color_by = {}
                 if setting_index > 3 and self.output:  # Look for attribute to color by in the output
@@ -955,14 +999,14 @@ class frmMainSWMM(frmMain):
                                                                                     self.thematic_link_max,
                                                                              self.map_widget.layer_styles[layer.id()],
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, number_of_digits=num_figs)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max,
                                                                                     None,
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow)
+                                                                                    color_by_flow, number_of_digits=num_figs)
                             self.annotate_layername(selected_attribute, "link", layer)
                         else:
                             do_label = True

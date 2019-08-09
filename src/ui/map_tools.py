@@ -1288,7 +1288,8 @@ try:
 
         @staticmethod
         def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None,
-                                                arenderer=None, aflow_dir=True, acolor_by_flow=None, do_label=True):
+                                                arenderer=None, aflow_dir=True, acolor_by_flow=None, do_label=True,
+                                                number_of_digits=2):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
@@ -1307,7 +1308,7 @@ try:
                     geom = feature.geometry()
                     val = color_by[feature_name]
                     vfi = feature.fieldNameIndex('value')
-                    provider.changeAttributeValues({feature.id(): {vfi: round(val, 2)}})
+                    provider.changeAttributeValues({feature.id(): {vfi: round(val, number_of_digits)}})
                     # provider.changeAttributeValues({feature.id() : {1 : '100, 255, 50'}})
                     # feature[1] = val
                     if do_flowdir:

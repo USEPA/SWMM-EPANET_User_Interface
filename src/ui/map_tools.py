@@ -2617,6 +2617,13 @@ try:
             self.extending_same_layer = False
             self.auto_detect = True
 
+        def set_nearest_layer(self):
+            active_layer = self.session.gis_layer_tree.currentLayer()
+            if active_layer:
+                if active_layer in self.session.model_layers.all_layers:
+                    self.nearest_layer = active_layer
+            self.nearest_layer = None
+
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
             for lyr in self.session.model_layers.all_layers:
@@ -2849,6 +2856,8 @@ try:
 
             if self.auto_detect:
                 self.nearest_layer = None
+            else:
+                self.set_nearest_layer()
             self.nearest_feature = None
             self.nearest_point_index = -1
             self.nearest_distance = float("inf")

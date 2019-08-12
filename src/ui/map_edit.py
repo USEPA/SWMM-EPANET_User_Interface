@@ -103,7 +103,7 @@ try:
             layerPt = self.toLayerCoordinates(self.layer, event.pos())
             geometry = feature.geometry()
             self.start_geom = self.copy_geometry(geometry)
-            distSquared, closestPt, beforeVertex = \
+            distSquared, closestPt, beforeVertex, leftof = \
                 geometry.closestSegmentWithContext(layerPt)
             distance = math.sqrt(distSquared)
             tolerance = self.calcTolerance(event.pos())
@@ -176,12 +176,14 @@ try:
                 return None
             vs = []
             for v in geometry.vertices():
-                vs.append(v)
-            if len(vs) > 3:
-                new_geometry = QgsGeometry()
+                vs.append(QgsPointXY(v.x(), v.y()))
+            new_geometry = QgsGeometry()
+            if geometry.wkbType() == QgsWkbTypes.Polygon:
                 new_geometry.addPointsXY(vs, QgsWkbTypes.PolygonGeometry)
                 return new_geometry
-                # return QgsGeometry.fromPolygon(vs)
+            elif geometry.wkbType() == QgsWkbTypes.LineGeometry:
+                new_geometry.addPointsXY(vs, QgsWkbTypes.LineGeometry)
+                return new_geometry
             else:
                 return None
 
@@ -277,7 +279,7 @@ try:
                             if fl["inlet"] == self.feature["c_modelid"]:
                                 if fl.geometry().wkbType() == QgsWkbTypes.LineString:
                                     line = fl.geometry().asPolyline()
-                                    new_l_g = QgsGeometry.fromPolyline([new_c, line[-1]])
+                                    new_l_g = QgsGeometry.fromPolylineXY([new_c, line[-1]])
                                     change_map = {fl.id(): new_l_g}
                                     self.sublinks.dataProvider().changeGeometryValues(change_map)
                                 break

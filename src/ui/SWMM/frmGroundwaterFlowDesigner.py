@@ -27,7 +27,7 @@ except AttributeError:
 class Ui_frmGroundwaterFlow(object):
     def setupUi(self, frmGroundwaterFlow):
         frmGroundwaterFlow.setObjectName(_fromUtf8("frmGroundwaterFlow"))
-        frmGroundwaterFlow.resize(680, 464)
+        frmGroundwaterFlow.resize(720, 464)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

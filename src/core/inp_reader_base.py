@@ -298,7 +298,7 @@ class SectionReaderAsList(SectionReader):
                        "[HYDROGRAPHS]", "[LID_CONTROLS]", "[AQUIFERS]", "[SNOWPACKS]",
                        "[JUNCTIONS]", "[OUTFALLS]", "[DIVIDERS]", "[STORAGE]",
                        "[CONDUITS]", "[PUMPS]", "[ORIFICES]", "[WEIRS]", "[LANDUSES]", "[POLLUTANTS]",
-                       "[PATTERNS]", "[CURVES]", "[TIMESERIES]", "[LABELS]"]
+                       "[PATTERNS]", "[CURVES]", "[TIMESERIES]", "[LABELS]", "[EVENTS]"]
         if hasattr(section, "SECTION_NAME") and section.SECTION_NAME in index_these:
             section.value = IndexedList([], ['name'])
         else:

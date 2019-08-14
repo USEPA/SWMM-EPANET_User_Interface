@@ -21,6 +21,7 @@ from core.swmm.options.files import Files
 from core.swmm.options.general import General
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
+from core.swmm.options.events import Events
 from core.swmm.patterns import Pattern
 from core.swmm.quality import Landuse, Buildup, Washoff, Pollutant
 from core.swmm.timeseries import TimeSeries
@@ -120,6 +121,8 @@ class SwmmProject(ProjectBase):
         self.controls = Controls()
         # rules that control pump and regulator operation
 
+        self.events = SectionAsList("[EVENTS]")  # (list of Events)
+
         self.landuses = SectionAsList("[LANDUSES]")  # (list of Landuse)     # land use categories
 
         self.buildup = SectionAsList("[BUILDUP]")  # (list of Buildup)
@@ -194,6 +197,7 @@ class SwmmProject(ProjectBase):
             self.buildup,
             self.washoff,
             self.report,
+            self.events,
             self.files,
             self.backdrop,
             self.map,

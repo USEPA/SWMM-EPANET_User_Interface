@@ -56,6 +56,7 @@ from core.swmm.options.general import FlowRouting
 from core.swmm.options.general import General
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
+from core.swmm.options.events import Events
 from core.swmm.patterns import Pattern
 from core.swmm.patterns import PatternType
 from core.swmm.quality import Buildup
@@ -200,6 +201,25 @@ class LabelReader(SectionReader):
             if len(fields) > 7:
                 label.italic = (fields[7] and fields[7] != '0')
         return label
+
+
+class EventsReader(SectionReader):
+    """Restricts hydraulic analyses to particular time periods, hydraulics remain constant outside of these periods"""
+
+    @staticmethod
+    def read(new_text):
+        event = Events()
+        fields = new_text.split()
+        if len(fields) > 0:
+            event.start_date = fields[0]
+        if len(fields) > 1:
+            event.start_time = fields[1]
+        if len(fields) > 2:
+            event.end_date =  fields[2]
+        if len(fields) > 3:
+            event.end_time = fields[3]
+        event.name = event.start_date + event.start_time + event.end_date + event.end_time
+        return event
 
 
 class CurveReader(SectionReader):

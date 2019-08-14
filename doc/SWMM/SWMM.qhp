@@ -254,6 +254,7 @@
                     </section>
                     <section title="Cross-Section Editor" ref="src/cross_sectioneditordialog.htm"></section>
                     <section title="Curve Editor" ref="src/curveeditordialog.htm"></section>
+                    <section title="Events Editor" ref="src/events_editor.htm"></section>
                     <section title="Graph Options Dialog" ref="src/graphoptionsdialog.htm"></section>
                     <section title="Groundwater Flow Editor" ref="src/groundwaterfloweditordialog.htm"></section>
                     <section title="Groundwater Equation Editor" ref="src/groundwater_equation_editor.htm"></section>

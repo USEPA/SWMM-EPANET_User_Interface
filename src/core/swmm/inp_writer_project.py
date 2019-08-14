@@ -10,6 +10,7 @@ from core.swmm.options.report import Report
 from core.swmm.options.files import Files
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.map import MapOptions
+from core.swmm.options.events import Events
 from core.swmm.climatology import Evaporation
 from core.swmm.climatology import Temperature
 from core.swmm.climatology import Adjustments
@@ -165,6 +166,10 @@ class ProjectWriter(InputFileWriterBase):
 
         self.write_controls = SectionWriter()
         # rules that control pump and regulator operation
+
+        self.write_events = SectionWriterAsList("[EVENTS]", EventsWriter,
+                                                  ";;Start Date         \tEnd Date\n")
+        # events
 
         self.write_landuses = SectionWriterAsList("[LANDUSES]", LanduseWriter,
                                                   ";;              \tSweeping  \tFraction  \tLast\n"

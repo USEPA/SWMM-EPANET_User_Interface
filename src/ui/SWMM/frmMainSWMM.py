@@ -14,6 +14,7 @@ from ui.model_utility import QString, from_utf8, transl8, process_events, Status
 from ui.help import HelpHandler
 from ui.frmMain import frmMain, ModelLayers
 from ui.SWMM.frmDates import frmDates
+from ui.SWMM.frmEvents import frmEvents
 from ui.SWMM.frmDynamicWave import frmDynamicWave
 from ui.SWMM.frmMapBackdropOptions import frmMapBackdropOptions
 from ui.SWMM.frmGeneralOptions import frmGeneralOptions
@@ -109,6 +110,7 @@ class frmMainSWMM(frmMain):
     # *_items are a lists of items in a section
     tree_options_General        = ["General",         frmGeneralOptions]
     tree_options_Dates          = ["Dates",           frmDates]
+    tree_options_Events         = ["Events",          frmEvents]
     tree_options_TimeSteps      = ["Time Steps",      frmTimeSteps]
     tree_options_DynamicWave    = ["Dynamic Wave",    frmDynamicWave]
     tree_options_InterfaceFiles = ["Interface Files", frmInterfaceFiles]
@@ -121,7 +123,8 @@ class frmMainSWMM(frmMain):
         tree_options_DynamicWave,
         tree_options_InterfaceFiles,
         tree_options_Reporting,
-        tree_options_MapBackdrop]
+        tree_options_MapBackdrop,
+        tree_options_Events]
 
     tree_climatology_Temperature    = ["Temperature",     frmClimatology, ["Temperature"]]
     tree_climatology_Evaporation    = ["Evaporation",     frmClimatology, ["Evaporation"]]
@@ -1283,6 +1286,8 @@ class frmMainSWMM(frmMain):
     def get_object_list(self, category):
         ids = []
         if category == 'Curves':
+            return None
+        if category == 'Events':
             return None
         if category == self.tree_curves_ControlCurves[0]:
             for curve in self.project.curves.value:

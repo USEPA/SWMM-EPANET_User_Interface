@@ -38,7 +38,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         QMainWindow.__init__(self, session)
         self.setupUi(self)
         self.helper = HelpHandler(self)
-        self.help_topic = "swmm/src/src/settingprojectdefaults.htm"
+        self.help_topic = "swmm/src/src/projectdefaultsdialog.htm"
         self.defaults = defaults
         self.session = session
         self.project = project
@@ -51,7 +51,9 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.setWindowTitle(self.session.model + " Project Defaults")
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
-        self.cmdHelp.clicked.connect(self.cmdHelp_Clicked)
+        #disable Help button on form since no other forms have one
+        self.cmdHelp.setVisible(False)
+        #self.cmdHelp.clicked.connect(self.cmdHelp_Clicked)
         # self.tabDefaults.currentChanged(int).connect(self.tab_changed)
         # self.tblGeneric.cellChanged(int, int).connect(self.tblGeneric_changed)
         self.tabDefaults.currentChanged.connect(self.tab_changed)
@@ -330,11 +332,14 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
 
     def tab_changed(self, index):
         #self.move_table(index)
-        #if index == 0:
+        if index == 0:
+            self.help_topic = "epanet/src/src/defaultidlabels.htm"
         #    self.set_tab_prefix()
-        #elif index == 1:
+        elif index == 1:
+            self.help_topic = "epanet/src/src/defaultsubcatchmentproperties.htm"
         #    self.set_sub_properties()
-        #elif index == 2:
+        elif index == 2:
+            self.help_topic = "epanet/src/src/defaultnodelinkproperties.htm"
         #    self.set_tab_hydraulics()
         pass
 

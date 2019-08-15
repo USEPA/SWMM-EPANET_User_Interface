@@ -94,6 +94,35 @@ class DefaultsEPANET(ini_setting):
         if self.id_increment is None:
             self.id_increment = 1
 
+        self.node_numerical_preference_keys = ['Demand', 'Head', 'Pressure', 'Node Quality']
+        self.node_numerical_preferences = {}
+        for key in self.node_numerical_preference_keys:
+            self.node_numerical_preferences[key] = 2
+            if self.config:
+                val, vtype = self.get_setting_value("Display Precision", key)
+                if val is not None:
+                    self.node_numerical_preferences[key] = val
+
+        self.link_numerical_preference_keys = ['Flow', 'Velocity', 'Unit Headloss',
+                                               'Friction Factor', 'Reaction Rate', 'Quality']
+        self.link_numerical_preferences = {}
+        for key in self.link_numerical_preference_keys:
+            self.link_numerical_preferences[key] = 2
+            if self.config:
+                val, vtype = self.get_setting_value("Display Precision", key)
+                if val is not None:
+                    self.link_numerical_preferences[key] = val
+
+        # [Preferences]
+        self.general_preference_keys = ['Blinking', 'FlyOvers', 'ConfirmDelete', 'AutoBackup', 'BoldFonts']
+        self.general_preferences = {}
+        for key in self.general_preference_keys:
+            self.general_preferences[key] = 0
+            if self.config:
+                val, vtype = self.get_setting_value("Preferences", key)
+                if val is not None:
+                    self.general_preferences[key] = val
+
         self.properties_values = {}
         for key in self.properties_keys:
             self.properties_values[key] = self.properties_def_values[self.properties_keys.index(key)]
@@ -187,6 +216,22 @@ class DefaultsEPANET(ini_setting):
                 hydraulics_options.viscosity = float(val)
             elif "gravity" in key.lower():
                 hydraulics_options.specific_gravity = float(val)
+
+    def sync_preferences(self):
+        """
+        sync preferences with internal qsettings
+        """
+        for key in self.node_numerical_preference_keys:
+            if self.config:
+                self.config.setValue("Display Precision/" + key, self.node_numerical_preferences[key])
+        for key in self.link_numerical_preference_keys:
+            if self.config:
+                self.config.setValue("Display Precision/" + key, self.link_numerical_preferences[key])
+        for key in self.general_preference_keys:
+            if self.config:
+                self.config.setValue("Preferences/" + key, self.general_preferences[key])
+        if self.config:
+            self.config.sync()
 
     def apply_default_attributes(self, item):
         """

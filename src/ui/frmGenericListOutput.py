@@ -2,6 +2,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
+from PyQt5.Qt import QApplication, QClipboard
 
 
 class frmGenericListOutput(QMainWindow, Ui_frmGenericPropertyEditor):
@@ -43,6 +44,8 @@ class frmGenericListOutput(QMainWindow, Ui_frmGenericPropertyEditor):
                 col += 1
             row += 1
         self.tblGeneric.resizeColumnsToContents()
+        for row in range(self.tblGeneric.rowCount()):
+            self.tblGeneric.setRowHeight(row, 10)
 
     def set_data_by_columns(self, row_headers, column_headers, data_columns):
         """Populate the table.
@@ -73,6 +76,8 @@ class frmGenericListOutput(QMainWindow, Ui_frmGenericPropertyEditor):
                 row += 1
             col += 1
         self.tblGeneric.resizeColumnsToContents()
+        for row in range(self.tblGeneric.rowCount()):
+            self.tblGeneric.setRowHeight(row, 10)
 
     def set_data(self, nrows, ncols, headers, data):
         counter = -1
@@ -87,7 +92,25 @@ class frmGenericListOutput(QMainWindow, Ui_frmGenericPropertyEditor):
                 item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
                 self.tblGeneric.setItem(row, col, item)
         self.tblGeneric.resizeColumnsToContents()
+        for row in range(self.tblGeneric.rowCount()):
+            self.tblGeneric.setRowHeight(row, 10)
 
     def cmdCancel_Clicked(self):
         self.close()
 
+    def copy(self):
+        selected_range = self.tblGeneric.selectedRanges()[0]
+        str = ""
+        for i in range(selected_range.rowCount()):
+            if i > 0:
+                str += "\n"
+            for j in range(selected_range.columnCount()):
+                if j > 0:
+                    str += "\t"
+                str += self.tblGeneric.item(selected_range.topRow() + i, selected_range.leftColumn() + j).text()
+        str += "\n"
+        QApplication.clipboard().setText(str)
+
+    def keyPressEvent(self, event):
+        if event.matches(QtGui.QKeySequence.Copy):
+            self.copy()

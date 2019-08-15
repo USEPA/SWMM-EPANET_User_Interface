@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+   <title>Events Editor</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="How do I,How do I define routing events">
+
+   <style type="text/css">
+	a:link { color: #002682 }
+	a:hover { color: #FF0000; }
+	a:visited { color: #D63078 }
+   </style>
+
+<!-- This style sheet goes into compiled HTML HELP -->
+   <style type="text/css" media="screen">
+	#nsr
+	 {
+	 padding: 6px 6px 0px 6px;
+	 border-bottom: none;
+	 background: #649CCC;
+	 vertical-align: top;
+	 z-index: 2;
+	 visibility: visible;
+	 left: 0;
+	 top: 0;
+	 position: absolute;
+	 width: 100%;
+	 }
+	#mainbody
+	 {
+	 left: 0;
+	 top: 0px;
+	 margin: 0;
+	 position: absolute;
+	 padding: 10px;
+	 overflow: auto;
+	 height: 100%;
+	 z-index: 1;
+	 background-repeat: no-repeat;
+	 background-position: bottom right;
+	 background-attachment: fixed;
+	 }
+   </style>
+   <style type="text/css" media="print">
+	#nsr
+	 { visibility: none; }
+	#mainbody
+	 { overflow: visible; }
+   </style>
+   <script type="text/javascript" language="JavaScript" src="nonscroll.js"></script>
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+</head>
+<body bgcolor="#FFFFFF" 
+ marginheight="0" marginwidth="0" leftmargin="0" topmargin="0"
+ scroll="no"
+>
+
+
+<div id="nsr">
+<table width="100%" border="0" cellspacing="0" cellpadding="2"
+ bgcolor="#649CCC">
+  <tr valign="top">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Events Editor</span></p>
+
+    </td>
+    <td align="right">
+     <font face="Arial" size="2">
+     <a href="introduction.htm"
+        onmouseover="document.images.main.src='button_main_h.png'" 
+  	onmouseout="document.images.main.src='button_main.png'">
+        <img name=main src="button_main.png" border=0 alt="Return to Introduction"></a>&nbsp;
+     <a href="curveeditordialog.htm"
+        onmouseover="document.images.prev.src='button_prev_h.png'" 
+  	onmouseout="document.images.prev.src='button_prev.png'"><img name=prev src="button_prev.png" border=0 alt="Previous page"></a>&nbsp;
+     
+
+     <a href="graphoptionsdialog.htm"
+        onmouseover="document.images.next.src='button_next_h.png'" 
+  	onmouseout="document.images.next.src='button_next.png'"><img name=next src="button_next.png" border=0 alt="Next page"></a>
+     
+     </font>
+    </td>
+  </tr>
+</table>
+</div>
+
+
+<div id="mainbody">
+<p>The <span style="font-weight: bold;">Events</span> <span style="font-weight: bold;">Editor</span> is activated when the <span style="font-weight: bold;">Events</span> sub-category of simulation <span style="font-weight: bold;">Options</span> is selected for editing from the <a href="projectbrowser.htm">Project Browser.</a></p>
+<p>&nbsp;</p>
+<p>It is used to limit the periods of time in which a full unsteady hydraulic analysis of the drainage network is performed. For times outside of these periods, the hydraulic state of the network stays the same as it was at the end of the previous hydraulic event. &nbsp;Although hydraulic calculations are restricted to these pre-defined event periods, a full accounting of the system's hydrology is still computed over the entire simulation duration. During inter-event periods any inflows to the network, from runoff, groundwater flow, dry weather flow, etc., are ignored.The purpose of only computing hydraulics for particular time periods is to speed up long-term continuous simulations where one knows in advance which periods of time (such as representative or critical storm events) are of most interest.</p>
+<p>&nbsp;</p>
+<p>The dialog consists of a table listing the start and end date of each event, plus a blank line at the end of the list used for adding a new event. The events do not have to be entered in chronological order. There are date and time selection controls below the table used to edit the dates of a selected event. Clicking the <span style="font-weight: bold;">Replace</span> <span style="font-weight: bold;">Event</span> button will replace the row with the entries in these controls. The <span style="font-weight: bold;">Delete</span> <span style="font-weight: bold;">Event</span> button will delete the selected event and the <span style="font-weight: bold;">Delete All</span> button will delete all events from the table. The first column of the table contains a check box which determines if the event should be used in the analysis or not.</p>
+<p>&nbsp;</p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>To identify event periods of interest, one can first run a simulation with Flow Routing turned off (see <a href="simulationoptions_general.htm">Simulation Options - General</a>) and then perform a statistical frequency analysis on the system's rainfall record (see <a href="viewingastatisticsreport.htm">Viewing a Statistics Report</a>).</td></tr></table></div><p style="text-indent: -29px; margin: 0px 0px 0px 29px;"><span style="color: #000000;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"><table border="0" cellpadding="0" cellspacing="0" style="line-height: normal;"><tr style="vertical-align:baseline" valign="baseline"><td width="29"><img src="icon_tip.png" width="24" height="24" border="0" alt="icon_tip"></td><td>When a new event occurs, the water in a storage unit node will remain at the same level it had at the end of the previous event. Therefore one may want to choose event intervals long enough to minimize the effect that storage carryover might have.</td></tr></table></div>
+</div>
+
+</body>
+</html>

@@ -33,6 +33,7 @@ from core.indexed_list import IndexedList
 from core.project_base import ProjectBase
 from core.coordinate import Coordinate, Link, Polygon
 from ui.frmTranslateCoordinates import frmTranslateCoordinates
+from ui.frmPreferences import frmPreferences
 from ui.inifile import ini_setting
 from ui.model_utility import ParseData
 
@@ -50,9 +51,11 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.crs = None
         # self.project_settings = None
         self.model_path = ''  # Set this only if needed later when running model
+        self.model_api = None
         self.output = None    # Set this when model output is available
         self.status_file_name = ''  # Set this when model status is available
         self.output_filename = ''   # Set this when model output is available
+        self.run_inp_file = None
         self.no_items = True
         self.setupUi(self)
         self.q_application = q_application
@@ -124,6 +127,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdWinCloseAll.triggered.connect(self.close_all_windows)
         self.actionStdWinCloseAll.setVisible(False)
         self.actionStdMapToggle.triggered.connect(self.study_area_map)
+        self.actionStdProgPrefer.triggered.connect(self.program_preferences)
         # self.actionGroup_Obj = QActionGroup(self)
         self.cbAutoLength.setCurrentIndex(1)
         self.cbAutoLength.currentIndexChanged.connect(self.cbAutoLength_currentIndexChanged)
@@ -714,6 +718,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             QUndoCommand.__init__(self, "Delete " + str(item))
             self.session = session
             self.item = item
+            self.objects_with_pattern = None
             section_field_name = session.section_types[type(item)]
             if hasattr(session.project, section_field_name):
                 self.section = getattr(session.project, section_field_name)
@@ -729,6 +734,8 @@ class frmMain(QMainWindow, Ui_frmMain):
             layer_sublinks = self.session.model_layers.layer_by_name("sublinks")
             layer_sublinks.removeSelection()
             sel_slink_ids = []
+            if not self.layer:
+                return
             if "centroid" in self.layer.name().lower():
                 layer_subcatchments = self.session.model_layers.layer_by_name("subcatchments")
                 layer_subcatchments.removeSelection()
@@ -773,6 +780,8 @@ class frmMain(QMainWindow, Ui_frmMain):
 
         def redo(self):
             self.item_index = self.section.value.index(self.item)
+            if "PATTERN" in self.section.SECTION_NAME:
+                self.objects_with_pattern = self.session.project.delete_pattern(self.item)
             self.section.value.remove(self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             if self.layer:
@@ -808,6 +817,8 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.section.value.insert(self.item_index, self.item)
             else:
                 self.section.value.append(self.item)
+            if "PATTERN" in self.section.SECTION_NAME or "DWF" in self.section.SECTION_NAME:
+                self.session.project.restore_pattern(self.objects_with_pattern, self.item)
             self.session.list_objects()  # Refresh the list of items on the form
             added_del = None
             if self.layer and self.delete_feature:
@@ -1222,7 +1233,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         links_groups = self.project.links_groups()
         if section in links_groups:
             unique_groups = links_groups
-        elif section.SECTION_NAME.upper() in ["[RAINGAGES]", "[LABELS]"]:
+        elif section.SECTION_NAME.upper() in ["[RAINGAGES]", "[LABELS]", "[CURVES"]:
             unique_groups = [section]
         else:
             unique_groups = self.project.nodes_groups()
@@ -1875,6 +1886,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             # window.destroyed.connect(lambda s, e, a: self._forms.remove(s))
             # window.destroyed = lambda s, e, a: self._forms.remove(s)
             # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
+            window.setWindowModality(QtCore.Qt.ApplicationModal)
             window.show()
 
             # def editor_closing(self, event):
@@ -1898,7 +1910,8 @@ class frmMain(QMainWindow, Ui_frmMain):
     def list_selection_changed(self):
         try:
             layer = self.current_map_layer()
-            self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
+            if layer:
+                self.select_named_items(layer, [str(item.data()) for item in self.listViewObjects.selectedIndexes()])
             if len(self.listViewObjects.selectedIndexes()) > 0:
                 self.actionStdEditObject.setEnabled(True)
                 self.actionStdDeleteObject.setEnabled(True)
@@ -2092,7 +2105,51 @@ class frmMain(QMainWindow, Ui_frmMain):
             if choice == QMessageBox.Yes:
                 return True
             return False
+        self.delete_temp_run_files()
         return True
+
+    def delete_temp_run_files(self):
+        if self.run_inp_file:
+            if os.path.exists(self.run_inp_file[1]):
+                if self.output:
+                    try:
+                        if self.model.upper() == 'EPANET':
+                            self.output.close()
+                        elif self.model.upper() == 'SWMM':
+                            # self.output.close()
+                            pass
+                    except Exception as ex:
+                        pass
+                    self.output = None
+
+                if self.model_api:
+                    try:
+                        if self.model.upper() == 'EPANET':
+                            self.model_api.ENcloseH()
+                            self.model_api.ENcloseQ()
+                            if self.model_api.isOpen():
+                                self.model_api.ENclose()
+                        elif self.model.upper() == 'SWMM':
+                            self.model_api.swmm_close()
+                    except Exception as ex:
+                        pass
+                    self.model_api = None
+
+                try:
+                    os.remove(self.output_filename)
+                except Exception as ex:
+                    pass
+
+                try:
+                    os.remove(self.status_file_name)
+                except Exception as ex:
+                    pass
+
+                try:
+                    # os.close(self.run_inp_file[0])
+                    os.remove(self.run_inp_file[1])
+                except Exception as ex:
+                    pass
 
     def mark_project_as_unsaved(self):
         if not self.project.file_name.endswith('*'):
@@ -2108,6 +2165,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Open Project...", directory,
                                                       "Inp files (*.inp);;All files (*.*)")
         if file_name:
+            if self.project_settings.general_preferences['AutoBackup'] > 0:
+                from shutil import copyfile
+                copyfile(file_name, file_name + ".bak")
+
             self.add_recent_project(file_name)
             self.open_project_quiet(file_name)
             path_only, file_only = os.path.split(file_name)
@@ -2216,18 +2277,23 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def save_project(self, file_name=None):
         if not file_name:
+            file_name = self.project.file_name
+        if not file_name:
             # prompt to save
             new_name = self.save_project_as()
             if new_name:
                 self.project.file_name = new_name
             return
-        if not file_name:
-            file_name = self.project.file_name
         if file_name.endswith('*'):
             file_name = file_name[-1]
             self.project.file_name = file_name
         if self.model == "SWMM":
             self.set_project_map_extent()
+
+        if self.project_settings.general_preferences['AutoBackup'] > 0:
+            from shutil import copyfile
+            copyfile(file_name, file_name + ".bak")
+
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
         # Avoid making any changes to settings since this might make settings unreadable to SWMM5 interface.
@@ -2367,6 +2433,10 @@ class frmMain(QMainWindow, Ui_frmMain):
         if self.map_win:
             self.map.setActiveSubWindow(self.map_win)
 
+    def program_preferences(self):
+        self._frmPreferences = frmPreferences(self)
+        self._frmPreferences.show()
+
     def __unicode__(self):
         return unicode(self)
 
@@ -2393,7 +2463,8 @@ class frmMain(QMainWindow, Ui_frmMain):
         else:
             self.dockw_more.setEnabled(True)
             self.dockw_more.setWindowTitle(selected_text)
-            self.listViewObjects.addItems(names)
+            if len(names) > 0:
+                self.listViewObjects.addItems(names)
             # is_node_item = False
             # for nt in self.tree_nodes_items:
             #     if selected_text in nt[0]:

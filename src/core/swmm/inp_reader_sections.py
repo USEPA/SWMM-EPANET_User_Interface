@@ -56,6 +56,7 @@ from core.swmm.options.general import FlowRouting
 from core.swmm.options.general import General
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
+from core.swmm.options.events import Events
 from core.swmm.patterns import Pattern
 from core.swmm.patterns import PatternType
 from core.swmm.quality import Buildup
@@ -200,6 +201,25 @@ class LabelReader(SectionReader):
             if len(fields) > 7:
                 label.italic = (fields[7] and fields[7] != '0')
         return label
+
+
+class EventsReader(SectionReader):
+    """Restricts hydraulic analyses to particular time periods, hydraulics remain constant outside of these periods"""
+
+    @staticmethod
+    def read(new_text):
+        event = Events()
+        fields = new_text.split()
+        if len(fields) > 0:
+            event.start_date = fields[0]
+        if len(fields) > 1:
+            event.start_time = fields[1]
+        if len(fields) > 2:
+            event.end_date =  fields[2]
+        if len(fields) > 3:
+            event.end_time = fields[3]
+        event.name = event.start_date + event.start_time + event.end_date + event.end_time
+        return event
 
 
 class CurveReader(SectionReader):
@@ -1622,22 +1642,24 @@ class SubareasReader(SectionReader):
             fields = line.split()
             if len(fields) > 5:
                 subcatchment_name = fields[0]
-                for subcatchment in project.subcatchments.value:
-                    if subcatchment.name == subcatchment_name:
-                        subcatchment.setattr_keep_type("n_imperv", fields[1])
-                        subcatchment.setattr_keep_type("n_perv", fields[2])
-                        subcatchment.setattr_keep_type("storage_depth_imperv", fields[3])
-                        subcatchment.setattr_keep_type("storage_depth_perv", fields[4])
-                        subcatchment.setattr_keep_type("percent_zero_impervious", fields[5])
-                        subcatchment.subarea_routing = Routing.OUTLET
-                        if len(fields) > 6:
-                            routing = fields[6].upper()
-                            if routing.startswith("I"):
-                                subcatchment.subarea_routing = Routing.IMPERVIOUS
-                            elif routing.startswith("P"):
-                                subcatchment.subarea_routing = Routing.PERVIOUS
-                        if len(fields) > 7:
-                            subcatchment.setattr_keep_type("percent_routed", fields[7])
+                try:
+                    subcatchment = project.subcatchments.value[subcatchment_name]
+                    subcatchment.setattr_keep_type("n_imperv", fields[1])
+                    subcatchment.setattr_keep_type("n_perv", fields[2])
+                    subcatchment.setattr_keep_type("storage_depth_imperv", fields[3])
+                    subcatchment.setattr_keep_type("storage_depth_perv", fields[4])
+                    subcatchment.setattr_keep_type("percent_zero_impervious", fields[5])
+                    subcatchment.subarea_routing = Routing.OUTLET
+                    if len(fields) > 6:
+                        routing = fields[6].upper()
+                        if routing.startswith("I"):
+                            subcatchment.subarea_routing = Routing.IMPERVIOUS
+                        elif routing.startswith("P"):
+                            subcatchment.subarea_routing = Routing.PERVIOUS
+                    if len(fields) > 7:
+                        subcatchment.setattr_keep_type("percent_routed", fields[7])
+                except KeyError as ke:
+                    pass
 
 
 class TagsReader(SectionReader):
@@ -1656,21 +1678,17 @@ class TagsReader(SectionReader):
             fields = line.split()
             if len(fields) > 2:
                 object_type_name = fields[0].upper()
-                object_name = fields[1].upper()
+                # object_name = fields[1].upper()
+                object_name = fields[1]
                 tag = ' '.join(fields[2:])
                 sections = section_map[object_type_name]
-                found = False
                 for section in sections:
-                    for candidate in section.value:
-                        if candidate.name.upper() == object_name:
-                            candidate.tag = tag
-                            found = True
-                            # print "Tagged: " + type(candidate).__name__ + ' ' + candidate.name + ' = ' + tag
-                            break
-                    if found:
+                    try:
+                        candidate = section.value[object_name]
+                        candidate.tag = tag
                         break
-                if not found:
-                    print ("Tag not applied: " + line + "\n")
+                    except KeyError as ke:
+                        print("Tag not applied: " + line + "\n")
 
 
 class LossesReader(SectionReader):

@@ -37,9 +37,9 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         # self.cboEvap.clicked.connect(self.cboEvap_currentIndexChanged)
         self.cboEvap.currentIndexChanged.connect(self.cboEvap_currentIndexChanged)
         self.climate_type = climate_type
+        self._main_form = main_form
         if main_form and main_form.project:
             self.set_all(main_form.project)
-            self._main_form = main_form
             if climate_type:
                 self.set_from(main_form.project, climate_type)
 
@@ -143,6 +143,10 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             self.cbxStart.setChecked(True)
 
         # wind speed tab
+        if self._main_form.project.metric:
+            self.lblMonthlyWind.setText("Monthly Average Wind Speed (km/hr)")
+        else:
+            self.lblMonthlyWind.setText("Monthly Wind Speed (mph)")
         if temp_section.wind_speed.source == WindSource.MONTHLY:
             self.rbnMonthly.setChecked(True)
             monthly_list = temp_section.wind_speed.wind_speed_monthly
@@ -155,6 +159,12 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             self.rbnUseClimate.setChecked(True)
 
         # snow melt tab
+        if self._main_form.project.metric:
+            self.lblSnowDivide.setText("Dividing Temperature Between Snow and Rain (degrees C)")
+            self.lblSnowElevation.setText("Elevation above MSL (meters)")
+        else:
+            self.lblSnowDivide.setText("Dividing Temperature Between Snow and Rain (degrees F)")
+            self.lblSnowElevation.setText("Elevation above MSL (feet)")
         val, val_is_good = ParseData.floatTryParse(temp_section.snow_melt.snow_temp)
         if not val_is_good:
             val = 34
@@ -189,6 +199,8 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             pass
         else:
             self.btnPerNo_Clicked()
+        for row in range(self.tblAreal.rowCount()):
+            self.tblAreal.setRowHeight(row, 10)
         # self.tblAreal.resizeColumnsToContents()
 
         # adjustments for temp, evap, rain, cond
@@ -217,6 +229,8 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             point_count += 1
             led = QLineEdit(str(value))
             self.tblAdjustments.setItem(point_count,3,QTableWidgetItem(led.text()))
+        for row in range(self.tblAdjustments.rowCount()):
+            self.tblAdjustments.setRowHeight(row, 10)
 
     def cmdOK_Clicked(self):
 
@@ -424,6 +438,10 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             self.btnEvapTS.setVisible(False)
             self.lblEvapMisc.setVisible(False)
             self.tblEvap.setVisible(False)
+            if self._main_form.project.metric:
+                self.lblDaily.setText("Daily Evaporation (mm/day)")
+            else:
+                self.lblDaily.setText("Daily Evaporation (in/day)")
         elif newIndex == 1: # time series
             self.lblDaily.setVisible(False)
             self.txtDaily.setVisible(False)
@@ -452,7 +470,10 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             self.lblEvapTs.setVisible(False)
             self.cboEvapTs.setVisible(False)
             self.btnEvapTS.setVisible(False)
-            self.lblEvapMisc.setText("Monthly Averages (in/day)")
+            if self._main_form.project.metric:
+                self.lblEvapMisc.setText("Monthly Evaporation (mm/day)")
+            else:
+                self.lblEvapMisc.setText("Monthly Evaporation (in/day)")
             self.lblEvapMisc.setVisible(True)
             self.tblEvap.setVisible(True)
             point_count = -1

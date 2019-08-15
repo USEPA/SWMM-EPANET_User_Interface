@@ -153,3 +153,67 @@ class EpanetProject(ProjectBase):
 
         if self.options.hydraulics.default_pattern_object:
             self.options.hydraulics.default_pattern = self.options.hydraulics.default_pattern_object.name
+
+    def delete_pattern(self, pattern):
+        objects_with_pattern = []
+        if self.junctions.value:
+            for obj_junction in self.junctions.value:
+                if pattern in [obj_junction.demand_pattern_object]:
+                    obj_junction.demand_pattern_name = ""
+                    obj_junction.demand_pattern_object = None
+                    objects_with_pattern.append(obj_junction)
+
+        if self.reservoirs.value:
+            for obj_res in self.reservoirs.value:
+                if pattern in [obj_res.head_pattern_object]:
+                    obj_res.head_pattern_name = ""
+                    obj_res.head_pattern_object = None
+                    objects_with_pattern.append(obj_res)
+
+        if self.demands.value:
+            for obj_demand in self.demands.value:
+                if pattern in [obj_demand.demand_pattern_object]:
+                    obj_demand.demand_pattern = ""
+                    obj_demand.demand_pattern_object = None
+                    objects_with_pattern.append(obj_demand)
+
+        if self.sources.value:
+            for obj_src in self.sources.value:
+                if pattern in [obj_src.pattern_object]:
+                    obj_src.pattern_name = ""
+                    obj_src.pattern_object = None
+                    objects_with_pattern.append(obj_src)
+
+        if self.options.hydraulics.default_pattern_object:
+            if pattern in [self.options.hydraulics.default_pattern_object]:
+                self.options.hydraulics.default_pattern = ""
+                self.options.hydraulics.default_pattern_object = None
+                objects_with_pattern.append(self.options.hydraulics)
+
+        return objects_with_pattern
+
+    def restore_pattern(self, objects_with_pattern, pattern):
+        for obj in objects_with_pattern:
+            if self.junctions.value:
+                if obj in self.junctions.value:
+                    obj.demand_pattern_name = pattern.name
+                    obj.demand_pattern_object = pattern
+
+            if self.reservoirs.value:
+                if obj in self.reservoirs.value:
+                    obj.head_pattern_name = pattern.name
+                    obj.head_pattern_object = pattern
+
+            if self.demands.value:
+                if obj in self.demands.value:
+                    obj.demand_pattern = pattern.name
+                    obj.demand_pattern_object = pattern
+
+            if self.sources.value:
+                if obj in self.sources.value:
+                    obj.pattern_name = pattern.name
+                    obj.pattern_object = pattern
+
+            if obj in [self.options.hydraulics.default_pattern_object]:
+                self.options.hydraulics.default_pattern = pattern.name
+                self.options.hydraulics.default_pattern_object = pattern

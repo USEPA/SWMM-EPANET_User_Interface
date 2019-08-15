@@ -744,6 +744,7 @@ try:
                     layer = QgsVectorLayer("Point", layer_name, "memory")
                 provider = layer.dataProvider()
                 is_centroid = "CENTROID" in layer.name().upper()
+                is_label = "LABEL" in layer.name().upper()
 
                 # add fields
                 if is_centroid:
@@ -751,8 +752,7 @@ try:
                                             QgsField("color", QtCore.QVariant.String),
                                             QgsField("sub_mapid", QtCore.QVariant.Int),
                                             QgsField("sub_modelid", QtCore.QVariant.String)])
-                    pass
-                else:
+                elif is_label:
                     provider.addAttributes([QgsField("name", QtCore.QVariant.String),
                                             QgsField("color", QtCore.QVariant.String),
                                             QgsField("value", QtCore.QVariant.Double),
@@ -760,6 +760,10 @@ try:
                                             QgsField("italic", QtCore.QVariant.Bool),
                                             QgsField("size", QtCore.QVariant.Double),
                                             QgsField("font", QtCore.QVariant.String)])
+                else:
+                    provider.addAttributes([QgsField("name", QtCore.QVariant.String),
+                                            QgsField("color", QtCore.QVariant.String),
+                                            QgsField("value", QtCore.QVariant.Double)])
                 layer.updateFields()
 
                 features = []
@@ -855,62 +859,86 @@ try:
                     # size = 10.0
                     # symbol_layer.setOutlineColor(QColor('transparent'))
                     # symbol_layer.setColor(QColor('transparent'))
+                    EmbedMap.config_labeling(layer, None)
                     symbol_layer.setEnabled(False)
-
-                    # new code to implement bold, italics, font
-                    provider = layer.dataProvider()
-                    for feature in provider.getFeatures():
-                        font_name = QFont().family()
-                        format = pal_layer.format()
-                        font = format.font()
-                        isBold = feature[3]
-                        isItalic = feature[4]
-                        font_size = 10
-                        if float(feature[5]):
-                            font_size = float(feature[5])
-                        if len(str(feature[6])) > 0:
-                            font_name = str(feature[6])
-                        font.setFamily(font_name)
-                        font.setBold(isBold)
-                        font.setItalic(isItalic)
-                        format.setFont(font)
-                        format.setSize(font_size)
-                        pal_layer.setFormat(format)
-
-                    pc = QgsPropertyCollection('ddp')
-
-                    qgs_prop_bold = QgsProperty()
-                    qgs_prop_bold.setField("bold")
-                    pc.setProperty(1, qgs_prop_bold)
-
-                    qgs_prop_italic = QgsProperty()
-                    qgs_prop_italic.setField("italic")
-                    pc.setProperty(2, qgs_prop_italic)
-
-                    qgs_prop_size = QgsProperty()
-                    qgs_prop_size.setField("size")
-                    pc.setProperty(0, qgs_prop_size)
-
-                    qgs_prop_font = QgsProperty()
-                    qgs_prop_font.setField("family")
-                    pc.setProperty(6, qgs_prop_font)
-
-                    pal_layer.setDataDefinedProperties(pc)
-
                 else:
                     pal_layer.xOffset = size
                     pal_layer.yOffset = -size
-                # pal_layer.textColor = None
-                # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
-                labeler = QgsVectorLayerSimpleLabeling(pal_layer)
-                layer.setLabeling(labeler)
-                layer.setLabelsEnabled(True)
+                    # pal_layer.textColor = None
+                    # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Color, True, False, "", "color")
+                    labeler = QgsVectorLayerSimpleLabeling(pal_layer)
+                    layer.setLabeling(labeler)
+                    layer.setLabelsEnabled(True)
 
             symbol_layer.setSize(size)
             symbol.appendSymbolLayer(symbol_layer)
             renderer = QgsSingleSymbolRenderer(symbol)
             layer.setRenderer(renderer)
             # layer.rendererV2().symbols()[0].changeSymbolLayer(0, symbol_layer)
+
+        @staticmethod
+        def config_labeling(layer, txt_format):
+            layer.setLabelsEnabled(False)
+            layer.setLabeling(None)
+            pal_layer = QgsPalLayerSettings()
+            pal_layer.enabled = True
+            pal_layer.fontSizeInMapUnits = False
+            pal_layer.labelOffsetInMapUnits = False
+            pal_layer.fieldName = 'name'
+            pal_layer.placement = QgsPalLayerSettings.OverPoint
+            # expr = "case when size < 3 then size * 2 else size end case"
+            # pal_layer.setDataDefinedProperty(QgsPalLayerSettings.Size, True, True, expr, '')
+            if "LABELS" in layer.name().upper():
+                if txt_format is not None:
+                    new_format = QgsTextFormat(txt_format)
+                    pal_layer.setFormat(new_format)
+                else:
+                    # new code to implement bold, italics, font
+                    provider = layer.dataProvider()
+                    for feature in provider.getFeatures():
+                        font_name = QFont().family()
+                        fmt = pal_layer.format()
+                        font = fmt.font()
+                        is_bold = feature[3]
+                        is_italic = feature[4]
+                        font_size = 10
+                        if float(feature[5]):
+                            font_size = float(feature[5])
+                        if len(str(feature[6])) > 0:
+                            font_name = str(feature[6])
+                        font.setFamily(font_name)
+                        font.setBold(is_bold)
+                        font.setItalic(is_italic)
+                        fmt.setFont(font)
+                        fmt.setSize(font_size)
+                        pal_layer.setFormat(fmt)
+
+                    pc = QgsPropertyCollection('ddp')
+
+                    qgs_prop_bold = QgsProperty()
+                    qgs_prop_bold.setField("bold")
+                    pc.setProperty(QgsPalLayerSettings.Bold, qgs_prop_bold)
+
+                    qgs_prop_italic = QgsProperty()
+                    qgs_prop_italic.setField("italic")
+                    pc.setProperty(QgsPalLayerSettings.Italic, qgs_prop_italic)
+
+                    qgs_prop_size = QgsProperty()
+                    qgs_prop_size.setField("size")
+                    pc.setProperty(QgsPalLayerSettings.Size, qgs_prop_size)
+
+                    qgs_prop_font = QgsProperty()
+                    qgs_prop_font.setField("family")
+                    pc.setProperty(QgsPalLayerSettings.Family, qgs_prop_font)
+
+                    pal_layer.setDataDefinedProperties(pc)
+            else:
+                # pal_layer.xOffset = size
+                # pal_layer.yOffset = -size
+                pass
+            labeler = QgsVectorLayerSimpleLabeling(pal_layer)
+            layer.setLabeling(labeler)
+            layer.setLabelsEnabled(True)
 
         def addLinks(self, coordinates, links, layer_name, link_color=QColor('black'), link_width=1):
             try:
@@ -1260,7 +1288,8 @@ try:
 
         @staticmethod
         def applyGraduatedSymbologyStandardMode(layer, color_by, min=None, max=None,
-                                                arenderer=None, aflow_dir=True, acolor_by_flow=None, do_label=True):
+                                                arenderer=None, aflow_dir=True, acolor_by_flow=None, do_label=True,
+                                                number_of_digits=2):
             provider = layer.dataProvider()
             calculate_min_max = False
             if min is None or max is None:
@@ -1279,7 +1308,7 @@ try:
                     geom = feature.geometry()
                     val = color_by[feature_name]
                     vfi = feature.fieldNameIndex('value')
-                    provider.changeAttributeValues({feature.id(): {vfi: round(val, 2)}})
+                    provider.changeAttributeValues({feature.id(): {vfi: round(val, number_of_digits)}})
                     # provider.changeAttributeValues({feature.id() : {1 : '100, 255, 50'}})
                     # feature[1] = val
                     if do_flowdir:
@@ -2588,6 +2617,13 @@ try:
             self.extending_same_layer = False
             self.auto_detect = True
 
+        def set_nearest_layer(self):
+            active_layer = self.session.gis_layer_tree.currentLayer()
+            if active_layer:
+                if active_layer in self.session.model_layers.all_layers:
+                    self.nearest_layer = active_layer
+            self.nearest_layer = None
+
         def build_spatial_index(self):
             self.layer_spatial_indexes = []
             for lyr in self.session.model_layers.all_layers:
@@ -2820,6 +2856,8 @@ try:
 
             if self.auto_detect:
                 self.nearest_layer = None
+            else:
+                self.set_nearest_layer()
             self.nearest_feature = None
             self.nearest_point_index = -1
             self.nearest_distance = float("inf")
@@ -3152,6 +3190,14 @@ try:
                 ed = GraduatedSymbolV2(lyr, None)
                 if ed.exec_():
                     new_renderer = QgsGraduatedSymbolRenderer.convertFromRenderer(ed.get_renderer())
+            elif lyr.name().lower() == "map labels" or lyr.name().lower() == "labels":
+                ed = QgsTextFormatDialog(lyr.labeling().settings().format(), self.map_control.canvas)
+                if ed.exec_():
+                    EmbedMap.config_labeling(lyr, ed.format())
+                    self.map_control.config_labeling(lyr, ed.format())
+                    lyr.triggerRepaint()
+                    self.map_control.session.update_thematic_map()
+                    pass
             else:
                 old_renderer = self.view.currentLayer().renderer()
                 ed = QgsSymbolSelectorDialog(old_renderer.symbol(),

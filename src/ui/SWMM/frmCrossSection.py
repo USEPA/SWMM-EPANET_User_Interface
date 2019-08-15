@@ -5,6 +5,7 @@ import core.swmm.hydraulics
 import core.swmm.hydraulics.link
 import core.swmm.options.dynamic_wave
 from ui.SWMM.frmCrossSectionDesigner import Ui_frmCrossSection
+from ui.help import HelpHandler
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
@@ -15,6 +16,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
     def __init__(self, main_form=None, **kwargs):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/cross_sectioneditordialog.htm"
+        self.helper = HelpHandler(self)
         self.units = main_form.project.options.flow_units.value
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)

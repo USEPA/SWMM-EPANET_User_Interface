@@ -24,6 +24,7 @@
                 <section title="Data Browser" ref="src/Data_Bro.htm"></section>
                 <section title="Map Browser" ref="src/Map_Brow.htm"></section>
                 <section title="Property Editor" ref="src/Property.htm"></section>
+                <section title="Setting Program Preferences" ref="src/Setting_.htm"></section>
             </section>
             <section title="Working with Projects" ref="src/Working_.htm">
                 <section title="Overview" ref="src/Working_.htm"></section>
@@ -241,6 +242,8 @@
             <keyword name="Pipes" ref="src/Pipes.htm"/>
             <keyword name="Adding a link" ref="src/Addi0049.htm"/>
             <keyword name="Editing an Object" ref="src/Editing_.htm"/>
+            <keyword name="Program Preferences - General" ref="src/Program_.htm"/>
+            <keyword name="Program Preferences - Formats" ref="src/Prog0046.htm"/>
             <keyword name="Setting Project Defaults" ref="src/Sett0005.htm"/>
             <keyword name="Viewing a Project Summary" ref="src/View0006.htm"/>
             <keyword name="Property Editor" ref="src/Property.htm"/>

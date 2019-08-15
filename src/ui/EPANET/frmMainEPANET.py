@@ -68,6 +68,7 @@ from ui.EPANET.frmRunEPANET import frmRunEPANET
 import Externals.epanet.outputapi.ENOutputWrapper as ENO
 import ui.convenience
 from ui.EPANET.inifile import DefaultsEPANET
+from tempfile import *
 
 
 class frmMainEPANET(frmMain):
@@ -131,10 +132,7 @@ class frmMainEPANET(frmMain):
         self.program_settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model)
         print("Read program settings from " + self.program_settings.fileName())
         self.model_path = ''  # Set this only if needed later when running model
-        self.output = None    # Set this when model output is available
         self.status_suffix = "_status.txt"
-        self.status_file_name = ''  # Set this when model status is available
-        self.output_filename = ''   # Set this when model output is available
         self.project_type = Project  # Use the model-specific Project as defined in core.epanet.project
         self.project_reader_type = ProjectReader
         self.project_writer_type = ProjectWriter
@@ -186,8 +184,8 @@ class frmMainEPANET(frmMain):
         self.actionStdProjSimulation_Options.triggered.connect(self.edit_simulation_options)
         self.menuProject.removeAction(self.actionStdProjDetails)  # remove menus that are SWMM-specific
         self.menuTools.removeAction(self.actionStdConfigTools)
-        self.menuTools.removeAction(self.actionStdProgPrefer)
-        self.menuTools.deleteLater()
+        # self.menuTools.removeAction(self.actionStdProgPrefer)
+        # self.menuTools.deleteLater()
         self.menuObjects.deleteLater()
         self.toolBar_Standard.removeAction(self.actionProjTableStatistics)
 
@@ -319,6 +317,13 @@ class frmMainEPANET(frmMain):
 
         if self.model_layers.nodes_layers:
             selected_attribute = self.cboMapNodes.currentText()
+
+            num_figs = 2
+            if selected_attribute in self.project_settings.node_numerical_preferences:
+                precision = self.project_settings.node_numerical_preferences[selected_attribute]
+                if precision > -1:
+                    num_figs = precision
+
             attribute = None
             setting_index = self.cboMapNodes.currentIndex()
             if setting_index < 4:
@@ -360,13 +365,21 @@ class frmMainEPANET(frmMain):
                     if color_by:
                         self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                             self.thematic_node_min,
-                                                                            self.thematic_node_max)
+                                                                            self.thematic_node_max,
+                                                                            number_of_digits=num_figs)
                     else:
                         self.map_widget.set_default_point_renderer(layer)
                     layer.triggerRepaint()
 
         if self.model_layers.links_layers:
             selected_attribute = self.cboMapLinks.currentText()
+
+            num_figs = 2
+            if selected_attribute in self.project_settings.link_numerical_preferences:
+                precision = self.project_settings.link_numerical_preferences[selected_attribute]
+                if precision > -1:
+                    num_figs = precision
+
             attribute = None
             setting_index = self.cboMapLinks.currentIndex()
             if setting_index < 6:
@@ -414,7 +427,8 @@ class frmMainEPANET(frmMain):
                     if color_by:
                         self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                             self.thematic_link_min,
-                                                                            self.thematic_link_max)
+                                                                            self.thematic_link_max,
+                                                                            number_of_digits=num_figs)
                     else:
                         self.map_widget.set_default_line_renderer(layer, do_labels=False)
                     layer.triggerRepaint()
@@ -433,6 +447,13 @@ class frmMainEPANET(frmMain):
 
             if self.model_layers.nodes_layers:
                 selected_attribute = self.cboMapNodes.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.node_numerical_preferences:
+                    precision = self.project_settings.node_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 setting_index = self.cboMapNodes.currentIndex()
                 color_by = {}
                 if setting_index >= 4 and self.output:  # Look for attribute to color by in the output
@@ -454,12 +475,12 @@ class frmMainEPANET(frmMain):
                                                                                     self.thematic_node_min,
                                                                                     self.thematic_node_max,
                                                             self.map_widget.layer_styles[layer.id()],
-                                                                                    True, None, do_label)
+                                                                                    True, None, do_label, num_figs)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_node_min,
                                                                                 self.thematic_node_max,
-                                                                                    None, True, None, do_label)
+                                                                                    None, True, None, do_label, num_figs)
                             self.annotate_layername(selected_attribute, "node", layer)
                         else:
                             if len(self.project.all_nodes()) > 300:
@@ -469,6 +490,13 @@ class frmMainEPANET(frmMain):
 
             if self.model_layers.links_layers:
                 selected_attribute = self.cboMapLinks.currentText()
+
+                num_figs = 2
+                if selected_attribute in self.project_settings.link_numerical_preferences:
+                    precision = self.project_settings.link_numerical_preferences[selected_attribute]
+                    if precision > -1:
+                        num_figs = precision
+
                 setting_index = self.cboMapLinks.currentIndex()
                 color_by = {}
                 if setting_index >= 6 and self.output:  # Look for attribute to color by in the output
@@ -508,14 +536,14 @@ class frmMainEPANET(frmMain):
                                                                                     self.thematic_link_max,
                                                                              self.map_widget.layer_styles[layer.id()],
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow, do_label)
+                                                                                    color_by_flow, do_label, num_figs)
                             else:
                                 self.map_widget.applyGraduatedSymbologyStandardMode(layer, color_by,
                                                                                 self.thematic_link_min,
                                                                                 self.thematic_link_max,
                                                                                     None,
                                                                                     self.chkDisplayFlowDir.isChecked(),
-                                                                                    color_by_flow, do_label)
+                                                                                    color_by_flow, do_label, num_figs)
                             self.annotate_layername(selected_attribute, "link", layer)
                         else:
                             self.map_widget.set_default_line_renderer(layer, do_label)
@@ -857,8 +885,8 @@ class frmMainEPANET(frmMain):
         self.delete_item(item)
 
     def run_simulation(self):
-        # self.open_output()
-        # return
+
+        self.delete_temp_run_files()
 
         # Find input file to run
         # TODO: decide whether to automatically save to temp location as previous version did.
@@ -866,9 +894,8 @@ class frmMainEPANET(frmMain):
                        os.path.isdir(os.path.split(self.project.file_name)[0])
         if use_existing:
             filename, file_extension = os.path.splitext(self.project.file_name)
-            ts = QtCore.QTime.currentTime().toString().replace(":", "_")
-            if not os.path.exists(self.project.file_name_temporary):
-                self.project.file_name_temporary = filename + "_trial_" + ts + file_extension
+            self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+            self.project.file_name_temporary = self.run_inp_file[1]
             self.save_project(self.project.file_name_temporary)
         elif self.project.all_nodes():
             # unsaved changes to a new project have been made, prompt to save
@@ -876,7 +903,9 @@ class frmMainEPANET(frmMain):
             if new_name:
                 use_existing = True
                 self.project.file_name = new_name
-                self.project.file_name_temporary = self.project.file_name
+                filename, file_extension = os.path.splitext(self.project.file_name)
+                self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
+                self.project.file_name_temporary = self.run_inp_file[1]
             else:
                 return None
         else:
@@ -915,10 +944,11 @@ class frmMainEPANET(frmMain):
                             print("Could not change into temporary directory: " + str(err_temp))
 
                     if self.output:
-                        self.output.close()
                         self.output = None
-                    model_api = ENepanet(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
-                    frmRun = frmRunEPANET(model_api, self.project, self)
+                    if self.model_api:
+                        self.model_api = None
+                    self.model_api = ENepanet(inp_file_name, self.status_file_name, self.output_filename, self.model_path)
+                    frmRun = frmRunEPANET(self.model_api, self.project, self)
                     self._forms.append(frmRun)
                     frmRun.Execute()
                     # self.report_status()
@@ -954,9 +984,11 @@ class frmMainEPANET(frmMain):
                                             QMessageBox.Ok)
                 finally:
                     try:
-                        os.chdir(current_directory)
-                        if model_api and model_api.isOpen():
-                            model_api.ENclose()
+                        # os.chdir(current_directory)
+                        if self.run_inp_file:
+                            os.close(self.run_inp_file[0])
+                        if self.model_api and self.model_api.isOpen():
+                            self.model_api.ENclose()
                     except:
                         pass
                     return

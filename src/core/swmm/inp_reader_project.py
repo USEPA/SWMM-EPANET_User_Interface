@@ -10,6 +10,7 @@ from core.swmm.options.report import Report
 from core.swmm.options.files import Files
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.map import MapOptions
+from core.swmm.options.events import Events
 from core.swmm.climatology import Evaporation
 from core.swmm.climatology import Temperature
 from core.swmm.climatology import Adjustments
@@ -121,6 +122,9 @@ class ProjectReader(InputFileReader):
 
         self.read_controls = ControlsReader()
         # rules that control pump and regulator operation
+
+        self.read_events = SectionReaderAsList("[EVENTS]", EventsReader)
+        # events
 
         self.read_landuses = SectionReaderAsList("[LANDUSES]", LanduseReader)
         # land use categories

@@ -17,7 +17,7 @@ class frmDividers(frmGenericPropertyEditor):
     SECTION_TYPE = Divider
 
     def __init__(self, main_form, edit_these, new_item):
-        self.help_topic = "swmm/src/src/dividerproperties.htm"
+        self.help_topic = "swmm/src/src/flowdividerproperties.htm"
         self._main_form = main_form
         self.project = main_form.project
         self.refresh_column = -1

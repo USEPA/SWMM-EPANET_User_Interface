@@ -77,6 +77,7 @@ from core.swmm.options.general import General
 from core.swmm.options.map import MapUnits
 from core.swmm.options.map import MapOptions
 from core.swmm.options.report import Report
+from core.swmm.options.events import Events
 from core.inp_writer_base import SectionWriter
 from core.utility import ParseData
 
@@ -163,6 +164,23 @@ class PatternWriter(SectionWriter):
             section_text += "\t{:5}".format(multiplier)
             count += 1
         return section_text
+
+
+class EventsWriter(SectionWriter):
+    """Restricts hydraulic analyses to particular time periods, hydraulics remain constant outside of these periods"""
+
+    field_format = " {:12}\t{:5}\t{:10}\t{:5}"
+
+    @staticmethod
+    def as_text(event):
+        inp = ''
+        if event.comment:
+            inp = event.comment + '\n'
+        inp += EventsWriter.field_format.format(event.start_date,
+                                                event.start_time,
+                                                event.end_date,
+                                                event.end_time)
+        return inp
 
 
 class LanduseWriter(SectionWriter):

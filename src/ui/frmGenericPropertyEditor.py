@@ -121,8 +121,6 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
         pass
 
     def keyPressEvent(self, event):
-        x = event.key()
-        y = QtGui.QKeySequence.Copy
         if event.matches(QtGui.QKeySequence.Copy):
             self.copy()
         if event.matches(QtGui.QKeySequence.Paste):

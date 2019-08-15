@@ -27,7 +27,7 @@ except AttributeError:
 class Ui_frmGroundwaterFlow(object):
     def setupUi(self, frmGroundwaterFlow):
         frmGroundwaterFlow.setObjectName(_fromUtf8("frmGroundwaterFlow"))
-        frmGroundwaterFlow.resize(680, 464)
+        frmGroundwaterFlow.resize(720, 464)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -128,7 +128,7 @@ class Ui_frmGroundwaterFlow(object):
         sizePolicy.setHeightForWidth(self.lblImage.sizePolicy().hasHeightForWidth())
         self.lblImage.setSizePolicy(sizePolicy)
         self.lblImage.setText(_fromUtf8(""))
-        self.lblImage.setPixmap(QPixmap(_fromUtf8("../swmmimages/gw.png")))
+        self.lblImage.setPixmap(QPixmap(_fromUtf8("swmmimages/gw.png")))
         self.lblImage.setObjectName(_fromUtf8("lblImage"))
         self.horizontalLayout.addWidget(self.lblImage)
         self.verticalLayout.addWidget(self.fraImage)

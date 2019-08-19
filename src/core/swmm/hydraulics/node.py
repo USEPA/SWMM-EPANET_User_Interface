@@ -288,7 +288,7 @@ class StorageUnit(Junction):
         Junction.__init__(self)
 
         ## StorageCurveType: FUNCTIONAL or TABULAR
-        self.storage_curve_type = StorageCurveType.TABULAR
+        self.storage_curve_type = StorageCurveType.FUNCTIONAL
 
         ## Storage Curve containing the relationship between
         ## surface area and storage depth
@@ -296,7 +296,7 @@ class StorageUnit(Junction):
 
         ## A-value in the functional relationship
         ## between surface area and storage depth.
-        self.coefficient = '0'
+        self.coefficient = '1000'
 
         ## B-value in the functional relationship
         ## between surface area and storage depth.

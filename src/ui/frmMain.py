@@ -1526,6 +1526,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)
         self.setWindowTitle(self.model)
+        self.dockw_more.setEnabled(False)
 
     def toggle_toolbar(self, eventArg):
         tbname, is_checked = eventArg.split(',')
@@ -2285,8 +2286,11 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.project.file_name = new_name
             return
         if file_name.endswith('*'):
-            file_name = file_name[-1]
+            file_name = file_name[:-1]
             self.project.file_name = file_name
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+
         if self.model == "SWMM":
             self.set_project_map_extent()
 

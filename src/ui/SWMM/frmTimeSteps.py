@@ -33,6 +33,9 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         self.sbxReportDay.setValue(days)
         self.tmeReport.setTime(QtCore.QTime(hours, minutes, seconds))
 
+        (days, hours, minutes, seconds) = frmTimeSteps.split_days(section.rule_step)
+        self.tmeControl.setTime(QtCore.QTime(hours, minutes, seconds))
+
         routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
         self.txtRouting.setText(str(routing_time))
 
@@ -72,6 +75,7 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         orig_hour = orig_routing_time.hour()
         orig_minute = orig_routing_time.minute()
         orig_second = orig_routing_time.second()
+        orig_rule_step = section.rule_step
 
         section.skip_steady_state = self.cbxSkip.isChecked()
         section.lateral_inflow_tolerance = str(self.sbxLateral.value())
@@ -82,6 +86,8 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         section.report_step = frmTimeSteps.controls_to_hms(self.sbxReportDay, self.tmeReport)
         routing_time = QtCore.QTime(0, 0, 0).addSecs(int(self.txtRouting.text()))
         section.routing_step = "{:02}:{:02}:{:02}".format(routing_time.hour(), routing_time.minute(), routing_time.second())
+        section.rule_step = "{:02}:{:02}:{:02}".format(self.tmeControl.time().hour(),
+                                                       self.tmeControl.time().minute(), self.tmeControl.time().second())
 
         if orig_skip != section.skip_steady_state or \
             orig_lateral != section.lateral_inflow_tolerance or \
@@ -91,7 +97,8 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
             orig_report_step != section.report_step or \
             orig_hour != routing_time.hour() or \
             orig_minute != routing_time.minute() or \
-            orig_second != routing_time.second():
+            orig_second != routing_time.second() or \
+            orig_rule_step != section.rule_step:
             self._main_form.mark_project_as_unsaved()
         self.close()
 

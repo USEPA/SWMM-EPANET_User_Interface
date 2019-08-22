@@ -14,6 +14,7 @@ class Report(Section):
         ("input", "INPUT"),
         ("continuity", "CONTINUITY"),
         ("flow_stats", "FLOWSTATS"),
+        ("averages", "AVERAGES"),
         ("controls", "CONTROLS"),
         ("subcatchments", "SUBCATCHMENTS"),
         ("nodes", "NODES"),
@@ -37,6 +38,9 @@ class Report(Section):
 
         ## Whether to report summary flow statistics
         self.flow_stats = True
+
+        ## Average instead of instantaneous valeus
+        self.averages = False
 
         ## Whether to list all control actions taken during a simulation
         self.controls = False

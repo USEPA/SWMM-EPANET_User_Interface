@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>358</height>
+    <width>307</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="font">
@@ -38,6 +38,12 @@
        </item>
        <item row="0" column="1">
         <widget class="QLabel" name="lblDays">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>Days</string>
          </property>
@@ -61,7 +67,7 @@
         <widget class="QSpinBox" name="sbxReportDay">
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>70</width>
            <height>16777215</height>
           </size>
          </property>
@@ -102,7 +108,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QSpinBox" name="sbxDry">
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>70</width>
            <height>16777215</height>
           </size>
          </property>
@@ -140,7 +146,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QSpinBox" name="sbxWet">
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>70</width>
            <height>16777215</height>
           </size>
          </property>
@@ -163,23 +169,37 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="4" column="0">
+        <widget class="QLabel" name="lblControl">
+         <property name="text">
+          <string>Control Rule Step</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QTimeEdit" name="tmeControl">
+         <property name="displayFormat">
+          <string>h:mm:ss</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QLabel" name="lblRouting">
          <property name="text">
           <string>Routing</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QLineEdit" name="txtRouting">
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>70</width>
            <height>16777215</height>
           </size>
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
+       <item row="5" column="2">
         <widget class="QLabel" name="lblSeconds">
          <property name="text">
           <string>Seconds</string>
@@ -194,53 +214,87 @@ p, li { white-space: pre-wrap; }
       <property name="title">
        <string>Steady Flow Periods</string>
       </property>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="cbxSkip">
-         <property name="text">
-          <string>Skip Steady Flow Periods</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="lblSystem">
-         <property name="text">
-          <string>System Flow Tolerance (%)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="sbxSystem">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="lblLateral">
-         <property name="text">
-          <string>Lateral Flow Tolerance (%)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QSpinBox" name="sbxLateral">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QCheckBox" name="cbxSkip">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>26</y>
+         <width>167</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Skip Steady Flow Periods</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lblSystem">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>52</y>
+         <width>160</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>System Flow Tolerance (%)</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="sbxSystem">
+       <property name="geometry">
+        <rect>
+         <x>183</x>
+         <y>52</y>
+         <width>40</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lblLateral">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>157</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Lateral Flow Tolerance (%)</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="sbxLateral">
+       <property name="geometry">
+        <rect>
+         <x>183</x>
+         <y>80</y>
+         <width>40</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
      <widget class="QFrame" name="frame">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>50</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>

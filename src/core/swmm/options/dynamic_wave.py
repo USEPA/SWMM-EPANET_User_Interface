@@ -24,6 +24,12 @@ class ForceMainEquation(Enum):
     D_W = 2
 
 
+class SurchargeMethod(Enum):
+    """Mmethod used to handle surcharging"""
+    EXTRAN = 1
+    SLOT = 2
+
+
 class DynamicWave(Section):
     """SWMM Dynamic Wave Options"""
 
@@ -34,6 +40,7 @@ class DynamicWave(Section):
         ("inertial_damping",    "INERTIAL_DAMPING",    "Inertial Damping"),
         ("normal_flow_limited", "NORMAL_FLOW_LIMITED", "Normal Flow Limited"),
         ("force_main_equation", "FORCE_MAIN_EQUATION", "Force Main Equation"),
+        ("surcharge_method",    "SURCHARGE_METHOD",    "Surcharge Method"),
         ("variable_step",       "VARIABLE_STEP",       "Variable Step",        "0.0", "sec", "sec"),
         ("lengthening_step",    "LENGTHENING_STEP",    "Lengthening Step",     "0.0", "sec", "sec"),
         ("min_surface_area",    "MIN_SURFAREA",        "Minimum Surface Area", "0.0"),
@@ -59,6 +66,11 @@ class DynamicWave(Section):
         ## compute friction losses for pressurized flow in conduits that have been assigned a Circular Force
         ## Main cross-section shape. The default is H-W.
         self.force_main_equation = ForceMainEquation.H_W
+
+        ## The EXTRAN method continues to use the traditional Surcharge Algorithm to update the head at surcharged nodes.
+        ## The new SLOT option attaches a Preissmann Slot to closed conduits flowing more than 98.5% full that eliminates
+        ## the need to switch to the Surcharge Algorithm for surcharged nodes.
+        self.surcharge_method = SurchargeMethod.EXTRAN
 
         ## Time step, in seconds, used to lengthen conduits under
         ## dynamic wave routing, so that they meet the

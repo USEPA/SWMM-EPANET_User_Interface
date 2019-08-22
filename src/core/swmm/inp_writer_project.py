@@ -143,8 +143,8 @@ class ProjectWriter(InputFileWriterBase):
         # orifice link information
 
         self.write_weirs = SectionWriterAsList("[WEIRS]", WeirWriter,
-            ";;Name          \tFrom Node       \tTo Node         \tType        \tCrestHt   \tQcoeff    \tGated   \tEndCon  \tEndCoeff  \tSurcharge \tRoadWidth \tRoadSurf\n"
-            ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------")
+            ";;Name          \tFrom Node       \tTo Node         \tType        \tCrestHt   \tQcoeff    \tGated   \tEndCon  \tEndCoeff  \tSurcharge \tRoadWidth \tRoadSurf \tCoeff. Curve\n"
+            ";;--------------\t----------------\t----------------\t------------\t----------\t----------\t--------\t--------\t----------\t----------\t----------\t----------\t----------")
         # weir link information
 
         self.write_outlets = SectionWriterAsList("[OUTLETS]", OutletWriter,

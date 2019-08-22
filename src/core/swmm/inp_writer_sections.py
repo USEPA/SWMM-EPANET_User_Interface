@@ -529,7 +529,7 @@ class OrificeWriter(SectionWriter):
 
 class WeirWriter(SectionWriter):
 
-    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:8}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
+    field_format = "{:16}\t{:16}\t{:16}\t{:12}\t{:10}\t{:10}\t{:8}\t{:8}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{}"
 
     @staticmethod
     def as_text(weir):
@@ -540,15 +540,15 @@ class WeirWriter(SectionWriter):
                 road_width = weir.road_width
                 road_surface = weir.road_surface.name
             else:
-                road_width = ''
-                road_surface = ''
+                road_width = '*'
+                road_surface = '*'
             return WeirWriter.field_format.format(weir.name, weir.inlet_node, weir.outlet_node,
                                                      weir_name, weir.inlet_offset, weir.discharge_coefficient,
                                                      SectionWriter.yes_no(weir.flap_gate),
                                                      weir.end_contractions,
                                                      weir.end_coefficient,
                                                      SectionWriter.yes_no(weir.can_surcharge),
-                                                     road_width, road_surface, weir.comment)
+                                                     road_width, road_surface, weir.coeff_curve, weir.comment)
         elif weir.comment:
             return weir.comment
 
@@ -767,7 +767,7 @@ class StorageWriter(SectionWriter):
                                                 str(storage.initial_depth),
                                                 storage.storage_curve_type.name,
                                                 middle_part,
-                                                str(storage.ponded_area),
+                                                str(storage.surcharge_depth),
                                                 str(storage.evaporation_factor),
                                                 str(storage.seepage_suction_head),
                                                 str(storage.seepage_hydraulic_conductivity),

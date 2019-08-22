@@ -86,7 +86,7 @@
        <item>
         <widget class="QTabWidget" name="tabLID">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="Surface">
           <attribute name="title">
@@ -250,6 +250,26 @@
               </item>
               <item row="4" column="1">
                <widget class="QLineEdit" name="txtPavement5"/>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="lblFraction">
+                <property name="text">
+                 <string>Regneration Fraction</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="lblRegeneration">
+                <property name="text">
+                 <string>Regeneration Interval (days)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="txtRegeneration"/>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="txtFraction"/>
               </item>
              </layout>
             </widget>
@@ -470,7 +490,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
+                 <item row="0" column="2">
                   <widget class="QLineEdit" name="txtDrain1"/>
                  </item>
                  <item row="1" column="0">
@@ -483,7 +503,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
+                 <item row="1" column="2">
                   <widget class="QLineEdit" name="txtDrain2"/>
                  </item>
                  <item row="2" column="0">
@@ -496,7 +516,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="2" column="2">
                   <widget class="QLineEdit" name="txtDrain3"/>
                  </item>
                  <item row="3" column="0">
@@ -509,8 +529,38 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
+                 <item row="3" column="2">
                   <widget class="QLineEdit" name="txtDrain4"/>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="lblOpen">
+                   <property name="text">
+                    <string>Open Level (in or mm)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="lblControl">
+                   <property name="text">
+                    <string>Control Curve</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLabel" name="lblClosed">
+                   <property name="text">
+                    <string>Closed Level (in or mm)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="2">
+                  <widget class="QLineEdit" name="txtOpen"/>
+                 </item>
+                 <item row="5" column="2">
+                  <widget class="QLineEdit" name="txtClosed"/>
+                 </item>
+                 <item row="6" column="2">
+                  <widget class="QComboBox" name="cboCurve"/>
                  </item>
                 </layout>
                </widget>
@@ -526,6 +576,23 @@
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="Pollutant">
+          <attribute name="title">
+           <string>Pollutant Removals</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QTableWidget" name="tblPollutant"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="lblPollutant">
+             <property name="text">
+              <string>Enter percent removal for pollutants in underdrain outflow.</string>
+             </property>
             </widget>
            </item>
           </layout>

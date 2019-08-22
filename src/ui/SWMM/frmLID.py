@@ -1,9 +1,10 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from core.swmm.hydrology.lidcontrol import LIDType
 from ui.SWMM.frmLIDDesigner import Ui_frmLID
 from core.swmm.hydrology.lidcontrol import LIDControl
+from core.swmm.curves import CurveType
 
 
 class frmLID(QMainWindow, Ui_frmLID):
@@ -20,6 +21,27 @@ class frmLID(QMainWindow, Ui_frmLID):
         self.project = main_form.project
         self.section = self.project.lid_controls
         self.new_item = new_item
+
+        self.tblPollutant.setColumnCount(1)
+        self.tblPollutant.setHorizontalHeaderLabels(["% Removal"])
+        pollutant_count = -1
+        self.pollutant_list = self.project.pollutants.value[0:]
+        pollutant_names = []
+        for pollutant in self.pollutant_list:
+            pollutant_names.append(pollutant.name)
+        self.tblPollutant.setRowCount(len(pollutant_names))
+        self.tblPollutant.setVerticalHeaderLabels(pollutant_names)
+        for pollutant in self.pollutant_list:
+            pollutant_count += 1
+            self.tblPollutant.setItem(pollutant_count, 0, QTableWidgetItem(''))
+
+        # # for curves, show available curves
+        # curves_section = self.project.find_section("CURVES")
+        # curves_list = curves_section.value[0:]
+        # for curve in curves_list:
+        #     if curve.curve_type == CurveType.CONTROL:
+        #         self.cboCurve.addItem(curve.name)
+
         if new_item:
             self.lid = new_item
             self.set_from(new_item)
@@ -51,6 +73,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = True
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = True
             elif lid.lid_type == LIDType.RG:
                 self.cboLIDType.setCurrentIndex(1)
                 lid.has_surface_layer = True
@@ -59,6 +82,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = False
                 lid.has_underdrain_system = False
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = False
             elif lid.lid_type == LIDType.GR:
                 self.cboLIDType.setCurrentIndex(2)
                 lid.has_surface_layer = True
@@ -67,6 +91,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = False
                 lid.has_underdrain_system = False
                 lid.has_drainmat_system = True
+                lid.has_pollutant_removals = False
             elif lid.lid_type == LIDType.IT:
                 self.cboLIDType.setCurrentIndex(3)
                 lid.has_surface_layer = True
@@ -75,6 +100,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = False
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = True
             elif lid.lid_type == LIDType.PP:
                 self.cboLIDType.setCurrentIndex(4)
                 lid.has_surface_layer = True
@@ -83,6 +109,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = True
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = True
             elif lid.lid_type == LIDType.RB:
                 self.cboLIDType.setCurrentIndex(5)
                 lid.has_surface_layer = False
@@ -91,6 +118,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = True
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = True
             elif lid.lid_type == LIDType.RD:
                 self.cboLIDType.setCurrentIndex(6)
                 lid.has_surface_layer = True
@@ -99,6 +127,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = False
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = False
             elif lid.lid_type == LIDType.VS:
                 self.cboLIDType.setCurrentIndex(7)
                 lid.has_surface_layer = True
@@ -107,6 +136,7 @@ class frmLID(QMainWindow, Ui_frmLID):
                 lid.has_storage_layer = False
                 lid.has_underdrain_system = False
                 lid.has_drainmat_system = False
+                lid.has_pollutant_removals = False
 
             if lid.has_surface_layer:
                 self.txtSurface1.setText(lid.surface_layer_storage_depth)
@@ -120,6 +150,8 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.txtPavement3.setText(lid.pavement_layer_impervious_surface_fraction)
                 self.txtPavement4.setText(lid.pavement_layer_permeability)
                 self.txtPavement5.setText(lid.pavement_layer_clogging_factor)
+                self.txtRegeneration.setText(lid.pavement_layer_regeneration_interval)
+                self.txtFraction.setText(lid.pavement_layer_regeneration_fraction)
             if lid.has_soil_layer:
                 self.txtSoil1.setText(lid.soil_layer_thickness)
                 self.txtSoil2.setText(lid.soil_layer_porosity)
@@ -138,10 +170,37 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.txtDrain2.setText(lid.drain_exponent)
                 self.txtDrain3.setText(lid.drain_offset_height)
                 self.txtDrain4.setText(lid.drain_delay)
+                self.txtOpen.setText(lid.drain_open_level)
+                self.txtClosed.setText(lid.drain_closed_level)
+
+                # for curves, show available curves
+                self.cboCurve.addItem('')
+                curves_section = self.project.find_section("CURVES")
+                curves_list = curves_section.value[0:]
+                selected_index = 0
+                for curve in curves_list:
+                    if curve.curve_type == CurveType.CONTROL:
+                        self.cboCurve.addItem(curve.name)
+                        if lid.drain_control_curve == curve.name:
+                            selected_index = int(self.cboCurve.count()) - 1
+                self.cboCurve.setCurrentIndex(selected_index)
+
             if lid.has_drainmat_system:
                 self.txtDrain1.setText(lid.drainmat_thickness)
                 self.txtDrain2.setText(lid.drainmat_void_fraction)
                 self.txtDrain3.setText(lid.drainmat_roughness)
+            if lid.has_pollutant_removals:
+                if len(self.pollutant_list) > 0:
+                    self.tblPollutant.setItem(-1, 1, QTableWidgetItem(lid.removal_removal1))
+                if len(self.pollutant_list) > 1:
+                    self.tblPollutant.setItem(0, 1, QTableWidgetItem(lid.removal_removal2))
+                if len(self.pollutant_list) > 2:
+                    self.tblPollutant.setItem(1, 1, QTableWidgetItem(lid.removal_removal3))
+                if len(self.pollutant_list) > 3:
+                    self.tblPollutant.setItem(2, 1, QTableWidgetItem(lid.removal_removal4))
+                if len(self.pollutant_list) > 4:
+                    self.tblPollutant.setItem(3, 1, QTableWidgetItem(lid.removal_removal5))
+
 
     def cmdOK_Clicked(self):
         self.editing_item.name = self.txtName.text()
@@ -157,6 +216,8 @@ class frmLID(QMainWindow, Ui_frmLID):
         orig_pavement_layer_impervious_surface_fraction = self.editing_item.pavement_layer_impervious_surface_fraction
         orig_pavement_layer_permeability = self.editing_item.pavement_layer_permeability
         orig_pavement_layer_clogging_factor = self.editing_item.pavement_layer_clogging_factor
+        orig_pavement_layer_regeneration_interval = self.editing_item.pavement_layer_regeneration_interval
+        orig_pavement_layer_regeneration_fraction = self.editing_item.pavement_layer_regeneration_fraction
         orig_soil_layer_thickness = self.editing_item.soil_layer_thickness
         orig_soil_layer_porosity = self.editing_item.soil_layer_porosity
         orig_soil_layer_field_capacity = self.editing_item.soil_layer_field_capacity
@@ -172,9 +233,17 @@ class frmLID(QMainWindow, Ui_frmLID):
         orig_drain_exponent = self.editing_item.drain_exponent
         orig_drain_offset_height = self.editing_item.drain_offset_height
         orig_drain_delay = self.editing_item.drain_delay
+        orig_drain_open_level = self.editing_item.drain_open_level
+        orig_drain_closed_level = self.editing_item.drain_closed_level
+        orig_drain_control_curve = self.editing_item.drain_control_curve
         orig_drainmat_thickness = self.editing_item.drainmat_thickness
         orig_drainmat_void_fraction = self.editing_item.drainmat_void_fraction
         orig_drainmat_roughness = self.editing_item.drainmat_roughness
+        orig_removal_removal1 = self.editing_item.removal_removal1
+        orig_removal_removal2 = self.editing_item.removal_removal2
+        orig_removal_removal3 = self.editing_item.removal_removal3
+        orig_removal_removal4 = self.editing_item.removal_removal4
+        orig_removal_removal5 = self.editing_item.removal_removal5
 
         if self.cboLIDType.currentIndex() == 0:
             self.editing_item.lid_type = LIDType.BC
@@ -184,6 +253,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = True
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = True
         elif self.cboLIDType.currentIndex() == 1:
             self.editing_item.lid_type = LIDType.RG
             self.editing_item.has_surface_layer = True
@@ -192,6 +262,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = False
             self.editing_item.has_underdrain_system = False
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = False
         elif self.cboLIDType.currentIndex() == 2:
             self.editing_item.lid_type = LIDType.GR
             self.editing_item.has_surface_layer = True
@@ -200,6 +271,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = False
             self.editing_item.has_underdrain_system = False
             self.editing_item.has_drainmat_system = True
+            self.editing_item.has_pollutant_removals = False
         elif self.cboLIDType.currentIndex() == 3:
             self.editing_item.lid_type = LIDType.IT
             self.editing_item.has_surface_layer = True
@@ -208,6 +280,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = False
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = True
         elif self.cboLIDType.currentIndex() == 4:
             self.editing_item.lid_type = LIDType.PP
             self.editing_item.has_surface_layer = True
@@ -216,6 +289,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = True
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = True
         elif self.cboLIDType.currentIndex() == 5:
             self.editing_item.lid_type = LIDType.RB
             self.editing_item.has_surface_layer = False
@@ -224,6 +298,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = True
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = True
         elif self.cboLIDType.currentIndex() == 6:
             self.editing_item.lid_type = LIDType.RD
             self.editing_item.has_surface_layer = True
@@ -232,6 +307,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = False
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = False
         elif self.cboLIDType.currentIndex() == 7:
             self.editing_item.lid_type = LIDType.VS
             self.editing_item.has_surface_layer = True
@@ -240,6 +316,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.has_storage_layer = False
             self.editing_item.has_underdrain_system = False
             self.editing_item.has_drainmat_system = False
+            self.editing_item.has_pollutant_removals = False
 
         if self.editing_item.has_surface_layer:
             if self.cboLIDType.currentIndex() == 6:
@@ -258,6 +335,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.pavement_layer_impervious_surface_fraction = self.txtPavement3.text()
             self.editing_item.pavement_layer_permeability = self.txtPavement4.text()
             self.editing_item.pavement_layer_clogging_factor = self.txtPavement5.text()
+            self.editing_item.pavement_layer_regeneration_interval = self.txtRegeneration.text()
+            self.editing_item.pavement_layer_regeneration_fraction = self.txtFraction.text()
         if self.editing_item.has_soil_layer:
             self.editing_item.soil_layer_thickness = self.txtSoil1.text()
             self.editing_item.soil_layer_porosity = self.txtSoil2.text()
@@ -276,10 +355,24 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.drain_exponent = self.txtDrain2.text()
             self.editing_item.drain_offset_height = self.txtDrain3.text()
             self.editing_item.drain_delay = self.txtDrain4.text()
+            self.editing_item.drain_open_level = self.txtOpen.text()
+            self.editing_item.drain_closed_level = self.txtClosed.text()
+            self.editing_item.drain_control_curve = self.cboCurve.currentText()
         if self.editing_item.has_drainmat_system:
             self.editing_item.drainmat_thickness = self.txtDrain1.text()
             self.editing_item.drainmat_void_fraction = self.txtDrain2.text()
             self.editing_item.drainmat_roughness = self.txtDrain3.text()
+        if self.editing_item.has_pollutant_removals:
+            if len(self.pollutant_list) > 0:
+                self.editing_item.removal_removal1 = self.tblPollutant.item(0, 0).text()
+            if len(self.pollutant_list) > 1:
+                self.editing_item.removal_removal2 = self.tblPollutant.item(1, 0).text()
+            if len(self.pollutant_list) > 2:
+                self.editing_item.removal_removal3 = self.tblPollutant.item(2, 0).text()
+            if len(self.pollutant_list) > 3:
+                self.editing_item.removal_removal4 = self.tblPollutant.item(3, 0).text()
+            if len(self.pollutant_list) > 4:
+                self.editing_item.removal_removal5 = self.tblPollutant.item(4, 0).text()
         # self.main_form.list_objects()
 
         if self.new_item:  # We are editing a newly created item and it needs to be added to the project
@@ -299,6 +392,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             orig_pavement_layer_impervious_surface_fraction != self.editing_item.pavement_layer_impervious_surface_fraction or \
             orig_pavement_layer_permeability != self.editing_item.pavement_layer_permeability or \
             orig_pavement_layer_clogging_factor != self.editing_item.pavement_layer_clogging_factor or \
+            orig_pavement_layer_regeneration_interval != self.editing_item.pavement_layer_regeneration_interval or \
+            orig_pavement_layer_regeneration_fraction != self.editing_item.pavement_layer_regeneration_fraction or \
             orig_soil_layer_thickness != self.editing_item.soil_layer_thickness or \
             orig_soil_layer_porosity != self.editing_item.soil_layer_porosity or \
             orig_soil_layer_field_capacity != self.editing_item.soil_layer_field_capacity or \
@@ -314,9 +409,17 @@ class frmLID(QMainWindow, Ui_frmLID):
             orig_drain_exponent != self.editing_item.drain_exponent or \
             orig_drain_offset_height != self.editing_item.drain_offset_height or \
             orig_drain_delay != self.editing_item.drain_delay or \
+            orig_drain_open_level != self.editing_item.drain_open_level or \
+            orig_drain_closed_level != self.editing_item.drain_closed_level or \
+            orig_drain_control_curve != self.editing_item.drain_control_curve or \
             orig_drainmat_thickness != self.editing_item.drainmat_thickness or \
             orig_drainmat_void_fraction != self.editing_item.drainmat_void_fraction or \
-            orig_drainmat_roughness != self.editing_item.drainmat_roughness:
+            orig_drainmat_roughness != self.editing_item.drainmat_roughness or \
+            orig_removal_removal1 != self.editing_item.removal_removal1 or \
+            orig_removal_removal2 != self.editing_item.removal_removal2 or \
+            orig_removal_removal3 != self.editing_item.removal_removal3 or \
+            orig_removal_removal4 != self.editing_item.removal_removal4 or \
+            orig_removal_removal5 != self.editing_item.removal_removal5:
             self._main_form.mark_project_as_unsaved()
 
         self.close()
@@ -375,6 +478,12 @@ class frmLID(QMainWindow, Ui_frmLID):
         self.txtDrain3.setVisible(True)
         self.lblDrain4.setVisible(True)
         self.txtDrain4.setVisible(True)
+        self.lblOpen.setVisible(True)
+        self.lblClosed.setVisible(True)
+        self.lblControl.setVisible(True)
+        self.txtOpen.setVisible(True)
+        self.txtClosed.setVisible(True)
+        self.cboCurve.setVisible(True)
 
         if newIndex == 0: # "Bio-Retention Cell"
             self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/1bio.png"))
@@ -383,6 +492,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, True)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -398,6 +508,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,False)
             self.tabLID.setTabEnabled(4,False)
+            self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -410,6 +521,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,False)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drainage Mat")
 
             self.lblSurface5.setVisible(False)
@@ -422,6 +534,13 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lblDrain4.setVisible(False)
             self.txtDrain4.setVisible(False)
 
+            self.lblOpen.setVisible(False)
+            self.lblClosed.setVisible(False)
+            self.lblControl.setVisible(False)
+            self.txtOpen.setVisible(False)
+            self.txtClosed.setVisible(False)
+            self.cboCurve.setVisible(False)
+
         elif newIndex == 3: # "Infiltration Trench"
             self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/4infilt.png"))
             self.tabLID.setTabEnabled(0,True)
@@ -429,6 +548,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, True)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -448,6 +568,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, True)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -467,6 +588,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, True)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblStorage1.setText("Barrel Height (in. or mm)")
@@ -490,6 +612,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,False)
             self.tabLID.setTabEnabled(4,True)
+            self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Roof Drain")
 
             self.lblSurface1.setText("Storage Depth (in. or mm)")
@@ -509,6 +632,13 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.txtDrain4.setVisible(False)
             self.lblText.setText("Enter the maximum flow rate that the roof's drain system (gutters, downspouts, and leaders) can handle before overflowing. Use 0 if not applicable.")
 
+            self.lblOpen.setVisible(False)
+            self.lblClosed.setVisible(False)
+            self.lblControl.setVisible(False)
+            self.txtOpen.setVisible(False)
+            self.txtClosed.setVisible(False)
+            self.cboCurve.setVisible(False)
+
         elif newIndex == 7: # "Vegetative Swale"
             self.lblImage.setPixmap(QtGui.QPixmap("./swmmimages/8veg.png"))
             self.tabLID.setTabEnabled(0,True)
@@ -516,6 +646,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,False)
             self.tabLID.setTabEnabled(4,False)
+            self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
         if newIndex == 0:
@@ -525,6 +656,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = True
             self.lid.has_underdrain_system = True
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = True
         elif newIndex == 1:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = False
@@ -532,6 +664,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = False
             self.lid.has_underdrain_system = False
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = False
         elif newIndex == 2:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = False
@@ -539,6 +672,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = False
             self.lid.has_underdrain_system = False
             self.lid.has_drainmat_system = True
+            self.lid.has_pollutant_removals = False
         elif newIndex == 3:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = False
@@ -546,6 +680,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = False
             self.lid.has_underdrain_system = True
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = True
         elif newIndex == 4:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = True
@@ -553,6 +688,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = True
             self.lid.has_underdrain_system = True
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = True
         elif newIndex == 5:
             self.lid.has_surface_layer = False
             self.lid.has_pavement_layer = False
@@ -560,6 +696,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = True
             self.lid.has_underdrain_system = True
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = True
         elif newIndex == 6:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = False
@@ -567,6 +704,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = False
             self.lid.has_underdrain_system = True
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = False
         elif newIndex == 7:
             self.lid.has_surface_layer = True
             self.lid.has_pavement_layer = False
@@ -574,6 +712,7 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.lid.has_storage_layer = False
             self.lid.has_underdrain_system = False
             self.lid.has_drainmat_system = False
+            self.lid.has_pollutant_removals = False
 
         if self.lid.has_surface_layer:
             if newIndex == 6:

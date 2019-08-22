@@ -41,7 +41,9 @@ class LIDControl(Section):
          "pavement_layer_void_ratio",
          "pavement_layer_impervious_surface_fraction",
          "pavement_layer_permeability",
-         "pavement_layer_clogging_factor"),
+         "pavement_layer_clogging_factor",
+         "pavement_layer_regeneration_interval",
+         "pavement_layer_regeneration_fraction"),
         ("has_storage_layer",
          "STORAGE",
          "storage_layer_height",
@@ -53,12 +55,27 @@ class LIDControl(Section):
          "drain_coefficient",
          "drain_exponent",
          "drain_offset_height",
-         "drain_delay"),
+         "drain_delay",
+         "drain_open_level",
+         "drain_closed_level",
+         "drain_control_curve"),
         ("has_drainmat_system",
          "DRAINMAT",
          "drainmat_thickness",
          "drainmat_void_fraction",
-         "drainmat_roughness"))
+         "drainmat_roughness"),
+        ("has_pollutant_removals",
+         "REMOVALS",
+         "removal_pollutant1",
+         "removal_removal1",
+         "removal_pollutant2",
+         "removal_removal2",
+         "removal_pollutant3",
+         "removal_removal3",
+         "removal_pollutant4",
+         "removal_removal4",
+         "removal_pollutant5",
+         "removal_removal5"))
 
     def __init__(self):
         Section.__init__(self)
@@ -86,6 +103,9 @@ class LIDControl(Section):
 
         ## does lid have drainmat system
         self.has_drainmat_system = False
+
+        ## does lid have pollutant removals
+        self.has_pollutant_removals = False
 
         ## When confining walls or berms are present this is the maximum depth to
         ## which water can pond above the surface of the unit before overflow
@@ -121,6 +141,14 @@ class LIDControl(Section):
 
         ## Number of pavement layer void volumes of runoff treated it takes to completely clog the pavement
         self.pavement_layer_clogging_factor = "0.0"
+
+        ## The number of days that the pavement layer is allowed to clog before its permeability is restored,
+        ##  typically by vacuuming its surface. A value of 0 (the default) indicates that no permeability regeneration occurs.
+        self.pavement_layer_regeneration_interval = '0'
+
+        ## The fractional degree to which the pavement's permeability is restored when a regeneration interval is reached.
+        ##  The default is 0 (no restoration) while a value of 1 indicates complete restoration to the original permeability value.
+        self.pavement_layer_regeneration_fraction = '0'
 
         ## Thickness of the soil layer
         self.soil_layer_thickness = "0.0"
@@ -170,6 +198,18 @@ class LIDControl(Section):
         ## Number of dry weather hours that must elapse before the drain line in a rain barrel is opened
         self.drain_delay = "6.0"
 
+        ## The height( in inches or mm) in the drain's Storage Layer that causes the drain to automatically open when
+        ## the water level rises above it. The default is 0 which means that this feature is disabled.
+        self.drain_open_level = '0'
+
+        ## The height (in inches or mm) in the drain's Storage Layer that causes the drain to automatically close when
+        ## the water level falls below it. The default is 0.
+        self.drain_closed_level = '0'
+
+        ## The name of an optional Control Curve that adjusts the computed drain flow as a function of the head of
+        ## water above the drain. Leave blank if not applicable.
+        self.drain_control_curve = ''
+
         ## Thickness of the drainage mat (inches or mm)
         self.drainmat_thickness = "3.0"
 
@@ -179,4 +219,13 @@ class LIDControl(Section):
         ## Manning's n constant used to compute the horizontal flow rate of drained water through the mat
         self.drainmat_roughness = "0.1"
 
-
+        self.removal_pollutant1 = ''
+        self.removal_removal1 = '0'
+        self.removal_pollutant2 = ''
+        self.removal_removal2 = '0'
+        self.removal_pollutant3 = ''
+        self.removal_removal3 = '0'
+        self.removal_pollutant4 = ''
+        self.removal_removal4 = '0'
+        self.removal_pollutant5 = ''
+        self.removal_removal5 = '0'

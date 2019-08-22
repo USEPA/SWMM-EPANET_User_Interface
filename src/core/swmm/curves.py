@@ -14,6 +14,7 @@ class CurveType(Enum):
     PUMP4 = 8
     RATING = 9
     CONTROL = 10
+    WEIR = 11
 
 
 class Curve(Section):

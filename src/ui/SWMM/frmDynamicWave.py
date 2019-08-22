@@ -15,6 +15,7 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         # dampen=partial, ignore=full, keep=none
         self.cboForce.addItems(("Hazen-Williams", "Darcy-Weisbach"))
         self.cboNormal.addItems(("Slope", "Froude No.", "Slope & Froude"))
+        self.cboSurcharge.addItems(("Extran", "Slot"))
         self.cboThreads.addItems(("1", "2", "3", "4"))
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
@@ -49,6 +50,11 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         if section.normal_flow_limited == core.swmm.options.dynamic_wave.NormalFlowLimited.BOTH:
             self.cboNormal.setCurrentIndex(2)
 
+        if section.surcharge_method == core.swmm.options.dynamic_wave.SurchargeMethod.EXTRAN:
+            self.cboSurcharge.setCurrentIndex(0)
+        if section.surcharge_method == core.swmm.options.dynamic_wave.SurchargeMethod.SLOT:
+            self.cboSurcharge.setCurrentIndex(1)
+
         val, val_is_good = ParseData.intTryParse(section.threads)
         if val_is_good:
             self.cboThreads.setCurrentIndex(val - 1)
@@ -68,6 +74,7 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         orig_damping = section.inertial_damping
         orig_force_eq = section.force_main_equation
         orig_flow_lim = section.normal_flow_limited
+        orig_surcharge = section.surcharge_method
         orig_threads = section.threads
         orig_step = section.variable_step
         orig_min_step = section.minimum_step
@@ -95,6 +102,11 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         if self.cboNormal.currentIndex() == 2:
             section.normal_flow_limited = core.swmm.options.dynamic_wave.NormalFlowLimited.BOTH
 
+        if self.cboSurcharge.currentIndex() == 0:
+            section.surcharge_method = core.swmm.options.dynamic_wave.SurchargeMethod.EXTRAN
+        if self.cboSurcharge.currentIndex() == 1:
+            section.surcharge_method = core.swmm.options.dynamic_wave.SurchargeMethod.SLOT
+
         section.threads = self.cboThreads.currentIndex() + 1
         if self.cbxUseVariable.isChecked():
             section.variable_step = self.sbxAdjusted.value() / 100.0
@@ -109,6 +121,7 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         if orig_damping != section.inertial_damping or \
             orig_force_eq != section.force_main_equation or \
             orig_flow_lim != section.normal_flow_limited or \
+            orig_surcharge != section.surcharge_method or \
             int(orig_threads) != section.threads or \
             float(orig_step) != section.variable_step or \
             float(orig_min_step) != section.minimum_step or \

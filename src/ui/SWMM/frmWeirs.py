@@ -5,6 +5,7 @@ from core.swmm.hydraulics.link import Weir
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from core.swmm.hydraulics.link import CrossSection
 from core.swmm.hydraulics.link import CrossSectionShape
+from core.swmm.curves import CurveType
 
 
 class frmWeirs(frmGenericPropertyEditor):
@@ -55,6 +56,20 @@ class frmWeirs(frmGenericPropertyEditor):
                 if edit_these[column].can_surcharge == 'True' or edit_these[column].can_surcharge == True:
                     combobox.setCurrentIndex(0)
             self.tblGeneric.setCellWidget(14, column, combobox)
+            # for curves, show available curves
+            curves_section = self.project.find_section("CURVES")
+            curves_list = curves_section.value[0:]
+            combobox = QComboBox()
+            combobox.addItem('*')
+            selected_index = 0
+            for curve in curves_list:
+                if curve.curve_type == CurveType.WEIR:
+                    combobox.addItem(curve.name)
+                    if len(edit_these) > 0:
+                        if edit_these[column].coeff_curve == curve.name:
+                            selected_index = int(combobox.count()) - 1
+            combobox.setCurrentIndex(selected_index)
+            self.tblGeneric.setCellWidget(15, column, combobox)
             self.set_cross_section_cells(column)
 
         self.installEventFilter(self)

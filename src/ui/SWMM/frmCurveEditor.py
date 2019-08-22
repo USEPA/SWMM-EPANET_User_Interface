@@ -121,6 +121,13 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 self.tblMult.setHorizontalHeaderLabels(("Hour of Day", "Stage (m)"))
             else:
                 self.tblMult.setHorizontalHeaderLabels(("Hour of Day", "Stage (ft)"))
+        elif self.curve_type == "WEIR":
+            self.cboCurveType.setVisible(False)
+            self.lblCurveType.setVisible(False)
+            if self._main_form.project.metric:
+                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Coefficient"))
+            else:
+                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Coefficient"))
 
         self.txtCurveName.setText(str(curve.name))
         self.txtDescription.setText(str(curve.comment))

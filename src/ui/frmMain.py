@@ -1526,6 +1526,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         layout.addWidget(self.obj_tree)
         self.tabProject.setLayout(layout)
         self.setWindowTitle(self.model)
+        self.dockw_more.setEnabled(False)
 
     def toggle_toolbar(self, eventArg):
         tbname, is_checked = eventArg.split(',')
@@ -2285,14 +2286,18 @@ class frmMain(QMainWindow, Ui_frmMain):
                 self.project.file_name = new_name
             return
         if file_name.endswith('*'):
-            file_name = file_name[-1]
+            file_name = file_name[:-1]
             self.project.file_name = file_name
+            path_only, file_only = os.path.split(file_name)
+            self.setWindowTitle(self.model + " - " + file_only)
+
         if self.model == "SWMM":
             self.set_project_map_extent()
 
         if self.project_settings.general_preferences['AutoBackup'] > 0:
             from shutil import copyfile
-            copyfile(file_name, file_name + ".bak")
+            if os.path.exists(file_name):
+                copyfile(file_name, file_name + ".bak")
 
         project_writer = self.project_writer_type()
         project_writer.write_file(self.project, file_name)
@@ -2342,6 +2347,7 @@ class frmMain(QMainWindow, Ui_frmMain):
             path_only, file_only = os.path.split(file_name)
             try:
                 self.save_project(file_name)
+                self.project.file_name = file_name
                 self.setWindowTitle(self.model + " - " + file_only)
                 if path_only != directory:
                     self.program_settings.setValue("ProjectDir", path_only)

@@ -188,30 +188,30 @@ class ProjectReader(InputFileReader):
             elif infiltration.startswith("CURVE"):
                 self.read_infiltration = SectionReaderAsList(section_name, CurveNumberInfiltrationReader)
         elif section_name_upper == "[SUBAREAS]":
-            self.check_valid_subcatchment_id(project, 'SUBAREAS', section_text)
+            # self.check_valid_subcatchment_id(project, 'SUBAREAS', section_text)
             self.defer_subareas = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[COORDINATES]":
-            self.check_valid_node_id(project, 'COORDINATES', section_text)
+            # self.check_valid_node_id(project, 'COORDINATES', section_text)
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[SYMBOLS]":
-            self.check_valid_raingage_id(project, 'SYMBOLS', section_text)
+            # self.check_valid_raingage_id(project, 'SYMBOLS', section_text)
             self.defer_symbols = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[LOSSES]":
-            self.check_valid_link_id(project, 'LOSSES', section_text)
+            # self.check_valid_link_id(project, 'LOSSES', section_text)
             self.defer_losses = section_text
             return
         elif section_name_upper == "[VERTICES]":
-            self.check_valid_link_id(project, 'VERTICES', section_text)
+            # self.check_valid_link_id(project, 'VERTICES', section_text)
             self.defer_vertices = section_text
             return
         elif section_name_upper == "[POLYGONS]":
-            self.check_valid_subcatchment_id(project, 'POLYGONS', section_text)
+            # self.check_valid_subcatchment_id(project, 'POLYGONS', section_text)
             self.defer_polygons = section_text
             return
         elif section_name_upper == "[GROUNDWATER]":
@@ -262,24 +262,30 @@ class ProjectReader(InputFileReader):
 
     def finished_reading(self, project):
         if self.defer_subareas:
+            self.check_valid_subcatchment_id(project, 'SUBAREAS', self.defer_subareas)
             SubareasReader.read(self.defer_subareas, project)
             self.defer_subareas = None
         if self.defer_coordinates:
+            self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
         if self.defer_symbols:
+            self.check_valid_raingage_id(project, 'SYMBOLS', self.defer_symbols)
             SymbolsReader.read(self.defer_symbols, project)
             self.defer_symbols = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
         if self.defer_losses:
+            self.check_valid_link_id(project, 'LOSSES', self.defer_losses)
             LossesReader.read(self.defer_losses, project)
             self.defer_losses = None
         if self.defer_vertices:
+            self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
             VerticesReader.read(self.defer_vertices, project)
             self.defer_vertices = None
         if self.defer_polygons:
+            self.check_valid_subcatchment_id(project, 'POLYGONS', self.defer_polygons)
             PolygonsReader.read(self.defer_polygons, project)
             self.defer_polygons = None
         project.metric = project.options.flow_units in flow_units_metric

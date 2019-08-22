@@ -62,30 +62,24 @@ class ProjectReader(InputFileReader):
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
         if section_name_upper == "[QUALITY]":
-            self.check_valid_node_id(project, 'QUALITY', section_text)
             self.defer_quality = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[COORDINATES]":
-            self.check_valid_node_id(project, 'COORDINATES', section_text)
             self.defer_coordinates = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[VERTICES]":
-            self.check_valid_link_id(project, 'VERTICES', section_text)
             self.defer_vertices = section_text
             return
         elif section_name_upper == "[TAGS]":
             self.defer_tags = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[MIXING]":
-            self.check_valid_node_id(project, 'MIXING', section_text)
             self.defer_mixing = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[EMITTERS]":
-            self.check_valid_node_id(project, 'EMITTERS', section_text)
             self.defer_emitters = section_text
             return  # Skip read_section, defer until finished_reading is called.
         elif section_name_upper == "[STATUS]":
-            self.check_valid_link_id(project, 'STATUS', section_text)
             self.defer_status = section_text
             return
         elif section_name_upper == "[CALIBRATIONS]":
@@ -105,24 +99,30 @@ class ProjectReader(InputFileReader):
 
     def finished_reading(self, project):
         if self.defer_quality:
+            self.check_valid_node_id(project, 'QUALITY', self.defer_quality)
             QualityReader.read(self.defer_quality, project)
             self.defer_quality = None
         if self.defer_coordinates:
+            self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
         if self.defer_vertices:
+            self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
             VerticesReader.read(self.defer_vertices, project)
             self.defer_vertices = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
         if self.defer_mixing:
+            self.check_valid_node_id(project, 'MIXING', self.defer_mixing)
             MixingReader.read(self.defer_mixing, project)
             self.defer_mixing = None
         if self.defer_emitters:
+            self.check_valid_node_id(project, 'EMITTERS', self.defer_emitters)
             EmittersReader.read(self.defer_emitters, project)
             self.defer_emitters = None
         if self.defer_status:
+            self.check_valid_link_id(project, 'STATUS', self.defer_status)
             StatusReader.read(self.defer_status, project)
             self.defer_status = None
         project.metric = project.options.hydraulics.flow_units in flow_units_metric

@@ -43,6 +43,7 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
         self.txtWidth.setText('0')
         self.txtSat.setText('0')
         self.txtTreated.setText('0')
+        self.txtPervTreated.setText('0')
         self.txtDrain.setText('')
         self.txtFile.setText('')
 
@@ -63,14 +64,15 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
         self.cboLIDControl.setCurrentIndex(selected_index)
         self.subcatchment_name = subcatchment_name
 
-        number_replicate_units = parent_form.tblControls.item(row_id,5).text()
-        area_each_unit = parent_form.tblControls.item(row_id,6).text()
-        top_width_overland_flow_surface = parent_form.tblControls.item(row_id,7).text()
-        percent_initially_saturated = parent_form.tblControls.item(row_id,8).text()
+        number_replicate_units = parent_form.tblControls.item(row_id,6).text()
+        area_each_unit = parent_form.tblControls.item(row_id,7).text()
+        top_width_overland_flow_surface = parent_form.tblControls.item(row_id,8).text()
+        percent_initially_saturated = parent_form.tblControls.item(row_id,9).text()
         percent_impervious_area_treated = parent_form.tblControls.item(row_id,3).text()
-        detailed_report_file = parent_form.tblControls.item(row_id,4).text()
-        send_outflow_pervious_area = parent_form.tblControls.item(row_id,9).text()
-        subcatchment_drains_to = parent_form.tblControls.item(row_id,10).text()
+        percent_pervious_area_treated = parent_form.tblControls.item(row_id, 4).text()
+        detailed_report_file = parent_form.tblControls.item(row_id,5).text()
+        send_outflow_pervious_area = parent_form.tblControls.item(row_id,10).text()
+        subcatchment_drains_to = parent_form.tblControls.item(row_id,11).text()
 
         self.lblPercent.setText('0.000')
         self.spxUnits.setValue(int(number_replicate_units))
@@ -78,6 +80,7 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
         self.txtWidth.setText(top_width_overland_flow_surface)
         self.txtSat.setText(percent_initially_saturated)
         self.txtTreated.setText(percent_impervious_area_treated)
+        self.txtPervTreated.setText(percent_pervious_area_treated)
         self.txtDrain.setText(subcatchment_drains_to)
         self.txtFile.setText(detailed_report_file)
         if int(send_outflow_pervious_area) > 0:
@@ -90,6 +93,7 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
     def cmdOK_Clicked(self):
         lid_control = self.cboLIDControl.currentText()
         percent_impervious_area_treated = self.txtTreated.text()
+        percent_pervious_area_treated = self.txtPervTreated.text()
         detailed_report_file = self.txtFile.text()
         number_replicate_units = self.spxUnits.value()
         area_each_unit = self.txtArea.text()
@@ -112,13 +116,14 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
             # editing an existing lid usage, put back
             tblControls.setItem(self.row_id, 0, QTableWidgetItem(str(lid_control)))
             tblControls.setItem(self.row_id, 3, QTableWidgetItem(str(percent_impervious_area_treated)))
-            tblControls.setItem(self.row_id, 4, QTableWidgetItem(str(detailed_report_file)))
-            tblControls.setItem(self.row_id, 5, QTableWidgetItem(str(number_replicate_units)))
-            tblControls.setItem(self.row_id, 6, QTableWidgetItem(str(area_each_unit)))
-            tblControls.setItem(self.row_id, 7, QTableWidgetItem(str(top_width_overland_flow_surface)))
-            tblControls.setItem(self.row_id, 8, QTableWidgetItem(str(percent_initially_saturated)))
-            tblControls.setItem(self.row_id, 9, QTableWidgetItem(str(send_outflow_pervious_area)))
-            tblControls.setItem(self.row_id, 10, QTableWidgetItem(str(subcatchment_drains_to)))
+            tblControls.setItem(self.row_id, 4, QTableWidgetItem(str(percent_pervious_area_treated)))
+            tblControls.setItem(self.row_id, 5, QTableWidgetItem(str(detailed_report_file)))
+            tblControls.setItem(self.row_id, 6, QTableWidgetItem(str(number_replicate_units)))
+            tblControls.setItem(self.row_id, 7, QTableWidgetItem(str(area_each_unit)))
+            tblControls.setItem(self.row_id, 8, QTableWidgetItem(str(top_width_overland_flow_surface)))
+            tblControls.setItem(self.row_id, 9, QTableWidgetItem(str(percent_initially_saturated)))
+            tblControls.setItem(self.row_id, 10, QTableWidgetItem(str(send_outflow_pervious_area)))
+            tblControls.setItem(self.row_id, 11, QTableWidgetItem(str(subcatchment_drains_to)))
 
             # recalculate area and lid name
             self._main_form.SetLongLIDName(lid_control, self.row_id)

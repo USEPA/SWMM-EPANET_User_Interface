@@ -619,6 +619,14 @@ class AdjustmentsReader(SectionReader):
                         adjustments.rainfall = fields[1:]
                     elif fields[0].upper() == "CONDUCTIVITY":
                         adjustments.soil_conductivity = fields[1:]
+                if len(fields) == 3:
+                    other_adj = line.split(' ',1)[1].strip()
+                    if fields[0].upper() == "N-PERV":
+                        adjustments.nperv.append(other_adj)
+                    elif fields[0].upper() == "DSTORE":
+                        adjustments.dstore.append(other_adj)
+                    elif fields[0].upper() == "INFIL":
+                        adjustments.infil.append(other_adj)
             except:
                 print(adjustments.SECTION_NAME + " skipping input line: " + line)
         return adjustments
@@ -1551,6 +1559,10 @@ class LIDUsageReader(SectionReader):
             lid_usage.send_outflow_pervious_area = fields[7]
         if len(fields) > 8:
             lid_usage.detailed_report_file = fields[8]
+        if len(fields) > 9:
+            lid_usage.subcatchment_drains_to = fields[9]
+        if len(fields) > 10:
+            lid_usage.percent_pervious_area_treated = fields[10]
         return lid_usage
 
 

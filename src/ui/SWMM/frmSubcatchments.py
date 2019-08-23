@@ -6,6 +6,7 @@ from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from core.swmm.hydrology.subcatchment import Groundwater
+from core.swmm.patterns import PatternType
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmLIDControls import frmLIDControls
@@ -75,6 +76,46 @@ class frmSubcatchments(frmGenericPropertyEditor):
             row = self.header_index("rain")
             if row >= 0:
                 self.tblGeneric.setCellWidget(row, column, combobox)
+
+            # show available patterns
+            patterns_section = self.project.find_section("PATTERNS")
+            pattern_list = patterns_section.value[0:]
+            adjustments = self.project.find_section("ADJUSTMENTS")
+            nperv_adjustments = adjustments.nperv
+            dstore_adjustments = adjustments.dstore
+            infil_adjustments = adjustments.infil
+            combobox1 = QComboBox()
+            combobox2 = QComboBox()
+            combobox3 = QComboBox()
+            combobox1.addItem('')
+            combobox2.addItem('')
+            combobox3.addItem('')
+            selected_index1 = 0
+            selected_index2 = 0
+            selected_index3 = 0
+            for value in pattern_list:
+                if value.pattern_type == PatternType.MONTHLY:
+                    combobox1.addItem(value.name)
+                    combobox2.addItem(value.name)
+                    combobox3.addItem(value.name)
+                    for adj in nperv_adjustments:
+                        sub, pattern = adj.split()
+                        if sub == edit_these[column].name and pattern == value.name:
+                            selected_index1 = int(combobox1.count()) - 1
+                    for adj in dstore_adjustments:
+                        sub, pattern = adj.split()
+                        if sub == edit_these[column].name and pattern == value.name:
+                            selected_index2 = int(combobox1.count()) - 1
+                    for adj in infil_adjustments:
+                        sub, pattern = adj.split()
+                        if sub == edit_these[column].name and pattern == value.name:
+                            selected_index3 = int(combobox1.count()) - 1
+            combobox1.setCurrentIndex(selected_index1)
+            combobox2.setCurrentIndex(selected_index2)
+            combobox3.setCurrentIndex(selected_index3)
+            self.tblGeneric.setCellWidget(self.row_named["N-Perv Pattern"], column, combobox1)
+            self.tblGeneric.setCellWidget(self.row_named["Dstore Pattern"], column, combobox2)
+            self.tblGeneric.setCellWidget(self.row_named["Infil. Pattern"], column, combobox3)
 
             # also set special text plus button cells
             self.set_special_cells(column)
@@ -268,6 +309,53 @@ class frmSubcatchments(frmGenericPropertyEditor):
         self.backend.apply_edits()
         for fs in self._main_form.model_layers.subcatchments.getFeatures():
             self._main_form.model_layers.create_subcatchment_link(fs)
+
+        adjustments = self.project.find_section("ADJUSTMENTS")
+        for column in range(0, self.tblGeneric.columnCount()):
+            subname = str(self.tblGeneric.item(0, column).text())
+
+            nperv_pattern = self.tblGeneric.cellWidget(self.row_named["N-Perv Pattern"], column).currentText()
+            adj_found = False
+            for adj in adjustments.nperv:
+                sub, pattern = adj.split()
+                if sub == subname:
+                    if nperv_pattern == pattern:
+                        #already there as desired, do nothing
+                        adj_found = True
+                    else:
+                        adjustments.nperv.remove(adj)
+            if not adj_found and len(nperv_pattern) > 0:
+                # not found already and not blank, add it
+                adjustments.nperv.append(subname + "                " + nperv_pattern)
+
+            dstore_pattern = self.tblGeneric.cellWidget(self.row_named["Dstore Pattern"], column).currentText()
+            adj_found = False
+            for adj in adjustments.dstore:
+                sub, pattern = adj.split()
+                if sub == subname:
+                    if dstore_pattern == pattern:
+                        # already there as desired, do nothing
+                        adj_found = True
+                    else:
+                        adjustments.dstore.remove(adj)
+            if not adj_found and len(dstore_pattern) > 0:
+                # not found already and not blank, add it
+                adjustments.dstore.append(subname + "                " + dstore_pattern)
+
+            infil_pattern = self.tblGeneric.cellWidget(self.row_named["Infil. Pattern"], column).currentText()
+            adj_found = False
+            for adj in adjustments.infil:
+                sub, pattern = adj.split()
+                if sub == subname:
+                    if infil_pattern == pattern:
+                        # already there as desired, do nothing
+                        adj_found = True
+                    else:
+                        adjustments.infil.remove(adj)
+            if not adj_found and len(infil_pattern) > 0:
+                # not found already and not blank, add it
+                adjustments.infil.append(subname + "                " + infil_pattern)
+
         self.close()
 
     def cmdCancel_Clicked(self):

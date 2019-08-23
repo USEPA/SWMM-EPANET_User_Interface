@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>382</height>
+    <height>410</height>
    </rect>
   </property>
   <property name="font">
@@ -193,7 +193,7 @@
           <item row="6" column="1">
            <widget class="QLineEdit" name="txtTreated"/>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="8" column="0" colspan="2">
            <widget class="QLabel" name="lblDrain">
             <property name="text">
              <string>Set Drain Flow To: 
@@ -204,15 +204,25 @@ Leave Blank to use outlet of current subcatchment</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="9" column="0">
            <widget class="QLineEdit" name="txtDrain"/>
           </item>
-          <item row="9" column="0" colspan="2">
+          <item row="10" column="0" colspan="2">
            <widget class="QCheckBox" name="cbkReturn">
             <property name="text">
              <string>Return all Outflow to Pervious Area</string>
             </property>
            </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="lblPervious">
+            <property name="text">
+             <string>% of Pervious Area Treated</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="txtPervTreated"/>
           </item>
          </layout>
         </widget>

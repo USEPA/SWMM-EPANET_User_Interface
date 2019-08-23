@@ -427,6 +427,12 @@ class AdjustmentsWriter(SectionWriter):
             values = AdjustmentsWriter.format_values(data, default)
             if values:
                 text_list.append(label + '\t' + values)
+        for nperv in adjustments.nperv:
+            text_list.append("N-PERV" + "         " + nperv)
+        for dstore in adjustments.dstore:
+            text_list.append("DSTORE" + "         " + dstore)
+        for infil in adjustments.infil:
+            text_list.append("INFIL" + "          " + infil)
 
         # Only add section name and comment if there is some content in this section
         if len(text_list) > 0:
@@ -1069,13 +1075,19 @@ class GroundwaterWriter(SectionWriter):
 class LIDUsageWriter(SectionWriter):
     """Specifies how an LID control will be deployed in a subcatchment"""
 
-    field_format = " {:15}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}"  # TODO: add fields? \t{:24}\t{:16}
+    field_format = " {:15}\t{:16}\t{:7}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}\t{:24}\t{:10}\t{:10}"  # TODO: add fields? \t{:24}\t{:16}
 
     @staticmethod
     def as_text(lid_usage):
         inp = ''
         if lid_usage.comment:
             inp = lid_usage.comment + '\n'
+        report = lid_usage.detailed_report_file
+        if len(report) == 0:
+            report = '*'
+        drain = lid_usage.subcatchment_drains_to
+        if len(drain) == 0:
+            drain = '*'
         inp += LIDUsageWriter.field_format.format(lid_usage.subcatchment_name,
                                             lid_usage.control_name,
                                             lid_usage.number_replicate_units,
@@ -1084,7 +1096,9 @@ class LIDUsageWriter(SectionWriter):
                                             lid_usage.percent_initially_saturated,
                                             lid_usage.percent_impervious_area_treated,
                                             lid_usage.send_outflow_pervious_area,
-                                            lid_usage.detailed_report_file)
+                                            report,
+                                            drain,
+                                            lid_usage.percent_pervious_area_treated)
         return inp
 
 

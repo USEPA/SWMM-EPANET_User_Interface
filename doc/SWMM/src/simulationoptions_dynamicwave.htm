@@ -106,6 +106,9 @@
 <p><span style="font-weight: bold; text-decoration: underline;">Force Main Equation</span></p>
 <p>Selects which equation will be used to compute friction losses during pressurized flow for conduits that have been assigned a Circular Force Main cross-section. The choices are either the Hazen-Williams equation or the Darcy-Weisbach equation. </p>
 <p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Surcharge Method</span></p>
+<p>Selects which method will be used to handle surcharge conditions. The Extran option uses a variation of the Surcharge Algorithm from previous versions of SWMM to update nodal heads when all connecting links become full. The Slot option uses a Preissmann Slot to add a small amount of virtual top surface width to full flowing pipes so that SWMM's normal procedure for updating nodal heads can continue to be used. </p>
+<p>&nbsp;</p>
 <p><span style="font-weight: bold; text-decoration: underline;">Variable Time Step</span></p>
 <p>Check the box if an internally computed variable time step should be used at each routing time period and select an adjustment (or safety) factor to apply to this time step. The variable time step is computed so as to satisfy the Courant condition within each conduit. A typical adjustment factor would be 75% to provide some margin of conservatism. The computed variable time step will not be less than the minimum variable step discussed below nor be greater than the fixed time step specified on the <a href="simulationoptions_timesteps.htm">Time Steps</a> page of the dialog.</p>
 <p>&nbsp;</p>

@@ -265,7 +265,7 @@ class Weir(SwmmLink):
         self.can_surcharge = True
 
         ## str: Associated coefficient curve
-        self.coeff_curve = "None"
+        self.coeff_curve = ""
 
         ## float: Width of road lanes and shoulders
         self.road_width = 0.0

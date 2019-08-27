@@ -14,6 +14,7 @@ class SimpleReportTest(unittest.TestCase):
                     ";;Reporting Options\n" + \
                     " CONTINUITY         	YES\n" + \
                     " FLOWSTATS          	YES\n" + \
+                    " AVERAGES              NO\n" + \
                     " SUBCATCHMENTS      	NONE\n" + \
                     " LINKS              	NONE\n" + \
                     " INPUT              	NO\n" + \
@@ -40,6 +41,7 @@ class SimpleReportTest(unittest.TestCase):
                      "INPUT NO\n" \
                      "CONTINUITY NO\n" \
                      "FLOWSTATS NO\n" \
+                     "AVERAGES NO\n" + \
                      "CONTROLS NO\n" \
                      "SUBCATCHMENTS S1 S2 S3\n" \
                      "NODES J1\n" \

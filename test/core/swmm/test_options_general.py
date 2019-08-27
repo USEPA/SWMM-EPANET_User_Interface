@@ -109,6 +109,7 @@ INFILTRATION HORTON
 FLOW_ROUTING KINWAVE
 LINK_OFFSETS DEPTH
 FORCE_MAIN_EQUATION H-W
+SURCHARGE_METHOD EXTRAN
 IGNORE_RAINFALL NO
 IGNORE_SNOWMELT NO
 IGNORE_GROUNDWATER NO
@@ -132,6 +133,7 @@ REPORT_STEP 0:15:00
 WET_STEP 0:05:00
 DRY_STEP 1:00:00
 ROUTING_STEP 600
+RULE_STEP 00:00:00
 LENGTHENING_STEP 0
 VARIABLE_STEP 0
 MINIMUM_STEP 0.5
@@ -230,12 +232,14 @@ TEMPDIR .\temp"""
                         " REPORT_STEP        	02:00:00\n"\
                         " WET_STEP           	00:30:00\n"\
                         " SYS_FLOW_TOL       	5\n"\
-                        " ROUTING_STEP       	00:02:00\n"\
+                        " ROUTING_STEP       	00:02:00\n" \
+                        " RULE_STEP             00:00:00\n" \
                         ";; Dynamic Wave\n"\
                         " LENGTHENING_STEP   	1.0\n"\
                         " VARIABLE_STEP      	0.6\n"\
                         " INERTIAL_DAMPING   	PARTIAL\n"\
-                        " FORCE_MAIN_EQUATION	H-W\n"\
+                        " FORCE_MAIN_EQUATION	H-W\n" \
+                        " SURCHARGE_METHOD      EXTRAN\n"\
                         " NORMAL_FLOW_LIMITED	BOTH\n"\
                         " MAX_TRIALS         	8\n"\
                         " MIN_SURFAREA       	2.0\n"\

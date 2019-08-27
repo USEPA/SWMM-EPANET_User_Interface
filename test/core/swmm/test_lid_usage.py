@@ -16,7 +16,7 @@ class SimpleLIDUsageTest(unittest.TestCase):
 
     def test_lid_usage(self):
         """Test aquifer parameters from SWMM 5.1 manual"""
-        test_text = " S2 Swale 1 10000 50 0 0 0 'swale.rpt' "
+        test_text = " S2 Swale 1 10000 50 0 0 0 'swale.rpt' * 0 "
         my_options = LIDUsageReader.read(test_text)
         actual_text = LIDUsageWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text
@@ -31,8 +31,8 @@ class SimpleLIDUsageTest(unittest.TestCase):
                       ";subcatchment S1. They are initially empty and treat 17\n" \
                       ";The outflow from the barrels is returned to the\n" \
                       ";subcatchments pervious area.\n" \
-                      "S1 RB14 34 12 0 0 17 1\n" \
-                      "S2 Swale 1 10000 50 0 0 0 swale.rpt\n"
+                      "S1 RB14 34 12 0 0 17 1 * * 0 \n" \
+                      "S2 Swale 1 10000 50 0 0 0 swale.rpt * 0 \n"
         section_from_text = self.project_reader.read_lid_usage.read(source_text)
         actual_text = self.project_writer.write_lid_usage.as_text(section_from_text)
         msg = '\nSet:\n' + source_text + '\nGet:\n' + actual_text

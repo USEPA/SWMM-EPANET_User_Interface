@@ -391,10 +391,10 @@
 <p id="t119" class="stm mis">            <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">TemperatureWriter</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">my_options</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t120" class="stm mis">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet:'</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">actual_text</span><span class="strut">&nbsp;</span></p>
 <p id="t121" class="stm mis">            <span class="nam">msg</span> <span class="op">+=</span> <span class="str">"\nRule not enforced: Windspeed file should be the same climate file used for air temperature"</span><span class="strut">&nbsp;</span></p>
-<p id="t122" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="nam">False</span><span class="strut">&nbsp;</span></p>
+<p id="t122" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
 <p id="t123" class="stm mis">        <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t124" class="stm mis">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">"\nSet:"</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">str</span><span class="op">(</span><span class="nam">e</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t125" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="nam">True</span><span class="strut">&nbsp;</span></p>
+<p id="t125" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t126" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">assertTrue</span><span class="op">(</span><span class="nam">find_error</span><span class="op">,</span> <span class="nam">msg</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t127" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t128" class="stm mis">    <span class="key">def</span> <span class="nam">test_snowmelt</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -430,10 +430,10 @@
 <p id="t158" class="stm mis">            <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">TemperatureWriter</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">my_options</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t159" class="stm mis">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet:'</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">actual_text</span><span class="strut">&nbsp;</span></p>
 <p id="t160" class="stm mis">            <span class="nam">msg</span> <span class="op">+=</span> <span class="str">"\nRule not enforced: Snowmelt should allow two or no ADC PERVIOUS, allowed one."</span><span class="strut">&nbsp;</span></p>
-<p id="t161" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="nam">False</span><span class="strut">&nbsp;</span></p>
+<p id="t161" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
 <p id="t162" class="stm mis">        <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t163" class="stm mis">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">"\nSet:"</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">str</span><span class="op">(</span><span class="nam">e</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t164" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="nam">True</span><span class="strut">&nbsp;</span></p>
+<p id="t164" class="stm mis">            <span class="nam">find_error</span> <span class="op">=</span> <span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t165" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">assertTrue</span><span class="op">(</span><span class="nam">find_error</span><span class="op">,</span> <span class="nam">msg</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t166" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t167" class="stm mis">    <span class="key">def</span> <span class="nam">test_snowmelt_wo_adc</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -479,8 +479,8 @@
 <div id="footer">
     <div class="content">
         <p>
-            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
-            created at 2017-03-31 13:18
+            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
+            created at 2019-09-05 19:43
         </p>
     </div>
 </div>

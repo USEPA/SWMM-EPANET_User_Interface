@@ -467,7 +467,7 @@ class frmMainSWMM(frmMain):
         import core.swmm.options
         old_units = self.project.metric
         orig_flow_units = self.project.options.flow_units
-        self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[12:]]
+        self.project.options.flow_units = core.swmm.options.general.FlowUnits[self.cbFlowUnits.currentText()[13:]]
         self.project.metric = self.project.options.flow_units in core.swmm.options.general.flow_units_metric
         if self.project.options.flow_units != orig_flow_units:
             self.mark_project_as_unsaved()

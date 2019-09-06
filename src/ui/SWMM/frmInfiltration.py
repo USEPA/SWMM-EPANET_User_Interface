@@ -110,27 +110,27 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
                 val = self.defaults.infil_model_horton.default_max_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.max_rate
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "min" in vtitle and "infil" in vtitle:
                 val = self.defaults.infil_model_horton.default_min_rate()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.min_rate
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "decay" in vtitle:
                 val = self.defaults.infil_model_horton.default_decay()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.decay
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "dry" in vtitle:
                 val = self.defaults.infil_model_horton.default_dry_time()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.dry_time
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "max" in vtitle and "volume" in vtitle:
                 val = self.defaults.infil_model_horton.default_max_volume()
                 if mtype == E_InfilModel.MODIFIED_HORTON:
                     val = self.defaults.infil_model_horton.max_volume
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
 
     def set_greenampt(self):
         #mtype = self.defaults.infil_model_ga.model_type()
@@ -150,17 +150,17 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
                 val = self.defaults.infil_model_ga.default_suction()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.suction
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "conduct" in vtitle:
                 val = self.defaults.infil_model_ga.default_conductivity()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.hydraulic_conductivity
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
             elif "deficit" in vtitle:
                 val = self.defaults.infil_model_ga.default_init_deficit()
                 if mtype == E_InfilModel.MODIFIED_GREEN_AMPT:
                     val = self.defaults.infil_model_ga.initial_moisture_deficit
-                self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
 
     def set_CN(self):
         props = []
@@ -179,15 +179,15 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
             if "curve" in vtitle:
                 val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.curve_number)
                 if val_is_good:
-                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_CN())))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(self.defaults.infil_model_cn.default_CN()))
             elif "dry" in vtitle:
                 val, val_is_good = ParseData.floatTryParse(self.defaults.infil_model_cn.dry_days)
                 if val_is_good:
-                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(val)))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
                 else:
-                    self.tblGeneric.setItem(i,0, QTableWidgetItem(unicode(self.defaults.infil_model_cn.default_dry_time())))
+                    self.tblGeneric.setItem(i,0, QTableWidgetItem(self.defaults.infil_model_cn.default_dry_time()))
 
     def resizeCorner(self):
         self.corner_label.setGeometry(0, 0, self.tblGeneric.verticalHeader().width(),

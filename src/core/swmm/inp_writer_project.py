@@ -239,7 +239,7 @@ class ProjectWriter(InputFileWriterBase):
     def as_text(self, project):
         # Figure out which kind of infiltration will be written for this project
         infiltration = project.options.infiltration.upper()
-        if infiltration == "HORTON":
+        if infiltration == "HORTON" or infiltration == "MODIFIED_HORTON":
             self.write_infiltration = SectionWriterAsList(
                 "[INFILTRATION]", HortonInfiltrationWriter,
                 ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"

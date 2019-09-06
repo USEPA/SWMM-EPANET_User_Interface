@@ -282,6 +282,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             frm.show()
             self.refresh_column = column
             self.property_sub_changed = True
+            self.set_infilmodel_cell(0)
         return local_show
 
     def set_channel_cell(self, column):

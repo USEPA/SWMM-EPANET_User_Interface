@@ -100,4 +100,4 @@ class DynamicWave(Section):
 
         ## Number of parallel computing threads to use for dynamic wave flow routing
         ## on machines equipped with multi-core processors.
-        self.threads = ''
+        self.threads = '1'

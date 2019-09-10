@@ -1822,6 +1822,8 @@ class ModelLayersSWMM(ModelLayers):
         ms = sub_section.find_item(fs["name"])
         if not ms.outlet:
             return
+        if ms.outlet == 'None':
+            return
         fc = None
         fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.name)
         if fcs and len(fcs) > 0:

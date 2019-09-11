@@ -299,13 +299,14 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
 
     def make_show_channel(self, column, defaults):
         def local_show():
-            frm = frmCrossSection(self, defaults=defaults)
+            frm = frmCrossSection(self.session, defaults=defaults)
             frm.setWindowTitle("Define Default Conduit Geometry")
             #frm.set_from(self.project, "")
             frm.setWindowModality(QtCore.Qt.ApplicationModal)
             frm.show()
             self.refresh_column = column
             self.parameter_changed = True
+            self.set_channel_cell(0)
         return local_show
 
     def move_table(self, index):

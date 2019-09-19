@@ -20,6 +20,7 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         self.new_item = new_item
         self.helper = HelpHandler(self)
         option_section = parent.project.find_section('OPTIONS')
+        self.project = parent.project
         if option_section.infiltration=="HORTON" or option_section.infiltration=="MODIFIED_HORTON":
             self.help_topic = "swmm/src/src/hortoninfiltrationparameters.htm"
         elif option_section.infiltration=="GREEN_AMPT" or option_section.infiltration=="MODIFIED_GREEN_AMPT":

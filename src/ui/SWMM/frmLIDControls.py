@@ -183,8 +183,9 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
             if value.name == subcatchment_name:
                 subcatchment_area = value.area
 
-        if len(subcatchment_area) < 1:
-            subcatchment_area = 10.0
+        if type(subcatchment_area) is str:
+            if len(subcatchment_area) < 1:
+                subcatchment_area = 10.0
         elif float(subcatchment_area) <= 0:
             subcatchment_area = 10.0
 

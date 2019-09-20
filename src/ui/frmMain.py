@@ -1239,6 +1239,8 @@ class frmMain(QMainWindow, Ui_frmMain):
             unique_groups = self.project.nodes_groups()
             if hasattr(self.project, "subcatchments"):
                 unique_groups.append(self.project.subcatchments)
+            if hasattr(self.project, "lid_controls"):
+                unique_groups.append(self.project.lid_controls)
         existing_names = []
         for section in unique_groups:
             for item in section.value:

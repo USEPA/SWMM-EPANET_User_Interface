@@ -203,7 +203,13 @@ class frmLID(QMainWindow, Ui_frmLID):
 
 
     def cmdOK_Clicked(self):
+        oldname = self.editing_item.name
         self.editing_item.name = self.txtName.text()
+
+        if oldname != self.editing_item.name:
+            edited_names = []
+            edited_names.append((oldname, self.editing_item))
+            self._main_form.edited_name(edited_names)
 
         orig_lid_type = self.editing_item.lid_type
         orig_surface_layer_storage_depth = self.editing_item.surface_layer_storage_depth

@@ -140,8 +140,8 @@
 <p id="t16" class="pln">        <span class="com"># msg = '\nSet:'+test_text+'\nGet:'+actual_text</span><span class="strut">&nbsp;</span></p>
 <p id="t17" class="pln">        <span class="com"># self.assertTrue(match(actual_text, test_text), msg)</span><span class="strut">&nbsp;</span></p>
 <p id="t18" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">SECTION_NAME</span> <span class="op">==</span> <span class="str">"[BACKDROP]"</span><span class="strut">&nbsp;</span></p>
-<p id="t19" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">offset</span> <span class="op">==</span> <span class="nam">None</span><span class="strut">&nbsp;</span></p>
-<p id="t20" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">scaling</span> <span class="op">==</span> <span class="nam">None</span><span class="strut">&nbsp;</span></p>
+<p id="t19" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">offset</span> <span class="op">==</span> <span class="key">None</span><span class="strut">&nbsp;</span></p>
+<p id="t20" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">scaling</span> <span class="op">==</span> <span class="key">None</span><span class="strut">&nbsp;</span></p>
 <p id="t21" class="stm run hide_run">        <span class="key">assert</span> <span class="nam">my_options</span><span class="op">.</span><span class="nam">dimensions</span> <span class="op">==</span> <span class="op">(</span><span class="num">0.0</span><span class="op">,</span> <span class="num">0.0</span><span class="op">,</span> <span class="num">0.0</span><span class="op">,</span> <span class="num">0.0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t22" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t23" class="stm mis">    <span class="key">def</span> <span class="nam">test_backdrop</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -163,10 +163,10 @@
 <p id="t39" class="stm run hide_run">        <span class="key">try</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t40" class="stm run hide_run">            <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">BackdropOptionsWriter</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">my_options</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t41" class="stm mis">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet missing value with:'</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">str</span><span class="op">(</span><span class="nam">e</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t42" class="stm mis">            <span class="nam">find_missing_value</span> <span class="op">=</span> <span class="nam">False</span><span class="strut">&nbsp;</span></p>
+<p id="t42" class="stm mis">            <span class="nam">find_missing_value</span> <span class="op">=</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
 <p id="t43" class="stm run hide_run">        <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t44" class="stm run hide_run">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet missing value with:'</span><span class="op">+</span><span class="nam">test_text</span><span class="op">+</span><span class="str">'\nGet:'</span><span class="op">+</span><span class="nam">str</span><span class="op">(</span><span class="nam">e</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t45" class="stm run hide_run">            <span class="nam">find_missing_value</span> <span class="op">=</span> <span class="nam">True</span><span class="strut">&nbsp;</span></p>
+<p id="t45" class="stm run hide_run">            <span class="nam">find_missing_value</span> <span class="op">=</span> <span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t46" class="stm run hide_run">        <span class="nam">self</span><span class="op">.</span><span class="nam">assertTrue</span><span class="op">(</span><span class="nam">find_missing_value</span><span class="op">,</span> <span class="nam">msg</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t47" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t48" class="stm mis"><span class="key">def</span> <span class="nam">main</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -183,8 +183,8 @@
 <div id="footer">
     <div class="content">
         <p>
-            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
-            created at 2017-03-31 13:18
+            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
+            created at 2019-09-05 19:43
         </p>
     </div>
 </div>

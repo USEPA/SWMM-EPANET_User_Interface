@@ -15,7 +15,7 @@ my_suite.addTests(test.core.swmm.test_all.my_suite)
 if __name__ == "__main__":
     # execute only if run as a script
     report_filename = "test_results_core.html"
-    fp = file(report_filename, 'wb')
+    fp = open(report_filename, 'wb')
     runner = test.HTMLTestRunner.HTMLTestRunner(
         stream=fp,
         title='SWMM-EPANET Core Test Report',

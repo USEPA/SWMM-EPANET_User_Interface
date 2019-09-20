@@ -619,6 +619,14 @@ class AdjustmentsReader(SectionReader):
                         adjustments.rainfall = fields[1:]
                     elif fields[0].upper() == "CONDUCTIVITY":
                         adjustments.soil_conductivity = fields[1:]
+                if len(fields) == 3:
+                    other_adj = line.split(' ',1)[1].strip()
+                    if fields[0].upper() == "N-PERV":
+                        adjustments.nperv.append(other_adj)
+                    elif fields[0].upper() == "DSTORE":
+                        adjustments.dstore.append(other_adj)
+                    elif fields[0].upper() == "INFIL":
+                        adjustments.infil.append(other_adj)
             except:
                 print(adjustments.SECTION_NAME + " skipping input line: " + line)
         return adjustments
@@ -715,7 +723,7 @@ class WeirReader:
         """
         weir = Weir()
         new_text = SectionReader.set_comment_check_section(weir, new_text)
-        fields = new_text.split(None, 8)
+        fields = new_text.split(None, 12)
         if len(fields) > 5:
             weir.name = fields[0]
             weir.inlet_node = fields[1]
@@ -732,9 +740,13 @@ class WeirReader:
         if len(fields) > 9:
             weir.setattr_keep_type("can_surcharge", fields[9])
         if len(fields) > 10:
-            weir.setattr_keep_type("road_width", fields[10])
+            if fields[10] != '*':
+                weir.setattr_keep_type("road_width", fields[10])
         if len(fields) > 11:
-            weir.setattr_keep_type("road_surface", fields[11])
+            if fields[11] != '*':
+                weir.setattr_keep_type("road_surface", fields[11])
+        if len(fields) > 12:
+            weir.setattr_keep_type("coeff_curve", fields[12])
         return weir
 
 
@@ -1061,7 +1073,7 @@ class StorageReader(SectionReader):
                     next_field = 8
 
                 if len(fields) > next_field:
-                    storage.setattr_keep_type("ponded_area", fields[next_field])
+                    storage.setattr_keep_type("surcharge_depth", fields[next_field])
                     next_field += 1
                 if len(fields) > next_field:
                     storage.setattr_keep_type("evaporation_factor", fields[next_field])
@@ -1240,7 +1252,9 @@ class LIDControlReader(SectionReader):
          "pavement_layer_void_ratio",
          "pavement_layer_impervious_surface_fraction",
          "pavement_layer_permeability",
-         "pavement_layer_clogging_factor"),
+         "pavement_layer_clogging_factor",
+         "pavement_layer_regeneration_interval",
+         "pavement_layer_regeneration_fraction"),
         ("has_storage_layer",
          "STORAGE",
          "storage_layer_height",
@@ -1252,12 +1266,27 @@ class LIDControlReader(SectionReader):
          "drain_coefficient",
          "drain_exponent",
          "drain_offset_height",
-         "drain_delay"),
+         "drain_delay",
+         "drain_open_level",
+         "drain_closed_level",
+         "drain_control_curve"),
         ("has_drainmat_system",
          "DRAINMAT",
          "drainmat_thickness",
          "drainmat_void_fraction",
-         "drainmat_roughness"))
+         "drainmat_roughness"),
+        ("has_pollutant_removals",
+         "REMOVALS",
+         "removal_pollutant1",
+         "removal_removal1",
+         "removal_pollutant2",
+         "removal_removal2",
+         "removal_pollutant3",
+         "removal_removal3",
+         "removal_pollutant4",
+         "removal_removal4",
+         "removal_pollutant5",
+         "removal_removal5"))
 
     @staticmethod
     def read(new_text):
@@ -1530,6 +1559,10 @@ class LIDUsageReader(SectionReader):
             lid_usage.send_outflow_pervious_area = fields[7]
         if len(fields) > 8:
             lid_usage.detailed_report_file = fields[8]
+        if len(fields) > 9:
+            lid_usage.subcatchment_drains_to = fields[9]
+        if len(fields) > 10:
+            lid_usage.percent_pervious_area_treated = fields[10]
         return lid_usage
 
 

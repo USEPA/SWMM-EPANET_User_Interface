@@ -53,7 +53,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
                     if edit_these[column].storage_curve == value.name:
                         selected_index = int(combobox.count())-1
             combobox.setCurrentIndex(selected_index)
-            self.tblGeneric.setCellWidget(16, column, combobox)
+            self.tblGeneric.setCellWidget(17, column, combobox)
             # also set special text plus button cells
             self.set_seepage_loss_cell(column)
             self.set_inflow_cell(column)
@@ -120,7 +120,7 @@ class frmStorageUnits(frmGenericPropertyEditor):
         tb.textbox.setEnabled(False)
         tb.column = column
         tb.button.clicked.connect(self.make_show_seepage_loss(column))
-        self.tblGeneric.setCellWidget(11, column, tb)
+        self.tblGeneric.setCellWidget(12, column, tb)
 
     def make_show_inflows(self, column):
         def local_show():

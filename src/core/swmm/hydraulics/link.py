@@ -235,6 +235,7 @@ class Weir(SwmmLink):
         ("end_contractions",        '', "End Contractions","0",      '', '',           "Number of end contractions"),
         ("end_coefficient",         '', "End Coeff.",      "0",      '(CFS)', '(CMS)', "Discharge coefficient for flow through the triangular ends of a TRAPEZOIDAL weir"),
         ("can_surcharge",           '', "Can Surcharge",   "False",  '', '',           "True if weir can surcharge"),
+        ("coeff_curve",             '', "Coeff. Curve",    "",       '', '',           "Optional name of curve that relates discharge coefficient to head"),
         ("road_width",              '', "Road Width",      "0.0",    '(ft)', '(m)',    "Width of road lanes and shoulders if roadway weir"),
         ("road_surface",            '', "Road Surface",    "",       '', '',           "Type of road surface if roadway weir")
     ))
@@ -262,6 +263,9 @@ class Weir(SwmmLink):
 
         ## bool: True if weir can surcharge
         self.can_surcharge = True
+
+        ## str: Associated coefficient curve
+        self.coeff_curve = ""
 
         ## float: Width of road lanes and shoulders
         self.road_width = 0.0

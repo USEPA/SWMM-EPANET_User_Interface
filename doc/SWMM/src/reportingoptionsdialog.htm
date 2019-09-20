@@ -94,7 +94,7 @@
 
 
 <div id="mainbody">
-<p>The <span style="font-weight: bold;">Reporting Options</span> dialog is used to select individual subcatchments, nodes, and links that will have detailed time series results saved for viewing after a simulation has been run. The default for new projects is that all objects will have detailed results saved for them.</p>
+<p>The <span style="font-weight: bold;">Reporting Options</span> dialog is used to select individual subcatchments, nodes, and links that will have detailed time series results saved for viewing after a simulation has been run. The default for new projects is that all objects will have detailed results saved for them. It is also used to select what optional material appears in the <a href="viewingastatusreport.htm">Status Report</a> and whether time series results consist of point value (the default) or values averaged over a reporting time step.</p>
 <p>&nbsp;</p>
 <p>The dialog contains three tabbed pages - one each for subcatchments, nodes, and links. It is a stay-on-top form which means that you can select items directly from the Study Area Map or <a href="swmmsmainwindow.htm">Project Browser</a> while the dialog remains visible. </p>
 <p>&nbsp;</p>
@@ -107,6 +107,18 @@
 <p>To include all objects of a given category in the reporting set, check the &quot;<span style="font-weight: bold;">All</span>&quot; box on the page for that category (i.e., subcatchments, nodes, or links). This will override any individual items that may be currently listed on the page.</p>
 <p>&nbsp;</p>
 <p>To dismiss the dialog click the <span style="font-weight: bold;">Close </span>button.</p>
+<p>&nbsp;</p>
+<p>In addition the following reporting options can be selected from this dialog:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Report Input Summary</span></p>
+<p>Check this option if you want the simulation's Status Report to list a summary of the project's input data.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Report Control Actions</span></p>
+<p>Check this option if you want the simulation's <a href="viewingastatusreport.htm">Status Report</a> to list all discrete control actions taken by the <a href="controlrules.htm">Control Rules</a> associated with a project (continuous <a href="modulatedcontrols.htm">modulated control</a> actions are not listed). This option should only be used for short-term simulation.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Report Average Results</span></p>
+<p>Check this option if you want the average of the results for all routing time steps that fall within a reporting time step to be reported instead of the instantaneous point results that occur at the end of the reporting time step.</p>
+<p>&nbsp;</p>
 
 </div>
 

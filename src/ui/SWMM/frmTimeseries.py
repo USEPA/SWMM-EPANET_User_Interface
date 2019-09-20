@@ -195,6 +195,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
             df.hour_only = self.hour_only
             frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
+            frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
             frm_plt.show()
         pass
 

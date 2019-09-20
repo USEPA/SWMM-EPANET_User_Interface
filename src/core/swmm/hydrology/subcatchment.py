@@ -56,7 +56,10 @@ class Subcatchment(Section, Polygon):
         ("LIDUsage",                '', "LID Controls",    "0",      '', '',         "LID controls (click to edit)"),
         ("coverages",               '', "Land Uses",       "0",      '', '',         "Assignment of land uses to subcatchment (click to edit)"),
         ("initial_loadings",        '', "Initial Buildup", "NONE",   '', '',         "Initial pollutant buildup on subcatchment (click to edit)"),
-        ("curb_length",             '', "Curb Length",     "0",      '', '',         "Curb length (if needed for pollutant buildup functions)")
+        ("curb_length",             '', "Curb Length",     "0",      '', '',         "Curb length (if needed for pollutant buildup functions)"),
+        ("nperv_pattern",           '', "N-Perv Pattern",  "",       '', '',         "Optional monthly pattern that adjusts pervious Mannings N"),
+        ("dstore_pattern",          '', "Dstore Pattern",  "",       '', '',         "Optional monthly pattern that adjusts depression storage"),
+        ("infil_pattern",           '', "Infil. Pattern",  "",       '', '',         "Optional monhtly pattern that adjusts infiltration rate")
     ))
 
     def __init__(self):
@@ -134,6 +137,15 @@ class Subcatchment(Section, Polygon):
         ## Total length of curbs in the subcatchment (any length units).
         ## Used only when initial_loadings are normalized to curb length.
         self.curb_length = 0
+
+        ## Optional monthly pattern that adjusts pervious Mannings N
+        self.nperv_pattern = ''
+
+        ## Optional monthly pattern that adjusts depression storage
+        self.dstore_pattern = ''
+
+        ## Optional monthly pattern that adjusts infiltration rate
+        self.infil_pattern = ''
 
 
 class HortonInfiltration(Section):
@@ -400,6 +412,10 @@ class LIDUsage(Section):
         ## Percent of the impervious portion of the subcatchment's non-LID area whose runoff
         ## is treated by the LID practice
         self.percent_impervious_area_treated = '0'
+
+        ## Percent of the pervious portion of the subcatchment's non-LID area whose runoff
+        ## is treated by the LID practice
+        self.percent_pervious_area_treated = '0'
 
         ## 1 if the outflow from the LID is returned onto the subcatchment's pervious area rather
         ## than going to the subcatchment's outlet

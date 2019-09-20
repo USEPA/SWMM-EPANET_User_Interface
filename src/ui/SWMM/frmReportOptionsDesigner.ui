@@ -48,6 +48,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="cbxAverage">
+         <property name="text">
+          <string>Average Results</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="cbxControls">
          <property name="text">
           <string>Controls</string>

@@ -51,19 +51,22 @@ class InputFileReader(object):
                 project (ProjectBase): Project object to read data into
                 lines_iterator (iterator): Lines of text formatted as input file.
         """
+        winform = True
         project.sections = []
         project.section_order = []
         section_name = ""
         section_whole = []
         total_count = len(lines_iterator)
-        progress = QProgressDialog('Reading input...', 'Cancel', 1, total_count)
-        progress.setWindowModality(Qt.WindowModal)
+        if winform:
+            progress = QProgressDialog('Reading input...', 'Cancel', 1, total_count)
+            progress.setWindowModality(Qt.WindowModal)
         line_ctr = 1
         for line in lines_iterator:
-            if line_ctr % 100 == 0:
-                progress.setValue(line_ctr)
-            if progress.wasCanceled():
-                break
+            if winform:
+                if line_ctr % 100 == 0:
+                    progress.setValue(line_ctr)
+                if progress.wasCanceled():
+                    break
             if line.lstrip().startswith('['):
                 if section_name:
                     project.section_order.append(section_name.upper())
@@ -73,7 +76,8 @@ class InputFileReader(object):
             elif line.strip():
                 section_whole.append(line.rstrip())
             line_ctr = line_ctr + 1
-        progress.setValue(total_count)
+        if winform:
+            progress.setValue(total_count)
 
         if section_name:
             project.section_order.append(section_name.upper())

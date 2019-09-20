@@ -11,6 +11,7 @@
                 <section title="Water Quality Modeling Features" ref="src/waterqualitymodelingfeatures.htm"></section>
                 <section title="Typical Applications of SWMM" ref="src/typicalusesofswmm.htm"></section>
                 <section title="Steps in Using SWMM" ref="src/stepsinusingswmm.htm"></section>
+                <section title="What's New in Release 5.1.013" ref="src/whats_new_in_release_5_1_013.htm"></section>
             </section>
             <section title="SWMM's Conceptual Model" ref="src/componentobjects.htm">
                 <section title="Visual Objects" ref="src/visualobjects.htm">
@@ -287,6 +288,7 @@
                                 <section title="Drain Advisor" ref="src/drain_advisor.htm"></section>
                             </section>
                             <section title="LID Drainage Mat" ref="src/lid_control_editor___drainage_.htm"></section>
+                            <section title="LID Pollutant Removal" ref="src/lid_pollutant_removal.htm"></section>
                         </section>
                         <section title="LID Group Editor" ref="src/lidgroupeditor.htm"></section>
                         <section title="LID Usage Editor" ref="src/lidusageeditor.htm"></section>

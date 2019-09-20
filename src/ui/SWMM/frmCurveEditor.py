@@ -53,6 +53,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 self.set_from(edit_these)
 
     def set_from(self, curve):
+        flow_units = self._main_form.project.options.flow_units.name
         if not isinstance(curve, Curve):
             curve = self.section.value[curve]
         if isinstance(curve, Curve):
@@ -65,34 +66,31 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         elif self.curve_type == "DIVERSION":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
-            if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Inflow (CMS)", "Outflow (CMS)"))
-            else:
-                self.tblMult.setHorizontalHeaderLabels(("Inflow (CFS)", "Outflow (CFS)"))
+            self.tblMult.setHorizontalHeaderLabels(("Inflow (" + flow_units + ")", "Outflow (" + flow_units + ")"))
         elif self.curve_type == "PUMP":
             self.cboCurveType.setVisible(True)
             self.lblCurveType.setVisible(True)
 
             if curve.curve_type.name == "PUMP1":
                 if self._main_form.project.metric:
-                    self.tblMult.setHorizontalHeaderLabels(("Volume (m3)", "Flow (CMS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Volume (m3)", "Flow (" + flow_units + ")"))
                 else:
-                    self.tblMult.setHorizontalHeaderLabels(("Volume (ft3)", "Flow (CFS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Volume (ft3)", "Flow (" + flow_units + ")"))
             if curve.curve_type.name == "PUMP2":
                 if self._main_form.project.metric:
-                    self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (CMS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (" + flow_units + ")"))
                 else:
-                    self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (CFS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (" + flow_units + ")"))
             if curve.curve_type.name == "PUMP3":
                 if self._main_form.project.metric:
-                    self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Flow (CMS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Flow (" + flow_units + ")"))
                 else:
-                    self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Flow (CFS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Flow (" + flow_units + ")"))
             if curve.curve_type.name == "PUMP4":
                 if self._main_form.project.metric:
-                    self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (CMS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (" + flow_units + ")"))
                 else:
-                    self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (CFS)"))
+                    self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (" + flow_units + ")"))
 
             self.cboCurveType.clear()
             self.cboCurveType.addItems(("TYPE1","TYPE2","TYPE3","TYPE4"))
@@ -100,9 +98,9 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
             if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Outflow (CMS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Outflow (" + flow_units + ")"))
             else:
-                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Outflow (CFS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Outflow (" + flow_units + ")"))
         elif self.curve_type == "SHAPE":
             self.cboCurveType.setVisible(False)
             self.lblCurveType.setVisible(False)
@@ -121,6 +119,13 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 self.tblMult.setHorizontalHeaderLabels(("Hour of Day", "Stage (m)"))
             else:
                 self.tblMult.setHorizontalHeaderLabels(("Hour of Day", "Stage (ft)"))
+        elif self.curve_type == "WEIR":
+            self.cboCurveType.setVisible(False)
+            self.lblCurveType.setVisible(False)
+            if self._main_form.project.metric:
+                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Coefficient"))
+            else:
+                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Coefficient"))
 
         self.txtCurveName.setText(str(curve.name))
         self.txtDescription.setText(str(curve.comment))
@@ -191,26 +196,27 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
 
     def cboCurveType_currentIndexChanged(self, newIndex):
         curve_type = self.cboCurveType.currentText()
+        flow_units = self._main_form.project.options.flow_units.name
         if curve_type == "TYPE1":
             if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Volume (m3)", "Flow (CMS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Volume (m3)", "Flow (" + flow_units + ")"))
             else:
-                self.tblMult.setHorizontalHeaderLabels(("Volume (ft3)", "Flow (CFS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Volume (ft3)", "Flow (" + flow_units + ")"))
         elif curve_type == "TYPE2":
             if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (CMS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (" + flow_units + ")"))
             else:
-                self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (CFS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (" + flow_units + ")"))
         elif curve_type == "TYPE3":
             if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Flow (CMS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Head (m)", "Flow (" + flow_units + ")"))
             else:
-                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Flow (CFS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Head (ft)", "Flow (" + flow_units + ")"))
         elif curve_type == "TYPE4":
             if self._main_form.project.metric:
-                self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (CMS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Depth (m)", "Flow (" + flow_units + ")"))
             else:
-                self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (CFS)"))
+                self.tblMult.setHorizontalHeaderLabels(("Depth (ft)", "Flow (" + flow_units + ")"))
 
     def load_curve_data(self):
         directory = self._main_form.program_settings.value("DataDir", "")
@@ -312,6 +318,7 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
             frm_plt = frmPlotViewer(df,'xy',self.curve_type + ' Curve ' + self.txtCurveName.text(), self.windowIcon(),
                                     self.tblMult.horizontalHeaderItem(0).text(), self.tblMult.horizontalHeaderItem(1).text())
             frm_plt.setWindowTitle('Curve Viewer')
+            frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
             frm_plt.show()
         pass
 

@@ -14,6 +14,7 @@ class TimeSteps(Section):
         ("wet_step",                 "WET_STEP"),
         ("dry_step",                 "DRY_STEP"),
         ("routing_step",             "ROUTING_STEP"),
+        ("rule_step",                "RULE_STEP"),
         ("system_flow_tolerance",    "SYS_FLOW_TOL", '', '5', '%', '%'),
         ("lateral_inflow_tolerance", "LAT_FLOW_TOL", '', '5', '%', '%')))
     """Mapping between attribute name and name used in input file"""
@@ -42,6 +43,9 @@ class TimeSteps(Section):
         self.routing_step = "00:05:00"
         ## str: Time step used for routing flows and
         ## water quality constituents through the conveyance system
+
+        self.rule_step = "00:00:00"
+        ## periodic time step for control rule evaluation
 
         self.system_flow_tolerance = "5"
         ## the maximum percent difference between total system inflow and

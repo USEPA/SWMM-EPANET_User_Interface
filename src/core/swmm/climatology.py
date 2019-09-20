@@ -160,3 +160,12 @@ class Adjustments(Section):
         ## "monthly soil_conductivity adjustments as multipliers applied to soil hydraulic conductivity
         self.soil_conductivity = []
 
+        ## adjustment patterns for pervious mannings n
+        self.nperv = []
+
+        ## adjustment patterns for depression storage
+        self.dstore = []
+
+        ## adjustment patterns for infiltration rate
+        self.infil = []
+

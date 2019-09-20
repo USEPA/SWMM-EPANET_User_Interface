@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.ba-throttle-debounce.min.js"></script>
     <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
     <script type="text/javascript" src="coverage_html.js"></script>
@@ -22,7 +22,7 @@
 <div id="header">
     <div class="content">
         <h1>Coverage report:
-            <span class="pc_cov">68%</span>
+            <span class="pc_cov">47%</span>
         </h1>
 
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
@@ -65,17 +65,44 @@
         <tfoot>
             <tr class="total">
                 <td class="name left">Total</td>
-                <td>7640</td>
-                <td>2458</td>
-                <td>854</td>
+                <td>9135</td>
+                <td>4798</td>
+                <td>850</td>
                 
-                <td class="right" data-ratio="5182 7640">68%</td>
+                <td class="right" data-ratio="4337 9135">47%</td>
             </tr>
         </tfoot>
         <tbody>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_coordinate_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\coordinate.py</a></td>
+                <td class="name left"><a href="_Program Files_JetBrains_PyCharm Community Edition 2018_3_5_helpers_pydev__pydev_bundle__pydev_filesystem_encoding_py.html">C:\Program Files\JetBrains\PyCharm Community Edition 2018.3.5\helpers\pydev\_pydev_bundle\_pydev_filesystem_encoding.py</a></td>
+                <td>25</td>
+                <td>16</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="9 25">36%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Program Files_JetBrains_PyCharm Community Edition 2018_3_5_helpers_pydev__pydevd_bundle_pydevd_comm_py.html">C:\Program Files\JetBrains\PyCharm Community Edition 2018.3.5\helpers\pydev\_pydevd_bundle\pydevd_comm.py</a></td>
+                <td>913</td>
+                <td>912</td>
+                <td>31</td>
+                
+                <td class="right" data-ratio="1 913">1%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_Program Files_JetBrains_PyCharm Community Edition 2018_3_5_helpers_pydev_pydevd_file_utils_py.html">C:\Program Files\JetBrains\PyCharm Community Edition 2018.3.5\helpers\pydev\pydevd_file_utils.py</a></td>
+                <td>254</td>
+                <td>216</td>
+                <td>12</td>
+                
+                <td class="right" data-ratio="38 254">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_coordinate_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\coordinate.py</a></td>
                 <td>17</td>
                 <td>6</td>
                 <td>0</td>
@@ -84,7 +111,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_curves_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\curves.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_curves_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\curves.py</a></td>
                 <td>13</td>
                 <td>8</td>
                 <td>3</td>
@@ -93,88 +120,52 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_epanet_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\epanet_project.py</a></td>
-                <td>44</td>
-                <td>15</td>
-                <td>27</td>
-                
-                <td class="right" data-ratio="29 44">66%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_control_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\control.py</a></td>
-                <td>17</td>
-                <td>11</td>
-                <td>2</td>
-                
-                <td class="right" data-ratio="6 17">35%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_link_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\link.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_hydraulics_node_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\hydraulics\node.py</a></td>
+                <td>61</td>
                 <td>45</td>
-                <td>26</td>
-                <td>7</td>
-                
-                <td class="right" data-ratio="19 45">42%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_hydraulics_node_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\hydraulics\node.py</a></td>
-                <td>56</td>
-                <td>25</td>
                 <td>6</td>
                 
-                <td class="right" data-ratio="31 56">55%</td>
+                <td class="right" data-ratio="16 61">26%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_inp_reader_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_reader_project.py</a></td>
-                <td>88</td>
-                <td>15</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_inp_reader_project_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\inp_reader_project.py</a></td>
+                <td>174</td>
+                <td>145</td>
                 <td>7</td>
                 
-                <td class="right" data-ratio="73 88">83%</td>
+                <td class="right" data-ratio="29 174">17%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_inp_reader_sections_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_reader_sections.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_inp_reader_sections_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\inp_reader_sections.py</a></td>
                 <td>490</td>
-                <td>139</td>
+                <td>331</td>
                 <td>46</td>
                 
-                <td class="right" data-ratio="351 490">72%</td>
+                <td class="right" data-ratio="159 490">32%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_inp_writer_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_project.py</a></td>
-                <td>75</td>
-                <td>16</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_inp_writer_project_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\inp_writer_project.py</a></td>
+                <td>80</td>
+                <td>56</td>
                 <td>6</td>
                 
-                <td class="right" data-ratio="59 75">79%</td>
+                <td class="right" data-ratio="24 80">30%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_inp_writer_sections_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\inp_writer_sections.py</a></td>
-                <td>276</td>
-                <td>121</td>
-                <td>43</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_inp_writer_sections_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\inp_writer_sections.py</a></td>
+                <td>288</td>
+                <td>188</td>
+                <td>44</td>
                 
-                <td class="right" data-ratio="155 276">56%</td>
+                <td class="right" data-ratio="100 288">35%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_labels_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\labels.py</a></td>
-                <td>16</td>
-                <td>7</td>
-                <td>4</td>
-                
-                <td class="right" data-ratio="9 16">56%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_backdrop_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\backdrop.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_backdrop_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\backdrop.py</a></td>
                 <td>13</td>
                 <td>8</td>
                 <td>2</td>
@@ -183,7 +174,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_energy_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\energy.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_energy_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\energy.py</a></td>
                 <td>19</td>
                 <td>13</td>
                 <td>3</td>
@@ -192,16 +183,16 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_hydraulics_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\hydraulics.py</a></td>
-                <td>43</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_hydraulics_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\hydraulics.py</a></td>
+                <td>44</td>
                 <td>26</td>
                 <td>3</td>
                 
-                <td class="right" data-ratio="17 43">40%</td>
+                <td class="right" data-ratio="18 44">41%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_options_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\options.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_options_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\options.py</a></td>
                 <td>7</td>
                 <td>3</td>
                 <td>4</td>
@@ -210,7 +201,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_quality_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\quality.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_quality_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\quality.py</a></td>
                 <td>47</td>
                 <td>34</td>
                 <td>2</td>
@@ -219,7 +210,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_reactions_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\reactions.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_reactions_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\reactions.py</a></td>
                 <td>13</td>
                 <td>4</td>
                 <td>2</td>
@@ -228,7 +219,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_report_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\report.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_options_report_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\options\report.py</a></td>
                 <td>22</td>
                 <td>13</td>
                 <td>3</td>
@@ -237,16 +228,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_options_times_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\options\times.py</a></td>
-                <td>21</td>
-                <td>10</td>
-                <td>3</td>
-                
-                <td class="right" data-ratio="11 21">52%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_patterns_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\patterns.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_patterns_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\patterns.py</a></td>
                 <td>6</td>
                 <td>2</td>
                 <td>1</td>
@@ -255,7 +237,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_epanet_title_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\epanet\title.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_epanet_title_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\epanet\title.py</a></td>
                 <td>6</td>
                 <td>3</td>
                 <td>1</td>
@@ -264,70 +246,70 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_indexed_list_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\indexed_list.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_indexed_list_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\indexed_list.py</a></td>
                 <td>107</td>
-                <td>85</td>
+                <td>86</td>
                 <td>0</td>
                 
-                <td class="right" data-ratio="22 107">21%</td>
+                <td class="right" data-ratio="21 107">20%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_inp_reader_base_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_reader_base.py</a></td>
-                <td>213</td>
-                <td>53</td>
-                <td>6</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_inp_reader_base_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\inp_reader_base.py</a></td>
+                <td>237</td>
+                <td>83</td>
+                <td>8</td>
                 
-                <td class="right" data-ratio="160 213">75%</td>
+                <td class="right" data-ratio="154 237">65%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_inp_writer_base_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\inp_writer_base.py</a></td>
-                <td>151</td>
-                <td>35</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_inp_writer_base_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\inp_writer_base.py</a></td>
+                <td>153</td>
+                <td>91</td>
                 <td>4</td>
                 
-                <td class="right" data-ratio="116 151">77%</td>
+                <td class="right" data-ratio="62 153">41%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_metadata_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\metadata.py</a></td>
-                <td>61</td>
-                <td>56</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_metadata_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\metadata.py</a></td>
+                <td>63</td>
+                <td>58</td>
                 <td>1</td>
                 
-                <td class="right" data-ratio="5 61">8%</td>
+                <td class="right" data-ratio="5 63">8%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_project_base_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\project_base.py</a></td>
-                <td>136</td>
-                <td>52</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_project_base_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\project_base.py</a></td>
+                <td>140</td>
+                <td>74</td>
                 <td>5</td>
                 
-                <td class="right" data-ratio="84 136">62%</td>
+                <td class="right" data-ratio="66 140">47%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_climatology_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\climatology.py</a></td>
-                <td>64</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_climatology_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\climatology.py</a></td>
+                <td>67</td>
                 <td>32</td>
                 <td>3</td>
                 
-                <td class="right" data-ratio="32 64">50%</td>
+                <td class="right" data-ratio="35 67">52%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_curves_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\curves.py</a></td>
-                <td>17</td>
-                <td>13</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_curves_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\curves.py</a></td>
+                <td>18</td>
+                <td>14</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="4 17">24%</td>
+                <td class="right" data-ratio="4 18">22%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydraulics_control_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\control.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydraulics_control_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydraulics\control.py</a></td>
                 <td>8</td>
                 <td>5</td>
                 <td>1</td>
@@ -336,43 +318,43 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydraulics_link_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\link.py</a></td>
-                <td>139</td>
-                <td>80</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydraulics_link_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydraulics\link.py</a></td>
+                <td>177</td>
+                <td>140</td>
                 <td>5</td>
                 
-                <td class="right" data-ratio="59 139">42%</td>
+                <td class="right" data-ratio="37 177">21%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydraulics_node_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydraulics\node.py</a></td>
-                <td>106</td>
-                <td>51</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydraulics_node_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydraulics\node.py</a></td>
+                <td>109</td>
+                <td>62</td>
                 <td>4</td>
                 
-                <td class="right" data-ratio="55 106">52%</td>
+                <td class="right" data-ratio="47 109">43%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_aquifer_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\aquifer.py</a></td>
-                <td>18</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_aquifer_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\aquifer.py</a></td>
+                <td>19</td>
                 <td>3</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="15 18">83%</td>
+                <td class="right" data-ratio="16 19">84%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_lidcontrol_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\lidcontrol.py</a></td>
-                <td>49</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_lidcontrol_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\lidcontrol.py</a></td>
+                <td>65</td>
                 <td>12</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="37 49">76%</td>
+                <td class="right" data-ratio="53 65">82%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_raingage_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\raingage.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_raingage_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\raingage.py</a></td>
                 <td>25</td>
                 <td>13</td>
                 <td>5</td>
@@ -381,7 +363,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_snowpack_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\snowpack.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_snowpack_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\snowpack.py</a></td>
                 <td>37</td>
                 <td>3</td>
                 <td>1</td>
@@ -390,16 +372,16 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_subcatchment_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\subcatchment.py</a></td>
-                <td>160</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_subcatchment_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\subcatchment.py</a></td>
+                <td>164</td>
                 <td>82</td>
                 <td>5</td>
                 
-                <td class="right" data-ratio="78 160">49%</td>
+                <td class="right" data-ratio="82 164">50%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_hydrology_unithydrograph_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\hydrology\unithydrograph.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_hydrology_unithydrograph_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\hydrology\unithydrograph.py</a></td>
                 <td>17</td>
                 <td>5</td>
                 <td>1</td>
@@ -408,52 +390,43 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_inp_reader_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_project.py</a></td>
-                <td>121</td>
-                <td>15</td>
-                <td>26</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_inp_reader_project_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\inp_reader_project.py</a></td>
+                <td>319</td>
+                <td>194</td>
+                <td>27</td>
                 
-                <td class="right" data-ratio="106 121">88%</td>
+                <td class="right" data-ratio="125 319">39%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_inp_reader_sections_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_reader_sections.py</a></td>
-                <td>1250</td>
-                <td>236</td>
-                <td>72</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_inp_reader_sections_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\inp_reader_sections.py</a></td>
+                <td>1304</td>
+                <td>489</td>
+                <td>73</td>
                 
-                <td class="right" data-ratio="1014 1250">81%</td>
+                <td class="right" data-ratio="815 1304">62%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_inp_writer_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_project.py</a></td>
-                <td>113</td>
-                <td>15</td>
-                <td>26</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_inp_writer_project_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\inp_writer_project.py</a></td>
+                <td>119</td>
+                <td>71</td>
+                <td>27</td>
                 
-                <td class="right" data-ratio="98 113">87%</td>
+                <td class="right" data-ratio="48 119">40%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_inp_writer_sections_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\inp_writer_sections.py</a></td>
-                <td>603</td>
-                <td>225</td>
-                <td>80</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_inp_writer_sections_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\inp_writer_sections.py</a></td>
+                <td>630</td>
+                <td>302</td>
+                <td>82</td>
                 
-                <td class="right" data-ratio="378 603">63%</td>
+                <td class="right" data-ratio="328 630">52%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_labels_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\labels.py</a></td>
-                <td>10</td>
-                <td>3</td>
-                <td>4</td>
-                
-                <td class="right" data-ratio="7 10">70%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_backdrop_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\backdrop.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_backdrop_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\backdrop.py</a></td>
                 <td>9</td>
                 <td>3</td>
                 <td>2</td>
@@ -462,7 +435,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_dates_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\dates.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_dates_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\dates.py</a></td>
                 <td>17</td>
                 <td>7</td>
                 <td>2</td>
@@ -471,16 +444,16 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_dynamic_wave_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\dynamic_wave.py</a></td>
-                <td>26</td>
-                <td>15</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_dynamic_wave_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\dynamic_wave.py</a></td>
+                <td>30</td>
+                <td>18</td>
                 <td>3</td>
                 
-                <td class="right" data-ratio="11 26">42%</td>
+                <td class="right" data-ratio="12 30">40%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_files_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\files.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_files_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\files.py</a></td>
                 <td>16</td>
                 <td>5</td>
                 <td>2</td>
@@ -489,7 +462,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_general_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\general.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_general_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\general.py</a></td>
                 <td>38</td>
                 <td>20</td>
                 <td>6</td>
@@ -498,34 +471,34 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_map_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\map.py</a></td>
-                <td>20</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_map_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\map.py</a></td>
+                <td>22</td>
                 <td>17</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="3 20">15%</td>
+                <td class="right" data-ratio="5 22">23%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_report_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\report.py</a></td>
-                <td>17</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_report_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\report.py</a></td>
+                <td>18</td>
                 <td>8</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="9 17">53%</td>
+                <td class="right" data-ratio="10 18">56%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_options_time_steps_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\options\time_steps.py</a></td>
-                <td>13</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_options_time_steps_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\options\time_steps.py</a></td>
+                <td>14</td>
                 <td>5</td>
                 <td>2</td>
                 
-                <td class="right" data-ratio="8 13">62%</td>
+                <td class="right" data-ratio="9 14">64%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_patterns_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\patterns.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_patterns_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\patterns.py</a></td>
                 <td>12</td>
                 <td>7</td>
                 <td>2</td>
@@ -534,7 +507,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_quality_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\quality.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_quality_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\quality.py</a></td>
                 <td>66</td>
                 <td>31</td>
                 <td>3</td>
@@ -543,16 +516,16 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_swmm_project_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\swmm_project.py</a></td>
-                <td>66</td>
-                <td>15</td>
-                <td>27</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_swmm_project_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\swmm_project.py</a></td>
+                <td>142</td>
+                <td>88</td>
+                <td>28</td>
                 
-                <td class="right" data-ratio="51 66">77%</td>
+                <td class="right" data-ratio="54 142">38%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_timeseries_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\timeseries.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_timeseries_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\timeseries.py</a></td>
                 <td>16</td>
                 <td>3</td>
                 <td>1</td>
@@ -561,7 +534,7 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_swmm_title_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\swmm\title.py</a></td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_swmm_title_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\swmm\title.py</a></td>
                 <td>5</td>
                 <td>3</td>
                 <td>1</td>
@@ -570,30 +543,21 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_src_core_utility_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\src\core\utility.py</a></td>
-                <td>11</td>
-                <td>7</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_src_core_utility_py.html">C:\dev\Python\dev-ui-py3qt5\src\core\utility.py</a></td>
+                <td>23</td>
+                <td>13</td>
                 <td>0</td>
                 
-                <td class="right" data-ratio="4 11">36%</td>
+                <td class="right" data-ratio="10 23">43%</td>
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="_Project_SWMM_SWMM-EPANET_User_Interface_test_HTMLTestRunner_py.html">E:\Project\SWMM\SWMM-EPANET_User_Interface\test\HTMLTestRunner.py</a></td>
-                <td>194</td>
-                <td>92</td>
-                <td>7</td>
+                <td class="name left"><a href="_dev_Python_dev-ui-py3qt5_test_HTMLTestRunner_py.html">C:\dev\Python\dev-ui-py3qt5\test\HTMLTestRunner.py</a></td>
+                <td>196</td>
+                <td>95</td>
+                <td>8</td>
                 
-                <td class="right" data-ratio="102 194">53%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="epanet_epanetregressiontest_py.html">epanet\epanetregressiontest.py</a></td>
-                <td>11</td>
-                <td>5</td>
-                <td>4</td>
-                
-                <td class="right" data-ratio="6 11">55%</td>
+                <td class="right" data-ratio="101 196">52%</td>
             </tr>
             
             <tr class="file">
@@ -638,7 +602,7 @@
                 <td>7</td>
                 <td>8</td>
                 
-                <td class="right" data-ratio="33 40">83%</td>
+                <td class="right" data-ratio="33 40">82%</td>
             </tr>
             
             <tr class="file">
@@ -696,30 +660,12 @@
             </tr>
             
             <tr class="file">
-                <td class="name left"><a href="regression_base_py.html">regression_base.py</a></td>
-                <td>112</td>
-                <td>31</td>
-                <td>4</td>
-                
-                <td class="right" data-ratio="81 112">72%</td>
-            </tr>
-            
-            <tr class="file">
                 <td class="name left"><a href="section_match_py.html">section_match.py</a></td>
                 <td>190</td>
-                <td>76</td>
+                <td>103</td>
                 <td>1</td>
                 
-                <td class="right" data-ratio="114 190">60%</td>
-            </tr>
-            
-            <tr class="file">
-                <td class="name left"><a href="swmm_swmmregressiontest_py.html">swmm\swmmregressiontest.py</a></td>
-                <td>11</td>
-                <td>5</td>
-                <td>4</td>
-                
-                <td class="right" data-ratio="6 11">55%</td>
+                <td class="right" data-ratio="87 190">46%</td>
             </tr>
             
             <tr class="file">
@@ -1102,8 +1048,8 @@
 <div id="footer">
     <div class="content">
         <p>
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
-            created at 2017-03-31 13:18
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
+            created at 2019-09-05 19:47
         </p>
     </div>
 </div>

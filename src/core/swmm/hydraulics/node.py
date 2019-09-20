@@ -276,6 +276,7 @@ class StorageUnit(Junction):
         ("elevation",           '', "Invert El.",      '0',  '(ft)', '(m)', "Elevation at the bottom of the storage unit"),
         ("max_depth",           '', "Max Depth",       '0',  '(ft)', '(m)', "Maximum depth of the storage unit"),
         ("initial_depth",       '', "Initial Depth",   '0',  '(ft)', '(m)', "Initial depth of water in the storage unit"),
+        ("surcharge_depth",     '', "Surcharge Depth", '0',  '(ft)', '(m)', "Depth in excess of maximum depth before flooding occurs"),
         ("evaporation_factor",  '', "Evap. Factor",    '',   '',   '',      "Fraction of evaporation rate realized"),
         ("seepage_loss",        '', "Seepage Loss",    'NO', '',   '',      "Click to specify soil properties that determine seepage loss through the bottom and sloped sides of the storage unit"),
         ("storage_curve_type",  '', "Storage Curve",   '0',  '',   '',      "Method of describing the geometric shape of the storage unit"),

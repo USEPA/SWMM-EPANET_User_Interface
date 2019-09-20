@@ -28,6 +28,7 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
         self.cbxControls.setChecked(section.controls)
         self.cbxFlow.setChecked(section.flow_stats)
         self.cbxInput.setChecked(section.input)
+        self.cbxAverage.setChecked(section.averages)
         # add nodes to list 1
         self.listWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.listWidget.clear()
@@ -72,11 +73,13 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
         orig_flow_stats = section.flow_stats
         orig_input = section.input
         orig_nodes = section.nodes
+        orig_averages = section.averages
 
         section.continuity = self.cbxContinuity.isChecked()
         section.controls = self.cbxControls.isChecked()
         section.flow_stats = self.cbxFlow.isChecked()
         section.input = self.cbxInput.isChecked()
+        section.averages = self.cbxAverage.isChecked()
         # if none selected NONE, ALL, or list
         if self.listWidget.selectedItems().__len__() == self.listWidget.count():
             section.nodes = ['ALL']
@@ -91,7 +94,8 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
             orig_controls != section.controls or \
             orig_flow_stats != section.flow_stats or \
             orig_input != section.input or \
-            orig_nodes != section.nodes:
+            orig_nodes != section.nodes or \
+            orig_averages != section.averages:
             self._main_form.mark_project_as_unsaved()
 
         self.close()

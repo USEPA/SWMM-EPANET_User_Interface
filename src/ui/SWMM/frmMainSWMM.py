@@ -199,6 +199,7 @@ class frmMainSWMM(frmMain):
     tree_curves_ShapeCurves     = ["Shape Curves",     frmCurveEditor, ["SWMM Shape Curves",     "SHAPE"]]
     tree_curves_StorageCurves   = ["Storage Curves",   frmCurveEditor, ["SWMM Storage Curves",   "STORAGE"]]
     tree_curves_TidalCurves     = ["Tidal Curves",     frmCurveEditor, ["SWMM Tidal Curves",     "TIDAL"]]
+    tree_curves_WeirCurves      = ["Weir Curves",      frmCurveEditor, ["SWMM Weir Curves",      "WEIR"]]
     tree_curves_items = [
         tree_curves_ControlCurves,
         tree_curves_DiversionCurves,
@@ -206,7 +207,8 @@ class frmMainSWMM(frmMain):
         tree_curves_RatingCurves,
         tree_curves_ShapeCurves,
         tree_curves_StorageCurves,
-        tree_curves_TidalCurves]
+        tree_curves_TidalCurves,
+        tree_curves_WeirCurves]
 
     tree_TitleNotes   = ["Title/Notes",   frmTitle]
     tree_Options      = ["Options",       tree_options_items]
@@ -244,7 +246,8 @@ class frmMainSWMM(frmMain):
                            tree_curves_RatingCurves,
                            tree_curves_ShapeCurves,
                            tree_curves_StorageCurves,
-                           tree_curves_TidalCurves)
+                           tree_curves_TidalCurves,
+                           tree_curves_WeirCurves)
 
     def __init__(self, q_application):
         self.model = "SWMM"
@@ -302,6 +305,7 @@ class frmMainSWMM(frmMain):
             self.tree_curves_ShapeCurves[0]: Curve,
             self.tree_curves_StorageCurves[0]: Curve,
             self.tree_curves_TidalCurves[0]: Curve,
+            self.tree_curves_WeirCurves[0]: Curve,
             self.tree_TimeSeries[0]: TimeSeries,
             self.tree_TimePatterns[0]: Pattern,
             self.tree_MapLabels[0]: Label
@@ -1319,6 +1323,10 @@ class frmMainSWMM(frmMain):
             for i in range(0, len(self.project.curves.value)):
                 if self.project.curves.value[i].curve_type == CurveType.TIDAL:
                     ids.append(self.project.curves.value[i].name)
+        elif category == self.tree_curves_WeirCurves[0]:
+            for i in range(0, len(self.project.curves.value)):
+                if self.project.curves.value[i].curve_type == CurveType.WEIR:
+                    ids.append(self.project.curves.value[i].name)
         elif category == self.tree_MapLabels[0]:
             for i in range(0, len(self.project.labels.value)):
                 ids.append(self.project.labels.value[i].name)
@@ -1374,6 +1382,8 @@ class frmMainSWMM(frmMain):
             new_item.curve_type = CurveType.STORAGE
         elif tree_text == self.tree_curves_TidalCurves[0]:
             new_item.curve_type = CurveType.TIDAL
+        elif tree_text == self.tree_curves_WeirCurves[0]:
+            new_item.curve_type = CurveType.WEIR
 
         if self.project_settings:
             self.project_settings.apply_default_attributes(new_item)
@@ -1494,6 +1504,10 @@ class frmMainSWMM(frmMain):
                     # self.add_map_constituents()
                     try:
                         if os.path.isfile(self.output_filename):
+                            # self.model_api.swmm_end()
+                            # self.model_api.swmm_close()
+                            # self.model_api = None
+                            # QMessageBox.information(None, "SWMM", "pause", QMessageBox.Ok)
                             self.output = SMO.SwmmOutputObject(self.output_filename)
                             self.output.build_units_dictionary()
                             self.set_thematic_controls()
@@ -1585,7 +1599,8 @@ class frmMainSWMM(frmMain):
                         if self.run_inp_file:
                             os.close(self.run_inp_file[0])
                         if self.model_api:
-                            self.model_api.swmm_close()
+                            self.model_api = None
+                            # self.model_api.swmm_close()
                     except:
                         pass
                     return
@@ -1806,6 +1821,8 @@ class ModelLayersSWMM(ModelLayers):
         sub_section = getattr(self.project, "subcatchments")
         ms = sub_section.find_item(fs["name"])
         if not ms.outlet:
+            return
+        if ms.outlet == 'None':
             return
         fc = None
         fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.name)

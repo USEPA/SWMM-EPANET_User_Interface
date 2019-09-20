@@ -50,9 +50,9 @@ class SimpleLIDControlTest(unittest.TestCase):
 PorousPave       PP
 PorousPave       SURFACE    0.0        0.0        0.02       2          5
 PorousPave       SOIL       3          0.5        0.2        0.1        0.5        10.0       3.5
-PorousPave       PAVEMENT   6          0.15       0          100        0
+PorousPave       PAVEMENT   6          0.15       0          100        0          0          0
 PorousPave       STORAGE    12         0.75       0.2        0
-PorousPave       DRAIN      0          0.5        0          6
+PorousPave       DRAIN      0          0.5        0          6          0          0          	
 PorousPave       DRAINMAT   1          0.4        0.01
         """
         my_options = LIDControlReader.read(test_text)
@@ -71,28 +71,28 @@ GreenRoof        BC
 GreenRoof        SURFACE    0.0        0.0        0.1        1.0        5
 GreenRoof        SOIL       3          0.5        0.2        0.1        0.5        10.0       3.5
 GreenRoof        STORAGE    1          0.75       0          0
-GreenRoof        DRAIN      1          0.5        0          6
+GreenRoof        DRAIN      1          0.5        0          6          0          0          	
 
 PorousPave       PP
 PorousPave       SURFACE    0.0        0.0        0.02       2          5
-PorousPave       PAVEMENT   6          0.15       0          100        0
+PorousPave       PAVEMENT   6          0.15       0          100        0          0          0
 PorousPave       STORAGE    12         0.75       0.2        0
-PorousPave       DRAIN      0          0.5        0          6
+PorousPave       DRAIN      0          0.5        0          6          0          0          	
 
 Planters         BC
 Planters         SURFACE    6          0.0        0.0        0.0        5
 Planters         SOIL       12         0.5        0.2        0.1        0.5        10.0       3.5
 Planters         STORAGE    12         0.5        0.2        0
-Planters         DRAIN      0          1          0.5        6
+Planters         DRAIN      0          1          0.5        6          0          0          	
 
 InfilTrench      IT
 InfilTrench      SURFACE    0.0        0.0        0.24       0.4        5
 InfilTrench      STORAGE    36         0.40       0.2        0
-InfilTrench      DRAIN      0          0.5        0          6
+InfilTrench      DRAIN      0          0.5        0          6          0          0          	
 
 RainBarrels      RB
 RainBarrels      STORAGE    48         1          0          0
-RainBarrels      DRAIN      1          0.5        0          6
+RainBarrels      DRAIN      1          0.5        0          6          0          0          	
 
 Swale            VS
 Swale            SURFACE    36         0.0        0.24       1.0        5"""

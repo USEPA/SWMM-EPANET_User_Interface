@@ -885,7 +885,7 @@ class Ui_frmMain(object):
         self.toolBar_Object.addAction(self.actionObjAddLabel)
 
         self.retranslateUi(frmMain)
-        self.tabProjMap.setCurrentIndex(1)
+        self.tabProjMap.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmMain)
 
     def retranslateUi(self, frmMain):
@@ -899,7 +899,7 @@ class Ui_frmMain(object):
         self.cbFlowUnits.setItemText(1, _translate("frmMain", "Flow Units: GPM"))
         self.cbFlowUnits.setItemText(2, _translate("frmMain", "Flow Units: MGD"))
         self.cbFlowUnits.setItemText(3, _translate("frmMain", "Flow Units: CMS"))
-        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units:  LPS"))
+        self.cbFlowUnits.setItemText(4, _translate("frmMain", "Flow Units: LPS"))
         self.cbFlowUnits.setItemText(5, _translate("frmMain", "Flow Units: MLD"))
         self.btnCoord.setText(_translate("frmMain", "x,y"))
         self.menuFile.setTitle(_translate("frmMain", "File"))

@@ -133,7 +133,7 @@
 <p id="t16" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t17" class="stm mis">    <span class="key">def</span> <span class="nam">test_lid_usage</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t18" class="pln">        <span class="str">"""Test aquifer parameters from SWMM 5.1 manual"""</span><span class="strut">&nbsp;</span></p>
-<p id="t19" class="stm run hide_run">        <span class="nam">test_text</span> <span class="op">=</span> <span class="str">" S2 Swale 1 10000 50 0 0 0 'swale.rpt' "</span><span class="strut">&nbsp;</span></p>
+<p id="t19" class="stm run hide_run">        <span class="nam">test_text</span> <span class="op">=</span> <span class="str">" S2 Swale 1 10000 50 0 0 0 'swale.rpt' * 0 "</span><span class="strut">&nbsp;</span></p>
 <p id="t20" class="stm run hide_run">        <span class="nam">my_options</span> <span class="op">=</span> <span class="nam">LIDUsageReader</span><span class="op">.</span><span class="nam">read</span><span class="op">(</span><span class="nam">test_text</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t21" class="stm run hide_run">        <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">LIDUsageWriter</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">my_options</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t22" class="stm run hide_run">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet:'</span> <span class="op">+</span> <span class="nam">test_text</span> <span class="op">+</span> <span class="str">'\nGet:'</span> <span class="op">+</span> <span class="nam">actual_text</span><span class="strut">&nbsp;</span></p>
@@ -148,8 +148,8 @@
 <p id="t31" class="pln">                      <span class="str">";subcatchment S1. They are initially empty and treat 17\n"</span> <span class="xx">\</span><span class="strut">&nbsp;</span></p>
 <p id="t32" class="pln">                      <span class="str">";The outflow from the barrels is returned to the\n"</span> <span class="xx">\</span><span class="strut">&nbsp;</span></p>
 <p id="t33" class="pln">                      <span class="str">";subcatchments pervious area.\n"</span> <span class="xx">\</span><span class="strut">&nbsp;</span></p>
-<p id="t34" class="pln">                      <span class="str">"S1 RB14 34 12 0 0 17 1\n"</span> <span class="xx">\</span><span class="strut">&nbsp;</span></p>
-<p id="t35" class="pln">                      <span class="str">"S2 Swale 1 10000 50 0 0 0 swale.rpt\n"</span><span class="strut">&nbsp;</span></p>
+<p id="t34" class="pln">                      <span class="str">"S1 RB14 34 12 0 0 17 1 * * 0 \n"</span> <span class="xx">\</span><span class="strut">&nbsp;</span></p>
+<p id="t35" class="pln">                      <span class="str">"S2 Swale 1 10000 50 0 0 0 swale.rpt * 0 \n"</span><span class="strut">&nbsp;</span></p>
 <p id="t36" class="stm run hide_run">        <span class="nam">section_from_text</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">project_reader</span><span class="op">.</span><span class="nam">read_lid_usage</span><span class="op">.</span><span class="nam">read</span><span class="op">(</span><span class="nam">source_text</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t37" class="stm run hide_run">        <span class="nam">actual_text</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">project_writer</span><span class="op">.</span><span class="nam">write_lid_usage</span><span class="op">.</span><span class="nam">as_text</span><span class="op">(</span><span class="nam">section_from_text</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t38" class="stm run hide_run">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">'\nSet:\n'</span> <span class="op">+</span> <span class="nam">source_text</span> <span class="op">+</span> <span class="str">'\nGet:\n'</span> <span class="op">+</span> <span class="nam">actual_text</span><span class="strut">&nbsp;</span></p>
@@ -169,8 +169,8 @@
 <div id="footer">
     <div class="content">
         <p>
-            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.1</a>,
-            created at 2017-03-31 13:18
+            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
+            created at 2019-09-05 19:43
         </p>
     </div>
 </div>

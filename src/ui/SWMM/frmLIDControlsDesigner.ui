@@ -31,6 +31,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QTableWidget" name="tblControls">
+         <property name="columnCount">
+          <number>6</number>
+         </property>
          <column>
           <property name="text">
            <string>Control Name</string>
@@ -49,6 +52,11 @@
          <column>
           <property name="text">
            <string>% From Imperv</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>% From Perv</string>
           </property>
          </column>
          <column>

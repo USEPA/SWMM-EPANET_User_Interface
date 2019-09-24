@@ -326,11 +326,12 @@ class OutputObject(object):
             self._raise_error(ret)
         file_version = self._call_int(_lib.ENR_getVersion)
         print("ENR opened {} Version {}".format(output_file_name, str(file_version)))
-        self._measure_new_out_value_series()
-        self._get_units()
         self.dates = []
         self.times = []
         self._get_times()
+        if self.simDuration > 0:
+            self._measure_new_out_value_series()
+        self._get_units()
         self.nodes = ENR_node_type.read_all(self)
         self.links = ENR_link_type.read_all(self)
         self.all_items = (self.nodes, self.links)

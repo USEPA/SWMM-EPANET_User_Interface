@@ -1077,8 +1077,10 @@ try:
             symbol = symbol.createSimple({})
             symbol.deleteSymbolLayer(0)
             slayer = QgsSimpleLineSymbolLayer()
-            slayer.setWidth(1.0)
-            slayer.setColor(QColor("dark gray"))
+            # slayer.setWidth(1.0)
+            # slayer.setColor(QColor("dark gray"))
+            slayer.setWidth(0.2)
+            slayer.setColor(QColor("black"))
             symbol.appendSymbolLayer(slayer)
             layer_name_upper = layer.name().upper()
             if "CONDUIT" in layer_name_upper or \
@@ -1086,7 +1088,7 @@ try:
                 slayer = QgsSimpleLineSymbolLayer()
                 slayer.setWidth(0.5)
                 slayer.setColor(QColor("light gray"))
-                symbol.appendSymbolLayer(slayer)
+                # symbol.appendSymbolLayer(slayer)
                 renderer = QgsSingleSymbolRenderer(symbol)
                 layer.setRenderer(renderer)
             elif "SUBLINK" in layer_name_upper:
@@ -1099,7 +1101,8 @@ try:
                 renderer = QgsSingleSymbolRenderer(symbol)
                 layer.setRenderer(renderer)
             else:
-                slayer.setWidth(1.0)
+                # slayer.setWidth(1.0)
+                slayer.setWidth(0.2)
                 slayer = QgsMarkerLineSymbolLayer(True, 1.5)
                 mlayer = slayer.subSymbol()
                 anewlayer = None

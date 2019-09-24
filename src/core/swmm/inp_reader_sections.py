@@ -1715,13 +1715,15 @@ class TagsReader(SectionReader):
                 object_name = fields[1]
                 tag = ' '.join(fields[2:])
                 sections = section_map[object_type_name]
+                tag_applied = False
                 for section in sections:
-                    try:
-                        candidate = section.value[object_name]
+                    candidate = section.find_item(object_name)
+                    if candidate:
                         candidate.tag = tag
+                        tag_applied = True
                         break
-                    except KeyError as ke:
-                        print("Tag not applied: " + line + "\n")
+                if not tag_applied:
+                    print("Tag not applied: " + line + "\n")
 
 
 class LossesReader(SectionReader):

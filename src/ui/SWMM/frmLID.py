@@ -365,14 +365,19 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.drainmat_roughness = self.txtDrain3.text()
         if self.editing_item.has_pollutant_removals:
             if len(self.pollutant_list) > 0:
+                self.editing_item.removal_pollutant1 = self.pollutant_list[0].name
                 self.editing_item.removal_removal1 = self.tblPollutant.item(0, 0).text()
             if len(self.pollutant_list) > 1:
+                self.editing_item.removal_pollutant2 = self.pollutant_list[1].name
                 self.editing_item.removal_removal2 = self.tblPollutant.item(1, 0).text()
             if len(self.pollutant_list) > 2:
+                self.editing_item.removal_pollutant3 = self.pollutant_list[2].name
                 self.editing_item.removal_removal3 = self.tblPollutant.item(2, 0).text()
             if len(self.pollutant_list) > 3:
+                self.editing_item.removal_pollutant4 = self.pollutant_list[3].name
                 self.editing_item.removal_removal4 = self.tblPollutant.item(3, 0).text()
             if len(self.pollutant_list) > 4:
+                self.editing_item.removal_pollutant5 = self.pollutant_list[4].name
                 self.editing_item.removal_removal5 = self.tblPollutant.item(4, 0).text()
         # self.main_form.list_objects()
 

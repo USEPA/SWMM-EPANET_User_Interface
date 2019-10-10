@@ -1603,6 +1603,7 @@ class frmMainSWMM(frmMain):
                             # self.model_api.swmm_close()
                     except:
                         pass
+                    os.chdir(self.assembly_path)
                     return
 
             # Could not run with library, try running with executable

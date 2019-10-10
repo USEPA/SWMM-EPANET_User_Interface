@@ -926,9 +926,10 @@ class LIDControlWriter(SectionWriter):
         for field_names in LIDControl.LineTypes:
             if getattr(lid_control, field_names[0]):
                 line = lid_control.name + '\t' + field_names[1]
-                for field_name in field_names[2:]:
-                    line += '\t' + str(getattr(lid_control, field_name))
-                text_list.append(line)
+                if field_names[1] != "REMOVALS" or (field_names[1] == "REMOVALS" and len(lid_control.removal_removal1) > 0):
+                    for field_name in field_names[2:]:
+                        line += '\t' + str(getattr(lid_control, field_name))
+                    text_list.append(line)
         return '\n'.join(text_list)
 
 

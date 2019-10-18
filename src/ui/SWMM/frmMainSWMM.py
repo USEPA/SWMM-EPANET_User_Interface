@@ -80,6 +80,7 @@ from core.swmm.hydraulics.link import Outlet
 from core.swmm.hydraulics.link import Weir
 from core.swmm.hydraulics.link import Transect
 from core.swmm.hydraulics.link import CrossSection
+from core.swmm.hydraulics.link import CrossSectionShape
 from core.swmm.quality import Landuse
 from core.swmm.curves import Curve
 from core.swmm.curves import CurveType
@@ -1693,6 +1694,23 @@ class frmMainSWMM(frmMain):
                                                    rect.yMinimum() - y_setback,
                                                    rect.xMaximum() + x_setback,
                                                    rect.yMaximum() + y_setback)
+
+    def add_cross_section(self, new_item):
+        # add cross section for new conduit, orifice, weir as needed
+        if isinstance(new_item, Conduit) or isinstance(new_item, Weir) or isinstance(new_item, Orifice):
+            # create new xsection
+            xsection = CrossSection()
+            if self.project_settings and \
+                    self.project_settings.xsection:
+                self.project_settings.apply_default_attributes(xsection)
+                xsection.link = new_item.name
+                if isinstance(new_item, Weir):
+                    # weirs have different defaults
+                    xsection.shape = CrossSectionShape.RECT_OPEN
+                    xsection.geometry1 = 1
+                    xsection.geometry2 = 1
+                if self.project:
+                    self.project.xsections.value.append(xsection)
 
 
 class ModelLayersSWMM(ModelLayers):

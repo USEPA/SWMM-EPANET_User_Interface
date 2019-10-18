@@ -710,6 +710,8 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
+        if self.model == "SWMM":
+            self.add_cross_section(new_item)
         self.mark_project_as_unsaved()
 
     class _DeleteItem(QUndoCommand):

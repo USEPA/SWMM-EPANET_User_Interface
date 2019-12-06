@@ -96,8 +96,8 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.cboLIDType.setCurrentIndex(3)
                 lid.has_surface_layer = True
                 lid.has_pavement_layer = False
-                lid.has_soil_layer = True
-                lid.has_storage_layer = False
+                lid.has_soil_layer = False
+                lid.has_storage_layer = True
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
                 lid.has_pollutant_removals = True
@@ -277,8 +277,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.lid_type = LIDType.IT
             self.editing_item.has_surface_layer = True
             self.editing_item.has_pavement_layer = False
-            self.editing_item.has_soil_layer = True
-            self.editing_item.has_storage_layer = False
+            self.editing_item.has_soil_layer = False
+            self.editing_item.has_storage_layer = True
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
             self.editing_item.has_pollutant_removals = True

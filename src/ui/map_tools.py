@@ -1820,6 +1820,7 @@ try:
             if new_crs:
                 self.session.project.map.crs_name = crs_name
                 self.session.project.map.crs_unit = self.QGis_UnitType[new_crs.mapUnits()]
+                self.session.crs = new_crs
 
         def drawVertexMarker(self, layer):
             """

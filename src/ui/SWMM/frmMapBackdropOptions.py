@@ -13,8 +13,8 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
         self.setupUi(self)
         self.cmdOK.clicked.connect(self.cmdOK_Clicked)
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
-        self.set_from(main_form.project)
         self._main_form = main_form
+        self.set_from(main_form.project)
 
     def set_from(self, project):
         # section = core.swmm.options.backdrop.BackdropOptions()
@@ -29,6 +29,16 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
         self.txtLLYMap.setText(str(section.dimensions[1]))
         self.txtURXMap.setText(str(section.dimensions[2]))
         self.txtURYMap.setText(str(section.dimensions[3]))
+
+        if self._main_form.map_widget.map_linear_unit == 'Meters':
+            section.units = MapUnits.METERS
+        if self._main_form.map_widget.map_linear_unit == 'Unknown':
+            section.units = MapUnits.NONE
+        if self._main_form.map_widget.map_linear_unit == 'Degrees':
+            section.units = MapUnits.DEGREES
+        if self._main_form.map_widget.map_linear_unit == 'Feet':
+            section.units = MapUnits.FEET
+
         if section.units == MapUnits.NONE:
             self.rbnNone.setChecked(True)
         if section.units == MapUnits.DEGREES:
@@ -59,12 +69,16 @@ class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):
 
         if self.rbnNone.isChecked():
             section.units = MapUnits.NONE
+            self._main_form.map_widget.map_linear_unit = 'Unknown'
         if self.rbnDegrees.isChecked():
             section.units =  MapUnits.DEGREES
+            self._main_form.map_widget.map_linear_unit = 'Degrees'
         if self.rbnFeet.isChecked():
             section.units = MapUnits.FEET
+            self._main_form.map_widget.map_linear_unit = 'Feet'
         if self.rbnMeters.isChecked():
             section.units = MapUnits.METERS
+            self._main_form.map_widget.map_linear_unit = 'Meters'
         section.dimensions = (float(self.txtLLXMap.text()), float(self.txtLLYMap.text()),
                               float(self.txtURXMap.text()), float(self.txtURYMap.text()))
 

@@ -107,7 +107,7 @@ class SwmmOutputCategoryBase:
             elif attribute.smo_type == _lib.SMO_link:
                 tseries = _lib.getlinkseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
             elif attribute.smo_type == _lib.SMO_sys:
-                tseries = _lib.getsystemseries(output.ptrapi, self._index, attribute.index, start_index, output.num_periods)
+                tseries = _lib.getsystemseries(output.ptrapi, attribute.index, start_index, output.num_periods)
         except Exception as e:
             print("Error reading series " + self.type_label + " " + str(self.name) + ', att #' + str(attribute.index))
             msg_buf = ""

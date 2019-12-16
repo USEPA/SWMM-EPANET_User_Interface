@@ -55,9 +55,9 @@ class frmOrifices(frmGenericPropertyEditor):
             cross_section_list = cross_section.value[0:]
             for value in cross_section_list:
                 if value.link == str(self.tblGeneric.item(0,column).text()):
-                    if value.link.shape == 'CIRCULAR':
+                    if value.shape.name == 'CIRCULAR':
                         combobox.setCurrentIndex(0)
-                    elif value.link.shape == 'RECT_CLOSED':
+                    elif value.shape.name == 'RECT_CLOSED':
                         combobox.setCurrentIndex(1)
                     self.tblGeneric.setItem(7, column, QTableWidgetItem(value.geometry1))
                     self.tblGeneric.setItem(8, column, QTableWidgetItem(value.geometry2))

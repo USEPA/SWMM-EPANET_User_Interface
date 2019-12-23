@@ -1199,7 +1199,7 @@ try:
                             # check if they are closed
                             pt0 = poly_points[0]
                             pte = poly_points[len(poly_points) - 1]
-                            if abs(pt0.x() - pte.x()) / pte.x() > 0.01 or abs(pt0.y() - pte.y()) / pte.y() > 0.01:
+                            if pt0.x() != pte.x() or pt0.y() != pte.y():
                                 poly_points.append(poly_points[0])
                             # add a feature
                             feature = QgsFeature()

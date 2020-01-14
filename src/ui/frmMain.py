@@ -1865,7 +1865,10 @@ class frmMain(QMainWindow, Ui_frmMain):
                             edit_form = tree_item[1](*args)
                         except:  # Try without selected_items and new_item for editors that do not want them
                             args = args[0:-2]
-                            edit_form = tree_item[1](*args)
+                            try:
+                                edit_form = tree_item[1](*args)
+                            except:
+                                return None
                         edit_form.helper = HelpHandler(edit_form)
                         break
                     return None

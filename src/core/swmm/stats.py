@@ -663,7 +663,7 @@ class StatisticUtility(object):
         #  EventList is a list of objects of type: TStatsEvent
         # Call the TList Sort method to sort the objects in the event list,
         # using the Compare function as the comparison function.
-        aResults.EventList.sort(self.Compare)
+        aResults.EventList.sort(key=lambda x: getattr(x, 'Value'), reverse=True)
         #EventList.sort(key=lambda x: x.Value)
         #import operator as op
         #EventList.sort(key=op.attrgetter('Value'))

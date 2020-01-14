@@ -1240,6 +1240,7 @@ class frmMainSWMM(frmMain):
         frm = None
         # First handle special cases where forms need more than simply being created
 
+        model_sec = self.project.find_section(edit_name)
         new_item = None
         if edit_name == self.tree_quality_Pollutants[0]:
             edit_these = []
@@ -1284,6 +1285,9 @@ class frmMainSWMM(frmMain):
             return None
         elif edit_name == self.tree_nodes_StorageUnits[0] and len(self.project.storage.value) == 0:
             return None
+        elif model_sec is not None and hasattr(model_sec, 'value') and isinstance(model_sec.value, list):
+            if len(model_sec.value) == 0:
+                return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm

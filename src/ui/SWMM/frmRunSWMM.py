@@ -256,10 +256,5 @@ class frmRunSWMM(frmRunSimulation):
         # else:
         #     self.lblIconError.setVisible(True)
 
-        if self._main_form:
-            try:
-                self._main_form.showNormal()
-            except:
-                pass
         self.showNormal()
 

@@ -137,7 +137,7 @@ class frmWeirs(frmGenericPropertyEditor):
                         orig_geometry2 != value.geometry2 or \
                         orig_geometry3 != value.geometry3:
                         self._main_form.mark_project_as_unsaved()
-        self._main_form.model_layers.create_layers_from_project(self.project)
+        # self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

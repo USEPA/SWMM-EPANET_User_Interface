@@ -323,9 +323,9 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
-        for fs in self._main_form.model_layers.subcatchments.getFeatures():
-            self._main_form.model_layers.create_subcatchment_link(fs)
+        # self.session.model_layers.create_layers_from_project(self.project)
+        # for fs in self._main_form.model_layers.subcatchments.getFeatures():
+        #     self._main_form.model_layers.create_subcatchment_link(fs)
 
         adjustments = self.project.find_section("ADJUSTMENTS")
         for column in range(0, self.tblGeneric.columnCount()):

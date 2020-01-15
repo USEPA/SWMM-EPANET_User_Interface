@@ -28,8 +28,8 @@ try:
     class EmbedMap(QWidget):
         """ Main GUI Widget for map display inside vertical layout """
 
-        QGis_UnitType = ["Meters", "Feet", "Degrees", "Unknown", "DecimalDegree", "DegreesMinutesSeconds",
-                         "DegreesDecimalMinutes"]
+        QGis_UnitType = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Centimeters",
+                         "Millimeters", "Unknown"]
         map_unit_names       = ["Meters", "Kilometers", "Feet", "NauticalMiles", "Yards", "Miles", "Degrees", "Unknown"]
         map_unit_abbrev      = ["m",      "km",         "ft",   "nmi",           "yd",    "mi",    "deg",     ""]
         map_unit_to_meters   = [1.0,         1000.0,    0.3048,   1852,          0.9144,  1609.34, 0,         0]
@@ -999,8 +999,9 @@ try:
                 return None
 
         def add_layer(self, layer, group=None):
+            session_crs_changed = False
             if not self.session.crs:
-                self.set_crs_from_layer(layer)
+                session_crs_changed = self.set_crs_from_layer(layer)
             if group:
                 # QgsMapLayerRegistry.instance().addMapLayer(layer, False)
                 self.qgs_project.addMapLayer(layer, False)
@@ -1015,7 +1016,7 @@ try:
             for lyr in layers:
                 layers_now.append(lyr)
             self.canvas.setLayers(layers_now)
-            self.set_extent(self.canvas.fullExtent())
+            # self.set_extent(self.canvas.fullExtent())
             if "centroid" in layer.name().lower():
                 mlyrkey = ""
                 for mlyrkey in self.qgs_project.mapLayers().keys():
@@ -1025,6 +1026,8 @@ try:
                 # node.setVisible(Qt.Unchecked)
                 # node = QgsLayerTreeNode() # for DBG only
                 node.setItemVisibilityChecked(False)
+            if session_crs_changed:
+                self.canvas.zoomToFullExtent()
 
         def set_crs_from_layer(self, layer):
             """ If this layer has a valid coordinate reference system (projection),
@@ -1036,12 +1039,14 @@ try:
                 crs = dp.crs()
                 if crs.isValid():
                     # if not self.session.crs:
-                    self.session.set_crs(crs)
+                    crs_is_set = self.session.set_crs(crs)
                     print("CRS = " + crs.toWkt())
                     # else:  # TODO: compare to existing CRS?
                     #     pass
+                    return crs_is_set
             except Exception as ex:
                 print (str(ex))
+            return False
 
         def remove_all_layers(self):
             self.qgs_project.removeAllMapLayers()
@@ -1514,6 +1519,7 @@ try:
             else:
                 if layer:
                     self.add_layer(layer, self.other_group)
+            self.canvas.refresh()
 
         def replace_model_layer(self, alyr, group=None):
             alyr_name = alyr.name()
@@ -1626,9 +1632,13 @@ try:
             return layers
             pass
 
-        def set_extent(self, extent):
+        def set_buffered_extent(self, extent):
             buffered_extent = extent.buffered(extent.height() / 20)
             self.canvas.setExtent(buffered_extent)
+            self.canvas.refresh()
+
+        def set_extent(self, extent):
+            self.canvas.setExtent(extent)
             self.canvas.refresh()
 
         def set_extent_by_corners(self, corners):

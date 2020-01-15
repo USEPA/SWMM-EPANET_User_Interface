@@ -662,13 +662,11 @@ class frmMain(QMainWindow, Ui_frmMain):
                     # this is after discerning whether non-empty extent is due to
                     # adding in a legit layer or lingering extent from previous session
                     # (which doesn't work for a new session)
-                    if self.session.map_widget.canvas.extent().isEmpty() or \
-                       self.session.map_widget.refresh_extent_needed:
-                        self.session.map_widget.refresh_extent_needed = False
-                        if isinstance(self.item, Coordinate):
-                            self.session.map_widget.set_extent_about_point(self.item)
-                        else:
-                            self.session.map_widget.set_extent(self.layer.extent())
+                    if self.session.map_widget.canvas.extent().isEmpty():
+                        w = self.session.map_widget.canvas.width()
+                        h = self.session.map_widget.canvas.height()
+                        self.session.map_widget.set_extent_by_corners([0, -1 * h, w, 0])
+                        pass
 
                     self.session.map_widget.canvas.refresh()
                 else:
@@ -2277,11 +2275,12 @@ class frmMain(QMainWindow, Ui_frmMain):
                             #     mlayer.setCrs(mcrs)
                         except:
                             pass
+                return True
             except:
                 pass
         else:
             self.crs = None
-        pass
+        return False
 
     def save_project(self, file_name=None):
         if not file_name:
@@ -2461,7 +2460,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.listViewObjects.clear()
 
     def list_objects(self):
-        self.setQgsMapTool()
+        # self.setQgsMapTool()
         selected_text = ''
         for item in self.obj_tree.selectedIndexes():
             selected_text = str(item.data())

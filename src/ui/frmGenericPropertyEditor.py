@@ -80,7 +80,7 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
+        # self.session.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

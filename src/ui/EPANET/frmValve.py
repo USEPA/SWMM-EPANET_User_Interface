@@ -46,7 +46,7 @@ class frmValve(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self._main_form.model_layers.create_layers_from_project(self.project)
+        # self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

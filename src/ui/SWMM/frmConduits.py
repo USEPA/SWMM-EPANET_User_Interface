@@ -119,7 +119,7 @@ class frmConduits(frmGenericPropertyEditor):
                         self._main_form.mark_project_as_unsaved()
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
                     value.culvert_code = str(self.tblGeneric.item(18, column).text())
-        self._main_form.model_layers.create_layers_from_project(self.project)
+        # self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

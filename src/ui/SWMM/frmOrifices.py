@@ -33,7 +33,7 @@ class frmOrifices(frmGenericPropertyEditor):
                 edit_these = []
                 edit_these.extend(self.project_section.value)
 
-        frmGenericPropertyEditor.__init__(self, main_form, self.project_section, edit_these, new_item,
+        frmGenericPropertyEditor.__init__(self, main_form, self.project.orifices, edit_these, new_item, \
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
         for column in range(0, self.tblGeneric.columnCount()):
@@ -86,7 +86,7 @@ class frmOrifices(frmGenericPropertyEditor):
                     value.geometry1 = str(self.tblGeneric.item(7, column).text())
                     value.geometry2 = str(self.tblGeneric.item(8, column).text())
         self._main_form.list_objects()
-        self._main_form.model_layers.create_layers_from_project(self.project)
+        # self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()
 
     def cmdCancel_Clicked(self):

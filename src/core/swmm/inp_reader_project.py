@@ -181,9 +181,9 @@ class ProjectReader(InputFileReader):
         if section_name_upper == project.infiltration.SECTION_NAME.upper():
             self.check_valid_subcatchment_id(project, 'INFILTRATION', section_text)
             infiltration = project.options.infiltration.upper()
-            if infiltration == "HORTON":
+            if infiltration.startswith("HORTON") or infiltration.startswith("MODIFIED_HORTON"):
                 self.read_infiltration = SectionReaderAsList(section_name, HortonInfiltrationReader)
-            elif infiltration.startswith("GREEN"):
+            elif infiltration.startswith("GREEN") or infiltration.startswith("MODIFIED_GREEN"):
                 self.read_infiltration = SectionReaderAsList(section_name, GreenAmptInfiltrationReader)
             elif infiltration.startswith("CURVE"):
                 self.read_infiltration = SectionReaderAsList(section_name, CurveNumberInfiltrationReader)

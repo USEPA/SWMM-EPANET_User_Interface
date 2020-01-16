@@ -244,7 +244,7 @@ class ProjectWriter(InputFileWriterBase):
                 "[INFILTRATION]", HortonInfiltrationWriter,
                 ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
                 ";;--------------\t----------\t----------\t----------\t----------\t----------")
-        elif infiltration.startswith("GREEN"):
+        elif infiltration.startswith("GREEN") or infiltration.startswith("MODIFIED_GREEN"):
             self.write_infiltration = SectionWriterAsList(
                 "[INFILTRATION]", GreenAmptInfiltrationWriter,
                 ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"

@@ -470,7 +470,7 @@ try:
         def setAddObjectMode(self, action_obj, layer_name, tool_type):
             """Start interactively adding points to point layer layer_name using tool button action_obj"""
             if self.addObjectTool:
-                if not isinstance(self.addObjectTool,AddPointTool):
+                if not isinstance(self.addObjectTool, AddPointTool):
                     self.addObjectTool.stopCapturing()
 
             if action_obj.isChecked():
@@ -491,6 +491,25 @@ try:
                 QApplication.restoreOverrideCursor()
                 self.canvas.unsetMapTool(self.addObjectTool)
                 self.addObjectTool = None
+
+        def turn_off_add_object_mode(self):
+            if self.addObjectTool:
+                if not isinstance(self.addObjectTool, AddPointTool):
+                    self.addObjectTool.stopCapturing()
+                self.canvas.unsetMapTool(self.addObjectTool)
+                self.addObjectTool = None
+            for act, name in self.session.add_point_tools:
+                if act.isChecked():
+                    act.setChecked(False)
+                    self.session.setQgsMapTool()
+            for act, name in self.session.add_link_tools:
+                if act.isChecked():
+                    act.setChecked(False)
+                    self.session.setQgsMapTool()
+            for act, name in self.session.add_polygon_tools:
+                if act.isChecked():
+                    act.setChecked(False)
+                    self.session.setQgsMapTool()
 
         def setAddFeatureMode(self):
             layer = self.session.current_map_layer()

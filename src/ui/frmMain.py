@@ -2460,7 +2460,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.listViewObjects.clear()
 
     def list_objects(self):
-        # self.setQgsMapTool()
+        self.map_widget.turn_off_add_object_mode()
         selected_text = ''
         for item in self.obj_tree.selectedIndexes():
             selected_text = str(item.data())

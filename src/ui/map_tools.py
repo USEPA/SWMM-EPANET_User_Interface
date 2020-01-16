@@ -501,15 +501,13 @@ try:
             for act, name in self.session.add_point_tools:
                 if act.isChecked():
                     act.setChecked(False)
-                    self.session.setQgsMapTool()
             for act, name in self.session.add_link_tools:
                 if act.isChecked():
                     act.setChecked(False)
-                    self.session.setQgsMapTool()
             for act, name in self.session.add_polygon_tools:
                 if act.isChecked():
                     act.setChecked(False)
-                    self.session.setQgsMapTool()
+            self.session.setQgsMapTool()
 
         def setAddFeatureMode(self):
             layer = self.session.current_map_layer()

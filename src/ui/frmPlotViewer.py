@@ -170,7 +170,7 @@ class CurvePlot(BasePlot):
             for row in range(len(df)):
                 x.append(float(df.index[row]))
                 y.append(float(df.iloc[row][0]))
-                self.setData(x, y, x_title, y_title)
+            self.setData(x, y, x_title, y_title)
 
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()

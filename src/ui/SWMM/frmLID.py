@@ -502,7 +502,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -558,7 +561,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -578,7 +584,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -598,7 +607,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblStorage1.setText("Barrel Height (in. or mm)")

@@ -135,4 +135,5 @@ class frmTransect(QMainWindow, Ui_frmTransect):
         frm_plt = frmPlotViewer(df,'xy', 'Transect ' + self.editing_item.name, self.windowIcon(),
                                 self.tblTransect.horizontalHeaderItem(0).text(), self.tblTransect.horizontalHeaderItem(1).text())
         frm_plt.setWindowTitle("Transect Viewer")
+        frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
         frm_plt.show()

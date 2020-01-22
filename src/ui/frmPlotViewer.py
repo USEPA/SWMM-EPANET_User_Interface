@@ -168,8 +168,8 @@ class CurvePlot(BasePlot):
             x = []
             y = []
             for row in range(len(df)):
-                x.append(df.index[row])
-                y.append(df.iloc[row][0])
+                x.append(float(df.index[row]))
+                y.append(float(df.iloc[row][0]))
                 self.setData(x, y, x_title, y_title)
 
             self.fig.canvas.draw()

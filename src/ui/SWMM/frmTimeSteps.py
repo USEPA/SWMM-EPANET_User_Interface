@@ -36,7 +36,10 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         (days, hours, minutes, seconds) = frmTimeSteps.split_days(section.rule_step)
         self.tmeControl.setTime(QtCore.QTime(hours, minutes, seconds))
 
-        routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
+        if len(section.routing_step.split(':')[0]) == 1:  # Delphi GUI writes routing step as h:mm:ss
+            routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, 'h:mm:ss'))
+        else:
+            routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
         self.txtRouting.setText(str(routing_time))
 
     @staticmethod

@@ -247,7 +247,7 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
 
     def eventFilter(self, ui_object, event):
         if event.type() == QtCore.QEvent.WindowUnblocked:
-            if self.refresh_column and self.refresh_column > -1:
+            if self.refresh_column > -1:
                 self.set_infilmodel_cell(self.refresh_column)
                 self.set_channel_cell(self.refresh_column)
                 self.refresh_column = -1

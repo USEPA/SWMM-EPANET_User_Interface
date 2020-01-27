@@ -73,10 +73,11 @@ class ProjectBase(object):
     def find_link(self, link_name):
         for link_group in self.links_groups():
             if link_group and link_group.value:
-                try:
-                    return link_group.find_item(link_name)
-                except:
-                    return None
+                possible_match = link_group.find_item(link_name)
+                if possible_match:
+                    return possible_match
+
+        return None
 
     def all_vertices(self, set_names=False):
         """ Return a list of Coordinate objects, one for each internal vertices of all links.

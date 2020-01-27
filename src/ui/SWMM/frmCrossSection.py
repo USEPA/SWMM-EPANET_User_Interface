@@ -173,13 +173,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
                 if value.shape.name == 'IRREGULAR':
                     # for irregular, combo needs transect names, dialog opens transect buttons
-                    for index in range(0,self.cboCombo.count):
+                    for index in range(0,self.cboCombo.count()):
                         if value.transect == self.cboCombo.itemText(index):
                             self.cboCombo.setCurrentIndex(index)
 
                 if value.shape.name == 'CUSTOM':
                     # for custom, combo needs shape curves, dialog opens shape curve editor
-                    for index in range(0,self.cboCombo.count):
+                    for index in range(0,self.cboCombo.count()):
                         if value.curve == self.cboCombo.itemText(index):
                             self.cboCombo.setCurrentIndex(index)
 
@@ -242,13 +242,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
         if value.shape.name == 'IRREGULAR':
             # for irregular, combo needs transect names, dialog opens transect buttons
-            for index in range(0,self.cboCombo.count):
+            for index in range(0,self.cboCombo.count()):
                 if value.transect == self.cboCombo.itemText(index):
                     self.cboCombo.setCurrentIndex(index)
 
         if value.shape.name == 'CUSTOM':
             # for custom, combo needs shape curves, dialog opens shape curve editor
-            for index in range(0,self.cboCombo.count):
+            for index in range(0,self.cboCombo.count()):
                 if value.curve == self.cboCombo.itemText(index):
                     self.cboCombo.setCurrentIndex(index)
 

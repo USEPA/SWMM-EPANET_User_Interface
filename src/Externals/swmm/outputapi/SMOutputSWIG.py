@@ -564,7 +564,7 @@ class SwmmOutputObject(object):
             import pandas
             item = None
             if "SYSTEM" in type_label.upper():
-                item = self.system.items()[0][1] # SwmmOutputSystem
+                item = self.system.get('-1')  # SwmmOutputSystem
             else:
                 item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment, Link, Node
 
@@ -588,7 +588,7 @@ class SwmmOutputObject(object):
 
     def get_item_unit(self, type_label, object_id, attribute_name):
         if "SYSTEM" in type_label.upper():
-            item = self.system.items()[0][1]
+            item = self.system.get('-1')  # SwmmOutputSystem
         else:
             item = self.get_items(type_label)[object_id]  # SwmmOutputSubcatchment
         attribute = item.get_attribute_by_name(attribute_name)  # SwmmOutputAttribute

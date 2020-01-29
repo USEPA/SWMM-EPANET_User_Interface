@@ -101,6 +101,9 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         #                                   self.txtMinEventValue.text(), self.txtMinEventVolume.text(),
         #                                   self.txtMinEventDelta.text())
 
+        if len(selected_id) == 0:
+            return
+
         #ToDo: ensure type order is the same as in the type Enum
         self.stats.ObjectType = self.cboCategory.currentIndex()
         self.stats.ObjectTypeText = self.cboCategory.currentText()

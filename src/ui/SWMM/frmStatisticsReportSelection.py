@@ -43,7 +43,8 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         if newIndex != 3:
             for item in self.output.all_items[newIndex]:
                 self.lstName.addItem(item)
-            self.lstName.item(0).setSelected(True)
+            if self.output.all_items[newIndex]:
+                self.lstName.item(0).setSelected(True)
             self.cboVariable.clear()
             for attribute in object_type.attributes:
                 self.cboVariable.addItem(attribute.name)

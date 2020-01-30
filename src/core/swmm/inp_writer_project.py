@@ -133,7 +133,7 @@ class ProjectWriter(InputFileWriterBase):
         # conduit link information
 
         self.write_pumps = SectionWriterAsList("[PUMPS]", PumpWriter,
-            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoffn"
+            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoff\n"
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 

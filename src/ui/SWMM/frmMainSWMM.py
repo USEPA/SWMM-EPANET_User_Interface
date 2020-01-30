@@ -1285,7 +1285,8 @@ class frmMainSWMM(frmMain):
             return None
         elif edit_name == self.tree_nodes_StorageUnits[0] and len(self.project.storage.value) == 0:
             return None
-        elif model_sec is not None and hasattr(model_sec, 'value') and isinstance(model_sec.value, list):
+        elif model_sec is not None and hasattr(model_sec, 'value') and isinstance(model_sec.value, list) \
+                and model_sec.SECTION_NAME != "[EVENTS]":
             if len(model_sec.value) == 0:
                 return None
         else:  # General-purpose case finds most editors from tree information

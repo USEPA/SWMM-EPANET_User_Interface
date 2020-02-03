@@ -583,7 +583,7 @@ class CrossSectionWriter(SectionWriter):
     """Make a string representation of a CrossSection of a Conduit, Orifice, or Weir"""
 
     field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
-    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}"
+    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}"
     # field_format_irregular = "{:16}\t{:12}\t{:16}"
 
     @staticmethod
@@ -595,7 +595,9 @@ class CrossSectionWriter(SectionWriter):
         if cross_section.comment:
             inp = cross_section.comment + '\n'
         if cross_section.shape == CrossSectionShape.CUSTOM:
-            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, shape_name, cross_section.geometry1, cross_section.curve, cross_section.barrels)
+            g3 = '0'
+            g4 = '0'
+            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, shape_name, cross_section.geometry1, cross_section.curve, g3, g4, cross_section.barrels)
         # elif cross_section.shape == CrossSectionShape.IRREGULAR:
         #     inp += CrossSectionWriter.field_format_irregular.format(cross_section.link, cross_section.shape.name, cross_section.transect)
         else:

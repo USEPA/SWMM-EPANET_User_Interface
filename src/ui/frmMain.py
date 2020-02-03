@@ -150,7 +150,7 @@ class frmMain(QMainWindow, Ui_frmMain):
 
         try:
             # TODO: make sure this works on all platforms, both in dev environment and in our installed packages
-            orig_path = os.environ["Path"]
+            orig_path = os.environ["PATH"]
             print("Original Path = " + orig_path)
             search_paths = []
             install_dir_base = os.path.basename(INSTALL_DIR)
@@ -193,8 +193,8 @@ class frmMain(QMainWindow, Ui_frmMain):
                                          qgis_home]:
                             if os.path.isdir(add_path):
                                 path = add_path + ';' + path
-                        os.environ["Path"] = path
-                        print("Try path = " + os.environ["Path"])
+                        os.environ["PATH"] = path
+                        print("Try path = " + os.environ["PATH"])
 
                         from qgis.core import QgsApplication, QgsVectorLayer, QgsProject
                         from qgis.gui import QgsMapCanvas
@@ -202,9 +202,7 @@ class frmMain(QMainWindow, Ui_frmMain):
                         from ui.map_tools import EmbedMap, LegendMenuProvider
                         print("DBG: import map_tools passed.")
                         QgsApplication.setPrefixPath(qgis_home, True)
-                        # QgsApplication.initQgis()
-                        self.qgsa = QgsApplication([], False)
-                        self.qgsa.initQgis()
+                        QgsApplication.initQgis()
                         tmp_lyr = QgsVectorLayer("Point", "Test", "memory")
                         if not tmp_lyr.isValid():
                             del tmp_lyr

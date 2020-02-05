@@ -337,7 +337,7 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
                                 dpi=100)
         N = len(self.statsResult.EventList)
         if N > 0:
-            M = int(N) / 50
+            M = N // 50
             if M == 0:
                 M = 1
             lX = []

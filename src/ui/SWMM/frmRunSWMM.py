@@ -138,7 +138,7 @@ class frmRunSWMM(frmRunSimulation):
                         date_now = datetime.now()
                         if (date_now - date_updated).microseconds > 100000:
                             self.update_progress_days(elapsed_days, total_days)
-                            self.update_progress_bar(round(elapsed_days), total_days)
+                            self.update_progress_bar(elapsed_days, total_days)
                             process_events()
                             date_updated = date_now
                 else:

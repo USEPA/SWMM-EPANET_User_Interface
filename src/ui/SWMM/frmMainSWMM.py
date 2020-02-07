@@ -1459,6 +1459,7 @@ class frmMainSWMM(frmMain):
                 filename, file_extension = os.path.splitext(self.project.file_name)
                 self.run_inp_file = mkstemp(prefix=filename + '_', suffix='.inp', text=True)
                 self.project.file_name_temporary = self.run_inp_file[1]
+                self.save_project(self.project.file_name_temporary)
             else:
                 return None
         else:

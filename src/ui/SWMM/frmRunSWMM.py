@@ -4,7 +4,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMessageBox
 import Externals.swmm.model.swmm5 as pyswmm
-from datetime import datetime
+from datetime import datetime, timedelta
 from ui.frmRunSimulation import frmRunSimulation, RunStatus
 from ui.model_utility import process_events
 
@@ -138,7 +138,7 @@ class frmRunSWMM(frmRunSimulation):
                         date_now = datetime.now()
                         if (date_now - date_updated).microseconds > 100000:
                             self.update_progress_days(elapsed_days, total_days)
-                            self.update_progress_bar(round(elapsed_days), total_days)
+                            self.update_progress_bar(elapsed_days, total_days)
                             process_events()
                             date_updated = date_now
                 else:
@@ -212,7 +212,9 @@ class frmRunSWMM(frmRunSimulation):
                                          self._main_form.project.options.dates.end_time, "%m/%d/%Y %H:%M:%S")
             start_date = datetime.strptime(self._main_form.project.options.dates.start_date + ' ' +
                                            self._main_form.project.options.dates.start_time, "%m/%d/%Y %H:%M:%S")
-            return (end_date - start_date).days
+            time_difference = (end_date - start_date)
+            days = time_difference.total_seconds() / timedelta(days=1).total_seconds()
+            return days
         except:
             return 0.0
 

@@ -9,6 +9,7 @@ from ui.help import HelpHandler
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
+from ui.model_utility import ParseData
 
 
 class frmCrossSection(QMainWindow, Ui_frmCrossSection):
@@ -153,7 +154,10 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                         self.listWidget.setCurrentItem(list_item)
                     elif str(list_item.text()) == 'Semi-Circular' and value.shape.name == 'SEMICIRCULAR':
                         self.listWidget.setCurrentItem(list_item)
-                self.sbxNumber.setValue(int(value.barrels))
+
+                ibarrels, good_int = ParseData.get_int_from_float(value.barrels)
+                if good_int:
+                    self.sbxNumber.setValue(ibarrels)
                 self.txt1.setText(str(value.geometry1))
                 self.txt2.setText(str(value.geometry2))
                 self.txt3.setText(str(value.geometry3))

@@ -192,6 +192,18 @@ class ParseData:
         except ValueError:
             return value, False
 
+    @staticmethod
+    def get_int_from_float(value):
+        iv, int_good = ParseData.intTryParse(value)
+        if int_good:
+            return iv, True
+        else:
+            fv, float_good = ParseData.floatTryParse(value)
+            if float_good:
+                return int(fv), True
+            else:
+                value, False
+
 class BasePlot(FigureCanvas):
     def __init__(self, main_form=None, width=5, height=4, dpi=100):
         import matplotlib.pyplot as plt

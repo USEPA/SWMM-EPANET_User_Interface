@@ -289,6 +289,8 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         self.listWidget.item(23).setIcon(QtGui.QIcon("./swmmimages/24custom.png"))
         self.listWidget.item(24).setIcon(QtGui.QIcon("./swmmimages/25na.png"))
 
+        self.listWidget.setUniformItemSizes(False)
+
         self.listWidget_currentItemChanged()
 
 

@@ -1075,6 +1075,22 @@ class GroundwaterWriter(SectionWriter):
         return inp
 
 
+class GWFWriter(SectionWriter):
+    """Custom groundwater flow equations for specific subcatchments"""
+
+    field_format = " {:16}\t{:8}\t{:}"
+
+    @staticmethod
+    def as_text(gwf):
+        inp = ''
+        if gwf.comment:
+            inp = gwf.comment + '\n'
+        inp += GWFWriter.field_format.format(gwf.subcatchment_name,
+                                             gwf.groundwater_flow_type.name,
+                                             gwf.custom_equation)
+        return inp
+
+
 class LIDUsageWriter(SectionWriter):
     """Specifies how an LID control will be deployed in a subcatchment"""
 

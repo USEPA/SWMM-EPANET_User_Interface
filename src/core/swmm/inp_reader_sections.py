@@ -43,6 +43,7 @@ from core.swmm.hydrology.subcatchment import Coverages
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import Groundwater
+from core.swmm.hydrology.subcatchment import GWF, GroundwaterFlowType
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
@@ -1531,6 +1532,25 @@ class GroundwaterReader(SectionReader):
         if len(fields) > 13:
             groundwater.unsaturated_zone_moisture = fields[13]
         return groundwater
+
+
+class GWFReader(SectionReader):
+    """Custom groundwater flow equations for specific subcatchments"""
+
+    @staticmethod
+    def read(new_text):
+        gwf = GWF()
+        fields = new_text.split()
+        if len(fields) > 0:
+            gwf.subcatchment_name = fields[0]
+        if len(fields) > 1:
+            if fields[1].upper() == "LATERAL":
+                gwf.groundwater_flow_type = GroundwaterFlowType.LATERAL
+            elif fields[1].upper() == "DEEP":
+                gwf.groundwater_flow_type = GroundwaterFlowType.DEEP
+        if len(fields) > 2:
+            gwf.custom_equation = ''.join(fields[2:])
+        return gwf
 
 
 class LIDUsageReader(SectionReader):

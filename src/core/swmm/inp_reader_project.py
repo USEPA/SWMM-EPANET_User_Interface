@@ -84,6 +84,9 @@ class ProjectReader(InputFileReader):
         self.read_groundwater = SectionReaderAsList("[GROUNDWATER]", GroundwaterReader)
         # subcatchment groundwater parameters
 
+        self.read_gwf = SectionReaderAsList("[GWF]", GWFReader)
+        # subcatchment groundwater flow equations
+
         self.read_snowpacks = SectionReaderAsListGroupByID("[SNOWPACKS]", SnowPackReader)
         # subcatchment snow pack parameters
 

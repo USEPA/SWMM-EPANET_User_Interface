@@ -3,6 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from ui.SWMM.frmGroundwaterEquationDeepDesigner import Ui_frmGroundwaterEquationDeep
+from core.swmm.hydrology.subcatchment import GWF, GroundwaterFlowType
 
 
 class frmGroundwaterEquationDeep(QMainWindow, Ui_frmGroundwaterEquationDeep):
@@ -20,20 +21,39 @@ class frmGroundwaterEquationDeep(QMainWindow, Ui_frmGroundwaterEquationDeep):
 
     def set_from(self, project):
         self.project = project
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == self.subcatchment_name:
-                self.txtControls.setPlainText(value.custom_deep_flow_equation)
+        gwf_section = self.project.gwf
+        gwf_list = gwf_section.value[0:]
+        for value in gwf_list:
+            if (value.subcatchment_name == self.subcatchment_name and
+                    value.groundwater_flow_type == GroundwaterFlowType.DEEP):
+                self.txtControls.setPlainText(value.custom_equation)
 
     def cmdOK_Clicked(self):
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == self.subcatchment_name:
-                if value.custom_deep_flow_equation != self.txtControls.toPlainText():
-                    self._main_form.session.mark_project_as_unsaved()
-                value.custom_deep_flow_equation = self.txtControls.toPlainText()
+        gwf_section = self._main_form.project.find_section("GWF")
+
+        found = False
+        for value in gwf_section.value:
+            if (value.subcatchment_name == self.subcatchment_name and
+                    value.groundwater_flow_type == GroundwaterFlowType.DEEP):
+                found = True
+                if value.custom_equation != self.txtControls.toPlainText():
+                    self._main_form.mark_project_as_unsaved()
+                value.custom_equation = self.txtControls.toPlainText()
+
+                # no equation present, but previously had an equation,
+                # so need to remove from gwf list
+                if not self.txtControls.toPlainText():
+                    gwf_section.value.remove(value)
+                    self._main_form.mark_project_as_unsaved()
+
+        if not found and self.txtControls.toPlainText():
+            new_gwf = GWF()
+            new_gwf.subcatchment_name = self.subcatchment_name
+            new_gwf.groundwater_flow_type = GroundwaterFlowType.DEEP
+            new_gwf.custom_equation = self.txtControls.toPlainText()
+            self._main_form.project.gwf.value.append(new_gwf)
+            self._main_form.mark_project_as_unsaved()
+
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -1710,6 +1710,7 @@ class frmMainSWMM(frmMain):
                     self.project_settings.xsection:
                 self.project_settings.apply_default_attributes(xsection)
                 xsection.link = new_item.name
+                new_item.cross_section = xsection
                 if isinstance(new_item, Weir):
                     # weirs have different defaults
                     xsection.shape = CrossSectionShape.RECT_OPEN

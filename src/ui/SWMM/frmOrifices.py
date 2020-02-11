@@ -2,6 +2,7 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 from core.swmm.hydraulics.link import Orifice
+from core.swmm.hydraulics.link import CrossSectionShape
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmCrossSection import frmCrossSection
@@ -75,16 +76,22 @@ class frmOrifices(frmGenericPropertyEditor):
         cross_section = self.project.find_section("XSECTIONS")
         cross_section_list = cross_section.value[0:]
         for column in range(0, self.tblGeneric.columnCount()):
+            current_shape_text = self.tblGeneric.cellWidget(6, column).currentText()
+            current_geometry1_text = self.tblGeneric.item(7, column).text()
+            current_geometry2_text = self.tblGeneric.item(8, column).text()
+            current_link_name = self.tblGeneric.item(0, column).text()
             for value in cross_section_list:
-                if value.link == str(self.tblGeneric.item(0,column).text()):
-                    if value.shape != str(self.tblGeneric.item(6,column).text()) or \
-                        value.geometry1 != str(self.tblGeneric.item(7, column).text()) or \
-                        value.geometry2 != str(self.tblGeneric.item(8, column).text()):
+                if value.link == current_link_name:
+                    if value.shape.name != current_shape_text or \
+                        value.geometry1 != current_geometry1_text or \
+                        value.geometry2 != current_geometry2_text:
                         self._main_form.mark_project_as_unsaved()
 
-                    value.shape = str(self.tblGeneric.item(6,column).text())
-                    value.geometry1 = str(self.tblGeneric.item(7, column).text())
-                    value.geometry2 = str(self.tblGeneric.item(8, column).text())
+                    if value.shape.name != current_shape_text:
+                        xs_shape = CrossSectionShape[current_shape_text]
+                        value.shape = xs_shape
+                    value.geometry1 = current_geometry1_text
+                    value.geometry2 = current_geometry2_text
         self._main_form.list_objects()
         # self._main_form.model_layers.create_layers_from_project(self.project)
         self.close()

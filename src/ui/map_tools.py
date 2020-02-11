@@ -1411,9 +1411,9 @@ try:
                 increment = (max - min) / 5
                 ramp_val = [round(min + index*increment, 2) for index in [0, 1, 2, 3, 4]]
                 colorRamp = ((str(ramp_val[0]) + ' to ' + str(ramp_val[1]), ramp_val[0], ramp_val[1], '#0000ff'),
-                             (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#00ffff'),
-                             (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#00ff00'),
-                             (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#ffff00'),
+                             (str(ramp_val[1]) + ' to ' + str(ramp_val[2]), ramp_val[1], ramp_val[2], '#7dd0d0'),
+                             (str(ramp_val[2]) + ' to ' + str(ramp_val[3]), ramp_val[2], ramp_val[3], '#5abf28'),
+                             (str(ramp_val[3]) + ' to ' + str(ramp_val[4]), ramp_val[3], ramp_val[4], '#Fae91a'),
                              (str(ramp_val[4]) + ' to ' + str(round(max, 2)), ramp_val[4], max, '#ff0000'))
                 ranges = []
                 for label, lower, upper, color in colorRamp:

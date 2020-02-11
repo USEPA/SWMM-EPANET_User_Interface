@@ -418,7 +418,7 @@ class ProjectReader(InputFileReader):
                             pass
                         pollutant_name = fields[1]
                         found = False
-                        if pollutant_name == "FLOW":
+                        if pollutant_name == "FLOW" or pollutant_name.upper() == "FLOW":
                             found = True
                         for pollutant in project.pollutants.value:
                             if pollutant.name == pollutant_name:

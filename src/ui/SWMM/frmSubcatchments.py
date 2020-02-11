@@ -236,7 +236,6 @@ class frmSubcatchments(frmGenericPropertyEditor):
                     edit_these.append(new_item)
             if len(edit_these) == 0:
                 new_item = Groundwater()
-                groundwater_section.value = []
                 new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                 # groundwater_section.value.append(new_item)  not until ok
                 edit_these.append(new_item)

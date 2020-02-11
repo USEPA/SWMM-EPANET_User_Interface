@@ -8,6 +8,7 @@ from ui.text_plus_button import TextPlusButton
 from ui.help import HelpHandler
 from ui.SWMM.frmGroundwaterEquation import frmGroundwaterEquation
 from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
+from core.swmm.hydrology.subcatchment import GroundwaterFlowType
 
 
 class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
@@ -56,10 +57,12 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         # text plus button for custom lateral equation
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == str(self.tblGeneric.item(0,column).text()) and len(value.custom_lateral_flow_equation) > 0:
+        gwf_section = self.project.gwf
+        gwf_list = gwf_section.value[0:]
+        for value in gwf_list:
+            if (value.subcatchment_name == str(self.tblGeneric.item(0, column).text()) and
+                    len(value.custom_equation) > 0 and
+                    value.groundwater_flow_type == GroundwaterFlowType.LATERAL):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column
@@ -70,10 +73,12 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         # text plus button for custom deep equation
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == str(self.tblGeneric.item(0,column).text()) and len(value.custom_deep_flow_equation) > 0:
+        gwf_section = self.project.gwf
+        gwf_list = gwf_section.value[0:]
+        for value in gwf_list:
+            if (value.subcatchment_name == str(self.tblGeneric.item(0, column).text()) and
+                    len(value.custom_equation) > 0 and
+                    value.groundwater_flow_type == GroundwaterFlowType.DEEP):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column

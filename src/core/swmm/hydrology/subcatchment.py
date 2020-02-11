@@ -385,6 +385,28 @@ class Groundwater(Section):
         self.custom_deep_flow_equation = ''
 
 
+class GroundwaterFlowType(Enum):
+    LATERAL = 1
+    DEEP = 2
+
+
+class GWF(Section):
+    """Defines custom groundwater flow equations for specific subcatchments"""
+
+    def __init__(self):
+        Section.__init__(self)
+
+        ## Name of the Subcatchment defined in [SUBCATCHMENTS]
+        self.subcatchment_name = 'None'
+
+        ## Flow type: LATERAL (for lateral flow to a node of the conveyance network)
+        ## or DEEP (for vertical loss to deep groundwater)
+        self.groundwater_flow_type = GroundwaterFlowType.LATERAL
+
+        ## Math formula expressing the rate of groundwater flow
+        self.custom_equation = ''
+
+
 class LIDUsage(Section):
     """Specifies how an LID control will be deployed in a subcatchment"""
 

@@ -102,6 +102,11 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------------\t----------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------")
         # subcatchment groundwater parameters
 
+        self.write_gwf = SectionWriterAsList("[GWF]", GWFWriter,
+                                             ";;Subcatchment   \tFlow    \tEquation\n"
+                                             ";;-------------- \t------- \t--------")
+        # custom groundwater flow equations
+
         self.write_snowpacks = SectionWriterAsList("[SNOWPACKS]", SnowPackWriter,
                                                 ";;Name          \tSurface   \tParameters\n"
                                                 ";;--------------\t----------\t----------")

@@ -312,20 +312,26 @@ class SectionReaderAsList(SectionReader):
     def read(self, new_text):
         section = self._init_section()
         comment = ''
+        keep_per_item_comment = False
+        if new_text.startswith('[LANDUSE'):
+            keep_per_item_comment = True
         new_text = new_text.lstrip()  # xw20170328, remove heading white spaces indluing /n /t and spaces
         for line in new_text.splitlines()[1:]:  # process each line after the first one [section name]
             # if row starts with semicolon or is blank, add as a comment
             if line.lstrip().startswith(';') or not line.strip():
-                if section.value:  # If we have already added items to this section, add comment as a Section
+                if section.value or len(comment) > 0:  # If we have already added items to this section, add comment as a Section
                     # comment += line  xw20170327
                     if len(comment) > 0:  # xw20170327, added \n for multiple lines of comments within a section
                         comment += "\n" + line
                     else:
                         comment += line
                 else:  # If we are still at the beginning of the section, set comment instead of adding a Section
-                    self.set_comment_check_section(section, line)
+                    if line.startswith(';;'):
+                        self.set_comment_check_section(section, line)
+                    elif keep_per_item_comment and line.startswith(';'):
+                        comment = line
             else:
-                if comment:
+                if keep_per_item_comment and comment:
                     line = line + ' ' + comment
                     comment = ''
                 self.read_item(section, line)

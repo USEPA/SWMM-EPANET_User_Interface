@@ -192,13 +192,18 @@ class LanduseWriter(SectionWriter):
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-    field_format = " {:15}\t{:10}\t{:10}\t{:10}"
+    field_format = "{:<15}\t{:<10}\t{:<10}\t{:<10}"
 
     @staticmethod
     def as_text(landuse):
         inp = ''
         if landuse.comment:
-            inp = landuse.comment + '\n'
+            items = landuse.comment.split('\n')
+            for item in items:
+                if item.startswith(';'):
+                    inp += item + '\n'
+                else:
+                    inp += ';' + item + '\n'
         inp += LanduseWriter.field_format.format(landuse.name,
                                                  landuse.street_sweeping_interval,
                                                  landuse.street_sweeping_availability,

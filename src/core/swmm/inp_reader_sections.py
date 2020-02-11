@@ -287,15 +287,20 @@ class LanduseReader(SectionReader):
     @staticmethod
     def read(new_text):
         landuse = Landuse()
-        fields = new_text.split()
+        items = new_text.split(';')
+        fields = items[0].split()
+        comment = ''
+        for c in items[1:]:
+            comment += c
         if len(fields) > 0:
             landuse.name = fields[0]
         if len(fields) > 1:
             landuse.street_sweeping_interval = fields[1]
         if len(fields) > 2:
-            landuse.street_sweeping_availability =  fields[2]
+            landuse.street_sweeping_availability = fields[2]
         if len(fields) > 3:
             landuse.last_swept = fields[3]
+        landuse.comment = comment
         return landuse
 
 

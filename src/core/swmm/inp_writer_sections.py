@@ -162,7 +162,7 @@ class PatternWriter(SectionWriter):
             if count == count_total:   # add ID to first line and break lines before they get too long
                 if section_text:  # If there are already values added, put next value on a new line
                     section_text += '\n'
-                section_text += " {:16}{:10}".format(pattern.name, pattern_text)
+                section_text += " {:16} {:10}".format(pattern.name, pattern_text)
                 pattern_text = ''
                 count = 0
             section_text += "\t{:5}".format(multiplier)

@@ -149,13 +149,17 @@ class PatternWriter(SectionWriter):
     @staticmethod
     def as_text(pattern):
         """format contents of this item for writing to file"""
-        count = 6
+        if pattern.pattern_type == PatternType.DAILY:
+            count_total = 7
+        else:
+            count_total = 6
+        count = count_total
         section_text = ''
         pattern_text = pattern.pattern_type.name
         for line in pattern.description.splitlines(True):
             section_text += ';' + line
         for multiplier in pattern.multipliers:
-            if count == 6:        # add ID to first line and break lines before they get too long
+            if count == count_total:   # add ID to first line and break lines before they get too long
                 if section_text:  # If there are already values added, put next value on a new line
                     section_text += '\n'
                 section_text += " {:16}{:10}".format(pattern.name, pattern_text)

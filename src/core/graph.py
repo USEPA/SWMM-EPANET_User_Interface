@@ -8,9 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib import dates
 from matplotlib.cm import get_cmap
 import cycler
-import colorsys
 import datetime
-import numpy as np
 
 
 class SWMM:

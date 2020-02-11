@@ -1107,7 +1107,7 @@ class DirectInflowReader(SectionReader):
         if len(fields) > 0:
             direct_inflow.node = fields[0]
         if len(fields) > 1:
-            direct_inflow.constituent = fields[1]
+            direct_inflow.constituent = fields[1].upper()
         if len(fields) > 2:
             direct_inflow.timeseries = fields[2]
         if len(fields) > 3 and direct_inflow.constituent.upper() != "FLOW":

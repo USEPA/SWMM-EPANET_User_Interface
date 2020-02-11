@@ -805,7 +805,10 @@ class DirectInflowWriter(SectionWriter):
         if direct_inflow.constituent.upper() == "FLOW":
             inp_format = "FLOW"
         else:
-            inp_format = direct_inflow.format.name
+            if direct_inflow.format:
+                inp_format = direct_inflow.format.name
+            else:
+                inp_format = "CONCEN"
 
         if direct_inflow.baseline or direct_inflow.timeseries:
             inp += DirectInflowWriter.field_format.format(direct_inflow.node,

@@ -86,43 +86,48 @@ class ProjectReader(InputFileReader):
             self.defer_calibrations = section_text
             return
         elif section_name_upper == "[PIPES]":
-            self.check_valid_node_id(project, 'PIPES', section_text)
+            # self.check_valid_node_id(project, 'PIPES', section_text)
+            pass
         elif section_name_upper == "[PUMPS]":
-            self.check_valid_node_id(project, 'PUMPS', section_text)
+            # self.check_valid_node_id(project, 'PUMPS', section_text)
+            pass
         elif section_name_upper == "[VALVES]":
-            self.check_valid_node_id(project, 'VALVES', section_text)
+            # self.check_valid_node_id(project, 'VALVES', section_text)
+            pass
         elif section_name_upper == "[DEMANDS]":
-            self.check_valid_node_id(project, 'DEMANDS', section_text)
+            # self.check_valid_node_id(project, 'DEMANDS', section_text)
+            pass
         elif section_name_upper == "[SOURCES]":
-            self.check_valid_node_id(project, 'SOURCES', section_text)
+            # self.check_valid_node_id(project, 'SOURCES', section_text)
+            pass
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
         if self.defer_quality:
-            self.check_valid_node_id(project, 'QUALITY', self.defer_quality)
+            # self.check_valid_node_id(project, 'QUALITY', self.defer_quality)
             QualityReader.read(self.defer_quality, project)
             self.defer_quality = None
         if self.defer_coordinates:
-            self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
+            # self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
         if self.defer_vertices:
-            self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
+            # self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
             VerticesReader.read(self.defer_vertices, project)
             self.defer_vertices = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
         if self.defer_mixing:
-            self.check_valid_node_id(project, 'MIXING', self.defer_mixing)
+            # self.check_valid_node_id(project, 'MIXING', self.defer_mixing)
             MixingReader.read(self.defer_mixing, project)
             self.defer_mixing = None
         if self.defer_emitters:
-            self.check_valid_node_id(project, 'EMITTERS', self.defer_emitters)
+            # self.check_valid_node_id(project, 'EMITTERS', self.defer_emitters)
             EmittersReader.read(self.defer_emitters, project)
             self.defer_emitters = None
         if self.defer_status:
-            self.check_valid_link_id(project, 'STATUS', self.defer_status)
+            # self.check_valid_link_id(project, 'STATUS', self.defer_status)
             StatusReader.read(self.defer_status, project)
             self.defer_status = None
         project.metric = project.options.hydraulics.flow_units in flow_units_metric

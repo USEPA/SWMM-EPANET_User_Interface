@@ -182,7 +182,7 @@ class ProjectReader(InputFileReader):
     def read_section(self, project, section_name, section_text):
         section_name_upper = section_name.upper()
         if section_name_upper == project.infiltration.SECTION_NAME.upper():
-            self.check_valid_subcatchment_id(project, 'INFILTRATION', section_text)
+            # self.check_valid_subcatchment_id(project, 'INFILTRATION', section_text)
             infiltration = project.options.infiltration.upper()
             if infiltration.startswith("HORTON") or infiltration.startswith("MODIFIED_HORTON"):
                 self.read_infiltration = SectionReaderAsList(section_name, HortonInfiltrationReader)
@@ -218,77 +218,96 @@ class ProjectReader(InputFileReader):
             self.defer_polygons = section_text
             return
         elif section_name_upper == "[GROUNDWATER]":
-            self.check_valid_subcatchment_id(project, 'GROUNDWATER', section_text)
+            # self.check_valid_subcatchment_id(project, 'GROUNDWATER', section_text)
+            pass
         elif section_name_upper == "[GWF]":
-            self.check_valid_subcatchment_id(project, 'GWF', section_text)
+            # self.check_valid_subcatchment_id(project, 'GWF', section_text)
+            pass
         elif section_name_upper == "[COVERAGES]":
-            self.check_valid_subcatchment_id(project, 'COVERAGES', section_text)
-            self.check_valid_landuse_id(project, 'COVERAGES', section_text)
+            # self.check_valid_subcatchment_id(project, 'COVERAGES', section_text)
+            # self.check_valid_landuse_id(project, 'COVERAGES', section_text)
+            pass
         elif section_name_upper == "[LOADINGS]":
-            self.check_valid_subcatchment_id(project, 'LOADINGS', section_text)
+            # self.check_valid_subcatchment_id(project, 'LOADINGS', section_text)
+            pass
         elif section_name_upper == "[LID_USAGE]":
-            self.check_valid_subcatchment_id(project, 'LID_USAGE', section_text)
-            self.check_valid_lid_id(project, 'LID_USAGE', section_text)
+            # self.check_valid_subcatchment_id(project, 'LID_USAGE', section_text)
+            # self.check_valid_lid_id(project, 'LID_USAGE', section_text)
+            pass
         elif section_name_upper == "[CONDUITS]":
-            self.check_valid_node_id(project, 'CONDUITS', section_text)
+            # self.check_valid_node_id(project, 'CONDUITS', section_text)
+            pass
         elif section_name_upper == "[PUMPS]":
-            self.check_valid_node_id(project, 'PUMPS', section_text)
+            # self.check_valid_node_id(project, 'PUMPS', section_text)
+            pass
         elif section_name_upper == "[ORIFICES]":
-            self.check_valid_node_id(project, 'ORIFICES', section_text)
+            # self.check_valid_node_id(project, 'ORIFICES', section_text)
+            pass
         elif section_name_upper == "[WEIRS]":
-            self.check_valid_node_id(project, 'WEIRS', section_text)
+            # self.check_valid_node_id(project, 'WEIRS', section_text)
+            pass
         elif section_name_upper == "[OUTLETS]":
-            self.check_valid_node_id(project, 'OUTLETS', section_text)
+            # self.check_valid_node_id(project, 'OUTLETS', section_text)
+            pass
         elif section_name_upper == "[TREATMENT]":
-            self.check_valid_node_id(project, 'TREATMENT', section_text)
-            self.check_valid_pollutant_id(project, 'TREATMENT', section_text)
+            # self.check_valid_node_id(project, 'TREATMENT', section_text)
+            # self.check_valid_pollutant_id(project, 'TREATMENT', section_text)
+            pass
         elif section_name_upper == "[INFLOWS]":
-            self.check_valid_node_id(project, 'INFLOWS', section_text)
-            self.check_valid_pollutant_id(project, 'INFLOWS', section_text)
+            # self.check_valid_node_id(project, 'INFLOWS', section_text)
+            # self.check_valid_pollutant_id(project, 'INFLOWS', section_text)
+            pass
         elif section_name_upper == "[DWF]":
-            self.check_valid_node_id(project, 'DWF', section_text)
+            # self.check_valid_node_id(project, 'DWF', section_text)
+            pass
         elif section_name_upper == "[RDII]":
-            self.check_valid_node_id(project, 'RDII', section_text)
+            # self.check_valid_node_id(project, 'RDII', section_text)
+            pass
         elif section_name_upper == "[XSECTIONS]":
-            self.check_valid_link_id(project, 'XSECTIONS', section_text)
+            # self.check_valid_link_id(project, 'XSECTIONS', section_text)
+            pass
         elif section_name_upper == "[LOSSES]":
-            self.check_valid_link_id(project, 'LOSSES', section_text)
+            # self.check_valid_link_id(project, 'LOSSES', section_text)
+            pass
         elif section_name_upper == "[BUILDUP]":
-            self.check_valid_landuse_id(project, 'BUILDUP', section_text)
-            self.check_valid_pollutant_id(project, 'BUILDUP', section_text)
+            # self.check_valid_landuse_id(project, 'BUILDUP', section_text)
+            # self.check_valid_pollutant_id(project, 'BUILDUP', section_text)
+            pass
         elif section_name_upper == "[WASHOFF]":
-            self.check_valid_landuse_id(project, 'WASHOFF', section_text)
-            self.check_valid_pollutant_id(project, 'WASHOFF', section_text)
+            # self.check_valid_landuse_id(project, 'WASHOFF', section_text)
+            # self.check_valid_pollutant_id(project, 'WASHOFF', section_text)
+            pass
         elif section_name_upper == "[SUBCATCHMENTS]":
-            self.check_valid_raingage_id(project, 'SUBCATCHMENTS', section_text)
+            # self.check_valid_raingage_id(project, 'SUBCATCHMENTS', section_text)
+            pass
         InputFileReader.read_section(self, project, section_name, section_text)
 
     def finished_reading(self, project):
         if self.defer_subareas:
-            self.check_valid_subcatchment_id(project, 'SUBAREAS', self.defer_subareas)
+            # self.check_valid_subcatchment_id(project, 'SUBAREAS', self.defer_subareas)
             SubareasReader.read(self.defer_subareas, project)
             self.defer_subareas = None
         if self.defer_coordinates:
-            self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
+            # self.check_valid_node_id(project, 'COORDINATES', self.defer_coordinates)
             CoordinatesReader.read(self.defer_coordinates, project)
             self.defer_coordinates = None
         if self.defer_symbols:
-            self.check_valid_raingage_id(project, 'SYMBOLS', self.defer_symbols)
+            # self.check_valid_raingage_id(project, 'SYMBOLS', self.defer_symbols)
             SymbolsReader.read(self.defer_symbols, project)
             self.defer_symbols = None
         if self.defer_tags:
             TagsReader.read(self.defer_tags, project)
             self.defer_tags = None
         if self.defer_losses:
-            self.check_valid_link_id(project, 'LOSSES', self.defer_losses)
+            # self.check_valid_link_id(project, 'LOSSES', self.defer_losses)
             LossesReader.read(self.defer_losses, project)
             self.defer_losses = None
         if self.defer_vertices:
-            self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
+            # self.check_valid_link_id(project, 'VERTICES', self.defer_vertices)
             VerticesReader.read(self.defer_vertices, project)
             self.defer_vertices = None
         if self.defer_polygons:
-            self.check_valid_subcatchment_id(project, 'POLYGONS', self.defer_polygons)
+            # self.check_valid_subcatchment_id(project, 'POLYGONS', self.defer_polygons)
             PolygonsReader.read(self.defer_polygons, project)
             self.defer_polygons = None
         project.metric = project.options.flow_units in flow_units_metric
@@ -308,9 +327,11 @@ class ProjectReader(InputFileReader):
                             pass
                         subcatchment_name = fields[0]
                         found = False
-                        for subcatchment in project.subcatchments.value:
-                            if subcatchment.name == subcatchment_name:
+                        try:
+                            if project.subcatchments.value[subcatchment_name]:
                                 found = True
+                        except KeyError as ke:
+                            pass
                         if not found:
                             self.input_err_msg += '\n' + 'Undefined Subcatchment (' + subcatchment_name + ') referenced in ' + section_name + ' section.'
         except:

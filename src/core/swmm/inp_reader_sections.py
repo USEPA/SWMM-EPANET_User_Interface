@@ -824,9 +824,6 @@ class CrossSectionReader(SectionReader):
                     cross_section.barrels = fields[6]
         elif cross_section.shape == CrossSectionShape.NotSet:
             return None
-        # elif cross_section.shape == CrossSectionShape.IRREGULAR:
-        #     if len(fields) > 2:
-        #         cross_section.transect = fields[2]
         else:
             if len(fields) > 2:
                 cross_section.geometry1 = fields[2]

@@ -797,10 +797,10 @@ try:
 
                 if features:
                     # changes are only possible when editing the layer
-                    layer.startEditing()
+                    # layer.startEditing()
                     provider.addFeatures(features)
-                    layer.commitChanges()
-                    layer.updateExtents()
+                    # layer.commitChanges()
+                    # layer.updateExtents()
                     layer.dataProvider().createSpatialIndex()
 
                 # create a new symbol layer with default properties
@@ -997,10 +997,10 @@ try:
 
                 if features:
                     # changes are only possible when editing the layer
-                    layer.startEditing()
+                    # layer.startEditing()
                     provider.addFeatures(features)
-                    layer.commitChanges()
-                    layer.updateExtents()
+                    # layer.commitChanges()
+                    # layer.updateExtents()
                     layer.dataProvider().createSpatialIndex()
                 # sl = QgsSymbolLayerV2Registry.instance().symbolLayerMetadata("LineDecoration").createSymbolLayer(
                 #     {'width': '0.26', 'color': '0,0,0'})
@@ -1245,10 +1245,10 @@ try:
                             feature.setAttributes([polygon.name, 0.0, 0, 0, 0.0])
                             features.append(feature)
                 if features:
-                    layer.startEditing()
+                    # layer.startEditing()
                     provider.addFeatures(features)
-                    layer.commitChanges()
-                    layer.updateExtents()
+                    # layer.commitChanges()
+                    # layer.updateExtents()
                     layer.dataProvider().createSpatialIndex()
 
                 self.set_default_polygon_renderer(layer, poly_color)

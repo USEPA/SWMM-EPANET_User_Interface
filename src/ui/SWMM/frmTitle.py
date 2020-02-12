@@ -13,6 +13,8 @@ class frmTitle(QMainWindow, Ui_frmTitle):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
+        self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmTitle_geometry", self.saveGeometry(), type=QtCore.QByteArray))
+        self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmTitle_state", self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, project):
         self.txtTitle.setPlainText(project.title.title)
@@ -22,7 +24,11 @@ class frmTitle(QMainWindow, Ui_frmTitle):
         if section.title != self.txtTitle.toPlainText():
             self._main_form.mark_project_as_unsaved()
         section.title = self.txtTitle.toPlainText()
+        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_state", self.saveState())
         self.close()

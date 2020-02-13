@@ -23,6 +23,7 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         self.project = parent.project
         if option_section.infiltration=="HORTON" or option_section.infiltration=="MODIFIED_HORTON":
             self.help_topic = "swmm/src/src/hortoninfiltrationparameters.htm"
+
         elif option_section.infiltration=="GREEN_AMPT" or option_section.infiltration=="MODIFIED_GREEN_AMPT":
             self.help_topic = "swmm/src/src/green_amptinfiltrationparame.htm"
         elif option_section.infiltration=="CURVE_NUMBER":
@@ -95,6 +96,7 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
             self.set_CN()
 
     def set_horton(self):
+        self.lblNotes.setText("Maximum rate on the Horton infiltration curve (in/hr or mm/hr)")
         #mtype = self.defaults.infil_model_horton.model_type()
         mtype = E_InfilModel[self.cboInfilModel.currentText().upper()]
         props = []
@@ -134,6 +136,7 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
                 self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
 
     def set_greenampt(self):
+        self.lblNotes.setText("Soil capillary suction head (inches or mm)")
         #mtype = self.defaults.infil_model_ga.model_type()
         mtype = E_InfilModel[self.cboInfilModel.currentText().upper()]
         props = []
@@ -164,6 +167,7 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
                 self.tblGeneric.setItem(i,0, QTableWidgetItem(str(val)))
 
     def set_CN(self):
+        self.lblNotes.setText("SCS runoff curve number")
         props = []
         for i in range(0, len(CurveNumberInfiltration.metadata)):
             if "subcatch" in CurveNumberInfiltration.metadata[i].label.lower():

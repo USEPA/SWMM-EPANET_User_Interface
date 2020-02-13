@@ -52,6 +52,10 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
             else:
                 self.set_from(edit_these)
         self.resize(400,450)
+        if not self.project.pollutants.value:
+            self.lblNotesBuildup.setText("There are no pollutants for this project")
+            self.lblNotesWashoff.setText("There are no pollutants for this project")
+
 
     def set_from(self, land_use):
         if not isinstance(land_use, Landuse):

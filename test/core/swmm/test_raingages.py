@@ -10,6 +10,7 @@ class SimpleRainGageTest(unittest.TestCase):
     """Test RAINGAGES section"""
 
     TEST_TEXTS = ["RainGage         INTENSITY 0:05   1.0    TIMESERIES 2-yr "]
+    TEST_FILE_TEXTS = ['Logan            VOLUME    1:00     1        FILE       "190770BostonNCDC.dat" *          IN   ']
     SOURCE_TEXTS =["""[RAINGAGES]
 ;;               Rain      Time   Snow   Data
 ;;Name           Type      Intrvl Catch  Source
@@ -24,6 +25,14 @@ RainGage         INTENSITY 0:05   1.0    TIMESERIES 2-yr"""]
     def test_one_raingage(self):
         """Test one rain gage"""
         for test_text in self.TEST_TEXTS:
+            my_options = RainGageReader.read(test_text)
+            actual_text = RainGageWriter.as_text(my_options)
+            msg = '\nSet:'+test_text+'\nGet:'+actual_text
+            self.assertTrue(match(actual_text, test_text), msg)
+
+    def test_file_raingage(self):
+        """Test FILE raingage"""
+        for test_text in self.TEST_FILE_TEXTS:
             my_options = RainGageReader.read(test_text)
             actual_text = RainGageWriter.as_text(my_options)
             msg = '\nSet:'+test_text+'\nGet:'+actual_text

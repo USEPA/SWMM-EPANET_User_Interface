@@ -69,6 +69,7 @@ from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
+from core.swmm.hydrology.raingage import RainDataSource
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.general import FlowUnits
 from core.swmm.options.general import FlowRouting
@@ -1215,7 +1216,7 @@ class RainGageWriter(SectionWriter):
                 rain_gage.rain_format.name,
                 rain_gage.rain_interval,
                 rain_gage.snow_catch_factor)
-        if rain_gage.timeseries != "None":
+        if rain_gage.data_source is RainDataSource.TIMESERIES:
             inp += "{:10}\t{}".format("TIMESERIES", rain_gage.timeseries)
         else:
             inp += '{:10}\t{}\t{:10}\t{:5}'.format(

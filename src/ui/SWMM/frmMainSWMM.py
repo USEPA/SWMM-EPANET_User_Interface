@@ -1729,6 +1729,7 @@ class ModelLayersSWMM(ModelLayers):
         ModelLayers.__init__(self, map_widget)
         addCoordinates = self.map_widget.addCoordinates
         addLinks = self.map_widget.addLinks
+        self.create_subcatchment_links = self.map_widget.create_subcatchment_links
         self.junctions = addCoordinates(None, "Junctions")
         self.outfalls = addCoordinates(None, "Outfalls")
         self.dividers = addCoordinates(None, "Dividers")
@@ -1779,125 +1780,9 @@ class ModelLayersSWMM(ModelLayers):
         self.sublinks = addLinks(None, None, "sublinks", QColor('gray'), 1.0)
         self.subcatchments = self.map_widget.addPolygons(project.subcatchments.value, "Subcatchments")
         self.set_lists()
-        self.create_subcatchment_links(project)
+        self.create_subcatchment_links()
         self.create_spatial_index()
         self.map_widget.move_labels_to_anchor_nodes(project, self.labels)
-
-    def create_subcatchment_links(self, project):
-        #create centroids
-        for fs in self.subcatchments.getFeatures():
-            try:
-                self.create_subcatchment_centroid(fs)
-            except:
-                print ("Failed sub centroid: " + fs['name'])
-
-        #create sub links
-        for fs in self.subcatchments.getFeatures():
-            self.create_subcatchment_link(fs)
-
-        pass
-
-    def create_subcatchment_centroid(self, fs):
-        pt = fs.geometry().centroid().asPoint()
-        #ms = self.map_widget.session.project.subcatchments.find_item(fs["name"])
-        ms = None
-        try:
-            ms = self.map_widget.session.project.subcatchments.value[fs['name']]
-        except:
-            ms = None
-        if ms:
-            ms.centroid.x = str(pt.x())
-            ms.centroid.y = str(pt.y())
-        else:
-            return
-
-        # add centroid item
-        c_item = None
-        for obj_type, lyr_name in self.map_widget.session.section_types.items():
-            if lyr_name == "subcentroids":
-                c_item = obj_type()
-                c_item.x = str(pt.x())
-                c_item.y = str(pt.y())
-                break
-        c_item.name = u'subcentroid-' + ms.name #self.map_widget.session.new_item_name(type(c_item))
-        c_section_field_name = self.map_widget.session.section_types[type(c_item)]
-        if not hasattr(self.map_widget.session.project, c_section_field_name):
-            raise Exception("Section not found in project: " + c_section_field_name)
-        c_section = getattr(self.map_widget.session.project, c_section_field_name)
-        centroid_layer = self.map_widget.session.model_layers.layer_by_name(c_section_field_name)
-        if len(c_section.value) == 0 and not isinstance(c_section, list):
-            c_section.value = IndexedList([], ['name'])
-        c_section.value.append(c_item)
-        centroid_layer.startEditing()
-        pf = self.map_widget.point_feature_from_item(ms.centroid)
-        pf.setAttributes([c_item.name, 0.0, fs.id(), ms.name])
-        added_centroid = centroid_layer.dataProvider().addFeatures([pf])
-        if added_centroid[0]:
-            self.subcatchments.startEditing()
-            self.subcatchments.changeAttributeValue(fs.id(), 2, added_centroid[1][0].id())
-            self.subcatchments.changeAttributeValue(fs.id(), 3, c_item.name)
-            self.subcatchments.updateExtents()
-            self.subcatchments.commitChanges()
-            self.subcatchments.triggerRepaint()
-            centroid_layer.updateExtents()
-            centroid_layer.commitChanges()
-            centroid_layer.triggerRepaint()
-
-    def create_subcatchment_link(self, fs):
-        sub_section = getattr(self.project, "subcatchments")
-        ms = sub_section.find_item(fs["name"])
-        if not ms.outlet:
-            return
-        if ms.outlet == 'None':
-            return
-        fc = None
-        fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.name)
-        if fcs and len(fcs) > 0:
-            fc = fcs[0]
-        else:
-            return
-
-        isSub2Sub = 0 #False
-        # subcent_section = getattr(self.map_widget.session.project, "subcentroids")
-        outlet_sub = None
-        if self.project.subcatchments and self.project.subcatchments.value:
-            outlet_sub = self.project.subcatchments.find_item(ms.outlet)
-            if outlet_sub:
-                fcs = self.map_widget.get_features_by_attribute(self.subcentroids, "sub_modelid", ms.outlet)
-                if fcs and len(fcs) > 0:
-                    outlet_sub = self.project.subcentroids.find_item("subcentroid-" + ms.outlet)
-                    isSub2Sub = 1
-
-        link_item = SubLink()
-        link_item.name = u'sublink-' + ms.name #self.map_widget.session.new_item_name(type(link_item))
-        link_item.inlet_node = fc["name"]
-        if outlet_sub:
-            link_item.outlet_node = outlet_sub.name
-        else:
-            link_item.outlet_node = ms.outlet
-        inlet_sub = ms.centroid
-        f = self.map_widget.line_feature_from_item(link_item,
-                                                   self.map_widget.session.project.all_nodes(),
-                                                   inlet_sub, outlet_sub)
-        added = self.sublinks.dataProvider().addFeatures([f])
-        if added[0]:
-            sublink_section = getattr(self.map_widget.session.project, "sublinks")
-            if len(sublink_section.value) == 0 and not isinstance(sublink_section, list):
-                sublink_section.value = IndexedList([], ['name'])
-            sublink_section.value.append(link_item)
-            # set sublink's attributes
-            self.sublinks.startEditing()
-            # f.setAttributes([str(added[1][0].id()), 0.0, self.item.inlet_node, self.item.outlet_node, self.isSub2Sub])
-            # self.layer.changeAttributeValue(added[1][0].id(), 0, self.item.name)
-            # self.layer.changeAttributeValue(added[1][0].id(), 1, 0.0)
-            self.sublinks.changeAttributeValue(added[1][0].id(), 2, fc["name"])
-            self.sublinks.changeAttributeValue(added[1][0].id(), 3, link_item.outlet_node)
-            self.sublinks.changeAttributeValue(added[1][0].id(), 4, isSub2Sub)
-            self.sublinks.updateExtents()
-            self.sublinks.commitChanges()
-            self.sublinks.triggerRepaint()
-            self.map_widget.canvas.refresh()
-        pass
 
     def find_layer_by_name(self, aname):
         if not aname:

@@ -23,6 +23,8 @@ try:
     from enum import Enum
     from .map_edit import EditTool
     from ui.model_utility import ParseData
+    from core.indexed_list import IndexedList
+    from core.swmm.hydraulics.link import SubLink
 
 
     class EmbedMap(QWidget):
@@ -1896,6 +1898,144 @@ try:
                             total_selected = total_selected + len(selected_ids)
                             lyr.triggerRepaint()
             return total_selected
+
+        def create_subcatchment_links(self):
+            # create centroids
+            subcatchments_lyr = self.session.model_layers.subcatchments
+            for fs in subcatchments_lyr.getFeatures():
+                try:
+                    self.create_subcatchment_centroid(fs)
+                except:
+                    print("Failed sub centroid: " + fs['name'])
+
+            # create sub links
+            for fs in subcatchments_lyr.getFeatures():
+                self.create_subcatchment_link(fs)
+
+            pass
+
+        def create_subcatchment_centroid(self, fs):
+            pt = fs.geometry().centroid().asPoint()
+            # ms = self.map_widget.session.project.subcatchments.find_item(fs["name"])
+            ms = None
+            try:
+                ms = self.session.project.subcatchments.value[fs['name']]
+            except:
+                ms = None
+            if ms:
+                ms.centroid.x = str(pt.x())
+                ms.centroid.y = str(pt.y())
+            else:
+                return
+
+            # add centroid item
+            c_item = None
+            for obj_type, lyr_name in self.session.section_types.items():
+                if lyr_name == "subcentroids":
+                    c_item = obj_type()
+                    c_item.x = str(pt.x())
+                    c_item.y = str(pt.y())
+                    break
+            c_item.name = u'subcentroid-' + ms.name  # self.map_widget.session.new_item_name(type(c_item))
+            c_section_field_name = self.session.section_types[type(c_item)]
+            if not hasattr(self.session.project, c_section_field_name):
+                raise Exception("Section not found in project: " + c_section_field_name)
+            c_section = getattr(self.session.project, c_section_field_name)
+            centroid_layer = self.session.model_layers.layer_by_name(c_section_field_name)
+            if len(c_section.value) == 0 and not isinstance(c_section, list):
+                c_section.value = IndexedList([], ['name'])
+            c_section.value.append(c_item)
+            centroid_layer.startEditing()
+            pf = self.point_feature_from_item(ms.centroid)
+            pf.setAttributes([c_item.name, 0.0, fs.id(), ms.name])
+            added_centroid = centroid_layer.dataProvider().addFeatures([pf])
+            subcatchments_lyr = self.session.model_layers.subcatchments
+            if added_centroid[0]:
+                subcatchments_lyr.startEditing()
+                subcatchments_lyr.changeAttributeValue(fs.id(), 2, added_centroid[1][0].id())
+                subcatchments_lyr.changeAttributeValue(fs.id(), 3, c_item.name)
+                subcatchments_lyr.updateExtents()
+                subcatchments_lyr.commitChanges()
+                subcatchments_lyr.triggerRepaint()
+                centroid_layer.updateExtents()
+                centroid_layer.commitChanges()
+                centroid_layer.triggerRepaint()
+
+        def create_subcatchment_link(self, fs):
+            sub_section = getattr(self.session.project, "subcatchments")
+            # sub_section = self.project.subcatchments
+            ms = sub_section.find_item(fs["name"])
+            if not ms.outlet:
+                return
+            if ms.outlet == 'None':
+                return
+            fc = None
+            fcs = self.get_features_by_attribute(self.session.model_layers.subcentroids, "sub_modelid", ms.name)
+            if fcs and len(fcs) > 0:
+                fc = fcs[0]
+            else:
+                return
+
+            isSub2Sub = 0  # False
+            # subcent_section = getattr(self.map_widget.session.project, "subcentroids")
+            outlet_sub = None
+            model_subcatchments = self.session.project.subcatchments
+            model_subcentroids = self.session.project.subcentroids
+            layer_subcentroids = self.session.model_layers.subcentroids
+            if model_subcatchments and model_subcatchments.value:
+                outlet_sub = model_subcatchments.find_item(ms.outlet)
+                if outlet_sub:
+                    fcs = self.get_features_by_attribute(layer_subcentroids, "sub_modelid", ms.outlet)
+                    if fcs and len(fcs) > 0:
+                        outlet_sub = model_subcentroids.find_item("subcentroid-" + ms.outlet)
+                        isSub2Sub = 1
+
+            link_item = SubLink()
+            link_item.name = u'sublink-' + ms.name  # self.map_widget.session.new_item_name(type(link_item))
+            link_item.inlet_node = fc["name"]
+            if outlet_sub:
+                link_item.outlet_node = outlet_sub.name
+            else:
+                link_item.outlet_node = ms.outlet
+            inlet_sub = ms.centroid
+            f = self.line_feature_from_item(link_item,
+                                            self.session.project.all_nodes(),
+                                            inlet_sub, outlet_sub)
+            sublinks_lyr = self.session.model_layers.sublinks
+            added = sublinks_lyr.dataProvider().addFeatures([f])
+            if added[0]:
+                sublink_section = getattr(self.session.project, "sublinks")
+                if len(sublink_section.value) == 0 and not isinstance(sublink_section, list):
+                    sublink_section.value = IndexedList([], ['name'])
+                sublink_section.value.append(link_item)
+                # set sublink's attributes
+                sublinks_lyr.startEditing()
+                sublinks_lyr.changeAttributeValue(added[1][0].id(), 2, fc["name"])
+                sublinks_lyr.changeAttributeValue(added[1][0].id(), 3, link_item.outlet_node)
+                sublinks_lyr.changeAttributeValue(added[1][0].id(), 4, isSub2Sub)
+                sublinks_lyr.updateExtents()
+                sublinks_lyr.commitChanges()
+                sublinks_lyr.triggerRepaint()
+                self.canvas.refresh()
+            pass
+
+        def change_subcatchment_link(self, subcatchment, new_endpoint):
+            expr = "\"inlet\" IN ('{}')".format("','".join(['subcentroid-' + subcatchment.name]))
+            req = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+            req.setSubsetOfAttributes([]).setFilterExpression(expr)
+            sublinks_lyr = self.session.model_layers.sublinks
+            # for f in sublinks_lyr.getFeatures():
+            #     print(f['name'])
+            if sublinks_lyr:
+                it = sublinks_lyr.getFeatures(req)
+                sublinks_lyr.startEditing()
+                sublinks_lyr.deleteFeatures([i.id() for i in it])
+                sublinks_lyr.commitChanges()
+                sublinks_lyr.triggerRepaint()
+            layer = self.session.model_layers.subcatchments
+            features = self.get_features_by_attribute(layer, "name", subcatchment.name)
+            for fs in features:
+                self.create_subcatchment_link(fs)
 
         def create_composition(self, layer_list, extent):
             # New code for versions 2.4 and above

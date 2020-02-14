@@ -1963,7 +1963,6 @@ try:
 
         def create_subcatchment_link(self, fs):
             sub_section = getattr(self.session.project, "subcatchments")
-            # sub_section = self.project.subcatchments
             ms = sub_section.find_item(fs["name"])
             if not ms.outlet:
                 return
@@ -2024,14 +2023,15 @@ try:
             req = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
             req.setSubsetOfAttributes([]).setFilterExpression(expr)
             sublinks_lyr = self.session.model_layers.sublinks
-            # for f in sublinks_lyr.getFeatures():
-            #     print(f['name'])
             if sublinks_lyr:
                 it = sublinks_lyr.getFeatures(req)
                 sublinks_lyr.startEditing()
                 sublinks_lyr.deleteFeatures([i.id() for i in it])
                 sublinks_lyr.commitChanges()
                 sublinks_lyr.triggerRepaint()
+            sublink_model = self.session.project.sublinks.find_item('sublink-subcentroid-' + subcatchment.name)
+            if sublink_model is not None:
+                self.session.project.sublinks.value.remove(sublink_model)
             layer = self.session.model_layers.subcatchments
             features = self.get_features_by_attribute(layer, "name", subcatchment.name)
             for fs in features:

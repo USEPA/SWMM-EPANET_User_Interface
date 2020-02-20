@@ -4,3 +4,14 @@
 /.idea/modules.xml
 /.idea/workspace.xml
 *.pyc
+src/ui/SWMM/dist
+src/ui/SWMM/build
+src/ui/SWMM/output
+src/ui/EPANET/dist
+src/ui/EPANET/build
+src/ui/EPANET/output
+*.xml
+*.whl
+*_my*
+*.swo
+*.swp

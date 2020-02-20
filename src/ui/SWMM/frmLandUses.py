@@ -56,7 +56,6 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
             self.lblNotesBuildup.setText("There are no pollutants for this project")
             self.lblNotesWashoff.setText("There are no pollutants for this project")
 
-
     def set_from(self, land_use):
         if not isinstance(land_use, Landuse):
             land_use = self.section.value[land_use]

@@ -23,7 +23,6 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         self.project = parent.project
         if option_section.infiltration=="HORTON" or option_section.infiltration=="MODIFIED_HORTON":
             self.help_topic = "swmm/src/src/hortoninfiltrationparameters.htm"
-
         elif option_section.infiltration=="GREEN_AMPT" or option_section.infiltration=="MODIFIED_GREEN_AMPT":
             self.help_topic = "swmm/src/src/green_amptinfiltrationparame.htm"
         elif option_section.infiltration=="CURVE_NUMBER":
@@ -250,4 +249,3 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
 
     def cmdCancel_Clicked(self):
         self.close()
-

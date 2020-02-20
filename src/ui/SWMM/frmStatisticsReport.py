@@ -506,9 +506,9 @@ class MyHistogram(FigureCanvas):
 
     def setData(self, aData, aBins=None):
         if aBins is not None:
-            self.n, self.bins, self.patches = self.ax.hist(aData, aBins)
+            self.n, self.bins, self.patches = self.ax.hist(aData, aBins, edgecolor='k')
         else:
-            self.n, self.bins, self.patches = self.ax.hist(aData)
+            self.n, self.bins, self.patches = self.ax.hist(aData, edgecolor='k')
 
         N = sum(self.n)
         if N > 0:

@@ -114,6 +114,9 @@ class PropertyEditorBackend:
                                                     new_endpoint = widget.itemData(widget.currentIndex())
                                                     # the changed model element is: edit_this
                                                     self._main_form.map_widget.change_subcatchment_link(edit_this, new_endpoint)
+                                            elif meta_item.attribute == 'outlet_node' or meta_item.attribute == "inlet_node":
+                                                self._main_form.map_widget.change_link(edit_this, meta_item.attribute)
+
                                     except Exception as ex:
                                         print("Could not set " + str(meta_item.label) + " to " + str(new_value))
             column += 1

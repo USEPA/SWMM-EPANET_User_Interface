@@ -469,6 +469,13 @@ try:
             for feature in layer.getFeatures(QgsFeatureRequest(QgsExpression('"name"=' + "'" + feature_name + "'"))):
                 return feature
 
+        def find_feature_by_attribute(self, layer, attribute, values):
+            if layer and values and len(values) > 0:
+                expr = "\"" + attribute + "\"" + " IN ('{}')".format("','".join(values))
+                req = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+                req.setSubsetOfAttributes([]).setFilterExpression(expr)
+                return layer.getFeatures(req)
+
         def setAddObjectMode(self, action_obj, layer_name, tool_type):
             """Start interactively adding points to point layer layer_name using tool button action_obj"""
             if self.addObjectTool:
@@ -1988,9 +1995,16 @@ try:
                     if fcs and len(fcs) > 0:
                         outlet_sub = model_subcentroids.find_item("subcentroid-" + ms.outlet)
                         isSub2Sub = 1
+            inlet_node = None
+            if model_subcentroids and model_subcentroids.value:
+                try:
+                    inlet_node = model_subcentroids.value[u'subcentroid-' + ms.name]
+                except KeyError as ke:
+                    inlet_node = None
 
             link_item = SubLink()
-            link_item.name = u'sublink-' + ms.name  # self.map_widget.session.new_item_name(type(link_item))
+            # link_item.name = u'sublink-' + ms.name  # self.map_widget.session.new_item_name(type(link_item))
+            link_item.name = u'sublink-' + inlet_node.name
             link_item.inlet_node = fc["name"]
             if outlet_sub:
                 link_item.outlet_node = outlet_sub.name
@@ -2019,23 +2033,63 @@ try:
             pass
 
         def change_subcatchment_link(self, subcatchment, new_endpoint):
-            expr = "\"inlet\" IN ('{}')".format("','".join(['subcentroid-' + subcatchment.name]))
-            req = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-            req.setSubsetOfAttributes([]).setFilterExpression(expr)
             sublinks_lyr = self.session.model_layers.sublinks
             if sublinks_lyr:
-                it = sublinks_lyr.getFeatures(req)
+                it = self.find_feature_by_attribute(sublinks_lyr, 'inlet', ['subcentroid-' + subcatchment.name])
                 sublinks_lyr.startEditing()
                 sublinks_lyr.deleteFeatures([i.id() for i in it])
                 sublinks_lyr.commitChanges()
                 sublinks_lyr.triggerRepaint()
+            subcent_lyr = self.session.model_layers.subcentroids
+            if subcent_lyr:
+                it = self.find_feature_by_attribute(subcent_lyr, 'name', ['subcentroid-' + subcatchment.name])
+                subcent_lyr.startEditing()
+                subcent_lyr.deleteFeatures([i.id() for i in it])
+                subcent_lyr.commitChanges()
+                subcent_lyr.triggerRepaint()
             sublink_model = self.session.project.sublinks.find_item('sublink-subcentroid-' + subcatchment.name)
+            subcent_model = self.session.project.subcentroids.find_item('subcentroid-' + subcatchment.name)
             if sublink_model is not None:
                 self.session.project.sublinks.value.remove(sublink_model)
+            if subcent_model is not None:
+                self.session.project.subcentroids.value.remove(subcent_model)
             layer = self.session.model_layers.subcatchments
             features = self.get_features_by_attribute(layer, "name", subcatchment.name)
             for fs in features:
+                self.create_subcatchment_centroid(fs)
                 self.create_subcatchment_link(fs)
+            self.session.model_layers.subcentroids.dataProvider().createSpatialIndex()
+            self.session.model_layers.sublinks.dataProvider().createSpatialIndex()
+            pass
+
+        def change_link(self, link, attribute):
+            link_section = None
+            for i in range(0, len(self.session.project.links_groups())):
+                link_section = self.session.project.links_groups()[i].value
+                if link in link_section:
+                    break
+            if link_section:
+                new_node_name = getattr(link, attribute)
+                new_node = self.session.project.find_node(new_node_name)
+                if new_node_name and new_node:
+                    layer = self.session.model_layers.find_layer_by_name(type(link).__name__)
+                    it = self.find_feature_by_attribute(layer, 'name', [link.name])
+                    for feature in it:
+                        link_points = [QgsPoint(v.x(), v.y()) for v in feature.geometry().vertices()]
+                        vfi = -1
+                        if attribute.startswith('inlet'):
+                            link_points[0] = QgsPoint(new_node.x, new_node.y)
+                            vfi = feature.fieldNameIndex('inlet')
+                        elif attribute.startswith('outlet'):
+                            link_points[-1] = QgsPoint(new_node.x, new_node.y)
+                            vfi = feature.fieldNameIndex('outlet')
+                        layer.startEditing()
+                        layer.changeGeometry(feature.id(), QgsGeometry.fromPolyline(link_points))
+                        layer.commitChanges()
+                        layer.dataProvider().changeAttributeValues({feature.id(): {vfi: str(new_node_name)}})
+                        layer.updateExtents()
+                        layer.triggerRepaint()
+                pass
 
         def create_composition(self, layer_list, extent):
             # New code for versions 2.4 and above

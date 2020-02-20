@@ -517,6 +517,9 @@ class MyHistogram(FigureCanvas):
 
         self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 
+        self.ax.set_ylim([0, 1])
+        self.ax.set_xlim([0, self.ax.get_xlim()[1]])
+
         pass
 
     def setTitle(self, aTitle):

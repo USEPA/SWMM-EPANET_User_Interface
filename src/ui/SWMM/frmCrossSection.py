@@ -178,7 +178,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 if value.shape.name == 'IRREGULAR':
                     # for irregular, combo needs transect names, dialog opens transect buttons
                     for index in range(0,self.cboCombo.count()):
-                        if value.transect == self.cboCombo.itemText(index):
+                        if value.geometry1 == self.cboCombo.itemText(index):
                             self.cboCombo.setCurrentIndex(index)
 
                 if value.shape.name == 'CUSTOM':
@@ -247,7 +247,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         if value.shape.name == 'IRREGULAR':
             # for irregular, combo needs transect names, dialog opens transect buttons
             for index in range(0,self.cboCombo.count()):
-                if value.transect == self.cboCombo.itemText(index):
+                if value.geometry1 == self.cboCombo.itemText(index):
                     self.cboCombo.setCurrentIndex(index)
 
         if value.shape.name == 'CUSTOM':
@@ -333,7 +333,6 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         value.geometry2 = self.txt2.text()
         value.geometry3 = self.txt3.text()
         value.geometry4 = self.txt4.text()
-        value.transect = ''
         value.curve = ''
         XType = ''
         if current_selection == 'Rectangular':
@@ -349,7 +348,6 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'POWER'
         elif current_selection == 'Irregular':
             XType = 'IRREGULAR'
-            value.transect = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Circular':
             XType = 'CIRCULAR'
         elif current_selection == 'Force Main':

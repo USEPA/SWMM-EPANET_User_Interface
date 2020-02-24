@@ -506,9 +506,9 @@ class MyHistogram(FigureCanvas):
 
     def setData(self, aData, aBins=None):
         if aBins is not None:
-            self.n, self.bins, self.patches = self.ax.hist(aData, aBins)
+            self.n, self.bins, self.patches = self.ax.hist(aData, aBins, edgecolor='k')
         else:
-            self.n, self.bins, self.patches = self.ax.hist(aData)
+            self.n, self.bins, self.patches = self.ax.hist(aData, edgecolor='k')
 
         N = sum(self.n)
         if N > 0:
@@ -516,6 +516,9 @@ class MyHistogram(FigureCanvas):
                 item.set_height(item.get_height()/N)
 
         self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+        self.ax.set_ylim([0, 1])
+        self.ax.set_xlim([0, self.ax.get_xlim()[1]])
 
         pass
 

@@ -315,8 +315,15 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         if n > 0:
             ds = pd.Series(self.Y, index=self.X)
             df = pd.DataFrame({'DS-':ds})
-            frm_plt = frmPlotViewer(df,'xy',self.curve_type + ' Curve ' + self.txtCurveName.text(), self.windowIcon(),
-                                    self.tblMult.horizontalHeaderItem(0).text(), self.tblMult.horizontalHeaderItem(1).text())
+            # if Pump Type1 or Type2, plot as step function
+            if self.curve_type == 'PUMP' and self.cboCurveType.currentIndex() in (0, 1):
+                frm_plt = frmPlotViewer(df, 'step', self.curve_type + ' Curve ' + self.txtCurveName.text(),
+                                        self.windowIcon(), self.tblMult.horizontalHeaderItem(0).text(),
+                                        self.tblMult.horizontalHeaderItem(1).text())
+            else:
+                frm_plt = frmPlotViewer(df, 'xy', self.curve_type + ' Curve ' + self.txtCurveName.text(),
+                                        self.windowIcon(), self.tblMult.horizontalHeaderItem(0).text(),
+                                        self.tblMult.horizontalHeaderItem(1).text())
             frm_plt.setWindowTitle('Curve Viewer')
             frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
             frm_plt.show()

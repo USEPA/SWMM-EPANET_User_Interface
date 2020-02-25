@@ -376,9 +376,9 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
 
 
         # GROUND LEVEL PLOT
-        func = interp1d(pltxspans,Groundspans,kind='cubic')
-        xinterp = np.linspace(min(pltxspans),max(pltxspans),300)
-        plt.plot(xinterp,func(xinterp), ':k')
+        func = interp1d(pltxspans, Groundspans, kind='linear')
+        xinterp = np.linspace(min(pltxspans), max(pltxspans), 300)
+        plt.plot(xinterp, func(xinterp), 'g')
 
         if len(LKsToPlotAppendix)>0:
             for ind,val in enumerate(MHListAppendix):

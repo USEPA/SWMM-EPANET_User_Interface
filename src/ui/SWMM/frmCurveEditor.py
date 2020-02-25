@@ -1,4 +1,3 @@
-import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
@@ -7,13 +6,10 @@ from ui.help import HelpHandler
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
-from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
-# from PyQt5.QtGui import *
 from ui.model_utility import ParseData
 import os
 import traceback
-import numpy as np
 import pandas as pd
 from ui.frmPlotViewer import frmPlotViewer
 

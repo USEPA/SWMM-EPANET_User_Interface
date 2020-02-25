@@ -1,13 +1,9 @@
-from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout
 from ui.help import HelpHandler
 from .frmPlotViewerDesigner import Ui_frmPlot
 import matplotlib.dates as mdates
-from .model_utility import ParseData
 from .model_utility import BasePlot
-import numpy as np
-from datetime import datetime
 
 
 class frmPlotViewer(QMainWindow, Ui_frmPlot):

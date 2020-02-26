@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>352</height>
+    <width>547</width>
+    <height>368</height>
    </rect>
   </property>
   <property name="font">
@@ -58,7 +58,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>16777215</height>
           </size>
          </property>
@@ -121,7 +121,7 @@
         <widget class="QDateEdit" name="dedStart">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>16777215</height>
           </size>
          </property>
@@ -200,7 +200,7 @@
         <widget class="QDateEdit" name="dedStartReport">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>16777215</height>
           </size>
          </property>
@@ -273,7 +273,7 @@
         <widget class="QDateEdit" name="dedEnd">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>16777215</height>
           </size>
          </property>
@@ -316,12 +316,15 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="lblStartSweeping">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>150</width>
@@ -348,6 +351,12 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="lblEndSweeping">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>150</width>
@@ -374,9 +383,15 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="lblAntecedent">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>180</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>

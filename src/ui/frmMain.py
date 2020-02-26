@@ -1748,6 +1748,9 @@ class frmMain(QMainWindow, Ui_frmMain):
             file_name = action.data()
             if os.path.isfile(file_name):
                 self.open_project_quiet(file_name)
+            else:
+                QMessageBox.information(None, "Warning", "Input file no longer exists.",
+                                        QMessageBox.Ok)
 
     def add_recent(self, file_name, settings_key):
         """ Add a recently accessed file to program settings. Used when opening and saving projects and scripts. """

@@ -16,6 +16,13 @@ class frmDates(QMainWindow, Ui_frmDates):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmDates_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmDates_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmDates_geometry",
+                                                                  self.saveGeometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmDates_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         # section = core.swmm.options.dates.Dates
         section = project.options.dates
@@ -74,7 +81,11 @@ class frmDates(QMainWindow, Ui_frmDates):
             orig_dry_days != section.dry_days:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmDates_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmDates_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmDates_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmDates_state", self.saveState())
         self.close()

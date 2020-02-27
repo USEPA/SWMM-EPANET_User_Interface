@@ -1,13 +1,9 @@
-from PyQt5 import QtCore, QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout
 from ui.help import HelpHandler
 from .frmPlotViewerDesigner import Ui_frmPlot
 import matplotlib.dates as mdates
-from .model_utility import ParseData
 from .model_utility import BasePlot
-import numpy as np
-from datetime import datetime
 
 
 class frmPlotViewer(QMainWindow, Ui_frmPlot):
@@ -46,6 +42,9 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
         elif plot_type == 'xy':
             self.plot_type = 'xy'
             self.help_topic = "swmm/src/src/transecteditordialog.htm"
+        elif plot_type == 'step':
+            self.plot_type = 'step'
+            self.help_topic = ''   # TODO
         self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
         layout = QVBoxLayout(self.fraPlot)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -98,6 +97,8 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
                 self.plot.set_time_series_data(self.dataset)
             elif self.plot_type == 'xy':
                 self.plot.set_xy_data(self.dataset, self.x_title, self.y_title)
+            elif self.plot_type == 'step':
+                self.plot.set_xy_data(self.dataset, self.x_title, self.y_title, step=True)
 
         pass
 
@@ -119,15 +120,18 @@ class CurvePlot(BasePlot):
         self.line, = self.axes.plot([],[], 'r-')
         pass
 
-    def setData(self, X, Y, Xlabel, Ylabel):
-        color = self.get_colors()
-        #self.axes.scatter(self.X, self.Y, s=10, c=color, marker="o", label="")
-        #self.axes.legend(loc='upper left')
-        self.line.set_xdata(X)
-        self.line.set_ydata(Y)
-        self.line.set_marker("o")
-        self.line.set_markeredgecolor("blue")
-        self.line.set_markerfacecolor("lightblue")
+    def setData(self, X, Y, Xlabel, Ylabel, step=False):
+        if step:
+            self.line = self.axes.step(X, Y, 'r-')
+            self.axes.scatter(X, Y, marker='o', color='lightblue', edgecolor='blue')
+            self.axes.scatter(X[0:-1], Y[1:], marker='o', color='lightblue', edgecolor='blue')
+
+        else:
+            self.line.set_xdata(X)
+            self.line.set_ydata(Y)
+            self.line.set_marker("o")
+            self.line.set_markeredgecolor("blue")
+            self.line.set_markerfacecolor("lightblue")
 
         self.setXlabel(Xlabel)
         self.setYlabel(Ylabel)
@@ -135,7 +139,7 @@ class CurvePlot(BasePlot):
         self.axes.autoscale_view()
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-        #self.setTitle('Pump head curve for %s' % aData.name)
+
         pass
 
     def set_time_series_data(self, df):
@@ -163,14 +167,14 @@ class CurvePlot(BasePlot):
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
 
-    def set_xy_data(self, df, x_title, y_title):
+    def set_xy_data(self, df, x_title, y_title, step=False):
         if df.shape[0] > 0 and df.shape[1] > 0:
             x = []
             y = []
             for row in range(len(df)):
                 x.append(float(df.index[row]))
                 y.append(float(df.iloc[row][0]))
-            self.setData(x, y, x_title, y_title)
+            self.setData(x, y, x_title, y_title, step)
 
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()

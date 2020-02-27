@@ -1,4 +1,3 @@
-import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
@@ -7,13 +6,10 @@ from ui.help import HelpHandler
 import core.swmm.curves
 from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
-from core.swmm.curves import CurveType
 from core.swmm.curves import Curve
-# from PyQt5.QtGui import *
 from ui.model_utility import ParseData
 import os
 import traceback
-import numpy as np
 import pandas as pd
 from ui.frmPlotViewer import frmPlotViewer
 
@@ -315,8 +311,15 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         if n > 0:
             ds = pd.Series(self.Y, index=self.X)
             df = pd.DataFrame({'DS-':ds})
-            frm_plt = frmPlotViewer(df,'xy',self.curve_type + ' Curve ' + self.txtCurveName.text(), self.windowIcon(),
-                                    self.tblMult.horizontalHeaderItem(0).text(), self.tblMult.horizontalHeaderItem(1).text())
+            # if Pump Type1 or Type2, plot as step function
+            if self.curve_type == 'PUMP' and self.cboCurveType.currentIndex() in (0, 1):
+                frm_plt = frmPlotViewer(df, 'step', self.curve_type + ' Curve ' + self.txtCurveName.text(),
+                                        self.windowIcon(), self.tblMult.horizontalHeaderItem(0).text(),
+                                        self.tblMult.horizontalHeaderItem(1).text())
+            else:
+                frm_plt = frmPlotViewer(df, 'xy', self.curve_type + ' Curve ' + self.txtCurveName.text(),
+                                        self.windowIcon(), self.tblMult.horizontalHeaderItem(0).text(),
+                                        self.tblMult.horizontalHeaderItem(1).text())
             frm_plt.setWindowTitle('Curve Viewer')
             frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
             frm_plt.show()

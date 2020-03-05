@@ -30,6 +30,13 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmUnitHydrograph_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmUnitHydrograph_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmUnitHydrograph_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmUnitHydrograph_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, hydrograph):
         if not isinstance(hydrograph, UnitHydrograph):
             hydrograph = self.section.value[hydrograph]
@@ -185,9 +192,14 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
                         value.initial_abstraction_amount != self.editing_item.value[count].initial_abstraction_amount:
                         self._main_form.mark_project_as_unsaved()
             pass
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_state", self.saveState())
         self.close()
 
     def cboHydrograph_currentIndexChanged(self, newIndex):

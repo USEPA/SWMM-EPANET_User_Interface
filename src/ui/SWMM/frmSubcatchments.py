@@ -136,6 +136,13 @@ class frmSubcatchments(frmGenericPropertyEditor):
             # also set special text plus button cells
             self.set_special_cells(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmSubcatchments_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSubcatchments_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSubcatchments_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSubcatchments_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def set_special_cells(self, column):
@@ -372,7 +379,11 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 # not found already and not blank, add it
                 adjustments.infil.append(subname + "                " + infil_pattern)
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_state", self.saveState())
         self.close()

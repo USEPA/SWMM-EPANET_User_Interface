@@ -31,6 +31,13 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmPatternEditor_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmPatternEditor_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmPatternEditor_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmPatternEditor_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, pattern):
         if not isinstance(pattern, Pattern):
             pattern = self.section.value[pattern]
@@ -101,9 +108,14 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
 
         # regardless if pattern id is changed, refresh pattern references at all places
         self._main_form.project.refresh_pattern_object_references()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_state", self.saveState())
         self.close()
 
     def cboType_currentIndexChanged(self, newIndex):

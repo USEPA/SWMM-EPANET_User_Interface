@@ -25,6 +25,13 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmSnowPack_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSnowPack_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSnowPack_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSnowPack_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, pack):
         if not isinstance(pack, SnowPack):
             pack = self.section.value[pack]
@@ -167,7 +174,12 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
             self._main_form.mark_project_as_unsaved()
         else:
             pass
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_state", self.saveState())
         self.close()

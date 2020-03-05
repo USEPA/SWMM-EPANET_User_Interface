@@ -25,6 +25,13 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmInterfaceFiles_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmInterfaceFiles_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmInterfaceFiles_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmInterfaceFiles_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         # section = core.swmm.options.files.Files()
         section = project.files
@@ -107,6 +114,8 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
             orig_save_outflows != section.save_outflows:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_state", self.saveState())
         self.close()
 
 
@@ -126,6 +135,8 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
             return None
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_state", self.saveState())
         self.close()
 
     def cmdUseRainfall_Clicked(self):

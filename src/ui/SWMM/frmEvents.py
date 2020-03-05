@@ -24,6 +24,13 @@ class frmEvents(QMainWindow, Ui_frmEvents):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmEvents_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmEvents_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmEvents_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmEvents_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         section = project.events
         for event in section.value:
@@ -139,7 +146,11 @@ class frmEvents(QMainWindow, Ui_frmEvents):
                 event.name = event.start_date + event.start_time + event.end_date + event.end_time
                 section.value.append(event)
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_state", self.saveState())
         self.close()

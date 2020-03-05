@@ -59,6 +59,13 @@ class frmStorageUnits(frmGenericPropertyEditor):
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmStorageUnits_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmStorageUnits_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmStorageUnits_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmStorageUnits_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -151,7 +158,12 @@ class frmStorageUnits(frmGenericPropertyEditor):
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
         # self._main_form.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_state", self.saveState())
         self.close()

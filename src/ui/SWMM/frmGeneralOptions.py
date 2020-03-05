@@ -15,6 +15,13 @@ class frmGeneralOptions(QMainWindow, Ui_frmGeneralOptions):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmGeneralOptions_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmGeneralOptions_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmGeneralOptions_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmGeneralOptions_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         # section = core.swmm.options.general.General()
         section = project.options
@@ -115,7 +122,11 @@ class frmGeneralOptions(QMainWindow, Ui_frmGeneralOptions):
             orig_input != section.input:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_state", self.saveState())
         self.close()

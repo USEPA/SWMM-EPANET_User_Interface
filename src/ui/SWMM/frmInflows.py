@@ -73,6 +73,13 @@ class frmInflows(QMainWindow, Ui_frmInflows):
         self.setWindowTitle('SWMM Inflows for Node ' + self.node_name)
         self.done_loading = True
 
+        if (main_form.program_settings.value("Geometry/" + "frmInflows_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmInflows_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmInflows_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmInflows_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         self.project = project
         # build a local data structure to hold the data at the present, will need to update as pollutants change
@@ -376,9 +383,14 @@ class frmInflows(QMainWindow, Ui_frmInflows):
                 rdii_section.value = []
             rdii_section.value.append(new_inflow)
             self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_state", self.saveState())
         self.close()
 
     def tabInflows_currentTabChanged(self):

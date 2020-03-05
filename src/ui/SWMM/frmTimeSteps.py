@@ -16,6 +16,13 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmTimeSteps_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTimeSteps_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTimeSteps_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTimeSteps_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         section = project.options.time_steps
         self.cbxSkip.setChecked(section.skip_steady_state)
@@ -107,7 +114,12 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
             orig_second != routing_time.second() or \
             orig_rule_step != section.rule_step:
             self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_state", self.saveState())
         self.close()

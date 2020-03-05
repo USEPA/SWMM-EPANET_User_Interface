@@ -37,6 +37,13 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmTimeseries_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTimeseries_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTimeseries_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTimeseries_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, timeseries):
         if not isinstance(timeseries, TimeSeries):
             timeseries = self.section.value[timeseries]
@@ -171,9 +178,14 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                 self._main_form.mark_project_as_unsaved()
             pass
             # TODO: self._main_form.edited_?
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_state", self.saveState())
         self.close()
 
     def btnFile_Clicked(self):

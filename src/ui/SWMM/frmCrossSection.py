@@ -109,6 +109,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             #self.set_link(main_form.project, '1')
             pass
 
+        if (main_form.program_settings.value("Geometry/" + "frmCrossSection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmCrossSection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmCrossSection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmCrossSection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_link(self, project, link_name):
         # assume we want to edit the first one
         self.link_name = link_name
@@ -405,9 +412,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             orig_shape != value.shape:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_state", self.saveState())
         self.close()
 
     def btnDialog_Clicked(self):

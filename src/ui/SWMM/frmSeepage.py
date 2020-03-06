@@ -67,6 +67,13 @@ class frmSeepage(frmGenericPropertyEditor):
         self.resize(280,300)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmSeepage_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSeepage_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSeepage_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSeepage_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         node_found = False
         for storage_node in self.storage_nodes_list:
@@ -89,9 +96,14 @@ class frmSeepage(frmGenericPropertyEditor):
             value1.seepage_initial_moisture_deficit = self.tblGeneric.item(2, 0).text()
             self.section.value.append(value1)
             self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_state", self.saveState())
         self.close()
 
     def table_currentCellChanged(self):

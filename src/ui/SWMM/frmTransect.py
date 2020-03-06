@@ -31,6 +31,13 @@ class frmTransect(QMainWindow, Ui_frmTransect):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmTransect_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTransect_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTransect_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTransect_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, transect):
         if not isinstance(transect, Transect):
             transect = self.section.value[transect]
@@ -108,9 +115,13 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                 self._main_form.mark_project_as_unsaved()
             pass
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_state", self.saveState())
         self.close()
 
     def btnView_Clicked(self):

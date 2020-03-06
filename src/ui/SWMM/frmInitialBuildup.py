@@ -50,6 +50,13 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                     self.tblGeneric.setItem(pollutant_count,0,QTableWidgetItem(led.text()))
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmInitialBuildup_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmInitialBuildup_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmInitialBuildup_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmInitialBuildup_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("LOADINGS")
         loadings_list = section.value[0:]
@@ -79,7 +86,12 @@ class frmInitialBuildup(frmGenericPropertyEditor):
                         section.value = []
                     section.value.append(value1)
                     self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_state", self.saveState())
         self.close()

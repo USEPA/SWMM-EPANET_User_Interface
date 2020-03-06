@@ -77,6 +77,14 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         self.tblGeneric.verticalHeader().geometriesChanged.connect(self.resizeCorner)
         self.tblGeneric.horizontalHeader().geometriesChanged.connect(self.resizeCorner)
 
+        self._main_form = parent._main_form
+        if (self._main_form.program_settings.value("Geometry/" + "frmInfiltration_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmInfiltration_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmInfiltration_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmInfiltration_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
     def cboInfilModel_currentIndexChanged(self, currentIndex):
         #if self.infil_model is None: return
         if not self.defaults: return
@@ -242,8 +250,13 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
                 elif enum_val == E_InfilModel.GREEN_AMPT:
                     #self.qsettings.setValue(self.default_key, self.infil_model_ga)
                     self.defaults.infil_model_ga.set_defaults()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_state", self.saveState())
         self.close()
 

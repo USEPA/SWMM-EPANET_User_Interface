@@ -20,6 +20,13 @@ class frmGroundwaterEquation(QMainWindow, Ui_frmGroundwaterEquation):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
 
+        if (main_form.program_settings.value("Geometry/" + "frmGroundwaterEquation_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmGroundwaterEquation_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmGroundwaterEquation_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmGroundwaterEquation_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         self.project = project
         gwf_section = self.project.gwf
@@ -54,7 +61,11 @@ class frmGroundwaterEquation(QMainWindow, Ui_frmGroundwaterEquation):
             self._main_form.project.gwf.value.append(new_gwf)
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquation_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquation_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquation_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquation_state", self.saveState())
         self.close()

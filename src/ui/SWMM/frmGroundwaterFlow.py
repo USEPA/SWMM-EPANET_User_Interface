@@ -43,6 +43,13 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
             self.set_lateral_equation(column)
             self.set_deep_equation(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_geometry")
+                and main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -106,8 +113,13 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
             self.project.groundwater.value.append(self.new_item)
         self.backend.new_item = None
         self.backend.apply_edits()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_state", self.saveState())
         self.close()
 

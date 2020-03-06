@@ -21,6 +21,13 @@ class frmScatterPlot(QMainWindow, Ui_frmScatterPlot):
         self.cboXCat.currentIndexChanged.connect(self.cboXCat_currentIndexChanged)
         self.cboYCat.currentIndexChanged.connect(self.cboYCat_currentIndexChanged)
 
+        if (main_form.program_settings.value("Geometry/" + "frmScatterPlot_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmScatterPlot_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmScatterPlot_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmScatterPlot_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output):
         self.project = project
         self.output = output
@@ -96,5 +103,10 @@ class frmScatterPlot(QMainWindow, Ui_frmScatterPlot):
                                    object_type_label_x, object_name_x, attribute_name_x,
                                    object_type_label_y, object_name_y, attribute_name_y, start_index, num_steps)
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_state", self.saveState())
+
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_state", self.saveState())
         self.close()

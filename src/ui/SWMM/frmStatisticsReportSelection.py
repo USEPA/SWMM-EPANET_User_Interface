@@ -30,6 +30,13 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         self.txtMinEventDelta.setText('6')
         self.stats = ostatistics.TStatsSelection()
 
+        if (main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output):
         self.project = project
         self.output = output
@@ -147,8 +154,17 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         #     self.separation_time = separation_time  # 6
 
         self._frmStatisticsReport.show()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_geometry",
+                                                  self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_state",
+                                                  self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_geometry",
+                                                  self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_state",
+                                                  self.saveState())
         self.close()
 

@@ -30,6 +30,15 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
         self.btnScript.clicked.connect(self.save_script)
         self.cboStart.currentIndexChanged.connect(self.cboStart_currentIndexChanged)
         self.cboEnd.currentIndexChanged.connect(self.cboEnd_currentIndexChanged)
+
+        self._main_form = session
+        if (self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
         # self.installEventFilter(self)
 
     def set_from(self, project, output):
@@ -96,6 +105,9 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
                                     "Error plotting:\n" + msg,
                                     QMessageBox.Ok)
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_state", self.saveState())
+
         # cb = QApplication.clipboard()
         # cb.clear(mode=cb.Clipboard)
         # cb.setText(self.get_text(), mode=cb.Clipboard)
@@ -131,6 +143,8 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
                 print("Error writing {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_state", self.saveState())
         self.close()
 
     def get_text_lines(self):

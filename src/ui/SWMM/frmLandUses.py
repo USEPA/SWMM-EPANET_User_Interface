@@ -55,6 +55,13 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
         self.tblGeneral.resizeRowToContents(1)
         self.resize(400,450)
 
+        if (main_form.program_settings.value("Geometry/" + "frmLandUses_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLandUses_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLandUses_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLandUses_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, land_use):
         if not isinstance(land_use, Landuse):
             land_use = self.section.value[land_use]
@@ -279,9 +286,13 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
             pass
             # TODO: self._main_form.edited_?
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_state", self.saveState())
         self.close()
 
     def tblGeneral_currentCellChanged(self):

@@ -72,6 +72,13 @@ class frmWeirs(frmGenericPropertyEditor):
             self.tblGeneric.setCellWidget(15, column, combobox)
             self.set_cross_section_cells(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmWeirs_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmWeirs_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmWeirs_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmWeirs_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -138,7 +145,12 @@ class frmWeirs(frmGenericPropertyEditor):
                         orig_geometry3 != value.geometry3:
                         self._main_form.mark_project_as_unsaved()
         # self._main_form.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
+        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_state", self.saveState())
         self.close()

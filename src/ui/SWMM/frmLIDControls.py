@@ -133,8 +133,6 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmLIDControls_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmLIDControls_state", self.saveState())
         self.close()
 
     def btnAdd_Clicked(self):

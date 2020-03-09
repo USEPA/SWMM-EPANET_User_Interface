@@ -38,6 +38,4 @@ class frmControls(QMainWindow, Ui_frmControls):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmControls_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmControls_state", self.saveState())
         self.close()

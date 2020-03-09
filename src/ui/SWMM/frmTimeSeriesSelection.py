@@ -122,6 +122,4 @@ class frmTimeSeriesSelection(QMainWindow, Ui_frmTimeSeriesSelection):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesSelection_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesSelection_state", self.saveState())
         self.close()

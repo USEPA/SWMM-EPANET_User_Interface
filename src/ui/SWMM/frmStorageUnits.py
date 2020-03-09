@@ -164,6 +164,4 @@ class frmStorageUnits(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmStorageUnits_state", self.saveState())
         self.close()

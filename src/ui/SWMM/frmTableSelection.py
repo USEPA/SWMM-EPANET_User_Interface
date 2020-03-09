@@ -102,8 +102,6 @@ class frmTableSelection(QMainWindow, Ui_frmTableSelection):
         # self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTableSelection_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTableSelection_state", self.saveState())
         self.close()
 
     def cboObject_currentIndexChanged(self, newIndex):

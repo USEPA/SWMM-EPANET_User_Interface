@@ -143,8 +143,6 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
                 print("Error writing {0}: {1}\n{2}".format(file_name, str(e), str(traceback.print_exc())))
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_state", self.saveState())
         self.close()
 
     def get_text_lines(self):

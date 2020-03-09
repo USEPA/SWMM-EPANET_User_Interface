@@ -36,6 +36,4 @@ class frmTitle(QMainWindow, Ui_frmTitle):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTitle_state", self.saveState())
         self.close()

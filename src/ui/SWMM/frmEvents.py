@@ -151,6 +151,4 @@ class frmEvents(QMainWindow, Ui_frmEvents):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmEvents_state", self.saveState())
         self.close()

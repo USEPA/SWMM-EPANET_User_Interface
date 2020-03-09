@@ -87,6 +87,4 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmLandUseAssignment_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmLandUseAssignment_state", self.saveState())
         self.close()

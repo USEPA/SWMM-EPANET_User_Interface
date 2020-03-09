@@ -199,6 +199,4 @@ class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmCalibrationData_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmCalibrationData_state", self.saveState())
         self.close()

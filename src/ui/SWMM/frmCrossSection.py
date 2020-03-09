@@ -417,8 +417,6 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_state", self.saveState())
         self.close()
 
     def btnDialog_Clicked(self):

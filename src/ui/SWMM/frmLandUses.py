@@ -291,8 +291,6 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_state", self.saveState())
         self.close()
 
     def tblGeneral_currentCellChanged(self):

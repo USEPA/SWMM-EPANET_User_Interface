@@ -120,8 +120,6 @@ class frmTransect(QMainWindow, Ui_frmTransect):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_state", self.saveState())
         self.close()
 
     def btnView_Clicked(self):

@@ -84,6 +84,4 @@ class frmOutlets(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmOutlets_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmOutlets_state", self.saveState())
         self.close()

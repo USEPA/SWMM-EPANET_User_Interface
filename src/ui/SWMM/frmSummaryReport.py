@@ -292,6 +292,4 @@ class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
                 print("Error reading " + self.status_file_name)
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmSummaryReport_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmSummaryReport_state", self.saveState())
         self.close()

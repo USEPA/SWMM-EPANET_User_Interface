@@ -102,8 +102,6 @@ class frmSeepage(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmSeepage_state", self.saveState())
         self.close()
 
     def table_currentCellChanged(self):

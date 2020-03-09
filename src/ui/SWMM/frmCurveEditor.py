@@ -197,8 +197,6 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmCurveEditor_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmCurveEditor_state", self.saveState())
         self.close()
 
     def cboCurveType_currentIndexChanged(self, newIndex):

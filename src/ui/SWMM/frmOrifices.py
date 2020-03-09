@@ -108,6 +108,4 @@ class frmOrifices(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmOrifices_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmOrifices_state", self.saveState())
         self.close()

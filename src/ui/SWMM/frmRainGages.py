@@ -48,6 +48,4 @@ class frmRainGages(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmRainGages_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmRainGages_state", self.saveState())
         self.close()

@@ -436,8 +436,6 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmClimatology_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmClimatology_state", self.saveState())
         self.close()
 
     def cboEvap_currentIndexChanged(self, newIndex):

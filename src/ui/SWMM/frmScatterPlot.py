@@ -107,6 +107,4 @@ class frmScatterPlot(QMainWindow, Ui_frmScatterPlot):
         self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_state", self.saveState())
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmScatterPlot_state", self.saveState())
         self.close()

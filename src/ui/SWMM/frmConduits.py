@@ -133,6 +133,4 @@ class frmConduits(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmConduits_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmConduits_state", self.saveState())
         self.close()

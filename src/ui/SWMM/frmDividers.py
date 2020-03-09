@@ -136,6 +136,4 @@ class frmDividers(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmDividers_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmDividers_state", self.saveState())
         self.close()

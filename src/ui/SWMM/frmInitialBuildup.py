@@ -92,6 +92,4 @@ class frmInitialBuildup(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmInitialBuildup_state", self.saveState())
         self.close()

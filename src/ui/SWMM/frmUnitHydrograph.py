@@ -198,8 +198,6 @@ class frmUnitHydrograph(QMainWindow, Ui_frmUnitHydrograph):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmUnitHydrograph_state", self.saveState())
         self.close()
 
     def cboHydrograph_currentIndexChanged(self, newIndex):

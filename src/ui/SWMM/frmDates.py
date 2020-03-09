@@ -86,6 +86,4 @@ class frmDates(QMainWindow, Ui_frmDates):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmDates_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmDates_state", self.saveState())
         self.close()

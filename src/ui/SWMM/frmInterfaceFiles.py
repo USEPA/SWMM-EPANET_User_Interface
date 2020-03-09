@@ -135,8 +135,6 @@ class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):
             return None
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmInterfaceFiles_state", self.saveState())
         self.close()
 
     def cmdUseRainfall_Clicked(self):

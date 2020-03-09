@@ -143,6 +143,4 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmDynamicWave_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmDynamicWave_state", self.saveState())
         self.close()

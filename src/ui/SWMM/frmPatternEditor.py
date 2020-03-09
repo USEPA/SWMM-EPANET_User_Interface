@@ -114,8 +114,6 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_state", self.saveState())
         self.close()
 
     def cboType_currentIndexChanged(self, newIndex):

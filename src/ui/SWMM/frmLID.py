@@ -444,8 +444,6 @@ class frmLID(QMainWindow, Ui_frmLID):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmLID_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmLID_state", self.saveState())
         self.close()
 
     def cboLIDType_currentIndexChanged(self, newIndex):

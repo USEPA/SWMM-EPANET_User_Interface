@@ -68,6 +68,4 @@ class frmSummary(QMainWindow, Ui_frmSummary):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmSummary_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmSummary_state", self.saveState())
         self.close()

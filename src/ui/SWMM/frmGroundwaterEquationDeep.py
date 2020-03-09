@@ -68,8 +68,4 @@ class frmGroundwaterEquationDeep(QMainWindow, Ui_frmGroundwaterEquationDeep):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquationDeep_geometry",
-                                                  self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterEquationDeep_state",
-                                                  self.saveState())
         self.close()

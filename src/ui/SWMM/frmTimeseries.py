@@ -184,8 +184,6 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_state", self.saveState())
         self.close()
 
     def btnFile_Clicked(self):

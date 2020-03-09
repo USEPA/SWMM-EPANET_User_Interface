@@ -101,6 +101,4 @@ class frmJunction(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmJunction_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmJunction_state", self.saveState())
         self.close()

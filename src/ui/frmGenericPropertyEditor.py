@@ -106,13 +106,6 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        if self._main_form.model == 'SWMM':
-            if self.project_section.SECTION_NAME == '[LABELS]' or self.project_section.SECTION_NAME == '[POLLUTANTS]':
-                word = self.project_section.SECTION_NAME.strip('[]')
-                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
-                                                          "_geometry", self.saveGeometry())
-                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
-                                                          "_state", self.saveState())
         self.close()
 
     def copy(self):

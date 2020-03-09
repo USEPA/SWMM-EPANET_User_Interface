@@ -127,6 +127,4 @@ class frmGeneralOptions(QMainWindow, Ui_frmGeneralOptions):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmGeneralOptions_state", self.saveState())
         self.close()

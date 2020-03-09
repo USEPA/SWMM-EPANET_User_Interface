@@ -151,6 +151,4 @@ class frmWeirs(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmWeirs_state", self.saveState())
         self.close()

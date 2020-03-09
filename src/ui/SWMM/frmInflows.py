@@ -389,8 +389,6 @@ class frmInflows(QMainWindow, Ui_frmInflows):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmInflows_state", self.saveState())
         self.close()
 
     def tabInflows_currentTabChanged(self):

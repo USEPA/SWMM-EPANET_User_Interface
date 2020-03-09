@@ -256,7 +256,5 @@ class frmInfiltration(QMainWindow, Ui_frmInfiltrationEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmInfiltration_state", self.saveState())
         self.close()
 

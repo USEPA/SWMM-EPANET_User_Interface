@@ -90,6 +90,4 @@ class frmTreatment(frmGenericPropertyEditor):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmTreatment_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmTreatment_state", self.saveState())
         self.close()

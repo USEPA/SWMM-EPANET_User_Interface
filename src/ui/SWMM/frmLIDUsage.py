@@ -142,8 +142,6 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form._main_form.program_settings.setValue("Geometry/" + "frmLIDUsage_geometry", self.saveGeometry())
-        self._main_form._main_form.program_settings.setValue("Geometry/" + "frmLIDUsage_state", self.saveState())
         self.close()
 
     def cboLIDControl_currentIndexChanged(self, newIndex):

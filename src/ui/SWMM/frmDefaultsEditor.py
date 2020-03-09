@@ -448,8 +448,6 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         discard user changes to the defaults
         Returns:
         """
-        self._main_form.program_settings.setValue("Geometry/" + "frmDefaultsEditor_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmDefaultsEditor_state", self.saveState())
         self.close()
         pass
 

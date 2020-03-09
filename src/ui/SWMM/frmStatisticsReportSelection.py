@@ -162,9 +162,5 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_geometry",
-                                                  self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_state",
-                                                  self.saveState())
         self.close()
 

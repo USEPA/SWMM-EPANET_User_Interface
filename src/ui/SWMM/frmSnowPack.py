@@ -180,6 +180,4 @@ class frmSnowPack(QMainWindow, Ui_frmSnowPack):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmSnowPack_state", self.saveState())
         self.close()

@@ -491,8 +491,6 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
         self.widgetFrequency = frequency
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReport_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReport_state", self.saveState())
         self.close()
 
 class MyHistogram(FigureCanvas):

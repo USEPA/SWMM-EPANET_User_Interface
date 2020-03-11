@@ -376,13 +376,12 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdCopy_To.setVisible(False)
         self.actionStdGroup_Edit.setVisible(False)
 
-        if self.model == 'SWMM':
-            if (self.program_settings.value("Geometry/" + "frmMainSWMM_geometry") and
-                    self.program_settings.value("Geometry/" + "frmMainSWMM_state")):
-                self.restoreGeometry(self.program_settings.value("Geometry/" + "frmMainSWMM_geometry",
-                                                                 self.geometry(), type=QtCore.QByteArray))
-                self.restoreState(self.program_settings.value("Geometry/" + "frmMainSWMM_state",
-                                                              self.windowState(), type=QtCore.QByteArray))
+        if (self.program_settings.value("Geometry/" + "frmMain_geometry") and
+                self.program_settings.value("Geometry/" + "frmMain_state")):
+            self.restoreGeometry(self.program_settings.value("Geometry/" + "frmMain_geometry",
+                                                             self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self.program_settings.value("Geometry/" + "frmMain_state",
+                                                          self.windowState(), type=QtCore.QByteArray))
 
     def loadBasemap(self):
         pass
@@ -2416,9 +2415,8 @@ class frmMain(QMainWindow, Ui_frmMain):
         if not self.confirm_discard_project():
             return
 
-        if self.model == 'SWMM':
-            self.program_settings.setValue("Geometry/" + "frmMainSWMM_geometry", self.saveGeometry())
-            self.program_settings.setValue("Geometry/" + "frmMainSWMM_state", self.saveState())
+        self.program_settings.setValue("Geometry/" + "frmMain_geometry", self.saveGeometry())
+        self.program_settings.setValue("Geometry/" + "frmMain_state", self.saveState())
 
         del self.program_settings
         del self.project_settings

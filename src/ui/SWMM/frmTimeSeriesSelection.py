@@ -22,6 +22,13 @@ class frmTimeSeriesSelection(QMainWindow, Ui_frmTimeSeriesSelection):
         self.onObjectSelected = self._main_form.objectsSelected
         self.onObjectSelected.connect(self.set_selected_object)
 
+        if (main_form.program_settings.value("Geometry/" + "frmTimeSeriesSelection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTimeSeriesSelection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTimeSeriesSelection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTimeSeriesSelection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output, listener):
         self.project = project
         self.output = output
@@ -109,6 +116,9 @@ class frmTimeSeriesSelection(QMainWindow, Ui_frmTimeSeriesSelection):
                       self.cboVariable.currentText(),
                       axis,
                       legend)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesSelection_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesSelection_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

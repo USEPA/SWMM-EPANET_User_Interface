@@ -51,6 +51,13 @@ class frmConduits(frmGenericPropertyEditor):
             # also set special text plus button cells
             self.set_cross_section_cell(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmConduits_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmConduits_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmConduits_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmConduits_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -120,6 +127,9 @@ class frmConduits(frmGenericPropertyEditor):
                     value.geometry1 = str(self.tblGeneric.item(6, column).text())
                     value.culvert_code = str(self.tblGeneric.item(18, column).text())
         # self._main_form.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmConduits_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmConduits_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

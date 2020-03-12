@@ -19,7 +19,7 @@ class frmDates(QMainWindow, Ui_frmDates):
         if (main_form.program_settings.value("Geometry/" + "frmDates_geometry") and
                 main_form.program_settings.value("Geometry/" + "frmDates_state")):
             self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmDates_geometry",
-                                                                  self.saveGeometry(), type=QtCore.QByteArray))
+                                                                  self.geometry(), type=QtCore.QByteArray))
             self.restoreState(main_form.program_settings.value("Geometry/" + "frmDates_state",
                                                                self.windowState(), type=QtCore.QByteArray))
 
@@ -86,6 +86,4 @@ class frmDates(QMainWindow, Ui_frmDates):
         self.close()
 
     def cmdCancel_Clicked(self):
-        self._main_form.program_settings.setValue("Geometry/" + "frmDates_geometry", self.saveGeometry())
-        self._main_form.program_settings.setValue("Geometry/" + "frmDates_state", self.saveState())
         self.close()

@@ -48,6 +48,13 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
             else:
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmCurveEditor_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmCurveEditor_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmCurveEditor_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmCurveEditor_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, curve):
         flow_units = self._main_form.project.options.flow_units.name
         if not isinstance(curve, Curve):
@@ -185,6 +192,8 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
             orig_xy != self.editing_item.curve_xy:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmCurveEditor_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmCurveEditor_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

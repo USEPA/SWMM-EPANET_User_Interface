@@ -48,8 +48,18 @@ class frmAquifers(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(13, column, combobox)
 
+        self._main_form = main_form
+        if (main_form.program_settings.value("Geometry/" + "frmAquifers_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmAquifers_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmAquifers_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmAquifers_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self._main_form.program_settings.setValue("Geometry/" + "frmAquifers_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmAquifers_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

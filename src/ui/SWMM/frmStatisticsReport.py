@@ -50,6 +50,13 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
         self.stats = None
         self.statsResult = None #UStats.TStatsResults()
 
+        if (main_form.program_settings.value("Geometry/" + "frmStatisticsReport_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmStatisticsReport_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmStatisticsReport_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmStatisticsReport_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output, stats):
         self.project = project
         self.output = output #SMO.SwmmOutputObject(output)

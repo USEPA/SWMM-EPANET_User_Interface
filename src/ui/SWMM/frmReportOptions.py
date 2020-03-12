@@ -21,6 +21,13 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmReportOptions_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmReportOptions_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmReportOptions_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmReportOptions_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         # section = core.swmm.options.report.Report()
         section = project.find_section("REPORT")
@@ -98,6 +105,8 @@ class frmReportOptions(QMainWindow, Ui_frmReportOptions):
             orig_averages != section.averages:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmReportOptions_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmReportOptions_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

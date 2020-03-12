@@ -62,6 +62,14 @@ class frmOrifices(frmGenericPropertyEditor):
                         combobox.setCurrentIndex(1)
                     self.tblGeneric.setItem(7, column, QTableWidgetItem(value.geometry1))
                     self.tblGeneric.setItem(8, column, QTableWidgetItem(value.geometry2))
+
+        if (main_form.program_settings.value("Geometry/" + "frmOrifices_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmOrifices_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmOrifices_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmOrifices_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -94,6 +102,9 @@ class frmOrifices(frmGenericPropertyEditor):
                     value.geometry2 = current_geometry2_text
         self._main_form.list_objects()
         # self._main_form.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmOrifices_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmOrifices_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

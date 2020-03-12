@@ -82,6 +82,13 @@ class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
 
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmCalibrationData_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmCalibrationData_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmCalibrationData_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmCalibrationData_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def toolButton_Clicked(self):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Calibration File", '',
                                                       "Data files (*.DAT);;All files (*.*)")
@@ -187,6 +194,8 @@ class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):
                 self.defaults.config.setValue("Calibration/File12", '')
                 self.file_dict['File12'] = ''
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmCalibrationData_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmCalibrationData_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

@@ -24,6 +24,13 @@ class frmTableSelection(QMainWindow, Ui_frmTableSelection):
         self.lstNodes.setSelectionMode(QAbstractItemView.MultiSelection)
         self.lstVariables.setSelectionMode(QAbstractItemView.MultiSelection)
 
+        if (main_form.program_settings.value("Geometry/" + "frmTableSelection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTableSelection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTableSelection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTableSelection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output):
         self.project = project
         self.output = output

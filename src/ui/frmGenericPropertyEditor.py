@@ -40,6 +40,20 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
         for row in range(self.tblGeneric.rowCount()):
             self.tblGeneric.setRowHeight(row, 20)
 
+        self._main_form = session
+        if session.model == 'SWMM':
+            if project_section.SECTION_NAME == '[LABELS]' or project_section.SECTION_NAME == '[POLLUTANTS]':
+                word = project_section.SECTION_NAME.strip('[]')
+
+                if (session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word + "_geometry") and
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word + "_state")):
+                    self.restoreGeometry(
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                       "_geometry", self.geometry(), type=QtCore.QByteArray))
+                    self.restoreState(
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                       "_state", self.windowState(), type=QtCore.QByteArray))
+
     def header_index(self, prop):
         """
         Look up the row header to match up with prop
@@ -81,6 +95,14 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
         # self.session.model_layers.create_layers_from_project(self.project)
+
+        if self._main_form.model == 'SWMM':
+            if self.project_section.SECTION_NAME == '[LABELS]' or self.project_section.SECTION_NAME == '[POLLUTANTS]':
+                word = self.project_section.SECTION_NAME.strip('[]')
+                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                          "_geometry", self.saveGeometry())
+                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                          "_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

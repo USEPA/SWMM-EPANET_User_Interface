@@ -106,6 +106,14 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
         self.installEventFilter(self)
         self.loaded = True
 
+        self._main_form = session
+        if (self._main_form.program_settings.value("Geometry/" + "frmDefaultsEditor_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmDefaultsEditor_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmDefaultsEditor_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmDefaultsEditor_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
     def resizeCorner(self):
         tab_ind = self.tabDefaults.currentIndex()
         if tab_ind == 0:
@@ -430,6 +438,8 @@ class frmDefaultsEditor(QMainWindow, Ui_frmGenericDefaultsEditor):
             self.session.program_settings.sync()
             pass
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmDefaultsEditor_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmDefaultsEditor_state", self.saveState())
         self.close()
         pass
 

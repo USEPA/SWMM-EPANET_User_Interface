@@ -27,6 +27,13 @@ class frmPreferences(QMainWindow, Ui_frmPreferences):
         self.spnNode.valueChanged.connect(self.spnNode_valueChanged)
         self.spnLink.valueChanged.connect(self.spnLink_valueChanged)
 
+        if (main_form.program_settings.value("Geometry/" + "frmPreferences_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmPreferences_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmPreferences_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmPreferences_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         if self._main_form.model == "SWMM":
             settings = self._main_form.project_settings
@@ -177,6 +184,10 @@ class frmPreferences(QMainWindow, Ui_frmPreferences):
             self._main_form.update_recent(self._main_form.recent_projects, '')
 
         self._main_form.project_settings.sync_preferences()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmPreferences_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmPreferences_state", self.saveState())
+
         self.close()
 
     def cmdCancel_Clicked(self):

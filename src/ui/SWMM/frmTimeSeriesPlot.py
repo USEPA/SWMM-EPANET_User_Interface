@@ -30,6 +30,15 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
         self.btnScript.clicked.connect(self.save_script)
         self.cboStart.currentIndexChanged.connect(self.cboStart_currentIndexChanged)
         self.cboEnd.currentIndexChanged.connect(self.cboEnd_currentIndexChanged)
+
+        self._main_form = session
+        if (self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmTimeSeriesPlot_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
         # self.installEventFilter(self)
 
     def set_from(self, project, output):
@@ -95,6 +104,9 @@ class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):
             QMessageBox.information(None, "Plot",
                                     "Error plotting:\n" + msg,
                                     QMessageBox.Ok)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSeriesPlot_state", self.saveState())
 
         # cb = QApplication.clipboard()
         # cb.clear(mode=cb.Clipboard)

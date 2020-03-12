@@ -20,6 +20,13 @@ class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
         self.tblSummary.setSortingEnabled(False)
 
+        if (main_form.program_settings.value("Geometry/" + "frmSummaryReport_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSummaryReport_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSummaryReport_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSummaryReport_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, status_file_name):
         self.project = project
         self.status_file_name = status_file_name

@@ -56,6 +56,13 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.lid = edit_these
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmLID_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLID_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLID_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLID_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, lid):
         if not isinstance(lid, LIDControl):
             lid = self.section.value[lid]
@@ -432,6 +439,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             orig_removal_removal5 != self.editing_item.removal_removal5:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmLID_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLID_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

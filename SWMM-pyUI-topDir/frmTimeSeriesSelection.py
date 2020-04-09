@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
-from ui.SWMM.frmTimeSeriesSelectionDesigner import Ui_frmTimeSeriesSelection
+from frmTimeSeriesSelectionDesigner import Ui_frmTimeSeriesSelection
 from ui.help import HelpHandler
 import Externals.swmm.outputapi.SMOutputSWIG as SMO
 

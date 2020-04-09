@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 import core.swmm.options.files
-from ui.SWMM.frmInterfaceFilesDesigner import Ui_frmInterfaceFiles
+from frmInterfaceFilesDesigner import Ui_frmInterfaceFiles
 
 
 class frmInterfaceFiles(QMainWindow, Ui_frmInterfaceFiles):

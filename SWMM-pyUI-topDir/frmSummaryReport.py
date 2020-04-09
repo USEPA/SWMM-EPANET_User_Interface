@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from ui.help import HelpHandler
-from ui.SWMM.frmSummaryReportDesigner import Ui_frmSummaryReport
+from frmSummaryReportDesigner import Ui_frmSummaryReport
 
 
 class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):

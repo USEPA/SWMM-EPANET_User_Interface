@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
-from ui.SWMM.frmTransectDesigner import Ui_frmTransect
+from frmTransectDesigner import Ui_frmTransect
 from ui.help import HelpHandler
 from core.swmm.hydraulics.link import Transect
 import pandas as pd

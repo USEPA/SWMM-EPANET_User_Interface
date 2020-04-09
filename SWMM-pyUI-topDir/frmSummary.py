@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
-from ui.SWMM.frmSummaryDesigner import Ui_frmSummary
+from frmSummaryDesigner import Ui_frmSummary
 from ui.help import HelpHandler
 
 

@@ -3,7 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from PyQt5.QtCore import *
-from ui.SWMM.frmTimeseriesDesigner import Ui_frmTimeseries
+from frmTimeseriesDesigner import Ui_frmTimeseries
 from ui.help import HelpHandler
 from core.swmm.timeseries import TimeSeries
 from ui.model_utility import ParseData

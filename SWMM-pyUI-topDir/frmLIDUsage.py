@@ -3,7 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QFileDialog
 from ui.help import HelpHandler
 from core.swmm.hydrology.lidcontrol import LIDType
-from ui.SWMM.frmLIDUsageDesigner import Ui_frmLIDUsage
+from frmLIDUsageDesigner import Ui_frmLIDUsage
 
 
 class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):

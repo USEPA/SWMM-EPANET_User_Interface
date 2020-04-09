@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.swmm_project
-from ui.SWMM.frmTitleDesigner import Ui_frmTitle
+from frmTitleDesigner import Ui_frmTitle
 
 
 class frmTitle(QMainWindow, Ui_frmTitle):

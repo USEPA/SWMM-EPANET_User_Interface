@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
 from core.swmm.hydrology.lidcontrol import LIDType
-from ui.SWMM.frmLIDDesigner import Ui_frmLID
+from frmLIDDesigner import Ui_frmLID
 from core.swmm.hydrology.lidcontrol import LIDControl
 from core.swmm.curves import CurveType
 

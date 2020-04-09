@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QAbstractItemView
 import core.swmm.options.report
-from ui.SWMM.frmReportOptionsDesigner import Ui_frmReportOptions
+from frmReportOptionsDesigner import Ui_frmReportOptions
 
 
 class frmReportOptions(QMainWindow, Ui_frmReportOptions):

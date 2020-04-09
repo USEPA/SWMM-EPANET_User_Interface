@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
-from ui.SWMM.frmControlsDesigner import Ui_frmControls
+from frmControlsDesigner import Ui_frmControls
 
 
 class frmControls(QMainWindow, Ui_frmControls):

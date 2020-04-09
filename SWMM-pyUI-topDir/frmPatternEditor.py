@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem, QMessageBo
 import ui.convenience
 from core.swmm.patterns import PatternType
 from core.swmm.patterns import Pattern
-from ui.SWMM.frmPatternEditorDesigner import Ui_frmPatternEditor
+from frmPatternEditorDesigner import Ui_frmPatternEditor
 from ui.help import HelpHandler
 
 

@@ -9,11 +9,11 @@ from core.swmm.hydrology.subcatchment import Groundwater
 from core.swmm.patterns import PatternType
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
-from ui.SWMM.frmLIDControls import frmLIDControls
-from ui.SWMM.frmInitialBuildup import frmInitialBuildup
-from ui.SWMM.frmLandUseAssignment import frmLandUseAssignment
-from ui.SWMM.frmInfiltration import frmInfiltration
-from ui.SWMM.frmGroundwaterFlow import frmGroundwaterFlow
+from frmLIDControls import frmLIDControls
+from frmInitialBuildup import frmInitialBuildup
+from frmLandUseAssignment import frmLandUseAssignment
+from frmInfiltration import frmInfiltration
+from frmGroundwaterFlow import frmGroundwaterFlow
 
 
 class frmSubcatchments(frmGenericPropertyEditor):

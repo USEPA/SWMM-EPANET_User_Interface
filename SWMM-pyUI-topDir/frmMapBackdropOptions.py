@@ -3,7 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.backdrop
 from core.swmm.options.map import MapUnits
-from ui.SWMM.frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
+from frmMapBackdropOptionsDesigner import Ui_frmMapBackdropOptions
 
 
 class frmMapBackdropOptions(QMainWindow, Ui_frmMapBackdropOptions):

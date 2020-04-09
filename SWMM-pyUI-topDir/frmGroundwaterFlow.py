@@ -2,12 +2,12 @@ import PyQt5.QtCore as QtCore
 import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QComboBox
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
-from ui.SWMM.frmGroundwaterFlowDesigner import Ui_frmGroundwaterFlow
+from frmGroundwaterFlowDesigner import Ui_frmGroundwaterFlow
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
 from ui.help import HelpHandler
-from ui.SWMM.frmGroundwaterEquation import frmGroundwaterEquation
-from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
+from frmGroundwaterEquation import frmGroundwaterEquation
+from frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
 from core.swmm.hydrology.subcatchment import GroundwaterFlowType
 
 

@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.general
-from ui.SWMM.frmGeneralOptionsDesigner import Ui_frmGeneralOptions
+from frmGeneralOptionsDesigner import Ui_frmGeneralOptions
 
 
 class frmGeneralOptions(QMainWindow, Ui_frmGeneralOptions):

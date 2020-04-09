@@ -3,7 +3,7 @@ import PyQt5.QtGui as QtGui
 from PyQt5.QtWidgets import QMainWindow, QLabel, QTableWidgetItem
 from ui.help import HelpHandler
 from ui.frmGenericPropertyEditorDesigner import Ui_frmGenericPropertyEditor
-from ui.SWMM.frmInfiltrationDesigner import Ui_frmInfiltrationEditor
+from frmInfiltrationDesigner import Ui_frmInfiltrationEditor
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.convenience import set_combo_items
 from ui.convenience import set_combo

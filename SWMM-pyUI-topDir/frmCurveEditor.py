@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from PyQt5.QtCore import *
 from ui.help import HelpHandler
 import core.swmm.curves
-from ui.SWMM.frmCurveEditorDesigner import Ui_frmCurveEditor
+from frmCurveEditorDesigner import Ui_frmCurveEditor
 import ui.convenience
 from core.swmm.curves import Curve
 from ui.model_utility import ParseData

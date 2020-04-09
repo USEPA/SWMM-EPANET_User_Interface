@@ -6,8 +6,8 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 import traceback
 from ui.help import HelpHandler
 import ui.convenience
-from ui.SWMM.frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
-from ui.SWMM.frmTimeSeriesSelection import frmTimeSeriesSelection
+from frmTimeSeriesPlotDesigner import Ui_frmTimeSeriesPlot
+from frmTimeSeriesSelection import frmTimeSeriesSelection
 from core.graph import SWMM as graphSWMM
 
 class frmTimeSeriesPlot(QMainWindow, Ui_frmTimeSeriesPlot):

@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem
-from ui.SWMM.frmSnowPackDesigner import Ui_frmSnowPack
+from frmSnowPackDesigner import Ui_frmSnowPack
 from core.swmm.hydrology.snowpack import SnowPack
 
 

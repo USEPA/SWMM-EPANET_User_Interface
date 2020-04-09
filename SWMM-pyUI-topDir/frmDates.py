@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options.dates
-from ui.SWMM.frmDatesDesigner import Ui_frmDates
+from frmDatesDesigner import Ui_frmDates
 from ui.model_utility import ParseData
 
 

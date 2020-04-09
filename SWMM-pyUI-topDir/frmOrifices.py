@@ -5,7 +5,7 @@ from core.swmm.hydraulics.link import Orifice
 from core.swmm.hydraulics.link import CrossSectionShape
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
-from ui.SWMM.frmCrossSection import frmCrossSection
+from frmCrossSection import frmCrossSection
 
 
 class frmOrifices(frmGenericPropertyEditor):

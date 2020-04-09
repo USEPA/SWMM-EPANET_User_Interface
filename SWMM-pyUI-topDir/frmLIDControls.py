@@ -2,8 +2,8 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QAbstractItemView
 from ui.help import HelpHandler
-from ui.SWMM.frmLIDControlsDesigner import Ui_frmLIDControls
-from ui.SWMM.frmLIDUsage import frmLIDUsage
+from frmLIDControlsDesigner import Ui_frmLIDControls
+from frmLIDUsage import frmLIDUsage
 from core.swmm.hydrology.lidcontrol import LIDType
 from core.swmm.hydrology.subcatchment import LIDUsage
 

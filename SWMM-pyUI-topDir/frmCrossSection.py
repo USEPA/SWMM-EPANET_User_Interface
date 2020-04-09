@@ -4,10 +4,10 @@ from PyQt5.QtWidgets import QMainWindow
 import core.swmm.hydraulics
 import core.swmm.hydraulics.link
 import core.swmm.options.dynamic_wave
-from ui.SWMM.frmCrossSectionDesigner import Ui_frmCrossSection
+from frmCrossSectionDesigner import Ui_frmCrossSection
 from ui.help import HelpHandler
-from ui.SWMM.frmTransect import frmTransect
-from ui.SWMM.frmCurveEditor import frmCurveEditor
+from frmTransect import frmTransect
+from frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
 from ui.model_utility import ParseData
 

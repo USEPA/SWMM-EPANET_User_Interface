@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView
-from ui.SWMM.frmEventsDesigner import Ui_frmEvents
+from frmEventsDesigner import Ui_frmEvents
 from core.swmm.options.events import Events
 from core.indexed_list import IndexedList
 

@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
-from ui.SWMM.frmAboutDesigner import Ui_frmAbout
+from frmAboutDesigner import Ui_frmAbout
 
 
 class frmAbout(QMainWindow, Ui_frmAbout):

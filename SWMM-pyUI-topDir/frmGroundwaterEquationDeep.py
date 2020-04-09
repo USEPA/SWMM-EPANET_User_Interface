@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
-from ui.SWMM.frmGroundwaterEquationDeepDesigner import Ui_frmGroundwaterEquationDeep
+from frmGroundwaterEquationDeepDesigner import Ui_frmGroundwaterEquationDeep
 from core.swmm.hydrology.subcatchment import GWF, GroundwaterFlowType
 
 

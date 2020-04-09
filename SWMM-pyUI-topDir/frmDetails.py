@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
-from ui.SWMM.frmDetailsDesigner import Ui_frmDetails
+from frmDetailsDesigner import Ui_frmDetails
 from ui.help import HelpHandler
 
 

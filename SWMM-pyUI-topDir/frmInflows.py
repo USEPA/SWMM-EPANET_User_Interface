@@ -4,10 +4,10 @@ from PyQt5.QtWidgets import QMainWindow
 from ui.help import HelpHandler
 from core.swmm.hydraulics.node import DirectInflow, DirectInflowType, RDIInflow, DryWeatherInflow
 from core.swmm.quality import ConcentrationUnitLabels
-from ui.SWMM.frmInflowsDesigner import Ui_frmInflows
-from ui.SWMM.frmTimeseries import frmTimeseries
-from ui.SWMM.frmPatternEditor import frmPatternEditor
-from ui.SWMM.frmUnitHydrograph import frmUnitHydrograph
+from frmInflowsDesigner import Ui_frmInflows
+from frmTimeseries import frmTimeseries
+from frmPatternEditor import frmPatternEditor
+from frmUnitHydrograph import frmUnitHydrograph
 
 
 class frmInflows(QMainWindow, Ui_frmInflows):

@@ -5,9 +5,9 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from core.swmm.climatology import EvaporationFormat
 from core.swmm.climatology import TemperatureSource
 from core.swmm.climatology import WindSource
-from ui.SWMM.frmClimatologyDesigner import Ui_frmClimatology
-from ui.SWMM.frmPatternEditor import frmPatternEditor
-from ui.SWMM.frmTimeseries import frmTimeseries
+from frmClimatologyDesigner import Ui_frmClimatology
+from frmPatternEditor import frmPatternEditor
+from frmTimeseries import frmTimeseries
 from ui.model_utility import ParseData
 
 

@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options
-from ui.SWMM.frmTimeStepsDesigner import Ui_frmTimeSteps
+from frmTimeStepsDesigner import Ui_frmTimeSteps
 from ui.model_utility import ParseData
 import math
 

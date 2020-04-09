@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
-from ui.SWMM.frmCalibrationDataDesigner import Ui_frmCalibrationData
+from frmCalibrationDataDesigner import Ui_frmCalibrationData
 
 
 class frmCalibrationData(QMainWindow, Ui_frmCalibrationData):

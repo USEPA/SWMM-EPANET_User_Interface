@@ -1,7 +1,7 @@
 import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QLineEdit, QTableWidgetItem, QComboBox
-from ui.SWMM.frmLandUsesDesigner import Ui_frmLandUsesEditor
+from frmLandUsesDesigner import Ui_frmLandUsesEditor
 import ui.convenience
 from core.swmm.quality import Buildup
 from core.swmm.quality import Landuse

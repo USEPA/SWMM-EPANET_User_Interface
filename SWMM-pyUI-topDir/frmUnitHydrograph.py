@@ -2,7 +2,7 @@ import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLineEdit
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
-from ui.SWMM.frmUnitHydrographDesigner import Ui_frmUnitHydrograph
+from frmUnitHydrographDesigner import Ui_frmUnitHydrograph
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
 
 

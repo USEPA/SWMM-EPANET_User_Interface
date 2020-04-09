@@ -6,8 +6,8 @@ from core.swmm.hydraulics.node import DirectInflow, DryWeatherInflow, RDIInflow,
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.property_editor_backend import PropertyEditorBackend
 from ui.text_plus_button import TextPlusButton
-from ui.SWMM.frmInflows import frmInflows
-from ui.SWMM.frmTreatment import frmTreatment
+from frmInflows import frmInflows
+from frmTreatment import frmTreatment
 from core.swmm.curves import CurveType
 
 

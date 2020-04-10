@@ -1,0 +1,9 @@
+Script started on 2020-04-09 19:09:56-04:00 [TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="170" LINES="46"]
+]0;erikbeck@hood-canal:~/OtherGits/SWMM-EPANET_User_Interface/supplemental/swmm-python-dev/swmm_python/output/swmm/output[erikbeck@hood-canal output]$ exitpython-config ldflags--cflags
+-I/usr/include/python3.7m -I/usr/include/python3.7m  -Wno-unused-result -Wsign-compare  -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches   -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -D_GNU_SOURCE -fPIC -fwrapv  -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DNDEBUG  -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches   -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -D_GNU_SOURCE -fPIC -fwrapv
+]0;erikbeck@hood-canal:~/OtherGits/SWMM-EPANET_User_Interface/supplemental/swmm-python-dev/swmm_python/output/swmm/output[erikbeck@hood-canal output]$ python-config --cflagsexit[Kpython-config --cflags[Kpython-config --cflagsexit[Kpython-config ldflags-ldflags-ldflags
+ -L/usr/lib64 -lpython3.7m -lcrypt -lpthread -ldl  -lutil -lm 
+]0;erikbeck@hood-canal:~/OtherGits/SWMM-EPANET_User_Interface/supplemental/swmm-python-dev/swmm_python/output/swmm/output[erikbeck@hood-canal output]$ exit
+exit
+
+Script done on 2020-04-09 19:10:11-04:00 [COMMAND_EXIT_CODE="0"]

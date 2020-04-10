@@ -4,7 +4,7 @@ Written for SWMM-EPANET User Interface project
 @ swmm_output-0.1.0a0-cp36-cp36m-win_amd64.zip
 """
 import time, datetime
-from swig.swmm_output import output as _lib
+from output import _output as _lib
 
 
 class SwmmOutputCategoryBase:

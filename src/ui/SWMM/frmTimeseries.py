@@ -13,7 +13,7 @@ from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmTimeseries(QMainWindow, Ui_frmTimeseries):
-    def __init__(self, main_form, edit_these=[], new_item=None):
+    def __init__(self, main_form, edit_these=[], new_item=None, calling_form=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
         self.helper = HelpHandler(self)
@@ -24,6 +24,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
         self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
+        self.calling_form = calling_form
         self.section = self.project.timeseries
         self.new_item = new_item
         self.hour_only = True
@@ -178,6 +179,9 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                 self._main_form.mark_project_as_unsaved()
             pass
             # TODO: self._main_form.edited_?
+
+        if self.calling_form:
+            self.calling_form.refresh_timeseries()
 
         self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_geometry", self.saveGeometry())
         self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_state", self.saveState())

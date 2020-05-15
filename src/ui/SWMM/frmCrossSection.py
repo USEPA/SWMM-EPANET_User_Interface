@@ -355,6 +355,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'POWER'
         elif current_selection == 'Irregular':
             XType = 'IRREGULAR'
+            value.geometry1 = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Circular':
             XType = 'CIRCULAR'
         elif current_selection == 'Force Main':
@@ -437,12 +438,12 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 new_item = item_type()
                 new_item.name = self._main_form.new_item_name(item_type)
                 new_name = new_item.name
-            self._frmTransect = frmTransect(self._main_form, transect_list, new_item)
+            self._frmTransect = frmTransect(self._main_form, transect_list, new_item, self)
             self._frmTransect.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmTransect.show()
-            if self.cboCombo.currentIndex() == 0:
-                self.cboCombo.addItem(new_name)
-                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
+            # if self.cboCombo.currentIndex() == 0:
+            #     self.cboCombo.addItem(new_name)
+            #     self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
         elif current_selection == 'Custom':
             curve_id = self.cboCombo.currentText()
             curve_list = []
@@ -811,3 +812,14 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 self.txt1.setText(str(float(self.arch_height_in[selected_index-1])/factor))
                 self.txt2.setText(str(float(self.arch_width_in[selected_index-1])/factor))
                 self.txt3.setText(str(selected_index))
+
+    def refresh_transects(self):
+        # invoked from transects editor if opened from this form
+        transect_section = self._main_form.project.find_section("TRANSECTS")
+        transect_list = transect_section.value[0:]
+        self.cboCombo.clear()
+        self.cboCombo.addItem('')
+        for value in transect_list:
+            self.cboCombo.addItem(value.name)
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)

@@ -11,7 +11,7 @@ from ui.frmPlotViewer import frmPlotViewer
 class frmTransect(QMainWindow, Ui_frmTransect):
     SECTION_TYPE = Transect
 
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, main_form, edit_these, new_item, calling_form=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/transecteditordialog.htm"
         self.helper = HelpHandler(self)
@@ -20,6 +20,7 @@ class frmTransect(QMainWindow, Ui_frmTransect):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
+        self.calling_form = calling_form
         self.project = main_form.project
         self.section = self.project.transects
         self.new_item = new_item
@@ -114,6 +115,9 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                 orig_stations != self.editing_item.stations:
                 self._main_form.mark_project_as_unsaved()
             pass
+
+        if self.calling_form:
+            self.calling_form.refresh_transects()
 
         self._main_form.program_settings.setValue("Geometry/" + "frmTransect_geometry", self.saveGeometry())
         self._main_form.program_settings.setValue("Geometry/" + "frmTransect_state", self.saveState())

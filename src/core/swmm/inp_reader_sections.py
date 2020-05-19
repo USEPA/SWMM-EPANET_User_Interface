@@ -847,8 +847,12 @@ class ControlsReader(SectionReader):
     @staticmethod
     def read(new_text):
         controls = Controls()
-        start_search = new_text.find("RULE") + 1
-        controls.value = new_text[0:start_search] + new_text[start_search:].replace("\nRULE", "\n\nRULE")
+        # start_search = new_text.find("RULE") + 1
+        # controls.value = new_text[0:start_search] + new_text[start_search:].replace("\nRULE", "\n\nRULE")
+        lines = new_text.replace(controls.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            controls.value = '\n'.join(lines)
+            controls.value = controls.value.replace("\nRULE", "\n\nRULE")
         return controls
 
 

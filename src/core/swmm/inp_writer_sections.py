@@ -26,6 +26,7 @@ from core.swmm.climatology import WindSpeed
 from core.swmm.climatology import SnowMelt
 from core.swmm.climatology import ArealDepletion
 from core.swmm.climatology import Adjustments
+from core.swmm.hydraulics.control import Controls
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import OrificeType
@@ -81,6 +82,18 @@ from core.swmm.options.report import Report
 from core.swmm.options.events import Events
 from core.inp_writer_base import SectionWriter
 from core.utility import ParseData
+
+
+class ControlWriter(SectionWriter):
+    """rules that control pump and regulator operation"""
+
+    SECTION_NAME = "[CONTROLS]"
+
+    @staticmethod
+    def as_text(controls):
+        """format contents of this item for writing to file"""
+        if len(controls.value) > 0:
+            return Controls.SECTION_NAME + '\n' + controls.value
 
 
 class CoordinateWriter(SectionWriter):

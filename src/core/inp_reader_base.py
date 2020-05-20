@@ -312,7 +312,9 @@ class SectionReaderAsList(SectionReader):
     def read(self, new_text):
         section = self._init_section()
         comment = ''
-        keep_per_item_comment = False
+        keep_per_item_comment = True
+        new_text = new_text.encode('ascii', errors='ignore')  # strip out non-ascii characters
+        new_text = str(new_text, 'utf-8', 'ignore')
         if new_text.startswith('[LANDUSE'):
             keep_per_item_comment = True
         new_text = new_text.lstrip()  # xw20170328, remove heading white spaces indluing /n /t and spaces

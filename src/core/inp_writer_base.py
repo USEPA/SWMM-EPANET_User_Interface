@@ -45,9 +45,10 @@ class InputFileWriterBase(object):
                 else:
                     writer = SectionWriterAsList(section_name, SectionWriter(), None)
                 try:
-                    section_text = writer.as_text(section).rstrip('\n')
-                    if section_text and section_text != '[END]':                    # Skip adding blank sections
-                        section_text_list.append(section_text)
+                    if writer.as_text(section):
+                        section_text = writer.as_text(section).rstrip('\n')
+                        if section_text and section_text != '[END]':                    # Skip adding blank sections
+                            section_text_list.append(section_text)
 
                     # If we have a section order and derived sections to insert,
                     # insert any derived sections that come directly after this section.

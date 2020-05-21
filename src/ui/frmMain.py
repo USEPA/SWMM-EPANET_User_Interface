@@ -383,6 +383,13 @@ class frmMain(QMainWindow, Ui_frmMain):
             self.restoreState(self.program_settings.value("Geometry/" + "frmMain_state",
                                                           self.windowState(), type=QtCore.QByteArray))
 
+    def closeEvent(self, event):
+        # User has clicked the red x on the main window"
+        if self.confirm_discard_project():
+            event.accept()
+        else:
+            event.ignore()
+
     def loadBasemap(self):
         pass
 

@@ -139,6 +139,10 @@ class frmWeirs(frmGenericPropertyEditor):
                     value.geometry2 = str(self.tblGeneric.item(7, column).text())
                     value.geometry3 = str(self.tblGeneric.item(8, column).text())
 
+                    if str(orig_geometry1) == '1' and str(value.geometry1) == '':
+                        orig_geometry1 = ''
+                    if str(orig_geometry2) == '1' and str(value.geometry2) == '':
+                        orig_geometry2 = ''
                     if orig_shape != value.shape or \
                         orig_geometry1 != value.geometry1 or \
                         orig_geometry2 != value.geometry2 or \

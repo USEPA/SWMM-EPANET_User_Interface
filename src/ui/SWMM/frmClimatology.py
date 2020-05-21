@@ -282,10 +282,12 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             evap_section.dry_only = False
         evap_section.timeseries = str(self.cboEvapTs.currentText())
         evap_section.recovery_pattern = str(self.cboMonthly.currentText())
+        if orig_evap_format == EvaporationFormat.UNSET and evap_section.format == EvaporationFormat.CONSTANT:
+            orig_evap_format = EvaporationFormat.CONSTANT
         if orig_evap_format != evap_section.format or \
             orig_pan_coeff != evap_section.monthly_pan_coefficients or \
             orig_monthly != evap_section.monthly or \
-            orig_constant != str(evap_section.constant) or \
+            str(float(orig_constant)) != str(evap_section.constant) or \
             orig_dry_only != evap_section.dry_only or \
             orig_timeseries != evap_section.timeseries or \
             orig_pattern != evap_section.recovery_pattern:

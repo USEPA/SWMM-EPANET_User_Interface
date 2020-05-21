@@ -102,7 +102,19 @@ class PropertyEditorBackend:
                                 if new_value is not None and new_value != 'None':
                                     try:
                                         old_value = str(getattr(edit_this, meta_item.attribute))
-                                        if new_value != old_value:
+                                        if old_value.startswith('<core.swmm.hydraulics'):
+                                            old_value = 'CIRCULAR'
+                                        if str(old_value) == 'None' and str(new_value) == 'CIRCULAR':
+                                            old_value = 'CIRCULAR'
+                                        if str(old_value) == 'False' and str(new_value) == 'NO':
+                                            old_value = 'NO'
+                                        if str(old_value) == 'None' and str(new_value) == '*':
+                                            old_value = '*'
+                                        if str(old_value) == '' and str(new_value) == '*':
+                                            old_value = '*'
+                                        if str(old_value) == 'None' and str(new_value) == '':
+                                            old_value = ''
+                                        if str(new_value) != old_value:
                                             # TODO: make undoable edit?
                                             setattr(edit_this, meta_item.attribute, new_value)
                                             self._main_form.mark_project_as_unsaved()

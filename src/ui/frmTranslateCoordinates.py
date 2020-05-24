@@ -217,11 +217,15 @@ class frmTranslateCoordinates(QDialog):
         return True
 
     def set_dst_crs(self):
-        frmCRS = QgsProjectionSelectionDialog(self._main_form)
-        if frmCRS.exec_():
-            if frmCRS.crs() is not None and frmCRS.crs().authid():
-                self.destination_crs_name = frmCRS.crs().authid()
-                self._main_form.map_widget.update_project_map_crs_info(self.destination_crs_name)
+        try:
+            frmCRS = QgsProjectionSelectionDialog(self._main_form)
+            if frmCRS.exec_():
+                if frmCRS.crs() is not None and frmCRS.crs().authid():
+                    self.destination_crs_name = frmCRS.crs().authid()
+                    self._main_form.map_widget.update_project_map_crs_info(self.destination_crs_name)
+                    self._main_form.txtCrs.setText(self.destination_crs_name)
+        except:
+            pass
 
     def translate(self):
         if not self.check_coords():

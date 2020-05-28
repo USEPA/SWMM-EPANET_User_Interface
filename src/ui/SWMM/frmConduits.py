@@ -7,6 +7,7 @@ from core.swmm.hydraulics.link import CrossSectionShape
 from ui.frmGenericPropertyEditor import frmGenericPropertyEditor
 from ui.text_plus_button import TextPlusButton
 from ui.SWMM.frmCrossSection import frmCrossSection
+from core.swmm.hydraulics.link import Transect
 
 
 class frmConduits(frmGenericPropertyEditor):
@@ -106,6 +107,34 @@ class frmConduits(frmGenericPropertyEditor):
         tb.button.clicked.connect(self.show_cross_section(column))
         self.tblGeneric.setCellWidget(5, column, tb)
 
+        shapename = tb.textbox.text()
+        if shapename == 'IRREGULAR':
+            # display max depth as ymax-ymin
+            if len(self.project.xsections.value) > 0:
+                for value in self.project.xsections.value:
+                    if value.link == link_id:
+                        transect_id = value.geometry1
+                        transect = self.project.transects.value[transect_id]
+                        if isinstance(transect, Transect):
+                            ymax = 0
+                            ymin = 9999
+                            for value in transect.stations:
+                                yval = float(value[0])
+                                if yval > ymax:
+                                    ymax = yval
+                                if yval < ymin:
+                                    ymin = yval
+                            self.tblGeneric.setItem(6, column, QTableWidgetItem(str(ymax-ymin)))
+        if shapename == 'HORIZ_ELLIPSE' or shapename == 'VERT_ELLIPSE' or shapename == 'ARCH' or shapename == 'IRREGULAR' or shapename == 'DUMMY':
+            # disable editing for the max depth field
+            item = QTableWidgetItem(self.tblGeneric.item(6,column).text())
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable & ~QtCore.Qt.ItemIsSelectable)
+            self.tblGeneric.setItem(6, column, item)
+        else:
+            item = QTableWidgetItem(self.tblGeneric.item(6, column).text())
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsDragEnabled)
+            self.tblGeneric.setItem(6, column, item)
+
     def show_cross_section(self, column):
         def local_show():
             editor = frmCrossSection(self._main_form)
@@ -124,7 +153,9 @@ class frmConduits(frmGenericPropertyEditor):
                     if value.geometry1 != str(self.tblGeneric.item(6, column).text()) or \
                     value.culvert_code != str(self.tblGeneric.item(18, column).text()):
                         self._main_form.mark_project_as_unsaved()
-                    value.geometry1 = str(self.tblGeneric.item(6, column).text())
+                    shapename = value.shape.name
+                    if shapename != 'IRREGULAR':
+                        value.geometry1 = str(self.tblGeneric.item(6, column).text())
                     value.culvert_code = str(self.tblGeneric.item(18, column).text())
         # self._main_form.model_layers.create_layers_from_project(self.project)
 

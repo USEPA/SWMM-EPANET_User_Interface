@@ -45,11 +45,11 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
         elif plot_type == 'step':
             self.plot_type = 'step'
             self.help_topic = ''   # TODO
-        self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
-        layout = QVBoxLayout(self.fraPlot)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.plot)
-        self.fraPlot.setLayout(layout)
+        # self.plot = CurvePlot(self.fraPlot, width=6, height=2, dpi=100)
+        # layout = QVBoxLayout(self.fraPlot)
+        # layout.setContentsMargins(0, 0, 0, 0)
+        # layout.addWidget(self.plot)
+        # self.fraPlot.setLayout(layout)
         self.helper = HelpHandler(self)
 
         self.Xunits = {}
@@ -92,14 +92,18 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
 
         """
         if self.dataset.shape[0] > 0 and self.dataset.shape[1] > 0:
-            self.plot.setTitle(self.plot_title)
             if self.plot_type == 'timeseries':
-                self.plot.set_time_series_data(self.dataset)
+                # self.plot.setTitle(self.plot_title)
+                # self.plot.set_time_series_data(self.dataset)
+                self.set_time_series_data(self.dataset)
             elif self.plot_type == 'xy':
-                self.plot.set_xy_data(self.dataset, self.x_title, self.y_title)
+                # self.plot.setTitle(self.plot_title)
+                # self.plot.set_xy_data(self.dataset, self.x_title, self.y_title)
+                self.set_xy_data(self.dataset, self.x_title, self.y_title)
             elif self.plot_type == 'step':
-                self.plot.set_xy_data(self.dataset, self.x_title, self.y_title, step=True)
-
+                # self.plot.setTitle(self.plot_title)
+                # self.plot.set_xy_data(self.dataset, self.x_title, self.y_title, step=True)
+                self.set_xy_data(self.dataset, self.x_title, self.y_title, step=True)
         pass
 
     def frm_close(self):
@@ -112,6 +116,68 @@ class frmPlotViewer(QMainWindow, Ui_frmPlot):
 
     def get_help(self):
         self.helper.show_help()
+
+    def set_xy_data(self, df, x_title, y_title, step=False):
+        if df.shape[0] > 0 and df.shape[1] > 0:
+            x = []
+            y = []
+            for row in range(len(df)):
+                x.append(float(df.index[row]))
+                y.append(float(df.iloc[row][0]))
+
+            # the way frmScatterPlot does it:
+            import matplotlib.pyplot as plt
+            fig = plt.figure()
+            fig.canvas.set_window_title(self.plot_title)
+            plt.title(self.plot_title)
+
+            plt.scatter(x, y, s=50, c ="lightblue", edgecolors="blue", alpha=0.5)
+            plt.plot(x,y,color='red')
+
+            plt.xlabel(x_title)
+            plt.ylabel(y_title)
+
+            plt.grid(True)
+            plt.show(block=True)
+
+    def set_time_series_data(self, df):
+        if df.shape[0] > 0 and df.shape[1] > 0:
+            x = []
+            y = []
+            for row in range(len(df)):
+                if df.hour_only:
+                    x.append(df.index[row])
+                else:
+                    x.append(mdates.date2num(df.index[row]))
+                y.append(df.iloc[row][0])
+
+            # the way frmTimeSeriesPlot does it:
+            import matplotlib.pyplot as plt
+            fig = plt.figure()
+            fig.canvas.set_window_title(self.plot_title)
+            plt.title(self.plot_title)
+
+            # left_y_plot = fig.add_subplot()
+            left_y_plot = fig.gca().axes
+
+            # colors = get_cmap('Dark2').colors
+            # color_cycler = cycler.cycler('color', colors)
+            # plt.rc('axes', prop_cycle=color_cycler)
+
+            lines_plotted = []
+            line_legends = []
+            if df.hour_only:
+                plt.xlabel("Elapsed time (hours)")
+            else:
+                plt.xlabel("Elapsed time (date)")
+                fig.autofmt_xdate()
+            plt.grid(True)
+            new_line = left_y_plot.plot(x, y, label="xxx")[0]
+            if not df.hour_only:
+                left_y_plot.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
+            lines_plotted.append(new_line)
+            plt.legend(lines_plotted, line_legends, loc="best")
+            plt.show(block=False)
 
 
 class CurvePlot(BasePlot):

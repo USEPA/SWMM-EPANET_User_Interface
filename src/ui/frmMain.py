@@ -1910,6 +1910,10 @@ class frmMain(QMainWindow, Ui_frmMain):
             # window.destroyed = lambda s, e, a: self._forms.remove(s)
             # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
             window.setWindowModality(QtCore.Qt.ApplicationModal)
+            if window.section:
+                if window.section.SECTION_NAME == "[TRANSECTS]" or window.section.SECTION_NAME == "[CURVES]" or window.section.SECTION_NAME == "[TIMESERIES]":
+                    # some windows have to be nonmodal so user can go on and browse plots
+                    window.setWindowModality(QtCore.Qt.NonModal)
             window.show()
 
             # def editor_closing(self, event):

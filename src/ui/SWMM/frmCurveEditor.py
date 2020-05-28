@@ -329,9 +329,9 @@ class frmCurveEditor(QMainWindow, Ui_frmCurveEditor):
                 frm_plt = frmPlotViewer(df, 'xy', self.curve_type + ' Curve ' + self.txtCurveName.text(),
                                         self.windowIcon(), self.tblMult.horizontalHeaderItem(0).text(),
                                         self.tblMult.horizontalHeaderItem(1).text())
-            frm_plt.setWindowTitle('Curve Viewer')
-            frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
-            frm_plt.show()
+            # frm_plt.setWindowTitle('Curve Viewer')
+            # frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
+            # frm_plt.show()
         pass
 
     def keyPressEvent(self, event):

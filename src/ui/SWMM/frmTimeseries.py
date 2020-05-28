@@ -96,10 +96,10 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                         if self.tblTime.item(row, 0).text():
                             ldate = self.tblTime.item(row, 0).text()
                     if self.tblTime.item(row, 1):
-                        if self.tblTime.item(row, 1).text():
-                            ltime = self.tblTime.item(row, 1).text()
-                        else:
-                            continue
+                        ltime, ltime_good = ParseData.floatTryParse(self.tblTime.item(row, 1).text())
+                        if ltime_good:
+                            if self.tblTime.item(row, 1).text():
+                                ltime = self.tblTime.item(row, 1).text()
                     if self.hour_only:
                         if ":" in ltime:
                             arr = ltime.split(":")
@@ -209,8 +209,8 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
             df.hour_only = self.hour_only
             frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
-            frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
-            frm_plt.show()
+            # frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
+            # frm_plt.show()
         pass
 
     def keyPressEvent(self, event):

@@ -497,7 +497,11 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         ani = animation.FuncAnimation(fig, run, data_gen, save_count = NPeriods ,blit=False)
 
         if fig_output == 1:
-            plt.show()
+            fig = plt.gcf()
+            fig.show()
+            fig.canvas.draw()
+            # plt.show()
+            # fig.canvas.draw()
 
         if fig_output == 2:
             ani.save('basic_animation.mp4',fps=30, bitrate=2000)

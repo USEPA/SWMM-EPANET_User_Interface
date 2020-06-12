@@ -76,7 +76,16 @@ class ProjectBase(object):
                 possible_match = link_group.find_item(link_name)
                 if possible_match:
                     return possible_match
+        return None
 
+    def find_node(self, node_name):
+        if node_name is None or not isinstance(node_name, str) or node_name == '':
+            return None
+        for node_group in self.nodes_groups():
+            if node_group.value and len(node_group.value) > 0:
+                existing_node = node_group.find_item(node_name)
+                if existing_node is not None:
+                    return existing_node
         return None
 
     def all_vertices(self, set_names=False):

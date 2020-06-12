@@ -82,12 +82,12 @@ class frmSubcatchments(frmGenericPropertyEditor):
             combobox.addItem('')
             selected_index = 0
             for value in self.project.all_nodes():
-                combobox.addItem(value.name)
+                combobox.addItem(value.name, value)
                 if edit_these[column].outlet == value.name:
                     selected_index = int(combobox.count()) - 1
             for value in self.project.subcatchments.value:
                 if edit_these[column].name != value.name:
-                    combobox.addItem(value.name)
+                    combobox.addItem(value.name, value)
                 if edit_these[column].outlet == value.name:
                     selected_index = int(combobox.count()) - 1
             combobox.setCurrentIndex(selected_index)

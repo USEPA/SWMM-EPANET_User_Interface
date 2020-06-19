@@ -269,10 +269,17 @@ class frmTranslateCoordinates(QDialog):
             self.accept()
         except Exception as e:
             QMessageBox.information(None, "Translate failed", str(e))
+        finally:
+            if self._main_form:
+                self._main_form.setQgsMapToolTranslateCoords(False)
             return
 
     def cancel(self):
         if self._main_form and self._main_form.project:
-            self._main_form.project.map.crs_name = self.model_map_crs_name
-            self._main_form.project.map.crs_unit = self.model_map_crs_unit
+            self._main_form.map_widget.update_project_map_crs_info(self.model_map_crs_name)
+            self._main_form.txtCrs.setText(self.model_map_crs_name)
+            # self._main_form.project.map.crs_name = self.model_map_crs_name
+            # self._main_form.project.map.crs_unit = self.model_map_crs_unit
+        if self._main_form:
+            self._main_form.setQgsMapToolTranslateCoords(False)
         self.reject()

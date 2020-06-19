@@ -1807,15 +1807,15 @@ try:
                         nodeny, val_is_goodny = ParseData.floatTryParse(noden.y)
                         if val_is_good0x and val_is_good0y and \
                             val_is_goodnx and val_is_goodny:
-                            pt0 = QgsPoint(node0x, node0y)
-                            ptn = QgsPoint(nodenx, nodeny)
+                            pt0 = QgsPointXY(node0x, node0y)
+                            ptn = QgsPointXY(nodenx, nodeny)
                             list_pts = [pt0]
                             if lnk.vertices and len(lnk.vertices) > 0:
                                 for v in lnk.vertices:
                                     xval, xval_is_good = ParseData.floatTryParse(v.x)
                                     yval, yval_is_good = ParseData.floatTryParse(v.y)
                                     if xval_is_good and yval_is_good:
-                                        list_pts.append(QgsPoint(xval, yval))
+                                        list_pts.append(QgsPointXY(xval, yval))
                             list_pts.append(ptn)
                             lnk.length = str(ruler.measureLine(list_pts))
                             del list_pts[:]
@@ -1831,7 +1831,7 @@ try:
                         valx, val_is_goodx = ParseData.floatTryParse(v.x)
                         valy, val_is_goody = ParseData.floatTryParse(v.y)
                         if val_is_goodx and val_is_goody:
-                            list_pts.append(QgsPoint(valx, valy))
+                            list_pts.append(QgsPointXY(valx, valy))
                     if len(list_pts) > 0:
                         try:
                             # geometry = QgsGeometry.fromPolygon([list_pts])

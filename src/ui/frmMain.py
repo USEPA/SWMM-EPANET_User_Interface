@@ -1204,7 +1204,7 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
-        self.setQgsMapToolTranslateCoords()
+        self.setQgsMapToolTranslateCoords(True)
         if not self.translate_coord_dialog:
             self.translate_coord_dialog = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
         else:
@@ -1400,8 +1400,9 @@ class frmMain(QMainWindow, Ui_frmMain):
         else:
             self.actionStdEditObject.setEnabled(False)
 
-    def setQgsMapToolTranslateCoords(self):
-        self.translating_coordinates = not self.translating_coordinates
+    def setQgsMapToolTranslateCoords(self, translating):
+        # self.translating_coordinates = not self.translating_coordinates
+        self.translating_coordinates = translating
         if self.map_widget.translateCoordTool:
             self.map_widget.translateCoordTool.clear()
         self.setQgsMapTool()

@@ -802,6 +802,7 @@ class frmMainEPANET(frmMain):
         frm = None
         # First handle special cases where forms need more than simply being created
 
+        model_sec = self.project.find_section(edit_name)
         # the following items will respond to a click on a node form, not the tree diagram
         if edit_name == 'Labels':
             edit_these = []
@@ -837,6 +838,9 @@ class frmMainEPANET(frmMain):
             return None
         elif edit_name == self.tree_Labels[0] and len(self.project.labels.value) == 0:
             return None
+        elif model_sec is not None and hasattr(model_sec, 'value') and isinstance(model_sec.value, list):
+            if len(model_sec.value) == 0:
+                return None
         else:  # General-purpose case finds most editors from tree information
             frm = self.make_editor_from_tree(edit_name, self.tree_top_items)
         return frm

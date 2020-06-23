@@ -20,6 +20,13 @@ class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
         self.tblSummary.setSortingEnabled(False)
 
+        if (main_form.program_settings.value("Geometry/" + "frmSummaryReport_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSummaryReport_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSummaryReport_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSummaryReport_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, status_file_name):
         self.project = project
         self.status_file_name = status_file_name
@@ -268,6 +275,18 @@ class frmSummaryReport(QMainWindow, Ui_frmSummaryReport):
                             else:
                                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
                             self.tblSummary.setItem(row,col,item)
+
+                        # if not at maximum column, may need to set blank cell
+                        # relevant for non-conduit items in link flow summary table
+                        if col < len(column_headers) - 1:
+                            while True:
+                                col += 1
+                                item = QTableWidgetItem('')
+                                item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+                                self.tblSummary.setItem(row, col, item)
+                                if col >= len(column_headers) - 1:
+                                    break
+
                 # self.tblSummary.setSortingEnabled(True)
             except Exception as e:
                 print("Error reading " + self.status_file_name)

@@ -13,7 +13,7 @@ from ui.frmPlotViewer import frmPlotViewer
 
 
 class frmTimeseries(QMainWindow, Ui_frmTimeseries):
-    def __init__(self, main_form, edit_these=[], new_item=None):
+    def __init__(self, main_form, edit_these=[], new_item=None, calling_form=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timeserieseditordialog.htm"
         self.helper = HelpHandler(self)
@@ -24,6 +24,7 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
         self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
         self.project = main_form.project
+        self.calling_form = calling_form
         self.section = self.project.timeseries
         self.new_item = new_item
         self.hour_only = True
@@ -36,6 +37,13 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                 self.set_from(edit_these[0])
             else:
                 self.set_from(edit_these)
+
+        if (main_form.program_settings.value("Geometry/" + "frmTimeseries_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTimeseries_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTimeseries_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTimeseries_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, timeseries):
         if not isinstance(timeseries, TimeSeries):
@@ -88,10 +96,10 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                         if self.tblTime.item(row, 0).text():
                             ldate = self.tblTime.item(row, 0).text()
                     if self.tblTime.item(row, 1):
-                        if self.tblTime.item(row, 1).text():
-                            ltime = self.tblTime.item(row, 1).text()
-                        else:
-                            continue
+                        ltime, ltime_good = ParseData.floatTryParse(self.tblTime.item(row, 1).text())
+                        if ltime_good:
+                            if self.tblTime.item(row, 1).text():
+                                ltime = self.tblTime.item(row, 1).text()
                     if self.hour_only:
                         if ":" in ltime:
                             arr = ltime.split(":")
@@ -171,6 +179,12 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
                 self._main_form.mark_project_as_unsaved()
             pass
             # TODO: self._main_form.edited_?
+
+        if self.calling_form:
+            self.calling_form.refresh_timeseries()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeseries_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -195,8 +209,8 @@ class frmTimeseries(QMainWindow, Ui_frmTimeseries):
             df = pd.DataFrame({'TS-' + self.txtTimeseriesName.text():ts})
             df.hour_only = self.hour_only
             frm_plt = frmPlotViewer(df,'time','Time Series ' + self.editing_item.name, self.windowIcon(), '', '')
-            frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
-            frm_plt.show()
+            # frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
+            # frm_plt.show()
         pass
 
     def keyPressEvent(self, event):

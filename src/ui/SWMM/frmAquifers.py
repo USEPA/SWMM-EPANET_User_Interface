@@ -18,10 +18,26 @@ class frmAquifers(frmGenericPropertyEditor):
         frmGenericPropertyEditor.__init__(self, main_form, main_form.project.aquifers, edit_these, new_item,
                                           "SWMM " + self.SECTION_TYPE.__name__ + " Editor")
 
+        self.project_section = main_form.project.aquifers
+        if self.project_section and \
+                isinstance(self.project_section.value, list) and \
+                len(self.project_section.value) > 0 and \
+                isinstance(self.project_section.value[0], self.SECTION_TYPE):
+
+            if edit_these:  # Edit only specified item(s) in section
+                if isinstance(edit_these[0], str):  # Translate list from names to objects
+                    edit_names = edit_these
+                    edit_objects = [item for item in self.project_section.value if item.name in edit_these]
+                    edit_these = edit_objects
+
+            else:  # Edit all items in section
+                edit_these = []
+                edit_these.extend(self.project_section.value)
+
+        self.pattern_section = main_form.project.patterns
+        pattern_list = self.pattern_section.value[0:]
         for column in range(0, self.tblGeneric.columnCount()):
             # for patterns, show available patterns
-            pattern_section = main_form.project.patterns
-            pattern_list = pattern_section.value[0:]
             combobox = QComboBox()
             combobox.addItem('')
             selected_index = 0
@@ -32,8 +48,18 @@ class frmAquifers(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(13, column, combobox)
 
+        self._main_form = main_form
+        if (main_form.program_settings.value("Geometry/" + "frmAquifers_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmAquifers_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmAquifers_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmAquifers_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
+        self._main_form.program_settings.setValue("Geometry/" + "frmAquifers_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmAquifers_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

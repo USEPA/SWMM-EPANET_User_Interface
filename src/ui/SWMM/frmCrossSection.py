@@ -9,6 +9,7 @@ from ui.help import HelpHandler
 from ui.SWMM.frmTransect import frmTransect
 from ui.SWMM.frmCurveEditor import frmCurveEditor
 from core.swmm.curves import CurveType
+from ui.model_utility import ParseData
 
 
 class frmCrossSection(QMainWindow, Ui_frmCrossSection):
@@ -108,6 +109,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             #self.set_link(main_form.project, '1')
             pass
 
+        if (main_form.program_settings.value("Geometry/" + "frmCrossSection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmCrossSection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmCrossSection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmCrossSection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_link(self, project, link_name):
         # assume we want to edit the first one
         self.link_name = link_name
@@ -153,7 +161,10 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                         self.listWidget.setCurrentItem(list_item)
                     elif str(list_item.text()) == 'Semi-Circular' and value.shape.name == 'SEMICIRCULAR':
                         self.listWidget.setCurrentItem(list_item)
-                self.sbxNumber.setValue(int(value.barrels))
+
+                ibarrels, good_int = ParseData.get_int_from_float(value.barrels)
+                if good_int:
+                    self.sbxNumber.setValue(ibarrels)
                 self.txt1.setText(str(value.geometry1))
                 self.txt2.setText(str(value.geometry2))
                 self.txt3.setText(str(value.geometry3))
@@ -173,13 +184,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
                 if value.shape.name == 'IRREGULAR':
                     # for irregular, combo needs transect names, dialog opens transect buttons
-                    for index in range(0,self.cboCombo.count):
-                        if value.transect == self.cboCombo.itemText(index):
+                    for index in range(0,self.cboCombo.count()):
+                        if value.geometry1 == self.cboCombo.itemText(index):
                             self.cboCombo.setCurrentIndex(index)
 
                 if value.shape.name == 'CUSTOM':
                     # for custom, combo needs shape curves, dialog opens shape curve editor
-                    for index in range(0,self.cboCombo.count):
+                    for index in range(0,self.cboCombo.count()):
                         if value.curve == self.cboCombo.itemText(index):
                             self.cboCombo.setCurrentIndex(index)
 
@@ -242,13 +253,13 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
 
         if value.shape.name == 'IRREGULAR':
             # for irregular, combo needs transect names, dialog opens transect buttons
-            for index in range(0,self.cboCombo.count):
-                if value.transect == self.cboCombo.itemText(index):
+            for index in range(0,self.cboCombo.count()):
+                if value.geometry1 == self.cboCombo.itemText(index):
                     self.cboCombo.setCurrentIndex(index)
 
         if value.shape.name == 'CUSTOM':
             # for custom, combo needs shape curves, dialog opens shape curve editor
-            for index in range(0,self.cboCombo.count):
+            for index in range(0,self.cboCombo.count()):
                 if value.curve == self.cboCombo.itemText(index):
                     self.cboCombo.setCurrentIndex(index)
 
@@ -289,6 +300,8 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         self.listWidget.item(23).setIcon(QtGui.QIcon("./swmmimages/24custom.png"))
         self.listWidget.item(24).setIcon(QtGui.QIcon("./swmmimages/25na.png"))
 
+        self.listWidget.setUniformItemSizes(False)
+
         self.listWidget_currentItemChanged()
 
 
@@ -327,7 +340,6 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
         value.geometry2 = self.txt2.text()
         value.geometry3 = self.txt3.text()
         value.geometry4 = self.txt4.text()
-        value.transect = ''
         value.curve = ''
         XType = ''
         if current_selection == 'Rectangular':
@@ -343,7 +355,7 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             XType = 'POWER'
         elif current_selection == 'Irregular':
             XType = 'IRREGULAR'
-            value.transect = self.cboCombo.itemText(self.cboCombo.currentIndex())
+            value.geometry1 = self.cboCombo.itemText(self.cboCombo.currentIndex())
         elif current_selection == 'Circular':
             XType = 'CIRCULAR'
         elif current_selection == 'Force Main':
@@ -401,6 +413,8 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
             orig_shape != value.shape:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmCrossSection_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -424,12 +438,12 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 new_item = item_type()
                 new_item.name = self._main_form.new_item_name(item_type)
                 new_name = new_item.name
-            self._frmTransect = frmTransect(self._main_form, transect_list, new_item)
+            self._frmTransect = frmTransect(self._main_form, transect_list, new_item, self)
             self._frmTransect.setWindowModality(QtCore.Qt.ApplicationModal)
             self._frmTransect.show()
-            if self.cboCombo.currentIndex() == 0:
-                self.cboCombo.addItem(new_name)
-                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
+            # if self.cboCombo.currentIndex() == 0:
+            #     self.cboCombo.addItem(new_name)
+            #     self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)
         elif current_selection == 'Custom':
             curve_id = self.cboCombo.currentText()
             curve_list = []
@@ -798,3 +812,14 @@ class frmCrossSection(QMainWindow, Ui_frmCrossSection):
                 self.txt1.setText(str(float(self.arch_height_in[selected_index-1])/factor))
                 self.txt2.setText(str(float(self.arch_width_in[selected_index-1])/factor))
                 self.txt3.setText(str(selected_index))
+
+    def refresh_transects(self):
+        # invoked from transects editor if opened from this form
+        transect_section = self._main_form.project.find_section("TRANSECTS")
+        transect_list = transect_section.value[0:]
+        self.cboCombo.clear()
+        self.cboCombo.addItem('')
+        for value in transect_list:
+            self.cboCombo.addItem(value.name)
+            if self.cboCombo.currentIndex() == 0:
+                self.cboCombo.setCurrentIndex(self.cboCombo.count() - 1)

@@ -45,6 +45,13 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                     self.tblGeneric.setItem(land_use_count,0,QTableWidgetItem(led.text()))
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmLandUseAssignment_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLandUseAssignment_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLandUseAssignment_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLandUseAssignment_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         section = self._main_form.project.find_section("COVERAGES")
         coverage_list = section.value[0:]
@@ -74,6 +81,9 @@ class frmLandUseAssignment(frmGenericPropertyEditor):
                         section.value = []
                     section.value.append(value1)
                     self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUseAssignment_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUseAssignment_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

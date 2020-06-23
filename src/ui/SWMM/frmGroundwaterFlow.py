@@ -8,6 +8,7 @@ from ui.text_plus_button import TextPlusButton
 from ui.help import HelpHandler
 from ui.SWMM.frmGroundwaterEquation import frmGroundwaterEquation
 from ui.SWMM.frmGroundwaterEquationDeep import frmGroundwaterEquationDeep
+from core.swmm.hydrology.subcatchment import GroundwaterFlowType
 
 
 class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
@@ -42,6 +43,13 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
             self.set_lateral_equation(column)
             self.set_deep_equation(column)
 
+        if (main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_geometry")
+                and main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmGroundwaterFlow_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -56,10 +64,12 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         # text plus button for custom lateral equation
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == str(self.tblGeneric.item(0,column).text()) and len(value.custom_lateral_flow_equation) > 0:
+        gwf_section = self.project.gwf
+        gwf_list = gwf_section.value[0:]
+        for value in gwf_list:
+            if (value.subcatchment_name == str(self.tblGeneric.item(0, column).text()) and
+                    len(value.custom_equation) > 0 and
+                    value.groundwater_flow_type == GroundwaterFlowType.LATERAL):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column
@@ -70,10 +80,12 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
         # text plus button for custom deep equation
         tb = TextPlusButton(self)
         tb.textbox.setText('NO')
-        groundwater_section = self.project.groundwater
-        groundwater_list = groundwater_section.value[0:]
-        for value in groundwater_list:
-            if value.subcatchment == str(self.tblGeneric.item(0,column).text()) and len(value.custom_deep_flow_equation) > 0:
+        gwf_section = self.project.gwf
+        gwf_list = gwf_section.value[0:]
+        for value in gwf_list:
+            if (value.subcatchment_name == str(self.tblGeneric.item(0, column).text()) and
+                    len(value.custom_equation) > 0 and
+                    value.groundwater_flow_type == GroundwaterFlowType.DEEP):
                 tb.textbox.setText('YES')
         tb.textbox.setEnabled(False)
         tb.column = column
@@ -101,6 +113,9 @@ class frmGroundwaterFlow(QMainWindow, Ui_frmGroundwaterFlow):
             self.project.groundwater.value.append(self.new_item)
         self.backend.new_item = None
         self.backend.apply_edits()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmGroundwaterFlow_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

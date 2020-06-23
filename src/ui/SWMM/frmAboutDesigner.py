@@ -88,7 +88,7 @@ class Ui_frmAbout(object):
     def retranslateUi(self, frmAbout):
         _translate = QtCore.QCoreApplication.translate
         frmAbout.setWindowTitle(_translate("frmAbout", "About SWMM"))
-        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP6r0 (Python 3.7, PyQGIS 3.6.0, PyQt 5.11.3)</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">SWMM Engine Version 5.1.013</span></p></body></html>"))
+        self.lblSwmm.setText(_translate("frmAbout", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#0000ff;\">Storm Water Management Model</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">Version MTP7r0 (Python 3.7, PyQGIS 3.6.0, PyQt 5.11.3)</span></p><p align=\"center\"><span style=\" font-weight:600; color:#000000;\">SWMM Engine Version 5.1.013</span></p></body></html>"))
         self.lblAbout.setText(_translate("frmAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

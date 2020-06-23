@@ -9,7 +9,7 @@ from ui.help import HelpHandler
 
 
 class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
-    def __init__(self, main_form, edit_these=[], new_item=None):
+    def __init__(self, main_form, edit_these=[], new_item=None, calling_form=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/timepatterneditordialog.htm"
         self.helper = HelpHandler(self)
@@ -20,6 +20,7 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.cboType.currentIndexChanged.connect(self.cboType_currentIndexChanged)
         self._main_form = main_form
+        self.calling_form = calling_form
         self.project = main_form.project
         self.section = self.project.patterns
         self.new_item = new_item
@@ -30,6 +31,13 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
                 self.set_from(edit_these[0])
             else:
                 self.set_from(edit_these)
+
+        if (main_form.program_settings.value("Geometry/" + "frmPatternEditor_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmPatternEditor_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmPatternEditor_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmPatternEditor_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, pattern):
         if not isinstance(pattern, Pattern):
@@ -101,6 +109,11 @@ class frmPatternEditor(QMainWindow, Ui_frmPatternEditor):
 
         # regardless if pattern id is changed, refresh pattern references at all places
         self._main_form.project.refresh_pattern_object_references()
+        if self.calling_form:
+            self.calling_form.refresh_patterns()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmPatternEditor_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

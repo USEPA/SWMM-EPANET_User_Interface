@@ -51,7 +51,7 @@ class SimpleCrossSectionTest(unittest.TestCase):
     def test_custom_curve_barrelnum(self):
         """CUSTOM with Curve and number of barrels"""
         # -- Failed because the optional number of Barrels are not read
-        test_text = r"""W1   CUSTOM    1.0  Curve1  1"""
+        test_text = r"""W1   CUSTOM    1.0  Curve1  0  0  1"""
         my_options = CrossSectionReader.read(test_text)
         actual_text = CrossSectionWriter.as_text(my_options)
         msg = '\nSet:' + test_text + '\nGet:' + actual_text

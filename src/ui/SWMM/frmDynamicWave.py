@@ -28,6 +28,13 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
             self.lblSurface.setText("Minimum Nodal Surface Area (sq. feet)")
             self.lblHead.setText("Head Convergence Tolerance (feet)")
 
+        if (main_form.program_settings.value("Geometry/" + "frmDynamicWave_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmDynamicWave_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmDynamicWave_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmDynamicWave_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         # section = core.swmm.options.dynamic_wave.DynamicWave()
         section = project.options.dynamic_wave
@@ -131,6 +138,8 @@ class frmDynamicWave(QMainWindow, Ui_frmDynamicWave):
             int(orig_max_trials) != section.max_trials:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmDynamicWave_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmDynamicWave_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

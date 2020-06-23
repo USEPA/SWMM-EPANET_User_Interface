@@ -40,6 +40,20 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
         for row in range(self.tblGeneric.rowCount()):
             self.tblGeneric.setRowHeight(row, 20)
 
+        self._main_form = session
+        if session.model == 'SWMM':
+            if project_section.SECTION_NAME == '[LABELS]' or project_section.SECTION_NAME == '[POLLUTANTS]':
+                word = project_section.SECTION_NAME.strip('[]')
+
+                if (session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word + "_geometry") and
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word + "_state")):
+                    self.restoreGeometry(
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                       "_geometry", self.geometry(), type=QtCore.QByteArray))
+                    self.restoreState(
+                        session.program_settings.value("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                       "_state", self.windowState(), type=QtCore.QByteArray))
+
     def header_index(self, prop):
         """
         Look up the row header to match up with prop
@@ -57,11 +71,17 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
 
     def is_name_duplicate(self, irow, icol):
         new_name = self.tblGeneric.item(irow, icol).text()
-        if self.project_section.find_item(new_name):
+        existing_elem = None
+        if self.project_section in self.project.nodes_groups():
+            existing_elem = self.project.find_node(new_name)
+        elif self.project_section in self.project.links_groups():
+            existing_elem = self.project.find_link(new_name)
+        else:
+            existing_elem = self.project_section.find_item(new_name)
+        if existing_elem is not None:
             return True
         else:
             return False
-        pass
 
     def check_change(self, irow, icol):
         ori_value = getattr(self.backend.col_to_item_dict[icol], self.backend.meta[irow].attribute, '')
@@ -70,8 +90,13 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
             return
         if irow == 0:
             if self.is_name_duplicate(irow, icol):
+                elem_type = type(self.project_section.value[0]).__name__
+                if self.project_section in self.project.nodes_groups():
+                    elem_type = 'Node'
+                elif self.project_section in self.project.links_groups():
+                    elem_type = 'Link'
                 QMessageBox.information(None, self.session.model,
-                                        type(self.project_section.value[0]).__name__ + " '" + new_value + "' already exists.",
+                                        elem_type + " '" + new_value + "' already exists.",
                                         QMessageBox.Ok)
                 self.tblGeneric.cellChanged.disconnect(self.check_change)
                 self.tblGeneric.item(irow, icol).setText(ori_value)
@@ -80,7 +105,15 @@ class frmGenericPropertyEditor(QMainWindow, Ui_frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
+        # self.session.model_layers.create_layers_from_project(self.project)
+
+        if self._main_form.model == 'SWMM':
+            if self.project_section.SECTION_NAME == '[LABELS]' or self.project_section.SECTION_NAME == '[POLLUTANTS]':
+                word = self.project_section.SECTION_NAME.strip('[]')
+                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                          "_geometry", self.saveGeometry())
+                self._main_form.program_settings.setValue("Geometry/" + "frmGenericPropertyEditor_" + word +
+                                                          "_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

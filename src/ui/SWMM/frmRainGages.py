@@ -31,9 +31,20 @@ class frmRainGages(frmGenericPropertyEditor):
             combobox.setCurrentIndex(selected_index)
             self.tblGeneric.setCellWidget(9, column, combobox)
 
+        self._main_form = session
+        if (self._main_form.program_settings.value("Geometry/" + "frmRainGages_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmRainGages_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmRainGages_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmRainGages_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
+        # self.session.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmRainGages_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmRainGages_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

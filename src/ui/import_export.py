@@ -66,10 +66,10 @@ valve_import_attributes = [
     "minor_loss_coefficient", "status"]
 
 junctions_model_attributes = [
-    "element_type", "name", "elevation", "base_demand_flow", "demand_pattern_name"]
+    "element_type", "name", "description", "elevation", "base_demand_flow", "demand_pattern_name"]
 junctions_gis_attributes = [
-    "element_type", "element_id", "elevation", "base_demand_flow", "demand_pattern"]
-junction_import_attributes = [ "element_id", "elevation", "emitter_coefficient",
+    "element_type", "element_id", "description", "elevation", "base_demand_flow", "demand_pattern"]
+junction_import_attributes = ["element_id", "description", "elevation", "emitter_coefficient",
                                "initial_quality",
                                "source_quality_amount", "source_quality_type", "source_quality_pattern",
                                "base_demand_flow", "demand_pattern_name"]
@@ -131,9 +131,9 @@ conduit_import_attributes = [
     "max_depth"]
 
 junctions_model_attributes_swmm = [
-    "element_type", "name", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
+    "element_type", "name", "description", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junctions_gis_attributes_swmm = [
-    "element_type", "element_id", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
+    "element_type", "element_id", "description", "elevation", "max_depth", "surcharge_depth", "ponded_area"]
 junction_import_attributes_swmm = [
     "element_id",
     "description",

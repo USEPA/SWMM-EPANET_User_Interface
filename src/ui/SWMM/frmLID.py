@@ -56,6 +56,13 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.lid = edit_these
                 self.set_from(edit_these)
 
+        if (main_form.program_settings.value("Geometry/" + "frmLID_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLID_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLID_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLID_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, lid):
         if not isinstance(lid, LIDControl):
             lid = self.section.value[lid]
@@ -96,8 +103,8 @@ class frmLID(QMainWindow, Ui_frmLID):
                 self.cboLIDType.setCurrentIndex(3)
                 lid.has_surface_layer = True
                 lid.has_pavement_layer = False
-                lid.has_soil_layer = True
-                lid.has_storage_layer = False
+                lid.has_soil_layer = False
+                lid.has_storage_layer = True
                 lid.has_underdrain_system = True
                 lid.has_drainmat_system = False
                 lid.has_pollutant_removals = True
@@ -277,8 +284,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.lid_type = LIDType.IT
             self.editing_item.has_surface_layer = True
             self.editing_item.has_pavement_layer = False
-            self.editing_item.has_soil_layer = True
-            self.editing_item.has_storage_layer = False
+            self.editing_item.has_soil_layer = False
+            self.editing_item.has_storage_layer = True
             self.editing_item.has_underdrain_system = True
             self.editing_item.has_drainmat_system = False
             self.editing_item.has_pollutant_removals = True
@@ -365,14 +372,19 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.editing_item.drainmat_roughness = self.txtDrain3.text()
         if self.editing_item.has_pollutant_removals:
             if len(self.pollutant_list) > 0:
+                self.editing_item.removal_pollutant1 = self.pollutant_list[0].name
                 self.editing_item.removal_removal1 = self.tblPollutant.item(0, 0).text()
             if len(self.pollutant_list) > 1:
+                self.editing_item.removal_pollutant2 = self.pollutant_list[1].name
                 self.editing_item.removal_removal2 = self.tblPollutant.item(1, 0).text()
             if len(self.pollutant_list) > 2:
+                self.editing_item.removal_pollutant3 = self.pollutant_list[2].name
                 self.editing_item.removal_removal3 = self.tblPollutant.item(2, 0).text()
             if len(self.pollutant_list) > 3:
+                self.editing_item.removal_pollutant4 = self.pollutant_list[3].name
                 self.editing_item.removal_removal4 = self.tblPollutant.item(3, 0).text()
             if len(self.pollutant_list) > 4:
+                self.editing_item.removal_pollutant5 = self.pollutant_list[4].name
                 self.editing_item.removal_removal5 = self.tblPollutant.item(4, 0).text()
         # self.main_form.list_objects()
 
@@ -427,6 +439,8 @@ class frmLID(QMainWindow, Ui_frmLID):
             orig_removal_removal5 != self.editing_item.removal_removal5:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmLID_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLID_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -497,7 +511,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -553,7 +570,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -573,7 +593,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,True)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblSurface5.setVisible(False)
@@ -593,7 +616,10 @@ class frmLID(QMainWindow, Ui_frmLID):
             self.tabLID.setTabEnabled(2,False)
             self.tabLID.setTabEnabled(3,True)
             self.tabLID.setTabEnabled(4,True)
-            self.tabLID.setTabEnabled(5, True)
+            if self.pollutant_list:
+                self.tabLID.setTabEnabled(5, True)
+            else:
+                self.tabLID.setTabEnabled(5, False)
             self.tabLID.setTabText(4,"Drain")
 
             self.lblStorage1.setText("Barrel Height (in. or mm)")

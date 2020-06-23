@@ -220,12 +220,12 @@ class LIDControl(Section):
         self.drainmat_roughness = "0.1"
 
         self.removal_pollutant1 = ''
-        self.removal_removal1 = '0'
+        self.removal_removal1 = ''
         self.removal_pollutant2 = ''
-        self.removal_removal2 = '0'
+        self.removal_removal2 = ''
         self.removal_pollutant3 = ''
-        self.removal_removal3 = '0'
+        self.removal_removal3 = ''
         self.removal_pollutant4 = ''
-        self.removal_removal4 = '0'
+        self.removal_removal4 = ''
         self.removal_pollutant5 = ''
-        self.removal_removal5 = '0'
+        self.removal_removal5 = ''

@@ -26,6 +26,7 @@ from core.swmm.climatology import WindSpeed
 from core.swmm.climatology import SnowMelt
 from core.swmm.climatology import ArealDepletion
 from core.swmm.climatology import Adjustments
+from core.swmm.hydraulics.control import Controls
 from core.swmm.hydraulics.link import Conduit
 from core.swmm.hydraulics.link import Pump
 from core.swmm.hydraulics.link import OrificeType
@@ -69,6 +70,7 @@ from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
 from core.swmm.hydrology.unithydrograph import UnitHydrographEntry
 from core.swmm.hydrology.unithydrograph import UnitHydrograph
+from core.swmm.hydrology.raingage import RainDataSource
 from core.swmm.options.backdrop import BackdropOptions
 from core.swmm.options.general import FlowUnits
 from core.swmm.options.general import FlowRouting
@@ -80,6 +82,18 @@ from core.swmm.options.report import Report
 from core.swmm.options.events import Events
 from core.inp_writer_base import SectionWriter
 from core.utility import ParseData
+
+
+class ControlWriter(SectionWriter):
+    """rules that control pump and regulator operation"""
+
+    SECTION_NAME = "[CONTROLS]"
+
+    @staticmethod
+    def as_text(controls):
+        """format contents of this item for writing to file"""
+        if len(controls.value) > 0:
+            return Controls.SECTION_NAME + '\n' + controls.value
 
 
 class CoordinateWriter(SectionWriter):
@@ -149,16 +163,20 @@ class PatternWriter(SectionWriter):
     @staticmethod
     def as_text(pattern):
         """format contents of this item for writing to file"""
-        count = 6
+        if pattern.pattern_type == PatternType.DAILY:
+            count_total = 7
+        else:
+            count_total = 6
+        count = count_total
         section_text = ''
         pattern_text = pattern.pattern_type.name
         for line in pattern.description.splitlines(True):
             section_text += ';' + line
         for multiplier in pattern.multipliers:
-            if count == 6:        # add ID to first line and break lines before they get too long
+            if count == count_total:   # add ID to first line and break lines before they get too long
                 if section_text:  # If there are already values added, put next value on a new line
                     section_text += '\n'
-                section_text += " {:16}{:10}".format(pattern.name, pattern_text)
+                section_text += " {:16} {:10}".format(pattern.name, pattern_text)
                 pattern_text = ''
                 count = 0
             section_text += "\t{:5}".format(multiplier)
@@ -188,13 +206,18 @@ class LanduseWriter(SectionWriter):
         can be assigned a different mix of land uses. Each land use can be subjected to a different
         street sweeping schedule."""
 
-    field_format = " {:15}\t{:10}\t{:10}\t{:10}"
+    field_format = "{:<15}\t{:<10}\t{:<10}\t{:<10}"
 
     @staticmethod
     def as_text(landuse):
         inp = ''
         if landuse.comment:
-            inp = landuse.comment + '\n'
+            items = landuse.comment.split('\n')
+            for item in items:
+                if item.startswith(';'):
+                    inp += item + '\n'
+                else:
+                    inp += ';' + item + '\n'
         inp += LanduseWriter.field_format.format(landuse.name,
                                                  landuse.street_sweeping_interval,
                                                  landuse.street_sweeping_availability,
@@ -583,8 +606,7 @@ class CrossSectionWriter(SectionWriter):
     """Make a string representation of a CrossSection of a Conduit, Orifice, or Weir"""
 
     field_format_shape =     "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}\t{:10}"
-    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}"
-    # field_format_irregular = "{:16}\t{:12}\t{:16}"
+    field_format_custom =    "{:16}\t{:12}\t{:16}\t{:10}\t{:10}\t{:10}\t{:10}"
 
     @staticmethod
     def as_text(cross_section):
@@ -595,9 +617,9 @@ class CrossSectionWriter(SectionWriter):
         if cross_section.comment:
             inp = cross_section.comment + '\n'
         if cross_section.shape == CrossSectionShape.CUSTOM:
-            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, shape_name, cross_section.geometry1, cross_section.curve, cross_section.barrels)
-        # elif cross_section.shape == CrossSectionShape.IRREGULAR:
-        #     inp += CrossSectionWriter.field_format_irregular.format(cross_section.link, cross_section.shape.name, cross_section.transect)
+            g3 = '0'
+            g4 = '0'
+            inp += CrossSectionWriter.field_format_custom.format(cross_section.link, shape_name, cross_section.geometry1, cross_section.curve, g3, g4, cross_section.barrels)
         else:
             g1 = str(cross_section.geometry1)
             g2 = str(cross_section.geometry2)
@@ -794,7 +816,10 @@ class DirectInflowWriter(SectionWriter):
         if direct_inflow.constituent.upper() == "FLOW":
             inp_format = "FLOW"
         else:
-            inp_format = direct_inflow.format.name
+            if direct_inflow.format:
+                inp_format = direct_inflow.format.name
+            else:
+                inp_format = "CONCEN"
 
         if direct_inflow.baseline or direct_inflow.timeseries:
             inp += DirectInflowWriter.field_format.format(direct_inflow.node,
@@ -926,9 +951,10 @@ class LIDControlWriter(SectionWriter):
         for field_names in LIDControl.LineTypes:
             if getattr(lid_control, field_names[0]):
                 line = lid_control.name + '\t' + field_names[1]
-                for field_name in field_names[2:]:
-                    line += '\t' + str(getattr(lid_control, field_name))
-                text_list.append(line)
+                if field_names[1] != "REMOVALS" or (field_names[1] == "REMOVALS" and len(lid_control.removal_removal1) > 0):
+                    for field_name in field_names[2:]:
+                        line += '\t' + str(getattr(lid_control, field_name))
+                    text_list.append(line)
         return '\n'.join(text_list)
 
 
@@ -1072,6 +1098,22 @@ class GroundwaterWriter(SectionWriter):
         return inp
 
 
+class GWFWriter(SectionWriter):
+    """Custom groundwater flow equations for specific subcatchments"""
+
+    field_format = " {:16}\t{:8}\t{:}"
+
+    @staticmethod
+    def as_text(gwf):
+        inp = ''
+        if gwf.comment:
+            inp = gwf.comment + '\n'
+        inp += GWFWriter.field_format.format(gwf.subcatchment_name,
+                                             gwf.groundwater_flow_type.name,
+                                             gwf.custom_equation)
+        return inp
+
+
 class LIDUsageWriter(SectionWriter):
     """Specifies how an LID control will be deployed in a subcatchment"""
 
@@ -1184,7 +1226,7 @@ class RainGageWriter(SectionWriter):
                 rain_gage.rain_format.name,
                 rain_gage.rain_interval,
                 rain_gage.snow_catch_factor)
-        if rain_gage.timeseries != "None":
+        if rain_gage.data_source is RainDataSource.TIMESERIES:
             inp += "{:10}\t{}".format("TIMESERIES", rain_gage.timeseries)
         else:
             inp += '{:10}\t{}\t{:10}\t{:5}'.format(

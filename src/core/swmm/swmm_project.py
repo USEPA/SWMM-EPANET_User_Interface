@@ -83,6 +83,9 @@ class SwmmProject(ProjectBase):
         self.groundwater = SectionAsList("[GROUNDWATER]")  # (list of Groundwater)
         # subcatchment groundwater parameters
 
+        self.gwf = SectionAsList("[GWF]") # (list of Groundwater Flow Equations)
+        # groundwater flow equation parameters
+
         self.snowpacks = SectionAsList("[SNOWPACKS]")  # (list of SnowPack)
         # subcatchment snow pack parameters
 

@@ -102,6 +102,11 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------------\t----------------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------\t------")
         # subcatchment groundwater parameters
 
+        self.write_gwf = SectionWriterAsList("[GWF]", GWFWriter,
+                                             ";;Subcatchment   \tFlow    \tEquation\n"
+                                             ";;-------------- \t------- \t--------")
+        # custom groundwater flow equations
+
         self.write_snowpacks = SectionWriterAsList("[SNOWPACKS]", SnowPackWriter,
                                                 ";;Name          \tSurface   \tParameters\n"
                                                 ";;--------------\t----------\t----------")
@@ -133,7 +138,7 @@ class ProjectWriter(InputFileWriterBase):
         # conduit link information
 
         self.write_pumps = SectionWriterAsList("[PUMPS]", PumpWriter,
-            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoffn"
+            ";;Name          \tFrom Node       \tTo Node         \tPump Curve      \tStatus  \tStartup \tShutoff\n"
             ";;--------------\t----------------\t----------------\t----------------\t--------\t--------\t--------")
         # pump link information
 
@@ -164,7 +169,7 @@ class ProjectWriter(InputFileWriterBase):
             ";;--------------\t----------\t----------\t----------\t----------\t----------")
         # conduit entrance/exit losses and flap valves
 
-        self.write_controls = SectionWriter()
+        self.write_controls = ControlWriter()
         # rules that control pump and regulator operation
 
         self.write_events = SectionWriterAsList("[EVENTS]", EventsWriter,
@@ -244,7 +249,7 @@ class ProjectWriter(InputFileWriterBase):
                 "[INFILTRATION]", HortonInfiltrationWriter,
                 ";;Subcatchment  \tMaxRate   \tMinRate   \tDecay     \tDryTime   \tMaxInfiltration\n"
                 ";;--------------\t----------\t----------\t----------\t----------\t----------")
-        elif infiltration.startswith("GREEN"):
+        elif infiltration.startswith("GREEN") or infiltration.startswith("MODIFIED_GREEN"):
             self.write_infiltration = SectionWriterAsList(
                 "[INFILTRATION]", GreenAmptInfiltrationWriter,
                 ";;Subcatchment  \tSuction   \tKsat      \tIMD       \n"

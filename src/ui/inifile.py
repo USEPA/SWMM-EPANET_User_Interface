@@ -22,11 +22,13 @@ class ini_setting:
         self.groups = {} # group names and key names
         self.config = None
         try:
-            if os.path.isfile(self.file_name):
-                self.create_ini_file(file_name)
+            self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
+            if (not os.path.isfile(self.file_name) and file_name):
+                from shutil import copyfile
+                copyfile(self.config.fileName(), file_name)
+                # self.create_ini_file(file_name)
             else:
-                self.config = QSettings(QSettings.IniFormat, QSettings.UserScope, "EPA", self.model, None)
-            self.file_name = self.config.fileName()
+                self.file_name = self.config.fileName()
             self.build_setting_map()
             print("Read project settings from " + self.file_name)
         except Exception as exINI:

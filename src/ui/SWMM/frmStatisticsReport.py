@@ -50,6 +50,13 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
         self.stats = None
         self.statsResult = None #UStats.TStatsResults()
 
+        if (main_form.program_settings.value("Geometry/" + "frmStatisticsReport_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmStatisticsReport_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmStatisticsReport_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmStatisticsReport_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output, stats):
         self.project = project
         self.output = output #SMO.SwmmOutputObject(output)
@@ -337,7 +344,7 @@ class frmStatisticsReport(QMainWindow, Ui_frmStatisticsReport):
                                 dpi=100)
         N = len(self.statsResult.EventList)
         if N > 0:
-            M = int(N) / 50
+            M = N // 50
             if M == 0:
                 M = 1
             lX = []
@@ -506,9 +513,9 @@ class MyHistogram(FigureCanvas):
 
     def setData(self, aData, aBins=None):
         if aBins is not None:
-            self.n, self.bins, self.patches = self.ax.hist(aData, aBins)
+            self.n, self.bins, self.patches = self.ax.hist(aData, aBins, edgecolor='k')
         else:
-            self.n, self.bins, self.patches = self.ax.hist(aData)
+            self.n, self.bins, self.patches = self.ax.hist(aData, edgecolor='k')
 
         N = sum(self.n)
         if N > 0:
@@ -516,6 +523,9 @@ class MyHistogram(FigureCanvas):
                 item.set_height(item.get_height()/N)
 
         self.ax.yaxis.set_major_formatter(mtick.FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
+
+        self.ax.set_ylim([0, 1])
+        self.ax.set_xlim([0, self.ax.get_xlim()[1]])
 
         pass
 

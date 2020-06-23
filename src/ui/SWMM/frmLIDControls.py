@@ -26,6 +26,13 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
         self.subcatchment_name = subcatchment_name
         self.set_subcatchment(main_form.project, subcatchment_name)
 
+        if (main_form.program_settings.value("Geometry/" + "frmLIDControls_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLIDControls_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLIDControls_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLIDControls_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_subcatchment(self, project, subcatchment_name):
         # section = core.swmm.project.LIDUsage()
         section = project.lid_usage
@@ -120,6 +127,9 @@ class frmLIDControls(QMainWindow, Ui_frmLIDControls):
                     new_lid.subcatchment_drains_to = self.tblControls.item(row,11).text()
                     section.value.append(new_lid)
             self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmLIDControls_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLIDControls_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

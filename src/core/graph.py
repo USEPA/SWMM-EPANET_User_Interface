@@ -6,9 +6,9 @@
 
 import matplotlib.pyplot as plt
 from matplotlib import dates
-import colorsys
+from matplotlib.cm import get_cmap
+import cycler
 import datetime
-import numpy as np
 
 
 class SWMM:
@@ -98,9 +98,11 @@ class SWMM:
                             left_y_plot.yaxis.tick_left()    # Only show left-axis tics on left axis
                         plot_on = right_y_plot
 
-                    color = colorsys.hsv_to_rgb(np.random.rand(), 1, 1)
+                    colors = get_cmap('Dark2').colors
+                    color_cycler = cycler.cycler('color', colors)
+                    plt.rc('axes', prop_cycle=color_cycler)
                     legend_text = legend_text.strip('"')
-                    new_line = plot_on.plot(x_values, y_values, label=legend_text, c=color)[0]
+                    new_line = plot_on.plot(x_values, y_values, label=legend_text)[0]
                     lines_plotted.append(new_line)
                     line_legends.append(legend_text)
                     old_label = plot_on.get_ylabel()

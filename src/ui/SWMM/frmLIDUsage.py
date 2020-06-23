@@ -28,6 +28,13 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
         self.row_id = -1
         self.project = ''
 
+        if (main_form.program_settings.value("Geometry/" + "frmLIDUsage_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLIDUsage_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLIDUsage_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLIDUsage_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_add(self, project, main_form, subcatchment_name):
         self._main_form = main_form
         self.project = project
@@ -130,6 +137,8 @@ class frmLIDUsage(QMainWindow, Ui_frmLIDUsage):
             self._main_form.SetAreaTerm(self.subcatchment_name, self.row_id, number_replicate_units, area_each_unit)
             self._main_form._main_form.mark_project_as_unsaved()
 
+        self._main_form._main_form.program_settings.setValue("Geometry/" + "frmLIDUsage_geometry", self.saveGeometry())
+        self._main_form._main_form.program_settings.setValue("Geometry/" + "frmLIDUsage_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

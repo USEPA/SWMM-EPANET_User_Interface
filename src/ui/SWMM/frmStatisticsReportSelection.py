@@ -30,6 +30,13 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         self.txtMinEventDelta.setText('6')
         self.stats = ostatistics.TStatsSelection()
 
+        if (main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmStatisticsReportSelection_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, output):
         self.project = project
         self.output = output
@@ -43,7 +50,8 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         if newIndex != 3:
             for item in self.output.all_items[newIndex]:
                 self.lstName.addItem(item)
-            self.lstName.item(0).setSelected(True)
+            if self.output.all_items[newIndex]:
+                self.lstName.item(0).setSelected(True)
             self.cboVariable.clear()
             for attribute in object_type.attributes:
                 self.cboVariable.addItem(attribute.name)
@@ -100,6 +108,9 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         #                                   self.txtMinEventValue.text(), self.txtMinEventVolume.text(),
         #                                   self.txtMinEventDelta.text())
 
+        if len(selected_id) == 0 and self.cboCategory.currentIndex() != 3:
+            return
+
         #ToDo: ensure type order is the same as in the type Enum
         self.stats.ObjectType = self.cboCategory.currentIndex()
         self.stats.ObjectTypeText = self.cboCategory.currentText()
@@ -143,6 +154,11 @@ class frmStatisticsReportSelection(QMainWindow, Ui_frmStatisticsReportSelection)
         #     self.separation_time = separation_time  # 6
 
         self._frmStatisticsReport.show()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_geometry",
+                                                  self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmStatisticsReportSelection_state",
+                                                  self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

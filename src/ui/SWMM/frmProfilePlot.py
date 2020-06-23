@@ -67,8 +67,8 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         if self.lstData.count() == 0:
             # try the reverse order
             self.InDirectionOfFlow = False
-            start_node = str(self.cboEnd.currentText())
-            end_node = str(self.cboStart.currentText())
+            # start_node = str(self.cboEnd.currentText())
+            # end_node = str(self.cboStart.currentText())
 
             current_node = start_node
             counter = 0
@@ -77,18 +77,18 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
                 for link_group in self.project.links_groups():
                     if link_group and link_group.value:
                         for link in link_group.value:
-                            if link.inlet_node == current_node and current_node != end_node:
+                            if link.outlet_node == current_node and current_node != end_node:
                                 self.lstData.addItem(link.name)
-                                current_node = link.outlet_node
-            if self.lstData.count() > 0:
-                # reverse the order
-                temp_order = []
-                for index in range(0, self.lstData.count()):
-                    temp_order.append(self.lstData.item(index).text())
-                temp_order.reverse()
-                self.lstData.clear()
-                for item in temp_order:
-                    self.lstData.addItem(item)
+                                current_node = link.inlet_node
+            # if self.lstData.count() > 0:
+            #     # reverse the order
+            #     temp_order = []
+            #     for index in range(0, self.lstData.count()):
+            #         temp_order.append(self.lstData.item(index).text())
+            #     temp_order.reverse()
+            #     self.lstData.clear()
+            #     for item in temp_order:
+            #         self.lstData.addItem(item)
 
     def cmdSave_Clicked(self):
         cb = QApplication.clipboard()
@@ -138,6 +138,7 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         start_node = ''
         end_node = ''
         LKsToPlotData = {}
+        MaxDepthData = {}
         for link_name in LKsToPlot:
             try:
                 link = self.project.find_link(link_name)
@@ -149,6 +150,8 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
                 for cross_section in self.project.xsections.value:
                     if cross_section.link == link_name:
                         diameter = cross_section.geometry1
+                        MaxDepthData[link.inlet_node] = cross_section.geometry1
+                        MaxDepthData[link.outlet_node] = cross_section.geometry1
                 length = 10
                 if isinstance(link,core.swmm.hydraulics.link.Conduit):
                     length = float(link.length) - 2*mhrad
@@ -180,8 +183,13 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
                     depth = 0
                     if node.elevation:
                         elevation = node.elevation
-                    if isinstance(node,core.swmm.hydraulics.node.Junction):
+                    if isinstance(node, core.swmm.hydraulics.node.Outfall):
+                        # try to get from conduit max depth
+                        if node.name in MaxDepthData:
+                            depth = MaxDepthData[node.name]
+                    elif isinstance(node,core.swmm.hydraulics.node.Junction):
                         depth = node.max_depth
+
                     NodeInverts[node.name] = elevation
                     NodeDepths[node.name] = depth
 
@@ -376,9 +384,9 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
 
 
         # GROUND LEVEL PLOT
-        func = interp1d(pltxspans,Groundspans,kind='cubic')
-        xinterp = np.linspace(min(pltxspans),max(pltxspans),300)
-        plt.plot(xinterp,func(xinterp), ':k')
+        func = interp1d(pltxspans, Groundspans, kind='linear')
+        xinterp = np.linspace(min(pltxspans), max(pltxspans), 300)
+        plt.plot(xinterp, func(xinterp), 'g')
 
         if len(LKsToPlotAppendix)>0:
             for ind,val in enumerate(MHListAppendix):
@@ -489,7 +497,11 @@ class frmProfilePlot(QMainWindow, Ui_frmProfilePlot):
         ani = animation.FuncAnimation(fig, run, data_gen, save_count = NPeriods ,blit=False)
 
         if fig_output == 1:
-            plt.show()
+            fig = plt.gcf()
+            fig.show()
+            fig.canvas.draw()
+            # plt.show()
+            # fig.canvas.draw()
 
         if fig_output == 2:
             ani.save('basic_animation.mp4',fps=30, bitrate=2000)

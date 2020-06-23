@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>352</height>
+    <width>445</width>
+    <height>368</height>
    </rect>
   </property>
   <property name="font">
@@ -31,6 +31,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -39,7 +45,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -50,6 +56,12 @@
        </item>
        <item>
         <widget class="QLabel" name="lblDays">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -58,7 +70,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -69,6 +81,12 @@
        </item>
        <item>
         <widget class="QLabel" name="lblTimes">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -77,7 +95,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -100,6 +118,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="lblStart">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -108,7 +132,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -119,9 +143,15 @@
        </item>
        <item>
         <widget class="QDateEdit" name="dedStart">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -139,6 +169,12 @@
        </item>
        <item>
         <widget class="QTimeEdit" name="tmeStart">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -147,7 +183,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -179,6 +215,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLabel" name="lblStartReporting">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -187,7 +229,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -198,9 +240,15 @@
        </item>
        <item>
         <widget class="QDateEdit" name="dedStartReport">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>20000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -218,6 +266,12 @@
        </item>
        <item>
         <widget class="QTimeEdit" name="tmeReport">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -226,7 +280,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -252,6 +306,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QLabel" name="lblEnd">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -260,7 +320,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>150</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -271,9 +331,15 @@
        </item>
        <item>
         <widget class="QDateEdit" name="dedEnd">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -291,9 +357,15 @@
        </item>
        <item>
         <widget class="QTimeEdit" name="tmeEnd">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -316,12 +388,21 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="lblStartSweeping">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>150</width>
@@ -337,7 +418,7 @@
         <widget class="QDateEdit" name="dedSweepStart">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -348,6 +429,18 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="lblEndSweeping">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>150</width>
@@ -363,7 +456,7 @@
         <widget class="QDateEdit" name="dedSweepEnd">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -374,9 +467,21 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="lblAntecedent">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>180</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -389,7 +494,7 @@
         <widget class="QLineEdit" name="txtAntecedent">
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>2000</width>
            <height>16777215</height>
           </size>
          </property>

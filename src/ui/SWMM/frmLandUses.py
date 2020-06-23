@@ -51,7 +51,16 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
                 self.set_from(edit_these[0])
             else:
                 self.set_from(edit_these)
+        self.tblGeneral.resizeColumnToContents(0)
+        self.tblGeneral.resizeRowToContents(1)
         self.resize(400,450)
+
+        if (main_form.program_settings.value("Geometry/" + "frmLandUses_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmLandUses_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmLandUses_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmLandUses_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, land_use):
         if not isinstance(land_use, Landuse):
@@ -63,11 +72,11 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
             self.tblGeneral.setItem(0,0,QTableWidgetItem(led.text()))
             led = QLineEdit(land_use.comment)
             self.tblGeneral.setItem(1,0,QTableWidgetItem(led.text()))
-            led = QLineEdit(land_use.last_swept)
+            led = QLineEdit(land_use.street_sweeping_interval)
             self.tblGeneral.setItem(3,0,QTableWidgetItem(led.text()))
             led = QLineEdit(land_use.street_sweeping_availability)
             self.tblGeneral.setItem(4,0,QTableWidgetItem(led.text()))
-            led = QLineEdit(land_use.street_sweeping_interval)
+            led = QLineEdit(land_use.last_swept)
             self.tblGeneral.setItem(5,0,QTableWidgetItem(led.text()))
             self.tblGeneral.setCurrentCell(0,0)
             local_column = -1
@@ -259,9 +268,9 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
 
         self.editing_item.name = new_name
         self.editing_item.comment = self.tblGeneral.item(1,0).text()
-        self.editing_item.last_swept = self.tblGeneral.item(3,0).text()
+        self.editing_item.street_sweeping_interval = self.tblGeneral.item(3,0).text()
         self.editing_item.street_sweeping_availability = self.tblGeneral.item(4,0).text()
-        self.editing_item.street_sweeping_interval = self.tblGeneral.item(5,0).text()
+        self.editing_item.last_swept = self.tblGeneral.item(5,0).text()
 
         if orig_name != self.editing_item.name or \
             orig_comment != self.editing_item.comment or \
@@ -277,6 +286,8 @@ class frmLandUses(QMainWindow, Ui_frmLandUsesEditor):
             pass
             # TODO: self._main_form.edited_?
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmLandUses_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

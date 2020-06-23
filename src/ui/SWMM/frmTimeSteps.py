@@ -3,6 +3,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QMainWindow
 import core.swmm.options
 from ui.SWMM.frmTimeStepsDesigner import Ui_frmTimeSteps
+from ui.model_utility import ParseData
 import math
 
 class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
@@ -14,6 +15,13 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.set_from(main_form.project)
         self._main_form = main_form
+
+        if (main_form.program_settings.value("Geometry/" + "frmTimeSteps_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTimeSteps_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTimeSteps_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTimeSteps_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, project):
         section = project.options.time_steps
@@ -36,7 +44,13 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
         (days, hours, minutes, seconds) = frmTimeSteps.split_days(section.rule_step)
         self.tmeControl.setTime(QtCore.QTime(hours, minutes, seconds))
 
-        routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
+        if ':' in section.routing_step:
+            if len(section.routing_step.split(':')[0]) == 1:  # Delphi GUI writes routing step as h:mm:ss
+                routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, 'h:mm:ss'))
+            else:
+                routing_time = QtCore.QTime(0, 0, 0).secsTo(QtCore.QTime.fromString(section.routing_step, section.TIME_FORMAT))
+        else:
+            routing_time, good_int = ParseData.get_int_from_float(section.routing_step)
         self.txtRouting.setText(str(routing_time))
 
     @staticmethod
@@ -100,6 +114,9 @@ class frmTimeSteps(QMainWindow, Ui_frmTimeSteps):
             orig_second != routing_time.second() or \
             orig_rule_step != section.rule_step:
             self._main_form.mark_project_as_unsaved()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTimeSteps_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

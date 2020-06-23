@@ -43,6 +43,13 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             if climate_type:
                 self.set_from(main_form.project, climate_type)
 
+        if (main_form.program_settings.value("Geometry/" + "frmClimatology_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmClimatology_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmClimatology_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmClimatology_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project, climate_type):
         self.tabClimate_currentTabChanged()
         if climate_type == "Temperature":
@@ -275,10 +282,12 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             evap_section.dry_only = False
         evap_section.timeseries = str(self.cboEvapTs.currentText())
         evap_section.recovery_pattern = str(self.cboMonthly.currentText())
+        if orig_evap_format == EvaporationFormat.UNSET and evap_section.format == EvaporationFormat.CONSTANT:
+            orig_evap_format = EvaporationFormat.CONSTANT
         if orig_evap_format != evap_section.format or \
             orig_pan_coeff != evap_section.monthly_pan_coefficients or \
             orig_monthly != evap_section.monthly or \
-            orig_constant != str(evap_section.constant) or \
+            str(float(orig_constant)) != str(evap_section.constant) or \
             orig_dry_only != evap_section.dry_only or \
             orig_timeseries != evap_section.timeseries or \
             orig_pattern != evap_section.recovery_pattern:
@@ -424,6 +433,8 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             save_conductivity != adjustments_section.soil_conductivity:
             self._main_form.mark_project_as_unsaved()
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmClimatology_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmClimatology_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -521,17 +532,14 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             new_item = item_type()
             new_item.name = self._main_form.new_item_name(item_type)
             new_name = new_item.name
-            self._frmTimeseries = frmTimeseries(self._main_form,[],new_item)
+            self._frmTimeseries = frmTimeseries(self._main_form,[],new_item,self)
         else:
             edit_these = []
             edit_these.append(self.cboTimeSeries.currentText())
-            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these, None, self)
         # edit timeseries
         self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
-        if self.cboTimeSeries.currentIndex() == 0:
-            self.cboTimeSeries.addItem(new_name)
-            self.cboTimeSeries.setCurrentIndex(self.cboTimeSeries.count()-1)
 
     def btnClimate_Clicked(self):
         file_name, ftype = QFileDialog.getOpenFileName(self, "Select a Climatological File", '',
@@ -582,17 +590,14 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             new_item = item_type()
             new_item.name = self._main_form.new_item_name(item_type)
             new_name = new_item.name
-            self._frmTimeseries = frmTimeseries(self._main_form, [], new_item)
+            self._frmTimeseries = frmTimeseries(self._main_form, [], new_item,self)
         else:
             edit_these = []
             edit_these.append(self.cboEvapTs.currentText())
-            self._frmTimeseries = frmTimeseries(self._main_form, edit_these)
+            self._frmTimeseries = frmTimeseries(self._main_form, edit_these,None,self)
         # edit timeseries
         self._frmTimeseries.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmTimeseries.show()
-        if self.cboEvapTs.currentIndex() == 0:
-            self.cboEvapTs.addItem(new_name)
-            self.cboEvapTs.setCurrentIndex(self.cboEvapTs.count() - 1)
 
     def btnPattern_Clicked(self):
         # edit pattern
@@ -614,17 +619,17 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             new_item = item_type()
             new_item.name = self._main_form.new_item_name(item_type)
             new_name = new_item.name
-            self._frmPatternEditor = frmPatternEditor(self._main_form, [], new_item)
+            self._frmPatternEditor = frmPatternEditor(self._main_form, [], new_item, self)
         else:
             edit_these = []
             edit_these.append(self.cboMonthly.currentText())
-            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these)
+            self._frmPatternEditor = frmPatternEditor(self._main_form, edit_these, None, self)
         # edit timeseries
         self._frmPatternEditor.setWindowModality(QtCore.Qt.ApplicationModal)
         self._frmPatternEditor.show()
-        if self.cboMonthly.currentIndex() == 0:
-            self.cboMonthly.addItem(new_name)
-            self.cboMonthly.setCurrentIndex(self.cboMonthly.count() - 1)
+        # if self.cboMonthly.currentIndex() == 0:
+        #     self.cboMonthly.addItem(new_name)
+        #     self.cboMonthly.setCurrentIndex(self.cboMonthly.count() - 1)
 
     def btnDelete_Clicked(self):
         # remove pattern
@@ -654,3 +659,32 @@ class frmClimatology(QMainWindow, Ui_frmClimatology):
             self.help_topic = "swmm/src/src/climateeditor_arealdepletion.htm"
         elif tab_index==5:
             self.help_topic = "swmm/src/src/climate_adjustments.htm"
+
+    def refresh_timeseries(self):
+        # invoked from timeseries editor if opened from this form
+        time_series_section = self._main_form.project.find_section("TIMESERIES")
+        time_series_list = time_series_section.value[0:]
+        self.cboTimeSeries.clear()
+        self.cboTimeSeries.addItem('')
+        for value in time_series_list:
+            self.cboTimeSeries.addItem(value.name)
+        if self.cboTimeSeries.currentIndex() == 0:
+            self.cboTimeSeries.setCurrentIndex(self.cboTimeSeries.count()-1)
+
+        self.cboEvapTs.clear()
+        self.cboEvapTs.addItem('')
+        for value in time_series_list:
+            self.cboEvapTs.addItem(value.name)
+        if self.cboEvapTs.currentIndex() == 0:
+            self.cboEvapTs.setCurrentIndex(self.cboEvapTs.count() - 1)
+
+    def refresh_patterns(self):
+        # invoked from patterns editor if opened from this form
+        pattern_section = self._main_form.project.find_section("PATTERNS")
+        pattern_list = pattern_section.value[0:]
+        self.cboMonthly.clear()
+        self.cboMonthly.addItem('')
+        for value in pattern_list:
+            self.cboMonthly.addItem(value.name)
+            if self.cboMonthly.currentIndex() == 0:
+                self.cboMonthly.setCurrentIndex(self.cboMonthly.count() - 1)

@@ -11,7 +11,7 @@ from ui.frmPlotViewer import frmPlotViewer
 class frmTransect(QMainWindow, Ui_frmTransect):
     SECTION_TYPE = Transect
 
-    def __init__(self, main_form, edit_these, new_item):
+    def __init__(self, main_form, edit_these, new_item, calling_form=None):
         QMainWindow.__init__(self, main_form)
         self.help_topic = "swmm/src/src/transecteditordialog.htm"
         self.helper = HelpHandler(self)
@@ -20,6 +20,7 @@ class frmTransect(QMainWindow, Ui_frmTransect):
         self.cmdCancel.clicked.connect(self.cmdCancel_Clicked)
         self.btnView.clicked.connect(self.btnView_Clicked)
         self._main_form = main_form
+        self.calling_form = calling_form
         self.project = main_form.project
         self.section = self.project.transects
         self.new_item = new_item
@@ -30,6 +31,13 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                 self.set_from(edit_these[0])
             else:
                 self.set_from(edit_these)
+
+        if (main_form.program_settings.value("Geometry/" + "frmTransect_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmTransect_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmTransect_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmTransect_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
     def set_from(self, transect):
         if not isinstance(transect, Transect):
@@ -108,6 +116,11 @@ class frmTransect(QMainWindow, Ui_frmTransect):
                 self._main_form.mark_project_as_unsaved()
             pass
 
+        if self.calling_form:
+            self.calling_form.refresh_transects()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmTransect_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):
@@ -134,5 +147,6 @@ class frmTransect(QMainWindow, Ui_frmTransect):
         df = pd.DataFrame({'':ts})
         frm_plt = frmPlotViewer(df,'xy', 'Transect ' + self.editing_item.name, self.windowIcon(),
                                 self.tblTransect.horizontalHeaderItem(0).text(), self.tblTransect.horizontalHeaderItem(1).text())
-        frm_plt.setWindowTitle("Transect Viewer")
-        frm_plt.show()
+        # frm_plt.setWindowTitle("Transect Viewer")
+        # frm_plt.setWindowModality(QtCore.Qt.ApplicationModal)
+        # frm_plt.show()

@@ -43,6 +43,7 @@ from core.swmm.hydrology.subcatchment import Coverages
 from core.swmm.hydrology.subcatchment import CurveNumberInfiltration
 from core.swmm.hydrology.subcatchment import GreenAmptInfiltration
 from core.swmm.hydrology.subcatchment import Groundwater
+from core.swmm.hydrology.subcatchment import GWF, GroundwaterFlowType
 from core.swmm.hydrology.subcatchment import HortonInfiltration
 from core.swmm.hydrology.subcatchment import InitialLoading
 from core.swmm.hydrology.subcatchment import InitialLoadings
@@ -286,15 +287,20 @@ class LanduseReader(SectionReader):
     @staticmethod
     def read(new_text):
         landuse = Landuse()
-        fields = new_text.split()
+        items = new_text.split(';')
+        fields = items[0].split()
+        comment = ''
+        for c in items[1:]:
+            comment += c
         if len(fields) > 0:
             landuse.name = fields[0]
         if len(fields) > 1:
             landuse.street_sweeping_interval = fields[1]
         if len(fields) > 2:
-            landuse.street_sweeping_availability =  fields[2]
+            landuse.street_sweeping_availability = fields[2]
         if len(fields) > 3:
             landuse.last_swept = fields[3]
+        landuse.comment = comment
         return landuse
 
 
@@ -818,9 +824,6 @@ class CrossSectionReader(SectionReader):
                     cross_section.barrels = fields[6]
         elif cross_section.shape == CrossSectionShape.NotSet:
             return None
-        # elif cross_section.shape == CrossSectionShape.IRREGULAR:
-        #     if len(fields) > 2:
-        #         cross_section.transect = fields[2]
         else:
             if len(fields) > 2:
                 cross_section.geometry1 = fields[2]
@@ -844,8 +847,12 @@ class ControlsReader(SectionReader):
     @staticmethod
     def read(new_text):
         controls = Controls()
-        start_search = new_text.find("RULE") + 1
-        controls.value = new_text[0:start_search] + new_text[start_search:].replace("\nRULE", "\n\nRULE")
+        # start_search = new_text.find("RULE") + 1
+        # controls.value = new_text[0:start_search] + new_text[start_search:].replace("\nRULE", "\n\nRULE")
+        lines = new_text.replace(controls.SECTION_NAME, '').strip().splitlines()
+        if len(lines) > 0:
+            controls.value = '\n'.join(lines)
+            controls.value = controls.value.replace("\nRULE", "\n\nRULE")
         return controls
 
 
@@ -1101,7 +1108,7 @@ class DirectInflowReader(SectionReader):
         if len(fields) > 0:
             direct_inflow.node = fields[0]
         if len(fields) > 1:
-            direct_inflow.constituent = fields[1]
+            direct_inflow.constituent = fields[1].upper()
         if len(fields) > 2:
             direct_inflow.timeseries = fields[2]
         if len(fields) > 3 and direct_inflow.constituent.upper() != "FLOW":
@@ -1531,6 +1538,25 @@ class GroundwaterReader(SectionReader):
         if len(fields) > 13:
             groundwater.unsaturated_zone_moisture = fields[13]
         return groundwater
+
+
+class GWFReader(SectionReader):
+    """Custom groundwater flow equations for specific subcatchments"""
+
+    @staticmethod
+    def read(new_text):
+        gwf = GWF()
+        fields = new_text.split()
+        if len(fields) > 0:
+            gwf.subcatchment_name = fields[0]
+        if len(fields) > 1:
+            if fields[1].upper() == "LATERAL":
+                gwf.groundwater_flow_type = GroundwaterFlowType.LATERAL
+            elif fields[1].upper() == "DEEP":
+                gwf.groundwater_flow_type = GroundwaterFlowType.DEEP
+        if len(fields) > 2:
+            gwf.custom_equation = ''.join(fields[2:])
+        return gwf
 
 
 class LIDUsageReader(SectionReader):

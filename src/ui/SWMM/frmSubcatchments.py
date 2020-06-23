@@ -77,6 +77,22 @@ class frmSubcatchments(frmGenericPropertyEditor):
             if row >= 0:
                 self.tblGeneric.setCellWidget(row, column, combobox)
 
+            # for outlets, show available nodes and subcatchments
+            combobox = QComboBox()
+            combobox.addItem('')
+            selected_index = 0
+            for value in self.project.all_nodes():
+                combobox.addItem(value.name, value)
+                if edit_these[column].outlet == value.name:
+                    selected_index = int(combobox.count()) - 1
+            for value in self.project.subcatchments.value:
+                if edit_these[column].name != value.name:
+                    combobox.addItem(value.name, value)
+                if edit_these[column].outlet == value.name:
+                    selected_index = int(combobox.count()) - 1
+            combobox.setCurrentIndex(selected_index)
+            self.tblGeneric.setCellWidget(self.row_named["Outlet"], column, combobox)
+
             # show available patterns
             patterns_section = self.project.find_section("PATTERNS")
             pattern_list = patterns_section.value[0:]
@@ -119,6 +135,13 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
             # also set special text plus button cells
             self.set_special_cells(column)
+
+        if (main_form.program_settings.value("Geometry/" + "frmSubcatchments_geometry") and
+                main_form.program_settings.value("Geometry/" + "frmSubcatchments_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSubcatchments_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSubcatchments_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
 
         self.installEventFilter(self)
 
@@ -220,7 +243,6 @@ class frmSubcatchments(frmGenericPropertyEditor):
                     edit_these.append(new_item)
             if len(edit_these) == 0:
                 new_item = Groundwater()
-                groundwater_section.value = []
                 new_item.subcatchment = str(self.tblGeneric.item(0, column).text())
                 # groundwater_section.value.append(new_item)  not until ok
                 edit_these.append(new_item)
@@ -307,9 +329,9 @@ class frmSubcatchments(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
-        for fs in self._main_form.model_layers.subcatchments.getFeatures():
-            self._main_form.model_layers.create_subcatchment_link(fs)
+        # self.session.model_layers.create_layers_from_project(self.project)
+        # for fs in self._main_form.model_layers.subcatchments.getFeatures():
+        #     self._main_form.model_layers.create_subcatchment_link(fs)
 
         adjustments = self.project.find_section("ADJUSTMENTS")
         for column in range(0, self.tblGeneric.columnCount()):
@@ -357,6 +379,8 @@ class frmSubcatchments(frmGenericPropertyEditor):
                 # not found already and not blank, add it
                 adjustments.infil.append(subname + "                " + infil_pattern)
 
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSubcatchments_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

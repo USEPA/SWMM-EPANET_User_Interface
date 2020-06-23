@@ -16,6 +16,13 @@ class frmSummary(QMainWindow, Ui_frmSummary):
         self.set_from(main_form.project)
         self._main_form = main_form
 
+        if (main_form.program_settings.value("Geometry/" + "frmSummary_geometry")
+                and main_form.program_settings.value("Geometry/" + "frmSummary_state")):
+            self.restoreGeometry(main_form.program_settings.value("Geometry/" + "frmSummary_geometry",
+                                                                  self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(main_form.program_settings.value("Geometry/" + "frmSummary_state",
+                                                               self.windowState(), type=QtCore.QByteArray))
+
     def set_from(self, project):
         self.txtTitle.setText(str(project.title.title))
         self.txtNotes.setPlainText(str(project.title.comment))
@@ -55,6 +62,9 @@ class frmSummary(QMainWindow, Ui_frmSummary):
 
         section.title = self.txtTitle.text()
         section.comment = self.txtNotes.toPlainText()
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmSummary_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmSummary_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

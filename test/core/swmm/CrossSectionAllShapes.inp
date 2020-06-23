@@ -25,5 +25,5 @@ dummy            CIRCULAR     1.5              0          0          0          
 21               BASKETHANDLE 17               0          0          0          7                    
 22               SEMICIRCULAR 1.222            0          0          0          11                   
 23               IRREGULAR    Tran1            0          0          0          1                    
-24               CUSTOM       2.833            curve1     4
-25               CUSTOM       2.933            curve2     5
+24               CUSTOM       2.833            curve1     0          0          4
+25               CUSTOM       2.933            curve2     0          0          5

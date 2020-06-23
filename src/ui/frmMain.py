@@ -376,6 +376,20 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.actionStdCopy_To.setVisible(False)
         self.actionStdGroup_Edit.setVisible(False)
 
+        if (self.program_settings.value("Geometry/" + "frmMain_geometry") and
+                self.program_settings.value("Geometry/" + "frmMain_state")):
+            self.restoreGeometry(self.program_settings.value("Geometry/" + "frmMain_geometry",
+                                                             self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self.program_settings.value("Geometry/" + "frmMain_state",
+                                                          self.windowState(), type=QtCore.QByteArray))
+
+    def closeEvent(self, event):
+        # User has clicked the red x on the main window"
+        if self.confirm_discard_project():
+            event.accept()
+        else:
+            event.ignore()
+
     def loadBasemap(self):
         pass
 
@@ -662,13 +676,11 @@ class frmMain(QMainWindow, Ui_frmMain):
                     # this is after discerning whether non-empty extent is due to
                     # adding in a legit layer or lingering extent from previous session
                     # (which doesn't work for a new session)
-                    if self.session.map_widget.canvas.extent().isEmpty() or \
-                       self.session.map_widget.refresh_extent_needed:
-                        self.session.map_widget.refresh_extent_needed = False
-                        if isinstance(self.item, Coordinate):
-                            self.session.map_widget.set_extent_about_point(self.item)
-                        else:
-                            self.session.map_widget.set_extent(self.layer.extent())
+                    if self.session.map_widget.canvas.extent().isEmpty():
+                        w = self.session.map_widget.canvas.width()
+                        h = self.session.map_widget.canvas.height()
+                        self.session.map_widget.set_extent_by_corners([0, -1 * h, w, 0])
+                        pass
 
                     self.session.map_widget.canvas.refresh()
                 else:
@@ -710,6 +722,8 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def add_item(self, new_item):
         self.undo_stack.push(self._AddItem(self, new_item))
+        if self.model == "SWMM":
+            self.add_cross_section(new_item)
         self.mark_project_as_unsaved()
 
     class _DeleteItem(QUndoCommand):
@@ -1190,7 +1204,7 @@ class frmMain(QMainWindow, Ui_frmMain):
 
     def open_translate_coord_dialog(self, pt_src_ll, pt_src_ur):
         # translate EPANET coords
-        self.setQgsMapToolTranslateCoords()
+        self.setQgsMapToolTranslateCoords(True)
         if not self.translate_coord_dialog:
             self.translate_coord_dialog = frmTranslateCoordinates(self, pt_src_ll, pt_src_ur)
         else:
@@ -1386,8 +1400,9 @@ class frmMain(QMainWindow, Ui_frmMain):
         else:
             self.actionStdEditObject.setEnabled(False)
 
-    def setQgsMapToolTranslateCoords(self):
-        self.translating_coordinates = not self.translating_coordinates
+    def setQgsMapToolTranslateCoords(self, translating):
+        # self.translating_coordinates = not self.translating_coordinates
+        self.translating_coordinates = translating
         if self.map_widget.translateCoordTool:
             self.map_widget.translateCoordTool.clear()
         self.setQgsMapTool()
@@ -1748,6 +1763,9 @@ class frmMain(QMainWindow, Ui_frmMain):
             file_name = action.data()
             if os.path.isfile(file_name):
                 self.open_project_quiet(file_name)
+            else:
+                QMessageBox.information(None, "Warning", "Input file no longer exists.",
+                                        QMessageBox.Ok)
 
     def add_recent(self, file_name, settings_key):
         """ Add a recently accessed file to program settings. Used when opening and saving projects and scripts. """
@@ -1863,7 +1881,10 @@ class frmMain(QMainWindow, Ui_frmMain):
                             edit_form = tree_item[1](*args)
                         except:  # Try without selected_items and new_item for editors that do not want them
                             args = args[0:-2]
-                            edit_form = tree_item[1](*args)
+                            try:
+                                edit_form = tree_item[1](*args)
+                            except:
+                                return None
                         edit_form.helper = HelpHandler(edit_form)
                         break
                     return None
@@ -1890,6 +1911,10 @@ class frmMain(QMainWindow, Ui_frmMain):
             # window.destroyed = lambda s, e, a: self._forms.remove(s)
             # window.connect(window, QtCore.SIGNAL('triggered()'), self.editor_closing)
             window.setWindowModality(QtCore.Qt.ApplicationModal)
+            if hasattr(window,'section'):
+                if window.section.SECTION_NAME == "[TRANSECTS]" or window.section.SECTION_NAME == "[CURVES]" or window.section.SECTION_NAME == "[TIMESERIES]":
+                    # some windows have to be nonmodal so user can go on and browse plots
+                    window.setWindowModality(QtCore.Qt.NonModal)
             window.show()
 
             # def editor_closing(self, event):
@@ -2272,11 +2297,12 @@ class frmMain(QMainWindow, Ui_frmMain):
                             #     mlayer.setCrs(mcrs)
                         except:
                             pass
+                return True
             except:
                 pass
         else:
             self.crs = None
-        pass
+        return False
 
     def save_project(self, file_name=None):
         if not file_name:
@@ -2400,6 +2426,10 @@ class frmMain(QMainWindow, Ui_frmMain):
     def action_exit(self):
         if not self.confirm_discard_project():
             return
+
+        self.program_settings.setValue("Geometry/" + "frmMain_geometry", self.saveGeometry())
+        self.program_settings.setValue("Geometry/" + "frmMain_state", self.saveState())
+
         del self.program_settings
         del self.project_settings
         try:
@@ -2456,6 +2486,7 @@ class frmMain(QMainWindow, Ui_frmMain):
         self.listViewObjects.clear()
 
     def list_objects(self):
+        self.map_widget.turn_off_add_object_mode()
         selected_text = ''
         for item in self.obj_tree.selectedIndexes():
             selected_text = str(item.data())

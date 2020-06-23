@@ -64,6 +64,14 @@ class frmMapDimensions(QDialog):
                     if self.session.project.map is not None:
                         self.session.project.map.dimensions = (val1, val2, val3, val4)
                         self.session.map_widget.set_extent_by_corners(self.session.project.map.dimensions)
+                        if self.ui.rdoUnitFeet.isChecked():
+                            self.map_widget.map_linear_unit = 'Feet'
+                        elif self.ui.rdoUnitMeters.isChecked():
+                            self.map_widget.map_linear_unit = 'Meters'
+                        elif self.ui.rdoUnitDegrees.isChecked():
+                            self.map_widget.map_linear_unit = 'Degrees'
+                        else:
+                            self.map_widget.map_linear_unit = 'Unknown'
                 if self.session.project is not None:
                     if self.session.project.backdrop is not None:
                         self.session.project.backdrop.dimensions = (self.ui.txtLLx.text(), self.ui.txtLLy.text(), self.ui.txtURx.text(), self.ui.txtURy.text())
@@ -95,7 +103,7 @@ class frmMapDimensions(QDialog):
         if self.map_widget is None:
             return
 
-        model_dim = self.session.project.backdrop.dimensions
+        model_dim = self.session.project.map.dimensions
         if model_dim and model_dim[0] is not None and model_dim[1] is not None and model_dim[2] is not None and model_dim[3] is not None:
             #self.ui.txtLLx.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.x))
             #self.ui.txtLLy.setText('{:.3f}'.format(self._main_form.map_widget.coord_origin.y))
@@ -108,16 +116,16 @@ class frmMapDimensions(QDialog):
         else:
             self.display_layers_extent()
 
-        if not isinstance(self.session.project.backdrop.units, str):
-            units = self.session.project.backdrop.units.name
-        else:
-            units = self.session.project.backdrop.units.upper()
+        # if not isinstance(self.session.project.map.units, str):
+        #     units = self.session.project.map.units.name
+        # else:
+        #     units = self.session.project.map.units.upper()
 
-        if units == "FEET":  # feet
+        if self.map_widget.map_linear_unit == 'Feet':  # feet
             self.ui.rdoUnitFeet.setChecked(True)
-        elif units == "METERS":  # meters
+        elif self.map_widget.map_linear_unit == "Meters":  # meters
             self.ui.rdoUnitMeters.setChecked(True)
-        elif units == "DEGREES":  # degrees
+        elif self.map_widget.map_linear_unit == "Degrees":  # degrees
             self.ui.rdoUnitDegrees.setChecked(True)
         else:
             self.ui.rdoUnitNone.setChecked(True)
@@ -160,14 +168,14 @@ class frmMapDimensions(QDialog):
             return
         if self.map_widget is None:
             return
-        if self.ui.rdoUnitDegrees.isChecked():
-            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[6]  # Degrees
-        elif self.ui.rdoUnitMeters.isChecked():
-            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[0]  # Meters
-        elif self.ui.rdoUnitNone.isChecked():
-            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[7]  # Unknown
-        elif self.ui.rdoUnitFeet.isChecked():
-            self.map_widget.map_linear_unit = self.map_widget.map_unit_names[2]  # Feet
+        # if self.ui.rdoUnitDegrees.isChecked():
+        #     self.map_widget.map_linear_unit = self.map_widget.map_unit_names[6]  # Degrees
+        # elif self.ui.rdoUnitMeters.isChecked():
+        #     self.map_widget.map_linear_unit = self.map_widget.map_unit_names[0]  # Meters
+        # elif self.ui.rdoUnitNone.isChecked():
+        #     self.map_widget.map_linear_unit = self.map_widget.map_unit_names[7]  # Unknown
+        # elif self.ui.rdoUnitFeet.isChecked():
+        #     self.map_widget.map_linear_unit = self.map_widget.map_unit_names[2]  # Feet
 
         if self.session.project is not None:
             if self.session.project.map is not None:

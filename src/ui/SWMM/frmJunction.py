@@ -24,6 +24,15 @@ class frmJunction(frmGenericPropertyEditor):
             # also set special text plus button cells
             self.set_inflow_cell(column)
             self.set_treatment_cell(column)
+
+        self._main_form = session
+        if (self._main_form.program_settings.value("Geometry/" + "frmJunction_geometry") and
+                self._main_form.program_settings.value("Geometry/" + "frmJunction_state")):
+            self.restoreGeometry(self._main_form.program_settings.value("Geometry/" + "frmJunction_geometry",
+                                                                        self.geometry(), type=QtCore.QByteArray))
+            self.restoreState(self._main_form.program_settings.value("Geometry/" + "frmJunction_state",
+                                                                     self.windowState(), type=QtCore.QByteArray))
+
         self.installEventFilter(self)
 
     def eventFilter(self, ui_object, event):
@@ -85,7 +94,10 @@ class frmJunction(frmGenericPropertyEditor):
 
     def cmdOK_Clicked(self):
         self.backend.apply_edits()
-        self.session.model_layers.create_layers_from_project(self.project)
+        # self.session.model_layers.create_layers_from_project(self.project)
+
+        self._main_form.program_settings.setValue("Geometry/" + "frmJunction_geometry", self.saveGeometry())
+        self._main_form.program_settings.setValue("Geometry/" + "frmJunction_state", self.saveState())
         self.close()
 
     def cmdCancel_Clicked(self):

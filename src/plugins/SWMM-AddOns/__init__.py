@@ -8,7 +8,7 @@ __all__ = {"SWMM-CAT":1,
 def run(session=None, choice=None):
 
     if choice == 1:
-        swmmcat_executable_full_path = "C:\EPA SWMM 5.1.013\SWMM-CAT\SWMM-CAT.exe"
+        swmmcat_executable_full_path = "C:\Program Files (x86)\SWMM-CAT\SWMM-CAT.exe"
 
         swmmcat_process = QtCore.QProcess()
         swmmcat_process.startDetached(swmmcat_executable_full_path, [])

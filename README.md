@@ -1,4 +1,7 @@
 # SWMM-EPANET_User_Interface
+
+![Screenshot example](EPANET_UI_Example.png)
+
 User interfaces for EPA SWMM and EPANET models implemented with:
 
 * python: 3.6.0
